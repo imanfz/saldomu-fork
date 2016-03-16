@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:minWidth="@dimen/item_width"
+              android:padding="10dp"
+        >
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:gravity="center"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    android:textColor="#ffffffff"
+                    android:id="@+id/title_dialog"
+                    android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_small_material"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:id="@+id/message_dialog"
+            android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textAppearance="@style/QText"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/message_dialog2"
+            android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/abc_text_size_small_material"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/message_dialog3"
+            android:layout_gravity="center_horizontal"/>
+
+    <ProgressBar
+        android:id="@+id/progressBarDialogNotif"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:layout_height="wrap_content" />
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="100dp"
+            android:text="@string/ok"
+            android:textStyle="bold"
+            android:textSize="@dimen/abc_text_size_button_material"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:id="@+id/btn_dialog_notification_ok"
+            android:layout_gravity="center_horizontal"/>
+</LinearLayout>

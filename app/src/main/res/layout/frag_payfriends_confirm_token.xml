@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/payfriends_bottom_layout"
+                  android:background="@color/windowBackgroundColor"
+                  android:layout_alignParentBottom="true"
+                  android:gravity="center"
+                  android:padding="8dp"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:id="@+id/layout_btn_resend"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:layout_marginRight="8dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_resend_token"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:maxEms="10"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/reg2_btn_text_resend_token"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:layout_weight="1"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_submit_payfriends"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/submit"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </LinearLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/card_bk"
+                android:layout_marginTop="8dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+
+            <Button
+                    android:id="@+id/btn_cancel_payfriends"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:background="@drawable/button_transparant"
+                    android:textColor="@color/colorSecondaryDark"
+                    />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+                android:layout_above="@id/payfriends_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideOverlay"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/grey_1000w"
+                android:layout_margin="6dp"
+                >
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_marginTop="15dp"
+                          android:layout_marginLeft="36dp"
+                          android:layout_marginRight="36dp"
+                    >
+
+                <ImageView
+                        android:id="@+id/img_profile"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        />
+
+                <ImageView
+                        android:layout_weight="1"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_margin="20dp"
+                        android:gravity="center_horizontal"
+                        android:src="@drawable/icon_arrow"
+                        />
+
+                <RelativeLayout
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" >
+
+                    <ImageView
+                            android:id="@+id/img_recipients"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:gravity="center_horizontal"
+                            />
+
+                    <TextView
+                            android:id="@+id/payfriends_value_number_recipients"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/img_recipients"
+                            android:layout_alignTop="@+id/img_recipients"
+                            android:layout_alignRight="@+id/img_recipients"
+                            android:layout_alignBottom="@+id/img_recipients"
+                            android:layout_margin="1dp"
+                            android:gravity="center"
+                            android:text="@string/Zero"
+                            android:textSize="44sp"
+                            android:textColor="@color/colorPrimaryDark" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:layout_marginBottom="15dp"
+                          android:layout_marginLeft="10dp"
+                          android:layout_marginRight="10dp"
+                    >
+
+                <TextView
+                        android:id="@+id/txtName"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"/>
+
+                <TextView
+                        android:id="@+id/txtNumberRecipients"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:textStyle="italic"
+                        android:text="@string/payfriends_number_recipients"/>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_recipients"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+
+                <ListView android:id="@+id/list_recipient"
+                          android:divider="@drawable/transparent"
+                          android:dividerHeight="3dp"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content">
+                </ListView>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_amount_each"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/payfriends_confirm_value_amount_each"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_amount"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/payfriends_confirm_value_amount"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_fee"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/payfriends_confirm_value_fee"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_total_amount"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/payfriends_confirm_value_total_amount"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_message"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/payfriends_confirm_value_message"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/layout_OTP"
+                          android:visibility="gone"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/payfriends_text_otp"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <EditText
+                        android:id="@+id/payfriends_value_otp"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:inputType="number|numberPassword"
+                        android:maxLength="4"
+                        android:singleLine="false"
+                        android:hint="@string/regist2_edithint_otp"
+                        />
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:textStyle="italic"
+                        android:textSize="@dimen/abc_text_size_caption_material"
+                        android:text="@string/payfriends_otp"/>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

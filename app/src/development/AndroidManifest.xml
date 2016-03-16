@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        >
+    <application>
+
+        <meta-data android:name="AA_DB_NAME" android:value="@string/dbname"/>
+        <meta-data android:name="AA_DB_VERSION" android:value="1" />
+        <meta-data android:name="AA_MODELS" android:value=" com.sgo.orimakardaya.Beans.communityModel,
+                                                            com.sgo.orimakardaya.Beans.friendModel,
+                                                            com.sgo.orimakardaya.Beans.myFriendModel,
+                                                            com.sgo.orimakardaya.Beans.listTimeLineModel,
+                                                            com.sgo.orimakardaya.Beans.listHistoryModel,
+                                                            com.sgo.orimakardaya.Beans.likeModel,
+                                                            com.sgo.orimakardaya.Beans.commentModel" />
+    </application>
+</manifest>

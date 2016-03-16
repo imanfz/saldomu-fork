@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="vertical"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/register_bottom_layout"
+                  android:background="@color/windowBackgroundColor"
+                  android:layout_alignParentBottom="true"
+                  android:gravity="center"
+                  android:padding="8dp"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/btn_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="@string/rsb_confirm"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+                android:layout_above="@id/register_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideOverlay"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/grey_1000w"
+                android:layout_margin="6dp"
+                >
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/rsb_acc_no"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView android:id="@+id/rsb_value_no"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/colorSecondaryDark"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:id="@+id/layout_dll"
+                    >
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="6dp"
+                              android:layout_marginLeft="16dp"
+                              android:layout_marginRight="16dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/rsb_acc_name"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <TextView android:id="@+id/rsb_value_name"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:textColor="@color/colorSecondaryDark"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                            />
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="6dp"
+                              android:layout_marginLeft="16dp"
+                              android:layout_marginRight="16dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/rsb_tgl_lahir"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <TextView android:id="@+id/rsb_value_tgl"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:textColor="@color/colorSecondaryDark"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                            />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/rsb_token"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <EditText
+                        android:id="@+id/rsb_value_token"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:inputType="numberPassword"
+                        android:maxLength="6"
+                        android:digits="0123456789"
+                        android:hint="@string/rsb_edithint_token"
+                        />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <include android:id="@+id/main_toolbar"
+             layout="@layout/toolbar_main"/>
+
+    <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/main_toolbar"
+                    android:orientation="vertical"
+                    android:background="@color/grey_1000w"
+                    android:layout_margin="3dp"
+            >
+
+        <TextView android:layout_marginTop="10dp"
+                  android:layout_marginLeft="10dp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="HOW TO TOP UP"
+                  android:textStyle="bold"
+                  android:textColor="@color/colorPrimary"
+                  android:textSize="@dimen/abc_text_size_medium_material"
+                />
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="10dp"
+                  android:text="Via ATM"
+                  android:textColor="@color/colorSecondaryDark"
+                />
+
+        <View android:layout_marginTop="10dp"
+              android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="@color/colorSecondaryDark"/>
+
+        <ListView android:id="@+id/lvAtm"
+                  android:divider="@color/colorSecondaryDark"
+                  android:dividerHeight="1dp"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"></ListView>
+
+    </LinearLayout>
+
+</RelativeLayout>

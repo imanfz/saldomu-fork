@@ -1,0 +1,2 @@
+include ':app', 'PinMaster', 'PinnedSectionList'
+include ':VPI'

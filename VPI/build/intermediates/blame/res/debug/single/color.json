@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/yuddistirakiki/Android Mobile Project/GradelProject/Akardaya/VPI/build/intermediates/res/merged/debug/color/vpi__dark_theme.xml",
+        "source": "/Users/yuddistirakiki/Android Mobile Project/GradelProject/Akardaya/VPI/src/main/res/color/vpi__dark_theme.xml"
+    },
+    {
+        "merged": "/Users/yuddistirakiki/Android Mobile Project/GradelProject/Akardaya/VPI/build/intermediates/res/merged/debug/color/vpi__light_theme.xml",
+        "source": "/Users/yuddistirakiki/Android Mobile Project/GradelProject/Akardaya/VPI/src/main/res/color/vpi__light_theme.xml"
+    }
+]

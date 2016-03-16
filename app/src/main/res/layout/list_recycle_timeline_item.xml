@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+       android:layout_margin="4dp"
+        card_view:cardCornerRadius="5dp"
+        android:layout_height="wrap_content">
+    <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                    android:id="@+id/icon_picture"
+                    android:layout_marginTop="29dp"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:scaleType="centerCrop"/>
+
+            <LinearLayout android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:layout_weight="1"
+                          android:layout_marginLeft="8dp"
+                          android:orientation="vertical"
+                          android:layout_gravity="center_vertical"
+                    >
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_gravity="right"
+                        android:layout_marginBottom="4dp"
+                        android:textSize="@dimen/abc_text_size_small_material"
+                        android:text=""
+                        />
+
+                <LinearLayout
+                              android:layout_width="match_parent"
+                              android:orientation="horizontal"
+                              android:layout_height="wrap_content">
+                    <TextView
+                            android:id="@+id/from_id"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:text="Wargit"
+                            android:layout_weight="5"
+                            android:textStyle="bold"
+                            android:textColor="@color/grey_1000b"
+                            />
+
+                    <TextView
+                            android:id="@+id/status"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:text="paid"
+                            android:textStyle="bold"
+                            android:textColor="@color/color_status"
+                            android:layout_weight="4"
+                            />
+
+                    <TextView
+                            android:id="@+id/to_id"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:text="Yuddistiraasd "
+                            android:layout_weight="5"
+                            android:textStyle="bold"
+                            android:textColor="@color/grey_1000b"
+                            />
+                </LinearLayout>
+
+                <TextView
+                        android:id="@+id/message_transaction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bayar nasgor Mas Bento"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="2dp"
+                        android:textSize="@dimen/abc_text_size_small_material"
+                        />
+
+                <TextView
+                        android:id="@+id/amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_small_material"
+                        android:text="+ IDR 100,000"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/green_500"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"
+                        />
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content">
+
+                    <ImageView android:layout_width="20dp"
+                               android:layout_height="20dp"
+                               android:src="@drawable/ic_like_inactive"
+                            />
+                    <TextView
+                            android:id="@+id/like_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:text="2"
+                            android:textStyle="bold"
+                            android:layout_marginRight="20dp"
+                            />
+
+
+                    <ImageView android:layout_width="20dp"
+                               android:layout_height="20dp"
+                               android:src="@drawable/ic_comment"
+                            />
+
+                    <TextView
+                            android:id="@+id/comment_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:text="3"
+                            android:textStyle="bold"
+                            android:layout_marginRight="5dp"
+                            />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent">
+            <TextView
+                    android:id="@+id/datetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="10dp"
+                    android:textSize="12sp"
+                    android:text="2 Hours"
+                    />
+            <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                    android:id="@+id/icon_picture_right"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:src="@drawable/user_unknown_menu"
+                    android:scaleType="centerCrop"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+                android:id="@+id/layout_comment"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+
+            <LinearLayout
+                    android:id="@+id/layout_comment1"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                        android:id="@+id/icon_picture_comment1"
+                        android:layout_height="40dp"
+                        android:layout_width="40dp"
+                        android:src="@drawable/user_unknown_menu"
+                        android:scaleType="centerCrop"/>
+
+                <LinearLayout android:orientation="vertical"
+                              android:paddingLeft="20dp"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/name_comment1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wargito S"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            />
+
+                    <TextView
+                            android:id="@+id/text_comment1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mba,,aku besok ya bayarnya..hehe..."
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+
+            <LinearLayout
+                    android:id="@+id/layout_comment2"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                        android:id="@+id/icon_picture_comment2"
+                        android:layout_height="40dp"
+                        android:layout_width="40dp"
+                        android:src="@drawable/user_unknown_menu"
+                        android:scaleType="centerCrop"/>
+
+                <LinearLayout android:orientation="vertical"
+                              android:paddingLeft="20dp"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content">
+
+                    <TextView
+                            android:id="@+id/name_comment2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Wicaksono"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            />
+
+                    <TextView
+                            android:id="@+id/text_comment2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Aku juga ya mba..."
+                            android:gravity="center_vertical"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+
+            <LinearLayout android:orientation="horizontal"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content">
+
+
+                <ImageView android:id="@+id/image_love"
+                           android:layout_width="30dp"
+                           android:layout_height="30dp"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="10dp"
+                           android:layout_gravity="center"
+                           android:src="@drawable/ic_like_inactive"/>
+
+                <View android:layout_width="1dp" android:layout_height="35dp" android:background="@color/colorSecondary"></View>
+
+                <ImageView android:id="@+id/image_comment"
+                           android:layout_width="30dp"
+                           android:layout_height="30dp"
+                           android:layout_marginLeft="10dp"
+                           android:layout_marginRight="5dp"
+                           android:layout_gravity="center"
+                           android:src="@drawable/ic_comment"/>
+
+                <TextView android:id="@+id/value_comment"
+                          android:layout_marginRight="10dp"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:text="Comment..."
+                          android:textSize="@dimen/abc_text_size_small_material"
+                          android:textColor="@color/colorSecondary"
+                          android:layout_gravity="center_vertical"
+                        />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

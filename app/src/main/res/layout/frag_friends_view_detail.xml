@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#80FFFFFF"
+            >
+
+        <LinearLayout android:id="@+id/myfriends_bottom_layout"
+                      android:background="@color/windowBackgroundColor"
+                      android:layout_alignParentBottom="true"
+                      android:gravity="center"
+                      android:padding="8dp"
+                      android:orientation="vertical"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="5dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_ask_for_money"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/menu_item_title_ask_for_money"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="5dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_pay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/pay"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="5dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_add_to_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/add_to_group"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="5dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_block"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/block"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:visibility="invisible"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="40dp"
+                    android:layout_marginBottom="5dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/btn_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:gravity="center"
+                        android:text="@string/delete"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+        </LinearLayout>
+
+        <ScrollView
+                android:id="@+id/friend_detail"
+                android:layout_above="@id/myfriends_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideOverlay"
+                >
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="20dp"
+                    >
+
+                <TextView
+                        android:text="@string/friend_profile"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="40dp"
+                        >
+
+                    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                            android:id="@+id/friends_pic_content"
+                            android:layout_centerInParent="true"
+                            android:layout_height="@dimen/friends_pic_content"
+                            android:layout_width="@dimen/friends_pic_content"
+                            android:scaleType="centerCrop"/>
+
+                    <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginLeft="20dp"
+                            >
+
+                        <TextView android:id="@+id/friends_value_name"
+                                  android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:textSize="@dimen/abc_text_size_medium_material"
+                                />
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                >
+
+                            <TextView android:text="@string/socialbanking_id"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+                            <TextView android:id="@+id/friends_value_id"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                >
+
+                            <TextView android:text="@string/phone_number"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+                            <TextView android:id="@+id/friends_value_phone"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                >
+
+                            <TextView android:text="@string/email"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+                            <TextView android:id="@+id/friends_value_email"
+                                      android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                    />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</LinearLayout>

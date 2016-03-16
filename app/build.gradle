@@ -1,0 +1,117 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    lintOptions {
+        disable 'MissingTranslation'
+    }
+
+    signingConfigs {
+        prodKey {
+            keyAlias 'akardayaprod'
+            keyPassword 'akardayapin095'
+            storePassword 'pinakardaya590'
+            storeFile file('akardaya-key.jks')
+        }
+    }
+
+
+    compileSdkVersion 22
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.sgo.orimakardaya"
+        minSdkVersion 16
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        buildConfigField 'String', "AppID", "\"AKD\""
+    }
+
+    productFlavors {
+        development {
+            applicationId "com.sgo.devorimakardaya"
+            resValue "string", "appname", "DEV AKARDAYA"
+            resValue "string", "dbname", "DevOriMAkardaya.db"
+            buildConfigField 'boolean', "isProdDomain", "false"
+            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya/\""
+
+            versionCode = 1
+            versionName "1.0"
+        }
+        production {
+            applicationId "com.sgo.orimakardaya"
+            resValue "string", "appname", "PIN m-akardaya"
+            resValue "string", "dbname", "m-akardaya.db"
+            buildConfigField 'boolean', "isProdDomain", "true"
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya/\""
+            signingConfig signingConfigs.prodKey
+            versionCode = 11
+            versionName "2.10"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        def fileName
+        if (variant.baseName.contains("development")) {
+            fileName = "DEV-AKARDAYA"
+        } else {
+            fileName = "m-akardaya"
+        }
+        variant.outputs.each { output ->
+            def apk = output.outputFile;
+            def newName = fileName + "-${variant.mergedFlavor.versionName}"
+            if (variant.buildType.name.contains("release")) {
+//                newName += "-${variant.buildType.versionNameSuffix}"
+                newName += "- release"
+            } else {
+                newName += "- debug"
+            }
+
+            if (output.zipAlign) {
+                output.zipAlign.outputFile = new File((File) apk.parentFile, newName + '.apk');
+            }
+            output.packageApplication.outputFile = new File((File) apk.parentFile, newName + "-unaligned.apk")
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'in.srain.cube:ultra-ptr:1.0.11'
+    compile 'com.balysv:material-ripple:1.0.2'
+    compile 'com.android.support:cardview-v7:22.2.1'
+    compile 'com.android.support:recyclerview-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
+    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'com.loopj.android:android-async-http:1.4.8'
+    compile 'com.klinkerapps:android-chips:1.0.1@aar'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.u1aryz:android-newpopupmenu-lib:1.0.1'
+    compile 'com.wdullaer:materialdatetimepicker:1.5.4'
+    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
+    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.novoda:merlin:0.7.0'
+    compile project(':PinMaster')
+    compile project(':PinnedSectionList')
+    compile project(':VPI')
+}

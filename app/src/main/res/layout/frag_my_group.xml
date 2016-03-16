@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <in.srain.cube.views.ptr.PtrFrameLayout
+            android:id="@+id/mygroup_ptr_frame"
+            xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            cube_ptr:ptr_resistance="1.7"
+            cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+            cube_ptr:ptr_duration_to_close="300"
+            cube_ptr:ptr_duration_to_close_header="2000"
+            cube_ptr:ptr_keep_header_when_refresh="true"
+            cube_ptr:ptr_pull_to_fresh="true" >
+
+        <!--<FrameLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+            <com.hb.views.PinnedSectionListView
+                    android:id="@android:id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:headerDividersEnabled="false"
+                    android:footerDividersEnabled="false"
+                    android:divider="@color/colorSecondary"
+                    android:dividerHeight="1px"
+                    android:scrollbars="none"
+                    android:fadingEdge="none"
+                    android:focusable="false"
+                    android:listSelector="@android:color/transparent"
+                    />
+
+        <!--</FrameLayout>-->
+
+    </in.srain.cube.views.ptr.PtrFrameLayout>
+</RelativeLayout>

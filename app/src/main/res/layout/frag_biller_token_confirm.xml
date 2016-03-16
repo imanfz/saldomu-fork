@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:background="@color/grey_1000w"
+                      android:layout_margin="3dp"
+                >
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/billertoken_text_biller_id"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_biller_id_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/billertoken_layout_biller_name"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:visibility="gone"
+                          android:orientation="vertical"
+                          android:layout_marginTop="12dp"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/billertoken_text_biller_name"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_biller_name_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/billertoken_text_item_name"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_item_name_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/billertoken_text_payment_options"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_item_payment_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginBottom="12dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/topup_token_amount"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_amount_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/billertoken_amount_desired_layout"
+                          android:layout_width="match_parent"
+                          android:visibility="gone"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/billertoken_text_payment_input_amount"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+
+                <TextView
+                        android:id="@+id/billertoken_desired_amount_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/topup_token_fee"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_fee_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/topup_token_total_amount"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/billertoken_total_amount_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+
+            <LinearLayout android:id="@+id/billertoken_layout_payment"
+                          android:layout_width="match_parent"
+                          android:visibility="gone"
+                          android:orientation="vertical"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginBottom="12dp"
+                          android:layout_height="wrap_content">
+
+                <RelativeLayout
+                              android:id="@+id/billertoken_layout_deskripsi"
+                              android:clickable="true"
+                              android:layout_width="match_parent"
+                              android:layout_height="wrap_content">
+
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:layout_gravity="left"
+                              android:layout_centerVertical="true"
+                              android:text="@string/description"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+
+                    <ImageView android:id="@+id/billertoken_arrow_desc"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:layout_marginRight="8dp"
+                               android:clickable="true"
+                               android:layout_centerVertical="true"
+                               android:layout_alignParentRight="true"
+                               android:src="@drawable/ic_circle_arrow_down"
+                            />
+                </RelativeLayout>
+
+                <TableLayout android:id="@+id/billertoken_layout_table"
+                             android:layout_width="match_parent"
+                             android:visibility="gone"
+                             android:layout_height="wrap_content"
+                             android:layout_marginRight="4dp"
+                             android:stretchColumns="1">
+
+
+                </TableLayout>
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/layout_token"
+                          android:visibility="gone"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/text_token_code"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+
+                <EditText
+                        android:enabled="true"
+                        android:id="@+id/billertoken_token_value"
+                        android:layout_gravity="center_vertical"
+                        android:hint="@string/regist2_edithint_otp"
+                        android:inputType="number|numberPassword"
+                        android:singleLine="true"
+                        android:textColorHint="@color/semi_transparant"
+                        android:textColor="@color/grey_1000b"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="24dp"
+                      android:layout_marginRight="40dp"
+                      android:layout_marginLeft="40dp"
+                      android:layout_marginBottom="8dp">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:id="@+id/layout_btn_resend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_orange"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginRight="8dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/billertoken_btn_resend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:maxEms="7"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/grey_1000w"
+                        android:gravity="center"
+                        android:text="@string/reg2_btn_text_resend_token"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_orange"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/white"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                <Button
+                        android:id="@+id/billertoken_btn_verification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/grey_1000w"
+                        android:gravity="center"
+                        android:text="@string/submit"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </LinearLayout>
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/card_bk"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+
+            <Button
+                    android:id="@+id/billertoken_btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:background="@drawable/button_transparant"
+                    android:textColor="@color/colorSecondaryDark"
+                    />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+</ScrollView>

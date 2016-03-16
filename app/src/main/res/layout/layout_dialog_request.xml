@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_marginLeft="@dimen/abc_text_size_medium_material"
+                android:layout_marginTop="@dimen/abc_text_size_medium_material"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+                 android:stretchColumns="1">
+        <TableRow>
+            <TextView
+                    android:text="@string/report_dialog_text_detail"
+                    android:layout_weight="1"
+                    android:padding="3dip"
+                    />
+            <TextView
+                    android:id="@+id/dialog_report_req_detail_value"
+                    android:text="Billing Payment"
+                    android:layout_weight="2"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/report_dialog_text_type"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_type_value"
+                    android:text="Out"
+                    android:layout_weight="2"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/description"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_description_value"
+                    android:text="KARTUKREDITYES - KARTU KREDIT 2"
+                    android:layout_weight="2"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/contact_alias"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_alias_value"
+                    android:text="Alias"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/topup_token_amount"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_amount_value"
+                    android:text="Rp. 200000"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/report_dialog_text_remark"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_remark_value"
+                    android:text="bayar lawakan"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/report_dialog_text_status"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_status_value"
+                    android:text="bayar lawakan"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="8dp"
+                android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                    android:text="@string/report_dialog_text_reason"
+                    android:layout_weight="0"
+                    android:padding="3dip" />
+            <TextView
+                    android:id="@+id/dialog_report_req_reason_value"
+                    android:text="bayar lawakan"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:gravity="right"
+                    android:padding="3dip" />
+        </TableRow>
+
+
+    </TableLayout>
+
+</RelativeLayout>

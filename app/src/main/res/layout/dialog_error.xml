@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="10dp"
+        >
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_warning_sign_md"
+                android:layout_gravity="center"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:gravity="center"
+                android:layout_marginRight="10dp"
+                android:id="@+id/message_dialog_error"
+                android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/abc_text_size_small_material"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:id="@+id/btn_dialog_error_ok"
+            android:layout_gravity="center_horizontal"/>
+</LinearLayout>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              android:layout_height="wrap_content">
+
+        <LinearLayout android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:background="@color/grey_1000w"
+                      android:layout_margin="3dp"
+                >
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:layout_marginTop="10dp"
+                    >
+                <TextView
+                        android:id="@+id/text_nameBank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="@string/sgoplus_text_productbank"
+                        android:paddingTop="10dp"
+                        />
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                        >
+                    <ImageView
+                            android:id="@+id/spinning_wheel_evoucher_bank_product"
+                            android:visibility="invisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/default_spinner"
+                            android:layout_centerInParent="true"
+                            />
+                    <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:spinnerMode="dropdown"
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                            android:id="@+id/spinner_evoucher_productBank"
+                            android:layout_gravity="center_horizontal"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    >
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:text="@string/evoucher_text_voucherhp"
+                        android:paddingTop="10dp"
+                        />
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                        >
+                    <ImageView
+                            android:id="@+id/spinning_wheel_evoucher_denom"
+                            android:visibility="invisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/default_spinner"
+                            android:layout_centerInParent="true"
+                            />
+                    <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:spinnerMode="dropdown"
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                            android:id="@+id/spinner_evoucher_denom"
+                            android:layout_gravity="center_horizontal"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    >
+                <TextView
+                        android:id="@+id/text_eVoucher_noHP"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:text="@string/regist1_text_nohp"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:paddingTop="10dp"
+                        />
+                <EditText
+                        android:id="@+id/noHP_eVoucher_value"
+                        android:layout_below="@id/text_eVoucher_noHP"
+                        android:enabled="true"
+                        android:maxLength="13"
+                        android:hint="@string/evoucher_edithint_nohp"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/card_bk"
+                android:layout_gravity="center"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/btn_submit_evoucher_input"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="@string/proses"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+</LinearLayout>

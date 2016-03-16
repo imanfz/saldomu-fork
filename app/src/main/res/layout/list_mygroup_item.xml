@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+            android:id="@+id/mygroup_contact_icon"
+            android:layout_height="50dp"
+            android:layout_width="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:scaleType="centerCrop"/>
+
+    <TextView android:id="@+id/mygroup_member_name"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_centerVertical="true"
+              android:paddingLeft="10dp"
+              android:paddingRight="20dp"
+              android:textColor="@color/colorSecondaryDark"
+              android:textSize="@dimen/abc_text_size_medium_material"
+              android:layout_toRightOf="@id/mygroup_contact_icon"/>
+
+</RelativeLayout>

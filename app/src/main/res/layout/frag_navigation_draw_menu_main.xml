@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/nav_menu_layout"
+              android:orientation="vertical"
+              android:layout_width="240dp"
+              android:layout_height="match_parent"
+              android:background="@color/transparent"
+        >
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+        <LinearLayout android:id="@+id/llHeaderProfile"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:baselineAligned="false"
+                      android:background="@color/colorPrimaryDark"
+                >
+            <RelativeLayout android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="8dp"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                    >
+                <View android:layout_width="56dp"
+                      android:layout_height="56dp"
+                      android:layout_centerInParent="true"
+                      android:background="@drawable/circle_border"
+                        />
+                <ImageView android:layout_width="48dp"
+                           android:layout_height="48dp"
+                           android:layout_centerInParent="true"
+                           android:id="@+id/header_cust_image"
+                        />
+
+            </RelativeLayout>
+
+
+            <LinearLayout android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_weight="2"
+                          android:padding="4dp"
+                          android:gravity="center_vertical"
+                    >
+                <TextView android:id="@+id/header_cust_name"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/grey_1000w"
+                          android:maxLength="25"
+                          android:textSize="@dimen/abc_text_size_title_material"
+                        />
+                <TextView android:id="@+id/header_cust_id"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textSize="@dimen/abc_text_size_subhead_material"
+                          android:textColor="@color/grey_1000w"
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorSecondary"
+                        android:padding="6dp"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                >
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/grey_1000w"
+                      android:textStyle="bold"
+                      android:textSize="@dimen/abc_text_size_body_1_material"
+                      android:text="@string/header_menu_balance"
+                    />
+
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/grey_1000w"
+                      android:textSize="@dimen/abc_text_size_body_1_material"
+                      android:id="@+id/currency_value"
+                      android:layout_marginRight="6dp"
+                    />
+            <TextView android:id="@+id/balance_value"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/grey_1000w"
+                      android:textSize="@dimen/abc_text_size_body_1_material"
+                    />
+
+            <ImageView android:layout_width="20dp"
+                         android:layout_height="20dp"
+                        android:src="@drawable/ic_refresh_balance"
+                       android:layout_marginLeft="10dp"
+                       android:id="@+id/btn_refresh_balance"
+                    />
+
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:padding="8dp"
+                      android:gravity="center"
+                      android:orientation="vertical"
+                >
+            <TextView android:id="@+id/periode_limit_value"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/colorSecondaryDark"
+                      android:textStyle="bold"
+                      android:textSize="@dimen/abc_text_size_body_1_material"
+                      android:text="@string/header_monthly_limit"
+                    />
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/colorSecondaryDark"
+                          android:textSize="@dimen/abc_text_size_body_1_material"
+                          android:id="@+id/currency_limit_value"
+                          android:layout_marginRight="6dp"
+                        />
+                <TextView android:id="@+id/limit_value"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/colorSecondaryDark"
+                          android:textSize="@dimen/abc_text_size_body_1_material"
+                        />
+            </LinearLayout>
+
+        </LinearLayout>
+        <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:paddingBottom="1dp"
+                android:background="#ffafafb1" />
+    </LinearLayout>
+
+    <ListView
+            android:id="@android:id/list"
+            android:layout_width="240dp"
+            android:dividerHeight="1dp"
+            android:layout_height="wrap_content">
+
+    </ListView>
+
+</LinearLayout>

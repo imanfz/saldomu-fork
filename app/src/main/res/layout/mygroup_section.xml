@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorSecondaryWhite">
+
+    <TextView android:id="@+id/tvMygroupSection"
+              android:paddingTop="5dp"
+              android:paddingBottom="5dp"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textStyle="bold"
+              android:textSize="@dimen/abc_text_size_medium_material"
+              android:paddingLeft="5dp"
+              android:textColor="@color/colorSecondaryDark"
+              android:background="@color/colorSecondaryWhite"/>
+
+</RelativeLayout>

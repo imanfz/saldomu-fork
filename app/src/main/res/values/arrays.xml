@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="listatm_namabank_list">
+        <item>Bank BCA</item>
+        <item>Bank Mandiri</item>
+        <item>Bank Bukopin</item>
+        <item>Bank BNI</item>
+        <item>Bank BRI</item>
+        <item>Bank CIMB</item>
+        <item>Bank OCBC</item>
+        <item>Bank BII</item>
+    </string-array>
+
+    <string-array name="topup_list_item">
+        <item>ATM</item>
+        <!--<item>Via Agent</item>-->
+    </string-array>
+
+    <string-array name="collection_payment_list_item">
+       <item>Internet Banking</item>
+    </string-array>
+
+    <string-array name="myprofilelist_list_item">
+        <item>Profil</item>
+        <item>Ganti Password</item>
+    </string-array>
+
+    <string-array name="myprofilelist_list_item_pin">
+        <item>Profil</item>
+        <item>Ganti Password</item>
+        <item>Ganti PIN</item>
+    </string-array>
+
+    <string-array name="home_vpi_title">
+        <item>RIWAYAT</item>
+        <item>LINI WAKTU</item>
+        <!--<item>GROUP</item>-->
+    </string-array>
+
+    <string-array name="buy_vpi_title">
+        <item>Pembelian</item>
+        <item>Pembayaran</item>
+        <item>Collection</item>
+    </string-array>
+
+    <string-array name="list_myprofile_hobby">
+        <item>Pilih Hobi</item>
+        <item>Musik</item>
+        <item>Membaca</item>
+        <item>Olahraga</item>
+    </string-array>
+
+    <string-array name="evoucer_productbank_list">
+        <item>BCA KLIKPAY</item>
+        <item>BRI E-PAY</item>
+        <item>DANAMON ONLINE BANKING</item>
+        <item>DOMPETKU</item>
+        <item>MANDIRI E-CASH</item>
+        <item>MANDIRI IB</item>
+        <item>MANDIRI SMS BANKING</item>
+        <item>T-CASH</item>
+        <item>XL TUNAI</item>
+    </string-array>
+
+    <string-array name="broadcast_kode_compare_en">
+        <item>code</item>
+    </string-array>
+
+    <string-array name="list_buy">
+        <item>E-Voucher HP</item>
+    </string-array>
+
+    <string-array name="list_e_voucher">
+        <item>Internet Banking</item>
+        <item>SMS Banking</item>
+    </string-array>
+
+    <string-array name="broadcast_kode_compare">
+        <item>kode</item>
+        <item>otp</item>
+        <item>member</item>
+    </string-array>
+
+    <string-array name="broadcast_regist_kode_compare">
+        <item>activation</item>
+        <item>code</item>
+    </string-array>
+
+    <string-array name="privacy_list">
+        <item>Pribadi</item>
+        <item>Teman</item>
+    </string-array>
+
+    <string-array name="report_list">
+        <item>Transaksi</item>
+        <item>Transfer</item>
+        <item>Request</item>
+    </string-array>
+
+    <integer-array name="google_colors">
+        <item>@color/red_700</item>
+        <item>@color/blue_700</item>
+        <item>@color/yellow_700</item>
+        <item>@color/green_700</item>
+    </integer-array>
+
+    <string-array name="settings_list">
+        <item>Registrasi SMS Banking</item>
+    </string-array>
+
+    <string-array name="buy_vpi_title_1">
+        <item>Pembelian</item>
+        <item>Pembayaran</item>
+    </string-array>
+
+    <string-array name="list_tipe_notif">
+        <item>Pilih Tipe Notifikasi</item>
+        <item>EMAIL</item>
+        <item>SMS</item>
+        <item>EMAIL &amp; SMS</item>
+    </string-array>
+</resources>

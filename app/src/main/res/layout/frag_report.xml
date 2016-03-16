@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <LinearLayout android:id="@+id/layout_filter"
+                  android:layout_width="match_parent"
+                  android:orientation="horizontal"
+                  android:padding="8dp"
+                  android:background="@color/colorSecondaryDark"
+                  android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="8dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <TextView android:id="@+id/filter_date_from"
+                      android:layout_width="match_parent"
+                      android:clickable="true"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:background="@color/colorPrimary"
+                      android:gravity="center"
+                      android:text="From\n15-5-2015"
+                      android:layout_height="wrap_content"/>
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/card_bk"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="16dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <TextView android:id="@+id/filter_date_to"
+                      android:layout_width="match_parent"
+                      android:paddingTop="10dp"
+                      android:paddingBottom="10dp"
+                      android:background="@color/colorPrimary"
+                      android:clickable="true"
+                      android:gravity="center"
+                      android:text="From\n15-5-2015"
+                      android:layout_height="wrap_content"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <ToggleButton
+                android:layout_width="0dp"
+                android:minWidth="200dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:layout_gravity="right|center_vertical"
+                android:textOn="@string/report_filter_button_on"
+                android:textOff="@string/report_filter_button_off"
+                android:id="@+id/filter_toggle_btn"/>
+
+
+    </LinearLayout>
+
+
+    <in.srain.cube.views.ptr.PtrFrameLayout
+            android:id="@+id/rotate_header_list_view_frame"
+            xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300"
+            cube_ptr:ptr_duration_to_close="200"
+            cube_ptr:ptr_duration_to_close_header="1000"
+            cube_ptr:ptr_keep_header_when_refresh="true"
+            cube_ptr:ptr_pull_to_fresh="false"
+            cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+            cube_ptr:ptr_resistance="1.7">
+
+
+        <RelativeLayout android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+            <ListView   android:id="@android:id/list"
+                        android:layout_width="match_parent"
+                        android:dividerHeight="1dp"
+                        android:layout_height="match_parent"
+                        android:choiceMode="singleChoice"
+                    />
+            <include android:id="@+id/empty_layout"
+                     layout="@layout/empty_view"
+                    />
+        </RelativeLayout>
+
+
+    </in.srain.cube.views.ptr.PtrFrameLayout>
+
+
+
+</LinearLayout>

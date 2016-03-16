@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"
+        >
+    <WebView  android:id="@+id/webview"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:visibility="gone"
+            />
+    <ProgressBar android:id="@+id/loading_bar_web"
+                android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_centerInParent="true"
+            />
+</RelativeLayout>
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+              android:orientation="vertical"
+        >
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Terms &amp; Conditions"
+              android:gravity="center"
+              android:textStyle="bold"
+              android:textSize="@dimen/abc_text_size_large_material"
+              android:textColor="@color/black"
+            />
+
+    <View android:layout_width="match_parent"
+          android:layout_height="4dp"
+          android:background="@color/colorSecondary"
+            />
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Mobile application PIN - one touch socialbanking usage terms and conditions."
+              android:textStyle="bold"
+              android:gravity="center_horizontal"
+              android:textSize="@dimen/abc_text_size_small_material"
+              android:textColor="@color/black"
+            />
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="@string/termsncondition_isi"
+              android:gravity="fill_horizontal"
+              android:layout_gravity="fill_horizontal"
+              android:textSize="@dimen/abc_text_size_small_material"
+              android:textColor="@color/black"
+            />
+</LinearLayout>-->

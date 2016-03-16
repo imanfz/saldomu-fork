@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:background="@color/grey_1000w"
+                      android:layout_margin="3dp"
+                >
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/pulsa_phone_number"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/pulsatoken_pulsa_id_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginTop="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/pulsainput_text_denom"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/pulsatoken_operator_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginTop="12dp"
+                          android:layout_marginLeft="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/pulsa_nominal"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <TextView
+                        android:id="@+id/pulsatoken_nominal_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/billerinput_text_payment_options"
+                        />
+
+                <Spinner
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:spinnerMode="dropdown"
+                        android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                        android:id="@+id/spinner_pulsainput_payment_options"
+                        android:layout_gravity="center_horizontal"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/card_bk_orange"
+                android:layout_gravity="center"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="8dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/pulsatoken_btn_verification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/grey_1000w"
+                    android:gravity="center"
+                    android:text="@string/submit"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/card_bk"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="16dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+
+            <Button
+                    android:id="@+id/pulsatoken_btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:background="@drawable/button_transparant"
+                    android:textColor="@color/colorSecondaryDark"
+                    />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+</ScrollView>

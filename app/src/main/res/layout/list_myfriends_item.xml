@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:padding="8dp"
+              android:layout_height="wrap_content">
+
+    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+                       android:id="@+id/contact_icon_friends"
+                       android:layout_height="?android:attr/listPreferredItemHeight"
+                       android:layout_width="?android:attr/listPreferredItemHeight"
+                       android:scaleType="centerCrop"/>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:layout_gravity="center_vertical"
+                >
+        <TextView
+                android:id="@+id/txtListName_contact_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:paddingTop="5dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                />
+        <TextView
+                android:id="@+id/txtListNumber_contact_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                />
+    </LinearLayout>
+
+
+</LinearLayout>

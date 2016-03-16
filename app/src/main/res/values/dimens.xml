@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="item_width">192dp</dimen>
+    <dimen name="item_height">192dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="profile_pic_back">88sp</dimen>
+    <dimen name="profile_pic_content">80sp</dimen>
+    <dimen name="friends_pic_content">80sp</dimen>
+
+    <dimen name="edittext_spacingZero">0dp</dimen>
+    <dimen name="edittext_spacingright">10dp</dimen>
+    <dimen name="edittext_spacingleft">16dp</dimen>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_prod" translatable="false">PIN m-akardaya</string>
+    <string name="drawer_open" translatable="false">Open</string>
+    <string name="drawer_close" translatable="false">Close</string>
+    <string name="Zero" translatable="false">0</string>
+
+</resources>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+        >
+    <android.support.v4.widget.DrawerLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            tools:context=".MainPage"
+            android:id="@+id/main_drawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <RelativeLayout
+                    android:id="@+id/outer_layout_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                >
+            <include android:id="@+id/main_toolbar"
+                     layout="@layout/toolbar_main"/>
+
+            <FrameLayout
+                    android:id="@+id/main_page_content"
+                    android:layout_below="@id/main_toolbar"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    />
+
+        </RelativeLayout>
+
+
+        <FrameLayout
+                android:id="@+id/left_drawer"
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                >
+
+
+            <fragment
+                    android:id="@+id/main_list_menu_fragment"
+                    android:layout_width="240dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left"
+                    android:layout="@layout/frag_navigation_draw_menu_main"
+                    class="com.sgo.orimakardaya.fragments.NavigationDrawMenu"
+                    tools:layout="@layout/frag_navigation_draw_menu_main"/>
+            <View android:layout_width="20dp"
+                  android:id="@+id/view_shadow"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/drawer_shadow_back"
+                  android:layout_gravity="right"
+                    />
+
+
+        </FrameLayout>
+
+        <FrameLayout
+                android:id="@+id/right_drawer"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                >
+
+            <View android:layout_width="20dp"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/drawer_shadow"
+                  android:layout_gravity="left"
+                    />
+            <fragment
+                    android:id="@+id/main_list_menu_fragment_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center"
+                    android:layout="@layout/frag_navigation_draw_menu_main"
+                    class="com.sgo.orimakardaya.fragments.RightSideDrawMenu"
+                    tools:layout="@layout/frag_navigation_draw_menu_main"/>
+
+        </FrameLayout>
+
+    </android.support.v4.widget.DrawerLayout>
+</RelativeLayout>

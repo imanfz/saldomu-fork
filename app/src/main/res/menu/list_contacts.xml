@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:someNamespace="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_list_contacts"
+          android:title="@string/menuitem_title_listcontacs"
+          android:icon="@drawable/ic_add_friends"
+          someNamespace:showAsAction="always" >
+
+        <menu>
+            <item android:id="@+id/menu_item_add_by_qrcode"
+                  android:icon="@drawable/ic_add_by_qr"
+                  android:title="@string/menu_item_add_by_qrcode" />
+            <item android:id="@+id/menu_item_add_by_nfc"
+                  android:icon="@drawable/ic_add_by_qr"
+                  android:title="@string/menu_item_add_by_nfc" />
+            <item android:id="@+id/menu_item_contact_list"
+                  android:icon="@drawable/ic_add_by_contact"
+                  android:title="@string/menu_item_contact_list" />
+        </menu>
+    </item>
+</menu>
