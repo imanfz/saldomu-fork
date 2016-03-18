@@ -23,6 +23,8 @@ public abstract class BaseFragmentMainPage extends Fragment {
 
     public abstract boolean checkCanDoRefresh();
 
-    public abstract void refresh();
+    public abstract void refresh(PtrFrameLayout frameLayout);
+
+    public abstract void goToTop();
 
 }

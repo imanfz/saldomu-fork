@@ -15,6 +15,7 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
     public ImageView icon;
     private ClickListener clickListener;
     public LinearLayout layout_button_ask;
+    public QuickContactBadge iconPicture;
 
     public NotificationHolder(View itemView) {
         super(itemView);
@@ -23,11 +24,13 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
         time = (TextView)itemView.findViewById(R.id.txt_time);
         icon = (ImageView)itemView.findViewById(R.id.img_notif);
         dll = (TextView)itemView.findViewById(R.id.txt_dll);
+        iconPicture = (QuickContactBadge)itemView.findViewById(R.id.icon_picture);
         btnAccept = (TextView)itemView.findViewById(R.id.btn_accept);
         btnReject = (TextView)itemView.findViewById(R.id.btn_reject);
         layout_button_ask = (LinearLayout)itemView.findViewById(R.id.layout_button_ask);
 
         btnAccept.setOnClickListener(this);
+        itemView.setOnClickListener(this);
     }
 
     public interface ClickListener {
@@ -39,7 +42,8 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
          * position of the clicked item
          * isLongClick true if long click, false otherwise
          */
-        void onClick(View v, boolean isLongClick);
+        void onClickView(View v, boolean isLongClick);
+        void onClickBtnAccept(View v, boolean isLongClick);
 
     }
 
@@ -53,13 +57,19 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         // If not long clicked, pass last variable as false.
-        clickListener.onClick(v, false);
+        if(v instanceof TextView)
+            clickListener.onClickBtnAccept(v,false);
+        else
+            clickListener.onClickView(v, false);
     }
 
     @Override
     public boolean onLongClick(View v) {
         // If long clicked, passed last variable as true.
-        clickListener.onClick(v, true);
+        if(v instanceof TextView)
+            clickListener.onClickBtnAccept(v,true);
+        else
+            clickListener.onClickView(v, true);
         return true;
     }
 }

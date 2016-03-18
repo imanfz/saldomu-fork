@@ -26,6 +26,8 @@ public class WebParams {
     public static String CUST_PHONE = "cust_phone";
     public static String CUST_EMAIL = "cust_email";
     public static String MAX_RESEND_TOKEN = "max_resend_token";
+    public static String MAX_RESEND = "max_resend";
+    public static String COUNT_RESEND = "count_resend";
 
     public static String PASSWORD_LOGIN = "password";
     public static String USER_NAME = "user_name";
@@ -73,7 +75,10 @@ public class WebParams {
     public static String EMAIL = "email";
     public static String FULL_NAME = "full_name";
     public static String HOBBY = "hobby";
+    public static String POB = "birth_place";
+    public static String ID_TYPE = "idtype";
     public static String VERIFIED = "verified";
+    public static String MOTHER_NAME = "mother_name";
 
     public static String API_KEY = "api_key";
 
@@ -198,7 +203,8 @@ public class WebParams {
 
     public static String REMAIN_LIMIT = "remain_limit";
     public static String PERIOD_LIMIT = "period_limit";
-	
+    public static String NEXT_RESET = "next_reset";
+
     public static String PAGE= "page";
     public static String DATE_FROM= "date_from";
     public static String DATE_TO= "date_to";
@@ -263,7 +269,7 @@ public class WebParams {
 
     public static String SOCIAL_SIGNATURE = "social_signature";
     public static String RECIPIENT_NAME = "recipient_name";
-	
+
 	public static String RC_UUID = "rc_uuid";
     public static String RC_DTIME = "rc_dtime";
     public static String SIGNATURE = "signature";
@@ -282,4 +288,34 @@ public class WebParams {
     public static String CONF_PIN = "conf_pin";
     public static String IS_SMS = "is_sms";
     public static String IS_EMAIL = "is_email";
+
+    public static String CUST_ID_TYPE = "cust_id_type";
+    public static String CUST_ID_NUMBER = "cust_id_number";
+    public static String CUST_ADDRESS = "cust_address";
+    public static String CUST_COUNTRY = "cust_country";
+    public static String CUST_BIRTH_PLACE = "cust_birth_place";
+    public static String CUST_BIRTH_DATE = "cust_birth_date";
+    public static String CUST_MOTHER_NAME = "cust_mother_name";
+    public static String CUST_GENDER = "cust_gender";
+    public static String ID_TYPES = "id_types";
+
+    public static String MEMBER_LEVEL = "member_level";
+    public static String IS_REGISTERED = "is_registered";
+
+	public static String BANK_CASHOUT = "bank_cashout";
+    public static String USER_IS_SYNCED = "user_is_synced";
+
+    public static String FROM_USER_ID = "from_user_id";
+    public static String TO_USER_ID = "to_user_id";
+
+    public static String CONTACT_CENTER = "contact_center";
+    public static String CHANGE_PASS = "changed_pass";
+    public static String USERID_ADMIN = "user_id_admin";
+    public static String NAME_ADMIN = "user_name_admin";
+    public static String OTP_MEMBER = "otp_member";
+    public static String CUST_CONTACT_EMAIL = "cust_contact_email";
+    public static String MAX_TOPUP = "max_topup";
+    public static String IS_REGISTER = "is_register";
+    public static String ALLOW_MEMBER_LEVEL = "allow_member_level";
+    public static String CAN_TRANSFER = "can_transfer";
 }

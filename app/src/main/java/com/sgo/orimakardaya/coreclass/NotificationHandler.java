@@ -45,23 +45,25 @@ public class NotificationHandler {
 
             Timber.d("isi params Retrieve Notif Handler:"+params.toString());
 
-            MyApiClient.sentRetrieveNotif(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentRetrieveNotif(mContext,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.w("isi response Retrieve Notif handler:"+response.toString());
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals(ErrorDefinition.NO_TRANSACTION)) {
                             JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
-                            JSONObject mObject;
                             int idx = 0;
-                            for(int i=0 ; i<mArrayData.length();i++){
+                            JSONObject mObject;
+                            for (int i = 0; i < mArrayData.length(); i++) {
                                 mObject = mArrayData.getJSONObject(i);
-                                if(mObject.getInt(WebParams.NOTIF_TYPE) == NotificationActivity.TYPE_TRANSFER && mObject.getInt(WebParams.NOTIF_READ) == NotificationActivity.UNREAD){
-                                    String notif_detail_string = mArrayData.getJSONObject(i).optString(WebParams.NOTIF_DETAIL,"");
-                                    if(!notif_detail_string.isEmpty())
-                                        idx++;
+                                if(mObject != null) {
+                                    if (mObject.getInt(WebParams.NOTIF_READ) == NotificationActivity.UNREAD) {
+                                        String notif_detail_string = mArrayData.getJSONObject(i).optString(WebParams.NOTIF_DETAIL, "");
+                                        if (!notif_detail_string.isEmpty())
+                                            idx++;
+                                    }
                                 }
                             }
                             setNotifCount(String.valueOf(idx));

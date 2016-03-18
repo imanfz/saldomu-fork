@@ -72,5 +72,49 @@ public abstract class BaseActivity extends AppCompatActivity {
         return deprogressbar;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.wtf(this.getClass().getSimpleName(), "onStart");
+        Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
+        Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.wtf(this.getClass().getSimpleName(), "onResume");
+        Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
+        Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
+    }
+
+    @Override
+    protected void onPause() {
+//        serviceReferenceBalance.StopCallBalance();
+        super.onPause();
+        Log.wtf(this.getClass().getSimpleName(),"onPause");
+        Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
+        Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.wtf(this.getClass().getSimpleName(), "onStop");
+        Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
+        Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.wtf(this.getClass().getSimpleName(), "onDestroy");
+        Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
+        Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
+    }
 }

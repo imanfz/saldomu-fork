@@ -63,13 +63,16 @@ public class PasswordRegisterActivity extends BaseActivity {
     Button.OnClickListener btnSubmitNewPassListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (inputValidation()){
-                Intent i = new Intent();
-                i.putExtra(DefineValue.NEW_PASSWORD, et_pass_new.getText().toString());
-                i.putExtra(DefineValue.CONFIRM_PASSWORD, et_pass_retype.getText().toString());
+            if(InetHandler.isNetworkAvailable(PasswordRegisterActivity.this)) {
+                if (inputValidation()) {
+                    Intent i = new Intent();
+                    i.putExtra(DefineValue.NEW_PASSWORD, et_pass_new.getText().toString());
+                    i.putExtra(DefineValue.CONFIRM_PASSWORD, et_pass_retype.getText().toString());
 
-                finishChild(i);
+                    finishChild(i);
+                }
             }
+            else DefinedDialog.showErrorDialog(PasswordRegisterActivity.this, getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -91,10 +94,10 @@ public class PasswordRegisterActivity extends BaseActivity {
 
         String auth = getIntent().getStringExtra(DefineValue.AUTHENTICATION_TYPE);
 
-        if (auth.equals(DefineValue.AUTH_TYPE_PIN))
+//        if (auth.equals(DefineValue.AUTH_TYPE_PIN))
             setResult(Registration.RESULT_PIN,data);
-        else
-            setResult(Registration.RESULT_FINISHING,data);
+//        else
+//            setResult(Registration.RESULT_FINISHING,data);
         finish();
     }
 
@@ -104,7 +107,7 @@ public class PasswordRegisterActivity extends BaseActivity {
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpass));
             return false;
         }
-        else if(et_pass_new.getText().toString().length()<5){
+        else if(et_pass_new.getText().toString().length()<6){
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpasslength));
             return false;

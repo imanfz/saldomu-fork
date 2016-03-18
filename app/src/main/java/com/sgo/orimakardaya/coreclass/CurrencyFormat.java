@@ -19,8 +19,8 @@ public class CurrencyFormat {
   }
 
   public static String format(String number){
-    double temp = Double.valueOf(number);
-    return format(temp);
+      double temp = Double.valueOf(number);
+      return format(temp);
   }
 
   public static String format(int number){

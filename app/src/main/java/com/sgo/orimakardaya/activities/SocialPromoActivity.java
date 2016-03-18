@@ -72,11 +72,29 @@ public class SocialPromoActivity extends BaseActivity {
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
             }
 
-//            @Override
-//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-//                handler.proceed();
-//                //super.onReceivedSslError(view, handler, error);
-//            }
+
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+                Toast.makeText(activity, getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+            }
+
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                Toast.makeText(activity, error.getDescription(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+                if(MyApiClient.IS_PROD)
+                    super.onReceivedSslError(view, handler, error);
+                else
+                    handler.proceed();
+
+            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {

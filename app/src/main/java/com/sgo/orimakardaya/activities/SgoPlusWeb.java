@@ -141,10 +141,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        if(bankCode.equals("014")) {
-            webSettings.setLoadWithOverviewMode(true);
-            webSettings.setUseWideViewPort(true);
-        }
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setUseWideViewPort(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         if (android.os.Build.VERSION.SDK_INT<=11) {
             webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
@@ -154,44 +152,68 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webview.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 //setSupportProgress(progress * 100);
-               getProgressSpinner().setVisibility(View.VISIBLE);
+                getProgressSpinner().setVisibility(View.VISIBLE);
+                view.setVisibility(View.GONE);
                 //activity.setProgress(progress * 100);
-                if(progress == 100)
+                if (progress == 100) {
                     getProgressSpinner().setVisibility(View.GONE);
+                    view.setVisibility(View.VISIBLE);
+                }
             }
         });
         webview.setWebViewClient(new WebViewClient() {
 
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Timber.d("isi url tombol-tombolnya:" + url);
-                if (url.contains("isclose=1")) {
+                Timber.d("isi url tombol-tombolnya:"+ url);
+                if (url.contains("isclose=1")){
                     setResult(MainPage.RESULT_BALANCE);
                     getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                            fee, amount, reportType, commId, transType, shareType);
+                                 fee, amount,reportType,commId,transType, shareType);
                 }
                 else if (url.contains("isback=1")){
                     setResult(MainPage.RESULT_BALANCE);
                     onOkButton();
-                }
-                else view.loadUrl(url);
+                } else view.loadUrl(url);
 
                 return true;
             }
 
+
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Timber.d("isi url tombol-tombolnya2:" + failingUrl);
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
                 isDisconnected = true;
                 invalidateOptionsMenu();
+                Timber.d("isi error code :" + String.valueOf(errorCode));
+                String message = "";
+                if (errorCode > ERROR_IO)
+                    message = getString(R.string.webview_err_connect);
+                else if(errorCode == ERROR_TIMEOUT)
+                    message = getString(R.string.webview_err_timeout);
+                else if(errorCode == ERROR_BAD_URL)
+                    message = getString(R.string.webview_err_bad_url);
+                else if(errorCode == ERROR_TOO_MANY_REQUESTS)
+                    message = getString(R.string.webview_err_too_many_req);
 
+                if(!message.isEmpty()) {
+                    try {
+                        String content = IOUtils.toString(getAssets().open("webnotavailable.html"))
+                                .replaceAll("%ERR_DESC%", message);
+                        view.loadDataWithBaseURL("file:///android_asset/webnotavailable.html", content, "text/html", "UTF-8", null);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
 
-//            @Override
-//            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
-//                if(!bankCode.equals("008"))handler.proceed();
-//                else super.onReceivedSslError(view, handler, error);
-//            }
+            @Override
+            public void onReceivedSslError(WebView view, @NonNull SslErrorHandler handler, SslError error) {
+                if(MyApiClient.IS_PROD)
+                    super.onReceivedSslError(view, handler, error);
+                else
+                    handler.proceed();
+            }
 
             @Override
             public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
@@ -223,7 +245,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
             Timber.d("isi params sent get Trx Status:" + params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(this, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -281,11 +303,11 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                     else
                         Toast.makeText(SgoPlusWeb.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if(out.isShowing())
+                    if(out.isShowing()) {
                         out.dismiss();
-
-                    showDialog(getString(R.string.network_connection_failure_toast));
-                    Timber.w("Error Koneksi app version registration:"+ throwable.toString());
+                        showDialog(getString(R.string.network_connection_failure_toast));
+                    }
+                   Timber.w("Error Koneksi app version registration:"+ throwable.toString());
                 }
             });
         }catch (Exception e){

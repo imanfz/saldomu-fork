@@ -25,6 +25,10 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(InetHandler.isNetworkAvailable(this))
+            getAppVersion();
+
+
         if (findViewById(R.id.loginContent) != null) {
             if (savedInstanceState != null) {
                 return;

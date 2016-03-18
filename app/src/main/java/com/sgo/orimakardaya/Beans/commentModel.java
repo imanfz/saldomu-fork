@@ -71,7 +71,6 @@ public class commentModel extends Model{
                 .all()
                 .from(commentModel.class).orderBy("comment_id ASC")
                 .execute();
-
     }
 
     public static List<commentModel> getByPostId(String PostId) {

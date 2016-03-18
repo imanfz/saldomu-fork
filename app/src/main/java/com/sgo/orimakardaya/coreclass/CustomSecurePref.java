@@ -53,4 +53,59 @@ public class CustomSecurePref {
     public void setmSecurePrefs(SecurePreferences mSecurePrefs) {
         this.mSecurePrefs = mSecurePrefs;
     }
+
+
+    public void ClearAllCustomData(){
+        SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();
+
+        mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
+        mEdit.remove(DefineValue.BALANCE);
+        mEdit.remove(DefineValue.USERID_PHONE);
+        mEdit.remove(DefineValue.USER_NAME);
+        mEdit.remove(DefineValue.CUST_ID);
+        mEdit.remove(DefineValue.CUST_NAME);
+
+        mEdit.remove(DefineValue.PROFILE_DOB);
+        mEdit.remove(DefineValue.PROFILE_ADDRESS);
+        mEdit.remove(DefineValue.PROFILE_BIO);
+        mEdit.remove(DefineValue.PROFILE_COUNTRY);
+        mEdit.remove(DefineValue.PROFILE_EMAIL);
+        mEdit.remove(DefineValue.PROFILE_FULL_NAME);
+        mEdit.remove(DefineValue.PROFILE_SOCIAL_ID);
+        mEdit.remove(DefineValue.PROFILE_HOBBY);
+        mEdit.remove(DefineValue.PROFILE_POB);
+        mEdit.remove(DefineValue.PROFILE_GENDER);
+        mEdit.remove(DefineValue.PROFILE_ID_TYPE);
+        mEdit.remove(DefineValue.PROFILE_VERIFIED);
+        mEdit.remove(DefineValue.PROFILE_BOM);
+
+        mEdit.remove(DefineValue.LIST_ID_TYPES);
+        mEdit.remove(DefineValue.LIST_CONTACT_CENTER);
+        mEdit.remove(DefineValue.IS_CHANGED_PASS);
+        mEdit.remove(DefineValue.IMG_URL);
+        mEdit.remove(DefineValue.IMG_SMALL_URL);
+        mEdit.remove(DefineValue.IMG_MEDIUM_URL);
+        mEdit.remove(DefineValue.IMG_LARGE_URL);
+        mEdit.remove(DefineValue.ACCESS_KEY);
+        mEdit.remove(DefineValue.ACCESS_SECRET);
+
+        mEdit.remove(DefineValue.IS_REGISTERED_LEVEL);
+        mEdit.remove(DefineValue.COMMUNITY_LENGTH);
+        mEdit.remove(DefineValue.COMMUNITY_ID);
+        mEdit.remove(DefineValue.CALLBACK_URL_TOPUP);
+        mEdit.remove(DefineValue.API_KEY_TOPUP);
+        mEdit.remove(DefineValue.COMMUNITY_CODE);
+        mEdit.remove(DefineValue.COMMUNITY_NAME);
+        mEdit.remove(DefineValue.BUSS_SCHEME_CODE);
+
+        mEdit.remove(DefineValue.AUTHENTICATION_TYPE);
+        mEdit.remove(DefineValue.LENGTH_AUTH);
+        mEdit.remove(DefineValue.IS_HAVE_PIN);
+        mEdit.remove(DefineValue.LEVEL_VALUE);
+        mEdit.remove(DefineValue.ALLOW_MEMBER_LEVEL);
+        mEdit.remove(DefineValue.MAX_MEMBER_TRANS);
+
+        mEdit.apply();
+
+    }
 }

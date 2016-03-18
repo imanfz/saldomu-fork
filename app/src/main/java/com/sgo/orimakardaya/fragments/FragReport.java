@@ -558,11 +558,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             };
 
             if(report_type == REPORT_SCASH)
-                MyApiClient.sentGetTrxReport(paramsScash,deHandler);
+                MyApiClient.sentGetTrxReport(getActivity(),paramsScash,deHandler);
             else if(report_type == REPORT_ESPAY)
-                MyApiClient.sentReportEspay(paramsEspay,deHandler);
+                MyApiClient.sentReportEspay(getActivity(),paramsEspay,deHandler);
             else if(report_type == REPORT_ASK)
-                MyApiClient.sentReportAsk(paramsAsk,deHandler);
+                MyApiClient.sentReportAsk(getActivity(),paramsAsk,deHandler);
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -675,7 +675,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.SIGNATURE, signature);
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -705,6 +705,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         e.printStackTrace();
                     }
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

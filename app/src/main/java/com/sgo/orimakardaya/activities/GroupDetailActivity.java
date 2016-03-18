@@ -94,7 +94,7 @@ public class GroupDetailActivity extends BaseActivity {
                     .error(roundedImage)
                     .fit().centerInside()
                     .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(this))
+                    .transform(new RoundImageTransformation())
                     .into(iconPicture);
             else
                 mPic.load(profpic)
@@ -102,7 +102,7 @@ public class GroupDetailActivity extends BaseActivity {
                     .placeholder(R.anim.progress_animation)
                     .fit()
                     .centerCrop()
-                    .transform(new RoundImageTransformation(this))
+                    .transform(new RoundImageTransformation())
                     .into(iconPicture);
 
             txtPay.setText(pay);
@@ -114,7 +114,7 @@ public class GroupDetailActivity extends BaseActivity {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(this))
+                .transform(new RoundImageTransformation())
                 .into(iconPicture);
         }
 

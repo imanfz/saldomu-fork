@@ -31,7 +31,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/20/2015.
  */
-public class ChangePassword extends BaseActivity {
+public class ChangePassword extends BaseActivity implements View.OnClickListener {
 
     TextView tv_firsttime_msg;
     EditText et_pass_current,et_pass_new, et_pass_retype;
@@ -39,9 +39,13 @@ public class ChangePassword extends BaseActivity {
     Button btn_submit_changepass,btn_batal_changepass;
     SecurePreferences sp;
     ProgressDialog progdialog;
-    boolean is_first_time;
-    String userID;
-    String accessKey;
+    String userID,accessKey;
+    private boolean is_first_time;
+    private int lenght_auth_min, validIdx;
+    PasswordValidator mPassValid;
+
+    private static final String PASSWORD_PATTERN =
+            "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,10 +69,13 @@ public class ChangePassword extends BaseActivity {
         btn_batal_changepass = (Button) findViewById(R.id.btn_batal_changepass);
         tv_firsttime_msg = (TextView) findViewById(R.id.changepass_firsttime_msg);
 
-        btn_submit_changepass.setOnClickListener(btnSubmitChangePassListener);
-        btn_batal_changepass.setOnClickListener(btnBatalChangePassListener);
+        btn_submit_changepass.setOnClickListener(this);
+        btn_batal_changepass.setOnClickListener(this);
         cb_show_pass.setOnCheckedChangeListener(showPassword);
         if(is_first_time)tv_firsttime_msg.setVisibility(View.VISIBLE);
+
+        mPassValid = new PasswordValidator();
+        lenght_auth_min = 5;
     }
 
     @Override
@@ -102,24 +109,26 @@ public class ChangePassword extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    Button.OnClickListener btnSubmitChangePassListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (inputValidation()){
-                sendChangePassword();
-            }
-        }
-    };
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_submit_changePassword :
+                if(InetHandler.isNetworkAvailable(this)) {
+                    if (inputValidation()) {
+                        sendChangePassword();
+                    }
+                }
+                else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message));
+                break;
 
-    Button.OnClickListener btnBatalChangePassListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View v) {
+            case R.id.btn_batal_changepass :
                 if(!is_first_time)
                     setResult(MainPage.RESULT_NORMAL);
                 else setResult(MainPage.RESULT_LOGOUT);
                 finish();
+                break;
         }
-    };
+    }
 
     CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
         @Override
@@ -151,7 +160,7 @@ public class ChangePassword extends BaseActivity {
 
             Timber.d("isi params Change Password:" + params.toString());
 
-            MyApiClient.sentChangePassword(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentChangePassword(this, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -162,7 +171,8 @@ public class ChangePassword extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
                             Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
-                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO).apply();
+//                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO);
+                            sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
                             finishChild();
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -214,7 +224,10 @@ public class ChangePassword extends BaseActivity {
     }
 
     public void finishChild(){
-        setResult(MainPage.RESULT_NORMAL);
+        if(is_first_time)
+            setResult(MainPage.RESULT_FIRST_TIME);
+        else
+            setResult(MainPage.RESULT_NORMAL);
         this.finish();
     }
 
@@ -229,7 +242,12 @@ public class ChangePassword extends BaseActivity {
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpass));
             return false;
         }
-        else if(et_pass_new.getText().toString().length()<5){
+//        else if(validIdx != 0){
+//            et_pass_new.requestFocus();
+//            et_pass_new.setError(getString(validIdx));
+//            return false;
+//        }
+        else if(et_pass_new.getText().toString().length()<lenght_auth_min){
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpasslength));
             return false;
@@ -238,8 +256,7 @@ public class ChangePassword extends BaseActivity {
             et_pass_retype.requestFocus();
             et_pass_retype.setError(this.getString(R.string.changepass_edit_error_retypenewpass));
             return false;
-        }
-        else if(!et_pass_retype.getText().toString().equals(et_pass_new.getText().toString())){
+        } else if (!et_pass_retype.getText().toString().equals(et_pass_new.getText().toString())){
             et_pass_retype.requestFocus();
             et_pass_retype.setError(this.getString(R.string.changepass_edit_error_retypenewpass_confirm));
             return false;

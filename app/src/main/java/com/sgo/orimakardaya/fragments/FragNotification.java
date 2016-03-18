@@ -47,12 +47,13 @@ public class FragNotification extends Fragment {
 
     private final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
     private NotificationListAdapter mAdapter;
-    private String _memberId,_userid,accessKey;
+    private String _memberId,_userid,accessKey,_profpic;
     private ArrayList<NotificationModelClass> mData;
     private ArrayList<JSONObject> mDataNotifDetail;
     private RecyclerView mRecyclerView;
     private PtrFrameLayout mPtr;
     private View empty_layout;
+    private NotificationModelClass tempMData;
     ProgressDialog out;
     private SecurePreferences sp;
 
@@ -76,7 +77,8 @@ public class FragNotification extends Fragment {
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _memberId = sp.getString(DefineValue.MEMBER_ID, "");
         _userid = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _profpic = sp.getString(DefineValue.IMG_URL, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         empty_layout = v.findViewById(R.id.empty_layout);
         empty_layout.setVisibility(View.GONE);
@@ -108,49 +110,127 @@ public class FragNotification extends Fragment {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), null);
         mRecyclerView.addItemDecoration(itemDecoration);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mData = new ArrayList<NotificationModelClass>();
-        mDataNotifDetail = new ArrayList<JSONObject>();
+        mData = new ArrayList<>();
+        mDataNotifDetail = new ArrayList<>();
         mAdapter = new NotificationListAdapter(this,getActivity(), mData, new NotificationListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position, Boolean isLongClick) {
-                try {
+            public void onItemClickView(View view, int position, Boolean isLongClick) {
+                NotificationItemClickAction(position);
+            }
 
-                    NotificationModelClass mObj = mData.get(position);
+            @Override
+            public void onItemBtnAccept(View view, int position, Boolean isLongClick) {
+                NotificationItemClickAction(position);
+            }
 
-                    switch (mObj.getNotif_type()){
-                        case NotificationActivity.TYPE_TRANSFER:
-                            int pay_status = mDataNotifDetail.get(position).getInt(WebParams.STATUS);
-                            if(pay_status == NotificationActivity.P2PSTAT_PENDING){
-                                sentReadNotif(mData.get(position).getNotif_id(),position);
-                                Intent data = new Intent();
-                                data.putExtra(DefineValue.AMOUNT, mDataNotifDetail.get(position).getString(WebParams.AMOUNT));
-                                data.putExtra(DefineValue.CUST_NAME, mData.get(position).getFrom_name());
-                                data.putExtra(DefineValue.USERID_PHONE, mDataNotifDetail.get(position).getString(WebParams.FROM));
-                                data.putExtra(DefineValue.MESSAGE, mDataNotifDetail.get(position).getString(WebParams.DESC));
-                                data.putExtra(DefineValue.REQUEST_ID, mDataNotifDetail.get(position).getString(WebParams.REQUEST_ID));
-                                data.putExtra(DefineValue.TRX, mDataNotifDetail.get(position).getString(WebParams.TRX_ID));
-                                getActivity().setResult(MainPage.RESULT_NOTIF, data);
-                                Timber.d("masuk type transfer", "masukkk " + String.valueOf(data.hasExtra(DefineValue.AMOUNT)));
-                                getActivity().finish();
+        });
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
+
+                /*if(viewHolder != null)
+                    Log.d("on item visible idx position", "visible itemnya");
+                else
+                    Log.d("on item visible idx position", "gone itemnya");*/
+
+                for (int i = 0; i < recyclerView.getChildCount(); i++) {
+                    tempMData = mData.get(i);
+                    if (tempMData.getNotif_type() == NotificationActivity.TYPE_DECLINE) {
+                        if (recyclerView.getChildAt(i).getVisibility() == View.VISIBLE) {
+                            if (!tempMData.isRead()) {
+                                Timber.d("on item visible idx position");
+                                sentReadNotif(tempMData.getNotif_id(), i);
                             }
-                            else if(pay_status == NotificationActivity.P2PSTAT_PAID){
-                                Toast.makeText(getActivity(), getString(R.string.notifications_p2p_status_paid), Toast.LENGTH_SHORT).show();
-                            }
+                        }
 
-                            break;
                     }
 
-                    if(!mObj.isRead())
-                        sentReadNotif(mObj.getNotif_id(),position);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
         });
-        mRecyclerView.setAdapter(mAdapter);
         sentRetrieveNotif(true);
         getActivity().setResult(MainPage.RESULT_NORMAL);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    }
+
+
+    private void NotificationItemClickAction(int position){
+        NotificationModelClass mObj = mData.get(position);
+        JSONObject mObjDetail = mDataNotifDetail.get(position);
+        try {
+            Timber.d("isi notif type:"+String.valueOf(mObj.getNotif_type()));
+
+            switch (mObj.getNotif_type()){
+                case NotificationActivity.TYPE_TRANSFER:
+                    int pay_status = mObjDetail.getInt(WebParams.STATUS);
+                    if(pay_status == NotificationActivity.P2PSTAT_PENDING){
+                        sentReadNotif(mData.get(position).getNotif_id(), position);
+                        Intent data = new Intent();
+                        data.putExtra(DefineValue.AMOUNT, mObjDetail.getString(WebParams.AMOUNT));
+                        data.putExtra(DefineValue.CUST_NAME, mObj.getFrom_name());
+                        data.putExtra(DefineValue.USERID_PHONE, mObjDetail.getString(WebParams.FROM));
+                        data.putExtra(DefineValue.MESSAGE, mObjDetail.getString(WebParams.DESC));
+                        data.putExtra(DefineValue.REQUEST_ID, mObjDetail.getString(WebParams.REQUEST_ID));
+                        data.putExtra(DefineValue.TRX, mObjDetail.getString(WebParams.TRX_ID));
+                        data.putExtra(DefineValue.NOTIF_TYPE,NotificationActivity.TYPE_TRANSFER);
+                        getActivity().setResult(MainPage.RESULT_NOTIF, data);
+                        getActivity().finish();
+
+                    }
+                    else if(pay_status == NotificationActivity.P2PSTAT_PAID){
+                        Toast.makeText(getActivity(), getString(R.string.notifications_p2p_status_paid), Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+                case NotificationActivity.TYPE_PAID:
+                case NotificationActivity.TYPE_COMMENT:
+                case NotificationActivity.TYPE_LIKE:
+                    sentReadNotif(mObj.getNotif_id(), position);
+                    Intent data = new Intent();
+                    data.putExtra(DefineValue.POST_ID,mObjDetail.getString(WebParams.POST_ID));
+                    data.putExtra(DefineValue.TO_ID,mObj.getFrom_id());
+//                    data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
+                    data.putExtra(DefineValue.FROM_NAME,mObj.getFrom_name());
+                    if(mObj.getTo_id().equals(_userid))
+                        data.putExtra(DefineValue.TO_NAME, getString(R.string.you));
+//                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
+
+                    data.putExtra(DefineValue.FROM_ID,mObj.getTo_id());
+
+                    if(mObj.getNotif_type() == NotificationActivity.TYPE_PAID)
+                        data.putExtra(DefineValue.MESSAGE,mObjDetail.getString(WebParams.DESC));
+                    else
+                        data.putExtra(DefineValue.MESSAGE,mObjDetail.getString(WebParams.MESSAGE));
+                    data.putExtra(DefineValue.DATE_TIME,mObj.getDate_time());
+                    data.putExtra(DefineValue.CCY_ID,mObjDetail.getString(WebParams.CCY_ID));
+                    data.putExtra(DefineValue.AMOUNT,mObjDetail.getString(WebParams.AMOUNT));
+                    data.putExtra(DefineValue.PROF_PIC,mObj.getFrom_profile_picture());
+                    data.putExtra(DefineValue.TX_STATUS,mObjDetail.getString(WebParams.TYPECAPTION));
+                    data.putExtra(DefineValue.WITH_PROF_PIC,_profpic);
+                    data.putExtra(DefineValue.POST_TYPE, mObjDetail.getString(WebParams.TYPEPOST));
+                    if(mObj.getNotif_type() == NotificationActivity.TYPE_LIKE)
+                        data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_LIKE);
+                    else
+                        data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_COMMENT);
+                    Timber.d("isi extra intennt history detail activity:"+data.getExtras().toString());
+                    getActivity().setResult(MainPage.RESULT_NOTIF, data);
+                    getActivity().finish();
+                    break;
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(!mObj.isRead())
+                sentReadNotif(mObj.getNotif_id(),position);
+        }
     }
 
     public boolean canScroolUp() {
@@ -160,11 +240,7 @@ public class FragNotification extends Fragment {
         //Log.wtf(" Recycle view get child at 0 get top", String.valueOf(mRecyclerView.getChildAt(0).getTop()));
 
         try {
-            if(mAdapter.getItemCount() == 0 || mRecyclerView == null)
-                return true;
-            else {
-                return  mLayoutManager.findFirstCompletelyVisibleItemPosition() == 0 && mRecyclerView.getChildAt(0).getTop() == 0;
-            }
+            return mAdapter.getItemCount() == 0 || mRecyclerView == null || mLayoutManager.findFirstCompletelyVisibleItemPosition() == 0 && mRecyclerView.getChildAt(0).getTop() == 0;
 
         }
         catch (Exception ex){
@@ -186,7 +262,7 @@ public class FragNotification extends Fragment {
 
             Timber.d("isi params Read Notif:" + params.toString());
 
-            MyApiClient.sentReadNotif(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentReadNotif(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -198,6 +274,7 @@ public class FragNotification extends Fragment {
                                 mData.get(position).setRead(true);
                                 getActivity().setResult(MainPage.RESULT_NOTIF);
                                 mAdapter.notifyItemChanged(position);
+                                CheckNotification();
                             }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -247,6 +324,21 @@ public class FragNotification extends Fragment {
         }
     }
 
+    private void CheckNotification(){
+        Thread mth = new Thread(){
+            @Override
+            public void run() {
+                Activity mContext = getActivity().getParent();
+                if(mContext instanceof MainPage) {
+                    MainPage mMainPage = (MainPage)mContext;
+                    NotificationHandler mNoHand = new NotificationHandler(mMainPage, sp);
+                    mNoHand.sentRetrieveNotif();
+                }
+            }
+        };
+        mth.start();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -271,7 +363,7 @@ public class FragNotification extends Fragment {
 
             Timber.d("isi params Retrieve Notif:"+params.toString());
 
-            MyApiClient.sentRetrieveNotif(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentRetrieveNotif(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -291,65 +383,85 @@ public class FragNotification extends Fragment {
 
                             JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
 
-                            String name,detail,time,from_name, notif_id;
+                            String title = null, detail = null, time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time;
                             mData.clear();
-                            int notif_type, image;
+                            mDataNotifDetail.clear();
+                            int notif_type, image = 0;
                             boolean read;
                             Date time1;
                             PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-                            JSONObject notif_detail,mObject;
+                            JSONObject notif_detail, mObject;
+                            NotificationModelClass mObj;
 
-                            try{
-                                for(int i=0 ; i<mArrayData.length();i++){
+                            try {
+                                for (int i = 0; i < mArrayData.length(); i++) {
                                     mObject = mArrayData.getJSONObject(i);
 
                                     notif_id = mObject.getString(WebParams.NOTIF_ID);
                                     notif_type = mObject.getInt(WebParams.NOTIF_TYPE);
                                     from_name = mObject.getString(WebParams.FROM_NAME);
-                                    read = (mObject.getInt(WebParams.NOTIF_READ) == 1 );
+                                    from_id = mObject.getString(WebParams.FROM_USER_ID);
+                                    to_id = mObject.getString(WebParams.TO_USER_ID);
+                                    from_profile_picture = mObject.getString(WebParams.FROM_PROFILE_PICTURE);
+                                    date_time = mObject.getString(WebParams.CREATED_DATE);
+                                    read = (mObject.getInt(WebParams.NOTIF_READ) == 1);
 
-                                    String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL,"");
+                                    String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL, "");
 
-                                    if(!notif_detail_string.isEmpty()){
-                                        switch (notif_type){
-                                            case NotificationActivity.TYPE_TRANSFER:
-                                                notif_detail = new JSONArray(notif_detail_string).getJSONObject(0);
-                                                mDataNotifDetail.add(notif_detail);
-                                                image = R.drawable.ic_cash_in;
-                                                name = getString(R.string.notif_text_ask4money_name)+" "+from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID)+" "+notif_detail.getString(WebParams.AMOUNT)+
-                                                        "\n"+notif_detail.get(WebParams.DESC);
-                                                //time = notif_detail.getString(WebParams.DATE_TIME);
-
-                                                time1 = DateTimeFormat.convertCustomDate(notif_detail.getString(WebParams.DATE_TIME));
-                                                time = p.formatDuration(time1);
-
-                                                NotificationModelClass mObj = new NotificationModelClass(notif_id,image,name,from_name,detail,time,notif_type,read,notif_detail);
-                                                mData.add(mObj);
+                                    if (!notif_detail_string.isEmpty()) {
+                                        notif_detail = new JSONArray(notif_detail_string).getJSONObject(0);
+                                        switch (notif_type) {
+                                            case NotificationActivity.TYPE_LIKE:
+                                                image = 0;
+                                                title = from_name + " " + getString(R.string.notif_text_like_name) + " : ";
+                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                 break;
-                                            case 8:
-                                                notif_detail = new JSONArray(notif_detail_string).getJSONObject(0);
-                                                mDataNotifDetail.add(notif_detail);
+                                            case NotificationActivity.TYPE_COMMENT:
+                                                image = 0;
+                                                title = from_name + " " + getString(R.string.notif_text_comment_name) + " : ";
+                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                break;
+                                            case NotificationActivity.TYPE_TRANSFER:
                                                 image = R.drawable.ic_cash_in;
-                                                name = getString(R.string.notif_text_decline_name)+" "+from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID)+" "+notif_detail.getString(WebParams.AMOUNT)+
-                                                        "\n"+notif_detail.get(WebParams.REMARK);
-                                                //time = notif_detail.getString(WebParams.DATE_TIME);
-
-                                                time1 = DateTimeFormat.convertCustomDate(notif_detail.getString(WebParams.DATE_TIME));
-                                                time = p.formatDuration(time1);
-
-                                                mObj = new NotificationModelClass(notif_id, image, name, from_name, detail, time, notif_type, read, notif_detail);
-                                                mData.add(mObj);
+                                                title = getString(R.string.notif_text_ask4money_name) + " " + from_name;
+                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                        "\n" + notif_detail.get(WebParams.DESC);
+                                                break;
+                                            case NotificationActivity.TYPE_PAID:
+                                                image = R.drawable.ic_cash_out;
+                                                title = getString(R.string.notif_text_paid_name) + " " + from_name;
+                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                        "\n" + notif_detail.get(WebParams.DESC);
+                                                break;
+                                            case NotificationActivity.TYPE_DECLINE:
+                                                image = R.drawable.ic_cash_in;
+                                                title = getString(R.string.notif_text_decline_name) + " " + from_name;
+                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                        "\n" + notif_detail.get(WebParams.REMARK);
                                                 break;
                                         }
+
+                                        if (notif_type == NotificationActivity.TYPE_LIKE ||
+                                                notif_type == NotificationActivity.TYPE_COMMENT ||
+                                                notif_type == NotificationActivity.TYPE_TRANSFER ||
+                                                notif_type == NotificationActivity.TYPE_PAID ||
+                                                notif_type == NotificationActivity.TYPE_DECLINE) {
+                                            mDataNotifDetail.add(notif_detail);
+
+                                            time1 = DateTimeFormat.convertCustomDate(date_time);
+                                            time = p.formatDuration(time1);
+
+                                            mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
+                                                    from_id, detail, time, notif_type, read, notif_detail, from_profile_picture, date_time);
+                                            mData.add(mObj);
+                                        }
+
                                     }
                                 }
-                                if(mData.size() != 0){
+                                if (mData.size() != 0) {
                                     mAdapter.notifyDataSetChanged();
-                                }
-                                else {
-                                    Toast.makeText(getActivity(),"Tidak ada Notifikasi",Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(getActivity(), "Tidak ada Notifikasi", Toast.LENGTH_LONG).show();
                                     mRecyclerView.setVisibility(View.GONE);
                                     empty_layout.setVisibility(View.VISIBLE);
                                     mData.clear();
@@ -358,23 +470,20 @@ public class FragNotification extends Fragment {
                                 }
 
                                 getActivity().setResult(MainPage.RESULT_NOTIF);
-                            }
-                            catch (Exception ex){
+                            } catch (Exception ex) {
                                 Timber.d("isi exception Notification:"+ex.getMessage());
                             }
 
 
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
+                            test.showDialoginActivity(getActivity(), message);
+                        } else {
 
-                            if(code.equals("0003")) {
-                                Toast.makeText(getActivity(),getString(R.string.notifications_empty),Toast.LENGTH_LONG).show();
+                            if (code.equals("0003")) {
+                                Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
                                 mRecyclerView.setVisibility(View.GONE);
                                 empty_layout.setVisibility(View.VISIBLE);
                                 mData.clear();
@@ -384,7 +493,7 @@ public class FragNotification extends Fragment {
 
                         }
 
-                        if(mPtr.isShown())
+                        if (mPtr.isShown())
                             mPtr.refreshComplete();
 
                     } catch (JSONException e) {

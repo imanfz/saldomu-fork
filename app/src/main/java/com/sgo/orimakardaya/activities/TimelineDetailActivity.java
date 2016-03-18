@@ -62,7 +62,7 @@ public class TimelineDetailActivity extends BaseActivity {
     List<commentModel> listComment;
     TimelineCommentAdapter commentAdapter;
 
-    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic;
+    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic, type_post;
 
 
     ProgressDialog mProg;
@@ -116,15 +116,42 @@ public class TimelineDetailActivity extends BaseActivity {
             ccy = i.getStringExtra("ccy");
             tx_status = i.getStringExtra("tx_status");
             with_profpic = i.getStringExtra("with_profpic");
+            type_post = i.getStringExtra("type_post");
 
             likeModel.deleteByPostId(post_id);
+
+            if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
+                iconPictureRight.setVisibility(View.VISIBLE);
+                if(with_profpic != null && with_profpic.equals(""))
+                    mPic.load(R.drawable.user_unknown_menu)
+                            .error(roundedImage)
+                            .fit().centerInside()
+                            .placeholder(R.anim.progress_animation)
+                            .transform(new RoundImageTransformation())
+                            .into(iconPictureRight);
+                else
+                    mPic.load(with_profpic)
+                            .error(R.drawable.user_unknown_menu)
+                            .placeholder(R.anim.progress_animation)
+                            .fit()
+                            .centerCrop()
+                            .transform(new RoundImageTransformation())
+                            .into(iconPictureRight);
+                toId.setText(to_name);
+                textStatus.setText(tx_status);
+            }
+            else {
+                iconPictureRight.setVisibility(View.GONE);
+                toId.setText(tx_status);
+                textStatus.setText(getResources().getString(R.string.doing));
+            }
 
             if(profpic != null && profpic.equals(""))
                 mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
                     .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(getApplicationContext()))
+                    .transform(new RoundImageTransformation())
                     .into(iconPicture);
             else
                 mPic.load(profpic)
@@ -132,24 +159,8 @@ public class TimelineDetailActivity extends BaseActivity {
                     .placeholder(R.anim.progress_animation)
                     .fit()
                     .centerCrop()
-                    .transform(new RoundImageTransformation(getApplicationContext()))
+                    .transform(new RoundImageTransformation())
                     .into(iconPicture);
-
-            if(with_profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                        .error(roundedImage)
-                        .fit().centerInside()
-                        .placeholder(R.anim.progress_animation)
-                        .transform(new RoundImageTransformation(getApplicationContext()))
-                        .into(iconPictureRight);
-            else
-                mPic.load(with_profpic)
-                        .error(R.drawable.user_unknown_menu)
-                        .placeholder(R.anim.progress_animation)
-                        .fit()
-                        .centerCrop()
-                        .transform(new RoundImageTransformation(getApplicationContext()))
-                        .into(iconPictureRight);
 
             SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
             Date d = null;
@@ -166,17 +177,15 @@ public class TimelineDetailActivity extends BaseActivity {
             String period = PeriodTime.getTimeAgo(long_date, getApplicationContext());
 
             fromId.setText(from_name);
-            toId.setText(to_name);
             messageTransaction.setText(message);
             dateTime.setText(period);
             amount.setText(ccy + " " + amountvalue);
-            textStatus.setText(tx_status);
         } else {
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getApplicationContext()))
+                .transform(new RoundImageTransformation())
                 .into(iconPicture);
         }
 
@@ -278,7 +287,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:" + params.toString());
 
-            MyApiClient.getCommentList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -306,7 +315,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (flagSameComment == false) {
+                                if(flagSameComment == false) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -385,7 +394,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params add comment:"+ params.toString());
 
-            MyApiClient.sentAddComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -414,7 +423,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (flagSameComment == false) {
+                                if(flagSameComment == false) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -444,6 +453,7 @@ public class TimelineDetailActivity extends BaseActivity {
                     }
                 }
 
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
@@ -468,7 +478,7 @@ public class TimelineDetailActivity extends BaseActivity {
                     else
                         Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi add comment:" + throwable.toString());
                 }
@@ -494,7 +504,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove comment:"+ params.toString());
 
-            MyApiClient.sentRemoveComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentRemoveComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -524,7 +534,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (flagSameComment == false) {
+                                if(flagSameComment == false) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -553,15 +563,15 @@ public class TimelineDetailActivity extends BaseActivity {
                             commentAdapter.notifyDataSetChanged();
 
                             listTimeLineModel.updateNumcomments(count, Integer.parseInt(post_id));
-                            listTimeLineModel.updateComments("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateCommentId1("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateCommentId2("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromname1("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromname2("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromprofilepicture1("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromprofilepicture2("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateReply1("", Integer.parseInt(post_id));
-                            listTimeLineModel.updateReply2("", Integer.parseInt(post_id));
+                            listTimeLineModel.updateComments("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateCommentId1("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateCommentId2("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateFromname1("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateFromname2("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateReply1("",Integer.parseInt(post_id));
+                            listTimeLineModel.updateReply2("",Integer.parseInt(post_id));
                         } else {
                             Timber.d("isi error add comment:" + response.toString());
                         }
@@ -594,7 +604,7 @@ public class TimelineDetailActivity extends BaseActivity {
                     else
                         Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi remove comment timeline detail:" + throwable.toString());
                 }
@@ -618,7 +628,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params get like list:"+ params.toString());
 
-            MyApiClient.getLikeList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -657,7 +667,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                 String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
                                 String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                if (like_from.equals(_ownerID)) like = true;
+                                if(like_from.equals(_ownerID)) like = true;
 
                                 mListLike.add(new likeModel(like_id, like_post_id,
                                         like_from, like_from_name, like_from_profile_picture, like_to,
@@ -681,6 +691,7 @@ public class TimelineDetailActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -706,7 +717,7 @@ public class TimelineDetailActivity extends BaseActivity {
                     else
                         Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     finish();
                     Timber.w("Error Koneksi like list timeline detail:" + throwable.toString());
@@ -734,7 +745,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params add like:"+ params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -825,7 +836,7 @@ public class TimelineDetailActivity extends BaseActivity {
                     else
                         Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi add like timeline detail:" + throwable.toString());
                 }
@@ -852,7 +863,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove like:"+ params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

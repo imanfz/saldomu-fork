@@ -146,7 +146,7 @@ public class ForgotPassword extends Fragment {
 
             Timber.d(params.toString());
 
-            MyApiClient.sentForgotPassword(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentForgotPassword(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -160,23 +160,24 @@ public class ForgotPassword extends Fragment {
                         } else {
                             Timber.d("error forgot password" + response.toString());
                             String codemessage = response.getString(WebParams.ERROR_MESSAGE);
-                            if (code.equals("0097")) {
-                                attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                failed = response.optInt(WebParams.MAX_FAILED, 0);
+                            switch (code) {
+                                case "0097":
+                                    attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
+                                    failed = response.optInt(WebParams.MAX_FAILED, 0);
 
-                                if (attempt == -1)
-                                    CallPINinput(0);
-                                else
-                                    CallPINinput(failed - attempt);
+                                    if (attempt == -1)
+                                        CallPINinput(0);
+                                    else
+                                        CallPINinput(failed - attempt);
 
-                                Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-
-                            } else if (code.equals("0133")) {
-                                showDialog(codemessage);
-
-                            } else {
-                                Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-
+                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                    break;
+                                case "0133":
+                                    showDialog(codemessage);
+                                    break;
+                                default:
+                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                    break;
                             }
 
 
@@ -239,7 +240,8 @@ public class ForgotPassword extends Fragment {
                         if (ForgotPassword.this.isVisible()) {
                             for (int i = 0; i < arrayContact.length(); i++) {
                                 mObject = arrayContact.getJSONObject(i);
-                                if (i == 1) {
+                                id = mObject.optString(WebParams.ID, "0");
+                                if (i==0) {
                                     message_value = Message.getText().toString()+"\n"+
                                             mObject.optString(WebParams.DESCRIPTION, "") + " " +
                                             mObject.optString(WebParams.NAME, "") + "\n" +

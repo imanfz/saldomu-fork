@@ -17,7 +17,12 @@ import timber.log.Timber;
  */
 public class NotificationActivity extends BaseActivity {
 
+    public final static int TYPE_LIKE = 2;
+    public final static int TYPE_COMMENT = 3;
     public final static int TYPE_TRANSFER = 6;
+    public final static int TYPE_PAID = 7;
+    public final static int TYPE_DECLINE = 8;
+    public final static int TYPE_NONMEMBER_TRANSFER = 10;
 
     public final static int P2PSTAT_PENDING = 1;
     public final static int P2PSTAT_PAID = 2;

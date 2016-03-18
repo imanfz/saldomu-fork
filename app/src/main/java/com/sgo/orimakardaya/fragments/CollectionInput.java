@@ -235,14 +235,17 @@ public class CollectionInput extends Fragment {
     Button.OnClickListener prosesListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(inputValidation()){
-                sentValidTopupCollection(args.getString(DefineValue.COMMUNITY_ID,""),
-                                         listDB.get(spin_namaBank.getSelectedItemPosition()).getBank_code(),
-                                         listBankProduct.get(spin_produkBank.getSelectedItem().toString()),
-                                         String.valueOf(et_amount.getText()),
-                                         String.valueOf(et_remark.getText())
-                                        );
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    sentValidTopupCollection(args.getString(DefineValue.COMMUNITY_ID, ""),
+                            listDB.get(spin_namaBank.getSelectedItemPosition()).getBank_code(),
+                            listBankProduct.get(spin_produkBank.getSelectedItem().toString()),
+                            String.valueOf(et_amount.getText()),
+                            String.valueOf(et_remark.getText())
+                    );
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -277,7 +280,7 @@ public class CollectionInput extends Fragment {
 
             Timber.d("isi params Valid TopupCollection:" + params.toString());
 
-            MyApiClient.sentTopUpAccountCollection(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentTopUpAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -384,7 +387,7 @@ public class CollectionInput extends Fragment {
 
             Timber.d("isi params regtoken Collection:"+params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -528,7 +531,7 @@ public class CollectionInput extends Fragment {
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-        Message.setText(getString(R.string.application_name)+" "+getString(R.string.dialog_token_message_sms));
+        Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override

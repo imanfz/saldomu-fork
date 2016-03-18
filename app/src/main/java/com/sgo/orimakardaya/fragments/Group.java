@@ -35,7 +35,12 @@ public class Group extends BaseFragmentMainPage {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(PtrFrameLayout frameLayout) {
+
+    }
+
+    @Override
+    public void goToTop() {
 
     }
 

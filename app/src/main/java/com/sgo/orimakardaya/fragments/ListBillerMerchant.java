@@ -233,7 +233,7 @@ public class ListBillerMerchant extends ListFragment {
 
             Timber.d("isi params sent Denom Retail list biller merchant:" + params.toString());
 
-            MyApiClient.sentDenomRetail(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDenomRetail(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

@@ -199,7 +199,7 @@ public class BillerActivity extends BaseActivity {
 
             Timber.d("isi params sent Denom Retail:" + params.toString());
 
-            MyApiClient.sentDenomRetail(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDenomRetail(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

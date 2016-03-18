@@ -70,9 +70,6 @@ public class MainFragmentAdapter extends FragmentStatePagerAdapter implements Ic
 
     public boolean checkCanDoRefresh() {
         //Log.wtf("masuk get Main fragment adapter", String.valueOf(mCurrentFragment == null ? "null" : "isi"));
-        if (mCurrentFragment == null) {
-            return true;
-        }
-        return mCurrentFragment.checkCanDoRefresh();
+        return mCurrentFragment == null || mCurrentFragment.checkCanDoRefresh();
     }
 }

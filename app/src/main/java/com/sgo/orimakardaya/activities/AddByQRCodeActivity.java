@@ -193,7 +193,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
                 }
 
             };
-            MyApiClient.sentInsertContact(params, mHandler);
+            MyApiClient.sentInsertContact(this, params, mHandler);
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }

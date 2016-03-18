@@ -49,10 +49,11 @@ import timber.log.Timber;
 /*
   Created by thinkpad on 3/11/2015.
  */
-public class FragPayFriends extends Fragment {
+public class FragPayFriends extends Fragment implements InformationDialog.OnDialogOkCallback {
 
     private static final String failed = "F";
     private boolean isNotification = false;
+    private InformationDialog dialogI;
     ImageView imgProfile, imgRecipients;
     TextView txtName,txtNumberRecipients;
     Spinner sp_privacy;
@@ -76,8 +77,27 @@ public class FragPayFriends extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_payfriends, container, false);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -85,10 +105,12 @@ public class FragPayFriends extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS,5);
-        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
+        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
+
+        dialogI = InformationDialog.newInstance(this,5);
 
         imgProfile = (ImageView) v.findViewById(R.id.img_profile);
         imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
@@ -177,34 +199,12 @@ public class FragPayFriends extends Fragment {
             public void afterTextChanged(Editable s) {
                 Timber.d("after Text Change:"+s.toString());
 
-               /* if (!mToggle) {
-                    mToggle = true;
-                    phoneRetv.append("w");
-                    phoneRetv.setSelection(phoneRetv.getText().length());
-                    mToggle = false;
-                }*/
-
-                /*phoneRetv.removeTextChangedListener(this);
-                //Any modifications at this point will not be detected by TextWatcher,
-                //so no more StackOverflowError
-                if (!mToggle) {
-                    mToggle = true;
-                    if (s.length() != 0 && s.charAt(s.length() - 1) == ',')
-                        s.replace(s.length() - 1, s.length(), " ");
-                    mToggle = false;
-                }
-                phoneRetv.addTextChangedListener(this);*/
-
-               /* if(s.length() != 0 && s.charAt(s.length()-1) == ','){
-                    //s = s.toString().substring(0, s.length()-1) + " ";
-                    //phoneRetv.setText(s.toString());
-                }*/
             }
         });
 
         bundle = this.getArguments();
         if(bundle != null) {
-            String name,phone;
+            final String name,phone;
 
             if(bundle.containsKey(DefineValue.AMOUNT) && !bundle.getString(DefineValue.AMOUNT,null).isEmpty()){
                 name = bundle.getString(DefineValue.CUST_NAME);
@@ -213,7 +213,7 @@ public class FragPayFriends extends Fragment {
                 etAmount.setText(amount);
                 etAmount.setEnabled(false);
 
-                phoneRetv.setEnabled(false);
+//                phoneRetv.setEnabled(false);
                 isNotification = true;
             }
             else {
@@ -221,7 +221,15 @@ public class FragPayFriends extends Fragment {
                 phone = bundle.getString("phone");
 
             }
-            phoneRetv.submitItem(name, phone);
+
+            phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    phoneRetv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    phoneRetv.submitItem(name, phone);
+                }
+
+            });
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
@@ -291,6 +299,11 @@ public class FragPayFriends extends Fragment {
         }
     };
 
+    @Override
+    public void onOkButton() {
+
+    }
+
     private class TempObjectData{
 
         private String member_code_to;
@@ -341,60 +354,61 @@ public class FragPayFriends extends Fragment {
     Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
 
-            if(inputValidation()){
+                    Timber.d("isi length recipients button:" + String.valueOf(phoneRetv.getRecipients().length));
+                    Timber.d("isi length sort recipients button:" + String.valueOf(phoneRetv.getSortedRecipients().length));
+                    phoneRetv.requestFocus();
+                    String amount = etAmount.getText().toString();
+                    String message = etMessage.getText().toString();
+                    Boolean recipientValidation = true;
+                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
 
-                Timber.d("isi length recipients button",String.valueOf(phoneRetv.getRecipients().length));
-                Timber.d("isi length sort recipients button",String.valueOf(phoneRetv.getSortedRecipients().length));
-                phoneRetv.requestFocus();
-                String amount = etAmount.getText().toString();
-                String message = etMessage.getText().toString();
-                Boolean recipientValidation = true;
-                ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
+                    String finalNumber, finalName;
 
-                String finalNumber, finalName;
+                    String check = phoneRetv.getText().toString();
+                    if ((!check.isEmpty()) && check.substring(check.length() - 1).equals(","))
+                        phoneRetv.setText(check.substring(0, check.length() - 1));
 
-                String check = phoneRetv.getText().toString();
-                if((!check.isEmpty())&& check.substring(check.length() - 1).equals(","))
-                    phoneRetv.setText(check.substring(0,check.length()-1));
+                    chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
+                    chips = phoneRetv.getSortedRecipients();
+                    listName = new ArrayList<String>();
+                    phoneRetv.clearFocus();
+                    if (chips.length <= max_member_trans) {
+                        for (DrawableRecipientChip chip : chips) {
+                            Timber.v("DrawableChip:" + chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
+                            finalName = chip.getEntry().getDisplayName();
+                            finalNumber = chip.getEntry().getDestination();
+                            if (isAlpha(finalNumber) || finalNumber.length() < getResources().getInteger(R.integer.lenght_phone_number)) {
+                                recipientValidation = false;
+                                break;
+                            }
 
-                chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
-                chips = phoneRetv.getSortedRecipients();
-                listName = new ArrayList<String>();
-                phoneRetv.clearFocus();
-                if(chips.length <= max_member_trans) {
-                    for (DrawableRecipientChip chip : chips) {
-                        Timber.v("DrawableChip:"+chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
-                        finalName = chip.getEntry().getDisplayName();
-                        finalNumber = chip.getEntry().getDestination();
-                        if (isAlpha(finalNumber) || finalNumber.length()<11) {
-                            recipientValidation = false;
-                            break;
+                            finalNumber = NoHPFormat.editNoHP(chip.getEntry().getDestination());
+                            listName.add(chip.getEntry().getDisplayName());
+                            mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, finalName));
                         }
 
-                        finalNumber = NoHPFormat.editNoHP(chip.getEntry().getDestination());
-                        listName.add(chip.getEntry().getDisplayName());
-                        mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, finalName));
-                    }
-
-                    if (recipientValidation) {
-                        final GsonBuilder gsonBuilder = new GsonBuilder();
-                        gsonBuilder.setPrettyPrinting();
-                        final Gson gson = gsonBuilder.create();
-                        String testJson = gson.toJson(mTempObjectDataList);
-                        String nameJson = gson.toJson(listName);
-                        //  Timber.v("isi json build", testJson + numberJson);
-                        sentData(message, testJson, nameJson);
+                        if (recipientValidation) {
+                            final GsonBuilder gsonBuilder = new GsonBuilder();
+                            gsonBuilder.setPrettyPrinting();
+                            final Gson gson = gsonBuilder.create();
+                            String testJson = gson.toJson(mTempObjectDataList);
+                            String nameJson = gson.toJson(listName);
+                            //  Timber.v("isi json build", testJson + numberJson);
+                            sentData(message, testJson, nameJson);
+                        } else {
+                            phoneRetv.requestFocus();
+                            phoneRetv.setError(getString(R.string.payfriends_recipients_alpha_validation));
+                        }
                     } else {
                         phoneRetv.requestFocus();
-                        phoneRetv.setError(getString(R.string.payfriends_recipients_alpha_validation));
+                        phoneRetv.setError(getString(R.string.payfriends_recipients_max_validation1) + " " + max_member_trans + " " + getString(R.string.payfriends_recipients_max_validation2));
                     }
                 }
-                else {
-                    phoneRetv.requestFocus();
-                    phoneRetv.setError(getString(R.string.payfriends_recipients_max_validation1)+" "+max_member_trans+" "+getString(R.string.payfriends_recipients_max_validation2));
-                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -463,6 +477,10 @@ public class FragPayFriends extends Fragment {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginMain(getActivity(),message);
                         }
+                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            showDialogError(code);
+                        }
                         else {
                             Timber.d("isi error req token p2p:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -529,13 +547,27 @@ public class FragPayFriends extends Fragment {
 
             if(isNotification) {
                 Timber.d("masuk ke reqTokenP2P notif");
-                MyApiClient.sentReqTokenP2PNotif(params, myHandler);
+                MyApiClient.sentReqTokenP2PNotif(getActivity(),params, myHandler);
             }
             else
-                MyApiClient.sentReqTokenP2P(params, myHandler );
+                MyApiClient.sentReqTokenP2P(getActivity(),params, myHandler );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
+    }
+
+    private void showDialogError(String message){
+        MessageDialog dialognya;
+        dialognya = new MessageDialog(getActivity(),
+                getString(R.string.blocked_pin_title),
+                message);
+        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
+            @Override
+            public void onClickButton(View v, boolean isLongClick) {
+
+            }
+        });
+        dialognya.show();
     }
 
     void showDialog(final String _data_transfer, final String _nameJson, final String _message, final String _data_mapper) {
@@ -555,7 +587,7 @@ public class FragPayFriends extends Fragment {
 
             Message.setVisibility(View.VISIBLE);
             Title.setText(getString(R.string.payfriends_dialog_validation_title));
-            Message.setText(getString(R.string.application_name)+" "+getString(R.string.dialog_token_message_sms));
+            Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
 
             //clear data in edit text
 
@@ -618,6 +650,11 @@ public class FragPayFriends extends Fragment {
         if(phoneRetv.isFocused()){
             phoneRetv.clearFocus();
         }
+        if(phoneRetv.getText().toString().charAt(0) == ' '){
+            phoneRetv.requestFocus();
+            phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
+            return false;
+        }
         if(etAmount.getText().toString().length()==0){
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
@@ -664,7 +701,7 @@ public class FragPayFriends extends Fragment {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
         else {
@@ -672,7 +709,7 @@ public class FragPayFriends extends Fragment {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
     }

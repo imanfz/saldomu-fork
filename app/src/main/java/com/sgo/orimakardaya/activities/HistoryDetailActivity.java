@@ -62,7 +62,7 @@ public class HistoryDetailActivity extends BaseActivity {
     List<commentModel> listComment;
     TimelineCommentAdapter commentAdapter;
 
-    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic;
+    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic, type_post;
 
     ProgressDialog mProg;
 
@@ -101,45 +101,30 @@ public class HistoryDetailActivity extends BaseActivity {
         else
             mPic= Picasso.with(this);
 
-        Intent i = getIntent();
-        if(i != null) {
-            post_id = i.getStringExtra("post_id");
-            from_name = i.getStringExtra("from_name");
-            from_id = i.getStringExtra("from_id");
-            to_name = i.getStringExtra("to_name");
-            to_id = i.getStringExtra("to_id");
-            message = i.getStringExtra("message");
-            datetime = i.getStringExtra("datetime");
-            amountvalue = i.getStringExtra("amount");
-            profpic = i.getStringExtra("profpic");
-            ccy = i.getStringExtra("ccy");
-            tx_status = i.getStringExtra("tx_status");
-            with_profpic = i.getStringExtra("with_profpic");
+        Bundle i = getIntent().getExtras();
 
-            Timber.d("post_id", post_id);
+        post_id = i.getString(DefineValue.POST_ID);
+        from_name = i.getString(DefineValue.FROM_NAME);
+        from_id = i.getString(DefineValue.FROM_ID);
+        to_name = i.getString(DefineValue.TO_NAME);
+        to_id = i.getString(DefineValue.TO_ID);
+        message = i.getString(DefineValue.MESSAGE);
+        datetime = i.getString(DefineValue.DATE_TIME);
+        amountvalue = i.getString(DefineValue.AMOUNT);
+        profpic = i.getString(DefineValue.PROF_PIC);
+        ccy = i.getString(DefineValue.CCY_ID);
+        tx_status = i.getString(DefineValue.TX_STATUS);
+        with_profpic = i.getString(DefineValue.WITH_PROF_PIC);
+        type_post = i.getString(DefineValue.POST_TYPE,"");
 
-            if(profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(this))
-                    .into(iconPicture);
-            else
-                mPic.load(profpic)
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .transform(new RoundImageTransformation(this))
-                    .into(iconPicture);
-
+        if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
+            iconPictureRight.setVisibility(View.VISIBLE);
             if(with_profpic.equals(""))
                 mPic.load(R.drawable.user_unknown_menu)
                         .error(roundedImage)
                         .fit().centerInside()
                         .placeholder(R.anim.progress_animation)
-                        .transform(new RoundImageTransformation(getApplicationContext()))
+                        .transform(new RoundImageTransformation())
                         .into(iconPictureRight);
             else
                 mPic.load(with_profpic)
@@ -147,34 +132,51 @@ public class HistoryDetailActivity extends BaseActivity {
                         .placeholder(R.anim.progress_animation)
                         .fit()
                         .centerCrop()
-                        .transform(new RoundImageTransformation(getApplicationContext()))
+                        .transform(new RoundImageTransformation())
                         .into(iconPictureRight);
-
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date d = null;
-            try {
-                d = f.parse(datetime);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long long_date = d.getTime();
-
-            String period = PeriodTime.getTimeAgo(long_date, this);
-
-            fromId.setText(from_name);
             toId.setText(to_name);
-            messageTransaction.setText(message);
-            dateTime.setText(period);
-            amount.setText(ccy + " " + amountvalue);
             textStatus.setText(tx_status);
-        } else {
+        }
+        else {
+            iconPictureRight.setVisibility(View.GONE);
+            toId.setText(tx_status);
+            textStatus.setText(getResources().getString(R.string.doing));
+        }
+
+        if(profpic != null && profpic.equals(""))
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(this))
+                .transform(new RoundImageTransformation())
                 .into(iconPicture);
+        else
+            mPic.load(profpic)
+                .error(R.drawable.user_unknown_menu)
+                .placeholder(R.anim.progress_animation)
+                .fit()
+                .centerCrop()
+                .transform(new RoundImageTransformation())
+                .into(iconPicture);
+
+        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
+        Date d;
+        long long_date = 0;
+        try {
+            d = f.parse(datetime);
+            long_date = d.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+
+        String period = PeriodTime.getTimeAgo(long_date, this);
+
+        fromId.setText(from_name);
+        messageTransaction.setText(message);
+        dateTime.setText(period);
+        String _amount = ccy + " " + amountvalue;
+        amount.setText(_amount);
 
         commentAdapter = new TimelineCommentAdapter(this, listComment);
         lvComment.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -274,7 +276,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:"+params.toString());
 
-            MyApiClient.getCommentList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -302,7 +304,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (!flagSameComment) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -331,7 +333,6 @@ public class HistoryDetailActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                 }
-
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -381,7 +382,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params add comment:"+params.toString());
 
-            MyApiClient.sentAddComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -410,7 +411,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (!flagSameComment) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -463,7 +464,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }
@@ -489,7 +490,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove comment:"+params.toString());
 
-            MyApiClient.sentRemoveComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentRemoveComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -519,7 +520,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if (!flagSameComment) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -548,15 +549,15 @@ public class HistoryDetailActivity extends BaseActivity {
                             commentAdapter.notifyDataSetChanged();
 
                             listHistoryModel.updateNumcomments(count, Integer.parseInt(post_id));
-                            listHistoryModel.updateComments("", Integer.parseInt(post_id));
-                            listHistoryModel.updateCommentId1("", Integer.parseInt(post_id));
-                            listHistoryModel.updateCommentId2("", Integer.parseInt(post_id));
-                            listHistoryModel.updateFromname1("", Integer.parseInt(post_id));
-                            listHistoryModel.updateFromname2("", Integer.parseInt(post_id));
-                            listHistoryModel.updateFromprofilepicture1("", Integer.parseInt(post_id));
-                            listHistoryModel.updateFromprofilepicture2("", Integer.parseInt(post_id));
-                            listHistoryModel.updateReply1("", Integer.parseInt(post_id));
-                            listHistoryModel.updateReply2("", Integer.parseInt(post_id));
+                            listHistoryModel.updateComments("",Integer.parseInt(post_id));
+                            listHistoryModel.updateCommentId1("",Integer.parseInt(post_id));
+                            listHistoryModel.updateCommentId2("",Integer.parseInt(post_id));
+                            listHistoryModel.updateFromname1("",Integer.parseInt(post_id));
+                            listHistoryModel.updateFromname2("",Integer.parseInt(post_id));
+                            listHistoryModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
+                            listHistoryModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
+                            listHistoryModel.updateReply1("",Integer.parseInt(post_id));
+                            listHistoryModel.updateReply2("",Integer.parseInt(post_id));
                         } else {
                             Timber.d("isi error add comment:" + response.toString());
                         }
@@ -588,7 +589,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }
@@ -612,7 +613,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
            Timber.d("isi params get like list:"+params.toString());
 
-            MyApiClient.getLikeList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -651,7 +652,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                 String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
                                 String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                if (like_from.equals(_ownerID)) like = true;
+                                if(like_from.equals(_ownerID)) like = true;
 
                                 mListLike.add(new likeModel(like_id, like_post_id,
                                         like_from, like_from_name, like_from_profile_picture, like_to,
@@ -699,7 +700,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     finish();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
@@ -708,7 +709,7 @@ public class HistoryDetailActivity extends BaseActivity {
                 @Override
                 public void onFinish() {
                     super.onFinish();
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                 }
             });
@@ -734,7 +735,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -824,7 +825,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (mProg.isShowing())
+                    if(mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }
@@ -840,8 +841,8 @@ public class HistoryDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = false;
 
-            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
-            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
+//            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
+//            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
                     _ownerID,accessKey);
@@ -854,7 +855,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

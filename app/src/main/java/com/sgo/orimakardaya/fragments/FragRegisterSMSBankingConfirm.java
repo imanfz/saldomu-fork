@@ -99,15 +99,17 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
     Button.OnClickListener btnConfTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()) {
-                if(etToken.getText().toString().equals(token_id)) {
-                    if(isJatim)
-                        confirmTokenSB();
-                    else
-                        confirmTokenSB();
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    if (etToken.getText().toString().equals(token_id)) {
+                        if (isJatim)
+                            confirmTokenSB();
+                        else
+                            confirmTokenSB();
+                    } else Toast.makeText(getActivity(), "Wrong Token!", Toast.LENGTH_SHORT).show();
                 }
-                else Toast.makeText(getActivity(), "Wrong Token!", Toast.LENGTH_SHORT).show();
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -201,13 +203,12 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
 
                     Timber.w("Error Koneksi confirm token sms banking confirm:"+throwable.toString());
                 }
-
             };
 
             if(isJatim)
-                MyApiClient.sentConfirmTokenJatim(params, handler);
+                MyApiClient.sentConfirmTokenJatim(getActivity(),params, handler);
             else
-                MyApiClient.sentConfTokenSB(params,handler);
+                MyApiClient.sentConfTokenSB(getActivity(),params,handler);
         } catch (Exception e) {
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -226,7 +227,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
 
             Timber.d("isi params get token SB:"+params.toString());
 
-            MyApiClient.sentReqTokenSB(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentReqTokenSB(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -250,6 +251,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                     }
 
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

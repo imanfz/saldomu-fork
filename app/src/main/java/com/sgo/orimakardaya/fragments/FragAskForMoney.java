@@ -40,7 +40,7 @@ import timber.log.Timber;
 /*
  * Created by thinkpad on 3/17/2015.
  */
-public class FragAskForMoney extends Fragment {
+public class FragAskForMoney extends Fragment implements InformationDialog.OnDialogOkCallback {
 
     View v;
     ImageView imgProfile, imgRecipients;
@@ -53,6 +53,7 @@ public class FragAskForMoney extends Fragment {
     ProgressDialog progdialog;
 
     int privacy,max_member_trans;
+    private InformationDialog dialogI;
 
     SecurePreferences sp;
     DrawableRecipientChip[] chips;
@@ -61,6 +62,24 @@ public class FragAskForMoney extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_ask_for_money, container, false);
         return v;
+    }
+	
+	@Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -150,13 +169,23 @@ public class FragAskForMoney extends Fragment {
 
         Bundle bundle = this.getArguments();
         if(bundle != null) {
-            String name = bundle.getString("name");
-            String phone = bundle.getString("phone");
-            phoneRetv.submitItem(name, phone);
+            final String name = bundle.getString("name");
+            final String phone = bundle.getString("phone");
+			
+            //phoneRetv.submitItem(name, phone);
+			phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    phoneRetv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    phoneRetv.submitItem(name, phone);
+                }
+
+            });
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
 
+        dialogI = InformationDialog.newInstance(this,6);
     }
 
     TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -225,6 +254,11 @@ public class FragAskForMoney extends Fragment {
         }
     };
 
+    @Override
+    public void onOkButton() {
+
+    }
+
     private class TempObjectData{
 
         private String send_to;
@@ -244,54 +278,55 @@ public class FragAskForMoney extends Fragment {
     Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    phoneRetv.requestFocus();
+                    String amount = etAmount.getText().toString();
+                    String finalNumber;
+                    Boolean recipientValidation = true;
+                    String message = etMessage.getText().toString();
+                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
 
-            if (inputValidation()) {
-                phoneRetv.requestFocus();
-                String amount = etAmount.getText().toString();
-                String finalNumber;
-                Boolean recipientValidation = true;
-                String message = etMessage.getText().toString();
-                ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
+                    String check = phoneRetv.getText().toString();
+                    if ((!check.isEmpty()) && check.substring(check.length() - 1).equals(","))
+                        phoneRetv.setText(check.substring(0, check.length() - 1));
 
-                String check = phoneRetv.getText().toString();
-                if((!check.isEmpty())&& check.substring(check.length() - 1).equals(","))
-                    phoneRetv.setText(check.substring(0,check.length()-1));
-
-                chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
-                chips = phoneRetv.getSortedRecipients();
-                phoneRetv.clearFocus();
-                if(chips.length <= max_member_trans) {
-                    for (DrawableRecipientChip chip : chips) {
-                        Timber.v("DrawableChip:" + chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
-                        finalNumber = chip.getEntry().getDestination();
-                        if (isAlpha(finalNumber) || finalNumber.length()<11) {
-                            recipientValidation = false;
-                            break;
+                    chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
+                    chips = phoneRetv.getSortedRecipients();
+                    phoneRetv.clearFocus();
+                    if (chips.length <= max_member_trans) {
+                        for (DrawableRecipientChip chip : chips) {
+                            Timber.v("DrawableChip:" + chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
+                            finalNumber = chip.getEntry().getDestination();
+                            if (isAlpha(finalNumber) || finalNumber.length() < getResources().getInteger(R.integer.lenght_phone_number)) {
+                                recipientValidation = false;
+                                break;
+                            }
+                            finalNumber = NoHPFormat.editNoHP(finalNumber);
+                            Timber.v("final number:" + finalNumber);
+                            mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, chip.getEntry().getDisplayName()));
                         }
-                        finalNumber = NoHPFormat.editNoHP(finalNumber);
-                        Timber.v("final number:"+finalNumber);
-                        mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount,chip.getEntry().getDisplayName()));
-                    }
 
 
-                    if (recipientValidation) {
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        gsonBuilder.setPrettyPrinting();
-                        Gson gson = gsonBuilder.create();
-                        String data = gson.toJson(mTempObjectDataList);
-                        preDialog(message, data);
+                        if (recipientValidation) {
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            gsonBuilder.setPrettyPrinting();
+                            Gson gson = gsonBuilder.create();
+                            String data = gson.toJson(mTempObjectDataList);
+                            preDialog(message, data);
+                        } else {
+                            phoneRetv.requestFocus();
+                            phoneRetv.setError(getString(R.string.payfriends_recipients_alpha_validation));
+                        }
                     } else {
                         phoneRetv.requestFocus();
-                        phoneRetv.setError(getString(R.string.payfriends_recipients_alpha_validation));
+                        phoneRetv.setError(getString(R.string.payfriends_recipients_max_validation1) + " " +
+                                max_member_trans + " " + getString(R.string.payfriends_recipients_max_validation2));
                     }
-                }
-                else {
-                    phoneRetv.requestFocus();
-                    phoneRetv.setError(getString(R.string.payfriends_recipients_max_validation1)+" "+
-                            max_member_trans+" "+getString(R.string.payfriends_recipients_max_validation2));
-                }
 
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -319,7 +354,7 @@ public class FragAskForMoney extends Fragment {
 
             Timber.d("isi params sent ask for money:"+params.toString());
 
-            MyApiClient.sentSubmitAskForMoney(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentSubmitAskForMoney(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -473,6 +508,11 @@ public class FragAskForMoney extends Fragment {
         if(phoneRetv.isFocused()){
             phoneRetv.clearFocus();
         }
+        if(phoneRetv.getText().toString().charAt(0) == ' '){
+            phoneRetv.requestFocus();
+            phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
+            return false;
+        }
         if(etAmount.getText().toString().length()==0){
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
@@ -509,7 +549,7 @@ public class FragAskForMoney extends Fragment {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
         else {
@@ -517,7 +557,7 @@ public class FragAskForMoney extends Fragment {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
     }

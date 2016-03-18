@@ -91,7 +91,7 @@ public class DefineValue {
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
     public static String PULSA = "pulsa";
-    public static String IS_FIRST_TIME = "isFirstTime";
+//    public static String IS_FIRST_TIME = "isFirstTime";
     public static String IS_FIRST = "isFirst";
     public static String BANK_CHANNEL = "bankChannel";
     public static String CONTACT_FIRST_TIME = "contactFirstTime";
@@ -117,7 +117,9 @@ public class DefineValue {
     public static String PROFILE_POB = "profilePOB";
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_ID_TYPE = "profileIDType";
-
+    public static String PREVIOUS_LOGIN_USER_ID = "prevLoginUserId";
+    public static String PREVIOUS_BALANCE = "prevBalance";
+    public static String PREVIOUS_CONTACT_FIRST_TIME = "prevContactFirstTime";
 
     public static String BILLER_DATA = "billerData";
     public static String BILLER_NAME = "billerName";
@@ -243,6 +245,8 @@ public class DefineValue {
     public static String ID_ADMIN = "idAdmin";
     public static String NAME_ADMIN = "nameAdmin";
     public static String CASH_OUT = "cash out";
-
+    public static String MAX_TOPUP = "max_topup";
+    public static String ALLOW_MEMBER_LEVEL = "allowMemberLevel";
+    public static String CAN_TRANSFER = "canTransfer";
 
 }

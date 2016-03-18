@@ -143,7 +143,7 @@ public class FragMyGroup extends ListFragment {
 
             Timber.d("isi params get group list:" + params.toString());
 
-            MyApiClient.getGroupList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getGroupList(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();

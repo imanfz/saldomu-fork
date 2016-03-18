@@ -50,9 +50,9 @@ public class FriendsViewDetailActivity extends BaseActivity {
             FragFriendsViewDetail mFrag = new FragFriendsViewDetail();
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.friend_detail_content, mFrag,"Friend detail");
+            fragmentTransaction.add(R.id.friend_detail_content, mFrag, "Friend detail");
             fragmentTransaction.commit();
-            setResult(MainPage.RESULT_NORMAL);
+//            setResult(MainPage.RESULT_NORMAL);
         }
 
         RESULT = MainPage.RESULT_NORMAL;

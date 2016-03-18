@@ -128,8 +128,9 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
-                    userID,accessKey);
+//            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
+//                    userID,accessKey);
+            RequestParams params = new RequestParams();
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.PIN, Md5.hashMd5(mValuePin));
@@ -138,7 +139,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
             Timber.d("isi params create pin:"+params.toString());
 
-            MyApiClient.sentCreatePin(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentCreatePin(this, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

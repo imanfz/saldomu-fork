@@ -50,6 +50,8 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         user_id = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+
     }
 
     @Override
@@ -88,14 +90,24 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 //        else tx_status = "Pending";
 
         simpleHolder.fromId.setText(_data.getOwner());
-        simpleHolder.toId.setText(_data.getWith());
         simpleHolder.messageTransaction.setText(_data.getPost());
         simpleHolder.amount.setText(_data.getCcy_id() + " " + CurrencyFormat.format(_data.getAmount()));
         simpleHolder.dateTime.setText(period);
-        simpleHolder.status.setText(_data.getTypecaption());
 
         setImageProfPic(_data.getOwner_profile_picture(), simpleHolder.iconPicture);
-        setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
+
+        if(_data.getTypepost().equals("5") || _data.getTypepost().equals("6") || _data.getTypepost().equals("7")) {
+            simpleHolder.iconPictureRight.setVisibility(View.VISIBLE);
+            setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
+            simpleHolder.toId.setText(_data.getWith());
+            simpleHolder.status.setText(_data.getTypecaption());
+        }
+        else {
+            simpleHolder.iconPictureRight.setVisibility(View.GONE);
+            simpleHolder.toId.setText(_data.getTypecaption());
+            simpleHolder.status.setText(mContext.getResources().getString(R.string.doing));
+
+        }
 
         simpleHolder.likeCount.setText(_data.getNumlikes());;
         simpleHolder.commentCount.setText(_data.getNumcomments());
@@ -226,7 +238,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
         else {
@@ -235,7 +247,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                 .fit()
                 .centerCrop()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
     }
@@ -315,7 +327,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentAddLike(mContext,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -394,7 +406,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(mContext, params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
