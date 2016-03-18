@@ -144,7 +144,7 @@ public class Registration extends BaseActivity{
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("Isi response get App Version:"+ response.toString());
                             String arrayApp = response.getString(WebParams.APP_DATA);
-                            if(!arrayApp.isEmpty() && arrayApp.equalsIgnoreCase(null)) {
+                            if(!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
                                 JSONObject mObject = null;
                                 if (arrayApp != null)
                                     mObject = new JSONObject(arrayApp);

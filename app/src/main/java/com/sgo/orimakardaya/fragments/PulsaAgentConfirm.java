@@ -65,7 +65,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = new SecurePreferences(getActivity());
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 

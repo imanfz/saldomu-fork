@@ -46,8 +46,8 @@ android {
             buildConfigField 'boolean', "isProdDomain", "true"
             buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya/\""
             signingConfig signingConfigs.prodKey
-            versionCode = 11
-            versionName "2.10"
+            versionCode = 14
+            versionName "2.13"
         }
     }
 
@@ -57,7 +57,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 

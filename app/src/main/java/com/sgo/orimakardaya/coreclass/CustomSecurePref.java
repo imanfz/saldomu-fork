@@ -17,9 +17,6 @@ public class CustomSecurePref {
     private Context mContext;
 
     public static CustomSecurePref getInstance( ) {
-        if(singleton == null) {
-            singleton = new CustomSecurePref();
-        }
         return singleton;
     }
 
@@ -31,23 +28,13 @@ public class CustomSecurePref {
         return singleton;
     }
 
-    private CustomSecurePref(){
-        if(getmSecurePrefs() ==null){
-            try {
-                AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL, AesCbcWithIntegrity.generateSalt(), 1000);
-                setmSecurePrefs(new SecurePreferences(mContext, myKey, DefineValue.SEC_PREF_NAME));
-            } catch (GeneralSecurityException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
 
     private CustomSecurePref(Context _context){
         if(getmSecurePrefs() ==null){
             try {
-                AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL, Build.ID, 1000);
+                String test = Build.ID;
+                final byte[] salt = test.getBytes();
+                AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,1000);
                 setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();

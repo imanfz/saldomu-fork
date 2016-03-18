@@ -16,6 +16,7 @@ import com.sgo.orimakardaya.Beans.listbankModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
@@ -58,7 +59,7 @@ public class PulsaAgentDescription extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = new SecurePreferences(getActivity());
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         cust_id = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 

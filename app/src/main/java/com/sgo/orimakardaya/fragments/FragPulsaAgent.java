@@ -21,6 +21,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -71,7 +72,7 @@ public class FragPulsaAgent extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        sp = new SecurePreferences(act);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         member_dap = sp.getString(DefineValue.MEMBER_DAP,"");
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
