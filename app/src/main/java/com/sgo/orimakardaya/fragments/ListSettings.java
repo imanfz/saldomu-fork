@@ -18,15 +18,36 @@ import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 /**
  * Created by thinkpad on 6/11/2015.
  */
-public class ListSettings extends ListFragment {
+public class ListSettings extends ListFragment implements InformationDialog.OnDialogOkCallback {
     View v;
 
     SecurePreferences sp;
+    private InformationDialog dialogI;
+    String authType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_list_settings, container, false);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -34,9 +55,18 @@ public class ListSettings extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
 
+
+        dialogI = InformationDialog.newInstance(this,11);
         String[] _data = null;
-        _data = getResources().getStringArray(R.array.settings_list);
+        if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+            _data = getResources().getStringArray(R.array.settings_list);
+        }
+        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)) {
+            _data = getResources().getStringArray(R.array.settings_list_pin);
+        }
+
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
@@ -49,11 +79,56 @@ public class ListSettings extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
         Fragment f;
-        switch (position) {
-            case 0:
-                i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                switchActivity(i);
-                break;
+        if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+
+                case 1:
+                    i = new Intent(getActivity(), SharingOptionActivity.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 3:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
+        }
+        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)) {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+
+                case 1:
+                    i = new Intent(getActivity(), SharingOptionActivity.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 3:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 4:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
         }
     }
 
@@ -71,5 +146,10 @@ public class ListSettings extends ListFragment {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+    }
+
+    @Override
+    public void onOkButton() {
+
     }
 }

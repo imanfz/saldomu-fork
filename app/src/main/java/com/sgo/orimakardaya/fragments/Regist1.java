@@ -139,15 +139,17 @@ public class Regist1 extends Fragment{
                 emailValue.setEnabled(false);
 
                 RequestParams params = new RequestParams();
-                params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
-                params.put(WebParams.CUST_PHONE,noHP);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.CUST_PHONE, noHP);
                 params.put(WebParams.CUST_NAME,namaValue.getText());
                 params.put(WebParams.CUST_EMAIL, emailValue.getText());
                 params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+                params.put(WebParams.IS_SMS, "Y");
+                params.put(WebParams.IS_EMAIL, "N");
 
                 Timber.d("isi params reg1:" + params.toString());
 
-                MyApiClient.sentDataRegister(params,new JsonHttpResponseHandler(){
+                MyApiClient.sentDataRegister(getActivity(),params,new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
                             btnLanjut.setEnabled(true);
@@ -219,6 +221,8 @@ public class Regist1 extends Fragment{
                 }
     }
 
+
+
     public void changeActivity(Boolean login){
         if(login){
             DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
@@ -256,12 +260,12 @@ public class Regist1 extends Fragment{
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
         if(code.equals("0002")){
-            Title.setText(getResources().getString(R.string.regist1_notif_title));
-            Message.setText(getResources().getString(R.string.regist2_notif_message_3));
+            Title.setText(getResources().getString(R.string.regist1_notif_title_registered));
+            Message.setText(getResources().getString(R.string.regist1_notif_message_registered));
         }
         else if(code.equals(WebParams.SUCCESS_CODE)){
             Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-            Message.setText(getString(R.string.application_name)+" "+getString(R.string.regist1_notif_message_sms));
+            Message.setText(getString(R.string.appname)+" "+getString(R.string.regist1_notif_message_sms));
         }
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {

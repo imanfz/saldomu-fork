@@ -35,7 +35,7 @@ import timber.log.Timber;
 /**
   Created by Administrator on 7/10/2014.
  */
-public class Login extends Fragment {
+public class Login extends Fragment implements View.OnClickListener {
 
     String userIDfinale = null,userEmail = "";
 
@@ -66,12 +66,12 @@ public class Login extends Fragment {
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(loginListener);
+        btnLogin.setOnClickListener(this);
 
         btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
         btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
-        btnforgetPass.setOnClickListener(forgetpassListener);
+        btnforgetPass.setOnClickListener(this);
 
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
@@ -79,27 +79,30 @@ public class Login extends Fragment {
 
     }
 
-    Button.OnClickListener loginListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            //passLoginValue.setText("12345678");
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(inputValidation()){
-                    userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
-                    sentData();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_login :
+                if(InetHandler.isNetworkAvailable(getActivity())){
+                    if(inputValidation()){
+                        userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
+                        sentData();
+                    }
                 }
-            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-
+                else
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                break;
+            case R.id.btn_forgetPass :
+                newFrag = new ForgotPassword();
+                switchFragment(newFrag,"forgot password",true);
+                break;
+            case R.id.btn_register :
+                newFrag = new Regist1();
+                switchFragment(newFrag, "reg1", true);
+                break;
         }
-    };
+    }
 
-    Button.OnClickListener forgetpassListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Fragment newFrag = new ForgotPassword();
-            switchFragment(newFrag,"forgot password",true);
-        }
-    };
 
     public void sentData(){
         try{
@@ -115,12 +118,12 @@ public class Login extends Fragment {
             RequestParams params = new RequestParams();
             params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID,userIDfinale);
-            params.put(WebParams.PASSWORD_LOGIN, Md5.hashMd5(passLoginValue.getText().toString()));
+            params.put(WebParams.PASSWORD_LOGIN, AES.aes_encrypt(passLoginValue.getText().toString(), userIDfinale));
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
 
-            Timber.d("isi params login:"+params.toString());
+            Timber.d("isi params login:" + params.toString());
 
-            MyApiClient.sentDataLogin(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataLogin(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     image_spinner.clearAnimation();
@@ -142,7 +145,7 @@ public class Login extends Fragment {
                                 changeActivity();
                             }
                         } else {
-                            if(code.equals(DefineValue.ERROR_0004) || code.equals(DefineValue.ERROR_0042)){
+                            if(code.equals(DefineValue.ERROR_0042)){
                                 int failed = response.optInt(WebParams.FAILED_ATTEMPT,0);
                                 int max = response.optInt(WebParams.MAX_FAILED,0);
                                 String message = "";
@@ -160,14 +163,27 @@ public class Login extends Fragment {
 
                                 showDialog(message);
                             }
-
-                            if(code.equals(DefineValue.ERROR_0018)){
+                            else if(code.equals(DefineValue.ERROR_0126)){
                                 showDialog(getString(R.string.login_failed_attempt_3));
                             }
+                            else if(code.equals(DefineValue.ERROR_0018)||code.equals(DefineValue.ERROR_0017)){
+                                showDialog(getString(R.string.login_failed_inactive));
+                            }
+                            else if(code.equals(DefineValue.ERROR_0127)){
+                                showDialog(getString(R.string.login_failed_dormant));
+                            }
+                            else if(code.equals(DefineValue.ERROR_0004)){
+                                showDialog(getString(R.string.login_failed_wrong_pass));
+                            }
+                            else if(code.equals(DefineValue.ERROR_0002)){
+                                showDialog(getString(R.string.login_failed_wrong_id));
+                            }
+                            else {
+                                code = response.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
+                            Timber.d("isi error login:" + response.toString());
 
-                            Timber.d("isi error login", response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -247,7 +263,7 @@ public class Login extends Fragment {
             return;
 
         LoginActivity fca = (LoginActivity) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        fca.switchContent(i, name, isBackstack);
     }
 
     private void changeActivity() {
@@ -284,7 +300,24 @@ public class Login extends Fragment {
         SecurePreferences.Editor mEditor = prefs.edit();
         String arraynya;
         try {
-            mEditor.putString(DefineValue.USERID_PHONE, response.getString(WebParams.USER_ID));
+            String userId = response.getString(WebParams.USER_ID);
+            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
+
+            if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
+                mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
+                mEditor.putString(DefineValue.BALANCE,prefs.getString(DefineValue.PREVIOUS_BALANCE,"0"));
+            }
+            else {
+                if(prevContactFT.equals(DefineValue.NO)) {
+                    myFriendModel.deleteAll();
+                    mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
+                }
+                BalanceModel.deleteAll();
+                mEditor.putString(DefineValue.BALANCE, "0");
+
+            }
+
+            mEditor.putString(DefineValue.USERID_PHONE, userId);
             mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
             mEditor.putString(DefineValue.USER_NAME, response.getString(WebParams.USER_NAME));
             mEditor.putString(DefineValue.CUST_ID,response.getString(WebParams.CUST_ID));
@@ -298,9 +331,17 @@ public class Login extends Fragment {
             mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.PROFILE_SOCIAL_ID,response.getString(WebParams.SOCIAL_ID));
             mEditor.putString(DefineValue.PROFILE_HOBBY,response.getString(WebParams.HOBBY));
+            mEditor.putString(DefineValue.PROFILE_POB,response.getString(WebParams.POB));
+            mEditor.putString(DefineValue.PROFILE_GENDER,response.getString(WebParams.GENDER));
+            mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE));
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
+            mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
 
-            mEditor.putString(DefineValue.IS_FIRST_TIME,response.getString(WebParams.USER_IS_NEW));
+            mEditor.putString(DefineValue.LIST_ID_TYPES,response.getString(WebParams.ID_TYPES));
+            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
+
+//            mEditor.putString(DefineValue.IS_FIRST_TIME,response.getString(WebParams.USER_IS_NEW));
+            mEditor.putString(DefineValue.IS_CHANGED_PASS,response.optString(WebParams.CHANGE_PASS, ""));
 
             mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
             mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
@@ -309,6 +350,11 @@ public class Login extends Fragment {
 
             mEditor.putString(DefineValue.ACCESS_KEY, response.getString(WebParams.ACCESS_KEY));
             mEditor.putString(DefineValue.ACCESS_SECRET, response.getString(WebParams.ACCESS_SECRET));
+
+            if (response.optInt(WebParams.IS_REGISTERED,0) == 0)
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
+            else
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
 
             arraynya = response.getString(WebParams.COMMUNITY);
             if(!arraynya.isEmpty()){
@@ -325,7 +371,13 @@ public class Login extends Fragment {
                         mEditor.putString(DefineValue.AUTHENTICATION_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AUTHENTICATION_TYPE));
                         mEditor.putString(DefineValue.LENGTH_AUTH, arrayJson.getJSONObject(i).getString(WebParams.LENGTH_AUTH));
                         mEditor.putString(DefineValue.IS_HAVE_PIN, arrayJson.getJSONObject(i).getString(WebParams.IS_HAVE_PIN));
-                        Log.w("isi comm id yg bener", arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
+                        mEditor.putInt(DefineValue.LEVEL_VALUE, arrayJson.getJSONObject(i).optInt(WebParams.MEMBER_LEVEL, 0));
+                        if (arrayJson.getJSONObject(i).optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
+                        else
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+//                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
+                        Timber.w("isi comm id yg bener:" + arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
                         break;
                     }
                 }
@@ -334,8 +386,13 @@ public class Login extends Fragment {
             arraynya = response.getString(WebParams.SETTINGS);
             if(!arraynya.isEmpty()){
                 JSONArray arrayJson = new JSONArray(arraynya);
-                mEditor.putString(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getString(WebParams.MAX_MEMBER_TRANSFER));
+                mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
             }
+
+            SharedPreferences mOtherSP = getActivity().getSharedPreferences(DefineValue.FACEBOOK_PREF, Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = mOtherSP.edit();
+            edit.putBoolean(DefineValue.IS_ACTIVE,false);
+            edit.apply();
 
 
         } catch (JSONException e) {

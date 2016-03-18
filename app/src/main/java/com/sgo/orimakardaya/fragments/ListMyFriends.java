@@ -54,7 +54,8 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/27/2015.
  */
-public class ListMyFriends extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, PopupMenu.OnItemSelectedListener {
+public class ListMyFriends extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        PopupMenu.OnItemSelectedListener, InformationDialog.OnDialogOkCallback {
 
     private static final int CONTACTS_LOADER = 10;
     View v;
@@ -66,11 +67,11 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     private Cursor mCursor;
     CircleProgressBar loadingCircle;
     SecurePreferences sp;
-    private Thread getContactBackground;
-    Handler handler;
     private String _ownerID,isContactNew,accessKey;
-
+    PopupMenu mPopMenu;
     EditText etSearchFriend;
+
+    private InformationDialog dialogI;
 
     private final static int ASK_FOR_MONEY = 0;
     private final static int PAY = 1;
@@ -97,16 +98,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         //super.onListItemClick(l, v, position, id);
 
         positionSelected = position;
-
-        PopupMenu menu = new PopupMenu(getActivity().getApplicationContext());
-        menu.setOnItemSelectedListener(this);
-        menu.add(ASK_FOR_MONEY, R.string.menu_item_title_ask_for_money).setIcon(
-                getResources().getDrawable(R.drawable.ic_ask_icon_color));
-        menu.add(PAY, R.string.menu_item_title_pay_friends).setIcon(
-                getResources().getDrawable(R.drawable.ic_payfriends_icon_color));
-        menu.add(VIEW_DETAIL, R.string.view_detail).setIcon(
-                getResources().getDrawable(R.drawable.ic_view_detail));
-        menu.show(v);
+        mPopMenu.show(v);
     }
 
     @Override
@@ -122,8 +114,10 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 args.putString("id", mMFM.get(positionSelected).getUser_id());
                 args.putString("phone", mMFM.get(positionSelected).getFriend_number());
                 args.putString("email", mMFM.get(positionSelected).getEmail());
-                newFragment.setArguments(args);
-                switchFragment(newFragment, getResources().getString(R.string.menu_item_title_ask_for_money), false);
+//                newFragment.setArguments(args);
+//                switchFragment(newFragment, getResources().getString(R.string.menu_item_title_ask_for_money), false);
+                switchMenu(NavigationDrawMenu.MASK4MONEY,args);
+
                 break;
 
             case PAY:
@@ -134,8 +128,10 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 args.putString("id", mMFM.get(positionSelected).getUser_id());
                 args.putString("phone", mMFM.get(positionSelected).getFriend_number());
                 args.putString("email", mMFM.get(positionSelected).getEmail());
-                newFragment.setArguments(args);
-                switchFragment(newFragment, getResources().getString(R.string.menu_item_title_pay_friends), false);
+//                newFragment.setArguments(args);
+//                switchFragment(newFragment, getResources().getString(R.string.menu_item_title_pay_friends), false);
+                switchMenu(NavigationDrawMenu.MPAYFRIENDS,args);
+
                 break;
 
             case VIEW_DETAIL:
@@ -145,18 +141,26 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 i.putExtra("id", mMFM.get(positionSelected).getUser_id());
                 i.putExtra("phone", mMFM.get(positionSelected).getFriend_number());
                 i.putExtra("email", mMFM.get(positionSelected).getEmail());
-                switchActivity(i);
+                switchActivity(i, MainPage.ACTIVITY_RESULT);
                 break;
 
         }
     }
 
-    private void switchActivity(Intent mIntent){
+    private void switchMenu(int IdxItemMenu, Bundle data){
         if (getActivity() == null)
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
+        fca.switchMenu( IdxItemMenu, data);
+    }
+
+    private void switchActivity(Intent mIntent, int j){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent, j);
     }
     private void switchFragment(Fragment i, String name, Boolean isBackstack){
         if (getActivity() == null)
@@ -176,6 +180,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
 
         ActiveAndroid.initialize(getActivity());
+        mPopMenu = new PopupMenu(getActivity().getApplicationContext());
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
@@ -190,6 +195,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         etSearchFriend = (EditText) v.findViewById(R.id.etSearchFriend);
 
         btn_check_contact.setOnClickListener(checkContactListener);
+
+        dialogI = InformationDialog.newInstance(this,9);
 
         mMFM = new ArrayList<myFriendModel>();
         mAdapter = new MyFriendAdapter(getActivity(),R.layout.list_myfriends_item,mMFM);
@@ -213,12 +220,28 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             }
         });
 
-        Timber.d("is Contact new",isContactNew);
+        mPopMenu.setOnItemSelectedListener(this);
+        mPopMenu.add(ASK_FOR_MONEY, R.string.menu_item_title_ask_for_money).setIcon(
+                getDraw(R.drawable.ic_ask_icon_color));
+        mPopMenu.add(PAY, R.string.menu_item_title_pay_friends).setIcon(
+                getDraw(R.drawable.ic_payfriends_icon_color));
+        mPopMenu.add(VIEW_DETAIL, R.string.view_detail).setIcon(
+                getDraw(R.drawable.ic_view_detail));
+
+        Timber.d("is Contact new:"+isContactNew);
         if(isContactNew.equals(DefineValue.NO)){
             layout_check_contact.setVisibility(View.GONE);
             layout_list_contact.setVisibility(View.VISIBLE);
             initializeDataFriend();
             mState = SHOW_MENU;
+        }
+    }
+
+    private Drawable getDraw(int idDrawable){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getResources().getDrawable(idDrawable, getActivity().getTheme());
+        } else {
+            return getResources().getDrawable(idDrawable);
         }
 
     }
@@ -232,6 +255,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("options menu add contact");
         inflater.inflate(R.menu.list_contacts, menu);
+//        inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -246,7 +270,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 }
                 else if (mState == SHOW_MENU){
                     Intent i = new Intent(getActivity(), AddByQRCodeActivity.class);
-                    switchActivity(i);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 return true;
             case R.id.menu_item_add_by_nfc:
@@ -267,6 +291,9 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                     switchFragment(newFragment, "Contact List", true);
                 }
                 return true;
+//            case R.id.action_information:
+//                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -340,7 +367,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             if (cursor.getCount() > 0) {
                 Timber.wtf("isi size cursor:"+String.valueOf(cursor.getCount()));
                 //mAdapter.swapCursor(cursor);
-                getContactBackground = new Thread() {
+                Thread getContactBackground = new Thread() {
                     @Override
                     public void run() {
                         Looper.prepare();
@@ -350,24 +377,30 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                         String _id;
 
                         int finalI = 0;
-                        while ( !cursor.isClosed() &&cursor.moveToNext()) {
-                            _id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                            _name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                            if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        while (!cursor.isClosed() && cursor.moveToNext()) {
+                            _id = cursor.getString(cursor.getColumnIndex(Contacts._ID));
+                            _name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
+                            if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(Contacts.HAS_PHONE_NUMBER))) > 0) {
                                 Cursor pCur = mCR.query(
                                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                                         null,
-                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                                         new String[]{_id}, null);
 
-                                String _phone1 = null,_phone2 = null,_phone3 = null,_phoneTemp;
+                                String _phone1 = null, _phone2 = null, _phone3 = null, _phoneTemp;
                                 int idx = 0;
                                 while (pCur.moveToNext()) {
                                     _phoneTemp = NoHPFormat.editNoHP(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                                    switch(idx){
-                                        case 0 :_phone1 = _phoneTemp;break;
-                                        case 1 :_phone2 = _phoneTemp;break;
-                                        case 2 :_phone3 = _phoneTemp;break;
+                                    switch (idx) {
+                                        case 0:
+                                            _phone1 = _phoneTemp;
+                                            break;
+                                        case 1:
+                                            _phone2 = _phoneTemp;
+                                            break;
+                                        case 2:
+                                            _phone3 = _phoneTemp;
+                                            break;
                                     }
                                     idx++;
                                 }
@@ -519,11 +552,11 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
             if(isContactNew.equals(DefineValue.NO)){
                 Timber.d("isi params update Contact:"+params.toString());
-                MyApiClient.sentUpdateContact(params, mHandler);
+                MyApiClient.sentUpdateContact(getActivity(),params, mHandler);
             }
             else {
                 Timber.d("isi params insert Contact:"+params.toString());
-                MyApiClient.sentInsertContact(params, mHandler);
+                MyApiClient.sentInsertContact(getActivity(),params, mHandler);
             }
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -594,25 +627,30 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             ActiveAndroid.setTransactionSuccessful();
             ActiveAndroid.endTransaction();
             sp.edit().putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.NO).apply();
-            if(isAdded()){
-                if(isContactNew.equals(DefineValue.NO)){
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mMFM.clear();
-                            mMFM.addAll(myFriendModel.getAll());
-                            mAdapter.notifyDataSetChanged();
+
+            if (getActivity() != null) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (isAdded()) {
+                            if (isContactNew.equals(DefineValue.NO)) {
+                                mMFM.clear();
+                                mMFM.addAll(myFriendModel.getAll());
+                                mAdapter.notifyDataSetChanged();
+                                crossfadingView(layout_loading_contact, layout_list_contact);
+                            } else {
+                                mMFM.clear();
+                                mMFM.addAll(myFriendModel.getAll());
+                                mAdapter.notifyDataSetChanged();
+                                crossfadingView(layout_loading_contact, layout_list_contact);
+                            }
+                            Timber.d("finish initialize my friend");
+                            mState = SHOW_MENU;
                         }
-                    });
-                }
-                else {
-                    mMFM.addAll(myFriendModel.getAll());
-                    mAdapter.notifyDataSetChanged();
-                    crossfadingView(layout_loading_contact, layout_list_contact);
-                }
-                Timber.d("finish initialize", "oke");
-                mState = SHOW_MENU;
+                    }
+                });
             }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -623,12 +661,112 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         }
     }
 
+    /*Untuk update friend & my friend dbd
+    public void UpdateFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
+        try {
+            ActiveAndroid.beginTransaction();
+            friendModel mFm;
+            myFriendModel mMfm;
+            String bucket;
+
+            Log.d("arrayfriend lenght", String.valueOf(arrayFriend.length()));
+            if(arrayFriend.length()>0){
+                for (int i = 0; i < arrayFriend.length(); i++) {
+                    mFm = new friendModel();
+                    mFm.setContact_id(arrayFriend.getJSONObject(i).getInt(friendModel.CONTACT_ID));
+                    mFm.setFull_name(arrayFriend.getJSONObject(i).getString(friendModel.FULL_NAME));
+                    mFm.setMobile_number(arrayFriend.getJSONObject(i).getString(friendModel.MOBILE_NUMBER));
+                    mFm.setMobile_number2(arrayFriend.getJSONObject(i).getString(friendModel.MOBILE_NUMBER2));
+                    mFm.setMobile_number3(arrayFriend.getJSONObject(i).getString(friendModel.MOBILE_NUMBER3));
+                    mFm.setEmail(arrayFriend.getJSONObject(i).getString(friendModel.EMAIL));
+                    mFm.setOwner_id(arrayFriend.getJSONObject(i).getString(friendModel.OWNER_ID));
+
+                    bucket = arrayFriend.getJSONObject(i).getString(friendModel.IS_FRIEND);
+                    if(!bucket.equals(""))mFm.setIs_friend(Integer.parseInt(bucket));
+
+                    mFm.setCreated_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
+                    if(isContactNew.equals(CoreApp.NO) && !arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE).isEmpty()){
+                        mFm.setUpdate_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE)));
+                    }
+                    mFm.save();
+                    Log.d("idx array friend", String.valueOf(i));
+                    if(layout_loading_contact.getVisibility() == View.VISIBLE)
+                        loadingCircle.setProgress((int) ((i+1)* (25.0/(double)arrayFriend.length()))+50);
+                }
+            }
+            else {
+                if(layout_loading_contact.getVisibility() == View.VISIBLE)
+                    loadingCircle.setProgress(75);
+            }
+
+            Log.d("arrayMyfriend lenght", String.valueOf(arrayMyfriend.length()));
+            if(arrayMyfriend.length()>0){
+                for (int i = 0; i < arrayMyfriend.length(); i++) {
+                    mMfm = new myFriendModel();
+                    mMfm.setContact_id(arrayMyfriend.getJSONObject(i).getInt(myFriendModel.CONTACT_ID));
+                    mMfm.setFull_name(arrayMyfriend.getJSONObject(i).getString(myFriendModel.FULL_NAME));
+                    mMfm.setFriend_number(arrayMyfriend.getJSONObject(i).getString(myFriendModel.FRIEND_NUMBER));
+                    mMfm.setEmail(arrayMyfriend.getJSONObject(i).getString(myFriendModel.EMAIL));
+                    mMfm.setUser_id(arrayMyfriend.getJSONObject(i).getString(myFriendModel.USER_ID));
+                    mMfm.setImg_url(arrayMyfriend.getJSONObject(i).optString(myFriendModel.IMG_URL,""));
+                    mMfm.save();
+                    Log.d("idx array my friend", String.valueOf((int) ((i + 1) * (25.0 / (double) arrayMyfriend.length())) + 75));
+                    if(layout_loading_contact.getVisibility() == View.VISIBLE)
+                        loadingCircle.setProgress((int) ((i+1)* (25.0/(double)arrayMyfriend.length()))+75);
+                }
+            }
+            else {
+                if(layout_loading_contact.getVisibility() == View.VISIBLE)
+                    loadingCircle.setProgress(100);
+            }
+
+            ActiveAndroid.setTransactionSuccessful();
+            ActiveAndroid.endTransaction();
+            sp.edit().putString(CoreApp.CONTACT_FIRST_TIME,CoreApp.NO).apply();
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(isAdded()){
+                        if(isContactNew.equals(CoreApp.NO)){
+                            mMFM.clear();
+                            mMFM.addAll(myFriendModel.getAll());
+                            mAdapter.notifyDataSetChanged();
+                            crossfadingView(layout_loading_contact, layout_list_contact);
+                        }
+                        else {
+                            mMFM.clear();
+                            mMFM.addAll(myFriendModel.getAll());
+                            mAdapter.notifyDataSetChanged();
+                            crossfadingView(layout_loading_contact, layout_list_contact);
+                        }
+                        Log.d("finish initialize", "oke");
+                        mState = SHOW_MENU;
+                    }
+                }
+            });
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(ActiveAndroid.inTransaction())
+                ActiveAndroid.endTransaction();
+        }
+    }*/
+
     public Cursor getmCursor() {
         return mCursor;
     }
 
     public void setmCursor(Cursor mCursor) {
         this.mCursor = mCursor;
+    }
+
+    @Override
+    public void onOkButton() {
+
     }
 
     public class friendAdapter implements JsonSerializer<friendModel> {

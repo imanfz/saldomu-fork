@@ -40,7 +40,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListTopUp extends ListFragment {
+public class ListTopUp extends ListFragment implements InformationDialog.OnDialogOkCallback {
 
     View v;
     ArrayList<String> _listType;
@@ -48,9 +48,11 @@ public class ListTopUp extends ListFragment {
     EasyAdapter adapter;
     ArrayList<listbankModel> mlistbankIB = null, mlistbankSMS = null;
     Boolean is_full_activity = false;
+    private InformationDialog dialogI;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_list_topup, container, false);
         return v;
     }
@@ -64,6 +66,8 @@ public class ListTopUp extends ListFragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
+        dialogI = InformationDialog.newInstance(this,0);
+
         listBankIB = null;
         listBankSMS = null;
 
@@ -74,7 +78,7 @@ public class ListTopUp extends ListFragment {
         _listType = new ArrayList<String>();
 
         String noVA = sp.getString(DefineValue.NO_VA,"");
-        Timber.d("isi VA",noVA);
+        Timber.d("isi VA:"+noVA);
         if(!noVA.isEmpty()){
             Collections.addAll(_listType, getResources().getStringArray(R.array.topup_list_item));
         }
@@ -110,7 +114,7 @@ public class ListTopUp extends ListFragment {
 
                 Timber.d("isi params get BankList:" + params.toString());
 
-                MyApiClient.getBankList(params, new JsonHttpResponseHandler() {
+                MyApiClient.getBankList(getActivity(),params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
@@ -126,7 +130,10 @@ public class ListTopUp extends ListFragment {
                                 Timber.d("isi response autologout:"+response.toString());
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
+                                if(is_full_activity)
+                                    test.showDialoginActivity(getActivity(),message);
+                                else
+                                    test.showDialoginMain(getActivity(),message);
                             }
                             else {
                                 Timber.d("Error ListMember comlist:"+response.toString());
@@ -313,6 +320,7 @@ public class ListTopUp extends ListFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -326,9 +334,16 @@ public class ListTopUp extends ListFragment {
                 else
                     getActivity().finish();
                 return true;
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void onOkButton() {
+
+    }
 }

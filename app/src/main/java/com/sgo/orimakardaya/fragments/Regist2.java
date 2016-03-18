@@ -40,8 +40,8 @@ public class Regist2 extends Fragment {
 
     SecurePreferences sp;
     Button btnResend, btnSubmit,btnCancel;
-    String noHPValue,namaValue,emailValue,authType,custID, token, pass, confPass;
-    int max_resend;
+    String noHPValue,namaValue,emailValue,authType,custID, token, pass, confPass, memberID;
+    int max_resend_sms, max_resend_email;
     EditText TokenValue;
     TextView mNoHPValue,mNamaValue,mEmail;
     ProgressDialog progdialog;
@@ -63,7 +63,8 @@ public class Regist2 extends Fragment {
         noHPValue = args.getString(DefineValue.CUST_PHONE,"");
         namaValue = args.getString(DefineValue.CUST_NAME,"");
         emailValue = args.getString(DefineValue.CUST_EMAIL, "-");
-        max_resend = Integer.parseInt(args.getString(DefineValue.MAX_RESEND,"3"));
+        max_resend_sms = Integer.parseInt(args.getString(DefineValue.MAX_RESEND, "3"));
+        max_resend_email = Integer.parseInt(args.getString(DefineValue.MAX_RESEND, "3"));
         authType = args.getString(DefineValue.AUTHENTICATION_TYPE, DefineValue.AUTH_TYPE_PIN);
 
         TokenValue = (EditText) v.findViewById(R.id.reg2_token_value);
@@ -76,7 +77,12 @@ public class Regist2 extends Fragment {
 
         TokenValue.requestFocus();
 
-        btnResend.setText(getString(R.string.reg2_btn_text_resend_token) + " (" + max_resend + ")");
+        if(max_resend_sms != 0) {
+            btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
+        }
+        else if(max_resend_sms == 0 && max_resend_email > 0)  {
+            btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
+        }
 
         btnResend.setOnClickListener(resendListener);
         btnSubmit.setOnClickListener(submitListener);
@@ -101,7 +107,8 @@ public class Regist2 extends Fragment {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(max_resend!=0)requestResendToken();
+                if(max_resend_sms!=0)requestResendToken("Y","N");
+                else if(max_resend_sms == 0 && max_resend_email > 0) requestResendToken("N","Y");
                 else Toast.makeText(getActivity(),getString(R.string.reg2_notif_max_resend_token_empty),Toast.LENGTH_LONG).show();
             }
             else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
@@ -126,11 +133,6 @@ public class Regist2 extends Fragment {
 
 
     private void switchActivityPIN(Intent i){
-        /*if (getActivity() == null)
-            return;
-
-        Registration fca = (Registration) getActivity();
-        fca.switchActivity(i, Registration.ACTIVITY_RESULT);*/
         startActivityForResult(i, Registration.ACTIVITY_RESULT);
     }
 
