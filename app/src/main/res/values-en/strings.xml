@@ -311,7 +311,7 @@
     <string name="askformoney_number_recipients">* Number of Recipients</string>
     <string name="askformoney_otp">* max 6 characters</string>
 
-    <string name="showcase">Check out the\nNotification Action View</string>
+
     <string name="changepin_ab_changepin">Change PIN</string>
     <string name="changepin_text_currentpin">Current PIN</string>
     <string name="changepin_text_newpin">New PIN</string>
@@ -386,7 +386,7 @@
     <string name="listatm_topup_other_ins_5">Press YES/OK to submit your transaction</string>
 
     <string name="about_apps">About Application</string>
-    <string name="about_apps_desc">SocialBanking is an financial application with social media experience. Because banking is a part of your social life.</string>
+    <string name="about_apps_desc">Pin m-akardaya is an financial application with social media experience. Because banking is a part of your social life.</string>
     <string name="menu_group_title_supports">Supports</string>
     <string name="menu_item_title_setting">Setting</string>
     <string name="menu_item_title_help">Help</string>

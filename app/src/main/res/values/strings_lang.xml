@@ -16,7 +16,8 @@
     <string name="update">Simpan</string>
     <string name="close">Tutup</string>
     <string name="currency" translatable="false">Rp.</string>
-    <string name="text_copyright" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
+    <string name="text_copyright" translatable="false">Copyright &#169; 2016. All Rights Reserved.</string>
+    <string name="text_copyright2" translatable="false">Copyright &#169; 2014 Square Gate One.All Rights Reserved.</string>
     <string name="setting_icon_arrow" translatable="false">{fa-angle-double-right}</string>
     <string name="down_indicator" translatable="false">{fa-sort-desc}</string>
     <string name="up_indicator" translatable="false">{fa-sort-asc}</string>
@@ -148,10 +149,11 @@
     <string name="toolbar_title_purchase">Biller</string>
     <string name="toolbar_title_pay_friends">Bayar Teman</string>
     <string name="toolbar_title_topup" translatable="false">Top Up</string>
+    <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="toolbar_title_myfriends">Teman Saya</string>
     <string name="toolbar_title_mygroup">Grup Saya</string>
-
+    <string name="showcase">Check out the\nNotification Action View</string>
     <string name="header_menu_balance">Saldo : </string>
 
     <string name="menu_group_title_main_menu">Menu Utama</string>
@@ -435,7 +437,7 @@
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="about_apps">Tentang Aplikasi</string>
-    <string name="about_apps_desc">SocialBanking adalah aplikasi keuangan dengan fitur media sosial. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
+    <string name="about_apps_desc">Pin m-akardaya adalah aplikasi keuangan dengan fitur media sosial. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
 

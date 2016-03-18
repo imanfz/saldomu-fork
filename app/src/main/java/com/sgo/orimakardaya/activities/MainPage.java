@@ -904,7 +904,7 @@ public class MainPage extends BaseActivity{
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("Isi response get App Version:"+response.toString());
                             String arrayApp = response.optString(WebParams.APP_DATA,"");
-                            if(!arrayApp.isEmpty() && arrayApp.equalsIgnoreCase(null)) {
+                            if(!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
                                 final JSONObject mObject = new JSONObject(arrayApp);
                                 String package_version = mObject.getString(WebParams.PACKAGE_VERSION);
                                 final String package_name = mObject.getString(WebParams.PACKAGE_NAME);

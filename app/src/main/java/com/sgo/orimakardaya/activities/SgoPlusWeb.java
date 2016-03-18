@@ -180,6 +180,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Timber.d("isi url tombol-tombolnya2:" + failingUrl);
                 Toast.makeText(activity, description, Toast.LENGTH_SHORT).show();
                 isDisconnected = true;
                 invalidateOptionsMenu();

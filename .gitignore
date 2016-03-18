@@ -10,3 +10,4 @@
 PinMaster/src/main/gen
 VPI/build/generated
 VPI/build
+*.apk

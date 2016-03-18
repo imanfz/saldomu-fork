@@ -56,7 +56,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        SecurePreferences sp = new SecurePreferences(this);
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -171,6 +171,10 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
                     setResult(MainPage.RESULT_BALANCE);
                     getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
                             fee, amount,reportType,commId,transType, shareType);
+                }
+                else if (url.contains("isback=1")){
+                    setResult(MainPage.RESULT_BALANCE);
+                    onOkButton();
                 }
                 else view.loadUrl(url);
 

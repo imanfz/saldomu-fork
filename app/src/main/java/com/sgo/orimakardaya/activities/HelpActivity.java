@@ -13,6 +13,7 @@ import com.sgo.orimakardaya.Beans.HelpModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.adapter.HelpAdapter;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -48,7 +49,7 @@ public class HelpActivity extends BaseActivity {
 
         InitializeToolbar();
 
-        sp = new SecurePreferences(this);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         ownerId = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 

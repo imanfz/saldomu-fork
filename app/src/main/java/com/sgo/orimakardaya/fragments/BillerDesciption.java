@@ -438,7 +438,8 @@ public class BillerDesciption extends Fragment {
                         String code = response.getString(WebParams.ERROR_CODE);
 
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.d("isi response list bank biller:" + response.toString());
+
+                            Timber.d("isi response list bank biller:" + response.toString());
                             JSONArray mData = new JSONArray(response.getString(WebParams.BANK_DATA));
                             mDataPayment = new ArrayList<listbankModel>();
                             ArrayList<String> tempDataPaymentName = new ArrayList<String>();
@@ -494,6 +495,8 @@ public class BillerDesciption extends Fragment {
                     } catch (JSONException e) {
                         progdialog.dismiss();
                         Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
                 }

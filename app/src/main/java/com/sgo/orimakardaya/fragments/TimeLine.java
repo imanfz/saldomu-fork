@@ -317,7 +317,7 @@ public class TimeLine extends BaseFragmentMainPage {
                     else
                         Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    Timber.w("Error Koneksi Timeline:"+throwable.getCause().toString());
+                    Timber.w("Error Koneksi Timeline:"+throwable.toString());
                 }
 
 

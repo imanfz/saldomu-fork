@@ -7,6 +7,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.adapter.ExpandListATMAdapter;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class ListATM extends BaseActivity {
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        sp = new SecurePreferences(this);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         _namaBank = getResources().getStringArray(R.array.listatm_namabank_list);
 
