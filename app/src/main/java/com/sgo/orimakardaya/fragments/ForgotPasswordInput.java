@@ -16,6 +16,8 @@ import com.loopj.android.http.RequestParams;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.securities.Md5;
+
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,7 +99,7 @@ public class ForgotPasswordInput extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btn_resend.setText(getString(R.string.reg2_btn_text_resend_token)+" ("+max_resend+")");
+                btn_resend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_resend+")");
             }
         });
     }
@@ -147,7 +149,7 @@ public class ForgotPasswordInput extends Fragment {
 
             Timber.d("isi params insert password", params.toString());
 
-            MyApiClient.sentInsertPassword(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertPassword(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -187,7 +189,7 @@ public class ForgotPasswordInput extends Fragment {
 
             Timber.d("isi params forgot password", params.toString());
 
-            MyApiClient.sentForgotPassword(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentForgotPassword(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();

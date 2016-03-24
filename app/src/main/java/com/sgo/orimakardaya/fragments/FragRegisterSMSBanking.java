@@ -17,6 +17,7 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -86,8 +87,6 @@ public class FragRegisterSMSBanking extends Fragment {
         spinBankName.setAdapter(adapter);
         spinBankName.setOnItemSelectedListener(spinnerNamaBankListener);
 
-
-
         getBankList();
     }
 
@@ -132,7 +131,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params get BankList sms regist:"+params.toString());
 
-            MyApiClient.sentListBankSMSRegist(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentListBankSMSRegist(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -166,6 +165,7 @@ public class FragRegisterSMSBanking extends Fragment {
                     }
 
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
@@ -264,20 +264,23 @@ public class FragRegisterSMSBanking extends Fragment {
     Button.OnClickListener btnGetTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()) {
-                String bankName = spinBankName.getSelectedItem().toString();
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    String bankName = spinBankName.getSelectedItem().toString();
 
-                if(bankName.toLowerCase().contains("jatim"))
-                    sentInquiryMobileJTM(bankName);
-                else
-                    getDataSB();
+                    if (bankName.toLowerCase().contains("jatim"))
+                        sentInquiryMobileJTM(bankName);
+                    else
+                        getDataSB();
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
     public void sentInquiryMobileJTM(final String _bank_name){
         try{
-            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE_JATIM,
                     userID,accessKey);
@@ -288,7 +291,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params get BankList:"+params.toString());
 
-            MyApiClient.sentInquiryMobileJatim(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInquiryMobileJatim(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -366,7 +369,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params data SB:"+params.toString());
 
-            MyApiClient.getDataSB(params, new JsonHttpResponseHandler() {
+            MyApiClient.getDataSB(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -455,6 +458,7 @@ public class FragRegisterSMSBanking extends Fragment {
                     }
 
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

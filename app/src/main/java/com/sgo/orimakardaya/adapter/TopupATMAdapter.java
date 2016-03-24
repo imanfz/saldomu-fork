@@ -20,11 +20,13 @@ public class TopupATMAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<TopupATMObject> listAtm;
     private Context context;
+    private String max_topup_value;
 
-    public TopupATMAdapter(Context _context, List<TopupATMObject> _listAtm) {
+    public TopupATMAdapter(Context _context, List<TopupATMObject> _listAtm, String _max_topup_value) {
         context = _context;
         mInflater = LayoutInflater.from(context);
         listAtm = _listAtm;
+        max_topup_value = _max_topup_value;
     }
 
     @Override
@@ -54,6 +56,8 @@ public class TopupATMAdapter extends BaseAdapter {
             holder.pinAccount = (TextView)view.findViewById(R.id.pin_account);
             holder.otherInputCode = (TextView)view.findViewById(R.id.other_input_code);
             holder.imageAtm = (ImageView)view.findViewById(R.id.img_atm);
+            holder.maxTopup = (TextView)view.findViewById(R.id.max_topup);
+            holder.maxTopupOther = (TextView)view.findViewById(R.id.max_topup_other);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -65,12 +69,14 @@ public class TopupATMAdapter extends BaseAdapter {
         holder.pinAccount.setText(listAtm.get(position).getNo_va());
         holder.otherInputCode.setText(listAtm.get(position).getBank_code() + " + " + listAtm.get(position).getNo_va());
         holder.imageAtm.setImageResource(R.drawable.amt_other);
+        holder.maxTopup.setText("*" + context.getResources().getString(R.string.max_topup_allowed) + " : " + max_topup_value);
+        holder.maxTopupOther.setText("*" + context.getResources().getString(R.string.max_topup_allowed) + " : " + max_topup_value);
 
         return view;
     }
 
     private class ViewHolder {
-        public TextView titleAtm, pinAccount, otherInputCode, atmBank;
+        public TextView titleAtm, pinAccount, otherInputCode, atmBank, maxTopup, maxTopupOther;
         public ImageView imageAtm;
     }
 }

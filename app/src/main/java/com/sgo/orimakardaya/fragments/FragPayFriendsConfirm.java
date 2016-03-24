@@ -27,7 +27,10 @@ import com.sgo.orimakardaya.adapter.RecipientAdapter;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+import com.sgo.orimakardaya.loader.UtilsLoader;
 import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -56,7 +59,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     EditText etOTP;
     Button btnSubmit, btnCancel, btnResend;
     ProgressDialog progdialog;
-    int max_token_resend = 3, total_receive_recepient = 0;
+    private int max_token_resend = 3, total_receive_recepient = 0, attempt=-1;
     View v;
 
     List<String> listName;
@@ -118,6 +121,22 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         if(authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
             btnSubmit.setText(R.string.proses);
+            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { // get pin attempt
+                @Override
+                public void onSuccess(Object deData) {
+                    attempt = (int) deData;
+                }
+
+                @Override
+                public void onFail(String message) {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
         }
         else if(authType.equalsIgnoreCase("OTP")) {
             layoutOTP.setVisibility(View.VISIBLE);
@@ -256,6 +275,8 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 }
                 else if(authType.equalsIgnoreCase("PIN")){
                     Intent i = new Intent(getActivity(), InsertPIN.class);
+                    if(attempt != -1 && attempt < 2)
+                        i.putExtra(DefineValue.ATTEMPT,attempt);
                     startActivity(i);
                 }
             }
@@ -306,8 +327,6 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         args.putString(DefineValue.RECIPIENTS_ERROR,errorRecipients);
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
 
-
-
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
@@ -318,7 +337,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token)+" ("+max_token_resend+")");
+                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_token_resend+")");
             }
         });
     }
@@ -401,7 +420,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
                             if(isFailed != mArrayData.length()){
                                 String name = sp.getString(DefineValue.USER_NAME,"");
-                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_total_amount);
+                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
                                 showReportBillerDialog( name,
 										DateTimeFormat.getCurrentDateTime(),
                                         sp.getString(DefineValue.USERID_PHONE,""),
@@ -422,15 +441,22 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
+                            test.showDialoginActivity(getActivity(),message);
+                        }
+                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            showDialogError(code);
                         }
                         else {
                             Timber.d("isi error confirm token p2p:" + response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-
                             if(authType.equalsIgnoreCase("PIN")) {
                                 Intent i = new Intent(getActivity(), InsertPIN.class);
+                                attempt = attempt-1;
+                                if(attempt != -1 && attempt < 2)
+                                    i.putExtra(DefineValue.ATTEMPT, attempt);
+
                                 startActivity(i);
                             }
                         }
@@ -470,12 +496,26 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             };
 
             if(isNotification)
-                MyApiClient.sentConfirmTransP2PNotif(params, myHandler );
+                MyApiClient.sentConfirmTransP2PNotif(getActivity(),params, myHandler );
             else
-                MyApiClient.sentConfirmTransP2P(params, myHandler );
+                MyApiClient.sentConfirmTransP2P(getActivity(),params, myHandler );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
+    }
+
+    private void showDialogError(String message){
+        MessageDialog dialognya;
+        dialognya = new MessageDialog(getActivity(),
+                getString(R.string.blocked_pin_title),
+                message);
+        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
+            @Override
+            public void onClickButton(View v, boolean isLongClick) {
+                onOkButton();
+            }
+        });
+        dialognya.show();
     }
 
     public void sentResendToken(String _data){
@@ -492,7 +532,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
             Timber.d("isi params sent resend token p2p:"+params.toString());
 
-            MyApiClient.sentResentTokenP2P(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentResentTokenP2P(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -523,6 +563,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                         e.printStackTrace();
                     }
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -646,7 +687,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
         else {
@@ -655,7 +696,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 .fit()
                 .centerCrop()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(getActivity()))
+                .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
     }

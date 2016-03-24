@@ -126,7 +126,7 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 
             Timber.d("isi params ask for money reject:" + params.toString());
 
-            MyApiClient.sentAsk4MoneyReject(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAsk4MoneyReject(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -184,7 +184,6 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
                     dismiss();
                     Timber.w("Error ask for money reject:"+throwable.toString());
                 }
-
             });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

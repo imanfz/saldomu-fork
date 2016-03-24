@@ -27,6 +27,7 @@ import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -214,7 +215,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
             Timber.d("isi params insertTrxTOpupSGOL", params.toString());
 
-            MyApiClient.sentInsertTransTopup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -254,11 +255,35 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
                 }
 
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
                     btn_submit.setEnabled(true);
-                    Log.w("Error Koneksi insertTrxTOpupSGOL", throwable.toString());
+                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
                 }
             });
         }catch (Exception e){
@@ -279,7 +304,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
             Timber.d("isi params sent get Trx Status", params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -308,12 +333,37 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                     }
                 }
 
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    btn_submit.setEnabled(true);
-                    progdialog.dismiss();
-                    Log.w("Error Koneksi get trx status", throwable.toString());
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
                 }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    btn_submit.setEnabled(true);
+                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
+                }
+
             });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());

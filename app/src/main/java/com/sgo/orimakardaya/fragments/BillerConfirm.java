@@ -29,7 +29,11 @@ import com.sgo.orimakardaya.activities.SgoPlusWeb;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+import com.sgo.orimakardaya.loader.UtilsLoader;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +57,10 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     TextView tv_item_name_value,tv_amount_value,tv_id_cust, tv_payment_name, tv_fee_value, tv_total_amount_value;
     EditText et_token_value;
     Button btn_submit,btn_cancel,btn_resend;
-    int max_token_resend = 3, buy_code, max_length_token = 4;
+    private int max_token_resend = 3;
+    private int buy_code;
+    private int attempt;
+    private int failed;
     Boolean is_input_amount, is_display_amount, is_sgo_plus, isPIN;
     ProgressDialog progdialog;
     JSONArray isi_field, isi_value;
@@ -110,6 +117,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         shareType = args.getString(DefineValue.SHARE_TYPE);
         product_payment_type = args.getString(DefineValue.PRODUCT_PAYMENT_TYPE);
         biller_name = args.getString(DefineValue.BILLER_NAME,"");
+        attempt = args.getInt(DefineValue.ATTEMPT,-1);
         Timber.d("isi args:"+args.toString());
 
         tv_item_name_value.setText(item_name);
@@ -128,6 +136,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 View layout_btn_resend = v.findViewById(R.id.layout_btn_resend);
                 btn_resend = (Button) v.findViewById(R.id.billertoken_btn_resend);
                 et_token_value = (EditText) layoutOTP.findViewById(R.id.billertoken_token_value);
+                int max_length_token = 4;
                 if(product_payment_type.equals(DefineValue.BANKLIST_TYPE_SMS)){
                     if(bank_code.equals("114"))
                         max_length_token = 5;
@@ -145,7 +154,25 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 changeTextBtnSub();
                 isPIN = false;
             }
-            else isPIN = true;
+            else {
+                isPIN = true;
+                new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+                    @Override
+                    public void onSuccess(Object deData) {
+                        attempt = (int)deData;
+                    }
+
+                    @Override
+                    public void onFail(String message) {
+
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+            }
         }
 
         if(buy_code == BillerActivity.PURCHASE_TYPE){
@@ -288,9 +315,8 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 }
                 else {
                     if(isPIN){
-                        Intent i = new Intent(getActivity(), InsertPIN.class);
+                        CallPINinput(attempt);
                         btn_submit.setEnabled(true);
-                        startActivityForResult(i, MainPage.REQUEST_FINISH);
                     }
                     else{
                         if(inputValidation()) {
@@ -305,6 +331,13 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         }
     };
 
+
+    private void CallPINinput(int _attempt){
+        Intent i = new Intent(getActivity(), InsertPIN.class);
+        if(_attempt == 1)
+            i.putExtra(DefineValue.ATTEMPT,_attempt);
+        startActivityForResult(i, MainPage.REQUEST_FINISH);
+    }
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
@@ -353,13 +386,13 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.BILLER_COMM_CODE));
             params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID, ""));
+            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, tokenValue);
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
 
-            MyApiClient.sentInsertTransTopup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -386,6 +419,13 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                             btn_submit.setEnabled(true);
                             if(isPIN && message.equals("PIN tidak sesuai")){
                                 Intent i = new Intent(getActivity(), InsertPIN.class);
+
+                                attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
+                                failed = response.optInt(WebParams.MAX_FAILED,0);
+
+                                if(attempt != -1)
+                                    i.putExtra(DefineValue.ATTEMPT,failed-attempt);
+
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
                             }
                             else{
@@ -528,9 +568,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             };
 
             if(bank_code.equals("114"))// if bank jatim
-                MyApiClient.sentDataReqTokenSGOL(params,handler);
+                MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
             else
-                MyApiClient.sentResendTokenSGOL(params,handler);
+                MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -557,7 +597,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -622,6 +662,19 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         }
     }
 
+ 	private void showDialogError(String message){
+        MessageDialog dialognya;
+        dialognya = new MessageDialog(getActivity(),
+                getString(R.string.blocked_pin_title),
+                message);
+        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
+            @Override
+            public void onClickButton(View v, boolean isLongClick) {
+                onOkButton();
+            }
+        });
+        dialognya.show();
+	}
     private void changeToSgoPlus(String _tx_id, String _amount, String _bank_code, String _product_code,
                                  String _fee) {
 
@@ -776,7 +829,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btn_resend.setText(getString(R.string.reg2_btn_text_resend_token) + " (" + max_token_resend + ")");
+                btn_resend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
 
             }
         });

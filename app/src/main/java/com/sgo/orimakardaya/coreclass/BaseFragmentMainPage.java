@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 /*
   Created by Administrator on 11/24/2014.
  */
@@ -23,6 +25,8 @@ public abstract class BaseFragmentMainPage extends Fragment {
 
     public abstract boolean checkCanDoRefresh();
 
-    public abstract void refresh();
+    public abstract void refresh(PtrFrameLayout frameLayout);
+
+    public abstract void goToTop();
 
 }

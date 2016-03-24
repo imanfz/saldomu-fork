@@ -16,6 +16,8 @@ import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
 
 import java.util.ArrayList;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 /*
   Created by Administrator on 12/2/2014.
  */
@@ -35,7 +37,12 @@ public class Group extends BaseFragmentMainPage {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(PtrFrameLayout frameLayout) {
+
+    }
+
+    @Override
+    public void goToTop() {
 
     }
 

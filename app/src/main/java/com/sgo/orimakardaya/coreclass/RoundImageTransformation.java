@@ -23,7 +23,6 @@ public class RoundImageTransformation extends Drawable implements Transformation
     private RectF mRectF;
     private int mBitmapWidth = 0;
     private int mBitmapHeight = 0;
-    private Context mContext;
 
 
     public RoundImageTransformation(Bitmap bitmap) {
@@ -39,8 +38,7 @@ public class RoundImageTransformation extends Drawable implements Transformation
         mBitmapHeight = mBitmap.getHeight();
     }
 
-    public RoundImageTransformation(Context _context) {
-        this.mContext = _context;
+    public RoundImageTransformation() {
         mBitmap = null;
     }
 

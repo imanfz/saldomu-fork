@@ -6,11 +6,14 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.adapter.ReportTabAdapter;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;
@@ -19,19 +22,26 @@ import java.util.List;
 /*
   Created by Administrator on 7/7/2015.
  */
-public class ReportTab extends Fragment{
+public class ReportTab extends Fragment implements InformationDialog.OnDialogOkCallback{
 
     private ReportTabAdapter currentAdapternya;
     SecurePreferences sp;
     private View currentView;
+    private InformationDialog dialogI;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.frag_report_tab, container, false);
         setCurrentView(v);
         return v;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -44,6 +54,8 @@ public class ReportTab extends Fragment{
             TabPageIndicator tabs;
             ViewPager pager;
             String[] titles = getActivity().getResources().getStringArray(R.array.report_list);
+
+            dialogI = InformationDialog.newInstance(this,10);
 
             List<ListFragment> mList = new ArrayList<ListFragment>();
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
@@ -79,4 +91,20 @@ public class ReportTab extends Fragment{
         this.currentAdapternya = currentAdapternya;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onOkButton() {
+
+    }
 }

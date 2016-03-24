@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/bottom_layout"
+                  android:background="@color/windowBackgroundColor"
+                  android:layout_alignParentBottom="true"
+                  android:gravity="center"
+                  android:padding="10dp"
+                  android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk"
+                android:layout_weight="1"
+                android:layout_marginRight="32dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/btn_cancel_level_register"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk"
+                android:layout_weight="1"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/btn_submit_level_register"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="@string/proses"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+        </com.balysv.materialripple.MaterialRippleLayout>
+    </LinearLayout>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+                android:layout_above="@id/bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideOverlay"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="6dp"
+                >
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:background="@color/grey_1000w"
+                          android:layout_marginBottom="8dp"
+                          android:padding="8dp"
+                    >
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:gravity="center_horizontal"
+                          android:textStyle="bold"
+                          android:textColor="@color/colorPrimaryDark"
+                          android:textSize="@dimen/abc_text_size_large_material"
+                          android:text="@string/level_dialog_title"
+                        />
+                <TextView android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:padding="8dp"
+                          android:text="@string/level_message_notavailable"
+                        />
+
+            </LinearLayout>
+
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:background="@color/grey_1000w"
+                          android:paddingLeft="16dp"
+                          android:paddingRight="16dp"
+                    >
+
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginTop="18dp"
+                              android:layout_marginBottom="12dp"
+                        >
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="vertical"
+                                  android:layout_marginBottom="12dp"
+                            >
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="@string/myprofile_text_name"
+                                  android:textColor="@color/colorPrimary"
+                                  android:textSize="@dimen/abc_text_size_medium_material"
+                                  android:textStyle="bold"
+                                />
+                        <com.sgo.mdevcash.coreclass.CustomEditText
+                                android:id="@+id/level_value_name"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/abc_text_size_medium_material"
+                                android:inputType="text"
+                                android:maxLength="@integer/et_name"
+                                android:layout_marginTop="4dp"
+                                />
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="vertical"
+                                  android:layout_marginBottom="12dp"
+                            >
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="@string/myprofile_text_email"
+                                  android:textColor="@color/colorPrimary"
+                                  android:textSize="@dimen/abc_text_size_medium_material"
+                                  android:textStyle="bold"
+                                />
+                        <EditText
+                                android:id="@+id/level_value_email"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/abc_text_size_medium_material"
+                                android:inputType="textEmailAddress"
+                                android:layout_marginTop="4dp"
+                                android:enabled="false"
+                                />
+                    </LinearLayout>
+
+
+                    <LinearLayout android:layout_width="match_parent"
+                                  android:layout_height="wrap_content"
+                                  android:orientation="horizontal"
+                                  android:gravity="center_vertical"
+                            >
+
+                        <TextView android:layout_width="wrap_content"
+                                  android:layout_height="wrap_content"
+                                  android:text="@string/myprofile_text_social_id"
+                                  android:textColor="@color/colorPrimary"
+                                  android:textSize="@dimen/abc_text_size_medium_material"
+                                  android:textStyle="bold"
+                                  android:layout_weight="1"
+                                />
+
+                        <Spinner
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/level_spinner_socialid_type"
+                                android:layout_gravity="right"
+                                android:gravity="right"/>
+                    </LinearLayout>
+                    <com.sgo.mdevcash.coreclass.CustomEditText
+                            android:id="@+id/level_value_social_id"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:maxLength="@integer/et_id"
+                            android:inputType="number"
+                            android:layout_marginTop="4dp"
+                            />
+
+                </LinearLayout>
+
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="12dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/myprofile_text_address"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <com.sgo.mdevcash.coreclass.CustomEditText
+                            android:id="@+id/level_value_address"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:inputType="text"
+                            android:maxLength="@integer/et_address"
+                            android:layout_marginTop="4dp"
+                            />
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="12dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/myprofile_text_pob"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <com.sgo.mdevcash.coreclass.CustomEditText
+                            android:id="@+id/level_value_pob"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:inputType="text"
+                            android:maxLength="@integer/et_birth_place"
+                            android:layout_marginTop="4dp"
+                            />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="12dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/myprofile_text_bod"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <TextView
+                            android:id="@+id/level_value_bod"
+                            android:clickable="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:enabled="false"
+                            android:textSize="@dimen/abc_text_size_medium_material"
+                            android:text="@string/myprofile_text_date_click"
+                            android:textColor="@color/grey_1000b"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginLeft="8dp"
+                            />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="4dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/myprofile_text_citizen"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                            >
+                        <ImageView
+                                android:id="@+id/spinning_wheel_level_negara"
+                                android:visibility="invisible"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/default_spinner"
+                                android:layout_centerInParent="true"
+                                />
+                        <Spinner
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="visible"
+                                android:spinnerMode="dropdown"
+                                android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                                android:id="@+id/level_spinner_country"
+                                android:layout_gravity="center_horizontal"/>
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="vertical"
+                              android:layout_marginBottom="12dp"
+                        >
+                    <TextView android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="@string/myprofile_text_gender"
+                              android:textColor="@color/colorPrimary"
+                              android:textSize="@dimen/abc_text_size_medium_material"
+                              android:textStyle="bold"
+                            />
+                    <Spinner
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:spinnerMode="dropdown"
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                            android:id="@+id/level_spinner_gender"
+                            android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -164,7 +164,7 @@ public class CreateGroupActivity extends BaseActivity {
 
             Timber.d("isi params sent add group:" + params.toString());
 
-            MyApiClient.sentAddGroup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddGroup(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();

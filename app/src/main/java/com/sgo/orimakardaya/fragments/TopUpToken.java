@@ -48,6 +48,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     View v, layout_btn_resend;
     SecurePreferences sp;
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_topup_token, container, false);
@@ -85,7 +87,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
         tokenValue.requestFocus();
 
-        btnResend.setText(getString(R.string.reg2_btn_text_resend_token) + " (" + max_token_resend + ")");
+        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
 
         btnResend.setOnClickListener(resendListener);
         btnSubmit.setOnClickListener(submitListener);
@@ -175,7 +177,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token)+" ("+max_token_resend+")");
+                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_token_resend+")");
             }
         });
     }
@@ -221,7 +223,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
-            MyApiClient.sentInsertTransTopup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -356,6 +358,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                         Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_SHORT).show();
                     }
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
@@ -388,9 +391,9 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             };
 
             if(bankCode.equals("114"))
-                MyApiClient.sentDataReqTokenSGOL(params,handler);
+                MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
             else
-                MyApiClient.sentResendTokenSGOL(params,handler);
+                MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -416,7 +419,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

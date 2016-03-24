@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/layout_no_transaction"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/cashouttunai_message_notransaction"
+            android:layout_width="match_parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:text="iojdasiojdsfijodsfijoasdfijo"
+            android:layout_height="wrap_content" />
+        <include android:id="@+id/layout_no_data"
+            layout="@layout/no_data"/>
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/layout_cashoutagen"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_button"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_height="wrap_content">
+
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="8dp">
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:id="@+id/layout_btn_resend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_orange"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    android:layout_marginRight="8dp"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/colorPrimary"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                    <Button
+                        android:id="@+id/btn_resend"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="6dp"
+                        android:maxEms="9"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/grey_1000w"
+                        android:gravity="center"
+                        android:text="@string/reg2_btn_text_resend_token_sms"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+                </com.balysv.materialripple.MaterialRippleLayout>
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_orange"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/white"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                    <Button
+                        android:id="@+id/btn_verification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                        android:textColor="@color/grey_1000w"
+                        android:gravity="center"
+                        android:text="@string/submit"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@drawable/button_transparant"
+                        />
+                </com.balysv.materialripple.MaterialRippleLayout>
+
+            </LinearLayout>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/card_bk"
+                android:layout_marginRight="40dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginBottom="16dp"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/cancel_transaction"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:background="@drawable/button_transparant"
+                    android:textColor="@color/colorSecondaryDark"
+                    />
+
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_above="@id/layout_button"
+            android:layout_alignParentTop="true"
+            android:fadeScrollbars="false"
+            android:scrollbarStyle="insideInset"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <LinearLayout android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/grey_1000w"
+                android:layout_margin="3dp"
+                >
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashoutagen_text_message"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/login_edithint_id"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashoutagen_userId_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cashout_tx_id_text"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashoutagen_trxid_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cashoutagen_name_admin_text"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashout_admin_name_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="12dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/topup_token_amount"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashoutagen_amount_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/topup_token_fee"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashoutagen_fee_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/topup_token_total_amount"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+                    <TextView
+                        android:id="@+id/cashoutagen_total_amount_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textColor="@color/colorSecondaryDark"
+                        android:layout_marginTop="4dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout android:id="@+id/layout_token"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="16dp"
+                    >
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_token_code"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        />
+
+                    <EditText
+                        android:enabled="true"
+                        android:id="@+id/cashout_token_value"
+                        android:layout_gravity="center_vertical"
+                        android:hint="@string/regist2_edithint_otp"
+                        android:inputType="number|numberPassword"
+                        android:singleLine="true"
+                        android:textColorHint="@color/semi_transparant"
+                        android:textColor="@color/grey_1000b"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>

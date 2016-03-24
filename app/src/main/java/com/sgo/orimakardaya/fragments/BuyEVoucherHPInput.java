@@ -197,7 +197,7 @@ public class BuyEVoucherHPInput extends Fragment {
 
             Timber.d("isi params get Member Pulsa:"+params.toString());
 
-            MyApiClient.sentMemberPulsa(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentMemberPulsa(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -309,7 +309,7 @@ public class BuyEVoucherHPInput extends Fragment {
 
             Timber.d("isi params topup pulsa retail:"+params.toString());
 
-            MyApiClient.sentTopupPulsaRetailValidation(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentTopupPulsaRetailValidation(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -392,7 +392,7 @@ public class BuyEVoucherHPInput extends Fragment {
 
             Timber.d("isi params regtoken pulsa retail:"+params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

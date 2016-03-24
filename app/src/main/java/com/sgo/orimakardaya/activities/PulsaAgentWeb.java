@@ -224,7 +224,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
             Timber.d("isi params sent get Trx Status", params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -332,7 +332,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
 
         if(reportType.equals(DefineValue.PULSA_AGENT)){
-            setResult(MainPage.RESULT_DAP);
+            setResult(PulsaAgentActivity.RESULT_DAP);
         }
 
         Timber.d("isi args", args.toString());

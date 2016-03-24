@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginLeft="@dimen/padding_small"
+    android:layout_marginTop="@dimen/text_size_medium_material"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:stretchColumns="1">
+        <TableRow android:orientation="horizontal">
+            <TextView
+                android:text="@string/report_dialog_text_userid"
+                android:layout_weight="1"
+                android:minEms="10"
+                android:layout_marginRight="8dp"
+                android:layout_gravity="center_vertical"
+                android:padding="3dip"
+                />
+            <TextView
+                android:id="@+id/dialog_topup_userid_value"
+                android:text="6281285229384"
+                android:minEms="15"
+                android:layout_weight="2"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/biller_name"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:padding="3dip"
+                />
+            <TextView
+                android:id="@+id/dialog_topup_name_value"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:text="siodjfoaijsdfijoasd asodifjio"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/topup_token_bank_name"
+                android:layout_weight="0"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_topup_bankname_value"
+                android:text="Toufan"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/topup_token_bank_product"
+                android:layout_weight="0"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_topup_productbank_value"
+                android:text="Axis 1000"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+
+
+        <TableRow>
+            <TextView
+                android:text="@string/topup_token_amount"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:padding="3dip" />
+            <TextView
+                android:singleLine="true"
+                android:id="@+id/dialog_topup_amount_value"
+                android:text="Rp. 200000"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/topup_token_fee"
+                android:layout_weight="1"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_topup_fee_value"
+                android:text="Rp. 200000"
+                android:layout_weight="2"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/topup_token_total_amount"
+                android:layout_weight="1"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_topup_total_amount_value"
+                android:text="Rp. 200000"
+                android:layout_weight="2"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow
+            android:id="@+id/topup_remark_layout"
+            android:visibility="gone"
+            >
+            <TextView
+                android:text="@string/report_dialog_text_remark"
+                android:layout_weight="0"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_topup_message_value"
+                android:text="Rp. 200000"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
+
+    </TableLayout>
+
+</RelativeLayout>

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.listHistoryModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.interfaces.OnLoadMoreListener;
 import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -32,7 +34,11 @@ import java.util.List;
 import java.util.Locale;
 
 import timber.log.Timber;
-public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAdapter.SimpleHolder>{
+
+public class HistoryRecycleAdapter extends RecyclerView.Adapter{
+
+    private final int VIEW_ITEM = 1;
+    private final int VIEW_PROG = 0;
 
     private List<listHistoryModel> mData;
     private int rowLayout;
@@ -40,8 +46,15 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
     OnItemClickListener mItemClickListener;
     SecurePreferences sp;
     String user_id,accessKey;
+    SimpleHolder simpleHolder;
+    ProgressViewHolder progHolder;
+    private int visibleThreshold = 0;
+    private int lastVisibleItem, totalItemCount;
+    private boolean loadingLoadMore;
+    private OnLoadMoreListener onLoadMoreListener;
 
-    public HistoryRecycleAdapter(List<listHistoryModel> _mData, int _rowLayout, Context _mContext){
+    public HistoryRecycleAdapter(List<listHistoryModel> _mData, int _rowLayout, Context _mContext,
+                                 RecyclerView mRecycle){
         mData = _mData;
         rowLayout = _rowLayout;
         mContext = _mContext;
@@ -49,151 +62,203 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         user_id = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+        LoadingLoadMoreFinish();
+
+        if (mRecycle.getLayoutManager() instanceof LinearLayoutManager) {
+
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager)mRecycle.getLayoutManager();
+            mRecycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                    Timber.d("HistoryRecycleadapter:"+String.valueOf(totalItemCount)+"/"+
+                        String.valueOf(lastVisibleItem) +"/"+String.valueOf(loadingLoadMore));
+                    if (!loadingLoadMore && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+
+                        if (onLoadMoreListener != null) {
+                            onLoadMoreListener.onLoadMore();
+                        }
+                        setLoadingLoadMore(true);
+                    }
+                }
+            });
+        }
     }
 
     @Override
-    public SimpleHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(rowLayout,viewGroup,false);
-        return new SimpleHolder(v);
+    public int getItemCount() {
+        return mData == null ? 0 : mData.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mData.get(position) != null ? VIEW_ITEM : VIEW_PROG;
+    }
+
+    public void setVisibleThreshold(int visibleThreshold) {
+        this.visibleThreshold = visibleThreshold;
+    }
+
+    public void setLoadingLoadMore(boolean loadingLoadMore) {
+        this.loadingLoadMore = loadingLoadMore;
+    }
+
+    public void LoadingLoadMoreFinish() {
+        this.setLoadingLoadMore(false);
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        RecyclerView.ViewHolder vh;
+        if (viewType == VIEW_ITEM) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(rowLayout, viewGroup, false);
+            vh = new SimpleHolder(v);
+        }
+        else {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.progress_item, viewGroup, false);
+            vh = new ProgressViewHolder(v);
+        }
+        return vh;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void onBindViewHolder(final SimpleHolder simpleHolder, int i) {
-        final listHistoryModel _data = mData.get(i);
+    public void onBindViewHolder(final RecyclerView.ViewHolder mHolder, int i) {
 
-        String string_date = _data.getDatetime();
+        if(mHolder instanceof SimpleHolder) {
+            simpleHolder = (SimpleHolder) mHolder;
+            final listHistoryModel _data = mData.get(i);
+            String string_date = _data.getDatetime();
 
-        /*SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = f.parse(string_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long long_date = 0;
-        if (d != null) {
-            long_date = d.getTime();
-        }
+            PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
+            Date time1 = DateTimeFormat.convertCustomDate(string_date);
+            String period = p.formatDuration(time1);
 
-        String period = PeriodTime.getTimeAgo(long_date, mContext);
-*/
-        PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-        Date time1 = DateTimeFormat.convertCustomDate(string_date);
-        String period = p.formatDuration(time1);
+            simpleHolder.fromId.setText(_data.getOwner());
+            simpleHolder.messageTransaction.setText(_data.getPost());
+            simpleHolder.amount.setText(_data.getCcy_id() + " " + CurrencyFormat.format(_data.getAmount()));
+            simpleHolder.dateTime.setText(period);
 
-//        String tx_status = "";
-//        if(_data.getTx_status().equals("S")) tx_status = "Paid";
-//        else tx_status = "Pending";
+            setImageProfPic(_data.getOwner_profile_picture(), simpleHolder.iconPicture);
 
-        simpleHolder.fromId.setText(_data.getOwner());
-        simpleHolder.toId.setText(_data.getWith());
-        simpleHolder.messageTransaction.setText(_data.getPost());
-        simpleHolder.amount.setText(_data.getCcy_id() + " " + CurrencyFormat.format(_data.getAmount()));
-        simpleHolder.dateTime.setText(period);
-        simpleHolder.status.setText(_data.getTypecaption());
-
-        setImageProfPic(_data.getOwner_profile_picture(), simpleHolder.iconPicture);
-        setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
-
-        simpleHolder.likeCount.setText(_data.getNumlikes());;
-        simpleHolder.commentCount.setText(_data.getNumcomments());
-
-        if(_data.getComment_id_2().equals("")) {
-            simpleHolder.layoutComment1.setVisibility(View.GONE);
-        }
-        else {
-            simpleHolder.layoutComment1.setVisibility(View.VISIBLE);
-            simpleHolder.nameComment1.setText(_data.getFrom_name_2());
-            simpleHolder.textComment1.setText(_data.getReply_2());
-            setImageProfPic(_data.getFrom_profile_picture_2(), simpleHolder.iconPictureComment1);
-        }
-
-        if(_data.getComment_id_1().equals("")) {
-            simpleHolder.layoutComment2.setVisibility(View.GONE);
-        }
-        else {
-            simpleHolder.layoutComment2.setVisibility(View.VISIBLE);
-            simpleHolder.nameComment2.setText(_data.getFrom_name_1());
-            simpleHolder.textComment2.setText(_data.getReply_1());
-            setImageProfPic(_data.getFrom_profile_picture_1(), simpleHolder.iconPictureComment2);
-        }
-
-        String comments = _data.getComments();
-        if(comments.equals("")) {
-            simpleHolder.layoutComment.setVisibility(View.GONE);
-        }
-        else simpleHolder.layoutComment.setVisibility(View.VISIBLE);
-
-        final String isLike = _data.getIsLike();
-        if(isLike.equals("0")) {
-            simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
-        }
-        else {
-            simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
-        }
-
-        final int history_id = _data.getHistory_id();
-
-        simpleHolder.imageLove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                if(InetHandler.isNetworkAvailable(mContext)) {
-                    v.setEnabled(false);
-                    v.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            v.setEnabled(true);
-                        }
-                    }, 3000);
-
-                    if (isLike.equals("1")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) - 1);
-                        simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
-                        simpleHolder.likeCount.setText(jumlahLike);
-                        listHistoryModel.updateNumlikes(jumlahLike, history_id);
-                        listHistoryModel.updateIsLike("0", history_id);
-
-                        final Handler mHandler = new Handler();
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                String likes = _data.getLikes();
-                                try {
-                                    JSONArray mArrayLikes = new JSONArray(likes);
-                                    for (int i = 0; i < mArrayLikes.length(); i++) {
-                                        String from = mArrayLikes.getJSONObject(i).getString(WebParams.FROM);
-                                        if (user_id.equals(from)) {
-                                            String like_id = mArrayLikes.getJSONObject(i).getString(WebParams.ID);
-                                            String to = mArrayLikes.getJSONObject(i).getString(WebParams.TO);
-                                            removeLike(like_id, user_id, to, Integer.toString(history_id), jumlahLike);
-                                        }
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    } else if (isLike.equals("0")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) + 1);
-                        simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
-                        simpleHolder.likeCount.setText(jumlahLike);
-                        listHistoryModel.updateNumlikes(jumlahLike, history_id);
-                        listHistoryModel.updateIsLike("1", history_id);
-
-                        final Handler mHandler = new Handler();
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                addLike(Integer.toString(history_id), _data.getOwner_id(), jumlahLike);
-                            }
-                        });
-                    }
-
-                    swap(listHistoryModel.getAll());
-                }
+            if (_data.getTypepost().equals("5") || _data.getTypepost().equals("6") || _data.getTypepost().equals("7")) {
+                simpleHolder.iconPictureRight.setVisibility(View.VISIBLE);
+                setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
+                simpleHolder.toId.setText(_data.getWith());
+                simpleHolder.status.setText(_data.getTypecaption());
+            } else {
+                simpleHolder.iconPictureRight.setVisibility(View.GONE);
+                simpleHolder.toId.setText(_data.getTypecaption());
+                simpleHolder.status.setText(mContext.getResources().getString(R.string.doing));
             }
-        });
+
+            simpleHolder.likeCount.setText(_data.getNumlikes());
+            ;
+            simpleHolder.commentCount.setText(_data.getNumcomments());
+
+            if (_data.getComment_id_2().equals("")) {
+                simpleHolder.layoutComment1.setVisibility(View.GONE);
+            } else {
+                simpleHolder.layoutComment1.setVisibility(View.VISIBLE);
+                simpleHolder.nameComment1.setText(_data.getFrom_name_2());
+                simpleHolder.textComment1.setText(_data.getReply_2());
+                setImageProfPic(_data.getFrom_profile_picture_2(), simpleHolder.iconPictureComment1);
+            }
+
+            if (_data.getComment_id_1().equals("")) {
+                simpleHolder.layoutComment2.setVisibility(View.GONE);
+            } else {
+                simpleHolder.layoutComment2.setVisibility(View.VISIBLE);
+                simpleHolder.nameComment2.setText(_data.getFrom_name_1());
+                simpleHolder.textComment2.setText(_data.getReply_1());
+                setImageProfPic(_data.getFrom_profile_picture_1(), simpleHolder.iconPictureComment2);
+            }
+
+            String comments = _data.getComments();
+            if (comments.equals("")) {
+                simpleHolder.layoutComment.setVisibility(View.GONE);
+            } else simpleHolder.layoutComment.setVisibility(View.VISIBLE);
+
+            final String isLike = _data.getIsLike();
+            if (isLike.equals("0")) {
+                simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
+            } else {
+                simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
+            }
+
+            final int history_id = _data.getHistory_id();
+
+            simpleHolder.imageLove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    if (InetHandler.isNetworkAvailable(mContext)) {
+                        v.setEnabled(false);
+                        v.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.setEnabled(true);
+                            }
+                        }, 3000);
+
+                        if (isLike.equals("1")) {
+                            final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) - 1);
+                            simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
+                            simpleHolder.likeCount.setText(jumlahLike);
+                            listHistoryModel.updateNumlikes(jumlahLike, history_id);
+                            listHistoryModel.updateIsLike("0", history_id);
+
+                            final Handler mHandler = new Handler();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    String likes = _data.getLikes();
+                                    try {
+                                        JSONArray mArrayLikes = new JSONArray(likes);
+                                        for (int i = 0; i < mArrayLikes.length(); i++) {
+                                            String from = mArrayLikes.getJSONObject(i).getString(WebParams.FROM);
+                                            if (user_id.equals(from)) {
+                                                String like_id = mArrayLikes.getJSONObject(i).getString(WebParams.ID);
+                                                String to = mArrayLikes.getJSONObject(i).getString(WebParams.TO);
+                                                removeLike(like_id, user_id, to, Integer.toString(history_id), jumlahLike);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        } else if (isLike.equals("0")) {
+                            final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) + 1);
+                            simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
+                            simpleHolder.likeCount.setText(jumlahLike);
+                            listHistoryModel.updateNumlikes(jumlahLike, history_id);
+                            listHistoryModel.updateIsLike("1", history_id);
+
+                            final Handler mHandler = new Handler();
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    addLike(Integer.toString(history_id), _data.getOwner_id(), jumlahLike);
+                                }
+                            });
+                        }
+
+                        swap(listHistoryModel.getAll());
+                    }
+                }
+            });
+        }
+        else {
+            ((ProgressViewHolder) mHolder).progressBar.setIndeterminate(true);
+        }
     }
 
 
@@ -225,7 +290,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
         else {
@@ -234,7 +299,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
                 .fit()
                 .centerCrop()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
     }
@@ -245,10 +310,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemCount() {
-        return mData == null ? 0 : mData.size();
-    }
+
 
     public class SimpleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public LinearLayout layoutComment, layoutComment1, layoutComment2;
@@ -292,6 +354,15 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
 
     }
 
+    public static class ProgressViewHolder extends RecyclerView.ViewHolder {
+        public ProgressBar progressBar;
+
+        public ProgressViewHolder(View v) {
+            super(v);
+            progressBar = (ProgressBar) v.findViewById(R.id.progressBar1);
+        }
+    }
+
     public interface OnItemClickListener {
         public void onItemClick(View view, int position);
     }
@@ -315,7 +386,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentAddLike(mContext, params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -394,7 +465,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter<HistoryRecycleAd
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(mContext,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

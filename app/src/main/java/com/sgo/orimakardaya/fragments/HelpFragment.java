@@ -1,24 +1,29 @@
-package com.sgo.orimakardaya.activities;
+package com.sgo.orimakardaya.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.HelpModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.adapter.HelpAdapter;
-import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,13 +33,14 @@ import java.util.ArrayList;
 
 import timber.log.Timber;
 
-/**
- * Created by thinkpad on 6/9/2015.
+/*
+ Created by thinkpad on 6/9/2015.
  */
-public class HelpActivity extends BaseActivity {
+public class HelpFragment extends Fragment {
 
-    int RESULT;
     SecurePreferences sp;
+    View v;
+    Activity act;
     String ownerId,accessKey;
 
     ListView mListView;
@@ -43,39 +49,46 @@ public class HelpActivity extends BaseActivity {
     HelpAdapter mAdapter;
     ProgressDialog progdialog;
 
+    public static HelpFragment newInstance() {
+        return new HelpFragment();
+    }
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.activity_help_center, container, false);
+        return v;
+    }
 
-        InitializeToolbar();
-
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         ownerId = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        listHelp = new ArrayList<HelpModel>();
-        mListView = (ListView) findViewById(R.id.lvHelpCenter);
+        listHelp = new ArrayList<>();
+        mListView = (ListView) v.findViewById(R.id.lvHelpCenter);
 
         getHelpList();
 
-        mAdapter = new HelpAdapter(getApplicationContext(), listHelp);
+        mAdapter = new HelpAdapter(act, listHelp);
         mListView.setAdapter(mAdapter);
-
-        RESULT = MainPage.RESULT_NORMAL;
     }
 
     public void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
+            progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
                     ownerId,accessKey);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list", params.toString());
+            Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getHelpList(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -83,10 +96,10 @@ public class HelpActivity extends BaseActivity {
                         String message = response.getString(WebParams.ERROR_MESSAGE);
 
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list", response.toString());
+                            Timber.d("isi params help list:"+response.toString());
                             String count = response.getString(WebParams.COUNT);
                             if(count.equals("0")) {
-                                Timber.d("isi help list", "kosong");
+                                Timber.d("isi help list kosong");
                             }
                             else {
                                 JSONArray mArrayContact = new JSONArray(response.getString(WebParams.CONTACT_DATA));
@@ -105,13 +118,13 @@ public class HelpActivity extends BaseActivity {
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout:"+response.toString());
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(HelpActivity.this,message);
+                            test.showDialoginActivity(act,message);
                         }
                         else {
-                            Timber.d("isi error help list", response.toString());
-                            Toast.makeText(HelpActivity.this, message, Toast.LENGTH_LONG).show();
+                            Timber.d("isi error help list:"+response.toString());
+                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
                         }
 
                         progdialog.dismiss();
@@ -122,35 +135,39 @@ public class HelpActivity extends BaseActivity {
                 }
 
                 @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
-                    Log.w("Error Koneksi Help List", throwable.toString());
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+
+                    Timber.w("Error Koneksi help list help:"+throwable.toString());
                 }
             });
         }
         catch (Exception e){
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient:"+e.getMessage());
         }
     }
 
-    public void InitializeToolbar(){
-        setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.menu_item_title_help));
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                setResult(RESULT);
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_help_center;
-    }
 }

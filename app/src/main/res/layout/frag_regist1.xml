@@ -11,7 +11,7 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/abc_text_size_display_3_material"
+            android:layout_marginTop="@dimen/text_size_small_display_2_material"
             android:padding="16dp"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -111,18 +111,18 @@
                 app:mrl_rippleDelayClick="false"
                 app:mrl_rippleHover="true"
                 >
-        <Button
-                android:id="@+id/btn_reg1_verification"
-                android:enabled="false"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                android:textColor="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:text="@string/regist1_button_verifikasi"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button_transparant"
-                />
+            <Button
+                    android:id="@+id/btn_reg1_verification"
+                    android:enabled="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@drawable/color_selector"
+                    android:gravity="center"
+                    android:text="@string/regist1_button_verifikasi"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
         </com.balysv.materialripple.MaterialRippleLayout>
     </LinearLayout>
 

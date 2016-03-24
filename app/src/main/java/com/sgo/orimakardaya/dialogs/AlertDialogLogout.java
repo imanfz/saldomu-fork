@@ -27,15 +27,15 @@ public class AlertDialogLogout {
 
     public void showDialoginActivity(final Activity mContext, String message){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getResources().getString(R.string.dialog_title_logout)).setMessage(message)
-              .setCancelable(false)
-              .setPositiveButton(mContext.getResources().getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
-                  @Override
-                  public void onClick(DialogInterface dialog, int which) {
-                      mContext.setResult(MainPage.RESULT_LOGOUT);
-                      mContext.finish();
-                  }
-              });
+        builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mContext.setResult(MainPage.RESULT_LOGOUT);
+                        mContext.finish();
+                    }
+                });
         if(getAdInstance() == null ) {
             setAdInstance(builder.create());
             getAdInstance().show();
@@ -47,16 +47,16 @@ public class AlertDialogLogout {
     }
 
     public void showDialoginMain(final Activity mContext, String message){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(mContext.getResources().getString(R.string.dialog_title_logout)).setMessage(message)
+        builder.setTitle(mContext.getResources().getString(R.string.logout)).setMessage(message)
                 .setCancelable(false)
-                .setPositiveButton(mContext.getResources().getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+                .setPositiveButton(mContext.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switchLogout(mContext);
                     }
                 });
+
         Timber.d("showDialoginMain");
         if(getAdInstance() == null ) {
             Timber.d("showDialoginMain");

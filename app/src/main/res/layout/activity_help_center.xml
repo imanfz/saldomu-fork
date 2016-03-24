@@ -6,17 +6,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <include android:id="@+id/main_toolbar"
-             layout="@layout/toolbar_main"/>
 
-    <LinearLayout android:layout_below="@id/main_toolbar"
+    <LinearLayout
                   android:background="@color/grey_1000w"
                   android:orientation="vertical"
                   android:layout_margin="5dp"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent">
 
-        <LinearLayout android:layout_below="@id/main_toolbar"
+        <LinearLayout
                       android:orientation="vertical"
                       android:layout_marginTop="15dp"
                       android:layout_marginBottom="15dp"

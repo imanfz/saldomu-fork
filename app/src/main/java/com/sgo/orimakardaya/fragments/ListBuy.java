@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -24,12 +26,14 @@ import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -37,7 +41,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/30/2015.
  */
-public class ListBuy extends Fragment {
+public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCallback {
 
     View v;
     TabPageIndicator tabs;
@@ -45,11 +49,31 @@ public class ListBuy extends Fragment {
     BuyFragmentTabAdapter adapternya;
     ProgressDialog out;
     String userID,accessKey;
+    private InformationDialog dialogI;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_list_buy, container, false);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -66,7 +90,7 @@ public class ListBuy extends Fragment {
         pager = (ViewPager) v.findViewById(R.id.buy_pager);
 
         pager.setPageMargin(pageMargin);
-
+        dialogI = InformationDialog.newInstance(this,8);
         getDataBiller();
 
     }
@@ -119,7 +143,7 @@ public class ListBuy extends Fragment {
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (out.isShowing())
+                    if(out.isShowing())
                         out.dismiss();
 
                     Timber.w("Error Koneksi biller data list buy:" + throwable.toString());
@@ -144,7 +168,7 @@ public class ListBuy extends Fragment {
 
             Timber.d("Isi params CommAccountCollection:"+params.toString());
 
-            MyApiClient.sentCommAccountCollection(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentCommAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -213,9 +237,11 @@ public class ListBuy extends Fragment {
     }
 
     private void initializeData(JSONArray arrayBiller, JSONArray arrayCollection){
+
+        ArrayList<String> Title_tab = new ArrayList<>();
+        HashMap<String,String> mPurchase = new HashMap<>();
+        HashMap<String,String> mPayment = new HashMap<>();
         if(arrayBiller.length()>0){
-            HashMap<String,String> mPurchase = new HashMap<String, String>();
-            HashMap<String,String> mPayment = new HashMap<String, String>();
             for (int i = 0; i < arrayBiller.length(); i++) {
                 try {
                 if(arrayBiller.getJSONObject(i).getString(WebParams.BILLER_TYPE).equals(DefineValue.BIL_TYPE_BUY)){
@@ -231,14 +257,25 @@ public class ListBuy extends Fragment {
                 }
             }
 
-            adapternya = new BuyFragmentTabAdapter(getChildFragmentManager(),getActivity(),mPurchase,mPayment,arrayCollection);
-
-            pager.setAdapter(adapternya);
-            tabs.setViewPager(pager);
-            out.dismiss();
-            pager.setVisibility(View.VISIBLE);
-            tabs.setVisibility(View.VISIBLE);
+            if(!mPurchase.isEmpty())
+                Title_tab.add(getString(R.string.purchase));
+            if(!mPayment.isEmpty())
+                Title_tab.add(getString(R.string.payment));
         }
+
+        if(arrayCollection.length() > 0) {
+            Title_tab.add(getString(R.string.collection));
+        }
+
+        adapternya = new BuyFragmentTabAdapter(getChildFragmentManager(),getActivity(),mPurchase,
+                mPayment,arrayCollection,Title_tab);
+
+        pager.setAdapter(adapternya);
+        tabs.setViewPager(pager);
+        out.dismiss();
+        pager.setVisibility(View.VISIBLE);
+        tabs.setVisibility(View.VISIBLE);
+
     }
 
     private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
@@ -255,5 +292,10 @@ public class ListBuy extends Fragment {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
+    }
+
+    @Override
+    public void onOkButton() {
+
     }
 }

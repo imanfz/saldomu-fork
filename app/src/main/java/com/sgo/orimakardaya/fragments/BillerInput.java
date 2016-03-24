@@ -17,8 +17,11 @@ import android.widget.*;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -126,12 +129,25 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_CC));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
+        else if(biller_type.equals(billerType[7])){
+            buy_type = _buy_type[1];
+            buy_code = BillerActivity.PAYMENT_TYPE;
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Pulsa));
+            et_payment_remark.setFilters(new InputFilter[]{new InputFilter.LengthFilter(13)});
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
         else if(biller_type.equals(billerType[8])){
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PST));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
+        }
+        else if(biller_type.equals(billerType[11])){
+            buy_type = _buy_type[1];
+            buy_code = BillerActivity.PAYMENT_TYPE;
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_asuransi));
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
         else if(biller_type.equals(billerType[16])){
             buy_type = _buy_type[1];
@@ -237,12 +253,16 @@ public class BillerInput extends Fragment {
     Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()){
-                if(biller_type.equals(billerType[0]))final_payment_remark = NoHPFormat.editNoHP(String.valueOf(et_payment_remark.getText()));
-                else final_payment_remark = String.valueOf(et_payment_remark.getText());
-                showDialog(biller_merchant_name,final_payment_remark,item_id);
-                //showDialog("jaijdijaij","aksjflak","IDR","212138","asjfals","PST","N","Y","{\"ORDER ID\":\"1880103994376\",\"AIRLINE CODE\":\"09\",\"AIRLINE CODE2\":\"0002\",\"TOTAL FLIGHT\":\"3\",\"PASSENGER NAME\":\"YUUDDISTRIA IASDJIFAJD\",\"PNR CODE\":\"NENCLK\",\"NUMBER OF PASSENGERS\":\"01\",\"CARRIER\":\"JT\",\"CLASS\":\"N\",\"FROM\":\"CGK\",\"TO\":\"PLW\",\"FLIGHT NUMBER\":\"720\",\"DEPART DATE\":\"2404\",\"DEPART TIME\":\"0500\"}");
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    if (biller_type.equals(billerType[0]))
+                        final_payment_remark = NoHPFormat.editNoHP(String.valueOf(et_payment_remark.getText()));
+                    else final_payment_remark = String.valueOf(et_payment_remark.getText());
+                    showDialog(biller_merchant_name, final_payment_remark, item_id);
+                    //showDialog("jaijdijaij","aksjflak","IDR","212138","asjfals","PST","N","Y","{\"ORDER ID\":\"1880103994376\",\"AIRLINE CODE\":\"09\",\"AIRLINE CODE2\":\"0002\",\"TOTAL FLIGHT\":\"3\",\"PASSENGER NAME\":\"YUUDDISTRIA IASDJIFAJD\",\"PNR CODE\":\"NENCLK\",\"NUMBER OF PASSENGERS\":\"01\",\"CARRIER\":\"JT\",\"CLASS\":\"N\",\"FROM\":\"CGK\",\"TO\":\"PLW\",\"FLIGHT NUMBER\":\"720\",\"DEPART DATE\":\"2404\",\"DEPART TIME\":\"0500\"}");
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

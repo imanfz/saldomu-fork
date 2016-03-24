@@ -111,7 +111,7 @@ public final class TabBuyItem extends ListFragment {
 
             Timber.d("isi params get biller list merchantnya:" + params.toString());
 
-            MyApiClient.sentListBiller(params,new JsonHttpResponseHandler() {
+            MyApiClient.sentListBiller(getActivity(),params,new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

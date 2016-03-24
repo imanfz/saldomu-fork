@@ -64,7 +64,6 @@ public class ListMyProfile extends ListFragment {
                 break;
             case 1:
                 i = new Intent(getActivity(),ChangePassword.class);
-                i.putExtra(DefineValue.IS_FIRST_TIME, DefineValue.NO);
                 switchActivity(i);
                 break;
             case 2:

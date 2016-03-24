@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TableRow;
 import android.widget.TextView;
 import com.sgo.orimakardaya.Beans.HelpModel;
 import com.sgo.orimakardaya.R;
@@ -51,18 +52,38 @@ public class HelpAdapter extends BaseAdapter{
             holder.name = (TextView)view.findViewById(R.id.help_name_value);
             holder.phone = (TextView)view.findViewById(R.id.help_phone_value);
             holder.mail = (TextView)view.findViewById(R.id.help_mail_value);
+            holder.trPhone = (TableRow)view.findViewById(R.id.tr_phone);
+            holder.trMail = (TableRow)view.findViewById(R.id.tr_mail);
             view.setTag(holder);
         } else {
             view = convertView;
             holder = (ViewHolder)view.getTag();
         }
         holder.name.setText(data.get(position).getName());
-        holder.phone.setText(data.get(position).getPhone());
-        holder.mail.setText(data.get(position).getMail());
+
+        String phone = data.get(position).getPhone();
+        String mail = data.get(position).getMail();
+
+        if(phone.equals("")) {
+            holder.trPhone.setVisibility(View.GONE);
+        }
+        else {
+            holder.trPhone.setVisibility(View.VISIBLE);
+            holder.phone.setText(phone);
+        }
+
+        if(mail.equals("")) {
+            holder.trMail.setVisibility(View.GONE);
+        }
+        else {
+            holder.trMail.setVisibility(View.VISIBLE);
+            holder.mail.setText(mail);
+        }
         return view;
     }
 
     private class ViewHolder {
         public TextView name, phone, mail;
+        public TableRow trPhone, trMail;
     }
 }

@@ -36,6 +36,7 @@ public class FragMainPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_main_page, container, false);
+        getActivity().invalidateOptionsMenu();
         setCurrentView(v);
         return v;
     }
@@ -48,8 +49,9 @@ public class FragMainPage extends Fragment {
         MainFragmentAdapter adapternya;
         TitlePageIndicator tabs;
         ViewPager pager;
-
-        List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
+        getActivity().invalidateOptionsMenu();
+        List<BaseFragmentMainPage> mList = new ArrayList<>();
+        mList.add(new Home());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
 //        mList.add(new Group());
@@ -61,7 +63,8 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(0);
+        pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);
 
@@ -76,33 +79,37 @@ public class FragMainPage extends Fragment {
 
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
-                long delay = (long) (1000 + Math.random() * 2000);
-                delay = Math.max(0, delay);
-                frame.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (getActivity() != null) {
-                            getCurrentAdapternya().mCurrentFragment.refresh();
-                            frame.refreshComplete();
-                        }
-                    }
-                }, delay);
+                if (getActivity() != null) {
+                    getCurrentAdapternya().mCurrentFragment.refresh(frame);
+                }
             }
+
+
         });
 
         setCurrentPtrFrame(mPtrFrame);
 
-        mPtrFrame.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getCurrentPtrFrame().autoRefresh(false);
-            }
-        }, 100);
-
+//        mPtrFrame.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                getCurrentPtrFrame().autoRefresh(true);
+//            }
+//        }, 100);
+        getCurrentPtrFrame().autoRefresh(true);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        //if(sp.getInt(Registration.COMMUNITY_LENGTH,0)==1)sentDataListMember();
 
+        tabs.setOnCenterItemClickListener(new TitlePageIndicator.OnCenterItemClickListener() {
+            @Override
+            public void onCenterItemClick(int position) {
+                getCurrentAdapternya().mCurrentFragment.goToTop();
+            }
+        });
+
+    }
+
+    public Fragment getFragment(int position){
+        return getCurrentAdapternya().getItem(position);
     }
 
     @Override

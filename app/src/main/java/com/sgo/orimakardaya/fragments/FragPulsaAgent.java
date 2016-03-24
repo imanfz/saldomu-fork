@@ -318,7 +318,7 @@ public class FragPulsaAgent extends Fragment{
 
             Timber.d("isi params sent Denom DAP", params.toString());
 
-            MyApiClient.getDenomDAP(params, new JsonHttpResponseHandler() {
+            MyApiClient.getDenomDAP(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -345,10 +345,32 @@ public class FragPulsaAgent extends Fragment{
                 }
 
                 @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    out.dismiss();
-                    Log.w("Error Koneksi get Denom DAP", throwable.toString());
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_LONG).show();
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(out.isShowing())
+                        out.dismiss();
+                    Timber.w("Error Koneksi getDenomDAP desc:" + throwable.toString());
                 }
             });
         }catch (Exception e){

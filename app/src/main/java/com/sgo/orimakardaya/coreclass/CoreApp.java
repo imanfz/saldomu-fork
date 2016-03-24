@@ -64,18 +64,21 @@ public class CoreApp extends Application {
             e.printStackTrace();
         }
 
-
-        MyApiClient.initializeAddress();
-        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
-
         if(MyApiClient.PROD_FLAG_ADDRESS){
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_PROD;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_PROD;
+            MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
+            MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_PROD;
         }
         else {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_DEV;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_DEV;
+            MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
+            MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
+
+        MyApiClient.initializeAddress();
+        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
 
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(
@@ -85,7 +88,8 @@ public class CoreApp extends Application {
                 listTimeLineModel.class,
                 listHistoryModel.class,
                 likeModel.class,
-                commentModel.class
+                commentModel.class,
+                BalanceModel.class
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));

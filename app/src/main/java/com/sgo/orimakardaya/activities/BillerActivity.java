@@ -7,18 +7,24 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.fragments.BillerInput;
 import com.sgo.orimakardaya.fragments.ListBillerMerchant;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -199,7 +205,7 @@ public class BillerActivity extends BaseActivity {
 
             Timber.d("isi params sent Denom Retail:" + params.toString());
 
-            MyApiClient.sentDenomRetail(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDenomRetail(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
