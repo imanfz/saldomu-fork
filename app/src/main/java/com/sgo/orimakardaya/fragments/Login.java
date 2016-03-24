@@ -3,6 +3,7 @@ package com.sgo.orimakardaya.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,13 +19,17 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.Beans.communityModel;
+import com.sgo.orimakardaya.Beans.myFriendModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.LoginActivity;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.Registration;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.securities.AES;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +43,7 @@ import timber.log.Timber;
 public class Login extends Fragment implements View.OnClickListener {
 
     String userIDfinale = null,userEmail = "";
-
+    Fragment newFrag;
     Button btnforgetPass;
     EditText userIDValue,passLoginValue;
     ImageView image_spinner;
@@ -123,7 +128,7 @@ public class Login extends Fragment implements View.OnClickListener {
 
             Timber.d("isi params login:" + params.toString());
 
-            MyApiClient.sentDataLogin(getActivity(),params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataLogin(getActivity(),params, new CustomResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     image_spinner.clearAnimation();
@@ -191,20 +196,8 @@ public class Login extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                public void onFailure2(int statusCode, Header[] headers, String response, Throwable throwable) {
+                    super.onFailure2(statusCode, headers, response, throwable);
                     ifFailure(throwable);
                 }
 
@@ -388,12 +381,6 @@ public class Login extends Fragment implements View.OnClickListener {
                 JSONArray arrayJson = new JSONArray(arraynya);
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
             }
-
-            SharedPreferences mOtherSP = getActivity().getSharedPreferences(DefineValue.FACEBOOK_PREF, Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = mOtherSP.edit();
-            edit.putBoolean(DefineValue.IS_ACTIVE,false);
-            edit.apply();
-
 
         } catch (JSONException e) {
             e.printStackTrace();

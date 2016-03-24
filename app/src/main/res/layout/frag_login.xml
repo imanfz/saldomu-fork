@@ -119,17 +119,17 @@
                 />
 
         <TextView
-                android:id="@+id/txt_forgetPass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_small_material"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_gravity="center"
-                android:textColor="@color/grey_1000b"
-                android:text="@string/login_text_forgetpass_hide"
-                android:background="@drawable/button_transparant"
-        />
+            android:id="@+id/txt_forgetPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small_material"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:textColor="@color/grey_1000b"
+            android:text="@string/login_text_forgetpass_hide"
+            android:background="@drawable/button_transparant"
+            />
 
     </LinearLayout>
 

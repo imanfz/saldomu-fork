@@ -16,8 +16,12 @@ android {
     }
 
 
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "23.0.2"
+
+    android {
+        useLibrary 'org.apache.http.legacy'
+    }
 
     defaultConfig {
         applicationId "com.sgo.orimakardaya"
@@ -91,9 +95,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.balysv:material-ripple:1.0.2'
-    compile 'com.android.support:cardview-v7:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:cardview-v7:23.2.0'
+    compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
     compile 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
@@ -106,11 +110,12 @@ dependencies {
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
     compile 'com.scottyab:secure-preferences-lib:0.1.4'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-    compile 'commons-codec:commons-codec:1.10'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.android.support:support-v4:23.2.0'
     compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.txusballesteros:FitChart:1.0'
     compile 'com.novoda:merlin:0.7.0'
+    compile 'commons-io:commons-io:2.4'
     compile project(':PinMaster')
     compile project(':PinnedSectionList')
     compile project(':VPI')

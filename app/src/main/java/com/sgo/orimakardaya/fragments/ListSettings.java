@@ -5,15 +5,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.AboutAppsActivity;
+import com.sgo.orimakardaya.activities.ChangePIN;
+import com.sgo.orimakardaya.activities.ChangePassword;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 
 /**
  * Created by thinkpad on 6/11/2015.
@@ -87,16 +94,11 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
                     break;
 
                 case 1:
-                    i = new Intent(getActivity(), SharingOptionActivity.class);
-                    switchActivity(i);
-                    break;
-
-                case 2:
                     i = new Intent(getActivity(), ChangePassword.class);
                     switchActivity(i);
                     break;
 
-                case 3:
+                case 2:
                     i = new Intent(getActivity(), AboutAppsActivity.class);
                     switchActivity(i);
                     break;
@@ -110,21 +112,16 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
                     break;
 
                 case 1:
-                    i = new Intent(getActivity(), SharingOptionActivity.class);
-                    switchActivity(i);
-                    break;
-
-                case 2:
                     i = new Intent(getActivity(), ChangePassword.class);
                     switchActivity(i);
                     break;
 
-                case 3:
+                case 2:
                     i = new Intent(getActivity(), ChangePIN.class);
                     switchActivity(i);
                     break;
 
-                case 4:
+                case 3:
                     i = new Intent(getActivity(), AboutAppsActivity.class);
                     switchActivity(i);
                     break;

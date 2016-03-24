@@ -1,14 +1,14 @@
-package com.sgo.mdevcash.activities;
+package com.sgo.orimakardaya.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.coreclass.BaseActivity;
-import com.sgo.mdevcash.coreclass.ToggleKeyboard;
-import com.sgo.mdevcash.fragments.FragLevelFormRegister;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.fragments.FragLevelFormRegister;
 import timber.log.Timber;
 
 /*

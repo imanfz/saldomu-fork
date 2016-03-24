@@ -333,7 +333,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = (TextView) view.findViewById(R.id.dialog_report_payment_options_value);
                 TextView tv_fee_value = (TextView) view.findViewById(R.id.dialog_reportdap_fee_value);
                 TextView tv_total_amount_value = (TextView) view.findViewById(R.id.dialog_reportdap_total_amount_value);
-                TextView tv_trans_remark = (TextView) view.findViewById(R.id.dialog_report_transaction_remark);
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
@@ -348,7 +347,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
                 if(!isSuccess){
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
-                    TextView tv_trans_remark_sub = (TextView) view.findViewById(R.id.dialog_report_transaction_remark_sub);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }

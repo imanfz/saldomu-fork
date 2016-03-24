@@ -17,8 +17,11 @@ import android.widget.*;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 

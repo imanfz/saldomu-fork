@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.net.http.SslError;
@@ -18,8 +18,8 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.coreclass.MyApiClient;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
 
 import timber.log.Timber;
 

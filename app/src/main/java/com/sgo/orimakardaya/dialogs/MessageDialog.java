@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.dialogs;/*
+package com.sgo.orimakardaya.dialogs;/*
   Created by Administrator on 11/20/2015.
  */
 
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import com.sgo.mdevcash.R;
+import com.sgo.orimakardaya.R;
 
 public class MessageDialog extends Dialog {
 

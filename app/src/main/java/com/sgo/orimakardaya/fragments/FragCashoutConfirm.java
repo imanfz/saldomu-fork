@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -24,16 +24,16 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.activities.CashoutActivity;
-import com.sgo.mdevcash.activities.InsertPIN;
-import com.sgo.mdevcash.activities.MainPage;
-import com.sgo.mdevcash.coreclass.*;
-import com.sgo.mdevcash.dialogs.AlertDialogLogout;
-import com.sgo.mdevcash.dialogs.DefinedDialog;
-import com.sgo.mdevcash.dialogs.ReportBillerDialog;
-import com.sgo.mdevcash.interfaces.OnLoadDataListener;
-import com.sgo.mdevcash.loader.UtilsLoader;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.CashoutActivity;
+import com.sgo.orimakardaya.activities.InsertPIN;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+import com.sgo.orimakardaya.loader.UtilsLoader;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

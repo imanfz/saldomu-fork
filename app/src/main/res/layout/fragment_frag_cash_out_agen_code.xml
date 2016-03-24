@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_button"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="8dp">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk_orange"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/white"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+                <Button
+                    android:id="@+id/btn_verification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/grey_1000w"
+                    android:gravity="center"
+                    android:text="@string/check_transaksi"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+            android:layout_above="@id/layout_button"
+            android:layout_alignParentTop="true"
+            android:fadeScrollbars="false"
+            android:scrollbarStyle="insideInset"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
+
+            <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/grey_1000w"
+            android:layout_margin="3dp"
+            >
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashoutagen_code_admin_text"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:padding="8dp"
+                    android:background="@color/grey_800"
+                    >
+                    <TextView
+                        android:id="@+id/cashoutagen_code_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/abc_text_size_display_1_material"
+                        android:text="DKEKXKK"
+                        android:textStyle="bold"
+                        android:textColor="@color/amber_500"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/cashoutagen_layout_payment"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/login_edithint_id"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashoutagen_userId_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cashout_tx_id_text"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashoutagen_trxid_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cashoutagen_name_admin_text"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashout_admin_name_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+                    </LinearLayout>
+
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginBottom="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/topup_token_amount"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashoutagen_amount_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/topup_token_fee"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashoutagen_fee_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="8dp"
+                        >
+                        <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/topup_token_total_amount"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textStyle="bold"
+                            />
+                        <TextView
+                            android:id="@+id/cashoutagen_total_amount_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/abc_text_size_small_material"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:layout_marginTop="4dp"
+                            />
+                    </LinearLayout>
+                    </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+</RelativeLayout>

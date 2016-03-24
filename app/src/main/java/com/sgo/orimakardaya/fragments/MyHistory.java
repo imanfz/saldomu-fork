@@ -20,6 +20,8 @@ import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.HistoryRecycleAdapter;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
+import com.sgo.orimakardaya.interfaces.OnLoadMoreListener;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +29,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
 import timber.log.Timber;
 
 /*

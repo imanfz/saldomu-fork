@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +12,13 @@ import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.Beans.BalanceModel;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.activities.MainPage;
-import com.sgo.mdevcash.coreclass.BaseFragmentMainPage;
-import com.sgo.mdevcash.coreclass.CurrencyFormat;
-import com.sgo.mdevcash.coreclass.CustomSecurePref;
-import com.sgo.mdevcash.services.BalanceService;
+import com.sgo.orimakardaya.Beans.BalanceModel;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
+import com.sgo.orimakardaya.coreclass.CurrencyFormat;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.services.BalanceService;
 import com.txusballesteros.widgets.FitChart;
 import com.txusballesteros.widgets.FitChartValue;
 

@@ -424,13 +424,14 @@ public class MyApiClient {
     public static void get(String url, AsyncHttpResponseHandler responseHandler) {
         if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
         getClient().setURLEncodingEnabled(true);
-        getClient().setMaxRetriesAndTimeout(1, 10000);
+        getClient().setMaxRetriesAndTimeout(2, 10000);
         getClient().get(getInstance().getmContext(),url, responseHandler);
     }
 
     public static void post(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
-        getClient().setMaxRetriesAndTimeout(1, 10000);
+        getClient().setMaxRetriesAndTimeout(2, 10000);
+        getClient().setTimeout(TIMEOUT);
         getClient().post(mContext,url, params, responseHandler);
     }
 

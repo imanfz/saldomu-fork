@@ -17,6 +17,7 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;

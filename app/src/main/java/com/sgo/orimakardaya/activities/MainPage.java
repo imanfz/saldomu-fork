@@ -10,7 +10,10 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -30,6 +33,7 @@ import com.activeandroid.ActiveAndroid;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.Beans.commentModel;
 import com.sgo.orimakardaya.Beans.likeModel;
 import com.sgo.orimakardaya.Beans.listHistoryModel;
@@ -38,11 +42,12 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.fragments.FragMainPage;
+import com.sgo.orimakardaya.fragments.MyHistory;
 import com.sgo.orimakardaya.fragments.NavigationDrawMenu;
 import com.sgo.orimakardaya.fragments.RightSideDrawMenu;
 import com.sgo.orimakardaya.services.AppInfoService;
 import com.sgo.orimakardaya.services.BalanceService;
-import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,9 +67,9 @@ public class MainPage extends BaseActivity{
     public static final int RESULT_BALANCE = 3;
     public static final int RESULT_NOTIF = 5;
     public static final int RESULT_BILLER = 7 ;
-    public static final int RESULT_DAP = 8 
-	public static final int RESULT_REFRESH_NAVDRAW= 8 
+	public static final int RESULT_REFRESH_NAVDRAW= 8;
     public static final int RESULT_FIRST_TIME = 9;
+
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
 
@@ -86,11 +91,10 @@ public class MainPage extends BaseActivity{
     private FrameLayout mLeftDrawerRelativeLayout;
     private FrameLayout mRightDrawerRelativeLayout;
     private float lastTranslate = 0.0f;
-    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
+//    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private boolean isBound, isBoundAppInfo;
-    private FacebookFunction mFaceFunction;
 
 
     @Override
@@ -313,18 +317,18 @@ public class MainPage extends BaseActivity{
 
         getDataListMember();
         mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Timber.wtf("masuh receiver", "massuukkkk");
-                boolean sentToken = sp.getBoolean(DefineValue.SENT_TOKEN_TO_SERVER, false);
-                if (sentToken) {
-//                    Toast.makeText(MainPage.this,"Dapet tokennya",Toast.LENGTH_LONG).show();
-                } else {
-//                    Toast.makeText(MainPage.this,"gak dapet tokennya",Toast.LENGTH_LONG).show();
-                }
-            }
-        };
+//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Timber.wtf("masuh receiver", "massuukkkk");
+//                boolean sentToken = sp.getBoolean(DefineValue.SENT_TOKEN_TO_SERVER, false);
+//                if (sentToken) {
+//                      Toast.makeText(MainPage.this,"Dapet tokennya",Toast.LENGTH_LONG).show();
+//                } else {
+//                      Toast.makeText(MainPage.this,"gak dapet tokennya",Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        };
     }
 
 
@@ -339,17 +343,17 @@ public class MainPage extends BaseActivity{
             mNavDrawer.initializeNavDrawer();
     }
 
-    private void TurnOnGCM(){
-
-        Log.d("masuk gcm manager", "turnon gcm oke");
-
-        if (GcmManager.checkPlayServices(this)) {
-            // Start IntentService to register this application with GCM.
-            Log.d("masuk gcm manager", "playservice oke");
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            startService(intent);
-        }
-    }
+//    private void TurnOnGCM(){
+//
+//        Log.d("masuk gcm manager", "turnon gcm oke");
+//
+//        if (GcmManager.checkPlayServices(this)) {
+//            // Start IntentService to register this application with GCM.
+//            Log.d("masuk gcm manager", "playservice oke");
+//            Intent intent = new Intent(this, RegistrationIntentService.class);
+//            startService(intent);
+//        }
+//    }
 
     public void getDataListMember(){
         try{
@@ -409,7 +413,7 @@ public class MainPage extends BaseActivity{
 
                                 if(mNavDrawer != null && serviceReferenceBalance != null)
                                     serviceReferenceBalance.runBalance();
-                                TurnOnGCM();
+//                                TurnOnGCM();
 //                                getBalance(true);
                                 refreshPromo();
                                 initializeNavDrawer();
@@ -521,21 +525,10 @@ public class MainPage extends BaseActivity{
 //----------------------------------------------------------------------------------------------------------------
 
 
-    public void openFirstScreen(int index){
-        Intent i;
-        switch(index){
-            case FIRST_SCREEN_LOGIN :
-                i = new Intent(this,LoginActivity.class);
-                break;
-            case FIRST_SCREEN_INTRO :
-                i = new Intent(this,Introduction.class);
-                break;
-            default:
-                i = new Intent(this,LoginActivity.class);
-                break;
-        };
+    public void openFirstScreen(){
+        Intent i = new Intent(this,Registration.class);
         startActivity(i);
-        this.finish();
+        finish();
     }
 
 
@@ -596,9 +589,6 @@ public class MainPage extends BaseActivity{
     }
     public void Logout() {
 
-        if(mFaceFunction.isLogin()){
-            mFaceFunction.Logout();
-        }
         String balance = sp.getString(DefineValue.BALANCE, "");
         String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
         deleteData();
@@ -927,10 +917,6 @@ public class MainPage extends BaseActivity{
             mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
             return true;
         }
-        else if(item.getItemId() == R.id.menu_item_share_option){
-            Intent i = new Intent(this,SharingOptionActivity.class);
-            switchActivity(i,ACTIVITY_RESULT);
-        }
         else if(item.getItemId() == R.id.menu_item_home) {
             invalidateOptionsMenu();
             Fragment newFragment = new FragMainPage();
@@ -1003,8 +989,8 @@ public class MainPage extends BaseActivity{
         if(mNavDrawer != null)
             mNavDrawer.getBalance();
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+//                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
     }
 
     @Override

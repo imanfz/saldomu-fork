@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.coreclass;
+package com.sgo.orimakardaya.coreclass;
 
 import android.annotation.TargetApi;
 import android.content.Context;

@@ -50,7 +50,7 @@ public class FragMainPage extends Fragment {
         TitlePageIndicator tabs;
         ViewPager pager;
         getActivity().invalidateOptionsMenu();
-        List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
+        List<BaseFragmentMainPage> mList = new ArrayList<>();
         mList.add(new Home());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
@@ -63,7 +63,7 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(0);
         pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);

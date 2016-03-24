@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.dialogs;/*
+package com.sgo.orimakardaya.dialogs;/*
   Created by Administrator on 3/6/2015.
  */
 
@@ -42,13 +42,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.activities.BillerActivity;
-import com.sgo.mdevcash.activities.MainPage;
-import com.sgo.mdevcash.coreclass.DateTimeFormat;
-import com.sgo.mdevcash.coreclass.DefineValue;
-import com.sgo.mdevcash.coreclass.InetHandler;
-import com.sgo.mdevcash.coreclass.MyApiClient;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.BillerActivity;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,6 +73,7 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     private View v;
     private int type;
     private ProgressBar progbar;
+    WebView webview;
 
 
     public interface OnDialogOkCallback {
@@ -159,7 +160,7 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
 
     public void loadUrl(String url) {
         Timber.d(url);
-        WebView webview = (WebView) v.findViewById(R.id.webview);
+        webview = (WebView) v.findViewById(R.id.webview);
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -202,7 +203,8 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
-                Toast.makeText(getActivity(), getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                if(InformationDialog.this.isVisible())
+                    Toast.makeText(getActivity(), getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
 
             @TargetApi(Build.VERSION_CODES.M)
@@ -243,4 +245,10 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
         callback.onOkButton();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(webview != null)
+            webview.stopLoading();
+    }
 }

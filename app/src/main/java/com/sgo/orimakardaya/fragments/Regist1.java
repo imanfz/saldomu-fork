@@ -174,7 +174,6 @@ public class Regist1 extends Fragment{
                                     showDialog(code);
                                 }
                                 else {
-                                    Timber.d("Error Reg1:"+response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }

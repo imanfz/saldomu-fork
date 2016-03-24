@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.Beans;
+package com.sgo.orimakardaya.Beans;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
 import com.activeandroid.util.SQLiteUtils;
-import com.sgo.mdevcash.coreclass.WebParams;
+import com.sgo.orimakardaya.coreclass.WebParams;
 
 import org.json.JSONObject;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "Balance")
 public class BalanceModel extends Model implements Parcelable {
 
-    public static final String BALANCE_PARCELABLE = "com.sgo.mdevcash.BALANCE_PARCELABLE";
+    public static final String BALANCE_PARCELABLE = "com.sgo.orimakardaya.BALANCE_PARCELABLE";
 
     @Column
     private String amount;

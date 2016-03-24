@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 /*
   Created by Administrator on 11/24/2014.
  */

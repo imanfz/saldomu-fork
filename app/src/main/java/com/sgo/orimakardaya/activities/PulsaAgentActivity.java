@@ -25,6 +25,7 @@ public class PulsaAgentActivity extends BaseActivity {
 
     public final static String FRAG_PULSA_DESCRIPTION = "pulsaDesc";
     public final static String FRAG_PULSA_CONFIRM = "pulsaConfirm";
+    public static final int RESULT_DAP = 8;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class PulsaAgentActivity extends BaseActivity {
         //Timber.d("onActivity result", "Pulsa Activity"+" / "+requestCode+" / "+resultCode);
         if (requestCode == MainPage.REQUEST_FINISH) {
 //            Timber.d("onActivity result", "Pulsa Activity masuk request exit");
-            if(resultCode == MainPage.RESULT_DAP){
+            if(resultCode == RESULT_DAP){
                 finish();
             }
             else if (resultCode == MainPage.RESULT_LOGOUT) {

@@ -3,6 +3,7 @@ package com.sgo.orimakardaya.coreclass;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -92,7 +93,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onPause() {
 //        serviceReferenceBalance.StopCallBalance();
         super.onPause();
-        Log.wtf(this.getClass().getSimpleName(),"onPause");
+        Log.wtf(this.getClass().getSimpleName(), "onPause");
         Log.wtf("is Application visible", String.valueOf(LifeCycleHandler.isApplicationVisible()));
         Log.wtf("is Application foreground", String.valueOf(LifeCycleHandler.isApplicationInForeground()));
     }

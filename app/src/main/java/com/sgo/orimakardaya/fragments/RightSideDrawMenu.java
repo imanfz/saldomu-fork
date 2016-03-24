@@ -147,7 +147,7 @@ public class RightSideDrawMenu extends Fragment {
 
             Timber.d("isi params get promo list:" + params.toString());
 
-            MyApiClient.getPromoList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getPromoList(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

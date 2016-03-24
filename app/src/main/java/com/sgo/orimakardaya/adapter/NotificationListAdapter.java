@@ -3,18 +3,27 @@ package com.sgo.orimakardaya.adapter;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.QuickContactBadge;
+
 import com.sgo.orimakardaya.Beans.NotificationModelClass;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.NotificationActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.MyPicasso;
+import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.RejectNotifDialog;
 import com.sgo.orimakardaya.fragments.FragNotification;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -25,6 +25,7 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;

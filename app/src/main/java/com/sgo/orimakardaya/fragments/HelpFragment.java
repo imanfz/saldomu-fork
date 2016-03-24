@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,15 +14,15 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.Beans.HelpModel;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.adapter.HelpAdapter;
-import com.sgo.mdevcash.coreclass.CustomSecurePref;
-import com.sgo.mdevcash.coreclass.DefineValue;
-import com.sgo.mdevcash.coreclass.MyApiClient;
-import com.sgo.mdevcash.coreclass.WebParams;
-import com.sgo.mdevcash.dialogs.AlertDialogLogout;
-import com.sgo.mdevcash.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.Beans.HelpModel;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.adapter.HelpAdapter;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.WebParams;
+import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

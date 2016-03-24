@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.activities;
+package com.sgo.orimakardaya.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -7,13 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.coreclass.BaseActivity;
-import com.sgo.mdevcash.coreclass.DefineValue;
-import com.sgo.mdevcash.coreclass.ToggleKeyboard;
-import com.sgo.mdevcash.fragments.FragCashOut;
-import com.sgo.mdevcash.fragments.FragCashOutAgen;
-import com.sgo.mdevcash.fragments.FragCashoutConfirm;
+
+
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.fragments.FragCashOut;
+import com.sgo.orimakardaya.fragments.FragCashOutAgen;
+
 import timber.log.Timber;
 
 /**

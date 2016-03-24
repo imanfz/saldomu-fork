@@ -106,7 +106,7 @@ public class Registration extends BaseActivity{
     }
 
     public void switchActivity(Intent mIntent) {
-        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         startActivity(mIntent);
     }
 
@@ -244,10 +244,6 @@ public class Registration extends BaseActivity{
                 }
 
                 private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(Registration.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(Registration.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                     Timber.w("Error Koneksi app version registration:"+ throwable.toString());
                 }
             });

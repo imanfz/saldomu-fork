@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.activities.CashoutActivity;
-import com.sgo.mdevcash.activities.MainPage;
-import com.sgo.mdevcash.adapter.EasyAdapter;
-import com.sgo.mdevcash.coreclass.DefineValue;
-import com.sgo.mdevcash.dialogs.InformationDialog;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.CashoutActivity;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.adapter.EasyAdapter;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;

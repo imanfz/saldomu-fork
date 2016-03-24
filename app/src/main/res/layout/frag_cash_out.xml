@@ -1,33 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
-              android:layout_margin="20dp"
+              android:descendantFocusability="beforeDescendants"
+              android:focusableInTouchMode="true"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textSize="@dimen/abc_text_size_medium_material"
-              android:textColor="@color/colorPrimaryDark"
-              android:layout_marginBottom="20dp"
-              android:text="@string/cashout_info"/>
+    <!--<TextView android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:textSize="@dimen/abc_text_size_medium_material"-->
+              <!--android:textColor="@color/colorPrimaryDark"-->
+              <!--android:layout_marginBottom="20dp"-->
+              <!--android:text="@string/cashout_info"/>-->
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="20dp"
-              android:textColor="@color/colorSecondaryDark"
-              android:text="@string/cashout_info_desc"/>
+    <!--<TextView android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:layout_marginBottom="20dp"-->
+              <!--android:textColor="@color/colorSecondaryDark"-->
+              <!--android:text="@string/cashout_info_desc"/>-->
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:textColor="@color/colorPrimaryDark"
-              android:textStyle="bold"
-              android:layout_marginBottom="10dp"
-              android:text="@string/cashout_nominal"/>
+    <!--<TextView android:layout_width="wrap_content"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:textColor="@color/colorPrimaryDark"-->
+              <!--android:textStyle="bold"-->
+              <!--android:layout_marginBottom="10dp"-->
+              <!--android:text="@string/cashout_nominal"/>-->
 
-    <ListView android:id="@+id/listNominal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:divider="@null"></ListView>
+    <!--<ListView android:id="@+id/listNominal"-->
+              <!--android:layout_width="match_parent"-->
+              <!--android:layout_height="wrap_content"-->
+              <!--android:divider="@null"></ListView>-->
 
-</LinearLayout>
+    <LinearLayout android:id="@+id/cashout_bottom_layout"
+                  android:background="@color/windowBackgroundColor"
+                  android:layout_alignParentBottom="true"
+                  android:gravity="center"
+                  android:padding="8dp"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/colorPrimary"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+            <Button
+                    android:id="@+id/cashout_btn_process"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="@string/next"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button_transparant"
+                    />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+                android:layout_above="@id/cashout_bottom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarStyle="insideOverlay"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/grey_1000w"
+                android:layout_margin="6dp"
+                >
+
+
+            <TextView
+                    android:id="@+id/cashout_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textSize="@dimen/abc_text_size_large_material"/>
+
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    >
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:textStyle="bold"
+                        android:text="@string/sgoplus_text_bank"
+                        android:paddingTop="10dp"
+                        />
+                <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                        >
+                    <ImageView
+                            android:id="@+id/spinning_wheel_bank_name"
+                            android:visibility="invisible"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/default_spinner"
+                            android:layout_centerInParent="true"
+                            />
+                    <Spinner
+                            android:id="@+id/cashout_spinner_nameBank"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            android:spinnerMode="dropdown"
+                            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                            android:layout_gravity="center_horizontal"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/cashout_bank_acc_no_text"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+
+                <EditText
+                        android:id="@+id/cashout_value_bank_acc_no"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:inputType="number"
+                        android:maxLength="13"
+                        android:hint="@string/cashout_bank_acc_no_hint"
+                        android:paddingLeft="10dp"
+                        />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+                <TextView android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/cashout_nominal_text"
+                          android:textColor="@color/colorPrimary"
+                          android:textSize="@dimen/abc_text_size_medium_material"
+                          android:textStyle="bold"
+                        />
+                <EditText
+                        android:id="@+id/cashout_value_nominal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:maxLength="17"
+                        android:inputType="number"
+                        android:hint="@string/cashout_nominal_hint"
+                        android:singleLine="true"
+                        android:paddingLeft="10dp"
+                        />
+
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:orientation="horizontal"
+                          android:gravity="right"
+                          android:visibility="gone"
+                          android:layout_gravity="right"
+                          android:layout_marginBottom="6dp"
+                          android:layout_marginLeft="16dp"
+                          android:layout_marginRight="16dp"
+                    >
+
+                <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/abc_text_size_caption_material"
+                        android:text="@string/share_options"/>
+
+                <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/cashout_privacy_spinner"
+                        android:gravity="right"
+                        android:layout_gravity="center_vertical"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

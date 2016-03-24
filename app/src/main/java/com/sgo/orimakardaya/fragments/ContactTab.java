@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.fragments;
+package com.sgo.orimakardaya.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.adapter.ContactTabAdapter;
-import com.sgo.mdevcash.dialogs.InformationDialog;
+import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.adapter.ContactTabAdapter;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
 import java.util.ArrayList;

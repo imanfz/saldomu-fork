@@ -15,6 +15,8 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
 /**
  * Created by thinkpad on 10/12/2015.

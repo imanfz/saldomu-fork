@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.activities;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
@@ -10,6 +11,7 @@ import com.sgo.orimakardaya.adapter.TopupATMAdapter;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
 
 import java.util.ArrayList;
 import java.util.List;

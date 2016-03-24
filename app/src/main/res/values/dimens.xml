@@ -12,4 +12,115 @@
     <dimen name="edittext_spacingZero">0dp</dimen>
     <dimen name="edittext_spacingright">10dp</dimen>
     <dimen name="edittext_spacingleft">16dp</dimen>
+    
+    <dimen name="chart_size">250dp</dimen>
+    <dimen name="stroke_size">18dp</dimen>
+
+
+    <dimen name="action_bar_content_inset_material">16dp</dimen>
+    <dimen name="action_bar_default_height_material">56dp</dimen>
+    <dimen name="action_bar_default_padding_end_material">0dp</dimen>
+    <dimen name="action_bar_default_padding_start_material">0dp</dimen>
+    <dimen name="action_bar_icon_vertical_padding_material">16dp</dimen>
+    <dimen name="action_bar_overflow_padding_end_material">10dp</dimen>
+    <dimen name="action_bar_overflow_padding_start_material">6dp</dimen>
+
+    <dimen name="action_bar_progress_bar_size">40dp</dimen>
+    <dimen name="action_bar_stacked_max_height">48dp</dimen>
+    <dimen name="action_bar_stacked_tab_max_width">180dp</dimen>
+
+    <dimen name="padding_hulk">64dp</dimen>
+    <dimen name="padding_giant">52dp</dimen>
+    <dimen name="padding_large_large">34dp</dimen>
+    <dimen name="padding_large_medium">28dp</dimen>
+    <dimen name="padding_large">24dp</dimen>
+    <dimen name="padding_medium_large">20dp</dimen>
+    <dimen name="padding_medium">18dp</dimen>
+    <dimen name="padding_small">14dp</dimen>
+
+    <dimen name="action_bar_subtitle_bottom_margin_material">5dp</dimen>
+    <dimen name="action_bar_subtitle_top_margin_material">-3dp</dimen>
+    <dimen name="action_button_min_height_material">48dp</dimen>
+    <dimen name="action_button_min_width_material">48dp</dimen>
+    <dimen name="action_button_min_width_overflow_material">36dp</dimen>
+
+    <dimen name="alert_dialog_button_bar_height">48dp</dimen>
+    <dimen name="button_inset_horizontal_material">@dimen/control_inset_material</dimen>
+    <dimen name="button_inset_vertical_material">6dp</dimen>
+    <dimen name="button_padding_horizontal_material">8dp</dimen>
+    <dimen name="button_padding_vertical_material">@dimen/control_padding_material</dimen>
+
+    <dimen name="control_corner_material">2dp</dimen>
+    <dimen name="control_inset_material">4dp</dimen>
+    <dimen name="control_padding_material">4dp</dimen>
+    <item name="dialog_fixed_height_major" type="dimen">80%</item>
+    <item name="dialog_fixed_height_minor" type="dimen">100%</item>
+    <item name="dialog_fixed_width_major" type="dimen">320dp</item>
+    <item name="dialog_fixed_width_minor" type="dimen">320dp</item>
+    <dimen name="dialog_list_padding_vertical_material">8dp</dimen>
+    <item name="dialog_min_width_major" type="dimen">65%</item>
+    <item name="dialog_min_width_minor" type="dimen">95%</item>
+    <dimen name="dialog_padding_material">24dp</dimen>
+    <dimen name="dialog_padding_top_material">18dp</dimen>
+
+    <dimen name="dropdownitem_icon_width">32dip</dimen>
+    <dimen name="dropdownitem_text_padding_left">8dip</dimen>
+    <dimen name="dropdownitem_text_padding_right">8dip</dimen>
+    <dimen name="edit_text_inset_bottom_material">7dp</dimen>
+    <dimen name="edit_text_inset_horizontal_material">4dp</dimen>
+    <dimen name="edit_text_inset_top_material">10dp</dimen>
+
+    <dimen name="floating_window_z">16dp</dimen>
+    <dimen name="list_item_padding_horizontal_material">@dimen/action_bar_content_inset_material</dimen>
+
+    <dimen name="panel_menu_list_width">296dp</dimen>
+    <dimen name="search_view_preferred_width">320dip</dimen>
+    <dimen name="search_view_text_min_width">160dip</dimen>
+
+    <dimen name="seekbar_track_background_height_material">2dp</dimen>
+    <dimen name="seekbar_track_progress_height_material">2dp</dimen>
+
+    <dimen name="select_dialog_padding_start_material">20dp</dimen>
+    <dimen name="switch_padding">3dp</dimen>
+
+    <dimen name="text_size_body_1_material">14sp</dimen>
+    <dimen name="text_size_body_2_material">14sp</dimen>
+    <dimen name="text_size_button_material">14sp</dimen>
+    <dimen name="text_size_caption_material">12sp</dimen>
+    <dimen name="text_size_small_display_1_material">26sp</dimen>
+    <dimen name="text_size_small_display_2_material">28sp</dimen>
+    <dimen name="text_size_small_display_3_material">31sp</dimen>
+    <dimen name="text_size_display_1_material">34sp</dimen>
+    <dimen name="text_size_display_2_material">45sp</dimen>
+    <dimen name="text_size_display_3_material">56sp</dimen>
+    <dimen name="text_size_display_4_material">112sp</dimen>
+    <dimen name="text_size_headline_material">24sp</dimen>
+    <dimen name="text_size_large_material">22sp</dimen>
+    <dimen name="text_size_medium_material">18sp</dimen>
+    <dimen name="text_size_menu_material">16sp</dimen>
+    <dimen name="text_size_small_material">14sp</dimen>
+    <dimen name="text_size_subhead_material">16sp</dimen>
+    <dimen name="text_size_subtitle_material_toolbar">16dp</dimen>
+    <dimen name="text_size_title_material">20sp</dimen>
+    <dimen name="text_size_title_material_toolbar">20dp</dimen>
+
+    <item format="float" name="disabled_alpha_dark_material" type="dimen">0.30</item>
+    <item format="float" name="disabled_alpha_material_light_material" type="dimen">0.26</item>
+    <item format="float" name="highlight_alpha_colored_material" type="dimen">0.26</item>
+    <item format="float" name="highlight_alpha_dark_material" type="dimen">0.20</item>
+    <item format="float" name="highlight_alpha_light_material" type="dimen">0.12</item>
+
+    <dimen name="notification_large_icon_height_material">64dp</dimen>
+    <dimen name="notification_large_icon_width_material">64dp</dimen>
+    <dimen name="notification_subtext_size_material">12dp</dimen>
+
+
+    <integer name="et_mother_name">50</integer>
+    <integer name="et_name">50</integer>
+    <integer name="et_address">100</integer>
+    <integer name="et_id">25</integer>
+    <integer name="et_birth_place">40</integer>
+    <integer name="lenght_phone_number">10</integer>
+
+
 </resources>

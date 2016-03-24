@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
+
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -40,8 +42,11 @@ import java.io.FileNotFoundException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -422,7 +427,7 @@ public class MyProfileActivity extends BaseActivity {
                         if (inputValidation()) {
                             if(is_first_time){
                                 AlertDialog.Builder alertbox=new AlertDialog.Builder(MyProfileActivity.this);
-                                alertbox.setTitle(getString(R.string.warning));
+                                alertbox.setTitle(getString(R.string.confirmation));
                                 alertbox.setMessage(getString(R.string.myprofile_warning_message_firsttime));
                                 alertbox.setPositiveButton(getString(R.string.ok), new
                                         DialogInterface.OnClickListener() {
@@ -501,8 +506,6 @@ public class MyProfileActivity extends BaseActivity {
             params.put(WebParams.FULL_NAME,et_name.getText().toString());
             params.put(WebParams.POB,et_pob.getText().toString());
             params.put(WebParams.ID_TYPE,spinner_id_types.getSelectedItem().toString());
-
-            Timber.d("dedate isinya ", dedate + " " + date_dob);
 
             if(dedate.equals(""))params.put(WebParams.DOB,"");
             else params.put(WebParams.DOB,date_dob);

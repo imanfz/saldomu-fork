@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.adapter;
+package com.sgo.orimakardaya.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -9,8 +9,8 @@ import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.sgo.mdevcash.fragments.FragFAQ;
-import com.sgo.mdevcash.fragments.HelpFragment;
+import com.sgo.orimakardaya.fragments.FragFAQ;
+import com.sgo.orimakardaya.fragments.HelpFragment;
 import com.viewpagerindicator.IconPagerAdapter;
 
 import java.util.List;

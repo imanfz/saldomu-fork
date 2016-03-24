@@ -1,5 +1,6 @@
 package com.sgo.orimakardaya.services;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.*;
@@ -16,8 +17,9 @@ public class AppInfoService extends Service {
 
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;
+    private Activity mainPageContext = null;
 
-    public static final long LOOPING_TIME = 500000; // 30 detik = 30 * 1000 ms
+    public static final long LOOPING_TIME = 50000; // 30 detik = 30 * 1000 ms
 
     private Handler mHandler = new Handler(){
         public void handleMessage(Message msg) {
@@ -28,8 +30,10 @@ public class AppInfoService extends Service {
         @Override
         public void run() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-            AppInfoHandler mBH = new AppInfoHandler(getApplicationContext());
-            mBH.getAppVersion();
+            if(mainPageContext != null) {
+                AppInfoHandler mBH = new AppInfoHandler(mainPageContext);
+                mBH.getAppVersion();
+            }
             Timber.i("Service jalankan call AppInfo Service");
             if(!isServiceDestroyed)mHandler.postDelayed(this, LOOPING_TIME);
         }
@@ -68,6 +72,10 @@ public class AppInfoService extends Service {
         public AppInfoService getService() {
             return AppInfoService.this;
         }
+    }
+
+    public void setMainPageContext(Activity _context){
+        mainPageContext = _context;
     }
 
     @Override

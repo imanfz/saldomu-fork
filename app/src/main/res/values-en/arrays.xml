@@ -13,6 +13,7 @@
     </string-array>
 
     <string-array name="home_vpi_title">
+        <item>HOME</item>
         <item>MY HISTORY</item>
         <item>TIME LINE</item>
         <!--<item>GROUP</item>-->
@@ -27,8 +28,8 @@
     <string-array name="list_myprofile_hobby">
         <item>Choose Hobby</item>
         <item>Music</item>
-        <item>Membaca</item>
-        <item>Olahraga</item>
+        <item>Read</item>
+        <item>Sport</item>
     </string-array>
 
     <string-array name="privacy_list">
@@ -44,6 +45,15 @@
 
     <string-array name="settings_list">
         <item>Register SMS Banking</item>
+        <item>Change Password</item>
+        <item>About</item>
+    </string-array>
+
+    <string-array name="settings_list_pin">
+        <item>Register SMS Banking</item>
+        <item>Change Password</item>
+        <item>Change PIN</item>
+        <item>About</item>
     </string-array>
 
     <string-array name="buy_vpi_title_1">
@@ -51,7 +61,26 @@
         <item>Payment</item>
     </string-array>
 
+    <string-array name="gender_type">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 
+    <string-array name="list_tipe_notif">
+        <item>Choose Notification Type</item>
+        <item>EMAIL</item>
+        <item>SMS</item>
+        <item>EMAIL &amp; SMS</item>
+    </string-array>
 
+    <string-array name="list_cash_out">
+        <item>Bank</item>
+        <item>Cash</item>
+    </string-array>
+
+    <string-array name="contact_tab_list">
+        <item>Contact Center</item>
+        <item>FAQ</item>
+    </string-array>
 
 </resources>

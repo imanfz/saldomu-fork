@@ -1,6 +1,6 @@
-package com.sgo.mdevcash.coreclass;
+package com.sgo.orimakardaya.coreclass;
 
-import com.sgo.mdevcash.R;
+import com.sgo.orimakardaya.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

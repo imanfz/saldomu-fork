@@ -1,21 +1,32 @@
 package com.sgo.orimakardaya.activities;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.securities.Md5;
+import com.venmo.android.pin.PinFragment;
+import com.venmo.android.pin.PinFragmentConfiguration;
+import com.venmo.android.pin.PinSaver;
+import com.venmo.android.pin.Validator;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -90,7 +101,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.activity_change_pin_1;
+        return R.layout.activity_change_pin;
     }
 
     public void InitializeToolbar(){

@@ -24,10 +24,13 @@ import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.activities.TopUpActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,12 +45,13 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class SgoPlus_input extends Fragment {
+public class SgoPlus_input extends Fragment implements InformationDialog.OnDialogOkCallback {
 
     private HashMap<String,String> listBankName;
     private HashMap<String,String> listBankProduct;
     private List<listbankModel> listDB;
     private ArrayList<String> BankProduct;
+    private InformationDialog dialogI;
 
     View v;
     Button btn_subSGO;
@@ -90,7 +94,12 @@ public class SgoPlus_input extends Fragment {
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        if(topupType.equals(DefineValue.SMS_BANKING))isSMSBanking = true;
+        if(topupType.equals(DefineValue.SMS_BANKING)){
+            isSMSBanking = true;
+            dialogI = InformationDialog.newInstance(this,3);
+        }
+        else
+            dialogI = InformationDialog.newInstance(this,2);
 
         InitializeSpinner();
 
@@ -234,13 +243,16 @@ public class SgoPlus_input extends Fragment {
     Button.OnClickListener prosesSGOplusListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(inputValidation()){
-              sentDataValidTopup(listBankName.get(spin_namaBank.getSelectedItem().toString()),
-                      listBankProduct.get(spin_produkBank.getSelectedItem().toString()),
-                      spin_produkBank.getSelectedItem().toString()
-                      );
-                //Timber.d("bank name / bank produk ", listBankName.get(spin_namaBank.getSelectedItem().toString()) + " / " + listBankProduct.get(spin_produkBank.getSelectedItem().toString()));
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    sentDataValidTopup(listBankName.get(spin_namaBank.getSelectedItem().toString()),
+                            listBankProduct.get(spin_produkBank.getSelectedItem().toString()),
+                            spin_produkBank.getSelectedItem().toString()
+                    );
+                    //Log.d("bank name / bank produk ", listBankName.get(spin_namaBank.getSelectedItem().toString()) + " / " + listBankProduct.get(spin_produkBank.getSelectedItem().toString()));
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -266,7 +278,7 @@ public class SgoPlus_input extends Fragment {
 
             Timber.d("isi params sgoplusinput:"+params.toString());
 
-            MyApiClient.sentValidTopUp(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentValidTopUp(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -375,13 +387,13 @@ public class SgoPlus_input extends Fragment {
             params.put(WebParams.COMM_CODE, _comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE,""));
+            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
 
             Timber.d("isi params regtoken Sgo+:"+params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -463,7 +475,7 @@ public class SgoPlus_input extends Fragment {
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-        Message.setText(getString(R.string.application_name)+" "+getString(R.string.dialog_token_message_sms));
+        Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -562,6 +574,7 @@ public class SgoPlus_input extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -575,6 +588,9 @@ public class SgoPlus_input extends Fragment {
                 else
                     getActivity().finish();
                 return true;
+            case R.id.action_information:
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -583,5 +599,10 @@ public class SgoPlus_input extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onOkButton() {
+
     }
 }
