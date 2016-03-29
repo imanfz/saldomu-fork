@@ -104,6 +104,7 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.LEVEL_VALUE);
         mEdit.remove(DefineValue.ALLOW_MEMBER_LEVEL);
         mEdit.remove(DefineValue.MAX_MEMBER_TRANS);
+        mEdit.remove(DefineValue.MEMBER_DAP);
 
         mEdit.apply();
 

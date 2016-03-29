@@ -401,6 +401,8 @@ public class MainPage extends BaseActivity{
                                 Timber.d("atm topup:" + bank_name);
 
                                 SecurePreferences.Editor mEditor = sp.edit();
+                                String member_dap = response.optString(WebParams.MEMBER_DAP,"");
+                                mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
                                 mEditor.putString(DefineValue.BANK_ATM_CODE, bank_code);
                                 mEditor.putString(DefineValue.NO_VA, no_va);
                                 mEditor.putString(DefineValue.BANK_ATM_NAME, bank_name);
