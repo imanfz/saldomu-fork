@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    >
+
+    <com.sgo.mdevcash.coreclass.Fab
+        android:id="@+id/fab"
+        style="@style/Widget.MaterialSheetFab.Fab"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <!-- Overlay that dims the screen -->
+    <com.gordonwong.materialsheetfab.DimOverlayFrameLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <io.codetail.widget.RevealLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end|bottom"
+        android:orientation="vertical">
+
+        <!-- Sheet that contains your items -->
+        <android.support.v7.widget.CardView
+            android:id="@+id/fab_sheet"
+            style="@style/Widget.MaterialSheetFab.Sheet">
+
+            <!-- Sheet items -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/white">
+
+                <!-- PayFriend -->
+                <TextView
+                    android:id="@+id/fab_sheet_item_PayFriend"
+                    style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
+                    android:drawableLeft="@drawable/ic_payfriends_icon_color"
+                    android:drawableStart="@drawable/ic_payfriends_icon_color"
+                    android:text="@string/menu_item_title_pay_friends" />
+
+                <!-- Ask For Money -->
+                <TextView
+                    android:id="@+id/fab_sheet_item_AskForMoney"
+                    style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
+                    android:drawableLeft="@drawable/ic_ask_icon_color"
+                    android:drawableStart="@drawable/ic_ask_icon_color"
+                    android:text="@string/menu_item_title_ask_for_money" />
+
+                <!-- SHARE -->
+                <TextView
+                    android:id="@+id/fab_sheet_item_Share"
+                    style="@style/TextAppearance.MaterialSheetFab.Sheet.Item"
+                    android:drawableLeft="@drawable/ic_share_orange"
+                    android:drawableStart="@drawable/ic_share_orange"
+                    android:text="@string/menu_item_share" />
+
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </io.codetail.widget.RevealLinearLayout>
+
+</RelativeLayout>

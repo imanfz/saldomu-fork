@@ -9,6 +9,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="colorAccent">@color/fab_color</item>
         <item name="android:editTextStyle">@android:style/Widget.EditText</item>
         <item name="android:editTextBackground">@drawable/apptheme_edit_text_holo_light</item>
         <item name="android:buttonStyle">@style/ButtonAppTheme</item>

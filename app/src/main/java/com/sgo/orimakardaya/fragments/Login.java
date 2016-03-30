@@ -344,6 +344,8 @@ public class Login extends Fragment implements View.OnClickListener {
             mEditor.putString(DefineValue.ACCESS_KEY, response.getString(WebParams.ACCESS_KEY));
             mEditor.putString(DefineValue.ACCESS_SECRET, response.getString(WebParams.ACCESS_SECRET));
 
+            mEditor.putString(DefineValue.LINK_APP,response.optString(WebParams.SOCIAL_SIGNATURE,""));
+
             if (response.optInt(WebParams.IS_REGISTERED,0) == 0)
                 mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
             else

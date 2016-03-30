@@ -280,7 +280,7 @@ public class MyApiClient {
 
 
 
-    public static final int TIMEOUT = 200000; // 200 x 1000 = 3 menit
+    public static final int TIMEOUT = 120000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
@@ -423,22 +423,25 @@ public class MyApiClient {
     public static void get(String url, AsyncHttpResponseHandler responseHandler) {
         if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
         getClient().setURLEncodingEnabled(true);
-        getClient().setMaxRetriesAndTimeout(2, 10000);
-        getClient().get(getInstance().getmContext(),url, responseHandler);
+        getClient().get(getInstance().getmContext(), url, responseHandler);
     }
 
     public static void post(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
-        getClient().setMaxRetriesAndTimeout(2, 10000);
-        getClient().setTimeout(TIMEOUT);
-        getClient().post(mContext,url, params, responseHandler);
+        getClient().post(mContext, url, params, responseHandler);
     }
 
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared
-        if (Looper.myLooper() == null)
+        if (Looper.myLooper() == null) {
+            getInstance().syncHttpClient.setTimeout(TIMEOUT);
+            getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
             return getInstance().syncHttpClient;
+        }
+        getInstance().asyncHttpClient.setTimeout(TIMEOUT);
+        getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
+
         return getInstance().asyncHttpClient;
     }
 
@@ -857,8 +860,8 @@ public class MyApiClient {
     public static void getAppVersion( AsyncHttpResponseHandler responseHandler) {
         get(LINK_APP_VERSION, responseHandler);
     }
-
-    public static void getHelpPIN( AsyncHttpResponseHandler responseHandler) {
+	
+	public static void getHelpPIN( AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN:"+LINK_HELP_PIN);
         get(LINK_HELP_PIN, responseHandler);
     }

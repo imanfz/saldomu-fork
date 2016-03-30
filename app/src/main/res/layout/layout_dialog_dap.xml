@@ -13,7 +13,7 @@
                  android:stretchColumns="1">
         <TableRow>
             <TextView
-                    android:text="@string/login_edithint_id"
+                    android:text="@string/report_dialog_text_userid"
                     android:layout_weight="1"
                     android:padding="3dip"
                     />

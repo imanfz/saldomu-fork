@@ -249,4 +249,6 @@ public class DefineValue {
     public static String ALLOW_MEMBER_LEVEL = "allowMemberLevel";
     public static String CAN_TRANSFER = "canTransfer";
 
+    public static String LINK_APP = "linkApp";
+
 }

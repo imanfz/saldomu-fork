@@ -106,7 +106,8 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
                     getActivity().finish();
                 return true;
             case R.id.action_information:
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
         }
         return super.onOptionsItemSelected(item);

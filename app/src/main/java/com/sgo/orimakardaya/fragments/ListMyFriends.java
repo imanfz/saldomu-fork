@@ -61,6 +61,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         PopupMenu.OnItemSelectedListener, InformationDialog.OnDialogOkCallback {
 
     private static final int CONTACTS_LOADER = 10;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     View v;
     View layout_check_contact, layout_list_contact, layout_loading_contact;
     private MyFriendAdapter mAdapter;
@@ -260,6 +261,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         inflater.inflate(R.menu.list_contacts, menu);
 //        inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @Override
@@ -305,13 +307,32 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     Button.OnClickListener checkContactListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            crossfadingView(layout_check_contact, layout_loading_contact);
-            loadingCircle.setMax(100);
-            runLoader();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+            }
+            else {
+                runLoader();
+            }
         }
     };
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                runLoader();
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     public void runLoader(){
+        crossfadingView(layout_check_contact, layout_loading_contact);
+        loadingCircle.setMax(100);
         getLoaderManager().initLoader(CONTACTS_LOADER, null, this);
     }
 

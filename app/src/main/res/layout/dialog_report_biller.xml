@@ -60,7 +60,7 @@
                   android:layout_marginLeft="8dp"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="asdiojasdoijasdfoijasdfoiasjdfaosidjfasdoijfasdoifasdfoiajsdfaoisdjfasoidjfasd"
+                  android:text="@string/transaction_success"
                   android:textColor="@color/red_400"
                   android:textSize="@dimen/text_size_small_material"
                   android:layout_gravity="center_horizontal"

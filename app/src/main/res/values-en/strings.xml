@@ -157,6 +157,7 @@
     <string name="menu_item_timeline_detail">TIMELINE</string>
     <string name="menu_item_history_detail">MY HISTORY</string>
     <string name="menu_item_group_detail">GROUP</string>
+    <string name="menu_item_share">Share</string>
 
     <string name="topup_token_bank_name">Bank Name</string>
     <string name="topup_token_bank_product">Bank Product</string>
@@ -557,4 +558,7 @@
     <string name="report_dialog_text_userid">Handphone Number</string>
     <string name="myprofile_warning_message_firsttime">Are you sure want to process this data ?</string>
     <string name="confirmation">Confirmation</string>
+
+    <string name="share_title">Share</string>
+    <string name="cancel_permission_read_contacts">You must grant the permission before use this feature</string>
 </resources>

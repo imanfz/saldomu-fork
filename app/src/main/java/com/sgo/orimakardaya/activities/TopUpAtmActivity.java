@@ -73,7 +73,8 @@ public class TopUpAtmActivity extends BaseActivity implements InformationDialog.
                 finish();
                 return true;
             case R.id.action_information:
-                dialogI.show(getSupportFragmentManager(), InformationDialog.TAG);
+                if(!dialogI.isAdded())
+                    dialogI.show(getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
         }
         return super.onOptionsItemSelected(item);

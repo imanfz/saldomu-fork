@@ -111,6 +111,7 @@
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
     <string name="login_edithint_id">No HP Anda yang sudah terdaftar</string>
+    <string name="edittext_hint_id">Nomor Handphone</string>
     <string name="login_text_pass">Kata Sandi</string>
     <string name="login_edithint_pass">Kata Sandi</string>
     <string name="login_button_login">Masuk</string>
@@ -192,6 +193,7 @@
     <string name="menu_item_timeline_detail">LINI WAKTU</string>
     <string name="menu_item_history_detail">RIWAYAT</string>
     <string name="menu_item_group_detail">GRUP</string>
+    <string name="menu_item_share">Bagikan</string>
 
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank</string>
@@ -524,6 +526,7 @@
 
     <string name="error_message">Terjadi error saat menjalankan proses.</string>
     <string name="warning">Peringatan</string>
+    <string name="confirmation">Konfirmasi</string>
     <string name="exit_message">Apakah anda yakin keluar dari aplikasi ?</string>
 
     <string name="myprofile_warning_message_firsttime">Apakah anda yakin memproses data yang anda isi?</string>
@@ -618,5 +621,7 @@
     <string name="level_dialog_finish_message_auto">Anda telah berhasil melakukan upgrade level member anda.</string>
     <string name="start_now">Mulai Sekarang</string>
     <string name="how_to_top_up">Cara Untuk TOP UP</string>
-    <string name="confirmation">Konfirmasi</string>
+
+    <string name="share_title">Bagikan</string>
+    <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
 </resources>
