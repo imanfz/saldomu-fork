@@ -331,14 +331,12 @@ public class MyHistory extends BaseFragmentMainPage {
                 }
 
                 private void failure(Throwable throwable){
-                    if(MyHistory.this.isVisible()) {
-                        if (MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                        Timber.w("Error Koneksi history list myhistory:"+throwable.toString());
-                    }
+//                    if(MyApiClient.PROD_FAILURE_FLAG)
+//                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                    else
+//                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
+                    Timber.w("Error Koneksi history list myhistory:"+throwable.toString());
                 }
             });
         }catch (Exception e){

@@ -589,7 +589,8 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                     getActivity().finish();
                 return true;
             case R.id.action_information:
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
         }
         return super.onOptionsItemSelected(item);

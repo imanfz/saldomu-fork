@@ -15,7 +15,7 @@
             <TextView
                     android:text="@string/report_dialog_text_userid"
                     android:layout_weight="1"
-                android:minEms="7"
+                    android:minEms="7"
                     android:padding="3dip"
                     />
             <TextView

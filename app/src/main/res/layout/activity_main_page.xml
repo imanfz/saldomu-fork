@@ -79,4 +79,9 @@
         </FrameLayout>
 
     </android.support.v4.widget.DrawerLayout>
+
+    <include android:id="@+id/layout_include_fab"
+        layout="@layout/layout_fab"
+        />
+
 </RelativeLayout>

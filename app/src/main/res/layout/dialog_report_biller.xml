@@ -60,7 +60,7 @@
                   android:layout_marginLeft="8dp"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:text="asdiojasdoijasdfoijasdfoiasjdfaosidjfasdoijfasdoifasdfoiajsdfaoisdjfasoidjfasd"
+                  android:text="@string/transaction_success"
                   android:textColor="@color/red_400"
                   android:textSize="@dimen/text_size_small_material"
                   android:layout_gravity="center_horizontal"
@@ -85,8 +85,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:minEms="7"
+                        android:gravity="left"
                         android:text="@string/report_item_text_date_time"
                         android:layout_marginLeft="@dimen/text_size_medium_material"
                         android:layout_gravity="center_vertical"
@@ -96,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:minEms="7"
+                        android:minEms="9"
                         android:text="20:15:31 28/12/2015"
                         android:gravity="right"
                         android:layout_marginLeft="4dp"
@@ -109,16 +108,21 @@
                               android:orientation="horizontal"
                         >
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/report_item_text_trans_id"
-                            android:layout_marginLeft="@dimen/text_size_medium_material"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/report_item_text_trans_id"
+                        android:layout_marginLeft="@dimen/text_size_medium_material"
                             />
-                    <TextView android:id="@+id/dialog_reportbiller_tx_id"
-                              android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="EMO1215151"
-                              android:layout_marginLeft="8dp"
+                    <TextView
+                        android:id="@+id/dialog_reportbiller_tx_id"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="EMO1459354600Y3K0asdfasdfwioej"
+                        android:gravity="right"
+                        android:layout_marginLeft="8dp"
                             />
 
                 </LinearLayout>

@@ -68,7 +68,7 @@
 -keep class com.sgo.orimakardaya.fragments.ListBillerMerchant$ListObject{ *; }
 
 -keep class com.sgo.orimakardaya.services.BalanceService { *; }
-
+-keep class io.codetail.animation.arcanimator.** { *; }
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
     native <methods>;

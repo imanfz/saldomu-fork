@@ -265,28 +265,8 @@ public class NavigationDrawMenu extends ListFragment{
     private ArrayList<navdrawmainmenuModel> generateData(){
         ArrayList<navdrawmainmenuModel> models = new ArrayList<navdrawmainmenuModel>();
         models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_main_menu),true));                                        //0
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_home_icon_color,0,getString(R.string.menu_item_title_home),false));              //1
-////        models.add(new navdrawmainmenuModel(R.drawable.ic_accounts_icon_color,getString(R.string.menu_item_title_accounts),false));        //
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),false));              //2
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,0,getString(R.string.menu_item_title_pulsa_agent), false));        //3
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),false));    //4
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),false));            //5
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,0,getString(R.string.menu_item_title_buy),false));                //6
-////        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),false));       //7
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_report,0,getString(R.string.menu_item_title_report),false));                       //8
-//
-//        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_account),true));                                              //9
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_profile_icon_color,0,getString(R.string.menu_item_title_my_profile),false));       //10
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),false));        //11
-////        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,getString(R.string.menu_item_title_my_groups),false));          //12
-//
-//        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_supports),true));                                           //13
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_setting,0,getString(R.string.menu_item_title_setting),false));                   //14
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_help,0,getString(R.string.menu_item_title_help),false));                         //15
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_about,0,getString(R.string.menu_item_title_about),false));               //16
-//
-//        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_logout),true));                                            //17
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,0,getString(R.string.menu_item_title_logout),false));                   //18
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_home_icon_color,getString(R.string.menu_item_title_home),false));              //
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_accounts_icon_color,getString(R.string.menu_item_title_accounts),false));        //
 
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),false));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),false));    //2

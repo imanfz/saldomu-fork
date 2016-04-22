@@ -18,4 +18,8 @@
             android:layout_weight="1"
             />
 
+    <include android:id="@+id/empty_layout"
+        layout="@layout/empty_view"
+        />
+
 </LinearLayout>

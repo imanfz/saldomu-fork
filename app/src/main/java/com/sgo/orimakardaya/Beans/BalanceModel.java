@@ -3,7 +3,10 @@ package com.sgo.orimakardaya.Beans;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.activeandroid.ActiveAndroid;
+import com.activeandroid.Cache;
 import com.activeandroid.Model;
+import com.activeandroid.TableInfo;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
@@ -155,8 +158,16 @@ public class BalanceModel extends Model implements Parcelable {
     }
 
     public static void deleteAll() {
-        // This is how you execute a query
-        new Delete().from(BalanceModel.class).execute();
-        SQLiteUtils.execSql("DELETE FROM SQLITE_SEQUENCE WHERE name='Balance';");
+//        // This is how you execute a query
+//        new Delete().from(BalanceModel.class).execute();
+//        SQLiteUtils.execSql("DELETE FROM SQLITE_SEQUENCE WHERE name='Balance';");
+
+        TableInfo tableInfo = Cache.getTableInfo(BalanceModel.class);
+        ActiveAndroid.execSQL(
+                String.format("DELETE FROM %s;",
+                        tableInfo.getTableName()));
+        ActiveAndroid.execSQL(
+                String.format("DELETE FROM sqlite_sequence WHERE name='%s';",
+                        tableInfo.getTableName()));
     }
 }

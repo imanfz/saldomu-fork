@@ -430,11 +430,6 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             switch(keyCode)
             {
                 case KeyEvent.KEYCODE_BACK:
-                    //if(webview.canGoBack()){
-                    //    webview.goBack();
-                    //}else{
-                    //    finish();
-                    //}
                     finish();
                     return true;
             }

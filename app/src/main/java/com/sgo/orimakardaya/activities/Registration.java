@@ -335,6 +335,6 @@ public class Registration extends BaseActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(getApplicationContext(),true);
+        MyApiClient.CancelRequestWS(this,true);
     }
 }

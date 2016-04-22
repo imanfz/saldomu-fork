@@ -183,7 +183,7 @@
                     android:layout_marginBottom="40dp"
                     >
 
-                <com.sgo.mdevcash.coreclass.RoundedQuickContactBadge
+                <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
                         android:id="@+id/friends_pic_content"
                         android:layout_centerInParent="true"
                         android:layout_height="@dimen/friends_pic_content"

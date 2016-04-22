@@ -70,7 +70,7 @@ public class FragCashOutAgen extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_frag_cash_out_agen, container, false);
+        v = inflater.inflate(R.layout.frag_cash_out_agen, container, false);
         return v;
     }
 

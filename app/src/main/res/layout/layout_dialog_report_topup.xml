@@ -50,7 +50,6 @@
                 android:id="@+id/dialog_topup_name_value"
                 android:layout_weight="2"
                 android:layout_width="wrap_content"
-                android:text="siodjfoaijsdfijoasd asodifjio"
                 android:gravity="right"
                 android:padding="3dip" />
         </TableRow>

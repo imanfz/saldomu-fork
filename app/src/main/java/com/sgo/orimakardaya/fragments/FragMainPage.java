@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.MainFragmentAdapter;
 import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
@@ -50,7 +52,7 @@ public class FragMainPage extends Fragment {
         TitlePageIndicator tabs;
         ViewPager pager;
         getActivity().invalidateOptionsMenu();
-        List<BaseFragmentMainPage> mList = new ArrayList<>();
+        final List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
         mList.add(new Home());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
@@ -67,6 +69,24 @@ public class FragMainPage extends Fragment {
         pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+//                updateFab(i);
+                ToggleFAB(!(mList.get(i) instanceof Home));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+
+//        setupFab();
 
         PtrFrameLayout mPtrFrame = (PtrClassicFrameLayout) getCurrentView().findViewById(R.id.view_pager_ptr_frame);
         mPtrFrame.disableWhenHorizontalMove(true);
@@ -89,12 +109,6 @@ public class FragMainPage extends Fragment {
 
         setCurrentPtrFrame(mPtrFrame);
 
-//        mPtrFrame.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                getCurrentPtrFrame().autoRefresh(true);
-//            }
-//        }, 100);
         getCurrentPtrFrame().autoRefresh(true);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -106,6 +120,8 @@ public class FragMainPage extends Fragment {
             }
         });
 
+
+        ToggleFAB(false);
     }
 
     public Fragment getFragment(int position){
@@ -139,5 +155,18 @@ public class FragMainPage extends Fragment {
 
     public void setCurrentView(View currentView) {
         this.currentView = currentView;
+    }
+
+    private void ToggleFAB(Boolean isShow){
+        if (getActivity() == null)
+            return;
+
+        if(getActivity() instanceof MainPage) {
+            MainPage fca = (MainPage) getActivity();
+            if(isShow)
+                fca.materialSheetFab.showFab();
+            else
+                fca.materialSheetFab.hideSheetThenFab();
+        }
     }
 }

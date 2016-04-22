@@ -330,19 +330,13 @@ public class TimeLine extends BaseFragmentMainPage {
                 }
 
                 private void failure(Throwable throwable){
-                    try {
-                        if (TimeLine.this.isVisible()) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
-                            Timber.w("Error Koneksi Timeline:" + throwable.getCause().toString());
-                        }
+                    if(TimeLine.this.isVisible()) {
+//                        if (MyApiClient.PROD_FAILURE_FLAG)
+//                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                        else
+//                            Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                    catch (Exception e){
-                        Timber.w("Error Failure:" + e.toString());
-                    }
-
+                    Timber.w("Error Koneksi Timeline:"+throwable.toString());
                 }
 
 

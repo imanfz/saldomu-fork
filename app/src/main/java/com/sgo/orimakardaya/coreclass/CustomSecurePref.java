@@ -104,6 +104,16 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.LEVEL_VALUE);
         mEdit.remove(DefineValue.ALLOW_MEMBER_LEVEL);
         mEdit.remove(DefineValue.MAX_MEMBER_TRANS);
+        mEdit.remove(DefineValue.BANK_ATM_CODE);
+        mEdit.remove(DefineValue.NO_VA);
+        mEdit.remove(DefineValue.BANK_ATM_NAME);
+        mEdit.remove(DefineValue.BANK_CASHOUT);
+        mEdit.remove(DefineValue.MEMBER_CODE);
+        mEdit.remove(DefineValue.MEMBER_DAP);
+		mEdit.remove(DefineValue.MEMBER_ID);
+        mEdit.remove(DefineValue.MEMBER_NAME);
+        mEdit.remove(DefineValue.MAX_TOPUP);
+        mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
 
         mEdit.apply();
 

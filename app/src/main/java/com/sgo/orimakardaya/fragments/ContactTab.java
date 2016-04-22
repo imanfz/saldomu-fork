@@ -77,7 +77,8 @@ public class ContactTab extends Fragment implements InformationDialog.OnDialogOk
         switch(item.getItemId())
         {
             case R.id.action_information:
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

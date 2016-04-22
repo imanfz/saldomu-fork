@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -43,7 +44,7 @@ import timber.log.Timber;
  */
 public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCallback {
 
-    View v;
+    View v,layout_empty;
     TabPageIndicator tabs;
     ViewPager pager;
     BuyFragmentTabAdapter adapternya;
@@ -69,7 +70,8 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
         switch(item.getItemId())
         {
             case R.id.action_information:
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -88,6 +90,16 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
 
         tabs = (TabPageIndicator)v.findViewById(R.id.buy_tabs);
         pager = (ViewPager) v.findViewById(R.id.buy_pager);
+        layout_empty = v.findViewById(R.id.empty_layout);
+
+        layout_empty.setVisibility(View.GONE);
+        Button btn_refresh = (Button) layout_empty.findViewById(R.id.btnRefresh);
+        btn_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDataBiller();
+            }
+        });
 
         pager.setPageMargin(pageMargin);
         dialogI = InformationDialog.newInstance(this,8);
@@ -143,7 +155,7 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if(out.isShowing())
+                    if (out.isShowing())
                         out.dismiss();
 
                     Timber.w("Error Koneksi biller data list buy:" + throwable.toString());
@@ -266,6 +278,11 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
         if(arrayCollection.length() > 0) {
             Title_tab.add(getString(R.string.collection));
         }
+
+        if(Title_tab.isEmpty())
+            layout_empty.setVisibility(View.VISIBLE);
+        else
+            layout_empty.setVisibility(View.GONE);
 
         adapternya = new BuyFragmentTabAdapter(getChildFragmentManager(),getActivity(),mPurchase,
                 mPayment,arrayCollection,Title_tab);

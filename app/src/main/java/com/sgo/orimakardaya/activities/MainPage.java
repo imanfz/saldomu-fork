@@ -30,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
+import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -97,6 +98,8 @@ public class MainPage extends BaseActivity{
     private boolean isBound, isBoundAppInfo;
 
 
+    public MaterialSheetFab materialSheetFab;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,9 +118,10 @@ public class MainPage extends BaseActivity{
         else{
             getAppVersion();
             ActiveAndroid.initialize(this);
-            progdialog = DefinedDialog.CreateProgressDialog(this, "Initialize");
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
             progdialog.show();
             InitializeNavDrawer();
+            setupFab();
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         }
 
@@ -401,6 +405,8 @@ public class MainPage extends BaseActivity{
                                 Timber.d("atm topup:" + bank_name);
 
                                 SecurePreferences.Editor mEditor = sp.edit();
+                                String member_dap = response.optString(WebParams.MEMBER_DAP,"");
+                                mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
                                 mEditor.putString(DefineValue.BANK_ATM_CODE, bank_code);
                                 mEditor.putString(DefineValue.NO_VA, no_va);
                                 mEditor.putString(DefineValue.BANK_ATM_NAME, bank_name);
@@ -483,7 +489,8 @@ public class MainPage extends BaseActivity{
                         Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                     if(progdialog.isShowing())
                         progdialog.dismiss();
-                    MainPage.this.finish();
+                    sentLogout();
+//                    finish();
                     Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());
                 }
             });
@@ -539,6 +546,9 @@ public class MainPage extends BaseActivity{
 
     public void switchContent(Fragment mFragment,String fragName) {
         mContent = mFragment;
+
+        materialSheetFab.showFab();
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.main_page_content, mContent, fragName)
@@ -594,10 +604,6 @@ public class MainPage extends BaseActivity{
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.BANK_ATM_CODE, "");
-        mEditor.putString(DefineValue.NO_VA, "");
-        mEditor.putString(DefineValue.BANK_ATM_NAME, "");
-        mEditor.putString(DefineValue.CONTACT_FIRST_TIME, "");
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
@@ -678,9 +684,9 @@ public class MainPage extends BaseActivity{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("isi request code:"+String.valueOf(requestCode));
+        Timber.d("isi request code:" + String.valueOf(requestCode));
 
-        Timber.d("isi result Code:"+String.valueOf(resultCode));
+        Timber.d("isi result Code:" + String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
             if (resultCode == RESULT_LOGOUT) {
                 switchLogout();
@@ -707,7 +713,7 @@ public class MainPage extends BaseActivity{
                         dataBundle.putString(DefineValue.TRX,data.getStringExtra(DefineValue.TRX));
                         dataBundle.putString(DefineValue.REQUEST_ID,data.getStringExtra(DefineValue.REQUEST_ID));
 
-                        mNavDrawer.selectItem(2,dataBundle);
+                        mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS,dataBundle);
                     }
                     else if(_type == NotificationActivity.TYPE_LIKE || _type == NotificationActivity.TYPE_COMMENT){
                         int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID,"0"));
@@ -869,7 +875,7 @@ public class MainPage extends BaseActivity{
                 }
 
                 private void failure(Throwable throwable){
-                    Timber.w("Error Koneksi app info main page:" + throwable.toString());
+                    Timber.w("Error Koneksi app info main page:"+throwable.toString());
                 }
             });
         }catch (Exception e){
@@ -1047,6 +1053,24 @@ public class MainPage extends BaseActivity{
         likeModel.deleteAll();
     }
 
+
+    private void setupFab() {
+
+        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
+            @Override
+            public void OnClickItemFAB(int idx) {
+                switch (idx){
+                    case FabInstance.ITEM_FAB_ASK4MONEY:
+                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
+                        break;
+                    case FabInstance.ITEM_FAB_PAYFRIENDS:
+                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
+                        break;
+                }
+            }
+        });
+
+    }
 
 
 }

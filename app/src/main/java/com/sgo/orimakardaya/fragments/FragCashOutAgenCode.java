@@ -65,7 +65,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.fragment_frag_cash_out_agen_code, container, false);
+        v = inflater.inflate(R.layout.frag_cash_out_agen_code, container, false);
         return v;
     }
 
