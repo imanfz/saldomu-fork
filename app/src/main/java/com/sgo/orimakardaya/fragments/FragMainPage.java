@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.MainFragmentAdapter;
 import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
@@ -153,87 +155,6 @@ public class FragMainPage extends Fragment {
 
     public void setCurrentView(View currentView) {
         this.currentView = currentView;
-    }
-
-
-    private int getStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return getActivity().getWindow().getStatusBarColor();
-        }
-        return 0;
-    }
-
-    private void setStatusBarColor(int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActivity().getWindow().setStatusBarColor(color);
-        }
-    }
-
-//    private void setupFab() {
-//        Fab fab = (Fab) getActivity().findViewById(R.id.fab);
-//        View sheetView = getActivity().findViewById(R.id.fab_sheet);
-//        View overlay = getActivity().findViewById(R.id.overlay);
-//        int sheetColor = getResources().getColor(R.color.white);
-//        int fabColor = getResources().getColor(R.color.colorPrimaryDarked);
-//
-//        // Create material sheet FAB
-//        materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
-//
-//        // Set material sheet event listener
-//        materialSheetFab.setEventListener(new MaterialSheetFabEventListener() {
-//            @Override
-//            public void onShowSheet() {
-//                // Save current status bar color
-//                statusBarColor = getStatusBarColor();
-//                // Set darker status bar color to match the dim overlay
-////                setStatusBarColor(getResources().getColor(R.color.fab_color));
-//                setStatusBarColor(statusBarColor);
-//            }
-//
-//            @Override
-//            public void onHideSheet() {
-//                // Restore status bar color
-//                setStatusBarColor(statusBarColor);
-//            }
-//        });
-//
-//        // Set material sheet item click listeners
-//        getActivity().findViewById(R.id.fab_sheet_item_PayFriend).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                switchMenu(NavigationDrawMenu.MPAYFRIENDS,null);
-//                materialSheetFab.hideSheet();
-//            }
-//        });
-//        getActivity().findViewById(R.id.fab_sheet_item_AskForMoney).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                switchMenu(NavigationDrawMenu.MASK4MONEY,null);
-//                materialSheetFab.hideSheet();
-//            }
-//        });
-//
-////        android.app.Fragment currentFragment = getFragmentManager().findFragmentById(R.id.main_page_content);
-////        Log.d("denny_", currentFragment.toString());
-//    }
-//
-//    private void updateFab(int selectedPage) {
-//        switch (selectedPage) {
-//            case 0:
-//                materialSheetFab.hideSheetThenFab();
-//                break;
-//            default:
-//                materialSheetFab.showFab();
-//                break;
-//        }
-//    }
-
-    private void switchMenu(int idx_menu,Bundle data){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-            fca.switchMenu(idx_menu, data);
     }
 
     private void ToggleFAB(Boolean isShow){

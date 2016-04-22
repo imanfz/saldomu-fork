@@ -203,16 +203,16 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
             @Override
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
-                if(InformationDialog.this.isVisible())
-                    Toast.makeText(getActivity(), getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//                if(InformationDialog.this.isVisible())
+//                    Toast.makeText(getActivity(), getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
 
             @TargetApi(Build.VERSION_CODES.M)
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                if(InformationDialog.this.isVisible())
-                    Toast.makeText(getActivity(), error.getDescription(), Toast.LENGTH_SHORT).show();
+//                if(InformationDialog.this.isVisible())
+//                    Toast.makeText(getActivity(), error.getDescription(), Toast.LENGTH_SHORT).show();
             }
 
             @Override

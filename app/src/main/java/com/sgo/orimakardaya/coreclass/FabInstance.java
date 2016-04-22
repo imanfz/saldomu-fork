@@ -1,4 +1,4 @@
-package com.sgo.mdevcash.coreclass;
+package com.sgo.orimakardaya.coreclass;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,8 +10,7 @@ import android.view.View;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
 import com.securepreferences.SecurePreferences;
-import com.sgo.mdevcash.BuildConfig;
-import com.sgo.mdevcash.R;
+import com.sgo.orimakardaya.R;
 
 import timber.log.Timber;
 
@@ -47,7 +46,7 @@ public class FabInstance {
         View sheetView = mContext.findViewById(R.id.fab_sheet);
         View overlay = mContext.findViewById(R.id.overlay);
         int sheetColor = getColor(mContext, R.color.white);
-        int fabColor = getColor(mContext, R.color.colorPrimaryDarked);
+        int fabColor = getColor(mContext, R.color.colorPrimaryDark);
         final int[] statusBarColor = new int[1];
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();

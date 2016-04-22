@@ -1,11 +1,7 @@
-package com.sgo.mdevcash.coreclass;
+package com.sgo.orimakardaya.coreclass;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,11 +10,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
 
 import com.gordonwong.materialsheetfab.AnimatedFab;
-
-import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.gordonwong.materialsheetfab.MaterialSheetFabEventListener;
-import com.sgo.mdevcash.R;
-import com.sgo.mdevcash.fragments.NavigationDrawMenu;
+import com.sgo.orimakardaya.R;
 
 /**
  * Created by Lenovo Thinkpad on 11/30/2015.

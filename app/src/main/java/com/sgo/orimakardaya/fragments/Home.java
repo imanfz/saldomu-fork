@@ -42,8 +42,6 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        ActiveAndroid.initialize(getActivity());
-
         fitChart = (FitChart) mView.findViewById(R.id.fitChart);
         fitChart.setMinValue(0f);
         fitChart.setMaxValue(100f);
@@ -68,6 +66,7 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
             mlimit = mBal.getRemain_limit();
             type_periode = mBal.getPeriod_limit();
         }
+
         setUIBalance();
 
     }

@@ -308,7 +308,7 @@
     <color name="chart_value_3">#5c8fc3</color>
     <color name="chart_value_4">#72a1d4</color>
 
-    <color name="fab_color">#006064</color>
+    <color name="fab_color">@color/colorPrimaryDark</color>
     <color name="transparent">#00000000</color>
     <color name="toolbar">#ff808080</color>
     <color name="background">#fff1f1f1</color>

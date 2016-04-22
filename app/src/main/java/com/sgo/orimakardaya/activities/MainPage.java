@@ -30,6 +30,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
+import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -603,10 +604,6 @@ public class MainPage extends BaseActivity{
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.BANK_ATM_CODE, "");
-        mEditor.putString(DefineValue.NO_VA, "");
-        mEditor.putString(DefineValue.BANK_ATM_NAME, "");
-        mEditor.putString(DefineValue.CONTACT_FIRST_TIME, "");
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
