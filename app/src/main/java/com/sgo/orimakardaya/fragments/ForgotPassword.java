@@ -53,6 +53,10 @@ public class ForgotPassword extends Fragment {
         et_user_id = (EditText) v.findViewById(R.id.forgotpass_userid_value);
         spin_tipe_notif = (Spinner) v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = (Button) v.findViewById(R.id.btn_submit_forgot_pass);
+        TextView textMsg = (TextView) v.findViewById(R.id.textForgotPassmsg);
+        String msg = getString(R.string.forgotpass_text_instruction)+" "+ getString(R.string.appname)+ " "+
+                        getString(R.string.forgotpass_text_instruction2);
+        textMsg.setText(msg);
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
@@ -233,6 +237,7 @@ public class ForgotPassword extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
 
+                    Timber.d("isi params contact forgot password:" + response.toString());
                     String id, message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));

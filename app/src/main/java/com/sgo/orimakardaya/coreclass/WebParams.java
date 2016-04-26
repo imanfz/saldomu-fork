@@ -44,6 +44,7 @@ public class WebParams {
     public static String CCY_ID = "ccy_id";
     public static String AMOUNT = "amount";
 
+    public static String BANK_BILLER = "bank_biller";
     public static String BANK_DATA = "bank_data";
     public static String BANK_NAME = "bank_name";
     public static String BANK_CODE = "bank_code";
@@ -87,6 +88,7 @@ public class WebParams {
 
     public static String BILLER_TYPE_DATA = "biller_type_data";
     public static String BILLER_TYPE_CODE = "biller_type_code";
+    public static String BILLER_TYPE_ID = "biller_type_id";
     public static String BILLER_TYPE_NAME = "biller_type_name";
 
     public static String BILLER_TYPE = "biller_type";
@@ -318,4 +320,10 @@ public class WebParams {
     public static String IS_REGISTER = "is_register";
     public static String ALLOW_MEMBER_LEVEL = "allow_member_level";
     public static String CAN_TRANSFER = "can_transfer";
+
+    public static String DEV_MODEL = "dev_model";
+    public static String MAC_ADDR = "mac_addr";
+    public static String BANK_GATEWAY = "bank_gateway";
+
+    public static String UNREAD_NOTIF = "unread_notif";
 }

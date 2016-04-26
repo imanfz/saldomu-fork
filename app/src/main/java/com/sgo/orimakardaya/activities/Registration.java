@@ -106,7 +106,7 @@ public class Registration extends BaseActivity{
     }
 
     public void switchActivity(Intent mIntent) {
-        getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(0).getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         startActivity(mIntent);
     }
 

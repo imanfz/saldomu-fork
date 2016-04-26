@@ -110,6 +110,7 @@ public class FragNotification extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), null);
         mRecyclerView.addItemDecoration(itemDecoration);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mData = new ArrayList<>();
         mDataNotifDetail = new ArrayList<>();

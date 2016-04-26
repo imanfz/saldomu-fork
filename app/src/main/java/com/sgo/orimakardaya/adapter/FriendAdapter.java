@@ -92,8 +92,9 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
     }
 
     public Uri getPhotoUri(int id) {
+        Cursor cur = null;
         try {
-            Cursor cur = this.context.getContentResolver().query(
+            cur = this.context.getContentResolver().query(
                     ContactsContract.Data.CONTENT_URI,
                     null,
                     ContactsContract.Data.CONTACT_ID + "=" + id + " AND "
@@ -110,6 +111,12 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+        finally {
+            try {
+                if( cur != null && !cur.isClosed() )
+                    cur.close();
+            } catch(Exception ex) {}
         }
         Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);

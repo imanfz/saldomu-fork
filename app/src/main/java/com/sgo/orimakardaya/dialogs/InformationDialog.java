@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,6 +75,7 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     private int type;
     private ProgressBar progbar;
     WebView webview;
+    private boolean shown = false;
 
 
     public interface OnDialogOkCallback {
@@ -247,9 +249,16 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(webview != null)
-            webview.stopLoading();
+    public void show(FragmentManager manager, String tag) {
+        if (shown) return;
+
+        super.show(manager, tag);
+        shown = true;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        shown = false;
+        super.onDismiss(dialog);
     }
 }

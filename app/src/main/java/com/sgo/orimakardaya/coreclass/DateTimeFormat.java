@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DateTimeFormat {
@@ -56,6 +57,10 @@ public class DateTimeFormat {
       return df.format(Calendar.getInstance().getTime());
     }
 
+    public static Date getCurrDate(){
+        return Calendar.getInstance().getTime();
+    }
+
     public static String getCurrentDate(int minus){
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
       Calendar calendar=Calendar.getInstance();
@@ -63,7 +68,7 @@ public class DateTimeFormat {
       return df.format(calendar.getTime());
     }
 
-    public static java.util.Date convertCustomDate(String _date){
+    public static java.util.Date convertCustomDateTime(String _date){
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
       try {
           return dateFormat.parse(_date);
@@ -71,5 +76,15 @@ public class DateTimeFormat {
           e.printStackTrace();
       }
       return null;
-  }
+    }
+
+    public static java.util.Date convertCustomDate(String _date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        try {
+            return dateFormat.parse(_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

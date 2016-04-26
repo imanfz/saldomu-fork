@@ -61,6 +61,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_ask_for_money, container, false);
         return v;
     }

@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -53,16 +54,20 @@ public class FragCashOut extends Fragment {
 
     View v;
     SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    LinearLayout layout_acc_name;
     Spinner sp_privacy, sp_bank;
-    EditText etAccNo, etNominal;
+    EditText etAccNo, etNominal, etAccName;
     TextView txtBalance;
     Button btnProcess;
     ProgressDialog progdialog;
 
     int privacy, start = 0;
-    String userID, accessKey, memberId, balance, bankCashout, bankCode, bankName;
+    String userID, accessKey, memberId, balance, bankCashout, bankCode, bankName, bankGateway;
     ArrayList<String> arrBankName;
     ArrayList<String> arrBankCode;
+    ArrayList<String> arrBankGateway;
+    boolean isBankGateway = false;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,6 +131,8 @@ public class FragCashOut extends Fragment {
 
         initializeBankCashout();
 
+        layout_acc_name = (LinearLayout) v.findViewById(R.id.layout_bankcashout_acc_name);
+        etAccName = (EditText) v.findViewById(R.id.cashout_value_bank_acc_name);
         etAccNo = (EditText) v.findViewById(R.id.cashout_value_bank_acc_no);
         etNominal = (EditText) v.findViewById(R.id.cashout_value_nominal);
         txtBalance = (TextView) v.findViewById(R.id.cashout_balance);
@@ -156,9 +163,10 @@ public class FragCashOut extends Fragment {
 
                 String accNo = etAccNo.getText().toString();
                 String nominal = etNominal.getText().toString();
+                String accName = etAccName.getText().toString();
 
                 if (inputValidation()) {
-                    reqCashout(accNo, nominal);
+                    reqCashout(accNo, nominal, accName);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -185,11 +193,19 @@ public class FragCashOut extends Fragment {
             Object item = adapterView.getItemAtPosition(i);
             bankCode = arrBankCode.get(i);
             bankName = item.toString();
-            Timber.d("isi bank name cashout:"+item.toString() + bankCode);
+            if(!arrBankGateway.isEmpty()) bankGateway = arrBankGateway.get(i);
+            Timber.d("isi bank name cashout:"+item.toString() + bankCode + bankGateway);
 //            if(item.toString().toLowerCase().contains("mandiri")) {
 //
 //            }
 
+            if(isBankGateway) {
+                if (bankGateway.equalsIgnoreCase("Y")) {
+                    layout_acc_name.setVisibility(View.GONE);
+                } else if (bankGateway.equalsIgnoreCase("N")) {
+                    layout_acc_name.setVisibility(View.VISIBLE);
+                }
+            }
         }
 
         @Override
@@ -198,7 +214,7 @@ public class FragCashOut extends Fragment {
         }
     };
 
-    public void reqCashout(final String _acctNo, final String _amount){
+    public void reqCashout(final String _acctNo, final String _amount, final String _accName){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -213,6 +229,17 @@ public class FragCashOut extends Fragment {
             params.put(WebParams.BANK_CODE, bankCode);
             params.put(WebParams.ACCT_NO, _acctNo);
 //            params.put(WebParams.PRIVACY, privacy);
+            if(isBankGateway) {
+                if (bankGateway.equalsIgnoreCase("N")) {
+                    params.put(WebParams.ACCT_NAME, _accName);
+                }
+            }
+
+            if(isBankGateway) {
+                if (bankGateway.equalsIgnoreCase("N")) {
+                    params.put(WebParams.ACCT_NAME, _accName);
+                }
+            }
 
             Timber.d("isi params req cashout:" + params.toString());
 
@@ -229,6 +256,7 @@ public class FragCashOut extends Fragment {
                             sp_bank.setSelection(0);
                             etAccNo.setText("");
                             etNominal.setText("");
+                            etAccName.setText("");
                             sp_privacy.setSelection(0);
 
                             String tx_id = response.getString(WebParams.TX_ID);
@@ -324,11 +352,17 @@ public class FragCashOut extends Fragment {
 
         arrBankName = new ArrayList<>();
         arrBankCode = new ArrayList<>();
+        arrBankGateway = new ArrayList<>();
         try {
             JSONArray arrbank = new JSONArray(bankCashout);
             for(int i=0 ; i<arrbank.length() ; i++){
                 arrBankCode.add(arrbank.getJSONObject(i).getString(WebParams.BANK_CODE));
                 arrBankName.add(arrbank.getJSONObject(i).getString(WebParams.BANK_NAME));
+                if(arrbank.getJSONObject(i).has(WebParams.BANK_GATEWAY)) {
+                    isBankGateway = true;
+                    arrBankGateway.add(arrbank.getJSONObject(i).getString(WebParams.BANK_GATEWAY));
+                }
+                else isBankGateway = false;
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -341,6 +375,15 @@ public class FragCashOut extends Fragment {
             etAccNo.requestFocus();
             etAccNo.setError(getString(R.string.cashout_accno_validation));
             return false;
+        }
+        if(isBankGateway) {
+            if (bankGateway.equalsIgnoreCase("N")) {
+                if (etAccName.getText().toString().length() == 0) {
+                    etAccName.requestFocus();
+                    etAccName.setError(getString(R.string.cashout_accname_validation));
+                    return false;
+                }
+            }
         }
         if(etNominal.getText().toString().length() == 0){
             etNominal.requestFocus();

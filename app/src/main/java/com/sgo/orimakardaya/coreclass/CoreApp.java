@@ -12,9 +12,16 @@ import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.orimakardaya.Beans.*;
 import com.sgo.orimakardaya.BuildConfig;
+import com.sgo.orimakardaya.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 /*
@@ -55,6 +62,16 @@ public class CoreApp extends Application {
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
+        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardayadev), getString(R.string.realmname));
+
+        RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
+                .name(getString(R.string.realmname))
+                .schemaVersion(getResources().getInteger(R.integer.realscheme))
+                .migration(new CustomRealMigration())
+                .build();
+
+        Realm.setDefaultConfiguration(config);
+
         PackageInfo pInfo;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -93,6 +110,23 @@ public class CoreApp extends Application {
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
+    }
+
+    private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
+        try {
+            File file = new File(this.getFilesDir(), outFileName);
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, bytesRead);
+            }
+            outputStream.close();
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

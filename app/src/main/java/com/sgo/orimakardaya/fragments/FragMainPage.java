@@ -157,6 +157,29 @@ public class FragMainPage extends Fragment {
         this.currentView = currentView;
     }
 
+
+    private int getStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getActivity().getWindow().getStatusBarColor();
+        }
+        return 0;
+    }
+
+    private void setStatusBarColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(color);
+        }
+    }
+
+
+    private void switchMenu(int idx_menu,Bundle data){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+            fca.switchMenu(idx_menu, data);
+    }
+
     private void ToggleFAB(Boolean isShow){
         if (getActivity() == null)
             return;

@@ -9,6 +9,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.BalanceModel;
+import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.coreclass.CurrencyFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
@@ -68,9 +69,18 @@ public class UtilsLoader {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Timber.v("masuk sini", "new balance caller Loader");
 
+                                String unread = sp.getString(WebParams.UNREAD_NOTIF,"");
+                                if(unread.equals("")) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(WebParams.UNREAD_NOTIF, response.getString(WebParams.UNREAD_NOTIF));
+                                    mEditor.apply();
+
+                                    setNotifCount(response.getString(WebParams.UNREAD_NOTIF));
+                                }
 
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.BALANCE, CurrencyFormat.format(response.getDouble(WebParams.AMOUNT)));
+                                mEditor.putString(DefineValue.MAX_TOPUP,response.optString(WebParams.MAX_TOPUP, ""));
                                 mEditor.apply();
 
                                 BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
@@ -199,4 +209,11 @@ public class UtilsLoader {
         }
     }
 
+    private void setNotifCount(String _count){
+        if (mActivity == null)
+            return;
+
+        MainPage fca = (MainPage) mActivity;
+        fca.setNotifAmount(_count);
+    }
 }

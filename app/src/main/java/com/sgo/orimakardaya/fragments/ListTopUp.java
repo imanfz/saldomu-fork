@@ -45,6 +45,7 @@ import timber.log.Timber;
 public class ListTopUp extends ListFragment implements InformationDialog.OnDialogOkCallback {
 
     View v;
+    SecurePreferences sp;
     ArrayList<String> _listType;
     String listBankIB, listBankSMS,userID,accessKey,memberID;
     EasyAdapter adapter;
@@ -63,7 +64,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         memberID = sp.getString(DefineValue.MEMBER_ID, "");
@@ -78,12 +79,6 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
             is_full_activity = mArgs.getBoolean(DefineValue.IS_ACTIVITY_FULL,false);
 
         _listType = new ArrayList<String>();
-
-        String noVA = sp.getString(DefineValue.NO_VA,"");
-        Timber.d("isi VA:"+noVA);
-        if(!noVA.isEmpty()){
-            Collections.addAll(_listType, getResources().getStringArray(R.array.topup_list_item));
-        }
 
         adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
 
@@ -124,6 +119,35 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Timber.d("response Listbank:"+response.toString());
                                 if (isAdded()) {
+                                    String atm_topup_data = response.optString(WebParams.ATM_TOPUP_DATA,"");
+                                    Timber.d("atm topup:" + atm_topup_data);
+                                    String bank_code = "";
+                                    String no_va = "";
+                                    String bank_name = "";
+                                    JSONArray mArrayATM = new JSONArray(atm_topup_data);
+                                    for (int i = 0; i < mArrayATM.length(); i++) {
+                                        if (i == mArrayATM.length() - 1) {
+                                            bank_code += mArrayATM.getJSONObject(i).getString(WebParams.BANK_CODE);
+                                            no_va += mArrayATM.getJSONObject(i).getString(WebParams.NO_VA);
+                                            bank_name += mArrayATM.getJSONObject(i).getString(WebParams.BANK_NAME);
+                                        } else {
+                                            bank_code += mArrayATM.getJSONObject(i).getString(WebParams.BANK_CODE) + ",";
+                                            no_va += mArrayATM.getJSONObject(i).getString(WebParams.NO_VA) + ",";
+                                            bank_name += mArrayATM.getJSONObject(i).getString(WebParams.BANK_NAME) + ",";
+                                        }
+                                    }
+                                    Timber.d("atm topup:" + bank_name);
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.BANK_ATM_CODE, bank_code);
+                                    mEditor.putString(DefineValue.NO_VA, no_va);
+                                    mEditor.putString(DefineValue.BANK_ATM_NAME, bank_name);
+                                    mEditor.apply();
+
+                                    if(!no_va.isEmpty()){
+                                        Collections.addAll(_listType, getResources().getStringArray(R.array.topup_list_item));
+                                    }
+
                                     insertBankList(new JSONArray(response.getString(WebParams.BANK_DATA)));
                                     prodDialog.dismiss();
                                 }
