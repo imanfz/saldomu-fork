@@ -255,8 +255,9 @@
     <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti kata sandi anda untuk alasan keamanan.</string>
 
     <string name="forgotpass_text_title">Lupa Kata Sandi</string>
-    <string name="forgotpass_text_instruction">Isi nomor Handphone yang terhubung dengan akun PIN anda dan pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
-    <string name="forgotpass_text_instruction2">Isi nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
+    <string name="forgotpass_text_instruction">Isi nomor Handphone yang terhubung dengan akun</string>
+    <string name="forgotpass_text_instruction2">anda dan pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
+    <string name="forgotpass_text_instruction3">Isi nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <string name="forgotpass_text_message_success">Ganti kata sandi berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">karakter!</string>
@@ -474,7 +475,7 @@
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="about_apps">Tentang Aplikasi</string>
-    <string name="about_apps_desc"><b>PIN</b> - socialbanking adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
+    <string name="about_apps_desc"><b>m-akardaya</b> - socialbanking adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
 
@@ -561,10 +562,12 @@
     <string name="cashout_bank_acc_no_text">No. Rekening Tujuan</string>
     <string name="cashout_nominal_text">Nominal</string>
     <string name="cashout_bank_acc_no_hint">Masukan nomor akun</string>
+    <string name="cashout_bank_acc_name_hint">Masukan nama penerima</string>
     <string name="cashout_nominal_hint">Masukan nominal penarikan</string>
     <string name="cashout_bank_acc_name_text">Nama Penerima</string>
     <string name="cashout_nominal_validation">Nominal dibutuhkan !</string>
     <string name="cashout_accno_validation">Nomor rekening dibutuhkan !</string>
+    <string name="cashout_accname_validation">Nama penerima dibutuhkan !</string>
     <string name="cashout_nominal_zero">Nominal harus lebih besar dari nol</string>
     <string name="cashout_tx_id_text">ID Transaksi</string>
     <string name="cashout_bank_name_text">Nama Bank</string>
@@ -624,4 +627,6 @@
 
     <string name="share_title">Bagikan</string>
     <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
+    <string name="failed_insert_realm">Gagal menyimpan data</string>
+    <string name="list_contact_title">List Contact</string>
 </resources>

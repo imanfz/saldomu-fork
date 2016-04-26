@@ -211,8 +211,10 @@
     <string name="changepass_text_firsttime_msg">Before using this application, please change your password for security reasons.</string>
 
     <string name="forgotpass_text_title">Forgot Password</string>
-    <string name="forgotpass_text_instruction">Enter your Phone Number associated with your PIN account and select the type of notification will be processed.</string>
-    <string name="forgotpass_text_message_success">Change Password Successful. Please login with new password.</string>
+    <string name="forgotpass_text_instruction">Enter your Phone Number associated with your account</string>
+    <string name="forgotpass_text_instruction2">and select the type of notification will be processed.</string>
+    <string name="forgotpass_text_instruction3">Enter your Phone Number associated with your account and a new password.</string>
+   <string name="forgotpass_text_message_success">Change Password Successful. Please login with new password.</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">characters!</string>
 
@@ -403,7 +405,7 @@
     <string name="listatm_topup_other_ins_5">Press YES/OK to submit your transaction</string>
 
     <string name="about_apps">About Application</string>
-    <string name="about_apps_desc"><b>PIN</b> - socialbanking is an financial application with <b><i>social media</i></b> experience. Because banking is a part of your social life.</string>
+    <string name="about_apps_desc"><b>m-akardaya</b> - socialbanking is an financial application with <b><i>social media</i></b> experience. Because banking is a part of your social life.</string>
     <string name="menu_group_title_supports">Supports</string>
     <string name="menu_item_title_setting">Setting</string>
     <string name="menu_item_title_help">Contact Us</string>
@@ -473,10 +475,12 @@
     <string name="cashout_bank_acc_no_text">Bank Account Number</string>
     <string name="cashout_nominal_text">Nominal</string>
     <string name="cashout_bank_acc_no_hint">please input bank account number</string>
+    <string name="cashout_bank_acc_name_hint">please input account name</string>
     <string name="cashout_nominal_hint">please input nominal cash out</string>
     <string name="cashout_bank_acc_name_text">Beneficiary  Name</string>
     <string name="cashout_nominal_validation">Nominal is required !</string>
     <string name="cashout_accno_validation">Account number is required !</string>
+    <string name="cashout_accname_validation">Account name is required !</string>
     <string name="cashout_nominal_zero">Nominal must be greater than zero</string>
     <string name="cashout_tx_id_text">Transaction ID</string>
     <string name="cashout_bank_name_text">Bank Name</string>
@@ -525,7 +529,6 @@
     <string name="amount">Amount</string>
     <string name="doing">doing</string>
     <string name="fee">Admin Fee</string>
-    <string name="forgotpass_text_instruction2">Enter your Phone Number associated with your PIN account and a new password.</string>
     <string name="login_failed_wrong_id">Mobile number is not valid or not registered.</string>
     <string name="login_failed_wrong_pass">Incorrect Password</string>
     <string name="login_text_forgetpin">Forgot PIN, Please call to\ncall center at 0813–3335–5541</string>

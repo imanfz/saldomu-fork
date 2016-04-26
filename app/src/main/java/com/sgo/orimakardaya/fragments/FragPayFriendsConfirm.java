@@ -67,7 +67,6 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     List<TempTxID> mTempTxID;
 
     String authType;
-    int start = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -244,25 +243,6 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        String hashPIN = sp.getString(DefineValue.PIN_CODE, "");
-
-        if(start > 0 && !hashPIN.equals("")) {
-            Timber.d("pin hash md5:" + hashPIN);
-
-            sentDataConfirm(txID, hashPIN);
-
-            SecurePreferences.Editor mEditor = sp.edit();
-            mEditor.putString(DefineValue.PIN_CODE, "");
-            mEditor.apply();
-        }
-        Timber.d("start:"+Integer.toString(start));
-        start++;
-    }
-
     Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -277,7 +257,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                     Intent i = new Intent(getActivity(), InsertPIN.class);
                     if(attempt != -1 && attempt < 2)
                         i.putExtra(DefineValue.ATTEMPT,attempt);
-                    startActivity(i);
+                    startActivityForResult(i,MainPage.REQUEST_FINISH);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -348,6 +328,20 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             getActivity().finish();
         }
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("onActivity result"+ " Biller Fragment"+" / "+requestCode+" / "+resultCode);
+        if(requestCode == MainPage.REQUEST_FINISH){
+              Timber.d("onActivity result", "Biller Fragment masuk request exit");
+            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+                String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
+                Timber.d("onActivity result", "Biller Fragment result pin value");
+                sentDataConfirm(txID, value_pin);
+            }
+        }
+    }
 
     public void sentDataConfirm(String _data, String _token){
         try{
@@ -456,8 +450,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                                 attempt = attempt-1;
                                 if(attempt != -1 && attempt < 2)
                                     i.putExtra(DefineValue.ATTEMPT, attempt);
-
-                                startActivity(i);
+                                startActivityForResult(i,MainPage.REQUEST_FINISH);
                             }
                         }
                     } catch (JSONException e) {

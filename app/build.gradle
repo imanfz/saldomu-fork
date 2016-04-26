@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
 
 android {
 
@@ -42,8 +43,11 @@ android {
             applicationId "com.sgo.devorimakardaya"
             resValue "string", "appname", "DEV AKARDAYA"
             resValue "string", "dbname", "DevOriMAkardaya.db"
+            resValue "string", "realmname", "akardayadev.realm"
+            resValue "integer", "realscheme", "0"
+            resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
-            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya/\""
+            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya2/\""
 
             versionCode = 1
             versionName "1.0"
@@ -52,8 +56,11 @@ android {
             applicationId "com.sgo.orimakardaya"
             resValue "string", "appname", "PIN m-akardaya"
             resValue "string", "dbname", "m-akardaya.db"
+            resValue "string", "realmname", "akardaya.realm"
+            resValue "integer", "realscheme", "0"
+            resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
-            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya/\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             signingConfig signingConfigs.prodKey
             versionCode = 14
             versionName "2.13"
@@ -124,6 +131,7 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.android.support:design:23.2.0'
     compile 'com.gordonwong:material-sheet-fab:1.2'
+    compile 'joda-time:joda-time:2.9.3'
     compile project(':PinMaster')
     compile project(':PinnedSectionList')
     compile project(':VPI')

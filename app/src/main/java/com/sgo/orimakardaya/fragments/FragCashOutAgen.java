@@ -1,5 +1,6 @@
 package com.sgo.orimakardaya.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -59,6 +60,7 @@ public class FragCashOutAgen extends Fragment {
     private int attempt,failed;
     private Button btnResend, btn_proses, btn_batal;
     private int max_token_resend = 3, count_resend=0;
+    private Activity act;
 
 
     @Override
@@ -78,6 +80,7 @@ public class FragCashOutAgen extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         userid = sp.getString(DefineValue.USERID_PHONE, "");
@@ -321,7 +324,18 @@ public class FragCashOutAgen extends Fragment {
                             test.showDialoginActivity(getActivity(),message);
                         }
                         else if(code.equals(ErrorDefinition.NO_TRANSACTION)){
-                            initializeNoData();
+//                            initializeNoData();
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+
+                            String contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
+                            if(contactCenter.equals("")) {
+                                getHelpList();
+                            }
+                            else {
+                                initializeNoData();
+                            }
                         }
                         else {
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -725,6 +739,97 @@ public class FragCashOutAgen extends Fragment {
 
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
+        }
+    }
+
+    public void getHelpList() {
+        try {
+            progdialog = DefinedDialog.CreateProgressDialog(act, "");
+//            progdialog.show();
+
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+                    userid,accesskey);
+            params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            Timber.d("isi params help list:" + params.toString());
+
+            MyApiClient.getHelpList(getActivity(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            Timber.d("isi params help list:" + response.toString());
+
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
+                            mEditor.apply();
+
+                            initializeNoData();
+//                            try {
+//                                JSONArray arrayContact = new JSONArray(contactCenter);
+//                                for (int i = 0; i < arrayContact.length(); i++) {
+//                                    if (i == 0) {
+//                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+//                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+//                                    }
+//                                }
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:" + response.toString());
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(act, message);
+                        } else {
+                            Timber.d("isi error help list:" + response.toString());
+                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
+                        }
+
+                        if(progdialog.isShowing())
+                            progdialog.dismiss();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if (progdialog.isShowing())
+                        progdialog.dismiss();
+
+                    Timber.w("Error Koneksi help list help:" + throwable.toString());
+                }
+            });
+        }
+        catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
         }
     }
 

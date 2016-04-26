@@ -41,10 +41,6 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if(InetHandler.isNetworkAvailable(this))
-            getAppVersion();
-
-
         if (findViewById(R.id.loginContent) != null) {
             if (savedInstanceState != null) {
                 return;
@@ -91,133 +87,12 @@ public class LoginActivity extends BaseActivity {
                     .beginTransaction()
                     .replace(R.id.loginContent, mFragment, fragName)
                     .commit();
-
         }
-
     }
 
-    public void getAppVersion(){
-        try{
-            Timber.d("getAppVersionRegistration");
-            MyApiClient.getAppVersion(new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response get App Version:" + response.toString());
-                            String arrayApp = response.getString(WebParams.APP_DATA);
-                            if (!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
-                                JSONObject mObject = null;
-                                if (arrayApp != null)
-                                    mObject = new JSONObject(arrayApp);
-
-
-                                if (mObject != null) {
-                                    String package_version;
-                                    package_version = mObject.getString(WebParams.PACKAGE_VERSION);
-
-                                    final String package_name = mObject.getString(WebParams.PACKAGE_NAME);
-                                    final String type = mObject.getString(WebParams.TYPE);
-                                    Timber.d("Isi Version Name / version code:" + DefineValue.VERSION_NAME + " / " + DefineValue.VERSION_CODE);
-                                    if (!package_version.equals(DefineValue.VERSION_NAME)) {
-                                        if (!isFinishing()) {
-                                            final JSONObject finalMObject = mObject;
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
-                                                    .setTitle("Update")
-                                                    .setMessage("Application is out of date,  Please update immediately")
-                                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                                    .setCancelable(false)
-                                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            if (type.equalsIgnoreCase("1")) {
-                                                                try {
-                                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
-                                                                } catch (android.content.ActivityNotFoundException anfe) {
-                                                                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
-                                                                }
-                                                            } else if (type.equalsIgnoreCase("2")) {
-                                                                String download_url = "";
-                                                                try {
-                                                                    download_url = finalMObject.getString(WebParams.DOWNLOAD_URL);
-                                                                } catch (JSONException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                                if (!Patterns.WEB_URL.matcher(download_url).matches())
-                                                                    download_url = "http://www.google.com";
-                                                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(download_url)));
-                                                            }
-                                                            Registration.fa.finish();
-                                                            LoginActivity.this.finish();
-                                                            android.os.Process.killProcess(android.os.Process.myPid());
-                                                            System.exit(0);
-                                                            getParent().finish();
-                                                        }
-                                                    });
-                                            AlertDialog alertDialog = builder.create();
-                                            alertDialog.show();
-                                        }
-                                    }
-                                }
-                            }
-                        } else if (code.equals("0381")) {
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this)
-                                    .setTitle("Maintenance")
-                                    .setMessage(message)
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .setCancelable(false)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Registration.fa.finish();
-                                            LoginActivity.this.finish();
-                                            android.os.Process.killProcess(android.os.Process.myPid());
-                                            System.exit(0);
-                                            getParent().finish();
-                                        }
-                                    });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(LoginActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(LoginActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi app version registration:" + throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
-        }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApiClient.CancelRequestWS(this, true);
     }
 }

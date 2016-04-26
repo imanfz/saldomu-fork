@@ -49,6 +49,8 @@ import com.sgo.orimakardaya.fragments.NavigationDrawMenu;
 import com.sgo.orimakardaya.fragments.RightSideDrawMenu;
 import com.sgo.orimakardaya.services.AppInfoService;
 import com.sgo.orimakardaya.services.BalanceService;
+import com.sgo.orimakardaya.services.UserProfileService;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,9 +97,10 @@ public class MainPage extends BaseActivity{
 //    private BroadcastReceiver mRegistrationBroadcastReceiver; // gcm
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
-    private boolean isBound, isBoundAppInfo;
-
-
+    private UserProfileService serviceUserProfileReference;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile;
+	
+    private int statusBarColor;
     public MaterialSheetFab materialSheetFab;
 
     @Override
@@ -190,6 +193,32 @@ public class MainPage extends BaseActivity{
         }
     };
 
+    private ServiceConnection UserProfileServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            // called when the connection with the service has been
+            // established. gives us the service object to use so we can
+            // interact with the service.we have bound to a explicit
+            // service that we know is running in our own process, so we can
+            // cast its IBinder to a concrete class and directly access it.
+            Timber.i("Main page service connection UserProfile Bound service connected");
+            serviceUserProfileReference = ((UserProfileService.MyLocalBinder) service).getService();
+            serviceUserProfileReference.setMainPageContext(MainPage.this);
+            isBoundUserProfile=true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            // called when the connection with the service has been
+            // unexpectedly disconnected -- its process crashed.
+            // Because it is running in our same process, we should never
+            // see this happen.
+            Timber.i("Main Page service connection UserProfile Problem: bound service disconnected");
+            serviceUserProfileReference = null;
+            isBoundUserProfile = false;
+        }
+    };
+
     private Handler handler=new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -232,6 +261,24 @@ public class MainPage extends BaseActivity{
             Intent bindIntent = new Intent(this, AppInfoService.class);
             isBoundAppInfo = bindService(bindIntent, AppInfoServiceConnection,Context.BIND_AUTO_CREATE);
         }
+    }
+
+
+    //    bind to the service
+    private void doBindToUserProfileService() {
+        Timber.i("Main Page service connection UserProfile Binding ........");
+        if (!isBoundUserProfile) {
+            Timber.i("Main Page service connection UserProfile Masuk binding");
+            Intent bindIntent = new Intent(this, UserProfileService.class);
+            isBoundUserProfile = bindService(bindIntent, UserProfileServiceConnection,Context.BIND_AUTO_CREATE);
+        }
+    }
+
+
+    private void doUnbindUserProfileService() {
+        Timber.i("Main Page service connection UserProfile Unbind ........");
+        unbindService(UserProfileServiceConnection);
+        isBoundUserProfile = false;
     }
 
     public void InitializeNavDrawer(){
@@ -385,43 +432,17 @@ public class MainPage extends BaseActivity{
                             if (!arraynya.isEmpty()) {
                                 JSONArray arrayJson = new JSONArray(arraynya);
                                 JSONObject objectJson = arrayJson.getJSONObject(0);
-                                String atm_topup_data = objectJson.optString(WebParams.ATM_TOPUP_DATA,"");
-                                Timber.d("atm topup:" + atm_topup_data);
-                                String bank_code = "";
-                                String no_va = "";
-                                String bank_name = "";
-                                JSONArray mArrayATM = new JSONArray(atm_topup_data);
-                                for (int i = 0; i < mArrayATM.length(); i++) {
-                                    if (i == mArrayATM.length() - 1) {
-                                        bank_code += mArrayATM.getJSONObject(i).getString(WebParams.BANK_CODE);
-                                        no_va += mArrayATM.getJSONObject(i).getString(WebParams.NO_VA);
-                                        bank_name += mArrayATM.getJSONObject(i).getString(WebParams.BANK_NAME);
-                                    } else {
-                                        bank_code += mArrayATM.getJSONObject(i).getString(WebParams.BANK_CODE) + ",";
-                                        no_va += mArrayATM.getJSONObject(i).getString(WebParams.NO_VA) + ",";
-                                        bank_name += mArrayATM.getJSONObject(i).getString(WebParams.BANK_NAME) + ",";
-                                    }
-                                }
-                                Timber.d("atm topup:" + bank_name);
 
                                 SecurePreferences.Editor mEditor = sp.edit();
-                                String member_dap = response.optString(WebParams.MEMBER_DAP,"");
-                                mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
-                                mEditor.putString(DefineValue.BANK_ATM_CODE, bank_code);
-                                mEditor.putString(DefineValue.NO_VA, no_va);
-                                mEditor.putString(DefineValue.BANK_ATM_NAME, bank_name);
-                                mEditor.putString(DefineValue.BANK_CASHOUT, objectJson.optString(WebParams.BANK_CASHOUT, ""));
                                 mEditor.putString(DefineValue.MEMBER_CODE, objectJson.optString(WebParams.MEMBER_CODE, ""));
                                 mEditor.putString(DefineValue.MEMBER_ID, objectJson.optString(WebParams.MEMBER_ID, ""));
                                 mEditor.putString(DefineValue.MEMBER_NAME, objectJson.optString(WebParams.MEMBER_NAME, ""));
-                                mEditor.putString(DefineValue.MAX_TOPUP,objectJson.optString(WebParams.MAX_TOPUP,""));
                                 mEditor.apply();
 
                                 if(mNavDrawer != null && serviceReferenceBalance != null)
                                     serviceReferenceBalance.runBalance();
 //                                TurnOnGCM();
 //                                getBalance(true);
-                                refreshPromo();
                                 initializeNavDrawer();
                                 CheckNotification();
                                 String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
@@ -436,14 +457,13 @@ public class MainPage extends BaseActivity{
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (progdialog.isShowing())
-                                        progdialog.dismiss();
-                                }
-                            },6000);
+                            String member_dap = response.getString(WebParams.MEMBER_DAP);
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
+                            mEditor.apply();
 
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
@@ -535,7 +555,7 @@ public class MainPage extends BaseActivity{
     public void openFirstScreen(){
         Intent i = new Intent(this,Registration.class);
         startActivity(i);
-        finish();
+        this.finish();
     }
 
 
@@ -917,6 +937,7 @@ public class MainPage extends BaseActivity{
             return true;
         }
         else if(item.getItemId() == R.id.right_drawer){
+            refreshPromo();
             if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)){
                 mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
             }
@@ -972,6 +993,7 @@ public class MainPage extends BaseActivity{
         super.onStart();
         doBindToService();
         doBindToAppInfoService();
+        doBindToUserProfileService();
     }
 
     @Override
@@ -1023,7 +1045,7 @@ public class MainPage extends BaseActivity{
         super.onStop();
         doUnbindService();
         doUnbindAppInfoService();
-
+        doUnbindUserProfileService();
     }
 
     @Override

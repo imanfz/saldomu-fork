@@ -38,6 +38,7 @@ import com.sgo.orimakardaya.Beans.myFriendModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.AddByQRCodeActivity;
 import com.sgo.orimakardaya.activities.FriendsViewDetailActivity;
+import com.sgo.orimakardaya.activities.ListContactActivity;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.MyFriendAdapter;
 import com.sgo.orimakardaya.coreclass.*;
@@ -158,22 +159,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchMenu( IdxItemMenu, data);
-    }
-
-    private void switchActivity(Intent mIntent, int j){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent, j);
-    }
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        fca.switchMenu(IdxItemMenu, data);
     }
 
     @Override
@@ -294,8 +280,10 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                     Toast.makeText(getActivity().getApplicationContext(), "Check Contacts First", Toast.LENGTH_LONG).show();
                 }
                 else if (mState == SHOW_MENU){
-                    Fragment newFragment = new ListContacts();
-                    switchFragment(newFragment, "Contact List", true);
+//                    Fragment newFragment = new ListContacts();
+//                    switchFragment(newFragment, "Contact List", true);
+                    Intent i = new Intent(getActivity(), ListContactActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                 }
                 return true;
 //            case R.id.action_information:
@@ -415,22 +403,27 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
                                 String _phone1 = null, _phone2 = null, _phone3 = null, _phoneTemp;
                                 int idx = 0;
-                                while (pCur.moveToNext()) {
-                                    _phoneTemp = NoHPFormat.editNoHP(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                                    switch (idx) {
-                                        case 0:
-                                            _phone1 = _phoneTemp;
-                                            break;
-                                        case 1:
-                                            _phone2 = _phoneTemp;
-                                            break;
-                                        case 2:
-                                            _phone3 = _phoneTemp;
-                                            break;
+
+                                if(pCur != null) {
+                                    while (pCur.moveToNext()) {
+                                        _phoneTemp = NoHPFormat.editNoHP(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                                        switch (idx) {
+                                            case 0:
+                                                _phone1 = _phoneTemp;
+                                                break;
+                                            case 1:
+                                                _phone2 = _phoneTemp;
+                                                break;
+                                            case 2:
+                                                _phone3 = _phoneTemp;
+                                                break;
+                                        }
+                                        idx++;
                                     }
-                                    idx++;
                                 }
-                                pCur.close();
+                                if (pCur != null) {
+                                    pCur.close();
+                                }
 
                                 pCur = mCR.query(
                                         ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -439,10 +432,15 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                                         new String[]{_id}, null);
 
                                 String _email=null;
-                                while (pCur.moveToNext()) {
-                                    _email = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+                                if (pCur != null) {
+                                    while (pCur.moveToNext()) {
+                                        _email = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                    }
                                 }
-                                pCur.close();
+                                if (pCur != null) {
+                                    pCur.close();
+                                }
 
                                 Timber.wtf("isi contact yg disimpen:"+_name+" / "+_phone1+" / "+_phone2+" / "+_phone3+" / "+_email+" / "+_ownerID);
 
@@ -829,5 +827,21 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             ActiveAndroid.endTransaction();
         }
         super.onDestroy();
+    }
+
+    private void switchActivity(Intent mIntent, int j){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent, j);
+    }
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchContent(i, name, isBackstack);
     }
 }

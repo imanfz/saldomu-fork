@@ -68,6 +68,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_sgoplus_input, container, false);
         return v;
     }

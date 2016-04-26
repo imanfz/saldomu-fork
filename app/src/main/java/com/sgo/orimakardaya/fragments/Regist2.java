@@ -294,7 +294,8 @@ public class Regist2 extends Fragment {
             params.put(WebParams.TOKEN_ID, TokenValue.getText().toString());
 
             Timber.d("isi params reg 2 submit:"+params.toString());
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
+
+            MyApiClient.sentValidRegister(getActivity(),params, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -309,7 +310,7 @@ public class Regist2 extends Fragment {
                             token = TokenValue.getText().toString();
                             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                             i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
-                            startActivityForResult(i, Registration.ACTIVITY_RESULT);
+                            switchActivityPIN(i);
                         } else {
                             Timber.d("isi response gagal submit:" + response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
@@ -343,16 +344,14 @@ public class Regist2 extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
+                    if (progdialog.isShowing())
                         progdialog.dismiss();
                     btnCancel.setEnabled(true);
                     btnSubmit.setEnabled(true);
                     TokenValue.setEnabled(true);
                     Timber.w("Error Koneksi proses data reg2:" + throwable.toString());
                 }
-            };
-
-            MyApiClient.sentValidRegister(getActivity(), params, mHandler);
+            });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -361,9 +360,13 @@ public class Regist2 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d(requestCode+"/"+resultCode);
+
+        Timber.d("isi regist 2 requestCode:"+String.valueOf(requestCode));
         if (requestCode == Registration.ACTIVITY_RESULT) {
+            Timber.d("isi regist 2 resultcode:"+String.valueOf(resultCode));
             if (resultCode == Registration.RESULT_PIN) {
+                Timber.d("isi regist 2 authtype:"+authType);
+
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
                 sendCreatePass();
@@ -403,7 +406,7 @@ public class Regist2 extends Fragment {
 
                             Intent i = new Intent(getActivity(), CreatePIN.class);
                             i.putExtra(DefineValue.REGISTRATION, true);
-                            startActivityForResult(i, Registration.ACTIVITY_RESULT);
+                            switchActivityPIN(i);
                         } else {
                             Timber.d("isi error create pass:" + response.toString());
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();

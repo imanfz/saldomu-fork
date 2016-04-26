@@ -12,5 +12,8 @@
             android:layout_height="match_parent">
     </ListView>
 
+    <include android:id="@+id/empty_layout"
+        layout="@layout/empty_view"
+        />
 
 </LinearLayout>

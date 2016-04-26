@@ -14,6 +14,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
+
+import com.sgo.orimakardaya.Beans.Biller_Data_Model;
+import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
+import com.sgo.orimakardaya.Beans.Denom_Data_Model;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
@@ -26,6 +30,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.HashMap;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 
 /*
   Created by Administrator on 3/4/2015.
@@ -58,15 +66,21 @@ public class BillerInput extends Fragment {
     ImageView spinWheelDenom;
     ProgressDialog progdialog;
     Animation frameAnimation;
-    String denom_data,biller_type, biller_comm_id,biller_merchant_name, biller_comm_code, biller_api_key, item_id,
-            final_payment_remark, buy_type,callback_url;
+    String biller_type,biller_comm_id,biller_comm_name, denom_item_id, biller_api_key, biller_item_id,
+            final_payment_remark, buy_type,callback_url, biller_id;
     int buy_code;
     private HashMap<String,String> mDenomData;
     String[] _denomData;
-    Boolean isToken;
+    private Biller_Data_Model mBillerData;
+    private Biller_Type_Data_Model mBillerTypeData;
+    private List<Denom_Data_Model> mListDenomData;
+    private RealmChangeListener realmListener;
+    Boolean isToken, isHaveItemID;
     Spinner sp_privacy;
     int privacy;
     String digitsListener ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    Realm realm;
+    ArrayAdapter<String> adapterDenom;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,13 +93,10 @@ public class BillerInput extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         Bundle args = getArguments();
-        denom_data = args.getString(DefineValue.DENOM_DATA);
-        biller_type = args.getString(DefineValue.BILLER_TYPE);
-        biller_comm_id = args.getString(DefineValue.BILLER_COMM_ID);
-        biller_comm_code = args.getString(DefineValue.BILLER_COMM_CODE);
-        biller_api_key = args.getString(DefineValue.BILLER_API_KEY);
-        callback_url = args.getString(DefineValue.CALLBACK_URL);
-        biller_merchant_name = args.getString(DefineValue.BILLER_NAME);
+        biller_id = args.getString(DefineValue.BILLER_ID,"");
+        biller_comm_id = args.getString(DefineValue.COMMUNITY_ID,"");
+        biller_comm_name = args.getString(DefineValue.COMMUNITY_NAME,"");
+        biller_item_id = args.getString(DefineValue.BILLER_ITEM_ID,"");
 
         isToken = false;
 
@@ -98,16 +109,61 @@ public class BillerInput extends Fragment {
         layout_denom = v.findViewById(R.id.billerinput_layout_denom);
         sp_privacy = (Spinner) v.findViewById(R.id.privacy_spinner);
 
+        btn_submit.setOnClickListener(submitInputListener);
         layout_denom.setVisibility(View.VISIBLE);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
+        realm = Realm.getDefaultInstance();
+
         initializeLayout();
+        initializeSpinnerDenom();
+
+        realmListener = new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                if(isVisible()){
+                    initializeLayout();
+                    if(progdialog != null && progdialog.isShowing()) {
+                        progdialog.dismiss();
+                    }
+
+                    if(mBillerData != null && !mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() != 0){
+                        initializeSpinnerDenom();
+                    }
+
+                    if(_denomData != null) {
+                        for (int i = 0; i < mListDenomData.size(); i++) {
+                            _denomData[i] = mListDenomData.get(i).getItem_name();
+                        }
+
+                        adapterDenom.notifyDataSetChanged();
+                    }
+                }
+            }};
+        realm.addChangeListener(realmListener);
     }
 
     private void initializeLayout(){
 
+        mBillerData = realm.where(Biller_Data_Model.class).
+                equalTo(WebParams.COMM_ID,biller_comm_id).
+                equalTo(WebParams.COMM_NAME,biller_comm_name).
+                equalTo(WebParams.DENOM_ITEM_ID,biller_item_id).
+                findFirst();
+
+        mBillerTypeData = realm.where(Biller_Type_Data_Model.class).
+                equalTo(WebParams.BILLER_TYPE_ID,biller_id).
+                findFirst();
+
+        if(mBillerData == null || mBillerData.getItem_id().isEmpty() && mBillerData.getDenom_data_models().size() == 0){
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        }
+
+        mListDenomData = realm.copyFromRealm(mBillerData.getDenom_data_models());
+
+        biller_type = mBillerTypeData.getBiller_type_code();
         String[] _buy_type = getResources().getStringArray(R.array.buy_vpi_title);
 
         if(biller_type.equals(billerType[0])){
@@ -162,58 +218,44 @@ public class BillerInput extends Fragment {
             et_payment_remark.setInputType(InputType.TYPE_CLASS_TEXT);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         }
+    }
 
-        btn_submit.setOnClickListener(submitInputListener);
+    private void initializeSpinnerDenom(){
+        if(mListDenomData.size() > 0){
+            _denomData = new String[mListDenomData.size()];
+            adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
+            adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spin_denom.setAdapter(adapterDenom);
+            spin_denom.setOnItemSelectedListener(spinnerDenomListener);
 
-        if(denom_data != null){
-            JSONArray mArray;
-            try {
-                mArray = new JSONArray(denom_data);
-                _denomData = new String[mArray.length()];
-                final ArrayAdapter<String> adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
-                adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spin_denom.setAdapter(adapterDenom);
-                spin_denom.setOnItemSelectedListener(spinnerDenomListener);
+            spin_denom.setVisibility(View.GONE);
+            spinWheelDenom.setVisibility(View.VISIBLE);
+            spinWheelDenom.startAnimation(frameAnimation);
 
-                spin_denom.setVisibility(View.GONE);
-                spinWheelDenom.setVisibility(View.VISIBLE);
-                spinWheelDenom.startAnimation(frameAnimation);
-
-                final JSONArray finalMArray = mArray;
-                mDenomData = new HashMap<String, String>();
-                Thread deproses = new Thread(){
-                    @Override
-                    public void run() {
-                        try {
-                            for (int i = 0 ;i< finalMArray.length();i++){
-                                //Timber.d("Json array isi", finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME)+"/"+finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_ID));
-                                _denomData[i] = finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME);
-                                mDenomData.put(finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME),
-                                        finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_ID));
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                spinWheelDenom.clearAnimation();
-                                spinWheelDenom.setVisibility(View.GONE);
-                                spin_denom.setVisibility(View.VISIBLE);
-                                adapterDenom.notifyDataSetChanged();
-                            }
-                        });
+            Thread deproses = new Thread(){
+                @Override
+                public void run() {
+                    for (int i = 0 ;i< mListDenomData.size();i++){
+                        _denomData[i] = mListDenomData.get(i).getItem_name();
                     }
-                };
-                deproses.run();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            spinWheelDenom.clearAnimation();
+                            spinWheelDenom.setVisibility(View.GONE);
+                            spin_denom.setVisibility(View.VISIBLE);
+                            adapterDenom.notifyDataSetChanged();
+                        }
+                    });
+                }
+            };
+            deproses.run();
+
         }
         else {
             layout_denom.setVisibility(View.GONE);
-            item_id = getArguments().getString(DefineValue.BILLER_ITEM_ID);
+            denom_item_id = mBillerData.getItem_id();
         }
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -240,8 +282,7 @@ public class BillerInput extends Fragment {
     Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Object item = adapterView.getItemAtPosition(i);
-            item_id = mDenomData.get(item.toString());
+            denom_item_id = mListDenomData.get(i).getItem_id();
         }
 
         @Override
@@ -257,22 +298,21 @@ public class BillerInput extends Fragment {
                 if (inputValidation()) {
                     if (biller_type.equals(billerType[0]))
                         final_payment_remark = NoHPFormat.editNoHP(String.valueOf(et_payment_remark.getText()));
-                    else final_payment_remark = String.valueOf(et_payment_remark.getText());
-                    showDialog(biller_merchant_name, final_payment_remark, item_id);
-                    //showDialog("jaijdijaij","aksjflak","IDR","212138","asjfals","PST","N","Y","{\"ORDER ID\":\"1880103994376\",\"AIRLINE CODE\":\"09\",\"AIRLINE CODE2\":\"0002\",\"TOTAL FLIGHT\":\"3\",\"PASSENGER NAME\":\"YUUDDISTRIA IASDJIFAJD\",\"PNR CODE\":\"NENCLK\",\"NUMBER OF PASSENGERS\":\"01\",\"CARRIER\":\"JT\",\"CLASS\":\"N\",\"FROM\":\"CGK\",\"TO\":\"PLW\",\"FLIGHT NUMBER\":\"720\",\"DEPART DATE\":\"2404\",\"DEPART TIME\":\"0500\"}");
+                    else
+                        final_payment_remark = String.valueOf(et_payment_remark.getText());
+                    showDialog(final_payment_remark);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
-    void showDialog(final String _biller_name, String _payment_remark,String _item_id) {
+    void showDialog( String _payment_remark) {
 
 
         Bundle mArgs = getArguments();
-        mArgs.putString(DefineValue.BILLER_NAME,_biller_name);
         mArgs.putString(DefineValue.CUST_ID, _payment_remark);
-        mArgs.putString(DefineValue.ITEM_ID, _item_id);
+        mArgs.putString(DefineValue.ITEM_ID, denom_item_id);
         mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
         mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
 
@@ -322,4 +362,12 @@ public class BillerInput extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onDestroy() {
+        if(!realm.isInTransaction() && !realm.isClosed()) {
+            realm.removeChangeListener(realmListener);
+            realm.close();
+        }
+        super.onDestroy();
+    }
 }

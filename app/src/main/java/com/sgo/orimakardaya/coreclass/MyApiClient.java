@@ -163,6 +163,9 @@ public class MyApiClient {
     public static String LINK_DELTRX_WITHDRAW;
     public static String LINK_CREATE_PASS;
     public static String LINK_GET_FAILED_PIN;
+    public static String LINK_ATMTOPUP;
+    public static String LINK_BANKCASHOUT;
+    public static String LINK_USER_PROFILE;
 
     public static void initializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -264,16 +267,19 @@ public class MyApiClient {
 
         LINK_CREATE_PASS    = headaddressfinal + "CreatePass/Invoke";
         LINK_GET_FAILED_PIN = headaddressfinal + "GetFailedPIN/Retrieve";
+        LINK_ATMTOPUP       = headaddressfinal + "ATMTopUp/Retrieve";
+        LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
+        LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
     }
 
 
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.goworld.asia/static/pages/help/edik-faq.html";
-    public static String URL_FAQ_DEV = "http://116.90.162.173:18080/static/pages/help/pin-faq.html";
+    public static String URL_FAQ_PROD = "https://mobile.goworld.asia/static/pages/help/pin_faq_akardaya.html";
+    public static String URL_FAQ_DEV = "http://116.90.162.173:18080/static/pages/help/pin_faq_akardaya.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://www.mypin.id/m.terms_conditions.html";
-    public static String URL_TERMS_DEV = "https://www.mypin.id/m.terms_conditions.html";
+    public static String URL_TERMS_PROD = "https://mobile.goworld.asia/static/pages/help/pin_terms_conditions_id_akardaya.html";
+    public static String URL_TERMS_DEV = "http://116.90.162.173:18080/static/pages/help/pin_terms_conditions_id_akardaya.html";
 
     //-----------------------------------------------------------------------------------------------------------------
 
@@ -844,6 +850,20 @@ public class MyApiClient {
     public static void sentGetFailedPIN(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent get failed pin:"+LINK_GET_FAILED_PIN);
         post(mContext,LINK_GET_FAILED_PIN, params, responseHandler);
+    }
+
+    public static void getATMTopUp(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address get ATM top up:"+LINK_ATMTOPUP);
+        post(mContext,LINK_ATMTOPUP, params, responseHandler);
+    }
+
+    public static void getBankCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address get bank cashout:"+LINK_BANKCASHOUT);
+        post(mContext,LINK_BANKCASHOUT, params, responseHandler);
+    }
+    public static void sentUserProfile(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent user profile:"+LINK_USER_PROFILE);
+        post(mContext,LINK_USER_PROFILE, params, responseHandler);
     }
     //get Data------------------------------------------------------------------------------------------
 

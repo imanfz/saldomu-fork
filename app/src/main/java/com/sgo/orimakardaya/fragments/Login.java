@@ -2,6 +2,7 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,10 +41,10 @@ import timber.log.Timber;
 /**
   Created by Administrator on 7/10/2014.
  */
-public class Login extends Fragment implements View.OnClickListener {
+public class Login extends Fragment {
 
     String userIDfinale = null,userEmail = "";
-    Fragment newFrag;
+
     Button btnforgetPass;
     EditText userIDValue,passLoginValue;
     ImageView image_spinner;
@@ -71,43 +72,45 @@ public class Login extends Fragment implements View.OnClickListener {
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(this);
+        btnLogin.setOnClickListener(loginListener);
 
         btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
         btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
-        btnforgetPass.setOnClickListener(this);
+        btnforgetPass.setOnClickListener(forgetpassListener);
 
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
+
+        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
+        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
+        String androidId = new DeviceUtils(getActivity()).getAndroidID();
+        Timber.e("mcaddress: " + mcAddress + " // devicemodel: " + deviceModel + " // androidid: " + androidId);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.btn_login :
-                if(InetHandler.isNetworkAvailable(getActivity())){
-                    if(inputValidation()){
-                        userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
-                        sentData();
-                    }
+    Button.OnClickListener loginListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            //passLoginValue.setText("12345678");
+            if(InetHandler.isNetworkAvailable(getActivity())){
+                if(inputValidation()){
+                    userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
+                    sentData();
                 }
-                else
-                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-                break;
-            case R.id.btn_forgetPass :
-                newFrag = new ForgotPassword();
-                switchFragment(newFrag,"forgot password",true);
-                break;
-            case R.id.btn_register :
-                newFrag = new Regist1();
-                switchFragment(newFrag, "reg1", true);
-                break;
-        }
-    }
+            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
+        }
+    };
+
+    Button.OnClickListener forgetpassListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Fragment newFrag = new ForgotPassword();
+            switchFragment(newFrag,"forgot password",true);
+        }
+    };
 
     public void sentData(){
         try{
@@ -125,10 +128,12 @@ public class Login extends Fragment implements View.OnClickListener {
             params.put(WebParams.USER_ID,userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, AES.aes_encrypt(passLoginValue.getText().toString(), userIDfinale));
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            params.put(WebParams.MAC_ADDR, new DeviceUtils(getActivity()).getWifiMcAddress());
+            params.put(WebParams.DEV_MODEL, new DeviceUtils(getActivity()).getDeviceModelID());
 
             Timber.d("isi params login:" + params.toString());
 
-            MyApiClient.sentDataLogin(getActivity(),params, new CustomResponseHandler() {
+            MyApiClient.sentDataLogin(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     image_spinner.clearAnimation();
@@ -196,8 +201,20 @@ public class Login extends Fragment implements View.OnClickListener {
                 }
 
                 @Override
-                public void onFailure2(int statusCode, Header[] headers, String response, Throwable throwable) {
-                    super.onFailure2(statusCode, headers, response, throwable);
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
                     ifFailure(throwable);
                 }
 
@@ -331,7 +348,7 @@ public class Login extends Fragment implements View.OnClickListener {
             mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
 
             mEditor.putString(DefineValue.LIST_ID_TYPES,response.getString(WebParams.ID_TYPES));
-            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
+//            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
 //            mEditor.putString(DefineValue.IS_FIRST_TIME,response.getString(WebParams.USER_IS_NEW));
             mEditor.putString(DefineValue.IS_CHANGED_PASS,response.optString(WebParams.CHANGE_PASS, ""));
@@ -383,6 +400,12 @@ public class Login extends Fragment implements View.OnClickListener {
                 JSONArray arrayJson = new JSONArray(arraynya);
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
             }
+
+            SharedPreferences mOtherSP = getActivity().getSharedPreferences(DefineValue.FACEBOOK_PREF, Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = mOtherSP.edit();
+            edit.putBoolean(DefineValue.IS_ACTIVE,false);
+            edit.apply();
+
 
         } catch (JSONException e) {
             e.printStackTrace();

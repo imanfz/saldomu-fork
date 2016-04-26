@@ -39,6 +39,7 @@ public class DefineValue {
     public static String TRANSACTION = "ts";
     public static String TRANSACTION_ESPAY = "tsesp";
     public static String BIL_TYPE_BUY = "BUY";
+    public static String BIL_TYPE_PAY = "PAY";
     public static String BANKLIST_TYPE_ALL = "ALL" ;
     public static String BANKLIST_TYPE_SMS = "SMS" ;
     public static String BANKLIST_TYPE_IB = "IB" ;
