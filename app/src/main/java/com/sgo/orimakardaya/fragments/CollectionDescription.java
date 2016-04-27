@@ -115,7 +115,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         }
 
         if(isPIN){
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int)deData;

@@ -188,7 +188,7 @@ public class FragCashOutAgen extends Fragment {
             changeTextBtnSub();
         }
         else {
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userid,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int)deData;

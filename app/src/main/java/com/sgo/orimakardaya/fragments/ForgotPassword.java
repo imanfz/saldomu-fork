@@ -131,6 +131,7 @@ public class ForgotPassword extends Fragment {
     private void CallPINinput(int _attempt){
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+        i.putExtra(DefineValue.USERID_PHONE,userIDfinale);
         if(_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT,_attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
@@ -237,7 +238,6 @@ public class ForgotPassword extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
 
-                    Timber.d("isi params contact forgot password:" + response.toString());
                     String id, message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));

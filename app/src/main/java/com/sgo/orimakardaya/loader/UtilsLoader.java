@@ -143,12 +143,11 @@ public class UtilsLoader {
         }
     }
 
-    public void getFailedPIN(final OnLoadDataListener mListener){
+    public void getFailedPIN(String user_id , final OnLoadDataListener mListener){
         try{
-            String userId  = sp.getString(DefineValue.USERID_PHONE,"");
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GET_FAILED_PIN,
-                    userId, sp.getString(DefineValue.ACCESS_KEY,""));
-            params.put(WebParams.USER_ID, userId);
+                    user_id, sp.getString(DefineValue.ACCESS_KEY,""));
+            params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get FailedPin Loader:" + params.toString());

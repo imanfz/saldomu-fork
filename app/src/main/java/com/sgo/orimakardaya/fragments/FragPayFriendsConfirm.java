@@ -120,7 +120,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         if(authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
             btnSubmit.setText(R.string.proses);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { // get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { // get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int) deData;

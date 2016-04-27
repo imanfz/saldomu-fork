@@ -87,7 +87,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         if(isOTP) layoutOTP.setVisibility(View.VISIBLE);
         else {
             layoutOTP.setVisibility(View.GONE);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     pin_attempt = (int) deData;

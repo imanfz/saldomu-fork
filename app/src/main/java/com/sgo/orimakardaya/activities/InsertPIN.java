@@ -51,7 +51,11 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         View v = this.findViewById(android.R.id.content);
         tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
         Timber.d("masuk UtilsLoader");
-        new UtilsLoader(this,sp).getFailedPIN(new OnLoadDataListener() {
+        String userId  = sp.getString(DefineValue.USERID_PHONE,"");
+        if(userId.isEmpty())
+            userId = getIntent().getExtras().getString(DefineValue.USERID_PHONE,"");
+
+        new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
             @Override
             public void onSuccess(Object deData) {
                 String _dedata = String.valueOf(deData);

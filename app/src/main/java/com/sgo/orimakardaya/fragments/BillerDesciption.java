@@ -49,6 +49,9 @@ import timber.log.Timber;
  */
 public class BillerDesciption extends Fragment {
 
+
+    public final static String TAG = "BILLER_DESCRIPTION";
+
     View v, layout_biller_name;
     String tx_id, biller_name, biller_comm_id ,biller_comm_code, biller_api_key,
             ccy_id,amount, item_name, description, cust_id, item_id,
@@ -844,15 +847,15 @@ public class BillerDesciption extends Fragment {
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);
-        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true);
+        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true, BillerConfirm.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack, String tag){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity ) getActivity();
-        fca.switchContent(i,name,next_name,isBackstack);
+        fca.switchContent(i,name,next_name,isBackstack, tag);
     }
 
     private void switchActivity(Intent mIntent){

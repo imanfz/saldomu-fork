@@ -51,6 +51,9 @@ import timber.log.Timber;
  */
 public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
+
+    public final static String TAG = "BILLER_CONFIRM";
+
     View v;
     String tx_id,merchant_type,ccy_id,amount,item_name,cust_id, payment_name, amount_desire,fee,total_amount,
             shareType, bank_code, product_code,product_payment_type,biller_name,userID,accessKey;
@@ -156,7 +159,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             }
             else {
                 isPIN = true;
-                new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+                new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                     @Override
                     public void onSuccess(Object deData) {
                         attempt = (int)deData;
