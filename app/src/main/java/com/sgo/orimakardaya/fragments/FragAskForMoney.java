@@ -58,6 +58,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
 
     SecurePreferences sp;
     DrawableRecipientChip[] chips;
+    int memberLevel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,7 +91,8 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS,5);
+        max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
+        memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
 
         imgProfile = (ImageView) v.findViewById(R.id.img_profile);
         imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
@@ -354,6 +356,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
             params.put(WebParams.DESC,_message);
             params.put(WebParams.DATA, _data);
             params.put(WebParams.PRIVACY, privacy);
+            params.put(WebParams.MEMBER_LEVEL, memberLevel);
 
             Timber.d("isi params sent ask for money:"+params.toString());
 
