@@ -31,16 +31,18 @@
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <!--android:label="@string/app_name_prod"-->
-    <application tools:replace="android:label"
-                 android:icon="@mipmap/ic_logo_ad"
-                 android:label="@string/appname"
-                 android:allowBackup="true"
-                 android:theme="@style/Theme.MyTheme"
-                 android:noHistory="true"
-                 android:launchMode="singleInstance"
-                 android:hardwareAccelerated="true"
-                 android:name=".coreclass.CoreApp"
-            >
+    <application
+        tools:replace="android:label"
+        android:icon="@mipmap/ic_logo_ad"
+        android:label="@string/appname"
+        android:allowBackup="true"
+        android:theme="@style/Theme.MyTheme"
+        android:noHistory="true"
+        android:launchMode="singleInstance"
+        android:largeHeap="true"
+        android:hardwareAccelerated="true"
+        android:name=".coreclass.CoreApp"
+        >
 
         <activity android:name=".activities.Registration"
                   android:configChanges="orientation"
