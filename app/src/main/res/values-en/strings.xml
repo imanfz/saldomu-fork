@@ -245,6 +245,7 @@
 
     <string name="biller_name">Name</string>
     <string name="billerinput_text_payment_remark">Customer ID</string>
+    <string name="billerinput_text_dest_remark">Destination Remark</string>
     <string name="billerinput_text_payment_remark_Pulsa">Handphone Number</string>
     <string name="billerinput_text_payment_remark_Listrik">Meter Number</string>
     <string name="billerinput_text_payment_remark_CC">Credit Card Number</string>

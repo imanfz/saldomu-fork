@@ -740,6 +740,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         args.putInt(DefineValue.BUY_TYPE, buy_code);
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.DESTINATION_REMARK, cust_id);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){

@@ -297,6 +297,7 @@
 
     <string name="biller_name">Nama</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
+    <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
     <string name="billerinput_text_payment_remark">ID Pelanggan</string>
     <string name="billerinput_text_payment_remark_Pulsa">Nomor Handphone</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>

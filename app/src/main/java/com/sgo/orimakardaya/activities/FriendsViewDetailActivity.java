@@ -29,7 +29,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
 
@@ -41,6 +41,8 @@ public class FriendsViewDetailActivity extends BaseActivity {
             phone = i.getStringExtra("phone");
             email = i.getStringExtra("email");
         }
+
+        InitializeToolbar();
 
         if (findViewById(R.id.friend_detail_content) != null) {
             if (savedInstanceState != null) {
@@ -65,7 +67,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
 
     public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.menu_item_title_my_friends));
+        setActionBarTitle(name);
     }
 
     @Override
@@ -97,6 +99,12 @@ public class FriendsViewDetailActivity extends BaseActivity {
                     .commit();
 
         }
+
+        setActionBarTitle(name+" - "+fragName);
+    }
+
+    public void setToolbarTitle(String _title) {
+        setActionBarTitle(_title);
     }
 
     @Override

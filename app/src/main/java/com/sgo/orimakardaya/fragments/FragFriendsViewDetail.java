@@ -193,6 +193,7 @@ public class FragFriendsViewDetail extends Fragment {
         });
         RESULT = MainPage.RESULT_NORMAL;
 
+        setActionBarTitle(name);
     }
 
     private void showDialogLevel(){
@@ -237,6 +238,14 @@ public class FragFriendsViewDetail extends Fragment {
 
         FriendsViewDetailActivity fca = (FriendsViewDetailActivity) getActivity();
         fca.switchContent(i,name,isBackstack);
+    }
+
+    private void setActionBarTitle(String _title){
+        if (getActivity() == null)
+            return;
+
+        FriendsViewDetailActivity fca = (FriendsViewDetailActivity) getActivity();
+        fca.setToolbarTitle(_title);
     }
 
     @Override
