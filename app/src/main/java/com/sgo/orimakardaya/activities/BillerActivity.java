@@ -28,6 +28,7 @@ import com.sgo.orimakardaya.fragments.BillerActivityRF;
 import com.sgo.orimakardaya.fragments.BillerDesciption;
 import com.sgo.orimakardaya.fragments.BillerInput;
 import com.sgo.orimakardaya.fragments.ListBillerMerchant;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -43,7 +44,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 3/4/2015.
  */
-public class BillerActivity extends BaseActivity {
+public class BillerActivity extends BaseActivity{
 
     SecurePreferences sp;
     public final static int PAYMENT_TYPE = 221;
@@ -54,12 +55,13 @@ public class BillerActivity extends BaseActivity {
     public final static String FRAG_BIL_DESCRIPTION = "bilDesc";
     FragmentManager fragmentManager;
     String _biller_merchant_name,userID,accessKey,_biller_type_code;
-    Boolean isOneBiller,isEmptyBiller;
+    Boolean isOneBiller;
+    Boolean isEmptyBiller;
     Biller_Type_Data_Model mBillerTypeData;
     List<Biller_Data_Model> mListBillerData;
     Realm realm;
-//    private RealmChangeListener realmListener;
-//    BillerActivityRF mWorkFragment;
+    private RealmChangeListener realmListener;
+    BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
 
     @Override
@@ -78,53 +80,56 @@ public class BillerActivity extends BaseActivity {
         Intent intent    = getIntent();
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
+        isEmptyBiller = false;
 
         Timber.d("isi biller activity " + intent.getExtras().toString());
         InitializeToolbar();
 
         initializeData();
 
+        //auto updater realm biller
+        realmListener = new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                Timber.d("Masuk realm listener bilactive asdfasdfa");
+                if(!BillerActivity.this.isFinishing()){
+                    if(progdialog != null && progdialog.isShowing())
+                        progdialog.dismiss();
+                    if(isEmptyBiller){
+                        initializeData();
+                    }
+                    else {
+                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
+                                .findFirst();
+                        if(mBillerTypeData.getBiller_data_models().size() == 0) {
+                            BillerActivity.this.finish();
+                        }
+                    }
 
-//        realmListener = new RealmChangeListener() {
-//            @Override
-//            public void onChange() {
-//                Timber.d("Masuk realm listener bilactive asdfasdfa");
-//                if(!BillerActivity.this.isFinishing()){
-//                    if(progdialog != null && progdialog.isShowing())
-//                        progdialog.dismiss();
-//                    if(isEmptyBiller){
-//                        initializeData();
-//                    }
-//                    else {
-//
-//                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
-//                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
-//                                .findFirst();
-//                    }
-//
-//                }
-//            }};
-//        realm.addChangeListener(realmListener);
-//
-//        FragmentManager fm = getSupportFragmentManager();
-//        // Check to see if we have retained the worker fragment.
-//        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
-//        // If not retained (or first time running), we need to create it.
-//        if (mWorkFragment == null) {
-//            mWorkFragment = new BillerActivityRF();
-//            // Tell it who it is working with.
-//            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
-//        }
-//
-//        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
-//
-//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//            @Override
-//            public void onBackStackChanged() {
-//                if(isFragmentValid())
-//                    mWorkFragment.runQueing();
-//            }
-//        });
+                }
+            }};
+        realm.addChangeListener(realmListener);
+
+        FragmentManager fm = getSupportFragmentManager();
+        // Check to see if we have retained the worker fragment.
+        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
+        // If not retained (or first time running), we need to create it.
+        if (mWorkFragment == null) {
+            mWorkFragment = new BillerActivityRF();
+            // Tell it who it is working with.
+            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
+        }
+
+        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(isFragmentValid())
+                    mWorkFragment.runQueing();
+            }
+        });
     }
 
     private void initializeData(){
@@ -145,9 +150,15 @@ public class BillerActivity extends BaseActivity {
             } else {
 //            Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
 //            this.finish();
-                progdialog = DefinedDialog.CreateProgressDialog(this, "");
-                isOneBiller = false;
-                isEmptyBiller = true;
+                if(!isEmptyBiller) {
+                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
+                    isOneBiller = false;
+                    isEmptyBiller = true;
+                }
+                else {
+                    isEmptyBiller = false;
+                    finish();
+                }
             }
         }
     }
@@ -191,8 +202,8 @@ public class BillerActivity extends BaseActivity {
     }
 
     public void updateDenom(String comm_id, String comm_name) {
-//        if (mWorkFragment != null)
-//            mWorkFragment.getDenomRetail(comm_id, comm_name);
+        if (mWorkFragment != null)
+            mWorkFragment.getDenomRetail(comm_id, comm_name);
     }
 
     public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack,String tag) {
@@ -290,7 +301,7 @@ public class BillerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
-//            realm.removeChangeListener(realmListener);
+            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();
@@ -302,4 +313,5 @@ public class BillerActivity extends BaseActivity {
             getFragmentManager().popBackStack();
         else super.onBackPressed();
     }
+
 }

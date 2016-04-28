@@ -1,6 +1,8 @@
 package com.sgo.orimakardaya.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,6 +24,7 @@ import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 
 import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
@@ -55,8 +58,6 @@ public class BillerActivityRF extends Fragment{
     private RealmChangeListener realmListener;
 
     private ArrayList<Object> Queing;
-
-
 
     public class exeBillerData{
         private Boolean isWithDenom;
@@ -144,6 +145,7 @@ public class BillerActivityRF extends Fragment{
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -239,8 +241,8 @@ public class BillerActivityRF extends Fragment{
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("Isi response get Biller list:"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response get Biller list:"+response.toString());
                             final String arrayBiller = response.getString(WebParams.BILLER_DATA);
                             insertUpdateData(new JSONArray(arrayBiller),_biller_type_code, withDenom);
                         }
@@ -251,6 +253,8 @@ public class BillerActivityRF extends Fragment{
                             test.showDialoginMain(getActivity(),message);
                         }
                         else {
+                            if(code.equals("0003"))
+                                insertUpdateData(null,_biller_type_code,withDenom);
                             code = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
@@ -327,7 +331,7 @@ public class BillerActivityRF extends Fragment{
             int j;
             int k;
             try {
-                if (arrayBiller.length() > 0) {
+                if (arrayBiller != null && arrayBiller.length() > 0) {
                     for ( i = 0; i < arrayBiller.length(); i++) {
                         mObj = realm.createObjectFromJson(Biller_Data_Model.class, arrayBiller.getJSONObject(i));
                         mObj.setLast_update(curr_date);

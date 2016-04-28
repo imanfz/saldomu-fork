@@ -33,6 +33,7 @@
 -keepattributes Signature
 -keepattributes InnerClasses
 -keepattributes *Annotation*
+
 -keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
 -keep public class com.sgo.orimakardaya.Beans.** { *; }
 #-keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }

@@ -55,8 +55,8 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
     ViewPager pager;
     BuyFragmentTabAdapter adapternya;
     ProgressDialog out;
-//    ListBuyRF mWorkFragment;
-//    private RealmChangeListener realmListener;
+    ListBuyRF mWorkFragment;
+    private RealmChangeListener realmListener;
     ArrayList<String> Title_tab;
 //    String userID,accessKey;
 
@@ -112,28 +112,30 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
         pager.setPageMargin(pageMargin);
         dialogI = InformationDialog.newInstance(this,8);
         realm = Realm.getDefaultInstance();
-//
-//        FragmentManager fm = getFragmentManager();
-//        // Check to see if we have retained the worker fragment.
-//        mWorkFragment = (ListBuyRF) fm.findFragmentByTag(ListBuyRF.LISTBUYRF_TAG);
-//        // If not retained (or first time running), we need to create it.
-//        if (mWorkFragment == null) {
-//            mWorkFragment = new ListBuyRF();
-//            // Tell it who it is working with.
-//            mWorkFragment.setTargetFragment(this, 0);
-//            fm.beginTransaction().add(mWorkFragment, ListBuyRF.LISTBUYRF_TAG).commit();
-//        }
-//        else
-//            mWorkFragment.getDataBiller();
-//
-//        realmListener = new RealmChangeListener() {
-//            @Override
-//            public void onChange() {
-//                if(isVisible()){
-////                    Timber.d("masukk realm listener gannnn");
-//                }
-//            }};
-//        realm.addChangeListener(realmListener);
+
+        // auto updater realm biller
+        FragmentManager fm = getFragmentManager();
+        // Check to see if we have retained the worker fragment.
+        mWorkFragment = (ListBuyRF) fm.findFragmentByTag(ListBuyRF.LISTBUYRF_TAG);
+        // If not retained (or first time running), we need to create it.
+        if (mWorkFragment == null) {
+            mWorkFragment = new ListBuyRF();
+            // Tell it who it is working with.
+            mWorkFragment.setTargetFragment(this, 0);
+            fm.beginTransaction().add(mWorkFragment, ListBuyRF.LISTBUYRF_TAG).commit();
+        }
+        else
+            mWorkFragment.getDataBiller();
+
+        realmListener = new RealmChangeListener() {
+            @Override
+            public void onChange() {
+                if(isVisible()){
+//                    Timber.d("masukk realm listener gannnn");
+                }
+            }};
+        realm.addChangeListener(realmListener);
+
         initializeData();
     }
 
@@ -201,16 +203,16 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
     @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
-//            realm.removeChangeListener(realmListener);
+            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();
     }
 
     public void cleanupRetainInstanceFragment() {
-//        if(!getActivity().isFinishing()) {
-//            FragmentManager fm = getFragmentManager();
-//            fm.beginTransaction().remove(this.mWorkFragment).commitAllowingStateLoss();
-//        }
+        if(!getActivity().isFinishing()) {
+            FragmentManager fm = getFragmentManager();
+            fm.beginTransaction().remove(this.mWorkFragment).commitAllowingStateLoss();
+        }
     }
 }
