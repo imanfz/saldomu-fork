@@ -700,6 +700,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         i.putExtra(DefineValue.BUY_TYPE, buy_code);
         i.putExtra(DefineValue.PAYMENT_NAME,payment_name);
         i.putExtra(DefineValue.BILLER_NAME,biller_name);
+        i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
 
         double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(_fee);
         i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));

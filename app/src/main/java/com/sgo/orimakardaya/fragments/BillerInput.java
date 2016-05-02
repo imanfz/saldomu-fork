@@ -128,9 +128,7 @@ public class BillerInput extends Fragment {
             public void onChange() {
 
                 if(isVisible()){
-                    if(progdialog != null && progdialog.isShowing()) {
-                        progdialog.dismiss();
-                    }
+
 
                     initializeLayout();
                     initializeSpinnerDenom();
@@ -145,6 +143,10 @@ public class BillerInput extends Fragment {
                         layout_denom.setVisibility(View.VISIBLE);
                         spin_denom.setVisibility(View.VISIBLE);
                         adapterDenom.notifyDataSetChanged();
+                    }
+
+                    if(progdialog != null && progdialog.isShowing()) {
+                        progdialog.dismiss();
                     }
                 }
             }};

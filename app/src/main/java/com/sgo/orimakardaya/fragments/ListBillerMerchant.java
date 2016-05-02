@@ -119,8 +119,8 @@ public class ListBillerMerchant extends ListFragment {
     }
 
     private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id){
-        if(_item_id.isEmpty())
-            callUpdateDenom(_comm_id, _comm_name);
+//        if(_item_id.isEmpty())
+//            callUpdateDenom(_comm_id, _comm_name);
 
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID,_comm_id);
@@ -152,13 +152,13 @@ public class ListBillerMerchant extends ListFragment {
         fca.setToolbarTitle(_title);
     }
 
-    private void callUpdateDenom(String comm_id, String comm_name){
-        if (getActivity() == null)
-            return;
-
-        BillerActivity fca = (BillerActivity) getActivity();
-        fca.updateDenom(comm_id,comm_name);
-    }
+//    private void callUpdateDenom(String comm_id, String comm_name){
+//        if (getActivity() == null)
+//            return;
+//
+//        BillerActivity fca = (BillerActivity) getActivity();
+//        fca.updateDenom(comm_id,comm_name);
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

@@ -30,7 +30,6 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
-    <!--android:label="@string/app_name_prod"-->
     <application
         tools:replace="android:label"
         android:icon="@mipmap/ic_logo_ad"
@@ -154,11 +153,6 @@
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
-        <activity android:name=".activities.ChangePIN"
-                  android:configChanges="orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
         <activity android:name=".activities.InsertPIN"
                   android:configChanges="orientation"
                   android:screenOrientation="portrait"
@@ -194,17 +188,28 @@
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
             />
-	<activity android:name=".activities.PasswordRegisterActivity"
+	    <activity android:name=".activities.PasswordRegisterActivity"
 	          android:configChanges="orientation"
 	          android:screenOrientation="portrait"
 	          android:windowSoftInputMode="stateAlwaysHidden"
 	        />
-        <activity android:name=".activities.ListContactActivity"
+        <activity android:name=".activities.LevelFormRegisterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             />
-        <activity android:name=".activities.LevelFormRegisterActivity"
+        <activity android:name=".activities.CashoutActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+
+        <activity android:name=".activities.ChangePIN"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+        <activity android:name=".activities.ListContactActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"

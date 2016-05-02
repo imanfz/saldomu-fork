@@ -44,7 +44,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 3/4/2015.
  */
-public class BillerActivity extends BaseActivity{
+public class BillerActivity extends BaseActivity {
 
     SecurePreferences sp;
     public final static int PAYMENT_TYPE = 221;
@@ -87,49 +87,49 @@ public class BillerActivity extends BaseActivity{
 
         initializeData();
 
-        //auto updater realm biller
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange() {
-                Timber.d("Masuk realm listener bilactive asdfasdfa");
-                if(!BillerActivity.this.isFinishing()){
-                    if(progdialog != null && progdialog.isShowing())
-                        progdialog.dismiss();
-                    if(isEmptyBiller){
-                        initializeData();
-                    }
-                    else {
-                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
-                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
-                                .findFirst();
-                        if(mBillerTypeData.getBiller_data_models().size() == 0) {
-                            BillerActivity.this.finish();
-                        }
-                    }
-
-                }
-            }};
-        realm.addChangeListener(realmListener);
-
-        FragmentManager fm = getSupportFragmentManager();
-        // Check to see if we have retained the worker fragment.
-        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
-        // If not retained (or first time running), we need to create it.
-        if (mWorkFragment == null) {
-            mWorkFragment = new BillerActivityRF();
-            // Tell it who it is working with.
-            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
-        }
-
-        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
-
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                if(isFragmentValid())
-                    mWorkFragment.runQueing();
-            }
-        });
+//        //auto updater realm biller
+//        realmListener = new RealmChangeListener() {
+//            @Override
+//            public void onChange() {
+//                Timber.d("Masuk realm listener bilactive asdfasdfa");
+//                if(!BillerActivity.this.isFinishing()){
+//                    if(progdialog != null && progdialog.isShowing())
+//                        progdialog.dismiss();
+//                    if(isEmptyBiller){
+//                        initializeData();
+//                    }
+//                    else {
+//                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+//                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
+//                                .findFirst();
+//                        if(mBillerTypeData.getBiller_data_models().size() == 0) {
+//                            BillerActivity.this.finish();
+//                        }
+//                    }
+//
+//                }
+//            }};
+//        realm.addChangeListener(realmListener);
+//
+//        FragmentManager fm = getSupportFragmentManager();
+//        // Check to see if we have retained the worker fragment.
+//        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
+//        // If not retained (or first time running), we need to create it.
+//        if (mWorkFragment == null) {
+//            mWorkFragment = new BillerActivityRF();
+//            // Tell it who it is working with.
+//            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
+//        }
+//
+//        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
+//
+//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                if(isFragmentValid())
+//                    mWorkFragment.runQueing();
+//            }
+//        });
     }
 
     private void initializeData(){
@@ -148,17 +148,17 @@ public class BillerActivity extends BaseActivity{
                     initializeListBiller();
                 }
             } else {
-//            Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
-//            this.finish();
-                if(!isEmptyBiller) {
-                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
-                    isOneBiller = false;
-                    isEmptyBiller = true;
-                }
-                else {
-                    isEmptyBiller = false;
-                    finish();
-                }
+            Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
+            this.finish();
+//                if(!isEmptyBiller) {
+//                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
+//                    isOneBiller = false;
+//                    isEmptyBiller = true;
+//                }
+//                else {
+//                    isEmptyBiller = false;
+//                    finish();
+//                }
             }
         }
     }
@@ -201,10 +201,10 @@ public class BillerActivity extends BaseActivity{
         setActionBarTitle(_title);
     }
 
-    public void updateDenom(String comm_id, String comm_name) {
-        if (mWorkFragment != null)
-            mWorkFragment.getDenomRetail(comm_id, comm_name);
-    }
+//    public void updateDenom(String comm_id, String comm_name) {
+//        if (mWorkFragment != null)
+//            mWorkFragment.getDenomRetail(comm_id, comm_name);
+//    }
 
     public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack,String tag) {
 
@@ -301,7 +301,7 @@ public class BillerActivity extends BaseActivity{
     @Override
     protected void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
-            realm.removeChangeListener(realmListener);
+//            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();
