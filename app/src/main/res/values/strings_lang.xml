@@ -592,7 +592,8 @@
     <string name="collection">Collection</string>
     <string name="or">atau</string>
     <string name="forgotpin">Lupa PIN</string>
-    <string name="forgotpin_message">Silahkan hubungi kami di PIN Customer Care.</string>
+    <string name="forgotpin_message">Silahkan hubungi kami di</string>
+    <string name="forgotpin_message2">Customer Care.</string>
     <string name="blocked_pin_title">Pin di Blok</string>
 
     <string name="cashoutagen_text_message">Anda akan melakukan tarik tunai dengan rincian transaksi sebagai berikut :</string>

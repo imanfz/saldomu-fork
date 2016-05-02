@@ -310,6 +310,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         args.putString(DefineValue.PAYMENT_NAME, paymentName);
         args.putString(DefineValue.DENOM_DATA, item_name);
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
+        args.putString(DefineValue.DESTINATION_REMARK, getIntent().getStringExtra(DefineValue.DESTINATION_REMARK));
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){

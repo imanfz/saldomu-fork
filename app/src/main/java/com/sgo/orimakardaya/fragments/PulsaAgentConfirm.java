@@ -152,6 +152,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         i.putExtra(DefineValue.SHARE_TYPE, shareType);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.PULSA_AGENT);
         i.putExtra(DefineValue.OPERATOR_NAME, operator_name);
+        i.putExtra(DefineValue.DESTINATION_REMARK, phone_number);
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(_fee);
         i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));
@@ -384,6 +385,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
+        args.putString(DefineValue.DESTINATION_REMARK,phone_number);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){

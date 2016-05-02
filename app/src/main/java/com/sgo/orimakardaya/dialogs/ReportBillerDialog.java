@@ -335,6 +335,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = (TextView) view.findViewById(R.id.dialog_report_payment_options_value);
                 TextView tv_fee_value = (TextView) view.findViewById(R.id.dialog_reportdap_fee_value);
                 TextView tv_total_amount_value = (TextView) view.findViewById(R.id.dialog_reportdap_total_amount_value);
+                TextView tv_dest_remark_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_dest_remark_value);
+
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
@@ -344,6 +346,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_payment_options_text.setText(args.getString(DefineValue.PAYMENT_NAME));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+                tv_dest_remark_text.setText(args.getString(DefineValue.DESTINATION_REMARK));
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));

@@ -188,7 +188,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
         Title.setText(getResources().getString(R.string.forgotpin));
         Message.setVisibility(View.GONE);
-        Message.setText(getString(R.string.forgotpin_message));
+        Message.setText(getString(R.string.forgotpin_message)+" "+
+                        getString(R.string.appname)+" "+
+                        getString(R.string.forgotpin_message2));
 
         progDialog.setIndeterminate(true);
         progDialog.setVisibility(View.VISIBLE);

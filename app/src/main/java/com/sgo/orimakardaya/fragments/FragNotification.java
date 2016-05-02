@@ -450,7 +450,7 @@ public class FragNotification extends Fragment {
                                                 notif_type == NotificationActivity.TYPE_DECLINE) {
                                             mDataNotifDetail.add(notif_detail);
 
-                                            time1 = DateTimeFormat.convertCustomDate(date_time);
+                                            time1 = DateTimeFormat.convertCustomDateTime(date_time);
                                             time = p.formatDuration(time1);
 
                                             mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
