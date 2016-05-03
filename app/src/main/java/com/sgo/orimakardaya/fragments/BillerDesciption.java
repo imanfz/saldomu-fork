@@ -183,6 +183,7 @@ public class BillerDesciption extends Fragment {
                             TableRow.LayoutParams.WRAP_CONTENT,8f);
                     rowParams.setMargins(6,6,6,6);
 
+                    mTableLayout.removeAllViews();
                     for (String aTempList : tempList) {
                         value_detail_field = aTempList;
                         value_detail_value = mDataDesc.getString(aTempList);

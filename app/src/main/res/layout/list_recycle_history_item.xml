@@ -42,6 +42,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                    android:layout_gravity="left"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:text="Wargit"
                         android:layout_weight="5"
@@ -51,12 +52,11 @@
 
                 <TextView
                         android:id="@+id/status"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textSize="@dimen/abc_text_size_medium_material"
-                        android:text="paid"
-                        android:layout_weight="4"
+                        android:text="melakukan"
                         />
 
                 <TextView
@@ -64,6 +64,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                        android:layout_gravity="right"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:text="Yuddistiraasd "
                         android:layout_weight="5"

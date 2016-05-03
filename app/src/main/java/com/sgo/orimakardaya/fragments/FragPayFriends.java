@@ -219,7 +219,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
                 etAmount.setText(amount);
                 etAmount.setEnabled(false);
 
-//                phoneRetv.setEnabled(false);
+                phoneRetv.setEnabled(false);
                 isNotification = true;
             }
             else {
