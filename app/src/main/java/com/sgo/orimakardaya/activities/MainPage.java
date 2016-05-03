@@ -76,6 +76,9 @@ public class MainPage extends BaseActivity{
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
 
+    private final static int FIRST_SCREEN_LOGIN = 1;
+    private final static int FIRST_SCREEN_INTRO = 2;
+
     public static String action_id = "";
     protected static boolean activityVisible;
     private static int AmountNotif = 0;
@@ -116,7 +119,7 @@ public class MainPage extends BaseActivity{
 
 
         if(!isLogin()){
-            openFirstScreen();
+            openFirstScreen(FIRST_SCREEN_INTRO);
         }
         else{
             getAppVersion();
@@ -552,8 +555,19 @@ public class MainPage extends BaseActivity{
 //----------------------------------------------------------------------------------------------------------------
 
 
-    public void openFirstScreen(){
-        Intent i = new Intent(this,Registration.class);
+    public void openFirstScreen(int index){
+        Intent i;
+        switch(index){
+            case FIRST_SCREEN_LOGIN :
+                i = new Intent(this,LoginActivity.class);
+                break;
+            case FIRST_SCREEN_INTRO :
+                i = new Intent(this,Introduction.class);
+                break;
+            default:
+                i = new Intent(this,LoginActivity.class);
+                break;
+        };
         startActivity(i);
         this.finish();
     }
@@ -628,7 +642,7 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
         mEditor.commit();
-        openFirstScreen();
+        openFirstScreen(FIRST_SCREEN_LOGIN);
     }
 	
 	public void sentLogout(){

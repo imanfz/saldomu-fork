@@ -41,11 +41,11 @@ import timber.log.Timber;
 /**
   Created by Administrator on 7/10/2014.
  */
-public class Login extends Fragment {
+public class Login extends Fragment implements View.OnClickListener {
 
-    String userIDfinale = null,userEmail = "";
-
-    Button btnforgetPass;
+    String userIDfinale = null;
+    Fragment newFrag;
+    Button btnforgetPass, btnRegister;
     EditText userIDValue,passLoginValue;
     ImageView image_spinner;
     Button btnLogin;
@@ -69,15 +69,19 @@ public class Login extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
+        userIDValue.requestFocus();
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
-        btnLogin.setOnClickListener(loginListener);
+        btnLogin.setOnClickListener(this);
 
         btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
         btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
-        btnforgetPass.setOnClickListener(forgetpassListener);
+        btnforgetPass.setOnClickListener(this);
+
+        btnRegister = (Button) v.findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(this);
 
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
@@ -90,32 +94,36 @@ public class Login extends Fragment {
         Timber.e("mcaddress: " + mcAddress + " // devicemodel: " + deviceModel + " // androidid: " + androidId);
     }
 
-    Button.OnClickListener loginListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            //passLoginValue.setText("12345678");
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(inputValidation()){
-                    userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
-                    sentData();
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_login :
+                if(InetHandler.isNetworkAvailable(getActivity())){
+                    if(inputValidation()){
+                        userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
+                        sentData();
+                    }
                 }
-            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-
+                else
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                break;
+            case R.id.btn_forgetPass :
+                newFrag = new ForgotPassword();
+                switchFragment(newFrag,"forgot password",true);
+                break;
+            case R.id.btn_register :
+                newFrag = new Regist1();
+                switchFragment(newFrag, "reg1", true);
+                break;
         }
-    };
+    }
 
-    Button.OnClickListener forgetpassListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Fragment newFrag = new ForgotPassword();
-            switchFragment(newFrag,"forgot password",true);
-        }
-    };
 
     public void sentData(){
         try{
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
+            btnRegister.setEnabled(false);
             passLoginValue.setEnabled(false);
             btnforgetPass.setEnabled(false);
             btnLayout.setVisibility(View.INVISIBLE);
@@ -140,6 +148,7 @@ public class Login extends Fragment {
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
                     userIDValue.setEnabled(true);
+                    btnRegister.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
                     btnLayout.setVisibility(View.VISIBLE);
@@ -231,6 +240,7 @@ public class Login extends Fragment {
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
                     btnLayout.setVisibility(View.VISIBLE);
+                    btnRegister.setEnabled(true);
                     btnLogin.setVisibility(View.VISIBLE);
                     Timber.w("Error Koneksi login:" + throwable.toString());
                 }
@@ -279,7 +289,6 @@ public class Login extends Fragment {
     private void changeActivity() {
         Intent i = new Intent(getActivity(),MainPage.class);
         startActivity(i);
-        Registration.fa.finish();
         getActivity().finish();
 
     }

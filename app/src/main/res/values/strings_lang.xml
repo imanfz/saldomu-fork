@@ -157,7 +157,7 @@
 
     <string name="toolbar_title_home" translatable="false">socialbanking</string>
     <string name="toolbar_title_purchase">Belanja</string>
-    <string name="toolbar_title_pay_friends">Bayar Teman</string>
+    <string name="toolbar_title_pay_friends">Kirim Saldo</string>
     <string name="toolbar_title_topup" translatable="false">Top Up</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
@@ -170,8 +170,8 @@
     <string name="menu_group_title_main_menu">Menu Utama</string>
     <string name="menu_item_title_home">Beranda</string>
     <string name="menu_item_title_accounts">Akun Saya</string>
-    <string name="menu_item_title_pay_friends">Bayar Teman</string>
-    <string name="menu_item_title_ask_for_money">Minta Uang</string>
+    <string name="menu_item_title_pay_friends">Kirim Saldo</string>
+    <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_buy">Belanja</string>
     <string name="menu_item_title_cash_out">Tarik Dana</string>
@@ -334,21 +334,21 @@
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
     <string name="payfriends_otp">* maks. 4 karakter</string>
-    <string name="payfriends_ab_title_activity">Bayar Teman - Kode OTP</string>
+    <string name="payfriends_ab_title_activity">Kirim Saldo - Kode OTP</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>
     <string name="payfriends_recipients_max_validation1">Maksimal Penerima</string>
     <string name="payfriends_recipients_max_validation2">Orang!</string>
     <string name="payfriends_recipients_duplicate_validation">Nomor penerima duplikasi!</string>
     <string name="payfriends_amount_validation">Jumlah Dibutuhkan !</string>
-    <string name="payfriends_dialog_validation_title">Validasi Bayar Teman</string>
+    <string name="payfriends_dialog_validation_title">Validasi Kirim Saldo</string>
     <string name="payfriends_text_total_amount">Total Jumlah</string>
     <string name="payfriends_text_error_recipient">Gagal transfer :</string>
     <string name="payfriends_amount_zero">Jumlah harus lebih besar dari nol</string>
 
     <string name="askfriends_btn_proses_request">Proses Permintaan</string>
     <string name="askfriends_dialog_title">Permintaan Uang Sukses</string>
-    <string name="askfriends_dialog_msg">Pesan minta uang sukses terkirim dengan detil berikut.</string>
+    <string name="askfriends_dialog_msg">Pesan Minta Saldo sukses terkirim dengan detil berikut.</string>
     <string name="askfriends_dialog_text_recipient">Penerima</string>
     <string name="askfriends_dialog_text_amount">Jumlah</string>
     <string name="askfriends_dialog_text_desc">Pesan</string>
@@ -361,9 +361,9 @@
 
     <string name="notifications">Notifikasi</string>
     <string name="notifications_ab_title">Notifikasi</string>
-    <string name="notif_text_ask4money_name">Minta Uang dari</string>
-    <string name="notif_text_decline_name">Tolak Minta Uang dari</string>
-    <string name="notif_text_paid_name">Bayar Teman dari</string>
+    <string name="notif_text_ask4money_name">Minta Saldo dari</string>
+    <string name="notif_text_decline_name">Tolak Minta Saldo dari</string>
+    <string name="notif_text_paid_name">Kirim Saldo dari</string>
     <string name="notif_text_comment_name">menulis komentar di post anda</string>
     <string name="notif_text_like_name">suka post anda</string>
     <string name="notifications_empty">Tidak ada Notifikasi</string>
@@ -545,10 +545,16 @@
     <string name="shareoption_title">Pengaturan Pembagian</string>
     <string name="shareoption_text_facebook" translatable="false">Facebook</string>
     <string name="update_facebook_failed_toast">Gagal perbaharui data Facebook</string>
-    <string name="askformoney_text_share">minta uang kepada</string>
+    <string name="askformoney_text_share">Minta Saldo kepada</string>
     <string name="facebook_share_message_reason"> Alasan :</string>
 
     <string name="pulsa_member_dap" translatable="false">Member DAP</string>
+    <string name="pulsainput_text_denom">Nama Operator</string>
+    <string name="pulsa_customer_id">Customer ID</string>
+    <string name="pulsa_denom_name">Nama Denom</string>
+    <string name="pulsa_product_name">Nama Produk</string>
+    <string name="pulsa_phone_number">Nomor Handphone</string>
+    <string name="pulsa_nominal">Nominal Voucher</string>
 
     <string name="contact_alias">Nama Alias</string>
     <string name="hint_comment">Tambah komentar</string>
@@ -582,7 +588,7 @@
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Upgrade Membership</string>
-    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Upgrade Membership dengan mengisi Form Register dibawah ini, maka Anda dapat melakukan Fitur - fitur Bayar Teman (PIN), Minta Uang, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
+    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Upgrade Membership dengan mengisi Form Register dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Upgrade telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership anda ke Principal dengan membawa Kartu Identitas anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>
@@ -631,4 +637,11 @@
     <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
     <string name="failed_insert_realm">Gagal menyimpan data</string>
     <string name="list_contact_title">List Contact</string>
+
+    <string name="intro_text_2">Aplikasi Keuangan Mobile dengan pengalaman &amp; fitur Social Media</string>
+    <string name="intro_text_3">Meminta Uang atau Tagihan kepada Teman</string>
+    <string name="intro_text_4">Tarik Tunai ke Rekening</string>
+    <string name="intro_text_5">Pembayaran Tagihan &amp; Pembelian</string>
+    <string name="intro_text_6">Dapat digunakan untuk Pembayaran di Merchant yang Terdaftar</string>
+
 </resources>

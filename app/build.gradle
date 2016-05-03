@@ -47,7 +47,7 @@ android {
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
-            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya2/\""
+            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya/\""
 
             versionCode = 1
             versionName "1.0"
@@ -60,7 +60,7 @@ android {
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
-            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya/\""
             signingConfig signingConfigs.prodKey
             versionCode = 14
             versionName "2.13"
@@ -124,6 +124,7 @@ dependencies {
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile 'commons-codec:commons-codec:1.10'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
+    compile 'com.github.paolorotolo:appintro:3.4.0'
     compile 'com.android.support:support-v4:23.2.0'
     compile 'com.jakewharton.timber:timber:4.1.0'
     compile 'com.txusballesteros:FitChart:1.0'

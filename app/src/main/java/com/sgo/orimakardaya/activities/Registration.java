@@ -39,12 +39,6 @@ import timber.log.Timber;
 
 public class Registration extends BaseActivity{
 
-    public static final int REQUEST_EXIT = 0 ;
-    public static final int RESULT_PIN = 1 ;
-    public static final int RESULT_NORMAL = 2 ;
-    public static final int RESULT_FINISHING = 5 ;
-    public static final int ACTIVITY_RESULT = 3;
-
     android.support.v4.app.FragmentManager fragmentManager;
 
     public static Activity fa;
@@ -323,13 +317,6 @@ public class Registration extends BaseActivity{
         super.onActivityResult(requestCode,resultCode,data);
     }
 
-    public void switchActivity(Intent mIntent, int activity_type) {
-        switch (activity_type){
-            case ACTIVITY_RESULT:
-                startActivityForResult(mIntent, REQUEST_EXIT);
-                break;
-        }
-    }
 
 
     @Override

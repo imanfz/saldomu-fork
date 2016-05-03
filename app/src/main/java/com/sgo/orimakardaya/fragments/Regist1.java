@@ -116,7 +116,7 @@ public class Regist1 extends Fragment{
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
+        LoginActivity fca = (LoginActivity) getActivity();
         fca.switchContent(i,name,isBackstack);
     }
 
@@ -124,8 +124,8 @@ public class Regist1 extends Fragment{
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
-        fca.switchActivity(i);
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchActivity(i, LoginActivity.ACTIVITY_RESULT);
     }
 
     public void sentData(final String noHP){
@@ -174,6 +174,7 @@ public class Regist1 extends Fragment{
                                     showDialog(code);
                                 }
                                 else {
+                                    Timber.d("Error Reg1:"+response.toString());
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }

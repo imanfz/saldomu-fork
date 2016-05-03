@@ -44,6 +44,10 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="CustomProgressbar" parent="@android:style/Widget.ProgressBar">
+        <item name="android:color">@color/white</item>
+    </style>
+
     <style name="Reg_Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
