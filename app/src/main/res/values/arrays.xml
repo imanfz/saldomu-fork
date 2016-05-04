@@ -99,7 +99,7 @@
     <string-array name="report_list">
         <item>Transaksi</item>
         <item>Transfer</item>
-        <item>Request</item>
+        <item>Permintaan</item>
     </string-array>
 
     <integer-array name="google_colors">

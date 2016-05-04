@@ -584,11 +584,11 @@
     <string name="cashout_validation_otp">Token dibutuhkan!</string>
     
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
-    <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Upgrade Membership dengan mengisi Form Register.</string>
+    <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan member anda dengan mengisi Formulir Pendaftaran.</string>
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Upgrade Membership</string>
-    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Upgrade Membership dengan mengisi Form Register dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
+    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan member anda dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Upgrade telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership anda ke Principal dengan membawa Kartu Identitas anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>
@@ -636,12 +636,14 @@
     <string name="share_title">Bagikan</string>
     <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
     <string name="failed_insert_realm">Gagal menyimpan data</string>
-    <string name="list_contact_title">List Contact</string>
+    <string name="list_contact_title">Daftar Kontak</string>
 
     <string name="intro_text_2">Aplikasi Keuangan Mobile dengan pengalaman &amp; fitur Social Media</string>
     <string name="intro_text_3">Meminta Uang atau Tagihan kepada Teman</string>
     <string name="intro_text_4">Tarik Tunai ke Rekening</string>
     <string name="intro_text_5">Pembayaran Tagihan &amp; Pembelian</string>
     <string name="intro_text_6">Dapat digunakan untuk Pembayaran di Merchant yang Terdaftar</string>
+
+    <string name="check_contact_first" >Cek Kontak Dahulu</string>
 
 </resources>

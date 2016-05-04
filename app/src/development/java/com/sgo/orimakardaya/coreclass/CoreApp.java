@@ -164,11 +164,7 @@ public class CoreApp extends Application {
             delanguage = newConfig.locale.getLanguage();
         }
 
-        Timber.d("isi delanguage system:"+delanguage);
-        if(delanguage.equals("en")) {
-           DefineValue.sDefSystemLanguage = delanguage.toUpperCase();
-        }
-        else DefineValue.sDefSystemLanguage = "ID";
+        DefineValue.sDefSystemLanguage = "in";
 
     }
 
