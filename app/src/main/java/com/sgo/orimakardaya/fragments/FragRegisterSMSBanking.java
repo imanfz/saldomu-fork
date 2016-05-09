@@ -141,8 +141,13 @@ public class FragRegisterSMSBanking extends Fragment {
 
                             JSONArray bank_data = new JSONArray(response.optString(WebParams.BANK_DATA,""));
 
-                            if(!bank_data.equals("")){
+                            if(bank_data.length() > 0){
+
                                 insertBankList(bank_data);
+                            }
+                            else {
+                                Toast.makeText(getActivity(),getString(R.string.data_not_found),Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
                             }
 
                             prodDialog.dismiss();
@@ -189,8 +194,10 @@ public class FragRegisterSMSBanking extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
+                    if (isVisible() || progdialog.isShowing())
                         progdialog.dismiss();
+
+                    getActivity().finish();
 
                     Timber.w("Error Koneksi get bank list req sms banking:"+throwable.toString());
                 }

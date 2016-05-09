@@ -719,7 +719,6 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("isi request code:" + String.valueOf(requestCode));
-
         Timber.d("isi result Code:" + String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
             if (resultCode == RESULT_LOGOUT) {

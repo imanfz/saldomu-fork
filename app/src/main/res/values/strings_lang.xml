@@ -584,12 +584,12 @@
     <string name="cashout_validation_otp">Token dibutuhkan!</string>
     
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
-    <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan member anda dengan mengisi Formulir Pendaftaran.</string>
+    <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran.</string>
     <string name="level_dialog_btn_ok">Isi Form</string>
 
-    <string name="level_title">Registrasi Upgrade Membership</string>
-    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan member anda dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
-    <string name="level_dialog_finish_title">Data Upgrade telah masuk Antrian</string>
+    <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
+    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
+    <string name="level_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership anda ke Principal dengan membawa Kartu Identitas anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>
 
@@ -627,9 +627,9 @@
     <string name="webview_err_too_many_req">Terlalu Banyak Request ke Server</string>
 
     <string name="max_topup_allowed">Maximal Isi Ulang</string>
-    <string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership anda dengan membawa Kartu Identitas anda sesuai dengan yang didaftarkan ke</string>
+    <string name="level_dialog_finish_message">Silahkan lakukan konfirmasi pembaharuan keanggotaan anda dengan membawa Kartu Identitas anda sesuai dengan yang didaftarkan ke</string>
     <string name="level_dialog_finish_message_2">atau silahkan hubungi</string>
-    <string name="level_dialog_finish_message_auto">Anda telah berhasil melakukan upgrade level member anda.</string>
+    <string name="level_dialog_finish_message_auto">Anda telah berhasil melakukan pembaharuan keanggotaan anda.</string>
     <string name="start_now">Mulai Sekarang</string>
     <string name="how_to_top_up">Cara Untuk TOP UP</string>
 
