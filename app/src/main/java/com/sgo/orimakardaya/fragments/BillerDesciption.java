@@ -31,7 +31,6 @@ import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -713,16 +712,15 @@ public class BillerDesciption extends Fragment {
     }
 
     private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.error),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                getFragmentManager().popBackStack();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.error),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        getFragmentManager().popBackStack();
+                    }
+                }
+        );
         dialognya.show();
     }
 

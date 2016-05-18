@@ -2,6 +2,7 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -380,17 +380,19 @@ public class FragLevelFormRegister extends Fragment {
                                 getActivity().finish();
                             }
                             else {
-                                MessageDialog dialognya = new MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
+                                Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
                                         getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                                        getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone);
-                                dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-                                    @Override
-                                    public void onClickButton(View v, boolean isLongClick) {
-                                        FragFriendsViewDetail.successUpgrade = true;
-                                        getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-                                        getActivity().finish();
-                                    }
-                                });
+                                                getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                                        new DefinedDialog.DialogButtonListener() {
+                                            @Override
+                                            public void onClickButton(View v, boolean isLongClick) {
+                                                FragFriendsViewDetail.successUpgrade = true;
+                                                getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+                                                getActivity().finish();
+                                            }
+                                        }
+                                );
+
                                 dialognya.show();
                             }
 

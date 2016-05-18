@@ -27,7 +27,6 @@ import com.sgo.orimakardaya.adapter.RecipientAdapter;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
@@ -498,16 +497,13 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     }
 
     private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.blocked_pin_title),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                onOkButton();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
+                message, new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+
+                    }
+                }) ;
         dialognya.show();
     }
 

@@ -62,7 +62,7 @@ public class CoreApp extends Application {
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
-        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardayadev), getString(R.string.realmname));
+        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardaya), getString(R.string.realmname));
 
         RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
                 .name(getString(R.string.realmname))

@@ -29,7 +29,6 @@ import com.sgo.orimakardaya.activities.SgoPlusWeb;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
@@ -666,16 +665,15 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     }
 
  	private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.blocked_pin_title),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                onOkButton();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        onOkButton();
+                    }
+                });
+
         dialognya.show();
 	}
     private void changeToSgoPlus(String _tx_id, String _amount, String _bank_code, String _product_code,

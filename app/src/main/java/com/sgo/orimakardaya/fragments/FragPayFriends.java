@@ -37,7 +37,6 @@ import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -563,17 +562,14 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
     }
 
     private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.blocked_pin_title),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
+        Dialog mdialog = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title), message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
 
-            }
-        });
-        dialognya.show();
+                    }
+                });
+        mdialog.show();
     }
 
     void showDialog(final String _data_transfer, final String _nameJson, final String _message, final String _data_mapper) {

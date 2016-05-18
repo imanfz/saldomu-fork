@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,7 +31,6 @@ import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
@@ -220,15 +220,16 @@ public class FragFriendsViewDetail extends Fragment {
     }
 
     private void showDialogLevelRegistered(){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title), getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
+                getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+                        getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
 
-            }
-        });
+                    }
+                });
+
         dialognya.show();
     }
 
