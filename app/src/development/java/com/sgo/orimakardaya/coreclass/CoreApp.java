@@ -133,14 +133,16 @@ public class CoreApp extends Application {
     private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
         try {
             File file = new File(this.getFilesDir(), outFileName);
-            FileOutputStream outputStream = new FileOutputStream(file);
-            byte[] buf = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, bytesRead);
+            if(!file.exists()) {
+                FileOutputStream outputStream = new FileOutputStream(file);
+                byte[] buf = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buf)) > 0) {
+                    outputStream.write(buf, 0, bytesRead);
+                }
+                outputStream.close();
+                return file.getAbsolutePath();
             }
-            outputStream.close();
-            return file.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
         }

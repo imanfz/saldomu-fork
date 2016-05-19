@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.SMSclass;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 /**
  * Created by Lenovo Thinkpad on 12/21/2015.
  */
@@ -33,6 +37,27 @@ public class IntroPage extends Fragment {
 
         if(getArguments() != null && getArguments().containsKey(ARG_LAYOUT_RES_ID))
             layoutResId = getArguments().getInt(ARG_LAYOUT_RES_ID);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        SMSclass smsClass = new SMSclass(getActivity());
+
+        smsClass.isSimExists(new SMSclass.SMS_SIM_STATE() {
+            @Override
+            public void sim_state(Boolean isExist, String msg) {
+                if(!isExist){
+                    DefinedDialog.showErrorDialog(getActivity(), msg, new DefinedDialog.DialogButtonListener() {
+                        @Override
+                        public void onClickButton(View v, boolean isLongClick) {
+                            getActivity().finish();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Nullable

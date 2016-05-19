@@ -35,7 +35,7 @@ public class DefinedDialog {
         return dialog;
     }
 
-    public static void showErrorDialog(Context context, String message) {
+    public static void showErrorDialog(Context context, String message, final DialogButtonListener mButtonListener) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -51,6 +51,8 @@ public class DefinedDialog {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (mButtonListener!=null)
+                    mButtonListener.onClickButton(view,false);
                 dialog.dismiss();
             }
         });

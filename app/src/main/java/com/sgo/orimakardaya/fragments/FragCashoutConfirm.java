@@ -151,7 +151,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
 
         }
     };

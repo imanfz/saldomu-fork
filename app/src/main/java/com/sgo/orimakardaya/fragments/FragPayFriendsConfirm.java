@@ -259,7 +259,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                     startActivityForResult(i,MainPage.REQUEST_FINISH);
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
 
         }
     };
@@ -274,7 +274,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
 
         }
     };

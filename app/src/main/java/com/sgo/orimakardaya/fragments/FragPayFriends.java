@@ -413,7 +413,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
                     }
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

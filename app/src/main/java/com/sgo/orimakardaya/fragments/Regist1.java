@@ -76,13 +76,21 @@ public class Regist1 extends Fragment{
             }
         });
 
-        if(isSimExists()){
+        SMSclass smsClass = new SMSclass(getActivity());
 
-            TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            String Nomor1 = tm.getLine1Number();
+        smsClass.isSimExists(new SMSclass.SMS_SIM_STATE() {
+            @Override
+            public void sim_state(Boolean isExist, String msg) {
+                if(isExist){
+                    TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                    String Nomor1 = tm.getLine1Number();
 
-            noHPValue.setText(Nomor1);
-        }
+                    noHPValue.setText(Nomor1);
+                }
+            }
+        });
+
+
         //else Toast.makeText(getActivity(),"tidak ada sim",Toast.LENGTH_LONG).show();
 
         noHPValue.requestFocus();
@@ -107,7 +115,7 @@ public class Regist1 extends Fragment{
                     if(inputValidation()){
                         sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
             }
         }
     };
@@ -307,31 +315,7 @@ public class Regist1 extends Fragment{
         return true;
     }
 
-    public boolean isSimExists()
-    {
-        TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        int SIM_STATE = telephonyManager.getSimState();
 
-        if(SIM_STATE == TelephonyManager.SIM_STATE_READY)
-            return true;
-        else
-        {
-            switch(SIM_STATE)
-            {
-                case TelephonyManager.SIM_STATE_ABSENT: //SimState = "No Sim Found!";
-                    break;
-                case TelephonyManager.SIM_STATE_NETWORK_LOCKED: //SimState = "Network Locked!";
-                    break;
-                case TelephonyManager.SIM_STATE_PIN_REQUIRED: //SimState = "PIN Required to access SIM!";
-                    break;
-                case TelephonyManager.SIM_STATE_PUK_REQUIRED: //SimState = "PUK Required to access SIM!"; // Personal Unblocking Code
-                    break;
-                case TelephonyManager.SIM_STATE_UNKNOWN: //SimState = "Unknown SIM State!";
-                    break;
-            }
-            return false;
-        }
-    }
 
     public static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();

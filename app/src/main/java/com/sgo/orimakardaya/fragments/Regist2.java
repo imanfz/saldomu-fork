@@ -104,7 +104,7 @@ public class Regist2 extends Fragment {
                         sentData();
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -116,7 +116,7 @@ public class Regist2 extends Fragment {
                 else if(max_resend_email > 0) requestResendToken("N","Y");
                 else Toast.makeText(getActivity(),getString(R.string.reg2_notif_max_resend_token_empty),Toast.LENGTH_LONG).show();
             }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
         }
     };
 

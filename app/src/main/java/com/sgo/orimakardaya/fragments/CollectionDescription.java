@@ -205,7 +205,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -219,7 +219,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
                 if(max_token_resend!=0)requestResendToken();
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

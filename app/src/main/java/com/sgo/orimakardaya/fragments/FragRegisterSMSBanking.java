@@ -281,7 +281,7 @@ public class FragRegisterSMSBanking extends Fragment {
                         getDataSB();
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

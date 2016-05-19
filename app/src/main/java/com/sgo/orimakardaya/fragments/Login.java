@@ -105,7 +105,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     }
                 }
                 else
-                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
                 break;
             case R.id.btn_forgetPass :
                 newFrag = new ForgotPassword();
@@ -409,11 +409,6 @@ public class Login extends Fragment implements View.OnClickListener {
                 JSONArray arrayJson = new JSONArray(arraynya);
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
             }
-
-            SharedPreferences mOtherSP = getActivity().getSharedPreferences(DefineValue.FACEBOOK_PREF, Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = mOtherSP.edit();
-            edit.putBoolean(DefineValue.IS_ACTIVE,false);
-            edit.apply();
 
 
         } catch (JSONException e) {
