@@ -1,2 +1,2 @@
-include ':app', 'PinMaster', 'PinnedSectionList'
+include ':app', 'PinMaster', 'PinnedSectionList', ':SecurePref'
 include ':VPI'

@@ -120,7 +120,7 @@ dependencies {
     compile 'com.u1aryz:android-newpopupmenu-lib:1.0.1'
     compile 'com.wdullaer:materialdatetimepicker:1.5.4'
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
-    compile 'com.scottyab:secure-preferences-lib:0.1.4'
+    //    compile 'com.scottyab:secure-preferences-lib:0.1.4'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile 'commons-codec:commons-codec:1.10'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
@@ -137,4 +137,5 @@ dependencies {
     compile project(':PinMaster')
     compile project(':PinnedSectionList')
     compile project(':VPI')
+    compile project(':SecurePref')
 }

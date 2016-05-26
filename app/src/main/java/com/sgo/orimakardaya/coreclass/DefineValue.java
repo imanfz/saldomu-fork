@@ -2,11 +2,13 @@ package com.sgo.orimakardaya.coreclass;/*
   Created by Administrator on 11/6/2015.
  */
 
+import com.sgo.orimakardaya.BuildConfig;
+
 public class DefineValue {
 
     //Final Value
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static final String SEC_PREF_NAME = "pin_pref.xml";
+    public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
 
 
