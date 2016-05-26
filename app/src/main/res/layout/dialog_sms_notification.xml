@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:minWidth="@dimen/item_width"
+              android:padding="10dp"
+        >
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:background="@color/colorPrimary"
+            android:padding="5dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            >
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_sms_title"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textStyle="bold"
+                    android:textColor="#ffffffff"
+                    android:id="@+id/title_dialog"
+                    android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/phone_sms_icon"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/dialog_pic_msg"
+        />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small_material"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/message_dialog"
+            android:layout_gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="20dp"
+            android:id="@+id/dialog_probar_inquiry"
+            android:visibility="gone"
+            android:progress="40"
+            android:max="100"
+            style="@style/CustomProgressBarHorizontal"
+            android:layout_centerInParent="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4:45"
+            android:visibility="gone"
+            android:id="@+id/dialog_duration_inquiry"
+            android:layout_centerInParent="true"
+            />
+
+    </RelativeLayout>
+
+        
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        >
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_button_material"
+            android:textColor="@color/colorPrimary"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:id="@+id/btn_dialog_cancel"
+            android:layout_alignParentLeft="true"/>
+
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_button_material"
+            android:textColor="@color/colorPrimary"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:id="@+id/btn_dialog_ok"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

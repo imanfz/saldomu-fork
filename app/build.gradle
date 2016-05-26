@@ -48,7 +48,6 @@ android {
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
             buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:18080/akardaya/\""
-
             versionCode = 1
             versionName "1.0"
         }
@@ -71,6 +70,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.prodKey
         }
         debug {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

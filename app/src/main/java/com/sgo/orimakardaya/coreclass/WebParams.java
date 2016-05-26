@@ -326,4 +326,10 @@ public class WebParams {
     public static String BANK_GATEWAY = "bank_gateway";
 
     public static String UNREAD_NOTIF = "unread_notif";
+    public static String IMEI = "imei";
+    public static String ICCID = "iccid";
+    public static String SENT = "sent";
+    public static String SENDER_ID = "sender_id";
+
+    public static String IS_NEW_USER = "is_new_user";
 }

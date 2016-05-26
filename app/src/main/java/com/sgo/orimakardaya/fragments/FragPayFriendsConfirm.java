@@ -247,12 +247,12 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         public void onClick(View view) {
 
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase("OTP")) {
+                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (inputValidation()) {
                         sentDataConfirm(txID,etOTP.getText().toString());
                     }
                 }
-                else if(authType.equalsIgnoreCase("PIN")){
+                else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)){
                     Intent i = new Intent(getActivity(), InsertPIN.class);
                     if(attempt != -1 && attempt < 2)
                         i.putExtra(DefineValue.ATTEMPT,attempt);

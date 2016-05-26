@@ -9,6 +9,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 
 import timber.log.Timber;

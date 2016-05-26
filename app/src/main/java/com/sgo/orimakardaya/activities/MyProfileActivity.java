@@ -197,6 +197,7 @@ public class MyProfileActivity extends BaseActivity {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
+
         initializeData();
     }
 
@@ -267,6 +268,7 @@ public class MyProfileActivity extends BaseActivity {
                     c.get(Calendar.MONTH),
                     c.get(Calendar.DAY_OF_MONTH)
             );
+
         }
 
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;

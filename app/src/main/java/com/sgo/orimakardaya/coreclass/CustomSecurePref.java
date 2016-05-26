@@ -8,6 +8,10 @@ import android.os.Build;
 import com.securepreferences.SecurePreferences;
 import com.tozny.crypto.android.AesCbcWithIntegrity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 
 public class CustomSecurePref {
@@ -42,6 +46,19 @@ public class CustomSecurePref {
             }
         }
     }
+
+//    private String handleMigrationFile() {
+//        try {
+//            String outFileName = "pin_pref.xml.xml"
+//            File file = new File(mContext.getFilesDir(), outFileName);
+//            if(!file.exists()) {
+//
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;

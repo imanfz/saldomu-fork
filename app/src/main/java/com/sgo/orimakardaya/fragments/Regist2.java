@@ -530,6 +530,9 @@ public class Regist2 extends Fragment {
     }
 
     void showDialog(){
+
+        saveImeiICCIDDevice();
+
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -554,11 +557,30 @@ public class Regist2 extends Fragment {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Fragment test = new Login();
+                switchFragment(test,"Login",false);
                 dialog.dismiss();
             }
         });
 
         dialog.show();
+    }
+
+    private void saveImeiICCIDDevice(){
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor edit = sp.edit();
+        SMSclass smSclass = new SMSclass(getActivity());
+        edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
+        edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
+        edit.commit();
+    }
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchContent(i,name,isBackstack);
     }
 
     public boolean inputValidation(){

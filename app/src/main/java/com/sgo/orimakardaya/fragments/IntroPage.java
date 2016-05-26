@@ -42,22 +42,6 @@ public class IntroPage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        SMSclass smsClass = new SMSclass(getActivity());
-
-        smsClass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-            @Override
-            public void sim_state(Boolean isExist, String msg) {
-                if(!isExist){
-                    DefinedDialog.showErrorDialog(getActivity(), msg, new DefinedDialog.DialogButtonListener() {
-                        @Override
-                        public void onClickButton(View v, boolean isLongClick) {
-                            getActivity().finish();
-                        }
-                    });
-                }
-            }
-        });
     }
 
     @Nullable
