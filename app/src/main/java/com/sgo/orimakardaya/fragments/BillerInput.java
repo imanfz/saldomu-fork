@@ -324,7 +324,7 @@ public class BillerInput extends Fragment {
                     showDialog(final_payment_remark);
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

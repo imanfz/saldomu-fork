@@ -331,7 +331,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

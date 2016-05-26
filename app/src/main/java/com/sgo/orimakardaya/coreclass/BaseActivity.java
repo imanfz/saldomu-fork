@@ -8,6 +8,8 @@ import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
 /*
   Created by Administrator on 11/24/2014.
@@ -17,6 +19,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Toolbar detoolbar;
     protected TextView title_detoolbar;
     protected ProgressBar deprogressbar;
+    protected SMSclass smsClass;
 
 
     @Override
@@ -34,7 +37,27 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+
+        smsClass = new SMSclass(this);
+
+        smsClass.isSimExists(new SMSclass.SMS_SIM_STATE() {
+            @Override
+            public void sim_state(Boolean isExist, String msg) {
+                if(!isExist){
+                    DefinedDialog.showErrorDialog(BaseActivity.this, msg, new DefinedDialog.DialogButtonListener() {
+                        @Override
+                        public void onClickButton(View v, boolean isLongClick) {
+                            setResult(MainPage.RESULT_LOGOUT);
+                            finish();
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

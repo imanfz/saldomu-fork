@@ -14,7 +14,6 @@ public class DefineValue {
 
     //Static Value
     public static String language = null;
-    public static String FACEBOOK_PREF = "FaPref";
     public static String VERSION_CODE = "" ;
     public static String VERSION_NAME = "" ;
     public static String TOPUP_IB_TYPE = "1";
@@ -253,7 +252,12 @@ public class DefineValue {
     public static String CAN_TRANSFER = "canTransfer";
 
     public static String DESTINATION_REMARK = "destinationRemark";
-
     public static String LINK_APP = "linkApp";
+
+    public static String SENDER_ID = "SenderID";
+    public static String DEIMEI = "deimei";
+    public static String DEICCID = "deiccid";
+
+    public static String USER_IS_NEW = "userIsNew";
 
 }

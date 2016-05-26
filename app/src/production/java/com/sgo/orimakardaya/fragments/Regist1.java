@@ -2,24 +2,36 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.LoginActivity;
-import com.sgo.orimakardaya.activities.Registration;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.NoHPFormat;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,8 +44,8 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
-    EditText namaValue,emailValue,noHPValue;
+    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",max_resend_token = "3", auth_type = "";
+    EditText namaValue,emailValue;
     Button btnLanjut;
     CheckBox cb_terms;
     View v;
@@ -63,7 +75,6 @@ public class Regist1 extends Fragment{
 
         namaValue=(EditText)getActivity().findViewById(R.id.name_value);
         emailValue=(EditText)getActivity().findViewById(R.id.email_value);
-        noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -76,16 +87,6 @@ public class Regist1 extends Fragment{
             }
         });
 
-        if(isSimExists()){
-
-            TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            String Nomor1 = tm.getLine1Number();
-
-            noHPValue.setText(Nomor1);
-        }
-        //else Toast.makeText(getActivity(),"tidak ada sim",Toast.LENGTH_LONG).show();
-
-        noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
 
         TextView tv_termsnconditions = (TextView) v.findViewById(R.id.tv_termsncondition);
@@ -96,6 +97,11 @@ public class Regist1 extends Fragment{
                 switchFragment(mfrag,getString(R.string.termsncondition_title),true);
             }
         });
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID))
+            noHPValid = NoHPFormat.editNoHP(sp.getString(DefineValue.SENDER_ID,""));
+
     }
 
     Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
@@ -105,9 +111,9 @@ public class Regist1 extends Fragment{
             if(view == btnLanjut){
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
-                        sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
+                        sentData(noHPValid);
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
             }
         }
     };
@@ -134,7 +140,6 @@ public class Regist1 extends Fragment{
                 progdialog.show();
 
                 btnLanjut.setEnabled(false);
-                noHPValue.setEnabled(false);
                 namaValue.setEnabled(false);
                 emailValue.setEnabled(false);
 
@@ -153,7 +158,6 @@ public class Regist1 extends Fragment{
                         @Override
                         public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
                             btnLanjut.setEnabled(true);
-                            noHPValue.setEnabled(true);
                             namaValue.setEnabled(true);
                             emailValue.setEnabled(true);
                             Timber.d("response register:"+response.toString());
@@ -210,7 +214,6 @@ public class Regist1 extends Fragment{
                         if(progdialog.isShowing())
                             progdialog.dismiss();
                         btnLanjut.setEnabled(true);
-                        noHPValue.setEnabled(true);
                         namaValue.setEnabled(true);
                         emailValue.setEnabled(true);
                         Timber.w("Error Koneksi reg1 proses reg1:"+throwable.toString());
@@ -284,12 +287,7 @@ public class Regist1 extends Fragment{
     //----------------------------------------------------------------------------------------------------------------
 
     public boolean inputValidation(){
-        if(noHPValue.getText().toString().length()==0){
-            noHPValue.requestFocus();
-            noHPValue.setError(getResources().getString(R.string.regist1_validation_nohp));
-            return false;
-        }
-        else if(namaValue.getText().toString().length()<2){
+       if(namaValue.getText().toString().length()<2){
             namaValue.requestFocus();
             namaValue.setError(getResources().getString(R.string.regist1_validation_nama));
             return false;
@@ -307,31 +305,7 @@ public class Regist1 extends Fragment{
         return true;
     }
 
-    public boolean isSimExists()
-    {
-        TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        int SIM_STATE = telephonyManager.getSimState();
 
-        if(SIM_STATE == TelephonyManager.SIM_STATE_READY)
-            return true;
-        else
-        {
-            switch(SIM_STATE)
-            {
-                case TelephonyManager.SIM_STATE_ABSENT: //SimState = "No Sim Found!";
-                    break;
-                case TelephonyManager.SIM_STATE_NETWORK_LOCKED: //SimState = "Network Locked!";
-                    break;
-                case TelephonyManager.SIM_STATE_PIN_REQUIRED: //SimState = "PIN Required to access SIM!";
-                    break;
-                case TelephonyManager.SIM_STATE_PUK_REQUIRED: //SimState = "PUK Required to access SIM!"; // Personal Unblocking Code
-                    break;
-                case TelephonyManager.SIM_STATE_UNKNOWN: //SimState = "Unknown SIM State!";
-                    break;
-            }
-            return false;
-        }
-    }
 
     public static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();

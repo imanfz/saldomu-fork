@@ -9,12 +9,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Menu;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
@@ -22,6 +22,7 @@ import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.fragments.Login;
+import com.sgo.orimakardaya.fragments.Regist1;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -51,16 +52,32 @@ public class LoginActivity extends BaseActivity {
         if(InetHandler.isNetworkAvailable(this))
             getAppVersion();
 
-
         if (findViewById(R.id.loginContent) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
-            Login login = new Login();
+
+            Fragment newFrag = new Login();
+
+            Bundle m = getIntent().getExtras();
+            if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+                if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
+                    newFrag = new Regist1();
+                } else if (BuildConfig.DEBUG) { //untuk shorcut dari tombol di activity introduction
+                    if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
+                        newFrag = new Regist1();
+
+                    } else if (m.getInt(DefineValue.USER_IS_NEW, 0) == -2) {
+                        newFrag = new Login();
+                    }
+                    newFrag.setArguments(m);
+                }
+            }
+
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.loginContent, login,"login");
+            fragmentTransaction.add(R.id.loginContent, newFrag,"login");
             fragmentTransaction.commit();
         }
     }

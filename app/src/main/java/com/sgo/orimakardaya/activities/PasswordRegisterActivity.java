@@ -74,7 +74,7 @@ public class PasswordRegisterActivity extends BaseActivity {
                     finishChild(i);
                 }
             }
-            else DefinedDialog.showErrorDialog(PasswordRegisterActivity.this, getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(PasswordRegisterActivity.this, getString(R.string.inethandler_dialog_message), null);
         }
     };
 
