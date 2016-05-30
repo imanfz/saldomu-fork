@@ -102,7 +102,7 @@ public class FragRegisterSMSBanking extends Fragment {
                 layout_dll.setVisibility(View.VISIBLE);
             }
             else layout_dll.setVisibility(View.GONE);
-            
+
         }
 
         @Override

@@ -224,17 +224,5 @@
         <service android:name=".services.BalanceService"/>
         <service android:name=".services.AppInfoService"/>
         <service android:name=".services.UserProfileService"/>
-
-        <receiver
-            android:name=".receivers.SimChangedReceiver"
-            android:enabled="true"
-            android:process=":remote" >
-            <intent-filter>
-                <action android:name="android.intent.action.SIM_STATE_CHANGED" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
