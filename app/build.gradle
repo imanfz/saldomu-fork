@@ -59,7 +59,7 @@ android {
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
-            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya/\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             signingConfig signingConfigs.prodKey
             versionCode = 14
             versionName "2.13"

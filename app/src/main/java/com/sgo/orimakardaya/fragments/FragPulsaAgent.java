@@ -59,6 +59,8 @@ public class FragPulsaAgent extends Fragment{
     private HashMap<String,String> mDenomData, mMemberData, mNominalData;
     int privacy;
     boolean flagDenom = true;
+    ArrayAdapter<String> adapterDenom;
+    ArrayAdapter<String> adapterNominal;
 
     @Override
     public void onResume() {
@@ -187,7 +189,7 @@ public class FragPulsaAgent extends Fragment{
                 mArray = new JSONArray(denom_data);
                 _denomData = new String[mArray.length()];
                 _catalogData = new String[mArray.length()];
-                final ArrayAdapter<String> adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
+                adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
                 adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_denom.setAdapter(adapterDenom);
                 spin_denom.setOnItemSelectedListener(spinnerDenomListener);
@@ -255,7 +257,7 @@ public class FragPulsaAgent extends Fragment{
             try {
                 mArray = new JSONArray(denom_data);
                 _nominalData = new String[mArray.length()];
-                final ArrayAdapter<String> adapterNominal = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_nominalData);
+                adapterNominal = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _nominalData);
                 adapterNominal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_nominal.setAdapter(adapterNominal);
                 spin_nominal.setOnItemSelectedListener(spinnerNominalListener);
@@ -316,7 +318,7 @@ public class FragPulsaAgent extends Fragment{
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params sent Denom DAP", params.toString());
+            Timber.d("isi params sent Denom DAP"+ params.toString());
 
             MyApiClient.getDenomDAP(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
@@ -324,12 +326,12 @@ public class FragPulsaAgent extends Fragment{
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response Denom DAP", response.toString());
+                            Timber.d("Isi response Denom DAP"+ response.toString());
                             String denom_data = response.getString(WebParams.DENOM_DATA);
                             if(catalog_id.equals("")) initializeDenom(denom_data);
                             else initializeNominal(denom_data);
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginMain(getActivity(),message);
@@ -374,7 +376,7 @@ public class FragPulsaAgent extends Fragment{
                 }
             });
         }catch (Exception e){
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient"+ e.getMessage());
         }
     }
 

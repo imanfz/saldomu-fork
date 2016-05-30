@@ -303,14 +303,14 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
 
-            Timber.d("isi params sent get Trx Status", params.toString());
+            Timber.d("isi params sent get Trx Status" + params.toString());
 
             MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status", response.toString());
+                        Timber.d("isi response sent get Trx Status"+response.toString());
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
@@ -319,7 +319,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                                     response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), amount);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
@@ -561,7 +561,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     };
 
     public final void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session", _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
+        Timber.d("isi _kode_otp, _member_kode, member kode session"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             et_token_value.setText(_kode_otp);
         }
