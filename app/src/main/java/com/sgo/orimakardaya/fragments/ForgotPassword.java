@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.InsertPIN;
 import com.sgo.orimakardaya.activities.LoginActivity;
@@ -69,6 +70,9 @@ public class ForgotPassword extends Fragment {
         btn_submit.setOnClickListener(submitForgotPassListener);
         et_user_id.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
 
     Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
@@ -337,8 +341,7 @@ public class ForgotPassword extends Fragment {
 
     public boolean inputValidation(){
         if(et_user_id.getText().toString().length()==0){
-            et_user_id.requestFocus();
-            et_user_id.setError(this.getString(R.string.forgetpass_edittext_validation));
+            DefinedDialog.showErrorDialog(getActivity(),getString(R.string.forgetpass_edittext_validation),null);
             return false;
         }
         if(spin_tipe_notif.getSelectedItemPosition()==0){

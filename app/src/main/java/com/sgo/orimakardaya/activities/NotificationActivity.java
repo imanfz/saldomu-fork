@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.fragments.FragNotification;
 
 import timber.log.Timber;
@@ -93,6 +94,12 @@ public class NotificationActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        MyApiClient.CancelRequestWS(this,true);
+        super.onDestroy();
     }
 
     @Override

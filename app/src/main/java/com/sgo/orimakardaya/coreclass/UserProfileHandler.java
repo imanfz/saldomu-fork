@@ -57,7 +57,7 @@ public class UserProfileHandler {
 
                         } else {
                             code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
+//                            Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
                         }
 
                     } catch (JSONException e) {

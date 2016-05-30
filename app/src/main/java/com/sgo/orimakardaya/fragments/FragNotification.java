@@ -485,12 +485,14 @@ public class FragNotification extends Fragment {
                         } else {
 
                             if (code.equals("0003")) {
-                                Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
-                                mRecyclerView.setVisibility(View.GONE);
-                                empty_layout.setVisibility(View.VISIBLE);
-                                mData.clear();
-                                mAdapter.notifyDataSetChanged();
-                                getActivity().setResult(MainPage.RESULT_NOTIF);
+                                if(FragNotification.this.isVisible()) {
+                                    Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
+                                    mRecyclerView.setVisibility(View.GONE);
+                                    empty_layout.setVisibility(View.VISIBLE);
+                                    mData.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                    getActivity().setResult(MainPage.RESULT_NOTIF);
+                                }
                             }
 
                         }
