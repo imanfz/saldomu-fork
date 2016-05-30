@@ -372,7 +372,14 @@ public class SecurePreferences implements SharedPreferences {
 	public String getString(String key, String defaultValue) {
 		final String encryptedValue = sharedPreferences.getString(
 				SecurePreferences.hashPrefKey(key), null);
-		return (encryptedValue != null) ? decrypt(encryptedValue) : defaultValue;
+		if(encryptedValue != null){
+			String dec = decrypt(encryptedValue);
+			if(dec == null)
+				return defaultValue;
+			else
+				return dec;
+		}
+		else return defaultValue;
 	}
 
 	/**
@@ -414,7 +421,10 @@ public class SecurePreferences implements SharedPreferences {
 			return defaultValue;
 		}
 		try {
-			return Integer.parseInt(decrypt(encryptedValue));
+			String dec = decrypt(encryptedValue);
+			if(dec != null)
+				return Integer.parseInt(dec);
+			return defaultValue;
 		} catch (NumberFormatException e) {
 			throw new ClassCastException(e.getMessage());
 		}
