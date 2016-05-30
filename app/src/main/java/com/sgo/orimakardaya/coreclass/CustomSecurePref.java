@@ -43,7 +43,6 @@ public class CustomSecurePref {
                 final byte[] salt = test.getBytes();
                 AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,500);
                 setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
-                getmSecurePrefs().handlePasswordChange(myKey.toString(),_context);
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
             }

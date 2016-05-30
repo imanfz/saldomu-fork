@@ -18,10 +18,12 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.SMSclass;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -43,15 +45,16 @@ public class SMSDialog extends Dialog {
     private TextView progText,tvMessage;
     private Button btnOk,btnCancel;
     private CountDownTimer cdTimer;
-//    private final static int lenghtTimer = 300000; //5 minute
-    private final static int lenghtTimer = 150000; //5 minute
+    private static int lenghtTimer; //5 minute
     private final static int intervalTimer = 1000;
+    private final static int max_fail_connect = 5; //5 minute
     private static Boolean isStop;
     private String imeiDevice,ICCIDDevice;
     SMSclass smsClass;
     String message1, timeStamp;
     SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
     Handler handler;
+    private int idx_fail;
 
 
     public interface DialogButtonListener{
@@ -76,6 +79,11 @@ public class SMSDialog extends Dialog {
         // Include dialog.xml file
         setContentView(R.layout.dialog_sms_notification);
 
+        if(BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
+            lenghtTimer = 150000;
+        else
+            lenghtTimer = 300000;
+
         smsClass = new SMSclass(getContext());
         // set values for custom dialog components - text, image and button
 
@@ -93,9 +101,6 @@ public class SMSDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 progBar.setProgress(0);
-                if (deListener!=null)
-                    deListener.onClickOkButton(v,false);
-
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg2));
                 progBar.setVisibility(View.VISIBLE);
                 progText.setVisibility(View.VISIBLE);
@@ -109,9 +114,11 @@ public class SMSDialog extends Dialog {
                 }
 
                 isStop = false;
+                idx_fail = 0;
                 sentInquirySMS();
                 cdTimer.start();
-
+                if (deListener!=null)
+                    deListener.onClickOkButton(v,false);
             }
         });
 
@@ -119,8 +126,7 @@ public class SMSDialog extends Dialog {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (deListener!=null)
-                    deListener.onClickCancelButton(v,false);
+
 
                 tvMessage.setText(message1);
                 progText.setVisibility(View.GONE);
@@ -137,6 +143,8 @@ public class SMSDialog extends Dialog {
                 MyApiClient.CancelRequestWS(getContext(),true);
                 isStop = true;
                 dismiss();
+                if (deListener!=null)
+                    deListener.onClickCancelButton(v,false);
             }
         });
 
@@ -241,92 +249,114 @@ public class SMSDialog extends Dialog {
 
     private void sentInquirySMS (){
         try{
-            if(!isStop) {
+            if(idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())){
+                if(!isStop) {
 
-                RequestParams params = new RequestParams();
-                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-                params.put(WebParams.IMEI, imeiDevice);
-                params.put(WebParams.ICCID, ICCIDDevice);
-                params.put(WebParams.SENT,timeStamp);
+                    RequestParams params = new RequestParams();
+                    params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                    params.put(WebParams.IMEI, imeiDevice);
+                    params.put(WebParams.ICCID, ICCIDDevice);
+                    params.put(WebParams.SENT,timeStamp);
 
-                Timber.d("isi params inquiry sms:" + params.toString());
+                    Timber.d("isi params inquiry sms:" + params.toString());
 
-                MyApiClient.sentInquirySMS(getContext(), params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
-                        try {
-                            Timber.d("isi params response inquiry sms:" + response.toString());
-                            String code = response.getString(WebParams.ERROR_CODE);
+                    MyApiClient.sentInquirySMS(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
+                            try {
+                                Timber.d("isi params response inquiry sms:" + response.toString());
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if(handler == null)
+                                    handler = new Handler();
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    isStop = true;
+                                    tvMessage.setText(getContext().getString(R.string.dialog_sms_msg4));
+                                    progText.setVisibility(View.GONE);
+                                    progBar.setVisibility(View.GONE);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_success));
+                                    }
+                                    else {
+                                        img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_success));
+                                    }
+                                    cdTimer.cancel();
+
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            saveData(response);
+                                        }
+                                    }, 3000);
+
+                                } else {
+
+
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            sentInquirySMS();
+                                        }
+                                    }, 3000);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Timber.w("Error Koneksi login:" + throwable.toString());
                             if(handler == null)
                                 handler = new Handler();
 
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                isStop = true;
-                                tvMessage.setText(getContext().getString(R.string.dialog_sms_msg4));
-                                progText.setVisibility(View.GONE);
-                                progBar.setVisibility(View.GONE);
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_success));
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    idx_fail++;
+                                    sentInquirySMS();
                                 }
-                                else {
-                                    img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_success));
-                                }
-                                cdTimer.cancel();
-
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        saveData(response);
-                                    }
-                                }, 3000);
-
-                            } else {
-
-
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        sentInquirySMS();
-                                    }
-                                }, 3000);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            }, 3000);
                         }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        ifFailure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        ifFailure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        ifFailure(throwable);
-                    }
-
-                    private void ifFailure(Throwable throwable) {
-                        Timber.w("Error Koneksi login:" + throwable.toString());
-                        if(handler == null)
-                            handler = new Handler();
-
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                sentInquirySMS();
-                            }
-                        }, 3000);
-                    }
-                });
+                    });
+                }
             }
+            else {
+                tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
+                progText.setVisibility(View.GONE);
+                progBar.setVisibility(View.GONE);
+                btnOk.setVisibility(View.VISIBLE);
+                btnCancel.setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_fail));
+                }
+                else {
+                    img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
+                }
+                cdTimer.cancel();
+                MyApiClient.CancelRequestWS(getContext(),true);
+                isStop = true;
+            }
+
+
+
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -339,12 +369,13 @@ public class SMSDialog extends Dialog {
         if(mObj.optInt(WebParams.IS_NEW_USER,0) == 0) {
             edit.putString(DefineValue.DEIMEI, imeiDevice);
             edit.putString(DefineValue.DEICCID, ICCIDDevice);
+            edit.commit();
             deListener.onSuccess(0);
         }
         else {
+            edit.commit();
             deListener.onSuccess(1);
         }
-        edit.commit();
     }
 
     @Override

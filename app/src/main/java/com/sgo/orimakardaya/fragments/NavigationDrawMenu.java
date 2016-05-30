@@ -222,10 +222,12 @@ public class NavigationDrawMenu extends ListFragment{
     }
 
     public void initializeNavDrawer(){
-        Fragment newFragment = new FragMainPage();
-        switchFragment(newFragment, getString(R.string.toolbar_title_home));
+       if(!getActivity().isFinishing()) {
+           Fragment newFragment = new FragMainPage();
+           switchFragment(newFragment, getString(R.string.toolbar_title_home));
 
-        refreshDataNavDrawer();
+           refreshDataNavDrawer();
+       }
     }
 
     public void refreshUINavDrawer(){

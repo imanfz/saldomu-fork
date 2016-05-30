@@ -256,8 +256,7 @@
     <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti kata sandi anda untuk alasan keamanan.</string>
 
     <string name="forgotpass_text_title">Lupa Kata Sandi</string>
-    <string name="forgotpass_text_instruction">Isi nomor Handphone yang terhubung dengan akun</string>
-    <string name="forgotpass_text_instruction2">anda dan pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
+    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
     <string name="forgotpass_text_instruction3">Isi nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
     <string name="forgotpass_text_message_success">Ganti kata sandi berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>
     <string name="validation_minimal">Minimal</string>

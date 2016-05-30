@@ -13,6 +13,8 @@ public class DefineValue {
 
 
     //Static Value
+    public static String DEVELOPMENT = "development" ;
+    public static String PRODUCTION = "production" ;
     public static String language = null;
     public static String VERSION_CODE = "" ;
     public static String VERSION_NAME = "" ;

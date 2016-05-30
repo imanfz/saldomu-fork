@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/grey_1000w"
                 android:textStyle="bold"
+                android:visibility="gone"
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:singleLine="true"/>
 

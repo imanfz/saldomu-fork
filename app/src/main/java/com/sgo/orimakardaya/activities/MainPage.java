@@ -17,6 +17,7 @@ import android.os.Messenger;
 import android.provider.Telephony;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,6 +49,7 @@ import com.sgo.orimakardaya.fragments.FragMainPage;
 import com.sgo.orimakardaya.fragments.MyHistory;
 import com.sgo.orimakardaya.fragments.NavigationDrawMenu;
 import com.sgo.orimakardaya.fragments.RightSideDrawMenu;
+import com.sgo.orimakardaya.receivers.SimChangedReceiver;
 import com.sgo.orimakardaya.services.AppInfoService;
 import com.sgo.orimakardaya.services.BalanceService;
 import com.sgo.orimakardaya.services.UserProfileService;
@@ -121,7 +123,7 @@ public class MainPage extends BaseActivity{
         if (!isLogin()) {
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
-            if(smsClass.isSimSameSP()) {
+
                 getAppVersion();
                 ActiveAndroid.initialize(this);
                 progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
@@ -129,10 +131,6 @@ public class MainPage extends BaseActivity{
                 InitializeNavDrawer();
                 setupFab();
                 AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-            }
-            else {
-                switchLogout();
-            }
         }
 
     }
@@ -397,7 +395,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void initializeNavDrawer(){
-        if(mNavDrawer != null)
+        if(mNavDrawer != null && isActive)
             mNavDrawer.initializeNavDrawer();
     }
 
@@ -1039,6 +1037,7 @@ public class MainPage extends BaseActivity{
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
+
     }
 
     @Override
@@ -1113,6 +1112,5 @@ public class MainPage extends BaseActivity{
         });
 
     }
-
 
 }

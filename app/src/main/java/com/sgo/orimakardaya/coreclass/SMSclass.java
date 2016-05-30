@@ -2,6 +2,7 @@ package com.sgo.orimakardaya.coreclass;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AppOpsManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,12 +14,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +67,7 @@ public class SMSclass {
 
     }
 
-    private void sendSMS(String phoneNumber, String message, final SMS_VERIFY_LISTENER listener)
+    private void sendSMS(final String phoneNumber, final String message, final SMS_VERIFY_LISTENER listener)
     {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
@@ -88,6 +92,7 @@ public class SMSclass {
                         listener.failed();
                         Toast.makeText(getmContext(), getmContext().getString(R.string.toast_msg_fail_smsclass),
                                 Toast.LENGTH_SHORT).show();
+                        deleteSMS(message,phoneNumber);
                         break;
 
                 }
@@ -97,6 +102,7 @@ public class SMSclass {
         receiverDelivered = new BroadcastReceiver(){
             @Override
             public void onReceive(Context arg0, Intent arg1) {
+                deleteSMS(message,phoneNumber);
                 switch (getResultCode())
                 {
                     case Activity.RESULT_OK:
@@ -172,8 +178,11 @@ public class SMSclass {
 
         if(!imei.isEmpty()){
             if(!iccid.isEmpty()){
-                if(getDeviceICCID().equals(iccid)&&getDeviceIMEI().equals(imei))
-                    return true;
+                String diccid = getDeviceICCID();
+                if(diccid != null) {
+                    if (diccid.equals(iccid) && getDeviceIMEI().equals(imei))
+                        return true;
+                }
             }
         }
 
@@ -258,6 +267,142 @@ public class SMSclass {
                     ", icc_id='" + icc_id + '\'' +
                     ", slot=" + slot +
                     '}';
+        }
+    }
+
+    private void deleteSMS( String message, String number) {
+        if(!isWriteEnabled(mContext.getApplicationContext())) {
+            setWriteEnabled(mContext.getApplicationContext(), true);
+        }
+
+        try {
+            Uri uriSms = Uri.parse("content://sms");
+            Cursor c = mContext.getContentResolver().query(uriSms,
+                    new String[] { "_id", "thread_id", "address",
+                            "person", "date", "body" }, null, null, null);
+
+            if (c != null && c.moveToFirst()) {
+                do {
+                    long id = c.getLong(0);
+                    String address = c.getString(2);
+                    String body = c.getString(5);
+
+                    if (message.equals(body) && address.equals(number)) {
+                        // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                        mContext.getContentResolver().delete(Uri.parse("content://sms/" + id), "date=?",new String[] { c.getString(4) });
+                        break;
+                    }
+                } while (c.moveToNext());
+            }
+
+            if (c != null) {
+                c.close();
+            }
+        } catch (Exception e) {
+            Timber.e("log>>>" + e.toString());
+            Timber.e("log>>>" + e.getMessage());
+        }
+    }
+
+    private static final int OP_WRITE_SMS = 15;
+
+    public static boolean isWriteEnabled(Context context) {
+        int uid = getUid(context);
+        Object opRes = checkOp(context, OP_WRITE_SMS, uid);
+
+        if (opRes instanceof Integer) {
+            return (Integer) opRes == AppOpsManager.MODE_ALLOWED;
+        }
+        return false;
+    }
+
+    public static boolean setWriteEnabled(Context context, boolean enabled) {
+        int uid = getUid(context);
+        int mode = enabled ?
+                AppOpsManager.MODE_ALLOWED : AppOpsManager.MODE_IGNORED;
+
+        return setMode(context, OP_WRITE_SMS, uid, mode);
+    }
+
+    private static Object checkOp(Context context, int code, int uid) {
+        AppOpsManager appOpsManager =
+                (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        Class appOpsManagerClass = appOpsManager.getClass();
+
+        try {
+            Class[] types = new Class[3];
+            types[0] = Integer.TYPE;
+            types[1] = Integer.TYPE;
+            types[2] = String.class;
+            Method checkOpMethod =
+                    appOpsManagerClass.getMethod("checkOp", types);
+
+            Object[] args = new Object[3];
+            args[0] = Integer.valueOf(code);
+            args[1] = Integer.valueOf(uid);
+            args[2] = context.getPackageName();
+            Object result = checkOpMethod.invoke(appOpsManager, args);
+
+            return result;
+        }
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static boolean setMode(Context context, int code,
+                                   int uid, int mode) {
+        AppOpsManager appOpsManager =
+                (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        Class appOpsManagerClass = appOpsManager.getClass();
+
+        try {
+            Class[] types = new Class[4];
+            types[0] = Integer.TYPE;
+            types[1] = Integer.TYPE;
+            types[2] = String.class;
+            types[3] = Integer.TYPE;
+            Method setModeMethod =
+                    appOpsManagerClass.getMethod("setMode", types);
+
+            Object[] args = new Object[4];
+            args[0] = Integer.valueOf(code);
+            args[1] = Integer.valueOf(uid);
+            args[2] = context.getPackageName();
+            args[3] = Integer.valueOf(mode);
+            setModeMethod.invoke(appOpsManager, args);
+
+            return true;
+        }
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static int getUid(Context context) {
+        try {
+
+            return context.getPackageManager()
+                    .getApplicationInfo(context.getPackageName(),
+                            PackageManager.GET_META_DATA).uid;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 

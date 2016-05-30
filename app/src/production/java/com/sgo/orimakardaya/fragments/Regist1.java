@@ -51,7 +51,6 @@ public class Regist1 extends Fragment{
     View v;
 
     Fragment mFragment;
-
     ProgressDialog progdialog;
 
 
@@ -155,7 +154,9 @@ public class Regist1 extends Fragment{
                 Timber.d("isi params reg1:" + params.toString());
 
                 MyApiClient.sentDataRegister(getActivity(),params,new JsonHttpResponseHandler(){
-                        @Override
+
+
+                    @Override
                         public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
                             btnLanjut.setEnabled(true);
                             namaValue.setEnabled(true);

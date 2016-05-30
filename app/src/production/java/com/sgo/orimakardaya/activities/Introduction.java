@@ -28,8 +28,7 @@ import timber.log.Timber;
 public class Introduction extends AppIntro {
 
     SMSDialog smsDialog;
-    SMSclass smSclass;
-    AlertDialogFrag chargeDialog;
+    SMSclass smsclass;
     private static final int PERMISSIONS_REQ_READPHONESTATE = 0x123;
     private static final int PERMISSIONS_SEND_SMS = 0x124;
 
@@ -41,22 +40,6 @@ public class Introduction extends AppIntro {
             this.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSIONS_REQ_READPHONESTATE);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
         }
-
-        chargeDialog = AlertDialogFrag.newInstance(null,getString(R.string.appname)+ " " +getString(R.string.dialog_sms_msg),
-                getString(R.string.sent), getString(R.string.cancel), false);
-
-        chargeDialog.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                smsDialog.sentSms();
-            }
-        });
-        chargeDialog.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                smsDialog.reset();
-            }
-        });
 
         addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
         addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
@@ -72,7 +55,7 @@ public class Introduction extends AppIntro {
         donebtn.setText(getString(R.string.done));
 
 
-        smSclass = new SMSclass(this);
+        smsclass = new SMSclass(this);
         smsDialog = new SMSDialog(this, new SMSDialog.DialogButtonListener() {
             @Override
             public void onClickOkButton(View v, boolean isLongClick) {
@@ -81,7 +64,7 @@ public class Introduction extends AppIntro {
                     //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
                 }
                 else {
-                    chargeDialog.show(getSupportFragmentManager(),AlertDialogFrag.TAG);
+                    smsDialog.sentSms();
                 }
             }
 
@@ -104,8 +87,9 @@ public class Introduction extends AppIntro {
         if (requestCode == PERMISSIONS_REQ_READPHONESTATE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                smsDialog.dismiss();
+                finish();
             }
+
         }
         else if(requestCode == PERMISSIONS_SEND_SMS){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -113,7 +97,8 @@ public class Introduction extends AppIntro {
                 smsDialog.sentSms();
             } else {
                 Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                finish();
+                smsDialog.dismiss();
+                smsDialog.reset();
             }
         }
     }
@@ -140,12 +125,14 @@ public class Introduction extends AppIntro {
     }
 
     private void doAction(){
-        if(smSclass.isSimSameSP()){
-            openLogin(-1);
+        if(InetHandler.isNetworkAvailable(this)) {
+            if (smsclass.isSimSameSP()) {
+                openLogin(-1);
+            } else {
+                smsDialog.show();
+            }
         }
-        else {
-            smsDialog.show();
-        }
+        else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message), null);
 
     }
 
@@ -163,19 +150,27 @@ public class Introduction extends AppIntro {
     public void onAttachFragment(android.support.v4.app.Fragment fragment) {
         super.onAttachFragment(fragment);
 
-        smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
-            @Override
-            public void sim_state(Boolean isExist, String msg) {
-                if(!isExist){
-                    DefinedDialog.showErrorDialog(Introduction.this, msg, new DefinedDialog.DialogButtonListener() {
-                        @Override
-                        public void onClickButton(View v, boolean isLongClick) {
-                            finish();
-                        }
-                    });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(smsclass != null) {
+            smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
+                @Override
+                public void sim_state(Boolean isExist, String msg) {
+                    if (!isExist && !Introduction.this.isFinishing()) {
+                        DefinedDialog.showErrorDialog(Introduction.this, msg, new DefinedDialog.DialogButtonListener() {
+                            @Override
+                            public void onClickButton(View v, boolean isLongClick) {
+                                finish();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -199,4 +194,6 @@ public class Introduction extends AppIntro {
     protected void onDestroy() {
         super.onDestroy();
     }
+
+
 }

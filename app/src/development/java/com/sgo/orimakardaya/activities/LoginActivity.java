@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity {
             if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
                     newFrag = new Regist1();
-                } else if (BuildConfig.DEBUG) { //untuk shorcut dari tombol di activity introduction
+                } else if (BuildConfig.DEBUG && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
                     if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
                         newFrag = new Regist1();
 

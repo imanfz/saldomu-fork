@@ -46,8 +46,6 @@ public class CoreApp extends Application {
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
-
-        set_instance(this);
         if(BuildConfig.DEBUG)
             Timber.plant(new Timber.DebugTree());
         else
@@ -57,13 +55,16 @@ public class CoreApp extends Application {
                 }
             });
 
+
+        set_instance(this);
+
+
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
-        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardaya), getString(R.string.realmname));
-
+        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardayadev), getString(R.string.realmname));
         RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
                 .name(getString(R.string.realmname))
                 .schemaVersion(getResources().getInteger(R.integer.realscheme))
@@ -94,9 +95,9 @@ public class CoreApp extends Application {
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
 
+
         MyApiClient.initializeAddress();
         Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
-
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(
                 communityModel.class,
@@ -110,6 +111,26 @@ public class CoreApp extends Application {
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
+                    if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
+                        Intent i = new Intent(CoreApp.this.getApplicationContext(),Introduction.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        CoreApp.this.startActivity(i);
+                    }
+
+                }
+            }
+        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
+
     }
 
     private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
@@ -170,7 +191,6 @@ public class CoreApp extends Application {
     public void setCurrentActivity(Activity mCurrentActivity){
         this.mCurrentActivity = mCurrentActivity;
     }
-
 
 
 }

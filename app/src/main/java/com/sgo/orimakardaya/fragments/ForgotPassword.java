@@ -54,8 +54,7 @@ public class ForgotPassword extends Fragment {
         spin_tipe_notif = (Spinner) v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = (Button) v.findViewById(R.id.btn_submit_forgot_pass);
         TextView textMsg = (TextView) v.findViewById(R.id.textForgotPassmsg);
-        String msg = getString(R.string.forgotpass_text_instruction)+" "+ getString(R.string.appname)+ " "+
-                        getString(R.string.forgotpass_text_instruction2);
+        String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
         textMsg.setText(msg);
 
 
