@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -237,8 +238,9 @@ public class NavigationDrawMenu extends ListFragment{
     }
     public void refreshDataNavDrawer(){
         if(sp.contains(DefineValue.LEVEL_VALUE)) {
-            int i = sp.getInt(DefineValue.LEVEL_VALUE, 0);
-            isLevel1 = i == 1;
+//            int i = sp.getInt(DefineValue.LEVEL_VALUE, 0);
+            String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
+            isLevel1 = Integer.valueOf(i) == 1;
             isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
             isAllowedLevel = sp.getBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
         }
