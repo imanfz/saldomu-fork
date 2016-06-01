@@ -2,7 +2,10 @@ package com.sgo.orimakardaya.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -13,6 +16,7 @@ import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.orimakardaya.Beans.*;
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.Introduction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -64,7 +68,7 @@ public class CoreApp extends Application {
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
-        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardayadev), getString(R.string.realmname));
+        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardaya), getString(R.string.realmname));
         RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
                 .name(getString(R.string.realmname))
                 .schemaVersion(getResources().getInteger(R.integer.realscheme))

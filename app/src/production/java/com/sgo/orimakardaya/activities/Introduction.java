@@ -17,8 +17,10 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.SMSclass;
 import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.SMSDialog;
 import com.sgo.orimakardaya.fragments.IntroPage;
 
