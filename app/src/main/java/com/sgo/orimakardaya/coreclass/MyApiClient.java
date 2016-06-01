@@ -166,6 +166,7 @@ public class MyApiClient {
     public static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
     public static String LINK_USER_PROFILE;
+    public static String LINK_INQUIRY_SMS;
 
     public static void initializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -270,6 +271,7 @@ public class MyApiClient {
         LINK_ATMTOPUP       = headaddressfinal + "ATMTopUp/Retrieve";
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
+        LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
     }
 
 
@@ -294,6 +296,8 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_PROD = "DAPMAKARDA1443547914WO0NU"; //prod pulsa agent
     public static String COMM_ID_PROD = "EMONEYMAKA1429005701H921A";  //prod
 
+    public static String INCOMINGSMS_INFOBIP = "+628111946677";
+    public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.AppID;
     public static String CCY_VALUE = "IDR";
@@ -864,6 +868,11 @@ public class MyApiClient {
     public static void sentUserProfile(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent user profile:"+LINK_USER_PROFILE);
         post(mContext,LINK_USER_PROFILE, params, responseHandler);
+    }
+
+    public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent inquiry sms:"+LINK_INQUIRY_SMS);
+        post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     //get Data------------------------------------------------------------------------------------------
 

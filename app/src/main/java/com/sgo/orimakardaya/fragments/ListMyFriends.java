@@ -259,7 +259,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             case R.id.menu_item_add_by_qrcode:
                 if (mState == HIDE_MENU)
                 {
-                    Toast.makeText(getActivity().getApplicationContext(), "Check Contacts First", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.check_contact_first), Toast.LENGTH_LONG).show();
                 }
                 else if (mState == SHOW_MENU){
                     Intent i = new Intent(getActivity(), AddByQRCodeActivity.class);
@@ -269,7 +269,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             case R.id.menu_item_add_by_nfc:
                 if (mState == HIDE_MENU)
                 {
-                    Toast.makeText(getActivity().getApplicationContext(), "Check Contacts First", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.check_contact_first), Toast.LENGTH_LONG).show();
                 }
                 else if (mState == SHOW_MENU){
                 }
@@ -277,7 +277,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
             case R.id.menu_item_contact_list:
                 if (mState == HIDE_MENU)
                 {
-                    Toast.makeText(getActivity().getApplicationContext(), "Check Contacts First", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity().getApplicationContext(), getString(R.string.check_contact_first), Toast.LENGTH_LONG).show();
                 }
                 else if (mState == SHOW_MENU){
 //                    Fragment newFragment = new ListContacts();

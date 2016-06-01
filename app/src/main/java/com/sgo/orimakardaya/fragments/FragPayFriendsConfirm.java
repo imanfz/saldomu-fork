@@ -27,7 +27,6 @@ import com.sgo.orimakardaya.adapter.RecipientAdapter;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
@@ -120,7 +119,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         if(authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
             btnSubmit.setText(R.string.proses);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { // get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { // get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int) deData;
@@ -248,19 +247,19 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         public void onClick(View view) {
 
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase("OTP")) {
+                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (inputValidation()) {
                         sentDataConfirm(txID,etOTP.getText().toString());
                     }
                 }
-                else if(authType.equalsIgnoreCase("PIN")){
+                else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)){
                     Intent i = new Intent(getActivity(), InsertPIN.class);
                     if(attempt != -1 && attempt < 2)
                         i.putExtra(DefineValue.ATTEMPT,attempt);
                     startActivityForResult(i,MainPage.REQUEST_FINISH);
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
 
         }
     };
@@ -275,7 +274,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
 
         }
     };
@@ -498,16 +497,13 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     }
 
     private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.blocked_pin_title),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                onOkButton();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
+                message, new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+
+                    }
+                }) ;
         dialognya.show();
     }
 

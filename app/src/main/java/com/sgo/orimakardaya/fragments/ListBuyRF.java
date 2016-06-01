@@ -215,30 +215,55 @@ public class ListBuyRF extends Fragment{
         realm.beginTransaction();
 
         if (arrayBiller.length() > 0) {
-          realm.clear(Biller_Type_Data_Model.class);
+            realm.clear(Biller_Type_Data_Model.class);
             Biller_Data_Model mListBillerData;
-            for (int i = 0; i < arrayBiller.length(); i++) {
-                      try {
-                          mBillerObj = realm.createObjectFromJson(Biller_Type_Data_Model.class, arrayBiller.getJSONObject(i));
-                          mBillerObj.setLast_update(curr_date);
+            int i;
+            int j;
+            int k;
+            for ( i= 0; i < arrayBiller.length(); i++) {
+                try {
+                    mBillerObj = realm.createObjectFromJson(Biller_Type_Data_Model.class, arrayBiller.getJSONObject(i));
+                    mBillerObj.setLast_update(curr_date);
 
+                    for (j = 0; j < temptData.size(); j++) {
+                        if (mBillerObj.getBiller_type_code().equals(temptData.get(j).getBiller_type_code())) {
+                            for ( k = 0; k < temptData.get(j).getBiller_data_models().size(); k++) {
+                                mListBillerData = realm.where(Biller_Data_Model.class).
+                                        equalTo("comm_id", temptData.get(j).getBiller_data_models().get(k).getComm_id()).
+                                        equalTo("comm_name", temptData.get(j).getBiller_data_models().get(k).getComm_name()).
+                                        findFirst();
+                                mBillerObj.getBiller_data_models().add(mListBillerData);
+                            }
+                            break;
+                        }
+                    }
 
-                          for (int j = 0 ; j < temptData.size();j++){
-                              if(mBillerObj.getBiller_type_code().equals(temptData.get(j).getBiller_type_code())) {
-                                  for(int k = 0; k < temptData.get(j).getBiller_data_models().size() ; k++){
-                                      mListBillerData = realm.where(Biller_Data_Model.class).
-                                                        equalTo("comm_id", temptData.get(j).getBiller_data_models().get(k).getComm_id()).
-                                                        equalTo("comm_name", temptData.get(j).getBiller_data_models().get(k).getComm_name()).
-                                                        findFirst();
-                                      mBillerObj.getBiller_data_models().add(mListBillerData);
-                                  }
-                                  break;
-                              }
-                          }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                      } catch (JSONException e) {
-                          e.printStackTrace();
-                      }
+            Boolean isHave = false;
+            Biller_Data_Model delList;
+            for(i = 0 ; i < temptData.size() ; i++){
+                for (j = 0 ; j < ResultData.size() ; j++){
+                    if(temptData.get(i).getBiller_type_code().equals(ResultData.get(j).getBiller_type_code())){
+                        isHave = true;
+                    }
+                }
+
+                if(!isHave){
+                    for ( j = 0; j < temptData.get(i).getBiller_data_models().size(); j++) {
+                        delList = realm.where(Biller_Data_Model.class).
+                                equalTo("comm_id", temptData.get(i).getBiller_data_models().get(j).getComm_id()).
+                                equalTo("comm_name", temptData.get(i).getBiller_data_models().get(j).getComm_name()).
+                                findFirst();
+                        if(delList.getDenom_data_models().size()>0)
+                            delList.getDenom_data_models().deleteAllFromRealm();
+                        delList.removeFromRealm();
+                    }
+                }
+                isHave = false;
             }
         }
 

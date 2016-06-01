@@ -253,7 +253,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                     //Log.d("bank name / bank produk ", listBankName.get(spin_namaBank.getSelectedItem().toString()) + " / " + listBankProduct.get(spin_produkBank.getSelectedItem().toString()));
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

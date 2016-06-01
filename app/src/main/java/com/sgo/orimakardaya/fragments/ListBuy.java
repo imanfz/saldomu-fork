@@ -111,9 +111,9 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
 
         pager.setPageMargin(pageMargin);
         dialogI = InformationDialog.newInstance(this,8);
-//        getDataBiller();
         realm = Realm.getDefaultInstance();
 
+//        // auto updater realm biller
 //        FragmentManager fm = getFragmentManager();
 //        // Check to see if we have retained the worker fragment.
 //        mWorkFragment = (ListBuyRF) fm.findFragmentByTag(ListBuyRF.LISTBUYRF_TAG);
@@ -126,15 +126,16 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
 //        }
 //        else
 //            mWorkFragment.getDataBiller();
+//
+//        realmListener = new RealmChangeListener() {
+//            @Override
+//            public void onChange() {
+//                if(isVisible()){
+////                    Timber.d("masukk realm listener gannnn");
+//                }
+//            }};
+//        realm.addChangeListener(realmListener);
 
-        realmListener = new RealmChangeListener() {
-            @Override
-            public void onChange() {
-                if(isVisible()){
-                    Timber.d("masukk realm listener gannnn");
-                }
-            }};
-        realm.addChangeListener(realmListener);
         initializeData();
     }
 
@@ -202,6 +203,7 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
     @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
+//            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();

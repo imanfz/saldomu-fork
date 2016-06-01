@@ -2,10 +2,12 @@ package com.sgo.orimakardaya.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -19,16 +21,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import com.activeandroid.ActiveAndroid;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -40,7 +42,15 @@ import com.sgo.orimakardaya.Beans.likeModel;
 import com.sgo.orimakardaya.Beans.listHistoryModel;
 import com.sgo.orimakardaya.Beans.listTimeLineModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.FabInstance;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.NotificationActionView;
+import com.sgo.orimakardaya.coreclass.NotificationHandler;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.fragments.FragMainPage;
@@ -75,6 +85,9 @@ public class MainPage extends BaseActivity{
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
+
+    private final static int FIRST_SCREEN_LOGIN = 1;
+    private final static int FIRST_SCREEN_INTRO = 2;
 
     public static String action_id = "";
     protected static boolean activityVisible;
@@ -114,18 +127,17 @@ public class MainPage extends BaseActivity{
         if (savedInstanceState != null)
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
+        if (!isLogin()) {
+            openFirstScreen(FIRST_SCREEN_INTRO);
+        } else {
 
-        if(!isLogin()){
-            openFirstScreen();
-        }
-        else{
-            getAppVersion();
-            ActiveAndroid.initialize(this);
-            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-            progdialog.show();
-            InitializeNavDrawer();
-            setupFab();
-            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+                getAppVersion();
+                ActiveAndroid.initialize(this);
+                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+                progdialog.show();
+                InitializeNavDrawer();
+                setupFab();
+                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         }
 
     }
@@ -390,7 +402,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void initializeNavDrawer(){
-        if(mNavDrawer != null)
+        if(mNavDrawer != null && isActive)
             mNavDrawer.initializeNavDrawer();
     }
 
@@ -552,8 +564,19 @@ public class MainPage extends BaseActivity{
 //----------------------------------------------------------------------------------------------------------------
 
 
-    public void openFirstScreen(){
-        Intent i = new Intent(this,Registration.class);
+    public void openFirstScreen(int index){
+        Intent i;
+        switch(index){
+            case FIRST_SCREEN_LOGIN :
+                i = new Intent(this,LoginActivity.class);
+                break;
+            case FIRST_SCREEN_INTRO :
+                i = new Intent(this,Introduction.class);
+                break;
+            default:
+                i = new Intent(this,LoginActivity.class);
+                break;
+        };
         startActivity(i);
         this.finish();
     }
@@ -628,7 +651,10 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
         mEditor.commit();
-        openFirstScreen();
+        if(smsClass.isSimSameSP())
+            openFirstScreen(FIRST_SCREEN_LOGIN);
+        else
+            openFirstScreen(FIRST_SCREEN_INTRO);
     }
 	
 	public void sentLogout(){
@@ -705,7 +731,6 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Timber.d("isi request code:" + String.valueOf(requestCode));
-
         Timber.d("isi result Code:" + String.valueOf(resultCode));
         if (requestCode == REQUEST_FINISH) {
             if (resultCode == RESULT_LOGOUT) {
@@ -1019,6 +1044,7 @@ public class MainPage extends BaseActivity{
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
+
     }
 
     @Override
@@ -1093,6 +1119,5 @@ public class MainPage extends BaseActivity{
         });
 
     }
-
 
 }

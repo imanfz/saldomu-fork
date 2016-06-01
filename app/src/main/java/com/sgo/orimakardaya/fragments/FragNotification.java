@@ -450,7 +450,7 @@ public class FragNotification extends Fragment {
                                                 notif_type == NotificationActivity.TYPE_DECLINE) {
                                             mDataNotifDetail.add(notif_detail);
 
-                                            time1 = DateTimeFormat.convertCustomDate(date_time);
+                                            time1 = DateTimeFormat.convertCustomDateTime(date_time);
                                             time = p.formatDuration(time1);
 
                                             mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
@@ -485,12 +485,14 @@ public class FragNotification extends Fragment {
                         } else {
 
                             if (code.equals("0003")) {
-                                Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
-                                mRecyclerView.setVisibility(View.GONE);
-                                empty_layout.setVisibility(View.VISIBLE);
-                                mData.clear();
-                                mAdapter.notifyDataSetChanged();
-                                getActivity().setResult(MainPage.RESULT_NOTIF);
+                                if(FragNotification.this.isVisible()) {
+                                    Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
+                                    mRecyclerView.setVisibility(View.GONE);
+                                    empty_layout.setVisibility(View.VISIBLE);
+                                    mData.clear();
+                                    mAdapter.notifyDataSetChanged();
+                                    getActivity().setResult(MainPage.RESULT_NOTIF);
+                                }
                             }
 
                         }

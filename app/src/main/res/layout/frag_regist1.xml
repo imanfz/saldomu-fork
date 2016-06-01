@@ -28,24 +28,6 @@
                 android:layout_gravity="start"
                 />
 
-
-        <EditText
-                android:layout_marginTop="48dp"
-                android:id="@+id/noHP_value"
-                android:maxLength="@integer/nomor_lenght_20"
-                android:paddingLeft="15dp"
-                android:paddingRight="10dp"
-                android:hint="@string/regist1_edithint_nohp"
-                android:textColorHint="@color/semi_white_transparant"
-                android:inputType="phone"
-                android:digits="1234567890"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/grey_1000w"
-                android:textStyle="bold"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:singleLine="true"/>
-
         <EditText
                 android:layout_marginTop="16dp"
                 android:enabled="true"

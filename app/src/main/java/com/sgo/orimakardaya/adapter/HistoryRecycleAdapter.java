@@ -139,7 +139,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             String string_date = _data.getDatetime();
 
             PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-            Date time1 = DateTimeFormat.convertCustomDate(string_date);
+            Date time1 = DateTimeFormat.convertCustomDateTime(string_date);
             String period = p.formatDuration(time1);
 
             simpleHolder.fromId.setText(_data.getOwner());

@@ -152,6 +152,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         i.putExtra(DefineValue.SHARE_TYPE, shareType);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.PULSA_AGENT);
         i.putExtra(DefineValue.OPERATOR_NAME, operator_name);
+        i.putExtra(DefineValue.DESTINATION_REMARK, phone_number);
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(_fee);
         i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));
@@ -186,7 +187,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                     }
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -302,14 +303,14 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
 
-            Timber.d("isi params sent get Trx Status", params.toString());
+            Timber.d("isi params sent get Trx Status" + params.toString());
 
             MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status", response.toString());
+                        Timber.d("isi response sent get Trx Status"+response.toString());
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
@@ -318,7 +319,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                                     response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), amount);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
@@ -384,6 +385,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
+        args.putString(DefineValue.DESTINATION_REMARK,phone_number);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){
@@ -559,7 +561,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     };
 
     public final void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session", _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
+        Timber.d("isi _kode_otp, _member_kode, member kode session"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             et_token_value.setText(_kode_otp);
         }

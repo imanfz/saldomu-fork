@@ -32,12 +32,14 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -162,19 +164,23 @@ public class TimelineDetailActivity extends BaseActivity {
                     .transform(new RoundImageTransformation())
                     .into(iconPicture);
 
-            SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
-            Date d = null;
-            long long_date = 0;
-            try {
-                d = f.parse(datetime);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (d != null) {
-                long_date = d.getTime();
-            }
+            PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
+            Date time1 = DateTimeFormat.convertCustomDateTime(datetime);
+            String period = p.formatDuration(time1);
 
-            String period = PeriodTime.getTimeAgo(long_date, getApplicationContext());
+//            SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
+//            Date d = null;
+//            long long_date = 0;
+//            try {
+//                d = f.parse(datetime);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            if (d != null) {
+//                long_date = d.getTime();
+//            }
+//
+//            String period = PeriodTime.getTimeAgo(long_date, getApplicationContext());
 
             fromId.setText(from_name);
             messageTransaction.setText(message);

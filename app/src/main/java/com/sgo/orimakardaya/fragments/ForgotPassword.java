@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.InsertPIN;
 import com.sgo.orimakardaya.activities.LoginActivity;
@@ -54,8 +55,7 @@ public class ForgotPassword extends Fragment {
         spin_tipe_notif = (Spinner) v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = (Button) v.findViewById(R.id.btn_submit_forgot_pass);
         TextView textMsg = (TextView) v.findViewById(R.id.textForgotPassmsg);
-        String msg = getString(R.string.forgotpass_text_instruction)+" "+ getString(R.string.appname)+ " "+
-                        getString(R.string.forgotpass_text_instruction2);
+        String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
         textMsg.setText(msg);
 
 
@@ -70,6 +70,9 @@ public class ForgotPassword extends Fragment {
         btn_submit.setOnClickListener(submitForgotPassListener);
         et_user_id.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
 
     Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
@@ -111,7 +114,7 @@ public class ForgotPassword extends Fragment {
                     userIDfinale = NoHPFormat.editNoHP(et_user_id.getText().toString());
                     CallPINinput(0);
                 }
-            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -131,6 +134,7 @@ public class ForgotPassword extends Fragment {
     private void CallPINinput(int _attempt){
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+        i.putExtra(DefineValue.USERID_PHONE,userIDfinale);
         if(_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT,_attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
@@ -237,7 +241,6 @@ public class ForgotPassword extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
 
-                    Timber.d("isi params contact forgot password:" + response.toString());
                     String id, message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
@@ -338,8 +341,7 @@ public class ForgotPassword extends Fragment {
 
     public boolean inputValidation(){
         if(et_user_id.getText().toString().length()==0){
-            et_user_id.requestFocus();
-            et_user_id.setError(this.getString(R.string.forgetpass_edittext_validation));
+            DefinedDialog.showErrorDialog(getActivity(),getString(R.string.forgetpass_edittext_validation),null);
             return false;
         }
         if(spin_tipe_notif.getSelectedItemPosition()==0){

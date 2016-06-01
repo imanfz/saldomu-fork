@@ -7,12 +7,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.InputFilter;
-import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -21,7 +27,13 @@ import com.sgo.orimakardaya.activities.CollectionActivity;
 import com.sgo.orimakardaya.activities.InsertPIN;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.SgoPlusWeb;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.CurrencyFormat;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
@@ -115,7 +127,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         }
 
         if(isPIN){
-            new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int)deData;
@@ -193,7 +205,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -207,7 +219,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
                 if(max_token_resend!=0)requestResendToken();
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 

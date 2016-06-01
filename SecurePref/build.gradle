@@ -1,0 +1,40 @@
+apply plugin: 'com.android.library'
+
+/*
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs 'libs' //this way we can find the .aar file in libs folder
+    }
+}
+*/
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    defaultConfig {
+        minSdkVersion 10
+        targetSdkVersion 21
+        versionCode versionCode
+        versionName version
+
+        testApplicationId "com.securepreferences.test"
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+    }
+
+    dependencies {
+        compile 'com.scottyab:aes-crypto:0.0.4'
+
+        //used when referencing a local copy of aes-crypto
+        //compile project(':aes-crypto-release')
+    }
+
+
+
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+        }
+    }
+}

@@ -150,7 +150,7 @@ public class PulsaAgentDescription extends Fragment {
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -240,7 +240,7 @@ public class PulsaAgentDescription extends Fragment {
             else
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_EMO);
 
-            Timber.d("isi params sent payment DAP", params.toString());
+            Timber.d("isi params sent payment DAP" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -248,7 +248,7 @@ public class PulsaAgentDescription extends Fragment {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response payment DAP", response.toString());
+                            Timber.d("isi response payment DAP" +response.toString());
 
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmDAP(response.getString(WebParams.AMOUNT), response.getString(WebParams.AUTH_TYPE), response.getString(WebParams.TX_ID), response.getString(WebParams.CCY_ID),
@@ -262,12 +262,12 @@ public class PulsaAgentDescription extends Fragment {
                             }
 
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }else {
-                            Timber.d("Error isi response payment DAP", response.toString());
+                            Timber.d("Error isi response payment DAP"+response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             progdialog.dismiss();
@@ -454,14 +454,14 @@ public class PulsaAgentDescription extends Fragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, cust_id);
 
-            Timber.d("isi params reqtoken Sgo+", params.toString());
+            Timber.d("isi params reqtoken Sgo+" + params.toString());
 
             MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response reqtoken ", response.toString());
+                        Timber.d("response reqtoken " + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             if(mTempBank.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
@@ -473,7 +473,7 @@ public class PulsaAgentDescription extends Fragment {
                                 changeToConfirmDAP(_amount,_merchant_type, _tx_id,_ccy_id,fee,_bank_code,_product_code);
 
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout" +response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);

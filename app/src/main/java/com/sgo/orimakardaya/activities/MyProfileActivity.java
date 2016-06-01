@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -196,6 +197,7 @@ public class MyProfileActivity extends BaseActivity {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
+
         initializeData();
     }
 
@@ -266,6 +268,7 @@ public class MyProfileActivity extends BaseActivity {
                     c.get(Calendar.MONTH),
                     c.get(Calendar.DAY_OF_MONTH)
             );
+
         }
 
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
@@ -445,7 +448,7 @@ public class MyProfileActivity extends BaseActivity {
                                 sendDataUpdate();
                         }
                 }
-                else DefinedDialog.showErrorDialog(MyProfileActivity.this, getString(R.string.inethandler_dialog_message));
+                else DefinedDialog.showErrorDialog(MyProfileActivity.this, getString(R.string.inethandler_dialog_message), null);
 
         }
     };
@@ -663,22 +666,35 @@ public class MyProfileActivity extends BaseActivity {
         switch(requestCode) {
             case RESULT_GALERY:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                    String filePath;
-                    Cursor cursor = getContentResolver().query(
-                            selectedImage, filePathColumn, null, null, null);
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                        filePath = cursor.getString(columnIndex);
-                    }
-                    else
-                        filePath = selectedImage.getPath();
+//                    Uri selectedImage = data.getData();
+//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//                    String filePath;
+//                    Cursor cursor = getContentResolver().query(
+//                            selectedImage, filePathColumn, null, null, null);
+//                    if (cursor != null) {
+//                        cursor.moveToFirst();
+//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                        filePath = cursor.getString(columnIndex);
+//                    }
+//                    else
+//                        filePath = selectedImage.getPath();
 
 //                    File photoFile = new File(filePath);
 
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
+                    Bitmap photo = null;
+                    Uri _urinya = data.getData();
+                    if(data.getData() == null) {
+                        photo = (Bitmap)data.getExtras().get("data");
+                    } else {
+                        try {
+                            photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
+
                     //setImageProfPic(photoFile);
                     //getOrientationImage();
                     uploadFileToServer(mGI.Convert());

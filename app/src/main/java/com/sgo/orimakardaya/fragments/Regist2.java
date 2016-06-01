@@ -104,7 +104,7 @@ public class Regist2 extends Fragment {
                         sentData();
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -116,7 +116,7 @@ public class Regist2 extends Fragment {
                 else if(max_resend_email > 0) requestResendToken("N","Y");
                 else Toast.makeText(getActivity(),getString(R.string.reg2_notif_max_resend_token_empty),Toast.LENGTH_LONG).show();
             }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -132,24 +132,25 @@ public class Regist2 extends Fragment {
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
-        fca.switchActivity(i);
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchActivity(i, LoginActivity.ACTIVITY_RESULT);
+
     }
 
 
     private void switchActivityPIN(Intent i){
-        startActivityForResult(i, Registration.ACTIVITY_RESULT);
+        startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
     }
 
     public void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (max_resend_sms != 0)
+                if(max_resend_sms != 0)
                     btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
-                else if (max_resend_email > 0)
+                else if(max_resend_email > 0)
                     btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
-                else if (max_resend_email == 0)
+                else if(max_resend_email == 0)
                     btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
 
             }
@@ -310,7 +311,7 @@ public class Regist2 extends Fragment {
                             token = TokenValue.getText().toString();
                             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                             i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
-                            switchActivityPIN(i);
+                            startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
                         } else {
                             Timber.d("isi response gagal submit:" + response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
@@ -360,18 +361,14 @@ public class Regist2 extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Timber.d("isi regist 2 requestCode:"+String.valueOf(requestCode));
-        if (requestCode == Registration.ACTIVITY_RESULT) {
-            Timber.d("isi regist 2 resultcode:"+String.valueOf(resultCode));
-            if (resultCode == Registration.RESULT_PIN) {
-                Timber.d("isi regist 2 authtype:"+authType);
-
+        Timber.d(requestCode+"/"+resultCode);
+        if (requestCode == LoginActivity.ACTIVITY_RESULT) {
+            if (resultCode == LoginActivity.RESULT_PIN) {
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
                 sendCreatePass();
             }
-            else if(resultCode == Registration.RESULT_FINISHING){
+            else if(resultCode == LoginActivity.RESULT_FINISHING){
 //                if(authType.equals(DefineValue.AUTH_TYPE_OTP)){
 //                    pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
 //                    confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
@@ -406,7 +403,7 @@ public class Regist2 extends Fragment {
 
                             Intent i = new Intent(getActivity(), CreatePIN.class);
                             i.putExtra(DefineValue.REGISTRATION, true);
-                            switchActivityPIN(i);
+                            startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
                         } else {
                             Timber.d("isi error create pass:" + response.toString());
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -470,7 +467,7 @@ public class Regist2 extends Fragment {
 
             Timber.d("params create pin:"+params.toString());
 
-            MyApiClient.sentCreatePin(getActivity(), params, new JsonHttpResponseHandler() {
+            MyApiClient.sentCreatePin(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -529,9 +526,13 @@ public class Regist2 extends Fragment {
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
+
     }
 
     void showDialog(){
+
+        saveImeiICCIDDevice();
+
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -555,7 +556,9 @@ public class Regist2 extends Fragment {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(true);
+                getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Fragment test = new Login();
+                switchFragment(test,"Login",false);
                 dialog.dismiss();
             }
         });
@@ -563,16 +566,21 @@ public class Regist2 extends Fragment {
         dialog.show();
     }
 
+    private void saveImeiICCIDDevice(){
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor edit = sp.edit();
+        SMSclass smSclass = new SMSclass(getActivity());
+        edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
+        edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
+        edit.commit();
+    }
 
-    public void changeFragment(Boolean submit){
-        if(submit){
-            DefineValue.NOBACK = false; //fragment selanjutnya bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
-        }
-        else{
-            getFragmentManager().popBackStack();
-        }
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchContent(i,name,isBackstack);
     }
 
     public boolean inputValidation(){
@@ -588,7 +596,7 @@ public class Regist2 extends Fragment {
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration ) getActivity();
+        LoginActivity fca = (LoginActivity ) getActivity();
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 

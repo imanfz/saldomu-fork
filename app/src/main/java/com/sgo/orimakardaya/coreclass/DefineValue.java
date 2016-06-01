@@ -2,17 +2,20 @@ package com.sgo.orimakardaya.coreclass;/*
   Created by Administrator on 11/6/2015.
  */
 
+import com.sgo.orimakardaya.BuildConfig;
+
 public class DefineValue {
 
     //Final Value
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static final String SEC_PREF_NAME = "pin_pref.xml";
+    public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
 
 
     //Static Value
+    public static String DEVELOPMENT = "development" ;
+    public static String PRODUCTION = "production" ;
     public static String language = null;
-    public static String FACEBOOK_PREF = "FaPref";
     public static String VERSION_CODE = "" ;
     public static String VERSION_NAME = "" ;
     public static String TOPUP_IB_TYPE = "1";
@@ -250,6 +253,13 @@ public class DefineValue {
     public static String ALLOW_MEMBER_LEVEL = "allowMemberLevel";
     public static String CAN_TRANSFER = "canTransfer";
 
+    public static String DESTINATION_REMARK = "destinationRemark";
     public static String LINK_APP = "linkApp";
+
+    public static String SENDER_ID = "SenderID";
+    public static String DEIMEI = "deimei";
+    public static String DEICCID = "deiccid";
+
+    public static String USER_IS_NEW = "userIsNew";
 
 }

@@ -31,7 +31,6 @@ import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -48,6 +47,9 @@ import timber.log.Timber;
   Created by Administrator on 5/21/2015.
  */
 public class BillerDesciption extends Fragment {
+
+
+    public final static String TAG = "BILLER_DESCRIPTION";
 
     View v, layout_biller_name;
     String tx_id, biller_name, biller_comm_id ,biller_comm_code, biller_api_key,
@@ -180,6 +182,7 @@ public class BillerDesciption extends Fragment {
                             TableRow.LayoutParams.WRAP_CONTENT,8f);
                     rowParams.setMargins(6,6,6,6);
 
+                    mTableLayout.removeAllViews();
                     for (String aTempList : tempList) {
                         value_detail_field = aTempList;
                         value_detail_value = mDataDesc.getString(aTempList);
@@ -348,7 +351,7 @@ public class BillerDesciption extends Fragment {
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -709,16 +712,15 @@ public class BillerDesciption extends Fragment {
     }
 
     private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.error),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                getFragmentManager().popBackStack();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.error),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        getFragmentManager().popBackStack();
+                    }
+                }
+        );
         dialognya.show();
     }
 
@@ -844,15 +846,15 @@ public class BillerDesciption extends Fragment {
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);
-        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true);
+        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true, BillerConfirm.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack, String tag){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity ) getActivity();
-        fca.switchContent(i,name,next_name,isBackstack);
+        fca.switchContent(i,name,next_name,isBackstack, tag);
     }
 
     private void switchActivity(Intent mIntent){

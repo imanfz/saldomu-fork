@@ -39,8 +39,10 @@ import timber.log.Timber;
  */
 public class ListBillerMerchant extends ListFragment {
 
+    public final static String TAG = "LIST_BILLER_MERCHANT";
+
     View v;
-    String userID,accessKey,billerId;
+    String userID,accessKey,billerTypeCode;
     List<Biller_Data_Model> mListBillerData;
     Biller_Type_Data_Model mBillerType;
     EasyAdapter adapter;
@@ -71,11 +73,13 @@ public class ListBillerMerchant extends ListFragment {
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
-        initializeData();
+        if(!realm.isInTransaction())
+            initializeData();
 
         realmListener = new RealmChangeListener() {
             @Override
             public void onChange() {
+                Timber.d("Masuk realm listener bilactive asdfasdfa");
                 if(isVisible()){
                     initializeData();
                 }
@@ -85,21 +89,26 @@ public class ListBillerMerchant extends ListFragment {
 
     public void initializeData(){
         Bundle args = getArguments();
-        billerId = args.getString(DefineValue.BILLER_ID,"");
+        billerTypeCode = args.getString(DefineValue.BILLER_TYPE,"");
 
         mBillerType = realm.where(Biller_Type_Data_Model.class).
-                        equalTo(WebParams.BILLER_TYPE_ID,billerId).
+                        equalTo(WebParams.BILLER_TYPE_CODE,billerTypeCode).
                         findFirst();
-        mListBillerData = mBillerType.getBiller_data_models();
 
-        setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
+        if(mBillerType !=null) {
+            mListBillerData = mBillerType.getBiller_data_models();
+            setActionBarTitle(getString(R.string.biller_ab_title) + "-" + mBillerType.getBiller_type_name());
+            _data.clear();
+            for (int i = 0 ;i< mListBillerData.size();i++){
+                _data.add(mListBillerData.get(i).getComm_name());
+            }
 
-        _data.clear();
-        for (int i = 0 ;i< mListBillerData.size();i++){
-            _data.add(mListBillerData.get(i).getComm_name());
+            adapter.notifyDataSetChanged();
         }
+        else
+            mListBillerData = new ArrayList<>();
 
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -110,29 +119,29 @@ public class ListBillerMerchant extends ListFragment {
     }
 
     private void changeToInputBiller(String _comm_id, String _comm_name, String _item_id){
-        if(_item_id.isEmpty())
-            callUpdateDenom(_comm_id, _comm_name);
+//        if(_item_id.isEmpty())
+//            callUpdateDenom(_comm_id, _comm_name);
 
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.COMMUNITY_ID,_comm_id);
         mArgs.putString(DefineValue.COMMUNITY_NAME,_comm_name);
         mArgs.putString(DefineValue.BILLER_ITEM_ID,_item_id);
-        mArgs.putString(DefineValue.BILLER_ID,billerId);
+        mArgs.putString(DefineValue.BILLER_TYPE,billerTypeCode);
 
         BillerInput mBI = new BillerInput() ;
         mBI.setArguments(mArgs);
 
         String fragname = mBillerType.getBiller_type_name()+"-"+_comm_name;
 
-        switchFragment(mBI,BillerActivity.FRAG_BIL_LIST_MERCHANT,fragname,true);
+        switchFragment(mBI,BillerActivity.FRAG_BIL_LIST_MERCHANT,fragname,true, BillerInput.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack, String tag){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.switchContent(i,name,next_name,isBackstack);
+        fca.switchContent(i,name,next_name,isBackstack,tag);
     }
 
     private void setActionBarTitle(String _title){
@@ -143,13 +152,13 @@ public class ListBillerMerchant extends ListFragment {
         fca.setToolbarTitle(_title);
     }
 
-    private void callUpdateDenom(String comm_id, String comm_name){
-        if (getActivity() == null)
-            return;
-
-        BillerActivity fca = (BillerActivity) getActivity();
-        fca.updateDenom(comm_id,comm_name);
-    }
+//    private void callUpdateDenom(String comm_id, String comm_name){
+//        if (getActivity() == null)
+//            return;
+//
+//        BillerActivity fca = (BillerActivity) getActivity();
+//        fca.updateDenom(comm_id,comm_name);
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

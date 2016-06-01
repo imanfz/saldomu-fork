@@ -74,7 +74,7 @@ public class PasswordRegisterActivity extends BaseActivity {
                     finishChild(i);
                 }
             }
-            else DefinedDialog.showErrorDialog(PasswordRegisterActivity.this, getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(PasswordRegisterActivity.this, getString(R.string.inethandler_dialog_message), null);
         }
     };
 
@@ -97,7 +97,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         String auth = getIntent().getStringExtra(DefineValue.AUTHENTICATION_TYPE);
 
 //        if (auth.equals(DefineValue.AUTH_TYPE_PIN))
-            setResult(Registration.RESULT_PIN,data);
+            setResult(LoginActivity.RESULT_PIN,data);
 //        else
 //            setResult(Registration.RESULT_FINISHING,data);
         finish();

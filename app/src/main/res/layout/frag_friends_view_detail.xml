@@ -63,7 +63,7 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Button"
                     android:textColor="@color/colorPrimaryDark"
                     android:gravity="center"
-                    android:text="@string/pay"
+                    android:text="@string/menu_item_title_pay_friends"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/button_transparant"
                     />

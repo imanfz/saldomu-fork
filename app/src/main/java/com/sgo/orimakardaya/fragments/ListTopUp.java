@@ -124,7 +124,11 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
                                     String bank_code = "";
                                     String no_va = "";
                                     String bank_name = "";
-                                    JSONArray mArrayATM = new JSONArray(atm_topup_data);
+                                    JSONArray mArrayATM;
+                                    if(atm_topup_data != null && !atm_topup_data.isEmpty() && !atm_topup_data.equals("null"))
+                                        mArrayATM = new JSONArray(atm_topup_data);
+                                    else
+                                        mArrayATM = new JSONArray();
                                     for (int i = 0; i < mArrayATM.length(); i++) {
                                         if (i == mArrayATM.length() - 1) {
                                             bank_code += mArrayATM.getJSONObject(i).getString(WebParams.BANK_CODE);

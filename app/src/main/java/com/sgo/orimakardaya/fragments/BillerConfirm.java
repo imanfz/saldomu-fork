@@ -29,7 +29,6 @@ import com.sgo.orimakardaya.activities.SgoPlusWeb;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.MessageDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
@@ -50,6 +49,9 @@ import timber.log.Timber;
   Created by Administrator on 3/5/2015.
  */
 public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+
+
+    public final static String TAG = "BILLER_CONFIRM";
 
     View v;
     String tx_id,merchant_type,ccy_id,amount,item_name,cust_id, payment_name, amount_desire,fee,total_amount,
@@ -156,7 +158,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             }
             else {
                 isPIN = true;
-                new UtilsLoader(getActivity(),sp).getFailedPIN(new OnLoadDataListener() { //get pin attempt
+                new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                     @Override
                     public void onSuccess(Object deData) {
                         attempt = (int)deData;
@@ -327,7 +329,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -349,7 +351,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 if(max_token_resend!=0)requestResendToken();
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message), null);
         }
     };
 
@@ -663,16 +665,15 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     }
 
  	private void showDialogError(String message){
-        MessageDialog dialognya;
-        dialognya = new MessageDialog(getActivity(),
-                getString(R.string.blocked_pin_title),
-                message);
-        dialognya.setDialogButtonClickListener(new MessageDialog.DialogButtonListener() {
-            @Override
-            public void onClickButton(View v, boolean isLongClick) {
-                onOkButton();
-            }
-        });
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        onOkButton();
+                    }
+                });
+
         dialognya.show();
 	}
     private void changeToSgoPlus(String _tx_id, String _amount, String _bank_code, String _product_code,
@@ -697,6 +698,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         i.putExtra(DefineValue.BUY_TYPE, buy_code);
         i.putExtra(DefineValue.PAYMENT_NAME,payment_name);
         i.putExtra(DefineValue.BILLER_NAME,biller_name);
+        i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
 
         double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(_fee);
         i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));
@@ -737,6 +739,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         args.putInt(DefineValue.BUY_TYPE, buy_code);
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.DESTINATION_REMARK, cust_id);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){

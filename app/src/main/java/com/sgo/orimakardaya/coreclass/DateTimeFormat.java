@@ -13,11 +13,17 @@ import java.util.Locale;
 
 public class DateTimeFormat {
 
+    private static final Long OneHourMs = 3600000L;
 
     public static SimpleDateFormat getFormatYearHours(){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
     }
 
+
+    public static Long getCurrentDateTimeMillis(){
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getTimeInMillis();
+    }
 
 
     public static String getCurrentDateTime(){
@@ -87,4 +93,18 @@ public class DateTimeFormat {
         }
         return null;
     }
+
+    public static String convertMilisToMinute(Long _milisecond){
+        SimpleDateFormat dateFormat;
+        if(_milisecond < OneHourMs) {
+            dateFormat = new SimpleDateFormat("m:ss", new Locale("ID", "INDONESIA"));
+
+        }
+        else {
+            dateFormat = new SimpleDateFormat("HH:mm:ss", new Locale("ID", "INDONESIA"));
+
+        }
+        return dateFormat.format(new Date(_milisecond));
+    }
+
 }

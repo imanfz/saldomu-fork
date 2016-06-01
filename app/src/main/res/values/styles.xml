@@ -44,6 +44,10 @@
         <item name="color">@color/white</item>
     </style>
 
+    <style name="CustomProgressbar" parent="@android:style/Widget.ProgressBar">
+        <item name="android:color">@color/white</item>
+    </style>
+
     <style name="Reg_Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -97,6 +101,13 @@
         <!--<item name="android:textColor">@color/text_black_87</item>-->
         <item name="android:textColor">@color/black</item>
         <item name="android:drawablePadding">@dimen/sheet_item_image_spacing</item>
+    </style>
+
+    <style name="CustomProgressBarHorizontal" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/progbar_horizontal_style_big</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:maxHeight">20dip</item>
     </style>
 
 

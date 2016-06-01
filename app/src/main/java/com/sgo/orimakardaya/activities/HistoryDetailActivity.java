@@ -32,12 +32,14 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -159,18 +161,25 @@ public class HistoryDetailActivity extends BaseActivity {
                 .transform(new RoundImageTransformation())
                 .into(iconPicture);
 
-        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
-        Date d;
-        long long_date = 0;
-        try {
-            d = f.parse(datetime);
-            long_date = d.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
 
-        String period = PeriodTime.getTimeAgo(long_date, this);
+        PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
+        Date time1 = DateTimeFormat.convertCustomDateTime(datetime);
+        String period = p.formatDuration(time1);
+
+//        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
+//        Date d;
+//        long long_date = 0;
+//        try {
+//            d = f.parse(datetime);
+//            long_date = d.getTime();
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//        String period = PeriodTime.getTimeAgo(long_date, this);
 
         fromId.setText(from_name);
         messageTransaction.setText(message);
@@ -276,7 +285,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:"+params.toString());
 
-            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler(){
+            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -304,7 +313,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(!flagSameComment) {
+                                if (!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -333,6 +342,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         e.printStackTrace();
                     }
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
@@ -411,7 +421,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(!flagSameComment) {
+                                if (!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -464,7 +474,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(mProg.isShowing())
+                    if (mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }
@@ -520,7 +530,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(!flagSameComment) {
+                                if (!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -549,15 +559,15 @@ public class HistoryDetailActivity extends BaseActivity {
                             commentAdapter.notifyDataSetChanged();
 
                             listHistoryModel.updateNumcomments(count, Integer.parseInt(post_id));
-                            listHistoryModel.updateComments("",Integer.parseInt(post_id));
-                            listHistoryModel.updateCommentId1("",Integer.parseInt(post_id));
-                            listHistoryModel.updateCommentId2("",Integer.parseInt(post_id));
-                            listHistoryModel.updateFromname1("",Integer.parseInt(post_id));
-                            listHistoryModel.updateFromname2("",Integer.parseInt(post_id));
-                            listHistoryModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
-                            listHistoryModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
-                            listHistoryModel.updateReply1("",Integer.parseInt(post_id));
-                            listHistoryModel.updateReply2("",Integer.parseInt(post_id));
+                            listHistoryModel.updateComments("", Integer.parseInt(post_id));
+                            listHistoryModel.updateCommentId1("", Integer.parseInt(post_id));
+                            listHistoryModel.updateCommentId2("", Integer.parseInt(post_id));
+                            listHistoryModel.updateFromname1("", Integer.parseInt(post_id));
+                            listHistoryModel.updateFromname2("", Integer.parseInt(post_id));
+                            listHistoryModel.updateFromprofilepicture1("", Integer.parseInt(post_id));
+                            listHistoryModel.updateFromprofilepicture2("", Integer.parseInt(post_id));
+                            listHistoryModel.updateReply1("", Integer.parseInt(post_id));
+                            listHistoryModel.updateReply2("", Integer.parseInt(post_id));
                         } else {
                             Timber.d("isi error add comment:" + response.toString());
                         }
@@ -589,7 +599,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(mProg.isShowing())
+                    if (mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }
@@ -613,7 +623,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
            Timber.d("isi params get like list:"+params.toString());
 
-            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler(){
+            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -652,7 +662,7 @@ public class HistoryDetailActivity extends BaseActivity {
                                 String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
                                 String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                if(like_from.equals(_ownerID)) like = true;
+                                if (like_from.equals(_ownerID)) like = true;
 
                                 mListLike.add(new likeModel(like_id, like_post_id,
                                         like_from, like_from_name, like_from_profile_picture, like_to,
@@ -700,7 +710,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(mProg.isShowing())
+                    if (mProg.isShowing())
                         mProg.dismiss();
                     finish();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
@@ -709,7 +719,7 @@ public class HistoryDetailActivity extends BaseActivity {
                 @Override
                 public void onFinish() {
                     super.onFinish();
-                    if(mProg.isShowing())
+                    if (mProg.isShowing())
                         mProg.dismiss();
                 }
             });
@@ -735,7 +745,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler(){
+            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -825,7 +835,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(mProg.isShowing())
+                    if (mProg.isShowing())
                         mProg.dismiss();
                     Timber.w("Error Koneksi User contact insert:" + throwable.toString());
                 }

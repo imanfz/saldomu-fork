@@ -30,21 +30,6 @@
 
 
         <EditText
-                android:layout_marginTop="48dp"
-                android:id="@+id/userID_value"
-                android:maxLength="@integer/nomor_lenght_20"
-                android:hint="@string/login_edithint_id"
-                android:textColorHint="@color/semi_white_transparant"
-                android:inputType="phone"
-                android:digits="1234567890"
-                android:textColor="@color/grey_1000w"
-                android:textStyle="bold"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"/>
-
-        <EditText
                 android:layout_marginTop="16dp"
                 android:enabled="true"
                 android:id="@+id/passLogin_value"
@@ -105,6 +90,7 @@
                     />
 
         </RelativeLayout>
+
 
         <Button
                 android:id="@+id/btn_forgetPass"

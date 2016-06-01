@@ -8,7 +8,14 @@ import android.os.Build;
 import com.securepreferences.SecurePreferences;
 import com.tozny.crypto.android.AesCbcWithIntegrity;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
+
+import timber.log.Timber;
 
 public class CustomSecurePref {
 
@@ -32,14 +39,51 @@ public class CustomSecurePref {
     private CustomSecurePref(Context _context){
         if(getmSecurePrefs() ==null){
             try {
+                isFilePrefExist(_context);
                 String test = Build.ID;
                 final byte[] salt = test.getBytes();
-                AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,1000);
+                AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,500);
                 setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
+
+                String i = getmSecurePrefs().getString(DefineValue.LEVEL_VALUE, "0");
+                if(i == null) {
+                    deleteData(_context);
+                    setmSecurePrefs(null);
+                    setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
+                }
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void isFilePrefExist(Context _context) {
+        String outFileName = "pin_pref.xml.xml";
+        File file = new File(_context.getApplicationInfo().dataDir+"/shared_prefs", outFileName);
+        File fileOut = new File(_context.getApplicationInfo().dataDir+"/shared_prefs",DefineValue.SEC_PREF_NAME+".xml");
+        if(file.exists()){
+            Boolean check = file.renameTo(fileOut);
+            if(check)
+                Timber.d("Success Rename");
+            else
+                Timber.d("Failed Rename");
+        }
+        else
+            Timber.d("gak ada");
+    }
+
+    private void deleteData(Context _context) {
+        File fileOut = new File(_context.getApplicationInfo().dataDir+"/shared_prefs",DefineValue.SEC_PREF_NAME+".xml");
+        if(fileOut.exists()){
+            Boolean check = fileOut.delete();
+            if(check)
+                Timber.d("Success Delete");
+            else
+                Timber.d("Failed Delete");
+        }
+        else
+            Timber.d("gak ada clearAllData");
+
     }
 
     public void setmContext(Context mContext) {
@@ -114,8 +158,9 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.MEMBER_NAME);
         mEdit.remove(DefineValue.MAX_TOPUP);
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
+        mEdit.remove(DefineValue.TIMELINE_FIRST_TIME);
 
-        mEdit.apply();
+        mEdit.commit();
 
     }
 }

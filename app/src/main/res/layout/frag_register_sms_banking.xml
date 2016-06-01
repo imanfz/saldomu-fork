@@ -125,14 +125,13 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
-                <EditText
+                <TextView
                         android:id="@+id/rsb_value_phone"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/abc_text_size_medium_material"
-                        android:inputType="number"
-                        android:maxLength="30"
-                        android:hint="@string/rsb_edithint_nohp"
+                        android:textColor="@color/black"
+                        android:text="@string/text_strip"
                         />
 
             </LinearLayout>

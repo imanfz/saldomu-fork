@@ -82,7 +82,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         String period = PeriodTime.getTimeAgo(long_date, mContext);
 */
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-        Date time1 = DateTimeFormat.convertCustomDate(string_date);
+        Date time1 = DateTimeFormat.convertCustomDateTime(string_date);
         String period = p.formatDuration(time1);
 
 //        String tx_status = "";

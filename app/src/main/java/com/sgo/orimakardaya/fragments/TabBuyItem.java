@@ -152,7 +152,7 @@ public final class TabBuyItem extends ListFragment {
                 equalTo(WebParams.BILLER_TYPE_ID,mBillerTypeData.get(position).getBiller_type_id()).
                 findFirst();
 //        getBillerList(mBillerType.getBiller_type_code(), mBillerType.getBiller_type_name(),mBillerType.getBiller_type_id());
-        openIntentBiller(mBillerType.getBiller_type_code(), mBillerType.getBiller_type_name(),mBillerType.getBiller_type_id());
+        openIntentBiller(mBillerType.getBiller_type_code(), mBillerType.getBiller_type_name());
 
     }
 
@@ -293,11 +293,10 @@ public final class TabBuyItem extends ListFragment {
 //        switchActivity(i);
 //    }
 
-    public void openIntentBiller(String _biller_type, String _biller_name, String _biller_type_id){
+    public void openIntentBiller(String _biller_type, String _biller_name){
         Intent i = new Intent(getActivity(), BillerActivity.class);
         i.putExtra(DefineValue.BILLER_TYPE,_biller_type);
         i.putExtra(DefineValue.BILLER_NAME,_biller_name);
-        i.putExtra(DefineValue.BILLER_ID,_biller_type_id);
         switchActivity(i);
     }
 

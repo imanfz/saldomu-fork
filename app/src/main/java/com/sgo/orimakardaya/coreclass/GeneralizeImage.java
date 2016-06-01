@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,20 +17,44 @@ public class GeneralizeImage {
 
     Context mContext;
     String mFilePath;
+    Uri mUri;
+    Bitmap mBitmap;
+
 
     public GeneralizeImage(Context _context, String _file_path){
         this.mFilePath = _file_path;
         this.mContext = _context;
     }
 
+    public GeneralizeImage(Context _context, Bitmap _file, Uri _uri){
+        if (_file == null)
+            return;
+        this.mBitmap = _file;
+        this.mUri = _uri;
+        this.mContext = _context;
+    }
+
+
     public File Convert(){
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mFilePath, options);
-        int imageHeight = options.outHeight;
-        int imageWidth = options.outWidth;
+        int imageHeight;
+        int imageWidth;
+        Bitmap finaleBitmap;
+        if(mFilePath == null || mFilePath.isEmpty()){
+            finaleBitmap = this.mBitmap;
+            imageHeight = finaleBitmap.getHeight();
+            imageWidth = finaleBitmap.getWidth();
+        }
+        else {
+            BitmapFactory.decodeFile(mFilePath, options);
+            imageHeight = options.outHeight;
+            imageWidth = options.outWidth;
+            finaleBitmap = BitmapFactory.decodeFile(mFilePath);
+        }
 
-        Bitmap oldBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(mFilePath), imageWidth/2, imageHeight/2, true);
+
+        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth/2, imageHeight/2, true);
 //        Bitmap oldBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(mFilePath),100, 100, true);
         Bitmap newBitmap = setOrientationBitmap(oldBitmap);
 
@@ -56,7 +81,11 @@ public class GeneralizeImage {
 
         ExifInterface exif = null;
         try {
-            exif = new ExifInterface(mFilePath);
+            if(mFilePath == null || mFilePath.isEmpty() )
+                exif = new ExifInterface(this.mUri.getPath());
+            else
+                exif = new ExifInterface(mFilePath);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
