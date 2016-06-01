@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -240,8 +241,9 @@ public class Regist1 extends Fragment{
     public void changeActivity(Boolean login){
         if(login){
             DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
+            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment test = new Login();
+            switchFragment(test,"Login",false);
         }
         else{
             DefineValue.NOBACK = true; //fragment selanjutnya tidak bisa menekan tombol BACK
