@@ -53,8 +53,16 @@ public class GeneralizeImage {
             finaleBitmap = BitmapFactory.decodeFile(mFilePath);
         }
 
+        if(imageHeight > 3000 ){
+            imageHeight = imageHeight/4;
+            imageWidth  = imageWidth/4;
+        }
+        else {
+            imageHeight = imageHeight/2;
+            imageWidth  = imageWidth/2;
+        }
 
-        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth/2, imageHeight/2, true);
+        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, true);
 //        Bitmap oldBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(mFilePath),100, 100, true);
         Bitmap newBitmap = setOrientationBitmap(oldBitmap);
 
@@ -65,7 +73,7 @@ public class GeneralizeImage {
         FileOutputStream out;
         try {
             out = new FileOutputStream(mfile);
-            newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
             out.flush();
             out.close();
