@@ -58,7 +58,7 @@ public class DateTimeFormat {
       }
     }
 
-    public static String getCurrentDate(){
+    public static String getCurrentDateMinus(){
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
       return df.format(Calendar.getInstance().getTime());
     }
@@ -67,14 +67,14 @@ public class DateTimeFormat {
         return Calendar.getInstance().getTime();
     }
 
-    public static String getCurrentDate(int minus){
+    public static String getCurrentDateMinus(int minus){
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
       Calendar calendar=Calendar.getInstance();
       calendar.add(Calendar.DAY_OF_YEAR, -minus);
       return df.format(calendar.getTime());
     }
 
-    public static java.util.Date convertCustomDateTime(String _date){
+    public static java.util.Date convertStringtoCustomDateTime(String _date){
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
       try {
           return dateFormat.parse(_date);
@@ -84,7 +84,7 @@ public class DateTimeFormat {
       return null;
     }
 
-    public static java.util.Date convertCustomDate(String _date){
+    public static java.util.Date convertStringtoCustomDate(String _date){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
         try {
             return dateFormat.parse(_date);
@@ -92,6 +92,11 @@ public class DateTimeFormat {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String convertDatetoString(Date _date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        return dateFormat.format(_date);
     }
 
     public static String convertMilisToMinute(Long _milisecond){

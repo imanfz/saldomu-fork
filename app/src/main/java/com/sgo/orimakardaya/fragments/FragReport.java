@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -108,8 +107,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        OrifromDate = DateTimeFormat.getCurrentDate(6);
-        OritoDate = DateTimeFormat.getCurrentDate();
+        OrifromDate = DateTimeFormat.getCurrentDateMinus(6);
+        OritoDate = DateTimeFormat.getCurrentDateMinus();
         page = 1;
 
         filter_btn.setOnClickListener(filterBtnListener);

@@ -237,7 +237,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
                     bucket = arrayFriend.getJSONObject(i).getString(friendModel.IS_FRIEND);
                     if(!bucket.equals(""))mFm.setIs_friend(Integer.parseInt(bucket));
 
-                    mFm.setCreated_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
+                    mFm.setCreated_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
                     mFm.save();
                     Timber.d("idx array friend", String.valueOf(i));
                 }

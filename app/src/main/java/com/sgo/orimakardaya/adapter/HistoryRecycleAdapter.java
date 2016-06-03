@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -139,7 +138,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             String string_date = _data.getDatetime();
 
             PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-            Date time1 = DateTimeFormat.convertCustomDateTime(string_date);
+            Date time1 = DateTimeFormat.convertStringtoCustomDateTime(string_date);
             String period = p.formatDuration(time1);
 
             simpleHolder.fromId.setText(_data.getOwner());
@@ -380,7 +379,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

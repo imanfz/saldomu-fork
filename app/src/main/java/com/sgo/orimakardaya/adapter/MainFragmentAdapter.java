@@ -59,6 +59,7 @@ public class MainFragmentAdapter extends FragmentStatePagerAdapter implements Ic
         }
     }
 
+
     @Override
     public void setPrimaryItem(ViewGroup container, int position, Object object) {
         if (mCurrentFragment != object) {

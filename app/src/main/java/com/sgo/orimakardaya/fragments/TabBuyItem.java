@@ -205,7 +205,7 @@ public final class TabBuyItem extends ListFragment {
 //                                    mBillerTypeData.getBiller_data_models().deleteAllFromRealm();
 //
 //                                    JSONArray jsonBiller;
-//                                    String curr_date = DateTimeFormat.getCurrentDate();
+//                                    String curr_date = DateTimeFormat.getCurrentDateMinus();
 //                                    Biller_Data_Model mObj;
 //                                    try {
 //                                        jsonBiller = new JSONArray(arrayBiller);
