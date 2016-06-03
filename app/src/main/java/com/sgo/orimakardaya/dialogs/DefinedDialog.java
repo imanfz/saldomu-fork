@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.CoreApp;
+import com.sgo.orimakardaya.coreclass.LifeCycleHandler;
 
 import timber.log.Timber;
 
@@ -59,7 +61,9 @@ public class DefinedDialog {
             }
         });
 
-        dialog.show();
+
+        if(LifeCycleHandler.isApplicationVisible())
+            dialog.show();
     }
 
     public static Dialog MessageDialog(Context context, String _title, String _message, final DialogButtonListener _dialogListener ){
