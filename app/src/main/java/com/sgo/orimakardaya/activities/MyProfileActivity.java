@@ -74,7 +74,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/18/2015.
  */
-public class MyProfileActivity extends BaseActivity {
+public class MyProfileActivity extends CameraClass {
 
     private static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 0x123;
     private static final int PERMISSIONS_REQ_CAMERA = 0x124;
@@ -105,7 +105,6 @@ public class MyProfileActivity extends BaseActivity {
     DatePickerDialog dpd;
     String[] gender_value= new String[]{"L","P"};
     Boolean isLevel1,isRegisteredLevel;
-    CameraClass cameraClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -681,11 +680,7 @@ public class MyProfileActivity extends BaseActivity {
             MyProfileActivity.this.requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQ_CAMERA);
         }
         else {
-
-            if(cameraClass == null)
-                cameraClass = new CameraClass(this);
-
-            cameraClass.startCameraIntent();
+            startCameraIntent();
 //            String fileName = "temp.jpg";
 //
 //            ContentValues values = new ContentValues();
@@ -696,28 +691,6 @@ public class MyProfileActivity extends BaseActivity {
 //            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 //            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
 //            startActivityForResult(takePictureIntent, RESULT_CAMERA);
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mCapturedImageURI != null) {
-            outState.putString("cameraImageUri", String.valueOf(mCapturedImageURI));
-        }
-        if(cameraClass != null){
-            cameraClass.SaveInstanceState(outState);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState.containsKey("cameraImageUri")) {
-            mCapturedImageURI = Uri.parse(savedInstanceState.getString("cameraImageUri"));
-        }
-        if(cameraClass != null){
-            cameraClass.RestoreInstanceState(savedInstanceState);
         }
     }
 
@@ -739,25 +712,22 @@ public class MyProfileActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-
                     GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
-
                     uploadFileToServer(mGI.Convert());
 
                 }
                 break;
             case CameraClass.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                if(cameraClass!=null){
-                    Uri fileUri = cameraClass.onCameraIntentResult(resultCode,data);
-                    if(fileUri != null){
-                        GeneralizeImage mGI = new GeneralizeImage(this,fileUri.getPath());
-                        //getOrientationImage();
-                        uploadFileToServer(mGI.Convert());
-                    }
-                    else{
-                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
-                    }
+                Uri fileUri = onTakePhotoActivityResult(requestCode,resultCode,data);
+                if(fileUri != null){
+                    File mGI =GeneralizeImage.ConvertCapturedImage(this,fileUri,rotateXDegrees);
+                    //getOrientationImage();
+                    uploadFileToServer(mGI);
                 }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                }
+
                 break;
             default:
                 break;
