@@ -22,7 +22,6 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.Beans.myFriendModel;
-import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.LoginActivity;
 import com.sgo.orimakardaya.activities.MainPage;
@@ -51,8 +50,8 @@ public class Login extends Fragment implements View.OnClickListener {
 
     String userIDfinale = null;
     Fragment newFrag;
-    Button btnforgetPass;
-    EditText passLoginValue;
+    Button btnforgetPass, btnRegister;
+    EditText userIDValue,passLoginValue;
     ImageView image_spinner;
     Button btnLogin;
     Animation frameAnimation;
@@ -70,6 +69,8 @@ public class Login extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        userIDValue = (EditText) v.findViewById(R.id.userID_value);
+        userIDValue.requestFocus();
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
@@ -80,25 +81,18 @@ public class Login extends Fragment implements View.OnClickListener {
         btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
         btnforgetPass.setOnClickListener(this);
 
+        btnRegister = (Button) v.findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(this);
+
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if(sp.contains(DefineValue.SENDER_ID))
-            userIDfinale = NoHPFormat.editNoHP(sp.getString(DefineValue.SENDER_ID,""));
 
-        if(BuildConfig.DEBUG){ //untuk shorcut dari tombol di activity LoginActivity
-            Bundle m = getArguments();
-            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
-            }
-        }
-
-        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
-        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
-        String androidId = new DeviceUtils(getActivity()).getAndroidID();
-        Timber.e("mcaddress: " + mcAddress + " // devicemodel: " + deviceModel + " // androidid: " + androidId);
+//        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
+//        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
+//        String androidId = new DeviceUtils(getActivity()).getAndroidID();
+//        Timber.e("mcaddress: " + mcAddress + " // devicemodel: " + deviceModel + " // androidid: " + androidId);
     }
 
     @Override
@@ -107,9 +101,7 @@ public class Login extends Fragment implements View.OnClickListener {
             case R.id.btn_login :
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
-                        if(BuildConfig.DEBUG && getActivity().findViewById(R.id.userID_value).getVisibility() == View.VISIBLE){
-                            userIDfinale = NoHPFormat.editNoHP (((EditText)getActivity().findViewById(R.id.userID_value)).getText().toString());
-                        }
+                        userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
                         sentData();
                     }
                 }
@@ -120,6 +112,10 @@ public class Login extends Fragment implements View.OnClickListener {
                 newFrag = new ForgotPassword();
                 switchFragment(newFrag,"forgot password",true);
                 break;
+            case R.id.btn_register :
+                newFrag = new Regist1();
+                switchFragment(newFrag, "reg1", true);
+                break;
         }
     }
 
@@ -127,6 +123,8 @@ public class Login extends Fragment implements View.OnClickListener {
     public void sentData(){
         try{
             btnLogin.setEnabled(false);
+            userIDValue.setEnabled(false);
+            btnRegister.setEnabled(false);
             passLoginValue.setEnabled(false);
             btnforgetPass.setEnabled(false);
             btnLayout.setVisibility(View.INVISIBLE);
@@ -150,6 +148,8 @@ public class Login extends Fragment implements View.OnClickListener {
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
+                    userIDValue.setEnabled(true);
+                    btnRegister.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
                     btnLayout.setVisibility(View.VISIBLE);
@@ -240,9 +240,11 @@ public class Login extends Fragment implements View.OnClickListener {
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
+                    userIDValue.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
                     btnLayout.setVisibility(View.VISIBLE);
+                    btnRegister.setEnabled(true);
                     btnLogin.setVisibility(View.VISIBLE);
                     Timber.w("Error Koneksi login:" + throwable.toString());
                 }
@@ -421,7 +423,12 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
     public boolean inputValidation(){
-        if(passLoginValue.getText().toString().length()==0){
+        if(userIDValue.getText().toString().length()==0){
+            userIDValue.requestFocus();
+            userIDValue.setError(this.getString(R.string.login_validation_userID));
+            return false;
+        }
+        else if(passLoginValue.getText().toString().length()==0){
             passLoginValue.requestFocus();
             passLoginValue.setError(this.getString(R.string.login_validation_pass));
             return false;

@@ -3,9 +3,12 @@ package com.sgo.orimakardaya.fragments;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +32,8 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
+import com.sgo.orimakardaya.coreclass.SMSclass;
 import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
@@ -45,14 +50,15 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",max_resend_token = "3", auth_type = "";
-    EditText namaValue,emailValue;
+    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
+    EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
     CheckBox cb_terms;
     View v;
 
     Fragment mFragment;
     ProgressDialog progdialog;
+    ReqPermissionClass reqPermissionClass;
 
 
     @Override
@@ -75,6 +81,7 @@ public class Regist1 extends Fragment{
 
         namaValue=(EditText)getActivity().findViewById(R.id.name_value);
         emailValue=(EditText)getActivity().findViewById(R.id.email_value);
+        noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -87,6 +94,17 @@ public class Regist1 extends Fragment{
             }
         });
 
+        reqPermissionClass = new ReqPermissionClass(getActivity());
+
+        if(reqPermissionClass.checkPermissionREADPHONESTATE()){
+            SMSclass smSclass = new SMSclass(getActivity());
+            if(smSclass.isSimExists()){
+                String Nomor1 = smSclass.getSimNumber();
+                noHPValue.setText(Nomor1);
+            }
+        }
+
+        noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
 
         TextView tv_termsnconditions = (TextView) v.findViewById(R.id.tv_termsncondition);
@@ -111,6 +129,18 @@ public class Regist1 extends Fragment{
 
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(reqPermissionClass.checkOnRequestREADPHONESTATE(requestCode,grantResults)){
+            SMSclass smSclass = new SMSclass(getActivity());
+            if(smSclass.isSimExists()){
+                String Nomor1 = smSclass.getSimNumber();
+                noHPValue.setText(Nomor1);
+            }
+        }
+    }
+
     Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
 
         @Override
@@ -118,10 +148,7 @@ public class Regist1 extends Fragment{
             if(view == btnLanjut){
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
-                        if(BuildConfig.DEBUG && getActivity().findViewById(R.id.noHP_value).getVisibility() == View.VISIBLE){
-                            noHPValid = NoHPFormat.editNoHP (((EditText)getActivity().findViewById(R.id.noHP_value)).getText().toString());
-                        }
-                        sentData(noHPValid);
+                        sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
                     }
                 }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
             }
@@ -150,6 +177,7 @@ public class Regist1 extends Fragment{
                 progdialog.show();
 
                 btnLanjut.setEnabled(false);
+                noHPValue.setEnabled(false);
                 namaValue.setEnabled(false);
                 emailValue.setEnabled(false);
 
@@ -165,11 +193,10 @@ public class Regist1 extends Fragment{
                 Timber.d("isi params reg1:" + params.toString());
 
                 MyApiClient.sentDataRegister(getActivity(),params,new JsonHttpResponseHandler(){
-
-
-                    @Override
+                        @Override
                         public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
                             btnLanjut.setEnabled(true);
+                            noHPValue.setEnabled(true);
                             namaValue.setEnabled(true);
                             emailValue.setEnabled(true);
                             Timber.d("response register:"+response.toString());
@@ -226,6 +253,7 @@ public class Regist1 extends Fragment{
                         if(progdialog.isShowing())
                             progdialog.dismiss();
                         btnLanjut.setEnabled(true);
+                        noHPValue.setEnabled(true);
                         namaValue.setEnabled(true);
                         emailValue.setEnabled(true);
                         Timber.w("Error Koneksi reg1 proses reg1:"+throwable.toString());
@@ -300,7 +328,12 @@ public class Regist1 extends Fragment{
     //----------------------------------------------------------------------------------------------------------------
 
     public boolean inputValidation(){
-       if(namaValue.getText().toString().length()<2){
+        if(noHPValue.getText().toString().length()==0){
+            noHPValue.requestFocus();
+            noHPValue.setError(getResources().getString(R.string.regist1_validation_nohp));
+            return false;
+        }
+        else if(namaValue.getText().toString().length()<2){
             namaValue.requestFocus();
             namaValue.setError(getResources().getString(R.string.regist1_validation_nama));
             return false;

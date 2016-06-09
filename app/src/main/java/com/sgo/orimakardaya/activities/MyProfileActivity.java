@@ -74,7 +74,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/18/2015.
  */
-public class MyProfileActivity extends CameraClass {
+public class MyProfileActivity extends BaseActivity {
 
     private static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 0x123;
     private static final int PERMISSIONS_REQ_CAMERA = 0x124;
@@ -675,22 +675,31 @@ public class MyProfileActivity extends CameraClass {
     }
 
     private void chooseCamera() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                MyProfileActivity.this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            MyProfileActivity.this.requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQ_CAMERA);
+        String fileName = "temp.jpg";
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, fileName);
+
+        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+        startActivityForResult(takePictureIntent, RESULT_CAMERA);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mCapturedImageURI != null) {
+            outState.putString("cameraImageUri", String.valueOf(mCapturedImageURI));
         }
-        else {
-            startCameraIntent();
-//            String fileName = "temp.jpg";
-//
-//            ContentValues values = new ContentValues();
-//            values.put(MediaStore.Images.Media.TITLE, fileName);
-//
-//            mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-//
-//            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-//            startActivityForResult(takePictureIntent, RESULT_CAMERA);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState.containsKey("cameraImageUri")) {
+            mCapturedImageURI = Uri.parse(savedInstanceState.getString("cameraImageUri"));
         }
     }
 
@@ -717,17 +726,26 @@ public class MyProfileActivity extends CameraClass {
 
                 }
                 break;
-            case CameraClass.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-                Uri fileUri = onTakePhotoActivityResult(requestCode,resultCode,data);
-                if(fileUri != null){
-                    File mGI =GeneralizeImage.ConvertCapturedImage(this,fileUri,rotateXDegrees);
+            case RESULT_CAMERA:
+                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
+                    String[] projection = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
+                    String filePath;
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        filePath = cursor.getString(column_index_data);
+                    }
+                    else
+                        filePath = data.getData().getPath();
+//                    File photoFile = new File(filePath);
+                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
                     //getOrientationImage();
-                    uploadFileToServer(mGI);
+                    uploadFileToServer(mGI.Convert());
                 }
                 else{
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
-
                 break;
             default:
                 break;
