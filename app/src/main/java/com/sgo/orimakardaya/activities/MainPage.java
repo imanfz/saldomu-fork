@@ -127,17 +127,18 @@ public class MainPage extends BaseActivity{
         if (savedInstanceState != null)
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
-        if (!isLogin()) {
-            openFirstScreen(FIRST_SCREEN_INTRO);
-        } else {
 
-                getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+        if(!isLogin()){
+            openFirstScreen(FIRST_SCREEN_INTRO);
+        }
+        else{
+            getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         }
 
     }
@@ -651,10 +652,7 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
         mEditor.commit();
-        if(smsClass.isSimSameSP())
-            openFirstScreen(FIRST_SCREEN_LOGIN);
-        else
-            openFirstScreen(FIRST_SCREEN_INTRO);
+        openFirstScreen(FIRST_SCREEN_LOGIN);
     }
 	
 	public void sentLogout(){

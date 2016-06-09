@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -48,10 +50,6 @@ public class SMSclass {
     public interface SMS_VERIFY_LISTENER{
         void success();
         void failed();
-
-    }
-
-    public SMSclass(){
 
     }
 
@@ -136,14 +134,22 @@ public class SMSclass {
     }
 
 
+    public boolean isSimExists(){
+       return isSimExists(null);
+    }
 
-    public void isSimExists(SMS_SIM_STATE listener)
+
+
+    public boolean isSimExists(SMS_SIM_STATE listener)
     {
 
         int SIM_STATE = telephonyManager.getSimState();
 
-        if(SIM_STATE == TelephonyManager.SIM_STATE_READY)
-            listener.sim_state(true,"Ada isinya");
+        if(SIM_STATE == TelephonyManager.SIM_STATE_READY) {
+            if (listener != null)
+                listener.sim_state(true, "Ada isinya");
+            return true;
+        }
         else
         {
             String SimState = "Access Sim Failed!";
@@ -165,7 +171,9 @@ public class SMSclass {
                     SimState = "Unknown SIM State!";
                     break;
             }
-            listener.sim_state(false,SimState);
+            if(listener != null)
+                listener.sim_state(false,SimState);
+            return false;
         }
     }
 
@@ -191,6 +199,10 @@ public class SMSclass {
 
     public String getDeviceIMEI(){
         return telephonyManager.getDeviceId();
+    }
+
+    public String getSimNumber(){
+        return telephonyManager.getLine1Number();
     }
 
     public String getDeviceICCID(){
@@ -381,13 +393,9 @@ public class SMSclass {
 
             return true;
         }
-        catch (NoSuchMethodException e) {
+        catch (NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
         return false;

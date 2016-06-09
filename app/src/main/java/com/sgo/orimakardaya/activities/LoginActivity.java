@@ -58,26 +58,10 @@ public class LoginActivity extends BaseActivity {
             }
 
 
-            Fragment newFrag = new Login();
-
-            Bundle m = getIntent().getExtras();
-            if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
-                    newFrag = new Regist1();
-                } else if (BuildConfig.DEBUG && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
-                    if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
-                        newFrag = new Regist1();
-
-                    } else if (m.getInt(DefineValue.USER_IS_NEW, 0) == -2) {
-                        newFrag = new Login();
-                    }
-                    newFrag.setArguments(m);
-                }
-            }
-
+            Login login = new Login();
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.loginContent, newFrag,"login");
+            fragmentTransaction.add(R.id.loginContent, login,"login");
             fragmentTransaction.commit();
         }
     }
