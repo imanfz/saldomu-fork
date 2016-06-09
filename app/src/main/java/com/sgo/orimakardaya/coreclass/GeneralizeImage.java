@@ -3,6 +3,7 @@ package com.sgo.orimakardaya.coreclass;/*
  */
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -10,6 +11,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -53,8 +55,16 @@ public class GeneralizeImage {
             finaleBitmap = BitmapFactory.decodeFile(mFilePath);
         }
 
+        if(imageHeight > 3000 ){
+            imageHeight = imageHeight/4;
+            imageWidth  = imageWidth/4;
+        }
+        else {
+            imageHeight = imageHeight/2;
+            imageWidth  = imageWidth/2;
+        }
 
-        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth/2, imageHeight/2, true);
+        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, true);
 //        Bitmap oldBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(mFilePath),100, 100, true);
         Bitmap newBitmap = setOrientationBitmap(oldBitmap);
 
@@ -65,7 +75,7 @@ public class GeneralizeImage {
         FileOutputStream out;
         try {
             out = new FileOutputStream(mfile);
-            newBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
 
             out.flush();
             out.close();
@@ -75,6 +85,76 @@ public class GeneralizeImage {
 
 
         return mfile;
+    }
+
+    public static File ConvertCapturedImage(Context mContext, Uri mUri, int rotateXDegree){
+        int imageHeight = 0;
+        int imageWidth = 0;
+        Bitmap finaleBitmap;
+
+        finaleBitmap = readBitmap(mContext,mUri);
+        if (finaleBitmap != null) {
+            imageHeight = finaleBitmap.getHeight();
+            imageWidth = finaleBitmap.getWidth();
+        }
+
+        if(imageHeight > 3000 ){
+            imageHeight = imageHeight/4;
+            imageWidth  = imageWidth/4;
+        }
+        else {
+            imageHeight = imageHeight/2;
+            imageWidth  = imageWidth/2;
+        }
+
+        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, true);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotateXDegree);
+        Bitmap newBitmap = Bitmap.createBitmap(oldBitmap, 0, 0, oldBitmap.getWidth(), oldBitmap.getHeight(),
+                matrix, false);
+
+        String destFolder = mContext.getCacheDir().getAbsolutePath();
+        String mFileName = "temp.jpeg";
+        File mfile = new File(destFolder, mFileName);
+
+        FileOutputStream out;
+        try {
+            out = new FileOutputStream(mfile);
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.gc();
+
+        return mfile;
+    }
+
+    public static Bitmap readBitmap(Context context, Uri selectedImage) {
+        Bitmap bm = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inScaled = false;
+//      options.inSampleSize = 3;
+        AssetFileDescriptor fileDescriptor = null;
+        try {
+            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(selectedImage, "r");
+        } catch (FileNotFoundException e) {
+            return null;
+        } finally {
+            try {
+                bm = BitmapFactory.decodeFileDescriptor(
+                        fileDescriptor.getFileDescriptor(), null, options);
+                fileDescriptor.close();
+            } catch (IOException e) {
+                return null;
+            }
+        }
+        return bm;
     }
 
     private Bitmap setOrientationBitmap(Bitmap bm) {

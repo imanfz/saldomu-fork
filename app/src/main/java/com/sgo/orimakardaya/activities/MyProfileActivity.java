@@ -1,25 +1,34 @@
 package com.sgo.orimakardaya.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -27,11 +36,22 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.CountryModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CameraClass;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.GeneralizeImage;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.MyPicasso;
+import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,7 +74,10 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/18/2015.
  */
-public class MyProfileActivity extends BaseActivity {
+public class MyProfileActivity extends CameraClass {
+
+    private static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 0x123;
+    private static final int PERMISSIONS_REQ_CAMERA = 0x124;
 
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
@@ -615,7 +638,13 @@ public class MyProfileActivity extends BaseActivity {
                             Timber.wtf("masuk gallery");
                             chooseGallery();
                         } else if (which == 1) {
-                            chooseCamera();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                                    MyProfileActivity.this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                MyProfileActivity.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQ_WRITEEXTERNALSTORAGE);
+                            }
+                            else {
+                                chooseCamera();
+                            }
                         }
 
                     }
@@ -625,6 +654,20 @@ public class MyProfileActivity extends BaseActivity {
         a.show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQ_WRITEEXTERNALSTORAGE || requestCode == PERMISSIONS_REQ_CAMERA  ) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+            }
+            else {
+                chooseCamera();
+            }
+
+        }
+    }
+
     private void chooseGallery() {
         Timber.wtf("masuk gallery");
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -632,31 +675,22 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void chooseCamera() {
-        String fileName = "temp.jpg";
-
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-
-        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-        startActivityForResult(takePictureIntent, RESULT_CAMERA);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mCapturedImageURI != null) {
-            outState.putString("cameraImageUri", String.valueOf(mCapturedImageURI));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                MyProfileActivity.this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            MyProfileActivity.this.requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQ_CAMERA);
         }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState.containsKey("cameraImageUri")) {
-            mCapturedImageURI = Uri.parse(savedInstanceState.getString("cameraImageUri"));
+        else {
+            startCameraIntent();
+//            String fileName = "temp.jpg";
+//
+//            ContentValues values = new ContentValues();
+//            values.put(MediaStore.Images.Media.TITLE, fileName);
+//
+//            mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//
+//            Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
+//            startActivityForResult(takePictureIntent, RESULT_CAMERA);
         }
     }
 
@@ -666,20 +700,6 @@ public class MyProfileActivity extends BaseActivity {
         switch(requestCode) {
             case RESULT_GALERY:
                 if(resultCode == RESULT_OK){
-//                    Uri selectedImage = data.getData();
-//                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//                    String filePath;
-//                    Cursor cursor = getContentResolver().query(
-//                            selectedImage, filePathColumn, null, null, null);
-//                    if (cursor != null) {
-//                        cursor.moveToFirst();
-//                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//                        filePath = cursor.getString(columnIndex);
-//                    }
-//                    else
-//                        filePath = selectedImage.getPath();
-
-//                    File photoFile = new File(filePath);
 
                     Bitmap photo = null;
                     Uri _urinya = data.getData();
@@ -692,35 +712,22 @@ public class MyProfileActivity extends BaseActivity {
                             e.printStackTrace();
                         }
                     }
-
                     GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
-
-                    //setImageProfPic(photoFile);
-                    //getOrientationImage();
                     uploadFileToServer(mGI.Convert());
 
                 }
                 break;
-            case RESULT_CAMERA:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-                    String filePath;
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        filePath = cursor.getString(column_index_data);
-                    }
-                    else
-                        filePath = data.getData().getPath();
-//                    File photoFile = new File(filePath);
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
+            case CameraClass.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
+                Uri fileUri = onTakePhotoActivityResult(requestCode,resultCode,data);
+                if(fileUri != null){
+                    File mGI =GeneralizeImage.ConvertCapturedImage(this,fileUri,rotateXDegrees);
                     //getOrientationImage();
-                    uploadFileToServer(mGI.Convert());
+                    uploadFileToServer(mGI);
                 }
                 else{
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
+
                 break;
             default:
                 break;

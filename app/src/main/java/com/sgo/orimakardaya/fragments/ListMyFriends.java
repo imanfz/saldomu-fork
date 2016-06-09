@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
@@ -19,7 +18,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -612,9 +610,9 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                     bucket = arrayFriend.getJSONObject(i).getString(friendModel.IS_FRIEND);
                     if(!bucket.equals(""))mFm.setIs_friend(Integer.parseInt(bucket));
 
-                    mFm.setCreated_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
+                    mFm.setCreated_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
                     if(isContactNew.equals(DefineValue.NO) && !arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE).isEmpty()){
-                        mFm.setUpdate_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE)));
+                        mFm.setUpdate_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE)));
                     }
                     mFm.save();
                     Timber.d("idx array friend:"+String.valueOf(i));
@@ -708,9 +706,9 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                     bucket = arrayFriend.getJSONObject(i).getString(friendModel.IS_FRIEND);
                     if(!bucket.equals(""))mFm.setIs_friend(Integer.parseInt(bucket));
 
-                    mFm.setCreated_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
+                    mFm.setCreated_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
                     if(isContactNew.equals(CoreApp.NO) && !arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE).isEmpty()){
-                        mFm.setUpdate_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE)));
+                        mFm.setUpdate_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.UPDATED_DATE)));
                     }
                     mFm.save();
                     Log.d("idx array friend", String.valueOf(i));

@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
@@ -172,7 +171,7 @@ public class MyHistory extends BaseFragmentMainPage {
                     _ownerID,accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
             params.put(WebParams.PAGE, mPage);
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

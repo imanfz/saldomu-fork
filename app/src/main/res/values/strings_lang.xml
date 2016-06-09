@@ -655,5 +655,8 @@
     <string name="toast_msg_success_smsclass" >Pesan Verifikasi Terkirim</string>
     <string name="toast_msg_fail_smsclass" >Pesan Verifikasi Gagal Terkirim</string>
 
+    <string name="toast_error_could_not_take_photo" >Gagal mengambil foto</string>
+    <string name="toast_error_sd_card_not_mounted" >SD Card tidak terdeteksi</string>
+
 
 </resources>

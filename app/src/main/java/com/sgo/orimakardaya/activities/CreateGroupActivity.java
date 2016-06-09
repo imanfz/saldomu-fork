@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -156,7 +155,7 @@ public class CreateGroupActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PAGE, page);
             params.put(WebParams.COUNT, DefineValue.COUNT);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
             params.put(WebParams.GROUP_NAME, groupName);
             params.put(WebParams.GROUP_DESC, desc);
             params.put(WebParams.MEMBERS, members);

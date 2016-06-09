@@ -157,6 +157,7 @@ public class Login extends Fragment implements View.OnClickListener {
 
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
+                        String msg = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi params response login:"+response.toString());
                             if(checkCommunity(response)){
@@ -193,6 +194,8 @@ public class Login extends Fragment implements View.OnClickListener {
                                 showDialog(getString(R.string.login_failed_dormant));
                             }
                             else if(code.equals(DefineValue.ERROR_0004)){
+                                if(msg != null && !msg.isEmpty())
+                                    showDialog(msg);
                                 showDialog(getString(R.string.login_failed_wrong_pass));
                             }
                             else if(code.equals(DefineValue.ERROR_0002)){

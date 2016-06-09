@@ -71,7 +71,7 @@ public class ListBuyRF extends Fragment{
         if(date != null) {
             Date dob = null;
             Date now = null;
-            dob = DateTimeFormat.convertCustomDate(date);
+            dob = DateTimeFormat.convertStringtoCustomDate(date);
             now = DateTimeFormat.getCurrDate();
 
             if (dob != null) {
@@ -205,7 +205,7 @@ public class ListBuyRF extends Fragment{
 
 
     private void initializeData(final JSONArray arrayBiller, final JSONArray arrayCollection){
-        final String curr_date = DateTimeFormat.getCurrentDate();
+        final String curr_date = DateTimeFormat.getCurrentDateMinus();
 
 
         Biller_Type_Data_Model mBillerObj;

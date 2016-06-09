@@ -1,8 +1,5 @@
 package com.sgo.orimakardaya.fragments;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,8 +20,6 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 
 import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
@@ -39,7 +34,6 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /*
@@ -204,7 +198,7 @@ public class BillerActivityRF extends Fragment{
             if (date != null) {
                 Date dob;
                 Date now;
-                dob = DateTimeFormat.convertCustomDate(date);
+                dob = DateTimeFormat.convertStringtoCustomDate(date);
                 now = DateTimeFormat.getCurrDate();
 
                 if (dob != null) {
@@ -323,7 +317,7 @@ public class BillerActivityRF extends Fragment{
             mBillerTypeData.getBiller_data_models().deleteAllFromRealm();
 
             JSONArray jsonBankBiller;
-            String curr_date = DateTimeFormat.getCurrentDate();
+            String curr_date = DateTimeFormat.getCurrentDateMinus();
             Biller_Data_Model mObj = null;
             Denom_Data_Model mDenomData;
             bank_biller_model refObj;
@@ -433,7 +427,7 @@ public class BillerActivityRF extends Fragment{
             if(date != null) {
                 Date dob;
                 Date now;
-                dob = DateTimeFormat.convertCustomDate(date);
+                dob = DateTimeFormat.convertStringtoCustomDate(date);
                 now = DateTimeFormat.getCurrDate();
 
                 if (dob != null) {
@@ -531,7 +525,7 @@ public class BillerActivityRF extends Fragment{
 
                     mBillerData.getDenom_data_models().deleteAllFromRealm();
 
-                    String curr_date = DateTimeFormat.getCurrentDate();
+                    String curr_date = DateTimeFormat.getCurrentDateMinus();
                     Denom_Data_Model mObjRealm;
 
                     for (int i = 0; i < denom_data.length(); i++) {

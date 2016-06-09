@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.activities;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -34,8 +32,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -164,7 +160,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
 
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-        Date time1 = DateTimeFormat.convertCustomDateTime(datetime);
+        Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
         String period = p.formatDuration(time1);
 
 //        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
@@ -386,7 +382,7 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.REPLY, reply);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -739,7 +735,7 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

@@ -184,7 +184,7 @@ public class Introduction extends AppIntro {
             smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
                 @Override
                 public void sim_state(Boolean isExist, String msg) {
-                    if (!isExist && !Introduction.this.isFinishing()) {
+                    if (!isExist) {
                         DefinedDialog.showErrorDialog(Introduction.this, msg, new DefinedDialog.DialogButtonListener() {
                             @Override
                             public void onClickButton(View v, boolean isLongClick) {

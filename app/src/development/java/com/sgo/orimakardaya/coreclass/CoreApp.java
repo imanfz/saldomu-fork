@@ -151,6 +151,7 @@ public class CoreApp extends Application {
 
     }
 
+
     private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
         try {
             File file = new File(this.getFilesDir(), outFileName);
