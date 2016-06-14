@@ -332,4 +332,8 @@ public class WebParams {
     public static String SENDER_ID = "sender_id";
 
     public static String IS_NEW_USER = "is_new_user";
+    public static String ID_RESULT = "id_result";
+    public static String HOLD_ID = "hold_id";
+    public static String EXP_DURATION_HOUR = "exp_duration_hour";
+	public static String IS_MEMBER_TEMP = "is_member_temp";
 }

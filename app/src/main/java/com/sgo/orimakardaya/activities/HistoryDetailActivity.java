@@ -163,20 +163,6 @@ public class HistoryDetailActivity extends BaseActivity {
         Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
         String period = p.formatDuration(time1);
 
-//        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
-//        Date d;
-//        long long_date = 0;
-//        try {
-//            d = f.parse(datetime);
-//            long_date = d.getTime();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//        String period = PeriodTime.getTimeAgo(long_date, this);
-
         fromId.setText(from_name);
         messageTransaction.setText(message);
         dateTime.setText(period);

@@ -347,12 +347,10 @@ public class MyHistory extends BaseFragmentMainPage {
         ActiveAndroid.beginTransaction();
         listHistoryModel mTm;
         new listHistoryModel();
-        Timber.d("arrayPost length:"+String.valueOf(mListTimeline.size()));
         if(mListTimeline.size()>0){
             for (int i = 0; i < mListTimeline.size(); i++) {
                 mTm = mListTimeline.get(i);
                 mTm.save();
-                Timber.d("idx array posts:"+String.valueOf(i));
             }
         }
 

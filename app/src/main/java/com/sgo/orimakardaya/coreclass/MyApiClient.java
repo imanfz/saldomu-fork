@@ -167,6 +167,7 @@ public class MyApiClient {
     public static String LINK_BANKCASHOUT;
     public static String LINK_USER_PROFILE;
     public static String LINK_INQUIRY_SMS;
+    public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
     public static void initializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -272,6 +273,7 @@ public class MyApiClient {
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
+        LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
     }
 
 
@@ -873,6 +875,10 @@ public class MyApiClient {
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent inquiry sms:"+LINK_INQUIRY_SMS);
         post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
+    }
+    public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent claim non member transfer:"+LINK_CLAIM_TRANSFER_NON_MEMBER);
+        post(mContext,LINK_CLAIM_TRANSFER_NON_MEMBER, params, responseHandler);
     }
     //get Data------------------------------------------------------------------------------------------
 

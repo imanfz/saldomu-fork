@@ -69,6 +69,13 @@ public class RecipientAdapter extends BaseAdapter {
                 holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_red));
             }
         }
+        else if(mObject.get(position).getIs_member_temp().equals(DefineValue.STRING_YES)){
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
+            } else {
+                holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
+            }
+        }
         else {
             if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_green) );

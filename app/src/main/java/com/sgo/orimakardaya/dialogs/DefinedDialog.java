@@ -94,4 +94,18 @@ public class DefinedDialog {
 //        dialog.show();
         return dialog;
     }
+
+    public static Dialog MessageP2P(Context context){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_p2p_color_help);
+        // Include dialog.xml file
+        dialog.findViewById(R.id.btn_dialog_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        return dialog;
+    }
 }

@@ -366,8 +366,11 @@
     <string name="notif_text_paid_name">Kirim Saldo dari</string>
     <string name="notif_text_comment_name">menulis komentar di post Anda</string>
     <string name="notif_text_like_name">suka post Anda</string>
+    <string name="notif_text_non_member">Klaim kirim uang dari</string>
+    <string name="notif_text_claim_non_member">sudah klaim transfer dana Anda</string>
     <string name="notifications_empty">Tidak ada Notifikasi</string>
     <string name="notifications_p2p_status_paid">Anda sudah melakukan transaksi ini.</string>
+    <string name="notif_detail_claim_non_member">sudah bergabung di PIN</string>
 
     <string name="social_promo">Promo Sosial</string>
     <string name="title_add_friends">Tambah Teman</string>
@@ -561,6 +564,7 @@
     <string name="alert_connection">Silahkan coba beberapa saat lagi.</string>
     <string name="text_accept">Terima</string>
     <string name="text_reject">Tolak</string>
+    <string name="text_claim">Klaim</string>
     <string name="alert_text_reject">Anda yakin ingin tolak ?</string>
     <string name="hint_text_remark">please type rejected message</string>
     <string name="max_remark">* maks 50 karakter</string>
@@ -645,6 +649,7 @@
     <string name="intro_text_6">Dapat digunakan untuk Pembayaran di Merchant yang Terdaftar</string>
 
     <string name="check_contact_first" >Cek Kontak Dahulu</string>
+    <string name="toast_msg_wait_claim">Saldo Anda (Rp. %1$s) akan berkurang jika temanmu sudah bergabung dan melakukan \'Claim\' </string>
 
     <string name="dialog_sms_title" >Verifikasi Nomor Handphone</string>
     <string name="dialog_sms_msg" >akan mengirimkan satu sms untuk proses verifikasi. Biaya SMS akan dikenakan sesuai dengan tarif operator.</string>
@@ -657,6 +662,17 @@
 
     <string name="toast_error_could_not_take_photo" >Gagal mengambil foto</string>
     <string name="toast_error_sd_card_not_mounted" >SD Card tidak terdeteksi</string>
+
+    <string name="dialog_p2p_color_help_title">Warna Indikator Penerima</string>
+
+    <string name="dialog_p2p_color_success_msg">Penerima siap dan bisa menerima transfer scash.</string>
+    <string name="dialog_p2p_color_failed_msg">Penerima gagal dan tidak bisa menerima transfer scash dikarenakan suatu hal (limit saldo penerima telah maksimum, penerima dorman,suspend, atau tidak aktif).</string>
+    <string name="dialog_p2p_color_nonmember_msg">Penerima belum terdaftar sebagai member. Jumlah scash akan diterima ketika penerima telah mendaftar sebagai member.</string>
+
+    <string name="dialog_p2p_nonmember_title">Ajak temanmu gabung PIN ?</string>
+    <string name="dialog_p2p_nonmember_msg1">Nomor</string>
+    <string name="dialog_p2p_nonmember_msg2">belum punya PIN. Tekan \'Ya\' bila ingin mengajak untuk bergabung PIN. Ajakan akan kadaluarsa dalam</string>
+    <string name="dialog_p2p_nonmember_msg3">jam. Saldo akan terkirim saat temanmu bergabung.</string>
 
     <string name="hint_comment_timeline">Komentar...</string>
     <string name="updating">Memperbaharui...</string>

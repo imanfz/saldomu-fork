@@ -48,9 +48,9 @@ public class FragRegisterSMSBanking extends Fragment {
     SecurePreferences sp;
     ArrayList<String> bankName;
     ProgressDialog progdialog;
-    EditText etAccNo;
+    EditText etPhone, etAccNo;
     Spinner spinBankName;
-    TextView tvDOB,tvUserID;
+    TextView tvDOB;
     Button btnRegister;
 
     String dedate = null, date_dob = null;
@@ -68,8 +68,7 @@ public class FragRegisterSMSBanking extends Fragment {
         custID = sp.getString(DefineValue.CUST_ID,"");
         bank_name = getArguments().getString(DefineValue.BANK_NAME,"");
 
-
-        tvUserID = (TextView) v.findViewById(R.id.rsb_value_phone);
+        etPhone = (EditText) v.findViewById(R.id.rsb_value_phone);
         etAccNo = (EditText) v.findViewById(R.id.rsb_value_acc_no);
         tvDOB = (TextView) v.findViewById(R.id.rsb_value_dob);
         btnRegister = (Button) v.findViewById(R.id.btn_register);
@@ -87,8 +86,6 @@ public class FragRegisterSMSBanking extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinBankName.setAdapter(adapter);
         spinBankName.setOnItemSelectedListener(spinnerNamaBankListener);
-
-        tvUserID.setText(userID);
 
         getBankList();
     }
@@ -293,7 +290,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE_JATIM,
                     userID,accessKey);
-            params.put(WebParams.NO_HP, userID);
+            params.put(WebParams.NO_HP, etPhone.getText().toString());
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -369,7 +366,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE,
                     userID,accessKey);
-            params.put(WebParams.NO_HP, userID);
+            params.put(WebParams.NO_HP, NoHPFormat.editNoHP(etPhone.getText().toString()) );
             params.put(WebParams.TGL_LAHIR, tvDOB.getText().toString());
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.ACCT_NO, etAccNo.getText().toString());
@@ -541,7 +538,12 @@ public class FragRegisterSMSBanking extends Fragment {
     }
 
     public boolean inputValidation() {
-      if(layout_dll.getVisibility() == View.VISIBLE){
+        if (etPhone.getText().toString().length() == 0 || etPhone.getText().toString().equals("")) {
+            etPhone.requestFocus();
+            etPhone.setError(getString(R.string.regist1_validation_nohp));
+            return false;
+        }
+        else if(layout_dll.getVisibility() == View.VISIBLE){
             if (tvDOB.getText().toString().equals(getResources().getString(R.string.rsb_hint_dob))) {
                 Toast.makeText(getActivity(), "Date of Birth required!", Toast.LENGTH_LONG).show();
                 return false;

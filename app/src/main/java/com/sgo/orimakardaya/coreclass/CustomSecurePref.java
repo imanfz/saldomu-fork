@@ -98,7 +98,6 @@ public class CustomSecurePref {
         this.mSecurePrefs = mSecurePrefs;
     }
 
-
     public void ClearAllCustomData(){
         SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();
 

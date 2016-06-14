@@ -53,6 +53,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     public interface OnItemClickListener {
         void onItemClickView(View view, int position, Boolean isLongClick);
         void onItemBtnAccept(View view, int position, Boolean isLongClick);
+        void onItemBtnClaim(View view, int position, Boolean isLongClick);
     }
 
     public NotificationListAdapter(FragNotification _fragment, Context context, ArrayList<NotificationModelClass> _data, OnItemClickListener _onItemClick) {
@@ -98,6 +99,11 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
             public void onClickBtnAccept(View v, boolean isLongClick) {
                 mOnItemClick.onItemBtnAccept(v,position,isLongClick);
             }
+
+            @Override
+             public void onClickBtnClaim(View v, boolean isLongClick) {
+                mOnItemClick.onItemBtnClaim(v,position,isLongClick);
+            }
         });
 
         final NotificationModelClass mNotif = mData.get(position);
@@ -107,6 +113,12 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         }
         else {
             simpleHolder.layout_button_ask.setVisibility(View.GONE);
+        }
+        if(notif_type == NotificationActivity.TYPE_NON_MEMBER) {
+            simpleHolder.layout_button_claim.setVisibility(View.VISIBLE);
+        }
+        else {
+            simpleHolder.layout_button_claim.setVisibility(View.GONE);
         }
         simpleHolder.name.setText(mNotif.getTitle());
         simpleHolder.detail.setText(mNotif.getDetail());

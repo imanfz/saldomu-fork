@@ -140,7 +140,6 @@ public class BillerActivityRF extends Fragment{
         setRetainInstance(true);
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

@@ -321,4 +321,7 @@
     <color name="primary_button_background">#ff83B337</color>
     <color name="primary_button_background_pressed">#ffa8ca73</color>
     <color name="primary_button_background_disabled">#8883B337</color>
+    <color name="p2p_color_indicator_success">@color/green_400</color>
+    <color name="p2p_color_indicator_failed">@color/red_400</color>
+    <color name="p2p_color_indicator_nonmember">@color/orange_800</color>
 </resources>

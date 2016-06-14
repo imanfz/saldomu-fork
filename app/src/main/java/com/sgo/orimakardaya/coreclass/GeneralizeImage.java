@@ -22,7 +22,6 @@ public class GeneralizeImage {
     Uri mUri;
     Bitmap mBitmap;
 
-
     public GeneralizeImage(Context _context, String _file_path){
         this.mFilePath = _file_path;
         this.mContext = _context;
@@ -35,7 +34,6 @@ public class GeneralizeImage {
         this.mUri = _uri;
         this.mContext = _context;
     }
-
 
     public File Convert(){
         BitmapFactory.Options options = new BitmapFactory.Options();
