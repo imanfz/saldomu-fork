@@ -123,7 +123,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
                 if(InetHandler.isNetworkAvailable(getActivity())) {
                     getTrxStatus();
                 }
-                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
             }
         });
 

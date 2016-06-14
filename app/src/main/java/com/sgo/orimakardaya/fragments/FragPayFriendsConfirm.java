@@ -136,7 +136,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 }
             });
         }
-        else if(authType.equalsIgnoreCase("OTP")) {
+        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
             layoutOTP.setVisibility(View.VISIBLE);
             btnResend = (Button) v.findViewById(R.id.btn_resend_token);
 
@@ -268,13 +268,13 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase("OTP")) {
+                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (max_token_resend != 0)
                         sentResendToken(txID);
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };

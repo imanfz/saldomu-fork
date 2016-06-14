@@ -158,7 +158,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                 }
                 else btnSubmit.setEnabled(true);
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -169,7 +169,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                 btnResend.setEnabled(false);
                 if(max_token_resend!=0)requestResendToken();
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

@@ -106,7 +106,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     }
                 }
                 else
-                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
                 break;
             case R.id.btn_forgetPass :
                 newFrag = new ForgotPassword();

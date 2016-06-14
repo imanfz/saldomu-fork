@@ -810,7 +810,7 @@ public class MainPage extends BaseActivity{
                         switchLogout();
                     }
                 });
-        alertbox.setNegativeButton("Cancel", new
+        alertbox.setNegativeButton(getString(R.string.cancel), new
                 DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
                     }

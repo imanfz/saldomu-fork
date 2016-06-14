@@ -192,9 +192,9 @@ public class HistoryDetailActivity extends BaseActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
                 AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
-                builder.setTitle("Delete Comment");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.delete_comment));
+                builder.setMessage(getString(R.string.delete_comment_ask));
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String comment_id = Integer.toString(listComment.get(index).getComment_id());
@@ -206,7 +206,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         removeComment(comment_id, post_id, from, to);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

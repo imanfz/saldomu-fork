@@ -169,7 +169,7 @@ public class FragCashOut extends Fragment {
                     reqCashout(accNo, nominal, accName);
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -344,7 +344,7 @@ public class FragCashOut extends Fragment {
                 }
             });
         }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

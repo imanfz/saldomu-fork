@@ -114,7 +114,7 @@ public class ForgotPassword extends Fragment {
                     userIDfinale = NoHPFormat.editNoHP(et_user_id.getText().toString());
                     CallPINinput(0);
                 }
-            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

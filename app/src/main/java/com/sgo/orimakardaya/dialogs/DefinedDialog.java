@@ -39,6 +39,10 @@ public class DefinedDialog {
         return dialog;
     }
 
+    public static void showErrorDialog(Context context, String message) {
+        showErrorDialog(context, message, null);
+    }
+
     public static void showErrorDialog(Context context, String message, final DialogButtonListener mButtonListener) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(context);

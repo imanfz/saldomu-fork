@@ -217,7 +217,7 @@ public class FragLevelFormRegister extends Fragment {
                     sentExecCust();
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

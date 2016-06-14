@@ -329,7 +329,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -351,7 +351,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 if(max_token_resend!=0)requestResendToken();
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message), null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

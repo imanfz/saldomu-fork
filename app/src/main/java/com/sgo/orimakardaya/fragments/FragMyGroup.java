@@ -86,7 +86,7 @@ public class FragMyGroup extends ListFragment {
         StoreHouseHeader header = new StoreHouseHeader(getActivity().getApplicationContext());
         header.setPadding(0, 20, 0, 20);
         header.setTextColor(Color.BLACK);
-        header.initWithString("Updating...");
+        header.initWithString(getString(R.string.updating));
 
         ptrFrameLayout.setDurationToCloseHeader(1500);
         ptrFrameLayout.setHeaderView(header);

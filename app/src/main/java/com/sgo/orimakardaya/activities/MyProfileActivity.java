@@ -471,7 +471,7 @@ public class MyProfileActivity extends BaseActivity {
                                 sendDataUpdate();
                         }
                 }
-                else DefinedDialog.showErrorDialog(MyProfileActivity.this, getString(R.string.inethandler_dialog_message), null);
+                else DefinedDialog.showErrorDialog(MyProfileActivity.this, getString(R.string.inethandler_dialog_message));
 
         }
     };

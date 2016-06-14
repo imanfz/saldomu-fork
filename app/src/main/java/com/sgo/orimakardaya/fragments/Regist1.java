@@ -150,7 +150,7 @@ public class Regist1 extends Fragment{
                     if(inputValidation()){
                         sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
+                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
             }
         }
     };
