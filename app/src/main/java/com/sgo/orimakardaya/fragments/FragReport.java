@@ -108,7 +108,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
         OrifromDate = DateTimeFormat.getCurrentDateMinus(6);
-        OritoDate = DateTimeFormat.getCurrentDateMinus();
+        OritoDate = DateTimeFormat.getCurrentDate();
         page = 1;
 
         filter_btn.setOnClickListener(filterBtnListener);

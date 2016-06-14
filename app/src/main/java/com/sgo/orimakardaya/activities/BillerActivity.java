@@ -240,8 +240,6 @@ public class BillerActivity extends BaseActivity {
         ToggleKeyboard.hide_keyboard(this);
     }
 
-
-
     public void setResultActivity(int result){
         setResult(MainPage.RESULT_BALANCE);
     }

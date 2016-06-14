@@ -58,7 +58,7 @@ public class DateTimeFormat {
       }
     }
 
-    public static String getCurrentDateMinus(){
+    public static String getCurrentDate(){
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
       return df.format(Calendar.getInstance().getTime());
     }
