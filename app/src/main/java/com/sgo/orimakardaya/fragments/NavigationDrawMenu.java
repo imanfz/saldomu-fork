@@ -84,6 +84,7 @@ public class NavigationDrawMenu extends ListFragment{
     String contactCenter,listContactPhone = "", listAddress="";
     Activity act;
     ProgressDialog progdialog;
+    public String levelValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -239,11 +240,12 @@ public class NavigationDrawMenu extends ListFragment{
     public void refreshDataNavDrawer(){
         if(sp.contains(DefineValue.LEVEL_VALUE)) {
 //            int i = sp.getInt(DefineValue.LEVEL_VALUE, 0);
-            String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
-            if(i == null) {
-                i = "0";
+            levelValue = sp.getString(DefineValue.LEVEL_VALUE, "0");
+            if(levelValue == null) {
+                levelValue = "0";
             }
-            isLevel1 = Integer.valueOf(i) == 1;
+            Timber.d("refreshDataNavDrawer");
+            isLevel1 = Integer.valueOf(levelValue) == 1;
             isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
             isAllowedLevel = sp.getBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
         }

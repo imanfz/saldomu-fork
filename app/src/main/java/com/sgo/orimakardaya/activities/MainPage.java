@@ -797,6 +797,7 @@ public class MainPage extends BaseActivity{
         flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if(flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
+        Timber.d("isLoginMainPage");
         return flagLogin.equals(DefineValue.STRING_YES);
     }
 

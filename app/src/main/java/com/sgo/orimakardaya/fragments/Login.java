@@ -196,7 +196,8 @@ public class Login extends Fragment implements View.OnClickListener {
                             else if(code.equals(DefineValue.ERROR_0004)){
                                 if(msg != null && !msg.isEmpty())
                                     showDialog(msg);
-                                showDialog(getString(R.string.login_failed_wrong_pass));
+                                else
+                                    showDialog(getString(R.string.login_failed_wrong_pass));
                             }
                             else if(code.equals(DefineValue.ERROR_0002)){
                                 showDialog(getString(R.string.login_failed_wrong_id));
