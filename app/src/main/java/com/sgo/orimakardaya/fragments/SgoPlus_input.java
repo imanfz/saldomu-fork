@@ -413,7 +413,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                         }
                         else {
                             progdialog.dismiss();
-                            if(code.equals("0059")){
+                            if(code.equals("0059")||code.equals("0164")){
                                 showDialogSMS(nama_bank);
                             }
                             else {

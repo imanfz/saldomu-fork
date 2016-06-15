@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -118,6 +120,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             if(bankCode.equals("114")){
                 max_length_token = 5;
                 tokenValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(max_length_token)});
+                tokenValue.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                tokenValue.setKeyListener(DigitsKeyListener.getInstance("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"));
             }
         }
         else {
