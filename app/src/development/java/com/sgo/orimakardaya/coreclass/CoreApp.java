@@ -82,7 +82,12 @@ public class CoreApp extends Application {
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
-        copyBundledRealmFile(CoreApp.this.getResources().openRawResource(R.raw.akardayadev), getString(R.string.realmname));
+        int checkExistence = CoreApp.this.getResources().getIdentifier("akardayadev", "raw", CoreApp.this.getPackageName());
+
+        if ( checkExistence != 0 ) {
+            copyBundledRealmFile(CoreApp.this.getResources().openRawResource(checkExistence), getString(R.string.realmname));
+        }
+
         RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
                 .name(getString(R.string.realmname))
                 .schemaVersion(getResources().getInteger(R.integer.realscheme))
@@ -130,24 +135,24 @@ public class CoreApp extends Application {
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
 
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
-                    if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
-                        Intent i = new Intent(CoreApp.this.getApplicationContext(),Introduction.class);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        CoreApp.this.startActivity(i);
-                    }
-
-                }
-            }
-        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
+//        registerReceiver(new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                String action = intent.getAction();
+//                if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
+//                    if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
+//                        Intent i = new Intent(CoreApp.this.getApplicationContext(),Introduction.class);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        CoreApp.this.startActivity(i);
+//                    }
+//
+//                }
+//            }
+//        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
 
     }
 

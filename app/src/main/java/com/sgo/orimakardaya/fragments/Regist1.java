@@ -1,14 +1,13 @@
 package com.sgo.orimakardaya.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +95,7 @@ public class Regist1 extends Fragment{
 
         reqPermissionClass = new ReqPermissionClass(getActivity());
 
-        if(reqPermissionClass.checkPermissionREADPHONESTATE()){
+        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
             SMSclass smSclass = new SMSclass(getActivity());
             if(smSclass.isSimExists()){
                 String Nomor1 = smSclass.getSimNumber();
@@ -132,7 +131,7 @@ public class Regist1 extends Fragment{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnRequestREADPHONESTATE(requestCode,grantResults)){
+        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
             SMSclass smSclass = new SMSclass(getActivity());
             if(smSclass.isSimExists()){
                 String Nomor1 = smSclass.getSimNumber();

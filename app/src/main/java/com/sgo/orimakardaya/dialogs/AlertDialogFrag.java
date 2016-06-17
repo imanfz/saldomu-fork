@@ -12,13 +12,14 @@ import android.view.Window;
 
 public class AlertDialogFrag extends DialogFragment {
 
-  public static final String TAG = "Alert Dialog";
 
-  private Boolean onlyPositive = true;
-  private DialogInterface.OnClickListener okListener;
-  private DialogInterface.OnClickListener cancelListener;
+    public static final String TAG = "Alert Dialog";
 
-  public AlertDialogFrag() {
+    private Boolean onlyPositive = true;
+    private DialogInterface.OnClickListener okListener;
+    private DialogInterface.OnClickListener cancelListener;
+
+    public AlertDialogFrag() {
       // Empty constructor required for DialogFragment
     }
 

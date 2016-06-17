@@ -614,7 +614,8 @@
     <string name="cashoutagen_del_withdraw_text">Anda telah membatalkan tarik dana.</string>
     <string name="cashoutagen_del_withdraw_dialog_text">Anda yakin membatalkan transaksi tarik dana ini ?</string>
     <string name="refresh">Perbaharui</string>
-    <string name="no_transaction">Tidak ada transaksi</string>
+    <string name="no_transaction">Tidak ada Transaksi</string>
+    <string name="no_data">Tidak ada Data</string>
     <string name="cancel_transaction">Batal Transaksi</string>
     <string name="check_transaksi">Cek Transaksi</string>
     <string name="dialog_notinput_cashoutcode">Kode Cashout Belum Di Input</string>
@@ -684,4 +685,10 @@
 
     <string name="delete_comment">Hapus Komentar</string>
     <string name="delete_comment_ask">Anda yakin ingin menghapus komentar ?</string>
+
+    <string name="sim_failed">Gagal mengakses SIM !</string>
+    <string name="sim_not_found">SIM tidak Terdeteksi !</string>
+    <string name="sim_network_locked">Jaringan Terkunci!</string>
+    <string name="sim_pin_required">Dibutuhkan PIN untuk mengakses SIM!</string>
+    <string name="sim_puk_required">Dibutuhkan PUK untuk mengakses SIM!</string>
 </resources>

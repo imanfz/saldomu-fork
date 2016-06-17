@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.Introduction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -52,6 +53,22 @@ public class SMSclass {
         void failed();
 
     }
+
+    public BroadcastReceiver simStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
+                if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
+                   if(getmContext() instanceof Activity)
+                       ((Activity)getmContext()).finish();
+                }
+
+            }
+        }
+    };
+
+    public static IntentFilter simStateIntentFilter = new IntentFilter("android.intent.action.SIM_STATE_CHANGED");
 
     public SMSclass(Context _context){
         this.setmContext(_context);
@@ -152,23 +169,23 @@ public class SMSclass {
         }
         else
         {
-            String SimState = "Access Sim Failed!";
+            String SimState = getmContext().getString(R.string.sim_failed);
             switch(SIM_STATE)
             {
                 case TelephonyManager.SIM_STATE_ABSENT:
-                    SimState = "No Sim Found!";
+                    SimState = getmContext().getString(R.string.sim_not_found);
                     break;
                 case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
-                    SimState = "Network Locked!";
+                    SimState = getmContext().getString(R.string.sim_network_locked);
                     break;
                 case TelephonyManager.SIM_STATE_PIN_REQUIRED:
-                    SimState = "PIN Required to access SIM!";
+                    SimState = getmContext().getString(R.string.sim_pin_required);
                     break;
                 case TelephonyManager.SIM_STATE_PUK_REQUIRED:
-                    SimState = "PUK Required to access SIM!"; // Personal Unblocking Code
+                    SimState = getmContext().getString(R.string.sim_puk_required);
                     break;
                 case TelephonyManager.SIM_STATE_UNKNOWN:
-                    SimState = "Unknown SIM State!";
+                    SimState = getmContext().getString(R.string.sim_failed);
                     break;
             }
             if(listener != null)
@@ -393,9 +410,11 @@ public class SMSclass {
 
             return true;
         }
-        catch (NoSuchMethodException | InvocationTargetException e) {
+        catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
         return false;
