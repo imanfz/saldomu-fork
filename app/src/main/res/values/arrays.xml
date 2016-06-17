@@ -117,6 +117,11 @@
     </string-array>
 
     <string-array name="settings_list_pin">
+        <item>Ganti Password</item>
+        <item>Ganti PIN</item>
+        <item>Tentang App</item>
+    </string-array>
+    <string-array name="settings_list_pin_2">
         <item>Registrasi SMS Banking</item>
         <item>Ganti Password</item>
         <item>Ganti PIN</item>

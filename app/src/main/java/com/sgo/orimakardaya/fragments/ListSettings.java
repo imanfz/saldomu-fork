@@ -30,6 +30,7 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
 
     SecurePreferences sp;
     private InformationDialog dialogI;
+    Boolean isLevel1;
 //    String authType;
 
     @Override
@@ -65,10 +66,17 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 //        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
 
-
+        String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
+        if(i == null)
+            i = "0";
+        isLevel1 = Integer.valueOf(i) == 1;
         dialogI = InformationDialog.newInstance(this,11);
-        String[] _data = null;
-        _data = getResources().getStringArray(R.array.settings_list_pin);
+        String[] _data;
+
+        if(isLevel1)
+            _data = getResources().getStringArray(R.array.settings_list_pin);
+        else
+            _data = getResources().getStringArray(R.array.settings_list_pin_2);
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
@@ -81,25 +89,46 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
         Fragment f;
-        switch (position) {
-            case 0:
-                i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                switchActivity(i);
-                break;
-            case 1:
-                i = new Intent(getActivity(), ChangePassword.class);
-                switchActivity(i);
-                break;
 
-            case 2:
-                i = new Intent(getActivity(), ChangePIN.class);
-                switchActivity(i);
-                break;
+        if(isLevel1){
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
 
-            case 3:
-                i = new Intent(getActivity(), AboutAppsActivity.class);
-                switchActivity(i);
-                break;
+                case 1:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
+        }
+        else {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+                case 1:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 3:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
         }
 
     }

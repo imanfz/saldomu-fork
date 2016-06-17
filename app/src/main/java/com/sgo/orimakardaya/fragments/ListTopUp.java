@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.*;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,6 +29,7 @@ import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
+import com.sgo.orimakardaya.dialogs.LevelClass;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -44,13 +46,17 @@ import timber.log.Timber;
  */
 public class ListTopUp extends ListFragment implements InformationDialog.OnDialogOkCallback {
 
-    View v;
+    View v,nodata_view,list_view;
+    TextView tv_textNoData;
+    Button btn_noData;
     SecurePreferences sp;
     ArrayList<String> _listType;
     String listBankIB, listBankSMS,userID,accessKey,memberID;
     EasyAdapter adapter;
     ArrayList<listbankModel> mlistbankIB = null, mlistbankSMS = null;
     Boolean is_full_activity = false;
+    Boolean isLevel1 = false;
+    LevelClass levelClass;
     private InformationDialog dialogI;
 
     @Override
@@ -64,6 +70,12 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        nodata_view = v.findViewById(R.id.layout_no_data);
+        nodata_view.setVisibility(View.GONE);
+        tv_textNoData = (TextView) nodata_view.findViewById(R.id.txt_alert);
+        tv_textNoData.setText(getString(R.string.no_data));
+        btn_noData = (Button) nodata_view.findViewById(R.id.btnRefresh);
+        list_view = v.findViewById(R.id.layout_list);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
@@ -82,11 +94,20 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
 
         adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
 
+        levelClass = new LevelClass(getActivity(),sp);
+        levelClass.refreshData();
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
         if(isAdded()) {
             getBankList();
         }
+
+        btn_noData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getBankList();
+            }
+        });
     }
 
     @Override
@@ -119,6 +140,11 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 Timber.d("response Listbank:"+response.toString());
                                 if (isAdded()) {
+                                    if(nodata_view.getVisibility() == View.VISIBLE) {
+                                        nodata_view.setVisibility(View.GONE);
+                                        list_view.setVisibility(View.VISIBLE);
+                                    }
+
                                     String atm_topup_data = response.optString(WebParams.ATM_TOPUP_DATA,"");
                                     Timber.d("atm topup:" + atm_topup_data);
                                     String bank_code = "";
@@ -169,6 +195,10 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
                                 Timber.d("Error ListMember comlist:"+response.toString());
                                 code = response.getString(WebParams.ERROR_MESSAGE);
                                 prodDialog.dismiss();
+                                if(nodata_view.getVisibility() == View.GONE) {
+                                    nodata_view.setVisibility(View.VISIBLE);
+                                    list_view.setVisibility(View.GONE);
+                                }
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
 
@@ -204,6 +234,10 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
 
                             if (prodDialog.isShowing())
                                 prodDialog.dismiss();
+                            if(nodata_view.getVisibility() == View.GONE) {
+                                nodata_view.setVisibility(View.VISIBLE);
+                                list_view.setVisibility(View.GONE);
+                            }
                         }
                         Timber.w("Error Koneksi bank list list topup:"+throwable.toString());
                     }
@@ -295,24 +329,39 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
                 if (itemName.equals(getString(R.string.internetBanking_ab_title))) {
                     mBun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.INTERNET_BANKING);
                     mBun.putString(DefineValue.BANKLIST_DATA, listBankIB);
+                    mFrag.setArguments(mBun);
+                    switchFragmentTopUpActivity(mFrag,itemName,true);
                 } else if (itemName.equals(getString(R.string.smsBanking_ab_title))) {
-                    mBun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
-                    mBun.putString(DefineValue.BANKLIST_DATA, listBankSMS);
+                    if (!levelClass.isLevel1QAC()) {
+                        mBun.putString(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
+                        mBun.putString(DefineValue.BANKLIST_DATA, listBankSMS);
+                        mFrag.setArguments(mBun);
+                        switchFragmentTopUpActivity(mFrag, itemName, true);
+                    }
+                    else
+                        levelClass.showDialogLevel();
+
                 }
 
-                mFrag.setArguments(mBun);
-                switchFragmentTopUpActivity(mFrag,itemName,true);
+
             }
             else {
                 i = new Intent(getActivity(), TopUpActivity.class);
                 if (itemName.equals(getString(R.string.internetBanking_ab_title))) {
                     i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.INTERNET_BANKING);
                     i.putExtra(DefineValue.BANKLIST_DATA, listBankIB);
+                    switchActivity(i);
                 } else if (itemName.equals(getString(R.string.smsBanking_ab_title))) {
-                    i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
-                    i.putExtra(DefineValue.BANKLIST_DATA, listBankSMS);
+                    if (!levelClass.isLevel1QAC()) {
+                            i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.SMS_BANKING);
+                            i.putExtra(DefineValue.BANKLIST_DATA, listBankSMS);
+                            switchActivity(i);
+                    }
+                    else
+                        levelClass.showDialogLevel();
+
                 }
-                switchActivity(i);
+
             }
         }
 
