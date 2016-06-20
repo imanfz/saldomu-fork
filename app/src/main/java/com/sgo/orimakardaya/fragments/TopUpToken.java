@@ -95,8 +95,10 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         btnSubmit.setOnClickListener(submitListener);
         btnCancel.setOnClickListener(cancelListener);
 
-        if(topupType.equals(DefineValue.EMONEY)) initializeEmoney(args);
-        else initializePulsa(args);
+        if(topupType.equals(DefineValue.EMONEY))
+            initializeEmoney(args);
+        else
+            initializePulsa(args);
     }
 
     public void initializeEmoney(Bundle _args){
@@ -120,8 +122,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             if(bankCode.equals("114")){
                 max_length_token = 5;
                 tokenValue.setFilters(new InputFilter[]{new InputFilter.LengthFilter(max_length_token)});
-                tokenValue.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                tokenValue.setKeyListener(DigitsKeyListener.getInstance("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"));
             }
         }
         else {
