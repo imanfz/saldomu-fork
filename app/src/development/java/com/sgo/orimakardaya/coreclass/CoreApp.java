@@ -84,8 +84,15 @@ public class CoreApp extends Application {
 
         int checkExistence = CoreApp.this.getResources().getIdentifier("akardayadev", "raw", CoreApp.this.getPackageName());
 
+
         if ( checkExistence != 0 ) {
+            Timber.d("test ada raw");
             copyBundledRealmFile(CoreApp.this.getResources().openRawResource(checkExistence), getString(R.string.realmname));
+
+        }
+        else {
+            Timber.d("test gak ada raw");
+            deleteBundledRealmFile(getString(R.string.realmname));
         }
 
         RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
@@ -95,6 +102,8 @@ public class CoreApp extends Application {
                 .build();
 
         Realm.setDefaultConfiguration(config);
+
+
 
         PackageInfo pInfo;
         try {
@@ -156,6 +165,17 @@ public class CoreApp extends Application {
 
     }
 
+    private void deleteBundledRealmFile(String outFileName) {
+        File file = new File(this.getFilesDir(), outFileName);
+        if(file.exists()) {
+            if(file.delete())
+                Timber.d("delete "+getString(R.string.success));
+            else
+                Timber.d("delete "+getString(R.string.failed));
+
+        }
+    }
+
 
     private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
         try {
@@ -168,11 +188,13 @@ public class CoreApp extends Application {
                     outputStream.write(buf, 0, bytesRead);
                 }
                 outputStream.close();
+                Timber.d("file baru dicopy");
                 return file.getAbsolutePath();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        Timber.d("file tidak dicopy");
         return null;
     }
 
