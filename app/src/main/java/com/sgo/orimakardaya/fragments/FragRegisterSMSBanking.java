@@ -119,7 +119,10 @@ public class FragRegisterSMSBanking extends Fragment {
 
     public void getBankList(){
         try{
-            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BANK_SMS_REGIST,
                     userID,accessKey);
@@ -149,7 +152,7 @@ public class FragRegisterSMSBanking extends Fragment {
                                 getActivity().finish();
                             }
 
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
@@ -160,7 +163,7 @@ public class FragRegisterSMSBanking extends Fragment {
                         else {
                             Timber.d("Error ListMember comlist:"+response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
 
@@ -286,7 +289,10 @@ public class FragRegisterSMSBanking extends Fragment {
 
     public void sentInquiryMobileJTM(final String _bank_name){
         try{
-            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE_JATIM,
                     userID,accessKey);
@@ -306,7 +312,7 @@ public class FragRegisterSMSBanking extends Fragment {
                             Timber.d("response Listbank:" + response.toString());
 
                             showDialog(_bank_name, response.optString(WebParams.NO_HP, ""), response.optString(WebParams.TOKEN_ID, ""));
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -315,7 +321,7 @@ public class FragRegisterSMSBanking extends Fragment {
                         } else {
                             Timber.d("Error ListMember comlist:" + response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
 
@@ -361,8 +367,10 @@ public class FragRegisterSMSBanking extends Fragment {
 
     public void getDataSB() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE,
                     userID,accessKey);
