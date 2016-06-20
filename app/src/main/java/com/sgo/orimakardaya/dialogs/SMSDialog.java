@@ -237,8 +237,14 @@ public class SMSDialog extends Dialog {
         else {
             img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
         }
-        isStop = true;
-        cdTimer.cancel();
+        DestroyDialog();
+    }
+
+    public void DestroyDialog(){
+        if(cdTimer != null) {
+            isStop = true;
+            cdTimer.cancel();
+        }
     }
 
     public void sentSms(){
@@ -383,5 +389,10 @@ public class SMSDialog extends Dialog {
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 }

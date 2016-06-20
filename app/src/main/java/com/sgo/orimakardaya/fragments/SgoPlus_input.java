@@ -121,6 +121,38 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         if(topupType.equals(DefineValue.SMS_BANKING)){
             isSMSBanking = true;
             dialogI = InformationDialog.newInstance(this,3);
+            reqPermissionClass = new ReqPermissionClass(getActivity());
+            reqPermissionClass.setTargetFragment(this);
+            initializeSmsClass();
+            smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
+                @Override
+                public void onClickOkButton(View v, boolean isLongClick) {
+                    if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS,ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+                        smsDialog.sentSms();
+                    }
+                }
+
+                @Override
+                public void onClickCancelButton(View v, boolean isLongClick) {
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                }
+
+                @Override
+                public void onSuccess(int user_is_new) {
+
+                }
+
+                @Override
+                public void onSuccess(String product_value) {
+                    if(sentObject != null) {
+                        sentObject.productValue = product_value;
+                        smsDialog.dismiss();
+                        smsDialog.reset();
+                        sentDataReqToken(sentObject);
+                    }
+                }
+            });
         }
         else
             dialogI = InformationDialog.newInstance(this,2);
@@ -130,43 +162,6 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         btn_subSGO.setOnClickListener(prosesSGOplusListener);
         jumlahSGO_value.addTextChangedListener(jumlahChangeListener);
 
-
-        reqPermissionClass = new ReqPermissionClass(getActivity());
-        reqPermissionClass.setTargetFragment(this);
-
-        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
-            initializeSmsClass();
-        }
-
-        smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
-            @Override
-            public void onClickOkButton(View v, boolean isLongClick) {
-                if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS,ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
-                    smsDialog.sentSms();
-                }
-            }
-
-            @Override
-            public void onClickCancelButton(View v, boolean isLongClick) {
-                if(progdialog.isShowing())
-                    progdialog.dismiss();
-            }
-
-            @Override
-            public void onSuccess(int user_is_new) {
-
-            }
-
-            @Override
-            public void onSuccess(String product_value) {
-                if(sentObject != null) {
-                    sentObject.productValue = product_value;
-                    smsDialog.dismiss();
-                    smsDialog.reset();
-                    sentDataReqToken(sentObject);
-                }
-            }
-        });
 
     }
 
@@ -195,17 +190,12 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
-            initializeSmsClass();
-        }
-        else if (reqPermissionClass.checkOnPermissionRequest(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+        if (reqPermissionClass.checkOnPermissionRequest(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
                 smsDialog.sentSms();
         }
         else {
-            Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-            if(requestCode == ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)
-                getActivity().finish();
-            else if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
+            if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
+                Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
                 if(progdialog.isShowing())
                     progdialog.dismiss();
                 if (smsDialog != null) {
@@ -215,20 +205,6 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
             }
         }
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(smSclass != null)
-            getActivity().registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(smSclass != null)
-            getActivity().unregisterReceiver(smSclass.simStateReceiver);
     }
 
     private void InitializeSpinner() {
@@ -740,5 +716,15 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     @Override
     public void onOkButton() {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(smsDialog != null) {
+            smsDialog.DestroyDialog();
+            if(this.isVisible())
+                smsDialog.dismiss();
+        }
     }
 }
