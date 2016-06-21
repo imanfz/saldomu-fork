@@ -670,10 +670,8 @@
     <string name="dialog_p2p_color_failed_msg">Penerima gagal dan tidak bisa menerima transfer scash dikarenakan suatu hal (limit saldo penerima telah maksimum, penerima dorman,suspend, atau tidak aktif).</string>
     <string name="dialog_p2p_color_nonmember_msg">Penerima belum terdaftar sebagai member. Jumlah scash akan diterima ketika penerima telah mendaftar sebagai member.</string>
 
-    <string name="dialog_p2p_nonmember_title">Ajak temanmu gabung PIN ?</string>
-    <string name="dialog_p2p_nonmember_msg1">Nomor</string>
-    <string name="dialog_p2p_nonmember_msg2">belum punya PIN. Tekan \'Ya\' bila ingin mengajak untuk bergabung PIN. Ajakan akan kadaluarsa dalam</string>
-    <string name="dialog_p2p_nonmember_msg3">jam. Saldo akan terkirim saat temanmu bergabung.</string>
+    <string name="dialog_p2p_nonmember_title">Ajak temanmu gabung %1$s ?</string>
+    <string name="dialog_p2p_nonmember_msg">Nomor %1$s belum punya %2$s. Tekan \'Ya\' bila ingin mengajak untuk bergabung %2$s. Ajakan akan kadaluarsa dalam %3$s jam. Saldo akan terkirim saat temanmu bergabung.</string>
 
     <string name="hint_comment_timeline">Komentar...</string>
     <string name="updating">Memperbaharui...</string>

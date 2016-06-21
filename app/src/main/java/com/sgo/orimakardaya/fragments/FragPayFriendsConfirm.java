@@ -256,13 +256,9 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             txtNumberRecipients.setText(Integer.toString(total_receive_recepient));
 
             if(!list_non_member.isEmpty()) {
-
-                String messageDialog = getString(R.string.dialog_p2p_nonmember_msg1) + " " + number_recipient_nonmember+ " "+
-                        getString(R.string.dialog_p2p_nonmember_msg2)+" "+
-                        expired_period_date+" "+
-                        getString(R.string.dialog_p2p_nonmember_msg3);
-
-                mDialogNonMember = AlertDialogFrag.newInstance(getString(R.string.dialog_p2p_nonmember_title), messageDialog,
+                String messageDialog = getString(R.string.dialog_p2p_nonmember_msg,
+                        number_recipient_nonmember,getString(R.string.appname),expired_period_date) ;
+                mDialogNonMember = AlertDialogFrag.newInstance(getString(R.string.dialog_p2p_nonmember_title,getString(R.string.appname)), messageDialog,
                         getString(R.string.yes),getString(R.string.cancel),false);
                 mDialogNonMember.setOkListener(new DialogInterface.OnClickListener() {
                     @Override
