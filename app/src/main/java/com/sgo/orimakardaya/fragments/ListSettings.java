@@ -21,6 +21,7 @@ import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
+import com.sgo.orimakardaya.dialogs.LevelClass;
 
 /**
  * Created by thinkpad on 6/11/2015.
@@ -31,7 +32,7 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
     SecurePreferences sp;
     private InformationDialog dialogI;
     Boolean isLevel1;
-//    String authType;
+    private LevelClass levelClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -66,10 +67,9 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 //        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
 
-        String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
-        if(i == null)
-            i = "0";
-        isLevel1 = Integer.valueOf(i) == 1;
+        levelClass = new LevelClass(getActivity(),sp);
+        levelClass.refreshData();
+        isLevel1 = levelClass.isLevel1QAC();
         dialogI = InformationDialog.newInstance(this,11);
         String[] _data;
 
