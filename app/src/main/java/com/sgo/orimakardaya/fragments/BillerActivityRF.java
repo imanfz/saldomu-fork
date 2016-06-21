@@ -155,8 +155,9 @@ public class BillerActivityRF extends Fragment{
 
 
         realmListener = new RealmChangeListener() {
+
             @Override
-            public void onChange() {
+            public void onChange(Object element) {
                 runQueing();
             }
         };

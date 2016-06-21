@@ -68,7 +68,7 @@ public class CoreApp extends Application {
         MyApiClient.initialize(this);
         setsDefSystemLanguage(null);
 
-        int checkExistence = CoreApp.this.getResources().getIdentifier("akardayadev", "raw", CoreApp.this.getPackageName());
+        int checkExistence = CoreApp.this.getResources().getIdentifier("akardaya", "raw", CoreApp.this.getPackageName());
 
 
         if ( checkExistence != 0 ) {
