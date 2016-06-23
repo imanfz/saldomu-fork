@@ -78,9 +78,9 @@ public class Regist1 extends Fragment{
         btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
 
-        namaValue=(EditText)getActivity().findViewById(R.id.name_value);
-        emailValue=(EditText)getActivity().findViewById(R.id.email_value);
-        noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
+        namaValue=(EditText)v.findViewById(R.id.name_value);
+        emailValue=(EditText)v.findViewById(R.id.email_value);
+        noHPValue=(EditText)v.findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -114,17 +114,6 @@ public class Regist1 extends Fragment{
                 switchFragment(mfrag,getString(R.string.termsncondition_title),true);
             }
         });
-
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if(sp.contains(DefineValue.SENDER_ID))
-            noHPValid = NoHPFormat.editNoHP(sp.getString(DefineValue.SENDER_ID,""));
-
-        if(BuildConfig.DEBUG){ //untuk shorcut dari tombol di activity LoginActivity
-            Bundle m = getArguments();
-            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                getActivity().findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
-            }
-        }
 
     }
 
