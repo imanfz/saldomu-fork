@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,9 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -24,15 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.Beans.navdrawmainmenuModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.LevelFormRegisterActivity;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.MyProfileActivity;
 import com.sgo.orimakardaya.adapter.NavDrawMainMenuAdapter;
@@ -42,21 +35,11 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.MyPicasso;
 import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.LevelClass;
-import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
 import com.sgo.orimakardaya.services.BalanceService;
 import com.squareup.picasso.Picasso;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

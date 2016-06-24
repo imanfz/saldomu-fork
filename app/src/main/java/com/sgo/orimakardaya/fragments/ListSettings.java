@@ -19,9 +19,8 @@ import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
-import com.sgo.orimakardaya.dialogs.LevelClass;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 
 /**
  * Created by thinkpad on 6/11/2015.

@@ -49,7 +49,12 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
+    String namaValid = "";
+    String emailValid = "";
+    String noHPValid = "";
+    String token_id = "";
+    String max_resend_token = "3";
+    String auth_type = "";
     EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
     CheckBox cb_terms;
