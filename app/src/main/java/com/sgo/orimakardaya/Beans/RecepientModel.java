@@ -8,12 +8,14 @@ public class RecepientModel {
     private String name;
     private String number;
     private String status;
+    private String is_member_temp;
 
-    public RecepientModel(String _tx_id, String _name, String _number, String _status){
-        this.tx_id = _tx_id;
-        this.name = _name;
-        this.number = _number;
-        this.status = _status;
+    public RecepientModel(String _tx_id, String _name, String _number, String _status, String _is_member_temp){
+        setTx_id(_tx_id);
+        setName(_name);
+        setNumber(_number);
+        setStatus(_status);
+        setIs_member_temp(_is_member_temp);
     }
 
 
@@ -47,5 +49,13 @@ public class RecepientModel {
 
     public void setTx_id(String tx_id) {
         this.tx_id = tx_id;
+    }
+
+    public String getIs_member_temp() {
+        return is_member_temp;
+    }
+
+    public void setIs_member_temp(String is_member_temp) {
+        this.is_member_temp = is_member_temp;
     }
 }

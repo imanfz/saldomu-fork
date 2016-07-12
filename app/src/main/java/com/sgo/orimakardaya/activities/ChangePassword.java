@@ -120,7 +120,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
                         sendChangePassword();
                     }
                 }
-                else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message),null);
+                else DefinedDialog.showErrorDialog(this, getString(R.string.inethandler_dialog_message));
                 break;
 
             case R.id.btn_batal_changepass :

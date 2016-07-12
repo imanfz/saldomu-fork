@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:textSize="@dimen/abc_text_size_small_material"
-                        android:text="Like"
+                        android:text="@string/like"
                         android:textStyle="bold"
                         />
 
@@ -103,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:textSize="@dimen/abc_text_size_small_material"
-                        android:text="Comment"
+                        android:text="@string/comment"
                         android:textStyle="bold"
                         android:layout_marginLeft="16dp"
                         />

@@ -61,6 +61,7 @@ public class SMSDialog extends Dialog {
         void onClickOkButton(View v, boolean isLongClick);
         void onClickCancelButton(View v, boolean isLongClick);
         void onSuccess(int user_is_new);
+        void onSuccess(String product_value);
     }
 
     private DialogButtonListener deListener;
@@ -236,13 +237,21 @@ public class SMSDialog extends Dialog {
         else {
             img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
         }
-        isStop = true;
-        cdTimer.cancel();
+        DestroyDialog();
+    }
+
+    public void DestroyDialog(){
+        if(cdTimer != null) {
+            isStop = true;
+            cdTimer.cancel();
+        }
     }
 
     public void sentSms(){
-        if(!isStop)
-            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice,ICCIDDevice,timeStamp,smsVerifyListener);
+        if(!isStop) {
+            Timber.d("jalanin sentSMSVerify");
+            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+        }
     }
 
 
@@ -290,8 +299,6 @@ public class SMSDialog extends Dialog {
                                     }, 3000);
 
                                 } else {
-
-
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -363,23 +370,29 @@ public class SMSDialog extends Dialog {
     }
 
     private void saveData(JSONObject mObj){
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        SecurePreferences.Editor edit = sp.edit();
-        edit.putString(DefineValue.SENDER_ID,mObj.optString(WebParams.SENDER_ID));
-        if(mObj.optInt(WebParams.IS_NEW_USER,0) == 0) {
-            edit.putString(DefineValue.DEIMEI, imeiDevice);
-            edit.putString(DefineValue.DEICCID, ICCIDDevice);
-            edit.commit();
-            deListener.onSuccess(0);
-        }
-        else {
-            edit.commit();
-            deListener.onSuccess(1);
-        }
+//        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+//        SecurePreferences.Editor edit = sp.edit();
+//        edit.putString(DefineValue.SENDER_ID,mObj.optString(WebParams.SENDER_ID));
+//        if(mObj.optInt(WebParams.IS_NEW_USER,0) == 0) {
+//            edit.putString(DefineValue.DEIMEI, imeiDevice);
+//            edit.putString(DefineValue.DEICCID, ICCIDDevice);
+//            edit.commit();
+//            deListener.onSuccess(0);
+//        }
+//        else {
+//            edit.commit();
+//            deListener.onSuccess(1);
+//        }
+        deListener.onSuccess(mObj.optString(WebParams.SENDER_ID,""));
     }
 
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
     }
 }

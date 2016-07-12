@@ -12,10 +12,10 @@ import com.sgo.orimakardaya.R;
 
 public class NotificationHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-    public TextView name,detail,time,dll, btnAccept, btnReject;
+    public TextView name,detail,time,dll, btnAccept, btnReject, btnClaim;
     public ImageView icon;
     private ClickListener clickListener;
-    public LinearLayout layout_button_ask;
+    public LinearLayout layout_button_ask, layout_button_claim;
     public QuickContactBadge iconPicture;
 
     public NotificationHolder(View itemView) {
@@ -28,8 +28,11 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
         iconPicture = (QuickContactBadge)itemView.findViewById(R.id.icon_picture);
         btnAccept = (TextView)itemView.findViewById(R.id.btn_accept);
         btnReject = (TextView)itemView.findViewById(R.id.btn_reject);
+        btnClaim = (TextView)itemView.findViewById(R.id.btn_claim);
         layout_button_ask = (LinearLayout)itemView.findViewById(R.id.layout_button_ask);
+        layout_button_claim = (LinearLayout)itemView.findViewById(R.id.layout_button_claim);
 
+        btnClaim.setOnClickListener(this);
         btnAccept.setOnClickListener(this);
         itemView.setOnClickListener(this);
     }
@@ -45,7 +48,7 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
          */
         void onClickView(View v, boolean isLongClick);
         void onClickBtnAccept(View v, boolean isLongClick);
-
+        void onClickBtnClaim(View v, boolean isLongClick);
     }
 
     /* Setter for listener. */
@@ -58,8 +61,10 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public void onClick(View v) {
         // If not long clicked, pass last variable as false.
-        if(v instanceof TextView)
-            clickListener.onClickBtnAccept(v,false);
+        if(v instanceof TextView) {
+            clickListener.onClickBtnAccept(v, false);
+            clickListener.onClickBtnClaim(v, false);
+        }
         else
             clickListener.onClickView(v, false);
     }
@@ -67,8 +72,10 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
     @Override
     public boolean onLongClick(View v) {
         // If long clicked, passed last variable as true.
-        if(v instanceof TextView)
-            clickListener.onClickBtnAccept(v,true);
+        if(v instanceof TextView) {
+            clickListener.onClickBtnAccept(v, true);
+            clickListener.onClickBtnClaim(v, true);
+        }
         else
             clickListener.onClickView(v, true);
         return true;

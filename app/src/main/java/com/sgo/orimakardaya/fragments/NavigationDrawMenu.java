@@ -2,16 +2,14 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.annotation.IntegerRes;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -23,15 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.Beans.navdrawmainmenuModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.LevelFormRegisterActivity;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.MyProfileActivity;
 import com.sgo.orimakardaya.adapter.NavDrawMainMenuAdapter;
@@ -41,20 +35,11 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.MyPicasso;
 import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
 import com.sgo.orimakardaya.loader.UtilsLoader;
 import com.sgo.orimakardaya.services.BalanceService;
 import com.squareup.picasso.Picasso;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -84,6 +69,8 @@ public class NavigationDrawMenu extends ListFragment{
     String contactCenter,listContactPhone = "", listAddress="";
     Activity act;
     ProgressDialog progdialog;
+    public String levelValue;
+    private LevelClass levelClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,6 +85,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(),sp);
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         mListView = (ListView) v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -113,7 +101,7 @@ public class NavigationDrawMenu extends ListFragment{
         periodeLimit = (TextView) v.findViewById(R.id.periode_limit_value);
 
         refreshUINavDrawer();
-        refreshDataNavDrawer();
+//        refreshDataNavDrawer();
 
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,10 +125,18 @@ public class NavigationDrawMenu extends ListFragment{
             }
         });
 
+
+
         BalanceModel mBal = BalanceModel.load(BalanceModel.class, 1);
         if(mBal != null)
             setBalanceToUI(mBal);
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        refreshDataNavDrawer();
     }
 
     public void setBalanceToUI(BalanceModel deData){
@@ -237,16 +233,8 @@ public class NavigationDrawMenu extends ListFragment{
         headerCustID.setText(sp.getString(DefineValue.CUST_ID, getString(R.string.text_strip)));
     }
     public void refreshDataNavDrawer(){
-        if(sp.contains(DefineValue.LEVEL_VALUE)) {
-//            int i = sp.getInt(DefineValue.LEVEL_VALUE, 0);
-            String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
-            if(i == null) {
-                i = "0";
-            }
-            isLevel1 = Integer.valueOf(i) == 1;
-            isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
-            isAllowedLevel = sp.getBoolean(DefineValue.ALLOW_MEMBER_LEVEL, false);
-        }
+        if(levelClass != null)
+            levelClass.refreshData();
     }
 
     @Override
@@ -299,12 +287,8 @@ public class NavigationDrawMenu extends ListFragment{
                 switchFragment(newFragment, getString(R.string.toolbar_title_topup));
                 break;
             case MPAYFRIENDS:
-                if(isAllowedLevel && isLevel1) {
-                    if(isRegisteredLevel) {
-                        setListContact();
-                    }
-                    else
-                        showDialogLevel();
+                if(levelClass.isLevel1QAC()) {
+                   levelClass.showDialogLevel();
                 }
                 else {
                     newFragment = new FragPayFriends();
@@ -313,12 +297,8 @@ public class NavigationDrawMenu extends ListFragment{
                 }
                 break;
             case MASK4MONEY:
-                if(isAllowedLevel && isLevel1) {
-                    if (isRegisteredLevel) {
-                        setListContact();
-                    }
-                    else
-                        showDialogLevel();
+                if(levelClass.isLevel1QAC()) {
+                   levelClass.showDialogLevel();
                 }else {
                     newFragment = new FragAskForMoney();
                     if (data != null && !data.isEmpty()) newFragment.setArguments(data);
@@ -384,49 +364,6 @@ public class NavigationDrawMenu extends ListFragment{
         }
     }
 
-    private void showDialogLevel(){
-        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.level_dialog_title),
-                getString(R.string.level_dialog_message),getString(R.string.level_dialog_btn_ok),getString(R.string.cancel),false);
-        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent mI = new Intent(getActivity(), LevelFormRegisterActivity.class);
-                switchActivity(mI, MainPage.ACTIVITY_RESULT);
-            }
-        });
-        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog_frag.dismiss();
-            }
-        });
-        dialog_frag.setTargetFragment(NavigationDrawMenu.this, 0);
-//        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.add(dialog_frag, null);
-        ft.commitAllowingStateLoss();
-    }
-
-    private void showDialogLevelRegistered(){
-        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),
-                getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-                        getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-
-                    }
-                }
-        );
-
-        dialognya.show();
-    }
-
-    private void showMyCustomDialog() {
-        ReportBillerDialog dialog = new ReportBillerDialog();
-        dialog.show(getActivity().getSupportFragmentManager(), "asfasfaf");
-    }
-
     private void switchFragment(Fragment i, String name){
         if (getActivity() == null)
             return;
@@ -457,122 +394,6 @@ public class NavigationDrawMenu extends ListFragment{
         mAdapter.notifyDataSetChanged();
     }
 
-    public void getHelpList() {
-        try {
-            progdialog = DefinedDialog.CreateProgressDialog(act, "");
-            progdialog.show();
-            String ownerId = sp.getString(DefineValue.USERID_PHONE,"");
-            String accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    ownerId,accessKey);
-            params.put(WebParams.USER_ID, ownerId);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            Timber.d("isi params help list:" + params.toString());
-
-            MyApiClient.getHelpList(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
-
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
-
-                            try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
-                                    if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                                    }
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            showDialogLevelRegistered();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(act,message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
-                        }
-
-                        progdialog.dismiss();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
-        }
-    }
-
-    private void setListContact() {
-        contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
-
-        if(contactCenter.equals("")) {
-            getHelpList();
-        }
-        else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for (int i = 0; i < arrayContact.length(); i++) {
-                    if (i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            showDialogLevelRegistered();
-        }
-    }
 
 }

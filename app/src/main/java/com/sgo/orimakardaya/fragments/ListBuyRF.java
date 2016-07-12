@@ -205,7 +205,7 @@ public class ListBuyRF extends Fragment{
 
 
     private void initializeData(final JSONArray arrayBiller, final JSONArray arrayCollection){
-        final String curr_date = DateTimeFormat.getCurrentDateMinus();
+        final String curr_date = DateTimeFormat.getCurrentDate();
 
 
         Biller_Type_Data_Model mBillerObj;

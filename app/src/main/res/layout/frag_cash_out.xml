@@ -7,31 +7,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <!--<TextView android:layout_width="wrap_content"-->
-              <!--android:layout_height="wrap_content"-->
-              <!--android:textSize="@dimen/abc_text_size_medium_material"-->
-              <!--android:textColor="@color/colorPrimaryDark"-->
-              <!--android:layout_marginBottom="20dp"-->
-              <!--android:text="@string/cashout_info"/>-->
-
-    <!--<TextView android:layout_width="wrap_content"-->
-              <!--android:layout_height="wrap_content"-->
-              <!--android:layout_marginBottom="20dp"-->
-              <!--android:textColor="@color/colorSecondaryDark"-->
-              <!--android:text="@string/cashout_info_desc"/>-->
-
-    <!--<TextView android:layout_width="wrap_content"-->
-              <!--android:layout_height="wrap_content"-->
-              <!--android:textColor="@color/colorPrimaryDark"-->
-              <!--android:textStyle="bold"-->
-              <!--android:layout_marginBottom="10dp"-->
-              <!--android:text="@string/cashout_nominal"/>-->
-
-    <!--<ListView android:id="@+id/listNominal"-->
-              <!--android:layout_width="match_parent"-->
-              <!--android:layout_height="wrap_content"-->
-              <!--android:divider="@null"></ListView>-->
-
     <LinearLayout android:id="@+id/cashout_bottom_layout"
                   android:background="@color/windowBackgroundColor"
                   android:layout_alignParentBottom="true"

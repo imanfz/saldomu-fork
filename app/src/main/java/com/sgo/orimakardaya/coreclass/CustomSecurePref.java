@@ -4,6 +4,7 @@ package com.sgo.orimakardaya.coreclass;/*
 
 import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
 
 import com.securepreferences.SecurePreferences;
 import com.tozny.crypto.android.AesCbcWithIntegrity;
@@ -40,7 +41,7 @@ public class CustomSecurePref {
         if(getmSecurePrefs() ==null){
             try {
                 isFilePrefExist(_context);
-                String test = Build.ID;
+                String test = Settings.Secure.ANDROID_ID;
                 final byte[] salt = test.getBytes();
                 AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,500);
                 setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
@@ -97,7 +98,6 @@ public class CustomSecurePref {
     public void setmSecurePrefs(SecurePreferences mSecurePrefs) {
         this.mSecurePrefs = mSecurePrefs;
     }
-
 
     public void ClearAllCustomData(){
         SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();

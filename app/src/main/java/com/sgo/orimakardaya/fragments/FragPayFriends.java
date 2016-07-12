@@ -55,7 +55,6 @@ import timber.log.Timber;
  */
 public class FragPayFriends extends Fragment implements InformationDialog.OnDialogOkCallback {
 
-    private static final String failed = "F";
     private boolean isNotification = false;
     private InformationDialog dialogI;
     ImageView imgProfile, imgRecipients;
@@ -413,7 +412,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
                     }
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -465,7 +464,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
                             int isFailed=0 ;
                             String msg = "";
                             for(int i = 0 ; i < mArrayData.length() ; i++) {
-                                if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(failed)){
+                                if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(DefineValue.FAILED)){
                                     isFailed++ ;
                                     msg = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_REMARK);
                                 }

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -93,8 +95,10 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         btnSubmit.setOnClickListener(submitListener);
         btnCancel.setOnClickListener(cancelListener);
 
-        if(topupType.equals(DefineValue.EMONEY)) initializeEmoney(args);
-        else initializePulsa(args);
+        if(topupType.equals(DefineValue.EMONEY))
+            initializeEmoney(args);
+        else
+            initializePulsa(args);
     }
 
     public void initializeEmoney(Bundle _args){
@@ -158,7 +162,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                 }
                 else btnSubmit.setEnabled(true);
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -169,7 +173,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                 btnResend.setEnabled(false);
                 if(max_token_resend!=0)requestResendToken();
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

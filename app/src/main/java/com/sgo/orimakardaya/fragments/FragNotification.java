@@ -56,6 +56,7 @@ public class FragNotification extends Fragment {
     private NotificationModelClass tempMData;
     ProgressDialog out;
     private SecurePreferences sp;
+    private boolean flagClaim = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +122,11 @@ public class FragNotification extends Fragment {
 
             @Override
             public void onItemBtnAccept(View view, int position, Boolean isLongClick) {
+                NotificationItemClickAction(position);
+            }
+
+            @Override
+            public void onItemBtnClaim(View view, int position, Boolean isLongClick) {
                 NotificationItemClickAction(position);
             }
 
@@ -220,6 +226,10 @@ public class FragNotification extends Fragment {
                     Timber.d("isi extra intennt history detail activity:"+data.getExtras().toString());
                     getActivity().setResult(MainPage.RESULT_NOTIF, data);
                     getActivity().finish();
+                    break;
+                case NotificationActivity.TYPE_NON_MEMBER:
+                    if(!flagClaim)
+                        sentClaimTransfer(true, mObj.getId_result());
                     break;
             }
 
@@ -321,7 +331,7 @@ public class FragNotification extends Fragment {
 
             });
         }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -384,7 +394,7 @@ public class FragNotification extends Fragment {
 
                             JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
 
-                            String title = null, detail = null, time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time;
+                            String title = null, detail = null, time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
                             mData.clear();
                             mDataNotifDetail.clear();
                             int notif_type, image = 0;
@@ -406,6 +416,7 @@ public class FragNotification extends Fragment {
                                     from_profile_picture = mObject.getString(WebParams.FROM_PROFILE_PICTURE);
                                     date_time = mObject.getString(WebParams.CREATED_DATE);
                                     read = (mObject.getInt(WebParams.NOTIF_READ) == 1);
+                                    id_result = mObject.getString(WebParams.ID_RESULT);
 
                                     String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL, "");
 
@@ -440,20 +451,33 @@ public class FragNotification extends Fragment {
                                                 detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                         "\n" + notif_detail.get(WebParams.REMARK);
                                                 break;
+                                            case NotificationActivity.TYPE_NON_MEMBER:
+                                                image = R.drawable.ic_cash_out;
+                                                title = getString(R.string.notif_text_non_member) + " " + from_name;
+                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT);
+                                                break;
+                                            case NotificationActivity.CLAIM_NON_MEMBER:
+                                                image = R.drawable.ic_cash_in;
+                                                title = from_name + " " + getString(R.string.notif_text_claim_non_member);
+                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                        "\n" + from_name + " " + getString(R.string.notif_detail_claim_non_member);
+                                                break;
                                         }
 
                                         if (notif_type == NotificationActivity.TYPE_LIKE ||
                                                 notif_type == NotificationActivity.TYPE_COMMENT ||
                                                 notif_type == NotificationActivity.TYPE_TRANSFER ||
                                                 notif_type == NotificationActivity.TYPE_PAID ||
-                                                notif_type == NotificationActivity.TYPE_DECLINE) {
+                                                notif_type == NotificationActivity.TYPE_DECLINE ||
+                                                notif_type == NotificationActivity.TYPE_NON_MEMBER ||
+                                                notif_type == NotificationActivity.CLAIM_NON_MEMBER) {
                                             mDataNotifDetail.add(notif_detail);
 
                                             time1 = DateTimeFormat.convertStringtoCustomDateTime(date_time);
                                             time = p.formatDuration(time1);
 
                                             mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
-                                                    from_id, detail, time, notif_type, read, notif_detail, from_profile_picture, date_time);
+                                                    from_id, detail, time, notif_type, read, notif_detail, from_profile_picture, date_time, id_result);
                                             mData.add(mObj);
                                         }
 
@@ -545,6 +569,101 @@ public class FragNotification extends Fragment {
                     getActivity().setResult(MainPage.RESULT_NOTIF);
                     getActivity().finish();
                     Timber.w("Error Koneksi Notif Retrieve");
+                }
+
+
+            });
+        } catch (Exception e) {
+            String err = (e.getMessage()==null)?"Connection failed":e.getMessage();
+            Timber.e("http err:"+err);
+        }
+    }
+
+    private void sentClaimTransfer(final Boolean isDialog, String _hold_id){
+        try{
+            flagClaim = true;
+            if(isDialog){
+                out = DefinedDialog.CreateProgressDialog(getActivity(), "");
+                if(!out.isShowing())
+                    out.show();
+            }
+
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
+                    _userid,accessKey);
+            params.put(WebParams.USER_ID,_userid);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.HOLD_ID, _hold_id);
+
+            Timber.d("isi params sent claim non member:"+params.toString());
+
+            MyApiClient.sentClaimNonMemberTrf(getActivity(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                    try {
+                        if (isDialog)
+                            out.dismiss();
+
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.w("isi response sent claim non member:" + response.toString());
+
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:" + response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(), message);
+                        }
+
+                        sentRetrieveNotif(true);
+
+                    } catch (JSONException e) {
+
+                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if (isDialog)
+                        out.dismiss();
+                    getActivity().setResult(MainPage.RESULT_NOTIF);
+                    getActivity().finish();
+                    Timber.w("Error Koneksi claim non member:" + throwable.toString());
+                }
+
+                @Override
+                public void onCancel() {
+                    super.onCancel();
+                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    if (isDialog)
+                        out.dismiss();
+                    getActivity().setResult(MainPage.RESULT_NOTIF);
+                    getActivity().finish();
+                    Timber.w("Error Koneksi claim non member");
                 }
 
 

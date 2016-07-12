@@ -163,20 +163,6 @@ public class HistoryDetailActivity extends BaseActivity {
         Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
         String period = p.formatDuration(time1);
 
-//        SimpleDateFormat f = DateTimeFormat.getFormatYearHours();
-//        Date d;
-//        long long_date = 0;
-//        try {
-//            d = f.parse(datetime);
-//            long_date = d.getTime();
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//
-//        String period = PeriodTime.getTimeAgo(long_date, this);
-
         fromId.setText(from_name);
         messageTransaction.setText(message);
         dateTime.setText(period);
@@ -192,9 +178,9 @@ public class HistoryDetailActivity extends BaseActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
                 AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
-                builder.setTitle("Delete Comment");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.delete_comment));
+                builder.setMessage(getString(R.string.delete_comment_ask));
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String comment_id = Integer.toString(listComment.get(index).getComment_id());
@@ -206,7 +192,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         removeComment(comment_id, post_id, from, to);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -382,7 +368,7 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.REPLY, reply);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -735,7 +721,7 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

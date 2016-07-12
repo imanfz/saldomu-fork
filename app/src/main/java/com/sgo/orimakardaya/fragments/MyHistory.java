@@ -171,7 +171,7 @@ public class MyHistory extends BaseFragmentMainPage {
                     _ownerID,accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
             params.put(WebParams.PAGE, mPage);
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -347,12 +347,10 @@ public class MyHistory extends BaseFragmentMainPage {
         ActiveAndroid.beginTransaction();
         listHistoryModel mTm;
         new listHistoryModel();
-        Timber.d("arrayPost length:"+String.valueOf(mListTimeline.size()));
         if(mListTimeline.size()>0){
             for (int i = 0; i < mListTimeline.size(); i++) {
                 mTm = mListTimeline.get(i);
                 mTm.save();
-                Timber.d("idx array posts:"+String.valueOf(i));
             }
         }
 

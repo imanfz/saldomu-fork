@@ -78,7 +78,7 @@ public class ListBillerMerchant extends ListFragment {
 
         realmListener = new RealmChangeListener() {
             @Override
-            public void onChange() {
+            public void onChange(Object element) {
                 Timber.d("Masuk realm listener bilactive asdfasdfa");
                 if(isVisible()){
                     initializeData();

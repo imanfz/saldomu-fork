@@ -65,28 +65,9 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         final listTimeLineModel _data = mData.get(i);
 
         String string_date = _data.getDatetime();
-
-        /*SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = f.parse(string_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long long_date = 0;
-        if (d != null) {
-            long_date = d.getTime();
-        }
-
-        String period = PeriodTime.getTimeAgo(long_date, mContext);
-*/
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
         Date time1 = DateTimeFormat.convertStringtoCustomDateTime(string_date);
         String period = p.formatDuration(time1);
-
-//        String tx_status = "";
-//        if(_data.getTx_status().equals("S")) tx_status = "Paid";
-//        else tx_status = "Pending";
 
         simpleHolder.fromId.setText(_data.getOwner());
         simpleHolder.messageTransaction.setText(_data.getPost());
@@ -108,7 +89,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
         }
 
-        simpleHolder.likeCount.setText(_data.getNumlikes());;
+        simpleHolder.likeCount.setText(_data.getNumlikes());
         simpleHolder.commentCount.setText(_data.getNumcomments());
 
         if(_data.getComment_id_2().equals("")) {
@@ -160,7 +141,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                     }, 3000);
 
                     if (isLike.equals("1")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) - 1);
+                        final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) - 1);
                         simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
                         simpleHolder.likeCount.setText(jumlahLike);
                         listTimeLineModel.updateNumlikes(jumlahLike, timeline_id);
@@ -187,7 +168,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                             }
                         });
                     } else if (isLike.equals("0")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) + 1);
+                        final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) + 1);
                         simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
                         simpleHolder.likeCount.setText(jumlahLike);
                         listTimeLineModel.updateNumlikes(jumlahLike, timeline_id);
@@ -320,7 +301,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

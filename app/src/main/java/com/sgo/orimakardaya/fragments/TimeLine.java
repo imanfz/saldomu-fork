@@ -171,7 +171,7 @@ public class TimeLine extends BaseFragmentMainPage {
                     _ownerID,accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
             params.put(WebParams.PAGE, mPage);
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

@@ -351,7 +351,7 @@ public class BillerDesciption extends Fragment {
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -406,8 +406,10 @@ public class BillerDesciption extends Fragment {
                         else {
                             Timber.d("Error isi responce inquiry Biller:"+response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                            if(isVisible()) {
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                getFragmentManager().popBackStack();
+                            }
                         }
                         if(progdialog.isShowing())
                             progdialog.dismiss();

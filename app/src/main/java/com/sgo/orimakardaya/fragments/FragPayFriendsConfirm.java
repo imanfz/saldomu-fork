@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +26,7 @@ import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.orimakardaya.adapter.RecipientAdapter;
 import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
@@ -46,11 +48,12 @@ import timber.log.Timber;
  */
 public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
+    public static String TAG_FRAGPAYFRIENDCONFIRM = "com.sgo.mdevcash.fragments.FragPayfriendsConfirm";
 
     String dataJson, dataName, message, memberID, txID, dataMapper,userID,accessKey;
     SecurePreferences sp;
     Boolean isNotification = false;
-    double amountEach,amount,totalAmount,fee;
+    double amountEach,totalAmount,fee;
     LinearLayout layoutOTP;
     ImageView imgProfile, imgRecipients;
     ListView listRecipient;
@@ -60,10 +63,12 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     ProgressDialog progdialog;
     private int max_token_resend = 3, total_receive_recepient = 0, attempt=-1;
     View v;
+    AlertDialogFrag mDialogNonMember;
 
     List<String> listName;
     List<RecepientModel> listObjectRecipient;
     List<TempTxID> mTempTxID;
+    List<RecepientModel> list_non_member;
 
     String authType;
 
@@ -136,7 +141,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 }
             });
         }
-        else if(authType.equalsIgnoreCase("OTP")) {
+        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
             layoutOTP.setVisibility(View.VISIBLE);
             btnResend = (Button) v.findViewById(R.id.btn_resend_token);
 
@@ -159,16 +164,18 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             message = bundle.getString(WebParams.MESSAGE);
             dataMapper = bundle.getString(WebParams.DATA_MAPPER);
 
-            mTempTxID = new ArrayList<TempTxID>();
+            mTempTxID = new ArrayList<>();
+            listObjectRecipient = new ArrayList<>();
+            list_non_member = new ArrayList<>();
 
-            listObjectRecipient = new ArrayList<RecepientModel>();
-
-            amount = 0.0;
+            double amount = 0.0;
 
             Gson json = new Gson();
             String finalName;
             String finalTxid;
+            String number_recipient_nonmember="";
             Double total_fee = 0.0, total_amount = 0.0;
+            String expired_period_date = "";
 
             try {
                 JSONArray mArrayData = new JSONArray(dataJson);
@@ -191,18 +198,32 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                         finalTxid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
                         finalName = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_NAME_TO);
                         mTempTxID.add(new TempTxID(mArrayData.getJSONObject(i).getString(WebParams.TX_ID)));
+                        if(expired_period_date.isEmpty() || expired_period_date.equals(""))
+                            expired_period_date = mArrayData.getJSONObject(i).optString(WebParams.EXP_DURATION_HOUR,"");
                     }
 
                     listObjectRecipient.add(new RecepientModel(finalTxid,
                                                                 finalName,
                                                                 mArrayData.getJSONObject(i).getString(WebParams.MEMBER_PHONE),
-                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS)
+                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS),
+                                                                mArrayData.getJSONObject(i).optString(WebParams.IS_MEMBER_TEMP,"")
                                                                 ));
                     if(listObjectRecipient.get(i).getStatus().equals(DefineValue.SUCCESS)){
+                        amount = amount + amountEach;
                         total_fee = total_fee + fee;
                         total_amount = total_amount + totalAmount;
-                        amount = amount + amountEach;
+
+                        if(listObjectRecipient.get(i).getIs_member_temp().equals(DefineValue.STRING_YES)){
+                            list_non_member.add(listObjectRecipient.get(i));
+                            if(number_recipient_nonmember.isEmpty())
+                                number_recipient_nonmember = listObjectRecipient.get(i).getNumber();
+                            else {
+                                number_recipient_nonmember = number_recipient_nonmember + ", "+ listObjectRecipient.get(i).getNumber();
+                            }
+                        }
                     }
+
+
                 }
 
             } catch (JSONException e) {
@@ -233,7 +254,30 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
             txtName.setText(sp.getString(DefineValue.USER_NAME,""));
             txtNumberRecipients.setText(Integer.toString(total_receive_recepient));
+
+            if(!list_non_member.isEmpty()) {
+                String messageDialog = getString(R.string.dialog_p2p_nonmember_msg,
+                        number_recipient_nonmember,getString(R.string.appname),expired_period_date) ;
+                mDialogNonMember = AlertDialogFrag.newInstance(getString(R.string.dialog_p2p_nonmember_title,getString(R.string.appname)), messageDialog,
+                        getString(R.string.yes),getString(R.string.cancel),false);
+                mDialogNonMember.setOkListener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        btnSubmitAction();
+                    }
+                });
+                mDialogNonMember.setTargetFragment(FragPayFriendsConfirm.this,0);
+
+            }
         }
+        View layout_rec = v.findViewById(R.id.layout_recipient);
+        final Dialog dialog_color_help = DefinedDialog.MessageP2P(getActivity());
+        layout_rec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog_color_help.show();
+            }
+        });
     }
 
     @Override
@@ -247,34 +291,41 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         public void onClick(View view) {
 
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
-                    if (inputValidation()) {
-                        sentDataConfirm(txID,etOTP.getText().toString());
-                    }
-                }
-                else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)){
-                    Intent i = new Intent(getActivity(), InsertPIN.class);
-                    if(attempt != -1 && attempt < 2)
-                        i.putExtra(DefineValue.ATTEMPT,attempt);
-                    startActivityForResult(i,MainPage.REQUEST_FINISH);
-                }
+                if(mDialogNonMember != null)
+                    mDialogNonMember.show(getFragmentManager(),TAG_FRAGPAYFRIENDCONFIRM);
+                else
+                    btnSubmitAction();
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };
+
+    private void btnSubmitAction(){
+        if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+            if (inputValidation()) {
+                sentDataConfirm(txID,etOTP.getText().toString());
+            }
+        }
+        else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN)){
+            Intent i = new Intent(getActivity(), InsertPIN.class);
+            if(attempt != -1 && attempt < 2)
+                i.putExtra(DefineValue.ATTEMPT,attempt);
+            startActivityForResult(i, MainPage.REQUEST_FINISH);
+        }
+    }
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase("OTP")) {
+                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (max_token_resend != 0)
                         sentResendToken(txID);
 
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };
@@ -380,13 +431,13 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                             String error_msg = "";
 
                             String _txid = "", _recipient = "", _recipient_error = null,_message;
-                            double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0;
+                            double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
                             _message = message;
 
                             for(int i = 0 ; i < mArrayData.length() ; i++) {
                                 for (RecepientModel aListObjectRecipient : listObjectRecipient) {
                                     if (aListObjectRecipient.getTx_id().equals(mArrayData.getJSONObject(i).getString(WebParams.TX_ID))) {
-                                        if(!mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.FAILED)) {
+                                        if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.SUCCESS)) {
                                             if (_txid.equals("")) {
                                                 _txid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
                                                 _recipient = aListObjectRecipient.getName();
@@ -399,7 +450,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                                             _fee = _fee + fee;
                                             _total_amount = _total_amount + totalAmount;
                                         }
-                                        else {
+                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.FAILED)) {
                                             isFailed++ ;
                                             error_msg = mArrayData.getJSONObject(i).getString(WebParams.TX_REMARK);
                                             if (_recipient_error == null)
@@ -407,25 +458,37 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                                             else _recipient_error = _recipient_error + "\n" +
                                                     aListObjectRecipient.getName()+ " = " + error_msg;
                                         }
+                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.WAITING_CLAIM)){
+                                            _total_wc = _total_wc + totalAmount;
+                                        }
+
                                     }
                                 }
                             }
 
+
                             if(isFailed != mArrayData.length()){
+
                                 String name = sp.getString(DefineValue.USER_NAME,"");
                                 String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
-                                showReportBillerDialog( name,
-										DateTimeFormat.getCurrentDateTime(),
-                                        sp.getString(DefineValue.USERID_PHONE,""),
-                                        _txid,
-                                        _recipient,
-                                        MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(amountEach),
-                                        MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount),
-                                        MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_fee),
-                                        MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_total_amount),
-                                        _message,
-                                        _recipient_error
-                                );
+
+                                if(list_non_member.size() == mArrayData.length()){
+                                    showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
+                                }
+                                else {
+                                    showReportBillerDialog(name,
+                                            DateTimeFormat.getCurrentDateTime(),
+                                            sp.getString(DefineValue.USERID_PHONE, ""),
+                                            _txid,
+                                            _recipient,
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
+                                            _message,
+                                            _recipient_error
+                                    );
+                                }
                             }
                             else showDialog(error_msg);
 
@@ -494,6 +557,19 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
+    }
+
+    private void showDialogClaim(String message){
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.transaction_success),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        onOkButton();
+                    }
+                });
+
+        dialognya.show();
     }
 
     private void showDialogError(String message){

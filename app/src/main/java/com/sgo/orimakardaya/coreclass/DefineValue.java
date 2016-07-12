@@ -260,6 +260,7 @@ public class DefineValue {
     public static String DEIMEI = "deimei";
     public static String DEICCID = "deiccid";
 
+    public static String WAITING_CLAIM = "WC";
     public static String USER_IS_NEW = "userIsNew";
 
 }

@@ -89,7 +89,7 @@ public class FragCashOutAgen extends Fragment {
         if(InetHandler.isNetworkAvailable(getActivity())) {
             sentInquiryWithdraw();
         }
-        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
     }
 
     private void initializeNoData(){
@@ -181,7 +181,7 @@ public class FragCashOutAgen extends Fragment {
                         if (count_resend != 0)
                             sentResendToken();
                     }
-                    else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+                    else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
                 }
             });
 
@@ -223,7 +223,7 @@ public class FragCashOutAgen extends Fragment {
                         } else
                             CallPINinput(-1);
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+                }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
             }
         });
@@ -238,7 +238,7 @@ public class FragCashOutAgen extends Fragment {
                         btnResend.setEnabled(false);
                     showDialogDel();
                 }
-                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
             }
         });
 

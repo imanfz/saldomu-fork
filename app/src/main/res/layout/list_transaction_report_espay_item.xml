@@ -125,7 +125,7 @@
                 android:id="@+id/text_tx_status"
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="4dp"
-                android:text="Success"
+                android:text="@string/success"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"/>

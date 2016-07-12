@@ -1,14 +1,13 @@
 package com.sgo.orimakardaya.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,12 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
+    String namaValid = "";
+    String emailValid = "";
+    String noHPValid = "";
+    String token_id = "";
+    String max_resend_token = "3";
+    String auth_type = "";
     EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
     CheckBox cb_terms;
@@ -79,9 +83,9 @@ public class Regist1 extends Fragment{
         btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
 
-        namaValue=(EditText)getActivity().findViewById(R.id.name_value);
-        emailValue=(EditText)getActivity().findViewById(R.id.email_value);
-        noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
+        namaValue=(EditText)v.findViewById(R.id.name_value);
+        emailValue=(EditText)v.findViewById(R.id.email_value);
+        noHPValue=(EditText)v.findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -96,7 +100,7 @@ public class Regist1 extends Fragment{
 
         reqPermissionClass = new ReqPermissionClass(getActivity());
 
-        if(reqPermissionClass.checkPermissionREADPHONESTATE()){
+        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
             SMSclass smSclass = new SMSclass(getActivity());
             if(smSclass.isSimExists()){
                 String Nomor1 = smSclass.getSimNumber();
@@ -116,23 +120,12 @@ public class Regist1 extends Fragment{
             }
         });
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        if(sp.contains(DefineValue.SENDER_ID))
-            noHPValid = NoHPFormat.editNoHP(sp.getString(DefineValue.SENDER_ID,""));
-
-        if(BuildConfig.DEBUG){ //untuk shorcut dari tombol di activity LoginActivity
-            Bundle m = getArguments();
-            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-                getActivity().findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
-            }
-        }
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnRequestREADPHONESTATE(requestCode,grantResults)){
+        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
             SMSclass smSclass = new SMSclass(getActivity());
             if(smSclass.isSimExists()){
                 String Nomor1 = smSclass.getSimNumber();
@@ -150,7 +143,7 @@ public class Regist1 extends Fragment{
                     if(inputValidation()){
                         sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message),null);
+                }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
             }
         }
     };

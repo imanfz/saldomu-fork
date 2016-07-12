@@ -160,7 +160,6 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             }
 
             simpleHolder.likeCount.setText(_data.getNumlikes());
-            ;
             simpleHolder.commentCount.setText(_data.getNumcomments());
 
             if (_data.getComment_id_2().equals("")) {
@@ -208,7 +207,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
                         }, 3000);
 
                         if (isLike.equals("1")) {
-                            final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) - 1);
+                            final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) - 1);
                             simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
                             simpleHolder.likeCount.setText(jumlahLike);
                             listHistoryModel.updateNumlikes(jumlahLike, history_id);
@@ -235,7 +234,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
                                 }
                             });
                         } else if (isLike.equals("0")) {
-                            final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) + 1);
+                            final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) + 1);
                             simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
                             simpleHolder.likeCount.setText(jumlahLike);
                             listHistoryModel.updateNumlikes(jumlahLike, history_id);
@@ -379,7 +378,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateMinus());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

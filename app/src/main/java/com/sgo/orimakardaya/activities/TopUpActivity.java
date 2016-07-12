@@ -1,16 +1,23 @@
 package com.sgo.orimakardaya.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
+
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
+import com.sgo.orimakardaya.coreclass.SMSclass;
 import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
 import com.sgo.orimakardaya.fragments.ListTopUp;
 import com.sgo.orimakardaya.fragments.SgoPlus_input;
@@ -24,6 +31,9 @@ public class TopUpActivity extends BaseActivity {
     FragmentManager fragmentManager;
     String transaction_type;
     Boolean is_full_activity = false;
+    boolean isSMSBanking = false;
+    private SMSclass smSclass;
+    private ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,19 @@ public class TopUpActivity extends BaseActivity {
             if (savedInstanceState != null) {
                 return;
             }
+
+            if(transaction_type != null && !transaction_type.isEmpty()) {
+                if (transaction_type.equals(DefineValue.SMS_BANKING)) {
+                    isSMSBanking = true;
+                    reqPermissionClass = new ReqPermissionClass(this);
+                    if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
+                        initializeSmsClass();
+                    }
+                }
+
+            }
+
+
 
             Fragment mFrag;
             Bundle mArgs = i.getExtras();
@@ -55,6 +78,54 @@ public class TopUpActivity extends BaseActivity {
             fragmentTransaction.add(R.id.topUpActivityContent, mFrag, "sgoInput");
             fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(smSclass != null && isSMSBanking)
+            registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(smSclass != null && isSMSBanking)
+            unregisterReceiver(smSclass.simStateReceiver);
+    }
+
+    private void initializeSmsClass(){
+        smSclass = new SMSclass(this);
+
+        smSclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
+            @Override
+            public void sim_state(Boolean isExist, String msg) {
+                if(!isExist){
+                    Toast.makeText(TopUpActivity.this,msg,Toast.LENGTH_SHORT).show();
+                    TopUpActivity.this.finish();
+                }
+            }
+        });
+
+        try{
+            unregisterReceiver(smSclass.simStateReceiver);
+        }
+        catch (Exception e){}
+        registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
+            initializeSmsClass();
+        }
+        else {
+            if(requestCode == ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE) {
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
@@ -147,5 +218,11 @@ public class TopUpActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApiClient.CancelRequestWS(this,true);
     }
 }

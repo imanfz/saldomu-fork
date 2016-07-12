@@ -99,7 +99,7 @@ public class FragMainPage extends Fragment {
 
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
-                if (getActivity() != null) {
+                if (getActivity() != null && getCurrentAdapternya().mCurrentFragment != null) {
                     getCurrentAdapternya().mCurrentFragment.refresh(frame);
                 }
             }

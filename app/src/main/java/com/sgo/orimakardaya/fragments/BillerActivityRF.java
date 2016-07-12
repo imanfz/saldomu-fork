@@ -140,7 +140,6 @@ public class BillerActivityRF extends Fragment{
         setRetainInstance(true);
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -156,8 +155,9 @@ public class BillerActivityRF extends Fragment{
 
 
         realmListener = new RealmChangeListener() {
+
             @Override
-            public void onChange() {
+            public void onChange(Object element) {
                 runQueing();
             }
         };
@@ -317,7 +317,7 @@ public class BillerActivityRF extends Fragment{
             mBillerTypeData.getBiller_data_models().deleteAllFromRealm();
 
             JSONArray jsonBankBiller;
-            String curr_date = DateTimeFormat.getCurrentDateMinus();
+            String curr_date = DateTimeFormat.getCurrentDate();
             Biller_Data_Model mObj = null;
             Denom_Data_Model mDenomData;
             bank_biller_model refObj;
@@ -525,7 +525,7 @@ public class BillerActivityRF extends Fragment{
 
                     mBillerData.getDenom_data_models().deleteAllFromRealm();
 
-                    String curr_date = DateTimeFormat.getCurrentDateMinus();
+                    String curr_date = DateTimeFormat.getCurrentDate();
                     Denom_Data_Model mObjRealm;
 
                     for (int i = 0; i < denom_data.length(); i++) {

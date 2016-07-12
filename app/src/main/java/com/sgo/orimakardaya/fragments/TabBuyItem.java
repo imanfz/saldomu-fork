@@ -84,7 +84,7 @@ public final class TabBuyItem extends ListFragment {
 
         realmListener = new RealmChangeListener() {
             @Override
-            public void onChange() {
+            public void onChange(Object element) {
                 if(isVisible()){
                     Timber.d("masukk realm listener gannnn");
                     mBillerTypeData = realm.where(Biller_Type_Data_Model.class)

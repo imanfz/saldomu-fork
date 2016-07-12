@@ -110,7 +110,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                     } else Toast.makeText(getActivity(), "Wrong Token!", Toast.LENGTH_SHORT).show();
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 

@@ -1,29 +1,36 @@
 package com.sgo.orimakardaya.coreclass;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 
 /**
  * Created by yuddistirakiki on 6/9/16.
  */
 public class ReqPermissionClass {
-    private static final int PERMISSIONS_REQ_READPHONESTATE = 0x123;
-    private static final int PERMISSIONS_SEND_SMS = 0x124;
+    public static final int PERMISSIONS_REQ_READPHONESTATE = 122;
+    public static final int PERMISSIONS_SEND_SMS = 121;
 
     private Activity mActive;
+    private Fragment mFrag;
 
     public ReqPermissionClass(Activity _active){
         this.setmActive(_active);
     }
 
-    public boolean checkPermissionREADPHONESTATE(){
+    public void setTargetFragment(Fragment _frag){
+        this.setmFrag(_frag);
+    }
+
+    public boolean checkPermission(String permission, int reqCode){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                getmActive().checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            getmActive().requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, PERMISSIONS_REQ_READPHONESTATE);
+                getmActive().checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+            if(getmFrag() != null)
+                getmFrag().requestPermissions(new String[]{permission}, reqCode);
+            else
+                getmActive().requestPermissions(new String[]{permission}, reqCode);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
             return false;
         }
@@ -31,17 +38,24 @@ public class ReqPermissionClass {
             return true;
     }
 
-    public boolean checkOnRequestREADPHONESTATE(int requestCode, @NonNull int[] grantResults) {
-        return requestCode == PERMISSIONS_REQ_READPHONESTATE && grantResults[0] != PackageManager.PERMISSION_GRANTED;
+    public boolean checkOnPermissionRequest(int requestCode, @NonNull int[] grantResults, int reqCode) {
+        return requestCode == reqCode && grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 
 
-    public Activity getmActive() {
+    private Activity getmActive() {
         return mActive;
     }
 
-    public void setmActive(Activity mActive) {
+    private void setmActive(Activity mActive) {
         this.mActive = mActive;
     }
 
+    private Fragment getmFrag() {
+        return mFrag;
+    }
+
+    private void setmFrag(Fragment mFrag) {
+        this.mFrag = mFrag;
+    }
 }
