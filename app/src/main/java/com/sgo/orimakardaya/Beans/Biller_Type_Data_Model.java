@@ -17,6 +17,7 @@ public class Biller_Type_Data_Model extends RealmObject {
 
 
     @PrimaryKey
+    @Required
     private String biller_type_id;
     @Required
     private String biller_type;
