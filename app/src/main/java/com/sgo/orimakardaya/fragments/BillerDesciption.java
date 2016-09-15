@@ -745,22 +745,29 @@ public class BillerDesciption extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
+
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
         TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+
+        final int memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));
         Message.setText(getString(R.string.topup_not_registered_1) + " " + _nama_bank + " " + getString(R.string.topup_not_registered_2));
         btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+        if(memberLevel == 1)
+            btnDialogOTP.setText(getString(R.string.ok));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                newIntent.putExtra(DefineValue.BANK_NAME,_nama_bank);
-                switchActivity(newIntent);
+                if(memberLevel == 2) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                    switchActivity(newIntent);
+                }
 
                 dialog.dismiss();
             }
@@ -790,7 +797,8 @@ public class BillerDesciption extends Fragment {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeToConfirmBiller(fee, merchant_type, bank_code, product_code,-1);
+
+                    changeToConfirmBiller(fee, merchant_type, bank_code, product_code,-1);
 
                 dialog.dismiss();
             }
