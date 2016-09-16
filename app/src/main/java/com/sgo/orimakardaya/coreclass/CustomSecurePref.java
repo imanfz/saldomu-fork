@@ -5,6 +5,7 @@ package com.sgo.orimakardaya.coreclass;/*
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 
 import com.securepreferences.SecurePreferences;
 import com.tozny.crypto.android.AesCbcWithIntegrity;
@@ -36,12 +37,20 @@ public class CustomSecurePref {
         return singleton;
     }
 
+    private static String getDeviceId() {
+        if(android.os.Build.SERIAL != null || !android.os.Build.SERIAL.isEmpty())
+            return Settings.Secure.ANDROID_ID+android.os.Build.SERIAL;
+        else
+            return Settings.Secure.ANDROID_ID;
+    }
 
     private CustomSecurePref(Context _context){
         if(getmSecurePrefs() ==null){
+
             try {
                 isFilePrefExist(_context);
-                String test = Settings.Secure.ANDROID_ID;
+//                String test = Settings.Secure.ANDROID_ID;
+                String test = getDeviceId();
                 final byte[] salt = test.getBytes();
                 AesCbcWithIntegrity.SecretKeys myKey = AesCbcWithIntegrity.generateKeyFromPassword(Build.SERIAL,salt,500);
                 setmSecurePrefs(new SecurePreferences(_context, myKey, DefineValue.SEC_PREF_NAME));
