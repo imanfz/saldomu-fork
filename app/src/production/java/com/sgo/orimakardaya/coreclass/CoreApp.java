@@ -2,16 +2,12 @@ package com.sgo.orimakardaya.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
-import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.sgo.orimakardaya.Beans.BalanceModel;
@@ -24,8 +20,6 @@ import com.sgo.orimakardaya.Beans.listTimeLineModel;
 import com.sgo.orimakardaya.Beans.myFriendModel;
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.Introduction;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -70,13 +64,6 @@ public class CoreApp extends Application {
 
 
         set_instance(this);
-        Stetho.initialize(
-                Stetho.newInitializerBuilder(this)
-                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
-                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
-                        .build());
-
-
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
         MyApiClient.initialize(this);
