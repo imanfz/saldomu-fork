@@ -47,7 +47,7 @@
         >
 
         <activity android:name=".activities.Registration"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 >
@@ -56,7 +56,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MainPage"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                   android:exported="true"
@@ -67,52 +67,52 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.LoginActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                 />
 
         <activity android:name=".activities.ListATM"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.SgoPlusWeb"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.MyProfileActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.ChangePassword"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.EvoucherHPActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.BillerActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.PayFriendsConfirmTokenActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.TopUpActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.NotificationActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
@@ -127,67 +127,67 @@
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.CreateGroupActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.TimelineDetailActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.HistoryDetailActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.GroupDetailActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.SocialPromoActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.AddByQRCodeActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.InsertPIN"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.TopUpAtmActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.CollectionActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.AboutAppsActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.RegisterSMSBankingActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.PulsaAgentActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.PulsaAgentWeb"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
@@ -202,22 +202,22 @@
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
 	    <activity android:name=".activities.CashoutActivity"
-                  android:configChanges="orientation"
+                  android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
                   android:windowSoftInputMode="stateAlwaysHidden"
                 />
         <activity android:name=".activities.Introduction"
-            android:configChanges="orientation"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             />
         <activity android:name=".activities.ChangePIN"
-            android:configChanges="orientation"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             />
         <activity android:name=".activities.ListContactActivity"
-            android:configChanges="orientation"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             />

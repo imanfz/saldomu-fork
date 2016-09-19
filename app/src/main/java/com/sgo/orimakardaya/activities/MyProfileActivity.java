@@ -45,6 +45,7 @@ import com.sgo.orimakardaya.coreclass.GeneralizeImage;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.MyPicasso;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
 import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
@@ -76,9 +77,6 @@ import timber.log.Timber;
  */
 public class MyProfileActivity extends BaseActivity {
 
-    private static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 0x123;
-    private static final int PERMISSIONS_REQ_CAMERA = 0x124;
-
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
 
@@ -105,6 +103,7 @@ public class MyProfileActivity extends BaseActivity {
     DatePickerDialog dpd;
     String[] gender_value= new String[]{"L","P"};
     Boolean isLevel1,isRegisteredLevel;
+    ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,7 +121,7 @@ public class MyProfileActivity extends BaseActivity {
         isLevel1 = i == 1;
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
 
-
+        reqPermissionClass = new ReqPermissionClass(this);
         InitializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
@@ -638,11 +637,8 @@ public class MyProfileActivity extends BaseActivity {
                             Timber.wtf("masuk gallery");
                             chooseGallery();
                         } else if (which == 1) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                                    MyProfileActivity.this.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                MyProfileActivity.this.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQ_WRITEEXTERNALSTORAGE);
-                            }
-                            else {
+                            if (reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)) {
                                 chooseCamera();
                             }
                         }
@@ -657,14 +653,14 @@ public class MyProfileActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQ_WRITEEXTERNALSTORAGE || requestCode == PERMISSIONS_REQ_CAMERA  ) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-            }
-            else {
+        if (reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)||
+                reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                        ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
                 chooseCamera();
-            }
-
+        }
+        else {
+            Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -675,6 +671,12 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void chooseCamera() {
+        if (reqPermissionClass.checkPermission(Manifest.permission.CAMERA,ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
+            runCamera();
+        }
+    }
+
+    public void runCamera(){
         String fileName = "temp.jpg";
 
         ContentValues values = new ContentValues();
