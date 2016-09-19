@@ -2,17 +2,20 @@ package com.sgo.orimakardaya.coreclass;/*
   Created by Administrator on 11/6/2015.
  */
 
+import com.sgo.orimakardaya.BuildConfig;
+
 public class DefineValue {
 
     //Final Value
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    public static final String SEC_PREF_NAME = "pin_pref.xml";
+    public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
 
 
     //Static Value
+    public static String DEVELOPMENT = "development" ;
+    public static String PRODUCTION = "production" ;
     public static String language = null;
-    public static String FACEBOOK_PREF = "FaPref";
     public static String VERSION_CODE = "" ;
     public static String VERSION_NAME = "" ;
     public static String TOPUP_IB_TYPE = "1";
@@ -39,6 +42,7 @@ public class DefineValue {
     public static String TRANSACTION = "ts";
     public static String TRANSACTION_ESPAY = "tsesp";
     public static String BIL_TYPE_BUY = "BUY";
+    public static String BIL_TYPE_PAY = "PAY";
     public static String BANKLIST_TYPE_ALL = "ALL" ;
     public static String BANKLIST_TYPE_SMS = "SMS" ;
     public static String BANKLIST_TYPE_IB = "IB" ;
@@ -91,7 +95,7 @@ public class DefineValue {
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
     public static String PULSA = "pulsa";
-    public static String IS_FIRST_TIME = "isFirstTime";
+//    public static String IS_FIRST_TIME = "isFirstTime";
     public static String IS_FIRST = "isFirst";
     public static String BANK_CHANNEL = "bankChannel";
     public static String CONTACT_FIRST_TIME = "contactFirstTime";
@@ -117,7 +121,9 @@ public class DefineValue {
     public static String PROFILE_POB = "profilePOB";
     public static String PROFILE_GENDER = "profileGender";
     public static String PROFILE_ID_TYPE = "profileIDType";
-
+    public static String PREVIOUS_LOGIN_USER_ID = "prevLoginUserId";
+    public static String PREVIOUS_BALANCE = "prevBalance";
+    public static String PREVIOUS_CONTACT_FIRST_TIME = "prevContactFirstTime";
 
     public static String BILLER_DATA = "billerData";
     public static String BILLER_NAME = "billerName";
@@ -243,6 +249,18 @@ public class DefineValue {
     public static String ID_ADMIN = "idAdmin";
     public static String NAME_ADMIN = "nameAdmin";
     public static String CASH_OUT = "cash out";
+    public static String MAX_TOPUP = "max_topup";
+    public static String ALLOW_MEMBER_LEVEL = "allowMemberLevel";
+    public static String CAN_TRANSFER = "canTransfer";
 
+    public static String DESTINATION_REMARK = "destinationRemark";
+    public static String LINK_APP = "linkApp";
+
+    public static String SENDER_ID = "SenderID";
+    public static String DEIMEI = "deimei";
+    public static String DEICCID = "deiccid";
+
+    public static String WAITING_CLAIM = "WC";
+    public static String USER_IS_NEW = "userIsNew";
 
 }

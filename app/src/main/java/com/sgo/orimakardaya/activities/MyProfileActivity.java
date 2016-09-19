@@ -1,35 +1,58 @@
 package com.sgo.orimakardaya.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.CountryModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CameraClass;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.GeneralizeImage;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.MyPicasso;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
+import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,11 +60,15 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -57,14 +84,13 @@ public class MyProfileActivity extends BaseActivity {
 
     SecurePreferences sp;
     TextView tv_dob, tv_verified;
-    EditText et_name,et_address,et_email, et_socialID,et_bio;
+    EditText et_name,et_address,et_email, et_socialID,et_bio,et_pob,et_bom;
     Button btn_submit_update_profile;
-    Spinner spinner_country,spinner_hobby;
+    Spinner spinner_country,spinner_hobby,spinner_gender,spinner_id_types;
     ImageView spinWheelCountry,profilePicContent, profileVerified;
     Animation frameAnimation;
     ArrayAdapter<String> adapter2, adapterHobby;
     String selectedCountry,selectedHobby;
-    Boolean isUpdate,isFirstTime;
     String date_dob, tempCountry,tempHobby,userID,accessKey;
     DateFormat fromFormat,toFormat,toFormat2;
     ProgressDialog progdialog;
@@ -72,48 +98,115 @@ public class MyProfileActivity extends BaseActivity {
     Uri mCapturedImageURI;
     ProgressBar prgLoading;
     int RESULT;
-    boolean is_verified = false;
+    boolean is_verified = false,is_first_time = false;
     String dateNow;
     DatePickerDialog dpd;
+    String[] gender_value= new String[]{"L","P"};
+    Boolean isLevel1,isRegisteredLevel;
+    ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-        prgLoading = (ProgressBar) findViewById(R.id.prgLoading);
-        profilePicContent = (ImageView) findViewById(R.id.myprofile_pic_content);
-        et_name = (EditText) findViewById(R.id.myprofile_value_name);et_name.addTextChangedListener(textWatcher);
-        et_address = (EditText) findViewById(R.id.myprofile_value_address);et_address.addTextChangedListener(textWatcher);
-        et_email = (EditText) findViewById(R.id.myprofile_value_email);et_email.addTextChangedListener(textWatcher);
-        et_socialID = (EditText) findViewById(R.id.myprofile_value_social_id); et_socialID.addTextChangedListener(textWatcher);
-        et_bio = (EditText) findViewById(R.id.myprofile_value_bio);et_bio.addTextChangedListener(textWatcher);
-        tv_dob = (TextView) findViewById(R.id.myprofile_value_bod);
-        btn_submit_update_profile = (Button) findViewById(R.id.btn_submit_update_profile);
-        spinner_country = (Spinner) findViewById(R.id.myprofile_spinner_negara);
-        spinner_hobby = (Spinner) findViewById(R.id.myprofile_spinner_hobby);
-        spinWheelCountry = (ImageView) findViewById(R.id.spinning_wheel_myprofile_negara);
-        tv_verified = (TextView) findViewById(R.id.myprofile_text_verified);
-        profileVerified = (ImageView) findViewById(R.id.myprofile_image_verified);
+        Intent intent    = getIntent();
+        if(intent.hasExtra(DefineValue.IS_FIRST))
+            is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+
+        int i = sp.getInt(DefineValue.LEVEL_VALUE,0);
+        isLevel1 = i == 1;
+        isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
+
+        reqPermissionClass = new ReqPermissionClass(this);
+        InitializeToolbar();
+
+        View v = this.findViewById(android.R.id.content);
+
+        prgLoading = (ProgressBar) v.findViewById(R.id.prgLoading);
+        profilePicContent = (ImageView) v.findViewById(R.id.myprofile_pic_content);
+        et_name = (EditText) v.findViewById(R.id.myprofile_value_name);
+        et_address = (EditText) v.findViewById(R.id.myprofile_value_address);
+        et_email = (EditText) v.findViewById(R.id.myprofile_value_email);
+        et_pob = (EditText) v.findViewById(R.id.myprofile_value_pob);
+        et_socialID = (EditText) v.findViewById(R.id.myprofile_value_social_id);
+        et_bio = (EditText) v.findViewById(R.id.myprofile_value_bio);
+        et_bom = (EditText) v.findViewById(R.id.myprofile_value_birth_mother);
+        tv_dob = (TextView) v.findViewById(R.id.myprofile_value_bod);
+        btn_submit_update_profile = (Button) v.findViewById(R.id.btn_submit_update_profile);
+        spinner_country = (Spinner) v.findViewById(R.id.myprofile_spinner_negara);
+        spinner_hobby = (Spinner) v.findViewById(R.id.myprofile_spinner_hobby);
+        spinner_gender = (Spinner) v.findViewById(R.id.myprofile_spinner_gender);
+        spinner_id_types = (Spinner) v.findViewById(R.id.myprofile_spinner_socialid_type);
+        spinWheelCountry = (ImageView) v.findViewById(R.id.spinning_wheel_myprofile_negara);
+        tv_verified = (TextView) v.findViewById(R.id.myprofile_text_verified);
+        profileVerified = (ImageView) v.findViewById(R.id.myprofile_image_verified);
+
+
+        if (is_first_time) {
+            View tv_first_time = v.findViewById(R.id.firsttime_msg);
+            View layout_mob = v.findViewById(R.id.layout_mother_name);
+            layout_mob.setVisibility(View.VISIBLE);
+            MaterialRippleLayout btn_cancel = (MaterialRippleLayout)
+                    v.findViewById(R.id.btn_cancel_update_profile);
+            tv_first_time.setVisibility(View.VISIBLE);
+            btn_cancel.setVisibility(View.VISIBLE);
+            btn_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    RESULT = MainPage.RESULT_LOGOUT;
+                    closethis();
+                }
+            });
+
+        }
+        else {
+            if(isLevel1) {
+                if (isRegisteredLevel) {
+                    et_name.setEnabled(false);
+                    et_address.setEnabled(false);
+                    et_pob.setEnabled(false);
+                    et_socialID.setEnabled(false);
+                    tv_dob.setEnabled(false);
+                    et_email.setEnabled(false);
+                    spinner_gender.setEnabled(false);
+                    spinner_id_types.setEnabled(false);
+                }
+                else {
+                    et_name.setEnabled(true);
+                    et_address.setEnabled(true);
+                    et_pob.setEnabled(true);
+                    et_socialID.setEnabled(true);
+                    et_email.setEnabled(false);
+                    tv_dob.setEnabled(false);
+                    spinner_gender.setEnabled(true);
+                }
+            }
+            else {
+                et_name.setEnabled(false);
+                et_address.setEnabled(false);
+                et_pob.setEnabled(false);
+                et_socialID.setEnabled(false);
+                tv_dob.setEnabled(false);
+                et_email.setEnabled(false);
+                spinner_gender.setEnabled(false);
+                spinner_id_types.setEnabled(false);
+            }
+        }
 
         tv_dob.setOnClickListener(textDOBListener);
-        spinner_country.setOnItemSelectedListener(spinnerCountryListener);
-        spinner_hobby.setOnItemSelectedListener(spinnerHobbyListener);
 
         frameAnimation = AnimationUtils.loadAnimation(this, R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
         btn_submit_update_profile.setOnClickListener(btnSubmitUpdateListener);
 
-        isUpdate = false;
-        isFirstTime = true;
-        fromFormat = new SimpleDateFormat("yyyy-MM-dd");
-        toFormat = new SimpleDateFormat("dd-MM-yyyy");
-        toFormat2 = new SimpleDateFormat("dd-M-yyyy");
+        fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID","INDONESIA"));
+        toFormat2 = new SimpleDateFormat("dd-M-yyyy", new Locale("ID","INDONESIA"));
 
         Calendar c = Calendar.getInstance();
         dateNow = fromFormat.format(c.getTime());
@@ -125,7 +218,18 @@ public class MyProfileActivity extends BaseActivity {
                 c.get(Calendar.MONTH),
                 c.get(Calendar.DAY_OF_MONTH)
         );
+
+
         initializeData();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(!is_first_time) {
+            RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+            closethis();
+        }
     }
 
 
@@ -135,7 +239,10 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     public void InitializeToolbar(){
-        setActionBarIcon(R.drawable.ic_arrow_left);
+        if(is_first_time)disableHomeIcon();
+        else {
+            setActionBarIcon(R.drawable.ic_arrow_left);
+        }
         setActionBarTitle(getString(R.string.myprofile_ab_title));
     }
 
@@ -143,9 +250,10 @@ public class MyProfileActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT);
-                    Timber.d("result home:"+String.valueOf(RESULT));
-                finish();
+                RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+                if (!is_first_time) {
+                    closethis();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -159,7 +267,9 @@ public class MyProfileActivity extends BaseActivity {
         et_address.setText(sp.getString(DefineValue.PROFILE_ADDRESS,""));
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL,""));
         et_socialID.setText(sp.getString(DefineValue.PROFILE_SOCIAL_ID,""));
+        et_pob.setText(sp.getString(DefineValue.PROFILE_POB,""));
         et_bio.setText(sp.getString(DefineValue.PROFILE_BIO,""));
+        et_bom.setText(sp.getString(DefineValue.PROFILE_BOM,""));
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
 
         if(!dedate.equals("")){
@@ -180,6 +290,7 @@ public class MyProfileActivity extends BaseActivity {
                     c.get(Calendar.MONTH),
                     c.get(Calendar.DAY_OF_MONTH)
             );
+
         }
 
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
@@ -190,18 +301,21 @@ public class MyProfileActivity extends BaseActivity {
         spinWheelCountry.setVisibility(View.VISIBLE);
         spinWheelCountry.startAnimation(frameAnimation);
 
-        CountryModel.allCountry[0] = getString(R.string.myprofile_spinner_default);
+        final ArrayList<String> dataCountry = new ArrayList<>();
+        dataCountry.add(getString(R.string.myprofile_spinner_default));
+        dataCountry.add(CountryModel.Indonesia);
+        dataCountry.addAll(Arrays.asList(CountryModel.allCountry));
 
         Thread deproses = new Thread(){
             @Override
             public void run() {
-                adapter2 = new ArrayAdapter<String>(MyProfileActivity.this, android.R.layout.simple_spinner_item, CountryModel.allCountry);
+                adapter2 = new ArrayAdapter<>(MyProfileActivity.this, android.R.layout.simple_spinner_item, dataCountry);
                 adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner_country.setAdapter(adapter2);
 
-                for(int i = 0 ; i<CountryModel.allCountry.length;i++){
-                    if(CountryModel.allCountry[i].contains(selectedCountry)){
-                        spinner_country.setSelection(i);
+                for(int i = 0 ; i< dataCountry.size();i++){
+                    if(dataCountry.get(i).contains(selectedCountry)){
+                        spinner_country.setSelection(i,false);
                         break;
                     }
                 }
@@ -213,7 +327,6 @@ public class MyProfileActivity extends BaseActivity {
                         spinWheelCountry.setVisibility(View.GONE);
                         spinner_country.setVisibility(View.VISIBLE);
                         adapter2.notifyDataSetChanged();
-                        isFirstTime = false;
                     }
                 });
             }
@@ -250,14 +363,47 @@ public class MyProfileActivity extends BaseActivity {
 
         for(int i = 0 ; i<list_hobby.length;i++){
             if(list_hobby[i].equals(selectedHobby)){
-                spinner_hobby.setSelection(i);
+                spinner_hobby.setSelection(i,false);
                 break;
             }
         }
 
         adapterHobby.notifyDataSetChanged();
 
-        isFirstTime = false;
+        ArrayAdapter<CharSequence> genderAdapter = ArrayAdapter.createFromResource(this,R.array.gender_type, android.R.layout.simple_spinner_item);
+        genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_gender.setAdapter(genderAdapter);
+
+
+        String _tempData = sp.getString(DefineValue.PROFILE_GENDER,"");
+        if(!_tempData.isEmpty()){
+            if(_tempData.equalsIgnoreCase(gender_value[0]))
+                spinner_gender.setSelection(0,false);
+            else
+                spinner_gender.setSelection(1,false);
+        }
+
+        JSONArray mData;
+        try {
+            mData = new JSONArray(sp.getString(DefineValue.LIST_ID_TYPES,""));
+            String[] dataSpinnerSocialID = new String[mData.length()];
+
+            for (int i = 0 ; i < mData.length(); i++) {
+                dataSpinnerSocialID[i] = mData.getJSONObject(i).getString(WebParams.TYPE);
+            }
+
+            ArrayAdapter<String> socialidAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataSpinnerSocialID );
+            socialidAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner_id_types.setAdapter(socialidAdapter);
+
+            _tempData = sp.getString(DefineValue.PROFILE_ID_TYPE,"");
+            if(!_tempData.equals("")){
+                spinner_id_types.setSelection(socialidAdapter.getPosition(_tempData),false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         setImageProfPic();
         changeVerified();
@@ -275,42 +421,6 @@ public class MyProfileActivity extends BaseActivity {
         }
 
     }
-
-    Spinner.OnItemSelectedListener spinnerCountryListener = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Object item = adapterView.getItemAtPosition(i);
-            if(!item.toString().equals(selectedCountry)){
-                    Timber.d("masuk spinner country","masuk dengan index "+i);
-                    changeTextBtnSub();
-                }
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
-    Spinner.OnItemSelectedListener spinnerHobbyListener = new Spinner.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Object item = adapterView.getItemAtPosition(i);
-            if (!item.toString().equals(selectedHobby)) {
-                Timber.d("masuk spinner bio", "masuk dengan index " + i);
-                changeTextBtnSub();
-            }
-
-
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
 
     TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
         @Override
@@ -332,50 +442,36 @@ public class MyProfileActivity extends BaseActivity {
                 e.printStackTrace();
             }
             tv_dob.setText(dedate);
-            changeTextBtnSub();
         }
     };
-
-    private TextWatcher textWatcher = new TextWatcher() {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            Timber.d("masuk masuk text watcher","masuk");
-            if(!isFirstTime)changeTextBtnSub();
-        }
-    };
-
-    public void changeTextBtnSub() {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                btn_submit_update_profile.setText(getString(R.string.update));
-                isUpdate = true;
-            }
-        });
-    }
 
     Button.OnClickListener btnSubmitUpdateListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (isUpdate){
-                if(inputValidation())
-                    sendDataUpdate();
-            }
-            else {
-                setResult(RESULT);
-                finish();
-            }
+                if(InetHandler.isNetworkAvailable(MyProfileActivity.this)) {
+                        if (inputValidation()) {
+                            if(is_first_time){
+                                AlertDialog.Builder alertbox=new AlertDialog.Builder(MyProfileActivity.this);
+                                alertbox.setTitle(getString(R.string.confirmation));
+                                alertbox.setMessage(getString(R.string.myprofile_warning_message_firsttime));
+                                alertbox.setPositiveButton(getString(R.string.ok), new
+                                        DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface arg0, int arg1) {
+                                                sendDataUpdate();
+                                            }
+                                        });
+                                alertbox.setNegativeButton(getString(R.string.cancel), new
+                                        DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface arg0, int arg1) {}
+                                        });
+                                alertbox.show();
+                            }
+                            else
+                                sendDataUpdate();
+                        }
+                }
+                else DefinedDialog.showErrorDialog(MyProfileActivity.this, getString(R.string.inethandler_dialog_message));
+
         }
     };
 
@@ -403,7 +499,7 @@ public class MyProfileActivity extends BaseActivity {
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(this)).into(profilePicContent);
+                .transform(new RoundImageTransformation()).into(profilePicContent);
         }
         else {
             mPic.load(_url_profpic)
@@ -411,7 +507,7 @@ public class MyProfileActivity extends BaseActivity {
                 .fit()
                 .centerCrop()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(this))
+                .transform(new RoundImageTransformation())
                 .into(profilePicContent);
         }
 
@@ -433,8 +529,8 @@ public class MyProfileActivity extends BaseActivity {
             params.put(WebParams.USER_ID,userID);
             params.put(WebParams.EMAIL,et_email.getText().toString());
             params.put(WebParams.FULL_NAME,et_name.getText().toString());
-
-            Timber.d("dedate isinya ", dedate + " " + date_dob);
+            params.put(WebParams.POB,et_pob.getText().toString());
+            params.put(WebParams.ID_TYPE,spinner_id_types.getSelectedItem().toString());
 
             if(dedate.equals(""))params.put(WebParams.DOB,"");
             else params.put(WebParams.DOB,date_dob);
@@ -449,11 +545,18 @@ public class MyProfileActivity extends BaseActivity {
             if(tempHobby.equals(list_hobby[0])) params.put(WebParams.HOBBY,"");
             else params.put(WebParams.HOBBY,tempHobby);
 
-            params.put(WebParams.BIO,et_bio.getText().toString());
+            if(spinner_gender.getSelectedItemPosition()==0)
+                params.put(WebParams.GENDER, gender_value[0]);
+            else
+                params.put(WebParams.GENDER, gender_value[1]);
+
+            params.put(WebParams.BIO, et_bio.getText().toString());
+            params.put(WebParams.MOTHER_NAME, et_bom.getText().toString());
+            params.put(WebParams.IS_REGISTER, "N");
 
             Timber.d("isi params update profile:"+ params.toString());
 
-            MyApiClient.sentUpdateProfile(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentUpdateProfile(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -463,7 +566,11 @@ public class MyProfileActivity extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             setLoginProfile(response);
                             Toast.makeText(MyProfileActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
-                            Timber.d("isi response Update Profile", response.toString());
+                            Timber.d("isi response Update Profile:"+ response.toString());
+                            if(is_first_time) {
+                                RESULT = MainPage.RESULT_FIRST_TIME;
+                            }
+                            closethis();
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
@@ -530,7 +637,10 @@ public class MyProfileActivity extends BaseActivity {
                             Timber.wtf("masuk gallery");
                             chooseGallery();
                         } else if (which == 1) {
-                            chooseCamera();
+                            if (reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)) {
+                                chooseCamera();
+                            }
                         }
 
                     }
@@ -540,6 +650,20 @@ public class MyProfileActivity extends BaseActivity {
         a.show();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)||
+                reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                        ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
+                chooseCamera();
+        }
+        else {
+            Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void chooseGallery() {
         Timber.wtf("masuk gallery");
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -547,6 +671,12 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void chooseCamera() {
+        if (reqPermissionClass.checkPermission(Manifest.permission.CAMERA,ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
+            runCamera();
+        }
+    }
+
+    public void runCamera(){
         String fileName = "temp.jpg";
 
         ContentValues values = new ContentValues();
@@ -581,21 +711,19 @@ public class MyProfileActivity extends BaseActivity {
         switch(requestCode) {
             case RESULT_GALERY:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                    Cursor cursor = getContentResolver().query(
-                            selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-
-                    File photoFile = new File(filePath);
-
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-                    //setImageProfPic(photoFile);
-                    //getOrientationImage();
+                    Bitmap photo = null;
+                    Uri _urinya = data.getData();
+                    if(data.getData() == null) {
+                        photo = (Bitmap)data.getExtras().get("data");
+                    } else {
+                        try {
+                            photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
                     uploadFileToServer(mGI.Convert());
 
                 }
@@ -604,11 +732,15 @@ public class MyProfileActivity extends BaseActivity {
                 if(resultCode == RESULT_OK && mCapturedImageURI!=null){
                     String[] projection = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-                    cursor.moveToFirst();
-                    int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    String filePath = cursor.getString(column_index_data);
-
-                    File photoFile = new File(filePath);
+                    String filePath;
+                    if (cursor != null) {
+                        cursor.moveToFirst();
+                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                        filePath = cursor.getString(column_index_data);
+                    }
+                    else
+                        filePath = data.getData().getPath();
+//                    File photoFile = new File(filePath);
                     GeneralizeImage mGI = new GeneralizeImage(this,filePath);
                     //getOrientationImage();
                     uploadFileToServer(mGI.Convert());
@@ -637,7 +769,7 @@ public class MyProfileActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        MyApiClient.sentProfilePicture(params, new JsonHttpResponseHandler() {
+        MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
@@ -657,8 +789,7 @@ public class MyProfileActivity extends BaseActivity {
 
                         setImageProfPic();
 
-                        RESULT = MainPage.RESULT_PROFILE_PIC;
-                        setResult(RESULT);
+                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                         Timber.d("isi response autologout:" + response.toString());
                         String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -727,6 +858,10 @@ public class MyProfileActivity extends BaseActivity {
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.PROFILE_HOBBY,response.getString(WebParams.HOBBY));
+            mEditor.putString(DefineValue.PROFILE_POB,response.getString(WebParams.POB));
+            mEditor.putString(DefineValue.PROFILE_BOM,response.optString(WebParams.MOTHER_NAME,et_bom.getText().toString()));
+            mEditor.putString(DefineValue.PROFILE_GENDER,response.getString(WebParams.GENDER));
+            mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE ));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
         } catch (JSONException e) {
@@ -734,7 +869,7 @@ public class MyProfileActivity extends BaseActivity {
         }
         mEditor.apply();
         changeVerified();
-        RESULT = MainPage.RESULT_MYPROFILE;
+        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
     }
 
     public boolean inputValidation(){
@@ -750,23 +885,17 @@ public class MyProfileActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            compare = dob.compareTo(now);
-                Timber.d("compare date:"+ Integer.toString(compare));
+            if (dob != null) {
+                if (now != null) {
+                    compare = dob.compareTo(now);
+                }
+            }
+            Timber.d("compare date:"+ Integer.toString(compare));
         }
 
         if(et_name.getText().toString().length()==0){
             et_name.requestFocus();
             et_name.setError(getResources().getString(R.string.regist1_validation_nama));
-            return false;
-        }
-        else if(et_address.getText().toString().length()==0){
-            et_address.requestFocus();
-            et_address.setError(getResources().getString(R.string.myprofile_validation_address));
-            return false;
-        }
-        else if(et_socialID.getText().toString().length()==0){
-            et_socialID.requestFocus();
-            et_socialID.setError(getResources().getString(R.string.myprofile_validation_socialid));
             return false;
         }
         else if(et_email.getText().toString().length()==0){
@@ -783,7 +912,7 @@ public class MyProfileActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -797,7 +926,7 @@ public class MyProfileActivity extends BaseActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date))
-                    .setPositiveButton("OK",new DialogInterface.OnClickListener() {
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -807,7 +936,36 @@ public class MyProfileActivity extends BaseActivity {
             dialog.show();
             return false;
         }
+        else if(is_first_time){
+            if(et_bom.getText().toString().length()==0){
+                et_bom.requestFocus();
+                et_bom.setError(getResources().getString(R.string.myprofile_validation_bom));
+                return false;
+            }
+        }
+        else if(!isLevel1) { //jika level 2
+            if(et_pob.getText().toString().length()==0){
+                et_pob.requestFocus();
+                et_pob.setError(getResources().getString(R.string.myprofile_validation_pob));
+                return false;
+            }
+            else if(et_address.getText().toString().length()==0){
+                et_address.requestFocus();
+                et_address.setError(getResources().getString(R.string.myprofile_validation_address));
+                return false;
+            }
+            else if(et_socialID.getText().toString().length()==0){
+                et_socialID.requestFocus();
+                et_socialID.setError(getResources().getString(R.string.myprofile_validation_socialid));
+                return false;
+            }
+        }
         return true;
+    }
+
+    private void closethis(){
+        setResult(RESULT);
+        this.finish();
     }
 
     public static boolean isValidEmail(CharSequence target) {

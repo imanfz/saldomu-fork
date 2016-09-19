@@ -19,6 +19,8 @@ import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.Beans.Biller_Data_Model;
+import com.sgo.orimakardaya.Beans.bank_biller_model;
 import com.sgo.orimakardaya.Beans.listbankModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.BillerActivity;
@@ -29,12 +31,16 @@ import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /*
@@ -42,10 +48,13 @@ import timber.log.Timber;
  */
 public class BillerDesciption extends Fragment {
 
+
+    public final static String TAG = "BILLER_DESCRIPTION";
+
     View v, layout_biller_name;
     String tx_id, biller_name, biller_comm_id ,biller_comm_code, biller_api_key,
-            ccy_id,amount, item_name, description, cust_id, item_id,biller_id,
-            buy_type_name, payment_name,shareType, callback_url,userID,accessKey;
+            ccy_id,amount, item_name, description, cust_id, item_id,
+            payment_name,shareType, callback_url,userID,accessKey;
     TextView tv_biller_name_value,tv_item_name_value,tv_amount_value, tv_id_cust;
     EditText et_desired_amount;
     Button btn_submit,btn_cancel;
@@ -58,10 +67,12 @@ public class BillerDesciption extends Fragment {
     listbankModel mTempBank;
     Spinner spin_payment_options;
     SecurePreferences sp;
-    private List<listbankModel> mDataPayment;
     List<String> paymentData;
     ArrayAdapter<String> adapterPaymentOptions;
-
+    private Biller_Data_Model mBillerData;
+    private List<bank_biller_model> mListBankBiller;
+    private RealmChangeListener realmListener;
+    Realm realm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,24 +100,37 @@ public class BillerDesciption extends Fragment {
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
 
-        Bundle args = getArguments();
-        Timber.d("isi args biller description:"+args.toString());
+        realm = Realm.getDefaultInstance();
 
-        cust_id = args.getString(DefineValue.CUST_ID,"");
-        biller_id = args.getString(DefineValue.BILLER_ID, "");
-        buy_type_name = args.getString(DefineValue.BUY_TYPE_NAME, "");
-        buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
-        biller_comm_id = args.getString(DefineValue.BILLER_COMM_ID);
-        biller_comm_code = args.getString(DefineValue.BILLER_COMM_CODE);
-        biller_api_key = args.getString(DefineValue.BILLER_API_KEY);
-        biller_name = args.getString(DefineValue.BILLER_NAME, "");
-        item_id = args.getString(DefineValue.ITEM_ID,"");
-        shareType = args.getString(DefineValue.SHARE_TYPE,"");
-        callback_url = args.getString(DefineValue.CALLBACK_URL,"");
+        initializeData();
 
         if(isAdded())
             sentInquiryBiller();
 
+    }
+
+    private void initializeData(){
+        Bundle args = getArguments();
+        Timber.d("isi args biller description:"+args.toString());
+
+        biller_comm_id = args.getString(DefineValue.COMMUNITY_ID);
+        biller_name = args.getString(DefineValue.COMMUNITY_NAME, "");
+        shareType = args.getString(DefineValue.SHARE_TYPE,"");
+        item_id = args.getString(DefineValue.ITEM_ID,"");
+        cust_id = args.getString(DefineValue.CUST_ID,"");
+        buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
+
+
+        mBillerData = realm.where(Biller_Data_Model.class).
+                equalTo(WebParams.COMM_ID,biller_comm_id).
+                equalTo(WebParams.COMM_NAME,biller_name).
+                findFirst();
+
+        mListBankBiller = realm.copyFromRealm(mBillerData.getBank_biller_models());
+
+        biller_comm_code = mBillerData.getComm_code();
+        biller_api_key = mBillerData.getApi_key();
+        callback_url = mBillerData.getCallback_url();
     }
 
     public void initializeLayout(){
@@ -158,6 +182,7 @@ public class BillerDesciption extends Fragment {
                             TableRow.LayoutParams.WRAP_CONTENT,8f);
                     rowParams.setMargins(6,6,6,6);
 
+                    mTableLayout.removeAllViews();
                     for (String aTempList : tempList) {
                         value_detail_field = aTempList;
                         value_detail_value = mDataDesc.getString(aTempList);
@@ -192,13 +217,32 @@ public class BillerDesciption extends Fragment {
             }
         }
 
-        paymentData = new ArrayList<String>();
-        adapterPaymentOptions = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,paymentData);
+        paymentData = new ArrayList<>();
+        adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
         adapterPaymentOptions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_payment_options.setAdapter(adapterPaymentOptions);
         spin_payment_options.setOnItemSelectedListener(spinnerPaymentListener);
 
-        sentListBankBiller();
+        if (isVisible()) {
+                ArrayList<String> tempDataPaymentName = new ArrayList<>();
+                paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+
+                for (int i = 0; i < mListBankBiller.size(); i++) {
+                    if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                        paymentData.add(mListBankBiller.get(i).getProduct_name());
+                    } else {
+                        tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
+                    }
+                }
+                if (!tempDataPaymentName.isEmpty())
+                    Collections.sort(tempDataPaymentName);
+
+                paymentData.addAll(tempDataPaymentName);
+                adapterPaymentOptions.notifyDataSetChanged();
+        }
+
+        if(progdialog !=null && progdialog.isShowing())
+            progdialog.dismiss();
     }
 
     TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -230,9 +274,16 @@ public class BillerDesciption extends Fragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
             payment_name = item.toString();
-            if(i>0)
-                mTempBank = mDataPayment.get(i-1);
-
+            for (i = 0; i < mListBankBiller.size() ; i++ ){
+                if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
+                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
+                                                    mListBankBiller.get(i).getBank_name(),
+                                                    mListBankBiller.get(i).getProduct_code(),
+                                                    mListBankBiller.get(i).getProduct_name(),
+                                                    mListBankBiller.get(i).getProduct_type(),
+                                                    mListBankBiller.get(i).getProduct_h2h());
+                }
+            }
         }
 
         @Override
@@ -355,8 +406,10 @@ public class BillerDesciption extends Fragment {
                         else {
                             Timber.d("Error isi responce inquiry Biller:"+response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                            if(isVisible()) {
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                getFragmentManager().popBackStack();
+                            }
                         }
                         if(progdialog.isShowing())
                             progdialog.dismiss();
@@ -412,123 +465,9 @@ public class BillerDesciption extends Fragment {
                 }
             };
 
-            MyApiClient.sentInquiryBiller(params, mHandler);
+            MyApiClient.sentInquiryBiller(getActivity(),params, mHandler);
 //            if(!isAdded())
                 //MyApiClient.getClient().cancelRequests(get);
-
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
-        }
-    }
-
-
-    public void sentListBankBiller(){
-        try{
-            RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_LIST_BANK_BILLER,
-                    userID,accessKey);
-            params.put(WebParams.COMM_ID,biller_comm_id);
-            params.put(WebParams.USER_ID, userID);
-
-            Timber.d("isi params sent list bank biller:" + params.toString());
-
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.d("isi response list bank biller:" + response.toString());
-                            JSONArray mData = new JSONArray(response.getString(WebParams.BANK_DATA));
-                            mDataPayment = new ArrayList<listbankModel>();
-                            ArrayList<String> tempDataPaymentName = new ArrayList<String>();
-                            ArrayList<listbankModel> tempMDataPayment = new ArrayList<listbankModel>();
-
-                            paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
-
-                            for(int i = 0; i < mData.length() ; i++){
-                                JSONObject mJob = mData.getJSONObject(i);
-                                listbankModel mBob = new listbankModel(mJob.getString(WebParams.BANK_CODE),
-                                                                       mJob.getString(WebParams.BANK_NAME),
-                                                                       mJob.getString(WebParams.PRODUCT_CODE),
-                                                                       mJob.getString(WebParams.PRODUCT_NAME),
-                                                                       mJob.getString(WebParams.PRODUCT_TYPE),
-                                                                       mJob.getString(WebParams.PRODUCT_H2H)
-                                                                       );
-
-                                if(mBob.getProduct_code().equals(DefineValue.SCASH)){
-                                    String tempProductName = mBob.getProduct_name();
-                                    mDataPayment.add(mBob);
-                                    paymentData.add(tempProductName);
-                                }
-                                else {
-                                    //mDataPayment.add(mBob);
-                                    tempMDataPayment.add(mBob);
-                                    tempDataPaymentName.add(mBob.getProduct_name());
-                                }
-                            }
-
-                            if(!tempDataPaymentName.isEmpty())
-                                Collections.sort(tempDataPaymentName);
-                            if(!tempMDataPayment.isEmpty())
-                                Collections.sort(tempMDataPayment, new PaymentNameComparator());
-
-                            mDataPayment.addAll(tempMDataPayment);
-                            paymentData.addAll(tempDataPaymentName);
-
-                            adapterPaymentOptions.notifyDataSetChanged();
-                            progdialog.dismiss();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            Timber.d("Error isi list bank biller", response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi list bank biller desc:"+throwable.toString());
-                }
-            };
-
-            MyApiClient.sentListBankBiller(params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -577,13 +516,17 @@ public class BillerDesciption extends Fragment {
 
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(response.getString(WebParams.FEE), response.optString(WebParams.MERCHANT_TYPE, ""),
-                                        bank_code,product_code);
+                                        bank_code,product_code,-1);
                                 progdialog.dismiss();
                                 btn_submit.setEnabled(true);
                             }
                             else {
+                                int attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
+                                if(attempt != -1)
+                                    attempt = response.optInt(WebParams.MAX_FAILED,3) - attempt ;
+
                                 sentDataReqToken(tx_id,product_code,biller_comm_code,response.getString(WebParams.FEE),
-                                        response.optString(WebParams.MERCHANT_TYPE, ""),bank_code);
+                                        response.optString(WebParams.MERCHANT_TYPE, ""),bank_code,attempt);
                             }
 
                         }
@@ -641,7 +584,7 @@ public class BillerDesciption extends Fragment {
                 }
             };
 
-            MyApiClient.sentPaymentBiller(params, mHandler);
+            MyApiClient.sentPaymentBiller(getActivity(),params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -651,7 +594,7 @@ public class BillerDesciption extends Fragment {
 
 
     public void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code, final String fee,
-                                 final String merchant_type, final String _bank_code){
+                                 final String merchant_type, final String _bank_code, final int _attempt){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
@@ -664,7 +607,7 @@ public class BillerDesciption extends Fragment {
 
             Timber.d("isi params regtoken Sgo+:"+params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -677,7 +620,7 @@ public class BillerDesciption extends Fragment {
                             else if(merchant_type.equals(DefineValue.AUTH_TYPE_OTP))
                                 showDialog(fee,merchant_type,_product_code,_bank_code);
                             else
-                                changeToConfirmBiller(fee,merchant_type,_bank_code,_product_code);
+                                changeToConfirmBiller(fee,merchant_type,_bank_code,_product_code,_attempt);
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -686,37 +629,44 @@ public class BillerDesciption extends Fragment {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }
+                        else if(code.equals(ErrorDefinition.WRONG_PIN_BILLER)){
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            showDialogError(code);
+
+                        }
                         else {
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals("0059")){
-                                showDialogSMS(mTempBank.getBank_name());
-                            }
-                            else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance);
+                            switch (code) {
+                                case "0059":
+                                    showDialogSMS(mTempBank.getBank_name());
+                                    break;
+                                case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance);
 
-                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent mI = new Intent(getActivity(),TopUpActivity.class);
-                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                        startActivityForResult(mI, MainPage.REQUEST_FINISH);
-                                    }
-                                });
-                                dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        sentInquiryBiller();
-                                    }
-                                });
-                                dialog_frag.setTargetFragment(BillerDesciption.this, 0);
-                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
-                            }
-                            else {
-                                code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                getFragmentManager().popBackStack();
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
+                                        }
+                                    });
+                                    dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            sentInquiryBiller();
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(BillerDesciption.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    break;
+                                default:
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getFragmentManager().popBackStack();
+                                    break;
                             }
 
                         }
@@ -763,6 +713,19 @@ public class BillerDesciption extends Fragment {
         }
     }
 
+    private void showDialogError(String message){
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.error),
+                message,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        getFragmentManager().popBackStack();
+                    }
+                }
+        );
+        dialognya.show();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -770,7 +733,6 @@ public class BillerDesciption extends Fragment {
             if(resultCode == MainPage.RESULT_NORMAL){
                 sentInquiryBiller();
             }
-
         }
     }
 
@@ -783,22 +745,29 @@ public class BillerDesciption extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
+
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
         TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+
+        final int memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));
         Message.setText(getString(R.string.topup_not_registered_1) + " " + _nama_bank + " " + getString(R.string.topup_not_registered_2));
         btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+        if(memberLevel == 1)
+            btnDialogOTP.setText(getString(R.string.ok));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                newIntent.putExtra(DefineValue.BANK_NAME,_nama_bank);
-                switchActivity(newIntent);
+                if(memberLevel == 2) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                    switchActivity(newIntent);
+                }
 
                 dialog.dismiss();
             }
@@ -823,12 +792,13 @@ public class BillerDesciption extends Fragment {
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.smsBanking_dialog_validation_title));
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-        Message.setText(getString(R.string.application_name)+" "+getString(R.string.dialog_token_message_sms));
+        Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeToConfirmBiller(fee, merchant_type, bank_code, product_code);
+
+                    changeToConfirmBiller(fee, merchant_type, bank_code, product_code,-1);
 
                 dialog.dismiss();
             }
@@ -840,7 +810,8 @@ public class BillerDesciption extends Fragment {
 
 
 
-    private void changeToConfirmBiller(String fee, String merchant_type, String bank_code, String product_code) {
+    private void changeToConfirmBiller(String fee, String merchant_type, String bank_code,
+                                       String product_code, int attempt) {
 
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.TX_ID,tx_id);
@@ -853,12 +824,10 @@ public class BillerDesciption extends Fragment {
         mArgs.putString(DefineValue.PAYMENT_NAME, payment_name);
         mArgs.putString(DefineValue.CUST_ID, cust_id);
         mArgs.putInt(DefineValue.BUY_TYPE, buy_type);
-        mArgs.putString(DefineValue.BUY_TYPE_NAME, buy_type_name);
         mArgs.putString(DefineValue.BILLER_COMM_CODE,biller_comm_code);
         mArgs.putString(DefineValue.BILLER_API_KEY,biller_api_key);
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.ITEM_ID,item_id);
-        mArgs.putString(DefineValue.BILLER_ID,biller_id);
         mArgs.putString(DefineValue.FEE, fee);
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
@@ -873,6 +842,7 @@ public class BillerDesciption extends Fragment {
 
         mArgs.putBoolean(DefineValue.IS_SGO_PLUS, mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB));
         mArgs.putString(DefineValue.AUTHENTICATION_TYPE, merchant_type);
+        mArgs.putInt(DefineValue.ATTEMPT, attempt);
 
         if(is_display_amount)
             mArgs.putString(DefineValue.DESCRIPTION,description);
@@ -886,15 +856,15 @@ public class BillerDesciption extends Fragment {
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);
-        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true);
+        switchFragment(newFrag, BillerActivity.FRAG_BIL_DESCRIPTION,null,true, BillerConfirm.TAG);
     }
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name,String next_name, Boolean isBackstack, String tag){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity ) getActivity();
-        fca.switchContent(i,name,next_name,isBackstack);
+        fca.switchContent(i,name,next_name,isBackstack, tag);
     }
 
     private void switchActivity(Intent mIntent){
@@ -928,22 +898,18 @@ public class BillerDesciption extends Fragment {
             }
         }
 
-        if(payment_name.equals(getString(R.string.billerinput_text_spinner_default_payment))){
-            spin_payment_options.requestFocus();
-            Toast.makeText(getActivity(),getString(R.string.billerinput_validation_spinner_default_payment),Toast.LENGTH_LONG).show();
-            return false;
+        if(payment_name!=null) {
+            if (payment_name.equals(getString(R.string.billerinput_text_spinner_default_payment))) {
+                spin_payment_options.requestFocus();
+                Toast.makeText(getActivity(), getString(R.string.billerinput_validation_spinner_default_payment), Toast.LENGTH_LONG).show();
+                return false;
+            }
         }
+        else
+            return false;
 
         return true;
     }
-
-    public class PaymentNameComparator implements Comparator<listbankModel>
-    {
-        public int compare(listbankModel left, listbankModel right) {
-            return left.getProduct_name().compareTo(right.getProduct_name());
-        }
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -960,4 +926,12 @@ public class BillerDesciption extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        if(!realm.isInTransaction() && !realm.isClosed()) {
+            realm.removeChangeListener(realmListener);
+            realm.close();
+        }
+        super.onDestroy();
+    }
 }

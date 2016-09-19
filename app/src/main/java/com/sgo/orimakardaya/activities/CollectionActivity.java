@@ -21,7 +21,6 @@ import timber.log.Timber;
  */
 public class CollectionActivity extends BaseActivity {
 
-    JSONObject mDataArray;
     FragmentManager fragmentManager;
     String _collection_data;
 
@@ -30,40 +29,29 @@ public class CollectionActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent    = getIntent();
-        String title = "";
-        _collection_data = intent.getStringExtra(DefineValue.COLLECTION_DATA);
+        Bundle mBun = getIntent().getExtras();
 
-        try {
-            mDataArray  = new JSONObject(_collection_data);
-            title = mDataArray.getString(WebParams.COMM_NAME);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        InitializeToolbar(title);
+        InitializeToolbar(mBun.getString(DefineValue.COMMUNITY_NAME,""));
 
         if (findViewById(R.id.collection_content) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
-            try {
-                Bundle mArgs = new Bundle();
-                mArgs.putString(DefineValue.COMMUNITY_CODE,mDataArray.getString(WebParams.COMM_CODE));
-                mArgs.putString(DefineValue.COMMUNITY_ID,mDataArray.getString(WebParams.COMM_ID));
-                mArgs.putString(DefineValue.COMMUNITY_API_KEY,mDataArray.getString(WebParams.API_KEY));
-                mArgs.putString(DefineValue.CALLBACK_URL,mDataArray.getString(WebParams.CALLBACK_URL));
-                mArgs.putString(DefineValue.COMMUNITY_NAME,title);
-                Fragment mFrag = new ListCollectionPayment();
-                mFrag.setArguments(mArgs);
-                fragmentManager = getSupportFragmentManager();
-                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.collection_content, mFrag,title);
-                fragmentTransaction.commit();
-                setResult(MainPage.RESULT_NORMAL);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            Bundle mArgs = new Bundle();
+            mArgs.putString(DefineValue.COMMUNITY_CODE,mBun.getString(DefineValue.COMMUNITY_CODE,""));
+            mArgs.putString(DefineValue.COMMUNITY_ID,mBun.getString(DefineValue.COMMUNITY_ID,""));
+            mArgs.putString(DefineValue.COMMUNITY_API_KEY,mBun.getString(DefineValue.COMMUNITY_API_KEY,""));
+            mArgs.putString(DefineValue.CALLBACK_URL,mBun.getString(DefineValue.CALLBACK_URL,""));
+            mArgs.putString(DefineValue.COMMUNITY_NAME,mBun.getString(DefineValue.COMMUNITY_NAME,""));
+            Fragment mFrag = new ListCollectionPayment();
+            mFrag.setArguments(mArgs);
+            fragmentManager = getSupportFragmentManager();
+            android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.collection_content, mFrag,mBun.getString(DefineValue.COMMUNITY_NAME,""));
+            fragmentTransaction.commit();
+            setResult(MainPage.RESULT_NORMAL);
+
         }
     }
 

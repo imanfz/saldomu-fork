@@ -39,12 +39,6 @@ import timber.log.Timber;
 
 public class Registration extends BaseActivity{
 
-    public static final int REQUEST_EXIT = 0 ;
-    public static final int RESULT_PIN = 1 ;
-    public static final int RESULT_NORMAL = 2 ;
-    public static final int RESULT_FINISHING = 5 ;
-    public static final int ACTIVITY_RESULT = 3;
-
     android.support.v4.app.FragmentManager fragmentManager;
 
     public static Activity fa;
@@ -144,7 +138,7 @@ public class Registration extends BaseActivity{
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("Isi response get App Version:"+ response.toString());
                             String arrayApp = response.getString(WebParams.APP_DATA);
-                            if(!arrayApp.isEmpty() && arrayApp.equalsIgnoreCase(null)) {
+                            if(!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
                                 JSONObject mObject = null;
                                 if (arrayApp != null)
                                     mObject = new JSONObject(arrayApp);
@@ -244,10 +238,6 @@ public class Registration extends BaseActivity{
                 }
 
                 private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(Registration.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(Registration.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                     Timber.w("Error Koneksi app version registration:"+ throwable.toString());
                 }
             });
@@ -327,18 +317,11 @@ public class Registration extends BaseActivity{
         super.onActivityResult(requestCode,resultCode,data);
     }
 
-    public void switchActivity(Intent mIntent, int activity_type) {
-        switch (activity_type){
-            case ACTIVITY_RESULT:
-                startActivityForResult(mIntent, REQUEST_EXIT);
-                break;
-        }
-    }
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(getApplicationContext(),true);
+        MyApiClient.CancelRequestWS(this,true);
     }
 }

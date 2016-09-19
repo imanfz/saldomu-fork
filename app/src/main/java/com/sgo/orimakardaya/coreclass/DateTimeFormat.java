@@ -8,15 +8,22 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DateTimeFormat {
 
+    private static final Long OneHourMs = 3600000L;
 
     public static SimpleDateFormat getFormatYearHours(){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
     }
 
+
+    public static Long getCurrentDateTimeMillis(){
+        Calendar calendar = Calendar.getInstance();
+        return calendar.getTimeInMillis();
+    }
 
 
     public static String getCurrentDateTime(){
@@ -56,14 +63,18 @@ public class DateTimeFormat {
       return df.format(Calendar.getInstance().getTime());
     }
 
-    public static String getCurrentDate(int minus){
+    public static Date getCurrDate(){
+        return Calendar.getInstance().getTime();
+    }
+
+    public static String getCurrentDateMinus(int minus){
       DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
       Calendar calendar=Calendar.getInstance();
       calendar.add(Calendar.DAY_OF_YEAR, -minus);
       return df.format(calendar.getTime());
     }
 
-    public static java.util.Date convertCustomDate(String _date){
+    public static java.util.Date convertStringtoCustomDateTime(String _date){
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
       try {
           return dateFormat.parse(_date);
@@ -71,5 +82,34 @@ public class DateTimeFormat {
           e.printStackTrace();
       }
       return null;
-  }
+    }
+
+    public static java.util.Date convertStringtoCustomDate(String _date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        try {
+            return dateFormat.parse(_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String convertDatetoString(Date _date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        return dateFormat.format(_date);
+    }
+
+    public static String convertMilisToMinute(Long _milisecond){
+        SimpleDateFormat dateFormat;
+        if(_milisecond < OneHourMs) {
+            dateFormat = new SimpleDateFormat("m:ss", new Locale("ID", "INDONESIA"));
+
+        }
+        else {
+            dateFormat = new SimpleDateFormat("HH:mm:ss", new Locale("ID", "INDONESIA"));
+
+        }
+        return dateFormat.format(new Date(_milisecond));
+    }
+
 }

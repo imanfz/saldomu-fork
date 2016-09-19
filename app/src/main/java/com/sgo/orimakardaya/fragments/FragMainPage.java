@@ -1,6 +1,7 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.Activity;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.MainFragmentAdapter;
 import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
@@ -36,6 +38,7 @@ public class FragMainPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_main_page, container, false);
+        getActivity().invalidateOptionsMenu();
         setCurrentView(v);
         return v;
     }
@@ -48,8 +51,9 @@ public class FragMainPage extends Fragment {
         MainFragmentAdapter adapternya;
         TitlePageIndicator tabs;
         ViewPager pager;
-
-        List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
+        getActivity().invalidateOptionsMenu();
+        final List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
+        mList.add(new Home());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
 //        mList.add(new Group());
@@ -61,9 +65,28 @@ public class FragMainPage extends Fragment {
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(0);
+        pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+//                updateFab(i);
+                ToggleFAB(!(mList.get(i) instanceof Home));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+
+//        setupFab();
 
         PtrFrameLayout mPtrFrame = (PtrClassicFrameLayout) getCurrentView().findViewById(R.id.view_pager_ptr_frame);
         mPtrFrame.disableWhenHorizontalMove(true);
@@ -76,33 +99,33 @@ public class FragMainPage extends Fragment {
 
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
-                long delay = (long) (1000 + Math.random() * 2000);
-                delay = Math.max(0, delay);
-                frame.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (getActivity() != null) {
-                            getCurrentAdapternya().mCurrentFragment.refresh();
-                            frame.refreshComplete();
-                        }
-                    }
-                }, delay);
+                if (getActivity() != null && getCurrentAdapternya().mCurrentFragment != null) {
+                    getCurrentAdapternya().mCurrentFragment.refresh(frame);
+                }
             }
+
+
         });
 
         setCurrentPtrFrame(mPtrFrame);
 
-        mPtrFrame.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getCurrentPtrFrame().autoRefresh(false);
-            }
-        }, 100);
-
+        getCurrentPtrFrame().autoRefresh(true);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        //if(sp.getInt(Registration.COMMUNITY_LENGTH,0)==1)sentDataListMember();
 
+        tabs.setOnCenterItemClickListener(new TitlePageIndicator.OnCenterItemClickListener() {
+            @Override
+            public void onCenterItemClick(int position) {
+                getCurrentAdapternya().mCurrentFragment.goToTop();
+            }
+        });
+
+
+        ToggleFAB(false);
+    }
+
+    public Fragment getFragment(int position){
+        return getCurrentAdapternya().getItem(position);
     }
 
     @Override
@@ -132,5 +155,41 @@ public class FragMainPage extends Fragment {
 
     public void setCurrentView(View currentView) {
         this.currentView = currentView;
+    }
+
+
+    private int getStatusBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return getActivity().getWindow().getStatusBarColor();
+        }
+        return 0;
+    }
+
+    private void setStatusBarColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getActivity().getWindow().setStatusBarColor(color);
+        }
+    }
+
+
+    private void switchMenu(int idx_menu,Bundle data){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+            fca.switchMenu(idx_menu, data);
+    }
+
+    private void ToggleFAB(Boolean isShow){
+        if (getActivity() == null)
+            return;
+
+        if(getActivity() instanceof MainPage) {
+            MainPage fca = (MainPage) getActivity();
+            if(isShow)
+                fca.materialSheetFab.showFab();
+            else
+                fca.materialSheetFab.hideSheetThenFab();
+        }
     }
 }

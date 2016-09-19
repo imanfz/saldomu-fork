@@ -42,7 +42,7 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/colorPrimaryDark"
                         android:gravity="center"
-                        android:text="@string/reg2_btn_text_resend_token"
+                        android:text="@string/reg2_btn_text_resend_token_sms"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/button_transparant"
                         />
@@ -209,6 +209,14 @@
                           android:layout_marginRight="16dp"
                     >
 
+                <LinearLayout
+                    android:id="@+id/layout_recipient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    >
+
                 <TextView android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
                           android:text="@string/payfriends_text_recipients"
@@ -216,6 +224,18 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_about"
+                        android:layout_marginLeft="4dp"
+                        />
+
+                </LinearLayout>
+
 
                 <ListView android:id="@+id/list_recipient"
                           android:divider="@drawable/transparent"

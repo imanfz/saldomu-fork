@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
@@ -20,6 +19,8 @@ import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.HistoryRecycleAdapter;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
+import com.sgo.orimakardaya.interfaces.OnLoadMoreListener;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
 import timber.log.Timber;
 
 /*
@@ -76,26 +79,32 @@ public class MyHistory extends BaseFragmentMainPage {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         setCurrentLayoutManag(mLayoutManager);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new HistoryRecycleAdapter(listHistory, R.layout.list_recycle_timeline_item, getActivity());
+        mAdapter = new HistoryRecycleAdapter(listHistory, R.layout.list_recycle_timeline_item,
+                getActivity(),mRecyclerView);
+        mAdapter.setOnLoadMoreListener(onLoadMoreListener);
+        mAdapter.setVisibleThreshold(1);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.SetOnItemClickListener(new HistoryRecycleAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Intent i = new Intent(getActivity(), HistoryDetailActivity.class);
-                i.putExtra("post_id", Integer.toString(listHistory.get(position).getHistory_id()));
-                i.putExtra("from_name", listHistory.get(position).getOwner());
-                i.putExtra("from_id", listHistory.get(position).getOwner_id());
-                i.putExtra("to_name", listHistory.get(position).getWith());
-                i.putExtra("to_id", listHistory.get(position).getWith_id());
-                i.putExtra("message", listHistory.get(position).getPost());
-                i.putExtra("datetime", listHistory.get(position).getDatetime());
-                i.putExtra("ccy", listHistory.get(position).getCcy_id());
-                i.putExtra("amount", listHistory.get(position).getAmount());
-                i.putExtra("profpic", listHistory.get(position).getOwner_profile_picture());
-                i.putExtra("tx_status", listHistory.get(position).getTypecaption());
-                i.putExtra("with_profpic", listHistory.get(position).getWith_profile_picture());
+                i.putExtra(DefineValue.POST_ID, Integer.toString(listHistory.get(position).getHistory_id()));
+                i.putExtra(DefineValue.FROM_NAME, listHistory.get(position).getOwner());
+                i.putExtra(DefineValue.FROM_ID, listHistory.get(position).getOwner_id());
+                i.putExtra(DefineValue.TO_NAME, listHistory.get(position).getWith());
+                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getWith_id());
+                i.putExtra(DefineValue.MESSAGE, listHistory.get(position).getPost());
+                i.putExtra(DefineValue.DATE_TIME, listHistory.get(position).getDatetime());
+                i.putExtra(DefineValue.CCY_ID, listHistory.get(position).getCcy_id());
+                i.putExtra(DefineValue.AMOUNT, listHistory.get(position).getAmount());
+                i.putExtra(DefineValue.PROF_PIC, listHistory.get(position).getOwner_profile_picture());
+                i.putExtra(DefineValue.TX_STATUS, listHistory.get(position).getTypecaption());
+                i.putExtra(DefineValue.WITH_PROF_PIC, listHistory.get(position).getWith_profile_picture());
+                i.putExtra(DefineValue.POST_TYPE, listHistory.get(position).getTypepost());
+                Timber.d("isi extra intennt history detail activity:"+i.getExtras().toString());
                 switchActivity(i);
             }
         });
@@ -104,14 +113,36 @@ public class MyHistory extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 page = "0";
-                getHistoryList();
+                getHistoryList(null,0);
             }
         });
 
         if(isTimelineNew.equals(DefineValue.NO)){
             initializeDataPost();
         }
-        getHistoryList();
+        getHistoryList(null,0);
+    }
+
+
+
+    OnLoadMoreListener onLoadMoreListener = new OnLoadMoreListener() {
+        @Override
+        public void onLoadMore() {
+            //add null , so the adapter will check view_type and show progress bar at bottom
+//            listHistory.add(null);
+//            mAdapter.notifyItemInserted(listHistory.size() - 1);
+//            getHistoryList(null,0);
+//            Log.d("masuk onloadmore myhistory","masssuukk");
+        }
+    };
+
+    public void ScrolltoItem(int _post_id){
+        for (int i = 0;i< listHistory.size();i++){
+            if(listHistory.get(i).getHistory_id() == _post_id){
+                getCurrentLayoutManag().scrollToPositionWithOffset(i,20);
+                break;
+            }
+        }
     }
 
     public void initializeDataPost(){
@@ -129,21 +160,25 @@ public class MyHistory extends BaseFragmentMainPage {
         mAdapter.notifyDataSetChanged();
     }
 
-    public void getHistoryList() {
+    public void getHistoryList(final PtrFrameLayout frameLayout, final int mPage) {
         try {
+
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+            _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
             RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TIMELINE_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
             params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
-            params.put(WebParams.PAGE, page);
+            params.put(WebParams.PAGE, mPage);
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get history list", params.toString());
+            Timber.d("isi params get history list:" + params.toString());
 
-            MyApiClient.getTimelineList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getTimelineList(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -151,11 +186,11 @@ public class MyHistory extends BaseFragmentMainPage {
                         String code = response.getString(WebParams.ERROR_CODE);
                         String count = response.getString(WebParams.COUNT);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && count != "0") {
-                            Timber.d("isi params history list", response.toString());
-                            Timber.d("list listHistory", Integer.toString(listHistory.size()));
+                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                            Timber.d("isi params history list:"+response.toString());
+                            Timber.d("list listHistory:"+Integer.toString(listHistory.size()));
 
-                            List<listHistoryModel> mListHistory = new ArrayList<listHistoryModel>();
+                            List<listHistoryModel> mListHistory = new ArrayList<>();
                             JSONArray mArrayPost = new JSONArray(response.getString(WebParams.DATA_POSTS));
                             for (int i = 0; i < mArrayPost.length(); i++) {
                                 int id = Integer.parseInt(mArrayPost.getJSONObject(i).getString(WebParams.ID));
@@ -173,7 +208,7 @@ public class MyHistory extends BaseFragmentMainPage {
                                     }
                                 }
 
-                                if (flagSame == false) {
+                                if (!flagSame) {
                                     String post = mArrayPost.getJSONObject(i).getString(WebParams.POST);
                                     String amount = mArrayPost.getJSONObject(i).getString(WebParams.AMOUNT);
                                     String balance = mArrayPost.getJSONObject(i).getString(WebParams.BALANCE);
@@ -253,19 +288,24 @@ public class MyHistory extends BaseFragmentMainPage {
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginMain(getActivity(),message);
                         }
                         else {
-                            Timber.d("isi error history list", response.toString());
+                            Timber.d("isi error history list:"+response.toString());
                             //code = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals("0003")) {
+                            if(mPage == 0 && code.equals("0003")) {
                                 listHistoryModel.deleteAll();
                                 initializeDataPost();
                             }
+                            mAdapter.setLoadingLoadMore(true);
                         }
+                        if(frameLayout != null)
+                            frameLayout.refreshComplete();
+                        if(mPage == 0)
+                            mAdapter.setLoadingLoadMore(false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -290,10 +330,10 @@ public class MyHistory extends BaseFragmentMainPage {
                 }
 
                 private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//                    if(MyApiClient.PROD_FAILURE_FLAG)
+//                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                    else
+//                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     Timber.w("Error Koneksi history list myhistory:"+throwable.toString());
                 }
@@ -306,13 +346,11 @@ public class MyHistory extends BaseFragmentMainPage {
     public void insertPostToDB(List<listHistoryModel> mListTimeline){
         ActiveAndroid.beginTransaction();
         listHistoryModel mTm;
-
+        new listHistoryModel();
         if(mListTimeline.size()>0){
             for (int i = 0; i < mListTimeline.size(); i++) {
-                mTm = new listHistoryModel();
                 mTm = mListTimeline.get(i);
                 mTm.save();
-                Timber.d("idx array posts", String.valueOf(i));
             }
         }
 
@@ -358,21 +396,23 @@ public class MyHistory extends BaseFragmentMainPage {
 
     @Override
     public boolean checkCanDoRefresh() {
-        if (mAdapter.getItemCount() == 0 || mRecyclerView == null) {
-            return true;
-        }
-        return getCurrentLayoutManag().findFirstCompletelyVisibleItemPosition() == 0 && mRecyclerView.getChildAt(0).getTop() > 0 ;
+        return mAdapter.getItemCount() == 0 || mRecyclerView == null || getCurrentLayoutManag().findFirstCompletelyVisibleItemPosition() == 0 && mRecyclerView.getChildAt(0).getTop() > 0;
 
     }
 
     @Override
-    public void refresh() {
+    public void refresh(PtrFrameLayout frameLayout) {
         int p = Integer.parseInt(page) + 1;
         page = Integer.toString(p);
-        getHistoryList();
+        getHistoryList(frameLayout,0);
     }
 
-	public LinearLayoutManager getCurrentLayoutManag() {
+    @Override
+    public void goToTop() {
+        mRecyclerView.smoothScrollToPosition(0);
+    }
+
+    public LinearLayoutManager getCurrentLayoutManag() {
         return currentLayoutManag;
     }
 

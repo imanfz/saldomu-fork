@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_marginLeft="@dimen/abc_text_size_medium_material"
-                android:layout_marginTop="@dimen/abc_text_size_medium_material"
+                android:layout_marginLeft="@dimen/text_size_small_material"
+                android:layout_marginTop="@dimen/text_size_small_material"
                 android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -66,13 +66,13 @@
                     android:padding="3dip" />
         </TableRow>
 
-        <View
+        <View   android:id="@+id/lineAlias"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="8dp"
                 android:background="@color/grey_300"/>
 
-        <TableRow>
+        <TableRow android:id="@+id/trAlias">
             <TextView
                     android:text="@string/contact_alias"
                     android:layout_weight="0"

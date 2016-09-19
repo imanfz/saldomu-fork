@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -108,7 +107,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        OrifromDate = DateTimeFormat.getCurrentDate(6);
+        OrifromDate = DateTimeFormat.getCurrentDateMinus(6);
         OritoDate = DateTimeFormat.getCurrentDate();
         page = 1;
 
@@ -558,11 +557,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             };
 
             if(report_type == REPORT_SCASH)
-                MyApiClient.sentGetTrxReport(paramsScash,deHandler);
+                MyApiClient.sentGetTrxReport(getActivity(),paramsScash,deHandler);
             else if(report_type == REPORT_ESPAY)
-                MyApiClient.sentReportEspay(paramsEspay,deHandler);
+                MyApiClient.sentReportEspay(getActivity(),paramsEspay,deHandler);
             else if(report_type == REPORT_ASK)
-                MyApiClient.sentReportAsk(paramsAsk,deHandler);
+                MyApiClient.sentReportAsk(getActivity(),paramsAsk,deHandler);
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -675,7 +674,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.SIGNATURE, signature);
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -705,6 +704,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         e.printStackTrace();
                     }
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

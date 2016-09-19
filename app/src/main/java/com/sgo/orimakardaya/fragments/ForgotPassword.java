@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.InsertPIN;
 import com.sgo.orimakardaya.activities.LoginActivity;
@@ -53,6 +54,9 @@ public class ForgotPassword extends Fragment {
         et_user_id = (EditText) v.findViewById(R.id.forgotpass_userid_value);
         spin_tipe_notif = (Spinner) v.findViewById(R.id.forgotpass_spin_notif);
         Button btn_submit = (Button) v.findViewById(R.id.btn_submit_forgot_pass);
+        TextView textMsg = (TextView) v.findViewById(R.id.textForgotPassmsg);
+        String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
+        textMsg.setText(msg);
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
@@ -66,6 +70,9 @@ public class ForgotPassword extends Fragment {
         btn_submit.setOnClickListener(submitForgotPassListener);
         et_user_id.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
 
     Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
@@ -127,6 +134,7 @@ public class ForgotPassword extends Fragment {
     private void CallPINinput(int _attempt){
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
+        i.putExtra(DefineValue.USERID_PHONE,userIDfinale);
         if(_attempt == 1)
             i.putExtra(DefineValue.ATTEMPT,_attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
@@ -146,7 +154,7 @@ public class ForgotPassword extends Fragment {
 
             Timber.d(params.toString());
 
-            MyApiClient.sentForgotPassword(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentForgotPassword(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -160,23 +168,24 @@ public class ForgotPassword extends Fragment {
                         } else {
                             Timber.d("error forgot password" + response.toString());
                             String codemessage = response.getString(WebParams.ERROR_MESSAGE);
-                            if (code.equals("0097")) {
-                                attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                failed = response.optInt(WebParams.MAX_FAILED, 0);
+                            switch (code) {
+                                case "0097":
+                                    attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
+                                    failed = response.optInt(WebParams.MAX_FAILED, 0);
 
-                                if (attempt == -1)
-                                    CallPINinput(0);
-                                else
-                                    CallPINinput(failed - attempt);
+                                    if (attempt == -1)
+                                        CallPINinput(0);
+                                    else
+                                        CallPINinput(failed - attempt);
 
-                                Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-
-                            } else if (code.equals("0133")) {
-                                showDialog(codemessage);
-
-                            } else {
-                                Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-
+                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                    break;
+                                case "0133":
+                                    showDialog(codemessage);
+                                    break;
+                                default:
+                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                    break;
                             }
 
 
@@ -239,7 +248,8 @@ public class ForgotPassword extends Fragment {
                         if (ForgotPassword.this.isVisible()) {
                             for (int i = 0; i < arrayContact.length(); i++) {
                                 mObject = arrayContact.getJSONObject(i);
-                                if (i == 1) {
+                                id = mObject.optString(WebParams.ID, "0");
+                                if (i==0) {
                                     message_value = Message.getText().toString()+"\n"+
                                             mObject.optString(WebParams.DESCRIPTION, "") + " " +
                                             mObject.optString(WebParams.NAME, "") + "\n" +
@@ -331,8 +341,7 @@ public class ForgotPassword extends Fragment {
 
     public boolean inputValidation(){
         if(et_user_id.getText().toString().length()==0){
-            et_user_id.requestFocus();
-            et_user_id.setError(this.getString(R.string.forgetpass_edittext_validation));
+            DefinedDialog.showErrorDialog(getActivity(),getString(R.string.forgetpass_edittext_validation),null);
             return false;
         }
         if(spin_tipe_notif.getSelectedItemPosition()==0){

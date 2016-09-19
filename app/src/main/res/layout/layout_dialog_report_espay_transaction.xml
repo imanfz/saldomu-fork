@@ -13,10 +13,10 @@
                  android:stretchColumns="1">
         <TableRow>
             <TextView
-                    android:text="@string/report_dialog_text_transaction_type"
+                android:text="@string/report_dialog_text_transaction_type"
                     android:layout_weight="1"
-                android:minEms="7"
                     android:padding="3dip"
+                    android:minEms="7"
                     />
             <TextView
                     android:id="@+id/dialog_report_buss_scheme_name_value"
@@ -96,16 +96,17 @@
                 android:background="@color/grey_300"/>
         <TableRow>
             <TextView
-                    android:text="@string/topup_token_amount"
-                    android:layout_weight="0"
-                    android:padding="3dip" />
+                android:text="@string/topup_token_amount"
+                android:layout_weight="0"
+                android:padding="3dip" />
             <TextView
-                    android:id="@+id/dialog_report_trans_amount_value"
-                    android:text="Rp. 200000"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="3dip" />
+                android:id="@+id/dialog_report_trans_amount_value"
+                android:text="Rp. 200000"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
         </TableRow>
 
         <View
@@ -116,16 +117,17 @@
 
         <TableRow>
             <TextView
-                    android:text="@string/topup_token_fee"
-                    android:layout_weight="0"
-                    android:padding="3dip" />
+                android:text="@string/topup_token_fee"
+                android:layout_weight="0"
+                android:padding="3dip" />
             <TextView
-                    android:id="@+id/dialog_report_fee_value"
-                    android:text="Rp. 200000"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="3dip" />
+                android:id="@+id/dialog_report_fee_value"
+                android:text="Rp. 200000"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
         </TableRow>
 
         <View
@@ -135,16 +137,17 @@
                 android:background="@color/grey_300"/>
         <TableRow>
             <TextView
-                    android:text="@string/topup_token_total_amount"
-                    android:layout_weight="0"
-                    android:padding="3dip" />
+                android:text="@string/topup_token_total_amount"
+                android:layout_weight="0"
+                android:padding="3dip" />
             <TextView
-                    android:id="@+id/dialog_report_total_amount_value"
-                    android:text="Rp. 200000"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="3dip" />
+                android:id="@+id/dialog_report_total_amount_value"
+                android:text="Rp. 200000"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:padding="3dip" />
         </TableRow>
 
         <View

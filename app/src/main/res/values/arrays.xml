@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+           tools:ignore="MissingTranslation">
 
     <string-array name="listatm_namabank_list">
         <item>Bank BCA</item>
@@ -33,6 +34,7 @@
     </string-array>
 
     <string-array name="home_vpi_title">
+        <item>BERANDA</item>
         <item>RIWAYAT</item>
         <item>LINI WAKTU</item>
         <!--<item>GROUP</item>-->
@@ -63,10 +65,6 @@
         <item>XL TUNAI</item>
     </string-array>
 
-    <string-array name="broadcast_kode_compare_en">
-        <item>code</item>
-    </string-array>
-
     <string-array name="list_buy">
         <item>E-Voucher HP</item>
     </string-array>
@@ -76,10 +74,16 @@
         <item>SMS Banking</item>
     </string-array>
 
-    <string-array name="broadcast_kode_compare">
+    <string-array name="broadcast_kode_compare" >
         <item>kode</item>
         <item>otp</item>
         <item>member</item>
+        <item>handphone</item>
+        <item>:</item>
+    </string-array>
+
+    <string-array name="broadcast_kode_compare_en">
+        <item>code</item>
     </string-array>
 
     <string-array name="broadcast_regist_kode_compare">
@@ -95,7 +99,7 @@
     <string-array name="report_list">
         <item>Transaksi</item>
         <item>Transfer</item>
-        <item>Request</item>
+        <item>Permintaan</item>
     </string-array>
 
     <integer-array name="google_colors">
@@ -107,11 +111,33 @@
 
     <string-array name="settings_list">
         <item>Registrasi SMS Banking</item>
+        <item>Pengaturan Pembagian</item>
+        <item>Ganti Password</item>
+        <item>Tentang App</item>
     </string-array>
 
-    <string-array name="buy_vpi_title_1">
-        <item>Pembelian</item>
-        <item>Pembayaran</item>
+    <string-array name="settings_list_pin">
+        <item>Ganti Password</item>
+        <item>Ganti PIN</item>
+        <item>Tentang App</item>
+    </string-array>
+    <string-array name="settings_list_pin_2">
+        <item>Registrasi SMS Banking</item>
+        <item>Ganti Password</item>
+        <item>Ganti PIN</item>
+        <item>Tentang App</item>
+    </string-array>
+
+    <string-array name="social_id_type">
+        <item>KTP</item>
+        <item>SIM</item>
+        <item>Passport</item>
+        <item>KITAS</item>
+    </string-array>
+
+    <string-array name="gender_type">
+        <item>Pria</item>
+        <item>Wanita</item>
     </string-array>
 
     <string-array name="list_tipe_notif">
@@ -120,4 +146,15 @@
         <item>SMS</item>
         <item>EMAIL &amp; SMS</item>
     </string-array>
+
+    <string-array name="list_cash_out">
+        <item>Bank</item>
+        <item>Tunai</item>
+    </string-array>
+
+    <string-array name="contact_tab_list">
+        <item>Pusat Bantuan</item>
+        <item>FAQ</item>
+    </string-array>
+
 </resources>

@@ -29,7 +29,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        InitializeToolbar();
+
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
 
@@ -42,6 +42,8 @@ public class FriendsViewDetailActivity extends BaseActivity {
             email = i.getStringExtra("email");
         }
 
+        InitializeToolbar();
+
         if (findViewById(R.id.friend_detail_content) != null) {
             if (savedInstanceState != null) {
                 return;
@@ -50,9 +52,9 @@ public class FriendsViewDetailActivity extends BaseActivity {
             FragFriendsViewDetail mFrag = new FragFriendsViewDetail();
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.friend_detail_content, mFrag,"Friend detail");
+            fragmentTransaction.add(R.id.friend_detail_content, mFrag, "Friend detail");
             fragmentTransaction.commit();
-            setResult(MainPage.RESULT_NORMAL);
+//            setResult(MainPage.RESULT_NORMAL);
         }
 
         RESULT = MainPage.RESULT_NORMAL;
@@ -65,7 +67,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
 
     public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.menu_item_title_my_friends));
+        setActionBarTitle(name);
     }
 
     @Override
@@ -97,6 +99,12 @@ public class FriendsViewDetailActivity extends BaseActivity {
                     .commit();
 
         }
+
+        setActionBarTitle(name+" - "+fragName);
+    }
+
+    public void setToolbarTitle(String _title) {
+        setActionBarTitle(_title);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        SecurePreferences sp = new SecurePreferences(this);
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -172,6 +172,10 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
                     getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
                             fee, amount,reportType,commId,transType, shareType);
                 }
+                else if (url.contains("isback=1")){
+                    setResult(MainPage.RESULT_BALANCE);
+                    onOkButton();
+                }
                 else view.loadUrl(url);
 
                 return true;
@@ -220,7 +224,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
             Timber.d("isi params sent get Trx Status", params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -306,6 +310,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         args.putString(DefineValue.PAYMENT_NAME, paymentName);
         args.putString(DefineValue.DENOM_DATA, item_name);
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
+        args.putString(DefineValue.DESTINATION_REMARK, getIntent().getStringExtra(DefineValue.DESTINATION_REMARK));
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){
@@ -328,7 +333,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
 
         if(reportType.equals(DefineValue.PULSA_AGENT)){
-            setResult(MainPage.RESULT_DAP);
+            setResult(PulsaAgentActivity.RESULT_DAP);
         }
 
         Timber.d("isi args", args.toString());

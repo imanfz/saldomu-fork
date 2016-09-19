@@ -6,13 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -32,6 +30,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
 import timber.log.Timber;
 
 /*
@@ -57,6 +57,7 @@ public class TimeLine extends BaseFragmentMainPage {
 
     private List<listTimeLineModel> listTimeline;
     int start = 0;
+    RecyclerView mRecyclerView;
 
     /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,9 +82,8 @@ public class TimeLine extends BaseFragmentMainPage {
         txtAlert = (TextView) mView.findViewById(R.id.txt_alert);
         imgAlert = (ImageView) mView.findViewById(R.id.img_alert);
 
-        listTimeline = new ArrayList<listTimeLineModel>();
+        listTimeline = new ArrayList<>();
 
-        RecyclerView mRecyclerView;
         mRecyclerView = (RecyclerView)mView.findViewById(R.id.timeline_recycle_list);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -112,6 +112,7 @@ public class TimeLine extends BaseFragmentMainPage {
                 i.putExtra("profpic", listTimeline.get(position).getOwner_profile_picture());
                 i.putExtra("with_profpic", listTimeline.get(position).getWith_profile_picture());
                 i.putExtra("tx_status", listTimeline.get(position).getTypecaption());
+                i.putExtra("type_post", listTimeline.get(position).getTypepost());
                 switchActivity(i);
             }
         });
@@ -120,7 +121,7 @@ public class TimeLine extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 page = "0";
-                getTimelineList();
+                getTimelineList(null, 0);
             }
         });
 
@@ -131,7 +132,8 @@ public class TimeLine extends BaseFragmentMainPage {
         if(isTimelineNew.equals(DefineValue.NO)){
             initializeDataPost();
         }
-        getTimelineList();
+        getTimelineList(null,0);
+
     }
 
     public void initializeDataPost(){
@@ -149,21 +151,34 @@ public class TimeLine extends BaseFragmentMainPage {
         getCurrentAdapter().notifyDataSetChanged();
     }
 
-    public void getTimelineList() {
+    public void ScrolltoItem(int _post_id){
+        for (int i = 0;i< listTimeline.size();i++){
+            if(listTimeline.get(i).getTimeline_id() == _post_id){
+                mRecyclerView.smoothScrollToPosition(i);
+                break;
+            }
+        }
+    }
+
+    public void getTimelineList(final PtrFrameLayout frameLayout, final int mPage) {
         try {
+
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+            _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TIMELINE_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
             params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
-            params.put(WebParams.PAGE, page);
+            params.put(WebParams.PAGE, mPage);
             params.put(WebParams.COUNT, DefineValue.COUNT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get timeline list:" + params.toString());
 
-            MyApiClient.getTimelineList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getTimelineList(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -272,7 +287,6 @@ public class TimeLine extends BaseFragmentMainPage {
                                 }
 
                             }
-
                             insertPostToDB(mListTimeline);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -288,6 +302,8 @@ public class TimeLine extends BaseFragmentMainPage {
                                 initializeDataPost();
                             }
                         }
+                        if(frameLayout !=null)
+                            frameLayout.refreshComplete();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -312,12 +328,13 @@ public class TimeLine extends BaseFragmentMainPage {
                 }
 
                 private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi Timeline:"+throwable.getCause().toString());
+                    if(TimeLine.this.isVisible()) {
+//                        if (MyApiClient.PROD_FAILURE_FLAG)
+//                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                        else
+//                            Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    Timber.w("Error Koneksi Timeline:"+throwable.toString());
                 }
 
 
@@ -393,10 +410,15 @@ public class TimeLine extends BaseFragmentMainPage {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(PtrFrameLayout frameLayout) {
         int p = Integer.parseInt(page) + 1;
         page = Integer.toString(p);
-        getTimelineList();
+        getTimelineList(frameLayout,0);
+    }
+
+    @Override
+    public void goToTop() {
+        mRecyclerView.smoothScrollToPosition(0);
     }
 
     public LinearLayoutManager getCurrentLayoutManag() {

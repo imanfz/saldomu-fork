@@ -5,28 +5,58 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.AboutAppsActivity;
+import com.sgo.orimakardaya.activities.ChangePIN;
+import com.sgo.orimakardaya.activities.ChangePassword;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.dialogs.InformationDialog;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 
 /**
  * Created by thinkpad on 6/11/2015.
  */
-public class ListSettings extends ListFragment {
+public class ListSettings extends ListFragment implements InformationDialog.OnDialogOkCallback {
     View v;
 
     SecurePreferences sp;
+    private InformationDialog dialogI;
+    Boolean isLevel1;
+    private LevelClass levelClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         v = inflater.inflate(R.layout.frag_list_settings, container, false);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        switch(item.getItemId())
+        {
+            case R.id.action_information:
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -34,9 +64,18 @@ public class ListSettings extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+//        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
 
-        String[] _data = null;
-        _data = getResources().getStringArray(R.array.settings_list);
+        levelClass = new LevelClass(getActivity(),sp);
+        levelClass.refreshData();
+        isLevel1 = levelClass.isLevel1QAC();
+        dialogI = InformationDialog.newInstance(this,11);
+        String[] _data;
+
+        if(isLevel1)
+            _data = getResources().getStringArray(R.array.settings_list_pin);
+        else
+            _data = getResources().getStringArray(R.array.settings_list_pin_2);
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
@@ -49,12 +88,48 @@ public class ListSettings extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
         Fragment f;
-        switch (position) {
-            case 0:
-                i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                switchActivity(i);
-                break;
+
+        if(isLevel1){
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 1:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
         }
+        else {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+                case 1:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 2:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 3:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
+        }
+
     }
 
     private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
@@ -71,5 +146,10 @@ public class ListSettings extends ListFragment {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+    }
+
+    @Override
+    public void onOkButton() {
+
     }
 }

@@ -18,6 +18,7 @@
             />
 
     <ProgressBar
+        style="@style/CustomProgressbar"
             android:id="@+id/main_toolbar_progress_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

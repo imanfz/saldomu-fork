@@ -15,6 +15,7 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.securities.Md5;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.PinSaver;
@@ -66,7 +67,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 //
 //                    @Override
 //                    public boolean isValid(String input) {
-//                        Timber.d("input", input);
+//                        Log.d("input", input);
 //                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
 
                     }
@@ -75,6 +76,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 //        Fragment toShow = PinHelper.hasDefaultPinSaved(this) ?
 //                PinFragment.newInstanceForVerification(config) :
 //                PinFragment.newInstanceForCreation(config);
+
         Fragment toShow = PinFragment.newInstanceForCreation(config);
 
 
@@ -106,7 +108,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(!isRegist) setResult(MainPage.RESULT_LOGOUT);
-                else setResult(Registration.RESULT_NORMAL);
+                else setResult(LoginActivity.RESULT_NORMAL);
                 finish();
                 return true;
         }
@@ -128,8 +130,9 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
-                    userID,accessKey);
+//            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
+//                    userID,accessKey);
+            RequestParams params = new RequestParams();
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.PIN, Md5.hashMd5(mValuePin));
@@ -138,7 +141,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
             Timber.d("isi params create pin:"+params.toString());
 
-            MyApiClient.sentCreatePin(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentCreatePin(this, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -214,7 +217,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
             i.putExtra(DefineValue.PIN_VALUE,mValuePin);
             i.putExtra(DefineValue.CONF_PIN,confirmPin);
 
-            setResult(Registration.RESULT_FINISHING, i);
+            setResult(LoginActivity.RESULT_FINISHING, i);
         }
         this.finish();
     }

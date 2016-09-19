@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+                android:minWidth="600dp"
+                android:paddingBottom="16dp"
+        >
+
+    <com.balysv.materialripple.MaterialRippleLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/dialog_reportbiller_btn_ok_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/card_bk"
+            android:layout_alignParentBottom="true"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimary"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+        <Button
+                android:id="@+id/dialog_reportbiller_btn_ok"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/ok"
+                android:background="@drawable/button_transparant"
+                />
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+    <LinearLayout
+                  android:layout_above="@id/dialog_reportbiller_btn_ok_layout"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@drawable/report_struk"
+                  android:paddingRight="@dimen/padding_medium_large"
+                  android:paddingLeft="@dimen/padding_hulk"
+                  android:paddingTop="@dimen/text_size_small_material"
+                  android:paddingBottom="@dimen/text_size_large_material"
+            >
+
+        <TextView android:id="@+id/dialog_report_transaction_remark"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/transaction_success"
+                  android:textStyle="bold"
+                  android:textSize="@dimen/text_size_medium_material"
+                  android:layout_gravity="center_horizontal"
+                />
+        <TextView android:id="@+id/dialog_report_transaction_remark_sub"
+                  android:visibility="gone"
+                  android:layout_marginLeft="8dp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="asdiojasdoijasdfoijasdfoiasjdfaosidjfasdoijfasdoifasdfoiajsdfaoisdjfasoidjfasd"
+                  android:textColor="@color/red_400"
+                  android:textSize="@dimen/text_size_small_material"
+                  android:layout_gravity="center_horizontal"
+                />
+
+
+        <ScrollView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_size_medium_material"
+                    android:scrollbarAlwaysDrawVerticalTrack="true"
+                    android:scrollbarStyle="insideOverlay"
+                >
+            <LinearLayout android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:orientation="vertical"
+                    >
+                <LinearLayout android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:gravity="center"
+                              android:orientation="horizontal"
+                        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minEms="7"
+                        android:text="@string/report_item_text_date_time"
+                        android:layout_marginLeft="@dimen/text_size_medium_material"
+                        android:layout_gravity="center_vertical"
+                            />
+                    <TextView
+                        android:id="@+id/dialog_reportbiller_date_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minEms="7"
+                        android:text="20:15:31 28/12/2015"
+                        android:layout_marginLeft="4dp"
+                        android:layout_gravity="center_vertical"
+                        />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="wrap_content"
+                              android:orientation="horizontal"
+                        >
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/report_item_text_trans_id"
+                            android:layout_marginLeft="@dimen/text_size_medium_material"
+                            />
+                    <TextView android:id="@+id/dialog_reportbiller_tx_id"
+                              android:layout_width="wrap_content"
+                              android:layout_height="wrap_content"
+                              android:text="EMO1215151"
+                              android:layout_marginLeft="8dp"
+                            />
+
+                </LinearLayout>
+
+
+                <include android:id="@+id/report_dialog"
+                         layout="@layout/layout_dialog_report_transaction"/>
+
+                <include android:id="@+id/report_dialog_espay"
+                     layout="@layout/layout_dialog_report_espay_transaction"/>
+
+                <include android:id="@+id/report_dialog_request"
+                         layout="@layout/layout_dialog_request"/>
+
+                <include android:id="@+id/report_cashout"
+                         layout="@layout/layout_dialog_report_cashout"/>
+
+                <include android:id="@+id/report_cashout_tunai"
+                    layout="@layout/layout_dialog_report_cashouttunai"/>
+
+                <include android:id="@+id/report_payfriends"
+                    layout="@layout/layout_dialog_report_payfriends"/>
+
+                <include android:id="@+id/report_topup"
+                    layout="@layout/layout_dialog_report_topup"/>
+
+                <include android:id="@+id/report_biller"
+                    layout="@layout/layout_dialog_report_biller"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</RelativeLayout>

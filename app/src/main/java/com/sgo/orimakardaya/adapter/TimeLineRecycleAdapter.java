@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +49,8 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         user_id = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+
     }
 
     @Override
@@ -64,40 +65,31 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
         final listTimeLineModel _data = mData.get(i);
 
         String string_date = _data.getDatetime();
-
-        /*SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date d = null;
-        try {
-            d = f.parse(string_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        long long_date = 0;
-        if (d != null) {
-            long_date = d.getTime();
-        }
-
-        String period = PeriodTime.getTimeAgo(long_date, mContext);
-*/
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-        Date time1 = DateTimeFormat.convertCustomDate(string_date);
+        Date time1 = DateTimeFormat.convertStringtoCustomDateTime(string_date);
         String period = p.formatDuration(time1);
 
-//        String tx_status = "";
-//        if(_data.getTx_status().equals("S")) tx_status = "Paid";
-//        else tx_status = "Pending";
-
         simpleHolder.fromId.setText(_data.getOwner());
-        simpleHolder.toId.setText(_data.getWith());
         simpleHolder.messageTransaction.setText(_data.getPost());
         simpleHolder.amount.setText(_data.getCcy_id() + " " + CurrencyFormat.format(_data.getAmount()));
         simpleHolder.dateTime.setText(period);
-        simpleHolder.status.setText(_data.getTypecaption());
 
         setImageProfPic(_data.getOwner_profile_picture(), simpleHolder.iconPicture);
-        setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
 
-        simpleHolder.likeCount.setText(_data.getNumlikes());;
+        if(_data.getTypepost().equals("5") || _data.getTypepost().equals("6") || _data.getTypepost().equals("7")) {
+            simpleHolder.iconPictureRight.setVisibility(View.VISIBLE);
+            setImageProfPic(_data.getWith_profile_picture(), simpleHolder.iconPictureRight);
+            simpleHolder.toId.setText(_data.getWith());
+            simpleHolder.status.setText(_data.getTypecaption());
+        }
+        else {
+            simpleHolder.iconPictureRight.setVisibility(View.GONE);
+            simpleHolder.toId.setText(_data.getTypecaption());
+            simpleHolder.status.setText(mContext.getResources().getString(R.string.doing));
+
+        }
+
+        simpleHolder.likeCount.setText(_data.getNumlikes());
         simpleHolder.commentCount.setText(_data.getNumcomments());
 
         if(_data.getComment_id_2().equals("")) {
@@ -149,7 +141,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                     }, 3000);
 
                     if (isLike.equals("1")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) - 1);
+                        final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) - 1);
                         simpleHolder.imageLove.setImageResource(R.drawable.ic_like_inactive);
                         simpleHolder.likeCount.setText(jumlahLike);
                         listTimeLineModel.updateNumlikes(jumlahLike, timeline_id);
@@ -176,7 +168,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                             }
                         });
                     } else if (isLike.equals("0")) {
-                        final String jumlahLike = Integer.toString(Integer.parseInt(simpleHolder.likeCount.getText().toString()) + 1);
+                        final String jumlahLike = Integer.toString(Integer.parseInt(_data.getNumlikes()) + 1);
                         simpleHolder.imageLove.setImageResource(R.drawable.ic_like_active);
                         simpleHolder.likeCount.setText(jumlahLike);
                         listTimeLineModel.updateNumlikes(jumlahLike, timeline_id);
@@ -226,7 +218,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
         else {
@@ -235,7 +227,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                 .fit()
                 .centerCrop()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(mContext))
+                .transform(new RoundImageTransformation())
                 .into(_holder);
         }
     }
@@ -309,13 +301,13 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
-            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
+            params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentAddLike(mContext,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -394,7 +386,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(mContext, params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

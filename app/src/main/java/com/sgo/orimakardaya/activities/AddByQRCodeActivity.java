@@ -9,7 +9,6 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.provider.Contacts;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.WindowManager;
@@ -17,9 +16,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.activeandroid.ActiveAndroid;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -28,8 +33,16 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.friendModel;
 import com.sgo.orimakardaya.Beans.myFriendModel;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.Contents;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.QRCodeEncoder;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -193,7 +206,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
                 }
 
             };
-            MyApiClient.sentInsertContact(params, mHandler);
+            MyApiClient.sentInsertContact(this, params, mHandler);
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }
@@ -224,7 +237,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
                     bucket = arrayFriend.getJSONObject(i).getString(friendModel.IS_FRIEND);
                     if(!bucket.equals(""))mFm.setIs_friend(Integer.parseInt(bucket));
 
-                    mFm.setCreated_date(DateTimeFormat.convertCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
+                    mFm.setCreated_date(DateTimeFormat.convertStringtoCustomDate(arrayFriend.getJSONObject(i).getString(friendModel.CREATED_DATE)));
                     mFm.save();
                     Timber.d("idx array friend", String.valueOf(i));
                 }
@@ -344,7 +357,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
 
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();

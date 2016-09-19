@@ -21,11 +21,12 @@
               android:layout_height="wrap_content"/>
 
     <TableLayout android:layout_marginBottom="15dp"
-                 android:layout_marginLeft="30dp"
-                 android:layout_marginRight="30dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_marginRight="10dp"
                  android:layout_height="wrap_content"
                  android:layout_width="match_parent">
-        <TableRow android:gravity="center"
+        <TableRow android:id="@+id/tr_phone"
+                  android:gravity="center"
                   android:layout_marginBottom="5dp"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
@@ -33,41 +34,39 @@
             <ImageView android:background="@drawable/cell_shape"
                        android:src="@drawable/ic_help_phone"
                        android:layout_weight="1"
-                       android:layout_width="40dip"
-                       android:layout_height="40dip"></ImageView>
+                       android:layout_width="0dp"
+                       android:minHeight="50dp"></ImageView>
 
             <TextView android:background="@drawable/cell_shape_white"
-                      android:paddingTop="3dp"
-                      android:paddingBottom="3dp"
-                      android:paddingRight="10dp"
-                      android:paddingLeft="10dp"
+                      android:padding="10dp"
                       android:id="@+id/help_phone_value"
-                      android:layout_weight="8"
-                      android:layout_width="wrap_content"
-                      android:layout_height="40dip"
+                      android:layout_weight="7"
+                      android:layout_width="0dp"
+                      android:minHeight="50dp"
                       android:textColor="@color/colorPrimary"
-                      android:textSize="@dimen/abc_text_size_large_material"></TextView>
+                      android:textSize="@dimen/abc_text_size_medium_material"></TextView>
 
         </TableRow>
-        <TableRow android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TableRow android:id="@+id/tr_mail" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
 
             <ImageView android:background="@drawable/cell_shape"
                        android:src="@drawable/ic_help_mail"
                        android:layout_weight="1"
-                       android:layout_width="40dip"
-                       android:layout_height="40dip"></ImageView>
+                       android:layout_width="0dp"
+                       android:minHeight="50dp"></ImageView>
 
-            <TextView android:background="@drawable/cell_shape_white"
-                      android:paddingTop="5dp"
-                      android:paddingBottom="5dp"
+            <TextView android:id="@+id/help_mail_value"
+                      android:background="@drawable/cell_shape_white"
+                      android:paddingTop="7dp"
+                      android:paddingBottom="7dp"
                       android:paddingRight="10dp"
                       android:paddingLeft="10dp"
-                      android:id="@+id/help_mail_value"
-                      android:layout_weight="8"
-                      android:layout_width="wrap_content"
-                      android:layout_height="40dip"
+                      android:layout_weight="7"
+                      android:layout_width="0dp"
+                      android:minHeight="50dp"
+                      android:singleLine="false"
                       android:textColor="@color/colorPrimary"
-                      android:textSize="@dimen/abc_text_size_medium_material"></TextView>
+                      android:textSize="@dimen/abc_text_size_small_material"></TextView>
 
         </TableRow>
     </TableLayout>

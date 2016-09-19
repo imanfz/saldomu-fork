@@ -7,23 +7,38 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.Beans.Biller_Data_Model;
+import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.BaseActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+import com.sgo.orimakardaya.fragments.BillerActivityRF;
+import com.sgo.orimakardaya.fragments.BillerDesciption;
 import com.sgo.orimakardaya.fragments.BillerInput;
 import com.sgo.orimakardaya.fragments.ListBillerMerchant;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /*
@@ -38,13 +53,16 @@ public class BillerActivity extends BaseActivity {
     public final static String FRAG_BIL_LIST_MERCHANT = "listMerchant";
     public final static String FRAG_BIL_INPUT = "bilInput";
     public final static String FRAG_BIL_DESCRIPTION = "bilDesc";
-    public final static String FRAG_BIL_CONFIRM = "bilConfirm";
-    JSONArray mDataArray;
     FragmentManager fragmentManager;
-    String _biller_data, _biller_name, _biller_type, _biller_id,_biller_item_id,_biller_comm_id , _biller_comm_code,
-            _biller_merchant_name, _biller_api_key, _biller_call_back,userID,accessKey;
-    ProgressDialog out;
+    String _biller_merchant_name,userID,accessKey,_biller_type_code;
     Boolean isOneBiller;
+    Boolean isEmptyBiller;
+    Biller_Type_Data_Model mBillerTypeData;
+    List<Biller_Data_Model> mListBillerData;
+    Realm realm;
+    private RealmChangeListener realmListener;
+    BillerActivityRF mWorkFragment;
+    ProgressDialog progdialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,79 +72,121 @@ public class BillerActivity extends BaseActivity {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        Intent intent    = getIntent();
-        _biller_data = intent.getStringExtra(DefineValue.BILLER_DATA);
-        _biller_name = intent.getStringExtra(DefineValue.BILLER_NAME);
-        _biller_type = intent.getStringExtra(DefineValue.BILLER_TYPE);
+        if (savedInstanceState != null) {
+            return;
+        }
 
+        realm = Realm.getDefaultInstance();
+        Intent intent    = getIntent();
+        _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
+        _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
+        isEmptyBiller = false;
+
+        Timber.d("isi biller activity " + intent.getExtras().toString());
         InitializeToolbar();
 
-        try {
-            mDataArray = new JSONArray(_biller_data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        initializeData();
 
-        if(mDataArray.length() != 0) {
-            if (findViewById(R.id.biller_content) != null) {
-                if (savedInstanceState != null) {
-                    return;
-                }
+//        //auto updater realm biller
+//        realmListener = new RealmChangeListener() {
+//            @Override
+//            public void onChange() {
+//                Timber.d("Masuk realm listener bilactive asdfasdfa");
+//                if(!BillerActivity.this.isFinishing()){
+//                    if(progdialog != null && progdialog.isShowing())
+//                        progdialog.dismiss();
+//                    if(isEmptyBiller){
+//                        initializeData();
+//                    }
+//                    else {
+//                        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+//                                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
+//                                .findFirst();
+//                        if(mBillerTypeData.getBiller_data_models().size() == 0) {
+//                            BillerActivity.this.finish();
+//                        }
+//                    }
+//
+//                }
+//            }};
+//        realm.addChangeListener(realmListener);
+//
+//        FragmentManager fm = getSupportFragmentManager();
+//        // Check to see if we have retained the worker fragment.
+//        mWorkFragment = (BillerActivityRF) fm.findFragmentByTag(BillerActivityRF.BILLERACTIV_TAG);
+//        // If not retained (or first time running), we need to create it.
+//        if (mWorkFragment == null) {
+//            mWorkFragment = new BillerActivityRF();
+//            // Tell it who it is working with.
+//            fm.beginTransaction().add(mWorkFragment, BillerActivityRF.BILLERACTIV_TAG).commit();
+//        }
+//
+//        mWorkFragment.getBillerList(_biller_type_code, isOneBiller);
+//
+//        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+//            @Override
+//            public void onBackStackChanged() {
+//                if(isFragmentValid())
+//                    mWorkFragment.runQueing();
+//            }
+//        });
+    }
 
-                if (mDataArray.length() > 1) {
-                    isOneBiller = false;
-                    initializeListBiller(null);
-                } else {
-                    try {
-                        isOneBiller = true;
-                        _biller_item_id = mDataArray.getJSONObject(0).getString(WebParams.DENOM_ITEM_ID);
-                        _biller_comm_id = mDataArray.getJSONObject(0).getString(WebParams.COMM_ID);
-                        _biller_comm_code = mDataArray.getJSONObject(0).getString(WebParams.COMM_CODE);
-                        _biller_merchant_name = mDataArray.getJSONObject(0).getString(WebParams.COMM_NAME);
-                        _biller_api_key = mDataArray.getJSONObject(0).getString(WebParams.API_KEY);
-                        _biller_call_back = mDataArray.getJSONObject(0).getString(WebParams.CALLBACK_URL);
-                        if (_biller_item_id.isEmpty())
-                            getDenomRetail(_biller_comm_id);
-                        else
-                            initializeListBiller(null);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+    private void initializeData(){
+        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
+                .findFirst();
+        Timber.d("isi billeractivity isinya "+ mBillerTypeData.getBiller_data_models().size());
+
+        mListBillerData = mBillerTypeData.getBiller_data_models();
+
+        if(mListBillerData != null) {
+            if (mListBillerData.size() != 0) {
+                if (findViewById(R.id.biller_content) != null) {
+                    isEmptyBiller = false;
+                    isOneBiller = mListBillerData.size() <= 1;
+                    initializeListBiller();
                 }
-            }
-        }
-        else {
+            } else {
             Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
             this.finish();
+//                if(!isEmptyBiller) {
+//                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
+//                    isOneBiller = false;
+//                    isEmptyBiller = true;
+//                }
+//                else {
+//                    isEmptyBiller = false;
+//                    finish();
+//                }
+            }
         }
     }
 
 
-    public void initializeListBiller(String _array_denom){
+    public void initializeListBiller(){
         Bundle mArgs = new Bundle();
-        mArgs.putString(DefineValue.BILLER_DATA,_biller_data);
-        mArgs.putString(DefineValue.BILLER_NAME,_biller_name);
-        mArgs.putString(DefineValue.BILLER_TYPE, _biller_type);
-
+        mArgs.putString(DefineValue.BILLER_TYPE,_biller_type_code);
         Fragment mLBM ;
+        String tag;
 
         if(isOneBiller){
             mLBM = new BillerInput();
-            mArgs.putString(DefineValue.BILLER_ITEM_ID,_biller_item_id);
-            mArgs.putString(DefineValue.BILLER_COMM_ID,_biller_comm_id);
-            mArgs.putString(DefineValue.BILLER_COMM_CODE,_biller_comm_code);
-            mArgs.putString(DefineValue.BILLER_API_KEY,_biller_api_key);
-            mArgs.putString(DefineValue.COMMUNITY_NAME,_biller_merchant_name);
-            mArgs.putString(DefineValue.CALLBACK_URL,_biller_call_back);
-            if(_biller_item_id.isEmpty())
-                mArgs.putString(DefineValue.DENOM_DATA,_array_denom);
+            mArgs.putString(DefineValue.COMMUNITY_ID,mListBillerData.get(0).getComm_id());
+            mArgs.putString(DefineValue.COMMUNITY_NAME,mListBillerData.get(0).getComm_name());
+            mArgs.putString(DefineValue.BILLER_ITEM_ID,mListBillerData.get(0).getItem_id());
+            tag = BillerInput.TAG;
         }
-        else mLBM = new ListBillerMerchant();
+        else {
+            mLBM = new ListBillerMerchant();
+            tag = ListBillerMerchant.TAG;
+        }
+        setToolbarTitle(getString(R.string.biller_ab_title)+ " - " +_biller_merchant_name);
 
         mLBM.setArguments(mArgs);
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.biller_content, mLBM,getString(R.string.biller_ab_title));
+        fragmentTransaction.replace(R.id.biller_content, mLBM,tag);
         fragmentTransaction.commit();
         setResult(MainPage.RESULT_NORMAL);
 
@@ -141,138 +201,18 @@ public class BillerActivity extends BaseActivity {
         setActionBarTitle(_title);
     }
 
-    /*public void getCommEspay(final String comm_id){
-        try{
-            out = DefinedDialog.CreateProgressDialog(this, null);
-            out.show();
+//    public void updateDenom(String comm_id, String comm_name) {
+//        if (mWorkFragment != null)
+//            mWorkFragment.getDenomRetail(comm_id, comm_name);
+//    }
 
-            RequestParams params = new RequestParams();
-            params.put(WebParams.COMM_ID, comm_id);
-
-            Timber.d("isi params sent Comm Espay :"+ params.toString());
-
-            MyApiClient.sentCommEspay(params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        Timber.d("Isi response comm Espay:"+ response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            if(_biller_item_id.isEmpty())
-                                getDenomRetail(comm_id, response);
-                            else {
-                                initializeListBiller(null, response);
-                                out.dismiss();
-                            }
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(BillerActivity.this, code, Toast.LENGTH_LONG).show();
-                            BillerActivity.this.finish();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.w("Error Koneksi get Biller Type", throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient", e.getMessage());
-        }
-    }*/
-
-    public void getDenomRetail(String _comm_id){
-        try{
-
-            out = DefinedDialog.CreateProgressDialog(this, "");
-
-
-            RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_DENOM_RETAIL,
-                    userID,accessKey);
-            //params.put(WebParams.BILLER_ID, _biller_id);
-            params.put(WebParams.COMM_ID, _comm_id);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE,""));
-
-            Timber.d("isi params sent Denom Retail:" + params.toString());
-
-            MyApiClient.sentDenomRetail(params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        if(!isFinishing())
-                            out.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response Denom Retail:"+response.toString());
-                            String arrayDenom = response.getString(WebParams.DENOM_DATA);
-                            initializeListBiller(arrayDenom);
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(BillerActivity.this,message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(BillerActivity.this, code, Toast.LENGTH_LONG).show();
-                            BillerActivity.this.finish();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    finally {
-                        if(out.isShowing())
-                            out.dismiss();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(out.isShowing())
-                        out.dismiss();
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(BillerActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(BillerActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    BillerActivity.this.finish();
-                    Timber.w("Error Koneksi get denom retail:"+throwable.toString());
-                }
-            });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
-        }
-    }
-
-    public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment,String fragName,String next_frag_title,Boolean isBackstack,String tag) {
 
         if(isBackstack){
             Timber.d("backstack:"+ "masuk");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.biller_content, mFragment, fragName)
+                    .replace(R.id.biller_content, mFragment, tag)
                     .addToBackStack(fragName)
                     .commit();
         }
@@ -280,7 +220,7 @@ public class BillerActivity extends BaseActivity {
             Timber.d("bukan backstack:"+"masuk");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.biller_content, mFragment, fragName)
+                    .replace(R.id.biller_content, mFragment, tag)
                     .commit();
 
         }
@@ -344,6 +284,11 @@ public class BillerActivity extends BaseActivity {
 
     }
 
+    public Boolean isFragmentValid(){
+        BillerDesciption myFragment = (BillerDesciption)getSupportFragmentManager().findFragmentByTag(BillerDesciption.TAG);
+        return !(myFragment != null && myFragment.isVisible());
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -352,8 +297,19 @@ public class BillerActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        if(!realm.isInTransaction() && !realm.isClosed()) {
+//            realm.removeChangeListener(realmListener);
+            realm.close();
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
-        if(getFragmentManager().getBackStackEntryCount()>0)getFragmentManager().popBackStack();
+        if(getFragmentManager().getBackStackEntryCount()>0)
+            getFragmentManager().popBackStack();
         else super.onBackPressed();
     }
+
 }

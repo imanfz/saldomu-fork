@@ -97,7 +97,7 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
                     .error(roundedImage)
                     .fit().centerInside()
                     .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(context))
+                    .transform(new RoundImageTransformation())
                     .into(holder.qc_pic);
             }
             else {
@@ -106,7 +106,7 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
                     .fit()
                     .centerCrop()
                     .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(context))
+                    .transform(new RoundImageTransformation())
                     .into(holder.qc_pic);
             }
 

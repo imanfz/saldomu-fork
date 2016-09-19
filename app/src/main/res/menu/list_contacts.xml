@@ -4,6 +4,7 @@
 
     <item android:id="@+id/action_list_contacts"
           android:title="@string/menuitem_title_listcontacs"
+          android:orderInCategory="1"
           android:icon="@drawable/ic_add_friends"
           someNamespace:showAsAction="always" >
 

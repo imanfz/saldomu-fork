@@ -6,12 +6,17 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.ViewGroup;
+
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.fragments.ListCollection;
 import com.sgo.orimakardaya.fragments.TabBuyItem;
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import timber.log.Timber;
@@ -21,26 +26,26 @@ public class BuyFragmentTabAdapter extends FragmentStatePagerAdapter {
     private final String[] TITLES;
     private int ITEMS;
     private Context mContext;
-    private HashMap<String,String> mPurchase,mPayment;
-    private JSONArray mCollection;
+//    private HashMap<String,String> mPurchase,mPayment;
+//    private JSONArray mCollection;
 
 
-    public BuyFragmentTabAdapter(FragmentManager fm, Context context, HashMap<String,String> _purchase,
-                                 HashMap<String,String> _payment, JSONArray _collection) {
+
+//    public BuyFragmentTabAdapter(FragmentManager fm, Context context, HashMap<String,String> _purchase,
+//                                 HashMap<String,String> _payment,
+//                                 ArrayList<String> _title_tab) {
+    public BuyFragmentTabAdapter(FragmentManager fm, Context context,ArrayList<String> _title_tab) {
         super(fm);
         this.mContext =  context;
-//        _collection = new JSONArray();
-        Timber.d("collection length", Integer.toString(_collection.length()));
-        if(_collection.length() > 0) {
-            TITLES = context.getResources().getStringArray(R.array.buy_vpi_title);
-        }
-        else {
-            TITLES = context.getResources().getStringArray(R.array.buy_vpi_title_1);
-        }
+
+        TITLES = new String[_title_tab.size()];
+        _title_tab.toArray(TITLES);
+
         ITEMS = TITLES.length;
-        this.mPurchase = _purchase;
-        this.mPayment = _payment;
-        this.mCollection = _collection;
+//        this.mPurchase = _purchase;
+//        this.mPayment = _payment;
+//        this.mCollection = _collection;
+
     }
 
     @Override
@@ -50,12 +55,14 @@ public class BuyFragmentTabAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        switch (i){
-            case 0: return TabBuyItem.newInstance(mPurchase);
-            case 1: return TabBuyItem.newInstance(mPayment);
-            case 2: return ListCollection.newInstance(mCollection);
 
-        }
+        if(TITLES[i].equals(mContext.getString(R.string.purchase)))
+            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_BUY);
+        else if(TITLES[i].equals(mContext.getString(R.string.payment)))
+            return TabBuyItem.newInstance(DefineValue.BIL_TYPE_PAY);
+        else if(TITLES[i].equals(mContext.getString(R.string.collection)))
+            return ListCollection.newInstance();
+
         return null;
     }
 
@@ -63,4 +70,15 @@ public class BuyFragmentTabAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return ITEMS;
     }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        if (position >= getCount()) {
+            FragmentManager manager = ((Fragment) object).getFragmentManager();
+            FragmentTransaction trans = manager.beginTransaction();
+            trans.remove((Fragment) object);
+            trans.commit();
+        }
+    }
+
 }

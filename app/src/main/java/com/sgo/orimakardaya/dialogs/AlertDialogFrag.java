@@ -8,16 +8,18 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.Window;
 
 public class AlertDialogFrag extends DialogFragment {
 
-  public static final String TAG = "Alert Dialog";
 
-  private Boolean onlyPositive = true;
-  private DialogInterface.OnClickListener okListener;
-  private DialogInterface.OnClickListener cancelListener;
+    public static final String TAG = "Alert Dialog";
 
-  public AlertDialogFrag() {
+    private Boolean onlyPositive = true;
+    private DialogInterface.OnClickListener okListener;
+    private DialogInterface.OnClickListener cancelListener;
+
+    public AlertDialogFrag() {
       // Empty constructor required for DialogFragment
     }
 
@@ -37,11 +39,17 @@ public class AlertDialogFrag extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-      String title = getArguments().getString("title");
+
+      String title = "";
+      if(getArguments().containsKey("title"))
+        title = getArguments().getString("title");
       String message  = getArguments().getString("message");
       String btnok = getArguments().getString("btnoke");
+
       AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-      alertDialogBuilder.setTitle(title);
+      if(title !=null && !title.isEmpty())
+        alertDialogBuilder.setTitle(title);
+
       alertDialogBuilder.setMessage(message);
       setCancelable(false);
 
@@ -52,7 +60,11 @@ public class AlertDialogFrag extends DialogFragment {
         alertDialogBuilder.setNegativeButton(btncancel, cancelListener);
       }
 
-      return alertDialogBuilder.create();
+      AlertDialog test  = alertDialogBuilder.create();
+      if(title == null || !title.isEmpty())
+        test.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+      return test;
     }
 
 

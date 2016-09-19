@@ -21,6 +21,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -58,6 +59,8 @@ public class FragPulsaAgent extends Fragment{
     private HashMap<String,String> mDenomData, mMemberData, mNominalData;
     int privacy;
     boolean flagDenom = true;
+    ArrayAdapter<String> adapterDenom;
+    ArrayAdapter<String> adapterNominal;
 
     @Override
     public void onResume() {
@@ -71,7 +74,7 @@ public class FragPulsaAgent extends Fragment{
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        sp = new SecurePreferences(act);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         member_dap = sp.getString(DefineValue.MEMBER_DAP,"");
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
@@ -186,7 +189,7 @@ public class FragPulsaAgent extends Fragment{
                 mArray = new JSONArray(denom_data);
                 _denomData = new String[mArray.length()];
                 _catalogData = new String[mArray.length()];
-                final ArrayAdapter<String> adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
+                adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
                 adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_denom.setAdapter(adapterDenom);
                 spin_denom.setOnItemSelectedListener(spinnerDenomListener);
@@ -254,7 +257,7 @@ public class FragPulsaAgent extends Fragment{
             try {
                 mArray = new JSONArray(denom_data);
                 _nominalData = new String[mArray.length()];
-                final ArrayAdapter<String> adapterNominal = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_nominalData);
+                adapterNominal = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _nominalData);
                 adapterNominal.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_nominal.setAdapter(adapterNominal);
                 spin_nominal.setOnItemSelectedListener(spinnerNominalListener);
@@ -315,20 +318,20 @@ public class FragPulsaAgent extends Fragment{
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
 
-            Timber.d("isi params sent Denom DAP", params.toString());
+            Timber.d("isi params sent Denom DAP"+ params.toString());
 
-            MyApiClient.getDenomDAP(params, new JsonHttpResponseHandler() {
+            MyApiClient.getDenomDAP(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response Denom DAP", response.toString());
+                            Timber.d("Isi response Denom DAP"+ response.toString());
                             String denom_data = response.getString(WebParams.DENOM_DATA);
                             if(catalog_id.equals("")) initializeDenom(denom_data);
                             else initializeNominal(denom_data);
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginMain(getActivity(),message);
@@ -344,14 +347,36 @@ public class FragPulsaAgent extends Fragment{
                 }
 
                 @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    out.dismiss();
-                    Log.w("Error Koneksi get Denom DAP", throwable.toString());
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_LONG).show();
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(out.isShowing())
+                        out.dismiss();
+                    Timber.w("Error Koneksi getDenomDAP desc:" + throwable.toString());
                 }
             });
         }catch (Exception e){
-            Timber.d("httpclient", e.getMessage());
+            Timber.d("httpclient"+ e.getMessage());
         }
     }
 

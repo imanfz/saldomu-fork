@@ -112,6 +112,7 @@
     <color name="blue_A200">#6889ff</color>
     <color name="blue_A400">#4d73ff</color>
     <color name="blue_A700">#4d69ff</color>
+    <color name="blue_fb">#3a579d</color>
 
     <color name="light_blue_50">#e1f5fe</color>
     <color name="light_blue_100">#b3e5fc</color>
@@ -127,6 +128,7 @@
     <color name="light_blue_A200">#40c4ff</color>
     <color name="light_blue_A400">#00b0ff</color>
     <color name="light_blue_A700">#0091ea</color>
+    <color name="toolbar_blue">#6fc3c6</color>
 
     <color name="cyan_50">#e0f7fa</color>
     <color name="cyan_100">#b2ebf2</color>
@@ -298,4 +300,28 @@
     <color name="blue_grey_700">#455a64</color>
     <color name="blue_grey_800">#37474f</color>
     <color name="blue_grey_900">#263238</color>
+
+
+
+    <color name="chart_value_1">#647a97</color>
+    <color name="chart_value_2">#6781a1</color>
+    <color name="chart_value_3">#5c8fc3</color>
+    <color name="chart_value_4">#72a1d4</color>
+
+    <color name="fab_color">@color/colorPrimaryDark</color>
+    <color name="transparent">#00000000</color>
+    <color name="toolbar">#ff808080</color>
+    <color name="background">#fff1f1f1</color>
+    <color name="default_title_text">#ff000000</color>
+    <color name="default_text">#ff333333</color>
+    <color name="default_button_text">#ffffffff</color>
+    <color name="default_button_background">#ff808080</color>
+    <color name="default_button_background_pressed">#ffB1B1B1</color>
+    <color name="default_button_background_disabled">#88858585</color>
+    <color name="primary_button_background">#ff83B337</color>
+    <color name="primary_button_background_pressed">#ffa8ca73</color>
+    <color name="primary_button_background_disabled">#8883B337</color>
+    <color name="p2p_color_indicator_success">@color/green_400</color>
+    <color name="p2p_color_indicator_failed">@color/red_400</color>
+    <color name="p2p_color_indicator_nonmember">@color/orange_800</color>
 </resources>

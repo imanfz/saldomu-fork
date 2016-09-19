@@ -7,12 +7,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.InputFilter;
-import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -21,10 +27,19 @@ import com.sgo.orimakardaya.activities.CollectionActivity;
 import com.sgo.orimakardaya.activities.InsertPIN;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.SgoPlusWeb;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.CurrencyFormat;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+import com.sgo.orimakardaya.loader.UtilsLoader;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +58,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             shareType, topuptype,userID,accessKey;
     Button btnSubmit,btnCancel,btnResend;
     EditText et_token;
-    int max_token_resend = 3,max_length_token;
+    int max_token_resend = 3,max_length_token, attempt = -1;
     ProgressDialog progdialog;
     View v;
     Boolean isPIN = false;
@@ -111,6 +126,25 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             }
         }
 
+        if(isPIN){
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+                @Override
+                public void onSuccess(Object deData) {
+                    attempt = (int)deData;
+                }
+
+                @Override
+                public void onFail(String message) {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+        }
+
         TextView tv_bank_name = (TextView) v.findViewById(R.id.collectdesc_bank_name);
         TextView tv_product_name = (TextView) v.findViewById(R.id.collectdesc_bank_product);
         TextView tv_amount = (TextView) v.findViewById(R.id.collectdesc_amount);
@@ -134,7 +168,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                btnResend.setText(getString(R.string.reg2_btn_text_resend_token) + " (" + max_token_resend + ")");
+                btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
             }
         });
     }
@@ -155,7 +189,9 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
 
                 if(topuptype.equals(DefineValue.EMONEY) && isPIN){
                     Intent i = new Intent(getActivity(), InsertPIN.class);
-                    //i.putExtra(CoreApp.IS_MD5,false);
+                    //i.putExtra(CoreApp.IS_MD5,false)
+                    if(attempt != -1 && attempt < 2)
+                        i.putExtra(DefineValue.ATTEMPT,attempt);
                     btnSubmit.setEnabled(true);
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
@@ -220,7 +256,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
 
             Timber.d("isi params insertTrx Collection:"+params.toString());
 
-            MyApiClient.sentInsertTransTopup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -242,7 +278,9 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
 
                             if(code.equals("0031") && topuptype.equals(DefineValue.EMONEY) && isPIN){
                                 Intent i = new Intent(getActivity(), InsertPIN.class);
-                                //i.putExtra(CoreApp.IS_MD5,false);
+                                attempt = attempt-1;
+                                if(attempt != -1 && attempt < 2)
+                                    i.putExtra(DefineValue.ATTEMPT, attempt);
                                 btnSubmit.setEnabled(true);
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
                             }
@@ -391,9 +429,9 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             };
 
             if(bankCode.equals("114"))
-                MyApiClient.sentDataReqTokenSGOL(params,handler);
+                MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
             else
-                MyApiClient.sentResendTokenSGOL(params,handler);
+                MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -416,7 +454,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

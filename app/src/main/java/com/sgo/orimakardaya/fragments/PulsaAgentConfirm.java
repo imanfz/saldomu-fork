@@ -27,6 +27,7 @@ import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,7 +66,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = new SecurePreferences(getActivity());
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -151,6 +152,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         i.putExtra(DefineValue.SHARE_TYPE, shareType);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.PULSA_AGENT);
         i.putExtra(DefineValue.OPERATOR_NAME, operator_name);
+        i.putExtra(DefineValue.DESTINATION_REMARK, phone_number);
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(_fee);
         i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));
@@ -185,7 +187,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                     }
                 }
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -214,7 +216,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
             Timber.d("isi params insertTrxTOpupSGOL", params.toString());
 
-            MyApiClient.sentInsertTransTopup(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -254,11 +256,35 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
                 }
 
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
                     btn_submit.setEnabled(true);
-                    Log.w("Error Koneksi insertTrxTOpupSGOL", throwable.toString());
+                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
                 }
             });
         }catch (Exception e){
@@ -277,14 +303,14 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
 
-            Timber.d("isi params sent get Trx Status", params.toString());
+            Timber.d("isi params sent get Trx Status" + params.toString());
 
-            MyApiClient.sentGetTRXStatus(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status", response.toString());
+                        Timber.d("isi response sent get Trx Status"+response.toString());
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
@@ -293,7 +319,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                                     response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), amount);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
@@ -308,12 +334,37 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                     }
                 }
 
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    btn_submit.setEnabled(true);
-                    progdialog.dismiss();
-                    Log.w("Error Koneksi get trx status", throwable.toString());
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
                 }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    btn_submit.setEnabled(true);
+                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
+                }
+
             });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
@@ -334,6 +385,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
+        args.putString(DefineValue.DESTINATION_REMARK,phone_number);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){
@@ -509,7 +561,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     };
 
     public final void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session", _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
+        Timber.d("isi _kode_otp, _member_kode, member kode session"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             et_token_value.setText(_kode_otp);
         }

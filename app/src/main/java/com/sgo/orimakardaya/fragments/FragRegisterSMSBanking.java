@@ -17,6 +17,7 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;
@@ -86,8 +87,6 @@ public class FragRegisterSMSBanking extends Fragment {
         spinBankName.setAdapter(adapter);
         spinBankName.setOnItemSelectedListener(spinnerNamaBankListener);
 
-
-
         getBankList();
     }
 
@@ -103,7 +102,6 @@ public class FragRegisterSMSBanking extends Fragment {
                 layout_dll.setVisibility(View.VISIBLE);
             }
             else layout_dll.setVisibility(View.GONE);
-
 
         }
 
@@ -121,7 +119,10 @@ public class FragRegisterSMSBanking extends Fragment {
 
     public void getBankList(){
         try{
-            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BANK_SMS_REGIST,
                     userID,accessKey);
@@ -132,7 +133,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params get BankList sms regist:"+params.toString());
 
-            MyApiClient.sentListBankSMSRegist(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentListBankSMSRegist(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -142,11 +143,16 @@ public class FragRegisterSMSBanking extends Fragment {
 
                             JSONArray bank_data = new JSONArray(response.optString(WebParams.BANK_DATA,""));
 
-                            if(!bank_data.equals("")){
+                            if(bank_data.length() > 0){
+
                                 insertBankList(bank_data);
                             }
+                            else {
+                                Toast.makeText(getActivity(),getString(R.string.data_not_found),Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                            }
 
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
@@ -157,7 +163,7 @@ public class FragRegisterSMSBanking extends Fragment {
                         else {
                             Timber.d("Error ListMember comlist:"+response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
 
@@ -166,6 +172,7 @@ public class FragRegisterSMSBanking extends Fragment {
                     }
 
                 }
+
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
@@ -189,8 +196,10 @@ public class FragRegisterSMSBanking extends Fragment {
                         Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
+                    if (isVisible() || progdialog.isShowing())
                         progdialog.dismiss();
+
+                    getActivity().finish();
 
                     Timber.w("Error Koneksi get bank list req sms banking:"+throwable.toString());
                 }
@@ -264,20 +273,26 @@ public class FragRegisterSMSBanking extends Fragment {
     Button.OnClickListener btnGetTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()) {
-                String bankName = spinBankName.getSelectedItem().toString();
+            if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    String bankName = spinBankName.getSelectedItem().toString();
 
-                if(bankName.toLowerCase().contains("jatim"))
-                    sentInquiryMobileJTM(bankName);
-                else
-                    getDataSB();
+                    if (bankName.toLowerCase().contains("jatim"))
+                        sentInquiryMobileJTM(bankName);
+                    else
+                        getDataSB();
+                }
             }
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
     public void sentInquiryMobileJTM(final String _bank_name){
         try{
-            final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE_JATIM,
                     userID,accessKey);
@@ -288,7 +303,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params get BankList:"+params.toString());
 
-            MyApiClient.sentInquiryMobileJatim(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentInquiryMobileJatim(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -297,7 +312,7 @@ public class FragRegisterSMSBanking extends Fragment {
                             Timber.d("response Listbank:" + response.toString());
 
                             showDialog(_bank_name, response.optString(WebParams.NO_HP, ""), response.optString(WebParams.TOKEN_ID, ""));
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -306,7 +321,7 @@ public class FragRegisterSMSBanking extends Fragment {
                         } else {
                             Timber.d("Error ListMember comlist:" + response.toString());
                             code = response.getString(WebParams.ERROR_MESSAGE);
-                            prodDialog.dismiss();
+                            progdialog.dismiss();
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
 
@@ -352,8 +367,10 @@ public class FragRegisterSMSBanking extends Fragment {
 
     public void getDataSB() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE,
                     userID,accessKey);
@@ -366,7 +383,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             Timber.d("isi params data SB:"+params.toString());
 
-            MyApiClient.getDataSB(params, new JsonHttpResponseHandler() {
+            MyApiClient.getDataSB(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     progdialog.dismiss();
@@ -455,6 +472,7 @@ public class FragRegisterSMSBanking extends Fragment {
                     }
 
                 }
+
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

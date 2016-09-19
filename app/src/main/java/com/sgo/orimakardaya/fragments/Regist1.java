@@ -1,25 +1,42 @@
 package com.sgo.orimakardaya.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.LoginActivity;
-import com.sgo.orimakardaya.activities.Registration;
-import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
+import com.sgo.orimakardaya.coreclass.DateTimeFormat;
+import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.NoHPFormat;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
+import com.sgo.orimakardaya.coreclass.SMSclass;
+import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
+import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,15 +49,20 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
+    String namaValid = "";
+    String emailValid = "";
+    String noHPValid = "";
+    String token_id = "";
+    String max_resend_token = "3";
+    String auth_type = "";
     EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
     CheckBox cb_terms;
     View v;
 
     Fragment mFragment;
-
     ProgressDialog progdialog;
+    ReqPermissionClass reqPermissionClass;
 
 
     @Override
@@ -61,9 +83,9 @@ public class Regist1 extends Fragment{
         btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
         btnLanjut.setOnClickListener(btnNextClickListener);
 
-        namaValue=(EditText)getActivity().findViewById(R.id.name_value);
-        emailValue=(EditText)getActivity().findViewById(R.id.email_value);
-        noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
+        namaValue=(EditText)v.findViewById(R.id.name_value);
+        emailValue=(EditText)v.findViewById(R.id.email_value);
+        noHPValue=(EditText)v.findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -76,14 +98,15 @@ public class Regist1 extends Fragment{
             }
         });
 
-        if(isSimExists()){
+        reqPermissionClass = new ReqPermissionClass(getActivity());
 
-            TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            String Nomor1 = tm.getLine1Number();
-
-            noHPValue.setText(Nomor1);
+        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
+            SMSclass smSclass = new SMSclass(getActivity());
+            if(smSclass.isSimExists()){
+                String Nomor1 = smSclass.getSimNumber();
+                noHPValue.setText(Nomor1);
+            }
         }
-        //else Toast.makeText(getActivity(),"tidak ada sim",Toast.LENGTH_LONG).show();
 
         noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
@@ -96,6 +119,19 @@ public class Regist1 extends Fragment{
                 switchFragment(mfrag,getString(R.string.termsncondition_title),true);
             }
         });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
+            SMSclass smSclass = new SMSclass(getActivity());
+            if(smSclass.isSimExists()){
+                String Nomor1 = smSclass.getSimNumber();
+                noHPValue.setText(Nomor1);
+            }
+        }
     }
 
     Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
@@ -116,7 +152,7 @@ public class Regist1 extends Fragment{
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
+        LoginActivity fca = (LoginActivity) getActivity();
         fca.switchContent(i,name,isBackstack);
     }
 
@@ -124,8 +160,8 @@ public class Regist1 extends Fragment{
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
-        fca.switchActivity(i);
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchActivity(i, LoginActivity.ACTIVITY_RESULT);
     }
 
     public void sentData(final String noHP){
@@ -139,15 +175,17 @@ public class Regist1 extends Fragment{
                 emailValue.setEnabled(false);
 
                 RequestParams params = new RequestParams();
-                params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
-                params.put(WebParams.CUST_PHONE,noHP);
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                params.put(WebParams.CUST_PHONE, noHP);
                 params.put(WebParams.CUST_NAME,namaValue.getText());
                 params.put(WebParams.CUST_EMAIL, emailValue.getText());
                 params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+                params.put(WebParams.IS_SMS, "Y");
+                params.put(WebParams.IS_EMAIL, "N");
 
                 Timber.d("isi params reg1:" + params.toString());
 
-                MyApiClient.sentDataRegister(params,new JsonHttpResponseHandler(){
+                MyApiClient.sentDataRegister(getActivity(),params,new JsonHttpResponseHandler(){
                         @Override
                         public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
                             btnLanjut.setEnabled(true);
@@ -219,11 +257,14 @@ public class Regist1 extends Fragment{
                 }
     }
 
+
+
     public void changeActivity(Boolean login){
         if(login){
             DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
+            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment test = new Login();
+            switchFragment(test,"Login",false);
         }
         else{
             DefineValue.NOBACK = true; //fragment selanjutnya tidak bisa menekan tombol BACK
@@ -256,12 +297,12 @@ public class Regist1 extends Fragment{
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
         if(code.equals("0002")){
-            Title.setText(getResources().getString(R.string.regist1_notif_title));
-            Message.setText(getResources().getString(R.string.regist2_notif_message_3));
+            Title.setText(getResources().getString(R.string.regist1_notif_title_registered));
+            Message.setText(getResources().getString(R.string.regist1_notif_message_registered));
         }
         else if(code.equals(WebParams.SUCCESS_CODE)){
             Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-            Message.setText(getString(R.string.application_name)+" "+getString(R.string.regist1_notif_message_sms));
+            Message.setText(getString(R.string.appname)+" "+getString(R.string.regist1_notif_message_sms));
         }
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
@@ -303,31 +344,7 @@ public class Regist1 extends Fragment{
         return true;
     }
 
-    public boolean isSimExists()
-    {
-        TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-        int SIM_STATE = telephonyManager.getSimState();
 
-        if(SIM_STATE == TelephonyManager.SIM_STATE_READY)
-            return true;
-        else
-        {
-            switch(SIM_STATE)
-            {
-                case TelephonyManager.SIM_STATE_ABSENT: //SimState = "No Sim Found!";
-                    break;
-                case TelephonyManager.SIM_STATE_NETWORK_LOCKED: //SimState = "Network Locked!";
-                    break;
-                case TelephonyManager.SIM_STATE_PIN_REQUIRED: //SimState = "PIN Required to access SIM!";
-                    break;
-                case TelephonyManager.SIM_STATE_PUK_REQUIRED: //SimState = "PUK Required to access SIM!"; // Personal Unblocking Code
-                    break;
-                case TelephonyManager.SIM_STATE_UNKNOWN: //SimState = "Unknown SIM State!";
-                    break;
-            }
-            return false;
-        }
-    }
 
     public static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();

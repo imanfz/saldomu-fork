@@ -1,203 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:orientation="vertical"
-                android:descendantFocusability="beforeDescendants"
-                android:focusableInTouchMode="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:descendantFocusability="beforeDescendants"
+    android:background="@color/grey_1000w"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include android:id="@+id/main_toolbar"
-             layout="@layout/toolbar_main"/>
+        layout="@layout/toolbar_main"/>
 
-    <ScrollView android:layout_below="@id/main_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarStyle="insideOverlay"
-            >
+    <LinearLayout
+        android:layout_below="@id/main_toolbar"
+        android:descendantFocusability="beforeDescendants"
+        android:background="@color/grey_1000w"
+        android:orientation="vertical"
+        android:focusableInTouchMode="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+        <ScrollView
+            android:id="@+id/img_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
             <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/grey_1000w"
-                    android:layout_margin="6dp"
-                    >
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/icon_lock"/>
 
-                <TextView android:id="@+id/changepin_firsttime_msg"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:layout_marginTop="8dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                          android:visibility="gone"
-                          android:textColor="@color/colorPrimary"
-                          android:text="@string/changepin_text_firsttime_msg"
-                        />
-
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="vertical"
-                              android:layout_marginTop="18dp"
-                              android:layout_marginBottom="12dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginRight="16dp"
-                        >
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/changepin_text_currentpin"
-                              android:textColor="@color/colorPrimary"
-                              android:textSize="@dimen/abc_text_size_medium_material"
-                              android:textStyle="bold"
-                            />
-                    <EditText
-                            android:id="@+id/current_pin_value"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/abc_text_size_medium_material"
-                            android:maxLength="6"
-                            android:digits="0123456789"
-                            android:inputType="numberPassword"
-                            android:layout_marginTop="4dp"
-                            />
-
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="vertical"
-                              android:layout_marginBottom="12dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginRight="16dp"
-                        >
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/changepin_text_newpin"
-                              android:textColor="@color/colorPrimary"
-                              android:textSize="@dimen/abc_text_size_medium_material"
-                              android:textStyle="bold"
-                            />
-                    <EditText
-                            android:id="@+id/new_pin_value"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/abc_text_size_medium_material"
-                            android:inputType="numberPassword"
-                            android:maxLength="6"
-                            android:digits="0123456789"
-                            android:layout_marginTop="4dp"
-                            />
-
-                </LinearLayout>
-
-                <LinearLayout android:layout_width="match_parent"
-                              android:layout_height="wrap_content"
-                              android:orientation="vertical"
-                              android:layout_marginBottom="12dp"
-                              android:layout_marginLeft="16dp"
-                              android:layout_marginRight="16dp"
-                        >
-                    <TextView android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/changepin_text_retypenewpin"
-                              android:textColor="@color/colorPrimary"
-                              android:textSize="@dimen/abc_text_size_medium_material"
-                              android:textStyle="bold"
-                            />
-                    <EditText
-                            android:id="@+id/retype_new_pin_value"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/abc_text_size_medium_material"
-                            android:inputType="numberPassword"
-                            android:maxLength="6"
-                            android:digits="0123456789"
-                            android:layout_marginTop="4dp"
-                            />
-
-                </LinearLayout>
-                <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginBottom="12dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        >
-                    <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/abc_text_size_small_material"
-                            android:text="@string/regist2_checkbox_showpin"
-                            android:id="@+id/cb_showPin_changepin"
-                            />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/pin_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="@string/changepin_text_currentpin"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
             </LinearLayout>
-            <com.balysv.materialripple.MaterialRippleLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:background="@drawable/card_bk_orange"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginBottom="8dp"
-                    app:mrl_rippleOverlay="true"
-                    app:mrl_rippleColor="@color/colorPrimary"
-                    app:mrl_rippleAlpha="0.2"
-                    app:mrl_rippleDelayClick="false"
-                    app:mrl_rippleHover="true"
-                    >
-                <Button
-                        android:id="@+id/btn_submit_changePin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:textColor="@color/grey_1000w"
-                        android:gravity="center"
-                        android:text="@string/update"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/button_transparant"
-                        />
-            </com.balysv.materialripple.MaterialRippleLayout>
 
-            <com.balysv.materialripple.MaterialRippleLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/card_bk"
-                    android:layout_marginRight="40dp"
-                    android:layout_marginLeft="40dp"
-                    app:mrl_rippleOverlay="true"
-                    app:mrl_rippleColor="@color/colorPrimary"
-                    app:mrl_rippleAlpha="0.2"
-                    app:mrl_rippleDelayClick="false"
-                    app:mrl_rippleHover="true"
-                    >
+        </ScrollView>
 
-                <Button
-                        android:id="@+id/btn_batal_changepin"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/cancel"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Button"
-                        android:background="@drawable/button_transparant"
-                        android:textColor="@color/grey_1000b"
-                        />
+        <FrameLayout
 
-            </com.balysv.materialripple.MaterialRippleLayout>
-        </LinearLayout>
-
-    </ScrollView>
+            android:id="@+id/root"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
 
 
+    </LinearLayout>
 
 
 </RelativeLayout>

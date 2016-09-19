@@ -33,6 +33,7 @@
 -keepattributes Signature
 -keepattributes InnerClasses
 -keepattributes *Annotation*
+
 -keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
 -keep public class com.sgo.orimakardaya.Beans.** { *; }
 #-keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
@@ -68,7 +69,7 @@
 -keep class com.sgo.orimakardaya.fragments.ListBillerMerchant$ListObject{ *; }
 
 -keep class com.sgo.orimakardaya.services.BalanceService { *; }
-
+-keep class io.codetail.animation.arcanimator.** { *; }
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
     native <methods>;

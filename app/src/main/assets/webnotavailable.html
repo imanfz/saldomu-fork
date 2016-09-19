@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Web Page Not Available</title>
+        <link rel="author" href="humans.txt">
+        <style type="text/css">
+			.a_demo_one {
+				background-color:#ba2323;
+				padding:10px;
+				position:relative;
+				font-family: 'Open Sans', sans-serif;
+				font-size:12px;
+				text-decoration:none;
+				color:#fff;
+				border: solid 1px #831212;
+				background-image: linear-gradient(bottom, rgb(171,27,27) 0%, rgb(212,51,51) 100%);
+				border-radius: 5px;
+			}
+
+			.a_demo_one:active {
+				padding-bottom:9px;
+				padding-left:10px;
+				padding-right:10px;
+				padding-top:11px;
+				top:1px;
+				background-image: linear-gradient(bottom, rgb(171,27,27) 100%, rgb(212,51,51) 0%);
+			}
+
+			.outer {
+			    display: table;
+			    position: absolute;
+			    height: 100%;
+			    width: 100%;
+			}
+
+			.middle {
+			    display: table-cell;
+			    vertical-align: middle;
+			}
+
+			.inner {
+			    margin-left: auto;
+			    margin-right: auto; 
+			    width: /*whatever width you want*/;
+			}
+
+			.content {
+			        width: 600px;
+			        height: 600px;
+
+			        position:absolute; /*it can be fixed too*/
+			        left:0; right:0;
+			        top:0; bottom:0;
+			        margin:auto;
+
+			        /*this to solve "the content will not be cut when the window is smaller than the content": */
+			        max-width:100%;
+			        max-height:100%;
+			        overflow:auto;
+			    }
+        </style>
+    </head>
+    <body>
+		<div class="outer">
+		<div class="middle">
+		<div style="text-align:center;" class="inner">
+			<div style="text-align:center;">
+				<img style="width: 20%; height: 20%;" src="ic_data_not_found.png" />
+			</div>
+			<div style="text-align:center; top:10%;" >
+				<label id="lblStatus" >%ERR_DESC%</label>
+			</div>
+			<p></p>
+			<div style="text-align:center;" >
+		    	<button  onclick="location.href='isback=1'" id="btnClose" value="Close" class="a_demo_one">Close</button>
+			</div>
+		</div>
+		</div>
+		</div>
+
+		<!-- <div style="text-align:center; top:100%;">
+			<img style="width: 20%; height: 20%;" src="ic_data_not_found.png" />
+		</div> -->
+		<!-- <div style="text-align:center;top:30%;"" class="content">
+			<img style="width: 50%; height: 50%;" src="ic_data_not_found.png" />
+		</div>
+		<div style="text-align:center; top:100%;" class="content">
+			<label id="lblStatus" >Please wait...</label>
+		</div>
+		<div style="text-align:center; top:110%;" class="content">
+		    <button id="btnClose" value="Close" class="a_demo_one">A button</button>
+		</div> -->
+    </body>
+</html>

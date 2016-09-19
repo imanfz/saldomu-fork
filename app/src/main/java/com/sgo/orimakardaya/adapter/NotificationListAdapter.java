@@ -3,18 +3,27 @@ package com.sgo.orimakardaya.adapter;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.QuickContactBadge;
+
 import com.sgo.orimakardaya.Beans.NotificationModelClass;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.NotificationActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+import com.sgo.orimakardaya.coreclass.MyPicasso;
+import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.RejectNotifDialog;
 import com.sgo.orimakardaya.fragments.FragNotification;
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,14 +51,16 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view, int position, Boolean isLongClick);
+        void onItemClickView(View view, int position, Boolean isLongClick);
+        void onItemBtnAccept(View view, int position, Boolean isLongClick);
+        void onItemBtnClaim(View view, int position, Boolean isLongClick);
     }
 
     public NotificationListAdapter(FragNotification _fragment, Context context, ArrayList<NotificationModelClass> _data, OnItemClickListener _onItemClick) {
         mInflater = LayoutInflater.from(context);
         mData = _data;
-        mOnItemClick = _onItemClick;
         mContext = context;
+        mOnItemClick = _onItemClick;
         fragment = _fragment;
     }
 
@@ -73,14 +84,25 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         else return VIEW_TYPE_UNREAD;
     }
 
+
+
     @Override
     public void onBindViewHolder(final NotificationHolder simpleHolder, final int position) {
 
         simpleHolder.setClickListener(new NotificationHolder.ClickListener() {
             @Override
-            public void onClick(View v, boolean isLongClick) {
-                simpleHolder.btnAccept.setEnabled(false);
-                mOnItemClick.onItemClick(v, position, isLongClick);
+            public void onClickView(View v, boolean isLongClick) {
+                mOnItemClick.onItemClickView(v,position,isLongClick);
+            }
+
+            @Override
+            public void onClickBtnAccept(View v, boolean isLongClick) {
+                mOnItemClick.onItemBtnAccept(v,position,isLongClick);
+            }
+
+            @Override
+             public void onClickBtnClaim(View v, boolean isLongClick) {
+                mOnItemClick.onItemBtnClaim(v,position,isLongClick);
             }
         });
 
@@ -92,10 +114,26 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         else {
             simpleHolder.layout_button_ask.setVisibility(View.GONE);
         }
-        simpleHolder.name.setText(mNotif.getName());
+        if(notif_type == NotificationActivity.TYPE_NON_MEMBER) {
+            simpleHolder.layout_button_claim.setVisibility(View.VISIBLE);
+        }
+        else {
+            simpleHolder.layout_button_claim.setVisibility(View.GONE);
+        }
+        simpleHolder.name.setText(mNotif.getTitle());
         simpleHolder.detail.setText(mNotif.getDetail());
         simpleHolder.time.setText(mNotif.getTime());
-        simpleHolder.icon.setImageResource(mNotif.getImage());
+
+        if(notif_type == NotificationActivity.TYPE_COMMENT || notif_type == NotificationActivity.TYPE_LIKE) {
+            simpleHolder.icon.setVisibility(View.GONE);
+            simpleHolder.iconPicture.setVisibility(View.VISIBLE);
+            setImageProfPic(mNotif.getFrom_profile_picture(), simpleHolder.iconPicture);
+        }
+        else {
+            simpleHolder.iconPicture.setVisibility(View.GONE);
+            simpleHolder.icon.setVisibility(View.VISIBLE);
+            simpleHolder.icon.setImageResource(mNotif.getImage());
+        }
 
         simpleHolder.btnReject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +212,47 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    public void setImageProfPic(String _data, QuickContactBadge _holder){
+        /*
+        float density = getResources().getDisplayMetrics().density;
+        String _url_profpic;
+
+        if(density <= 1) _url_profpic = sp.getString(CoreApp.IMG_SMALL_URL, null);
+        else if(density < 2) _url_profpic = sp.getString(CoreApp.IMG_MEDIUM_URL, null);
+        else _url_profpic = sp.getString(CoreApp.IMG_LARGE_URL, null);
+
+        Log.wtf("url prof pic", _url_profpic);
+
+        */
+
+        Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.user_unknown_menu);
+        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+        Picasso mPic;
+        if(MyApiClient.PROD_FLAG_ADDRESS)
+            mPic = MyPicasso.getImageLoader(mContext);
+        else
+            mPic= Picasso.with(mContext);
+
+        if(_data.equals("") || _data.isEmpty()){
+            mPic.load(R.drawable.user_unknown_menu)
+                    .error(roundedImage)
+                    .fit().centerInside()
+                    .placeholder(R.anim.progress_animation)
+                    .transform(new RoundImageTransformation())
+                    .into(_holder);
+        }
+        else {
+            mPic.load(_data)
+                    .error(roundedImage)
+                    .fit()
+                    .centerCrop()
+                    .placeholder(R.anim.progress_animation)
+                    .transform(new RoundImageTransformation())
+                    .into(_holder);
+        }
     }
 
 }

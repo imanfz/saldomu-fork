@@ -16,6 +16,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
+import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
+import com.sgo.orimakardaya.loader.UtilsLoader;
+import com.sgo.orimakardaya.securities.Md5;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.Validator;
@@ -39,39 +42,54 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     String valuePin;
     Boolean IsForgotPassword;
     Fragment toShow;
+    TextView tv_attempt ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        View v = this.findViewById(android.R.id.content);
+        tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
+        Timber.d("masuk UtilsLoader");
+        String userId  = sp.getString(DefineValue.USERID_PHONE,"");
+        if(userId.isEmpty())
+            userId = getIntent().getExtras().getString(DefineValue.USERID_PHONE,"");
+
+        new UtilsLoader(this,sp).getFailedPIN(userId, new OnLoadDataListener() {
+            @Override
+            public void onSuccess(Object deData) {
+                String _dedata = String.valueOf(deData);
+                setTextAttempt(_dedata);
+            }
+
+            @Override
+            public void onFail(String message) {
+
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
 
         InitializeToolbar();
 
-        View v = this.findViewById(android.R.id.content);
-
-        final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5,true);
+        final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, true);
         IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD,false);
-        int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT,0);
+        final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT,0);
 
 
         if(attempt != 0){
-            TextView tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
-            String attempt_text = getString(R.string.login_failed_attempt_1)+" "+
-                    String.valueOf(attempt)+" "+
-                    getString(R.string.login_failed_attempt_2);
-            tv_attempt.setText(attempt_text);
-            tv_attempt.setVisibility(View.VISIBLE);
+            setTextAttempt(String.valueOf(attempt));
         }
-
-
 
         PinFragmentConfiguration config = new PinFragmentConfiguration(getApplicationContext())
                 .validator(new Validator() {
                     @Override
                     public boolean isValid(String input) {
 //                        return PinHelper.doesMatchDefaultPin(getApplicationContext(), input);
-                        Timber.d("pin yg di confirm " + input);
+                        Timber.d("pin yg di confirm "+input);
                         valuePin = input;
                         SecurePreferences.Editor mEditor = sp.edit();
                         Intent i = new Intent();
@@ -97,6 +115,18 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                 .add(R.id.root, toShow)
                 .commit();
 
+
+    }
+
+    private void setTextAttempt(String attempt){
+        String attempt_text = getString(R.string.login_failed_attempt_1)+" "+
+                String.valueOf(attempt)+" "+
+                getString(R.string.login_failed_attempt_2);
+        tv_attempt.setText(attempt_text);
+        if(attempt.equalsIgnoreCase("1"))
+            tv_attempt.setVisibility(View.VISIBLE);
+        else
+            tv_attempt.setVisibility(View.GONE);
     }
 
     @Override
@@ -158,7 +188,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
         Title.setText(getResources().getString(R.string.forgotpin));
         Message.setVisibility(View.GONE);
-        Message.setText(getString(R.string.forgotpin_message));
+        Message.setText(getString(R.string.forgotpin_message)+" "+
+                        getString(R.string.appname)+" "+
+                        getString(R.string.forgotpin_message2));
 
         progDialog.setIndeterminate(true);
         progDialog.setVisibility(View.VISIBLE);
@@ -176,25 +208,25 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
-            MyApiClient.getHelpPIN(new JsonHttpResponseHandler(){
+            MyApiClient.getHelpPIN(new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    String id,message_value;
+                    String id, message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
                         JSONObject mObject;
-                        Log.d("getHelpPin",response.toString());
-                        for(int i=0; i < arrayContact.length() ; i++ ) {
+                        Log.d("getHelpPin", response.toString());
+                        for (int i = 0; i < arrayContact.length(); i++) {
                             mObject = arrayContact.getJSONObject(i);
 //                            id = mObject.optString(WebParams.ID, "0");
-                            if(i==1) {
-                                message_value = mObject.optString(WebParams.DESCRIPTION,"")+" "+
-                                                mObject.optString(WebParams.NAME,"")+"\n"+
-                                                mObject.optString(WebParams.CONTACT_PHONE,"")+" "+
-                                                getString(R.string.or)+" "+
-                                                mObject.optString(WebParams.CONTACT_EMAIL,"");
+                            if (i == 1) {
+                                message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
+                                        mObject.optString(WebParams.NAME, "") + "\n" +
+                                        mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
+                                        getString(R.string.or) + " " +
+                                        mObject.optString(WebParams.CONTACT_EMAIL, "");
                                 Message.setText(message_value);
                                 break;
                             }

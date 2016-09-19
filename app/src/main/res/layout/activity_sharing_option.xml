@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+        >
+
+    <include android:id="@+id/main_toolbar"
+             layout="@layout/toolbar_main"/>
+
+    <ScrollView
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:layout_below="@id/main_toolbar"
+            android:fillViewport="true"
+            >
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/grey_1000w"
+                android:layout_margin="6dp"
+                >
+
+            <TextView android:id="@+id/changepass_firsttime_msg"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginTop="8dp"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="16dp"
+                      android:visibility="gone"
+                      android:textColor="@color/colorPrimary"
+                      android:text="@string/changepass_text_firsttime_msg"
+                    />
+
+            <!--<LinearLayout android:layout_width="match_parent"-->
+                          <!--android:layout_height="wrap_content"-->
+                          <!--android:orientation="horizontal"-->
+                          <!--android:layout_marginTop="18dp"-->
+                          <!--android:layout_marginBottom="12dp"-->
+                          <!--android:layout_marginLeft="16dp"-->
+                          <!--android:layout_marginRight="16dp"-->
+                    <!-->-->
+                <!--<ImageView android:layout_width="45dp"-->
+                           <!--android:layout_height="45dp"-->
+                           <!--android:src="@drawable/facebook"-->
+                           <!--android:layout_marginRight="8dp"-->
+                        <!--/>-->
+                <!--<LinearLayout android:layout_width="wrap_content"-->
+                              <!--android:layout_height="match_parent"-->
+                              <!--android:orientation="vertical"-->
+                              <!--android:layout_weight="1"-->
+                        <!-->-->
+
+                    <!--<TextView android:layout_width="wrap_content"-->
+                              <!--android:layout_height="wrap_content"-->
+                              <!--android:layout_weight="1"-->
+                              <!--android:textStyle="bold"-->
+                              <!--android:text="@string/shareoption_text_facebook"-->
+                              <!--android:textSize="@dimen/abc_text_size_medium_material"-->
+                            <!--/>-->
+
+                    <!--<TextView android:layout_width="wrap_content"-->
+                              <!--android:layout_height="wrap_content"-->
+                              <!--android:id="@+id/facebook_user_name"-->
+                              <!--android:text="Yuddis Tira"-->
+                            <!--/>-->
+
+                <!--</LinearLayout>-->
+
+                <!--<ToggleButton android:layout_width="wrap_content"-->
+                              <!--android:layout_height="wrap_content"-->
+                              <!--android:layout_gravity="right"-->
+                              <!--android:id="@+id/facebook_toggle_btn"-->
+                              <!--android:textOn="@string/menu_item_title_logout"-->
+                              <!--android:textOff="@string/login_button_login"-->
+                        <!--/>-->
+
+            <!--</LinearLayout>-->
+
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

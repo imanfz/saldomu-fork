@@ -1,12 +1,17 @@
 package com.sgo.orimakardaya.coreclass;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.activities.Introduction;
+import com.sgo.orimakardaya.activities.MainPage;
+import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
 /*
   Created by Administrator on 11/24/2014.
@@ -16,6 +21,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Toolbar detoolbar;
     protected TextView title_detoolbar;
     protected ProgressBar deprogressbar;
+    protected SMSclass smsClass;
+    protected boolean isActive;
 
 
     @Override
@@ -33,6 +40,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isActive = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isActive = false;
     }
 
     @Override

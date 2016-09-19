@@ -14,6 +14,8 @@ import android.webkit.*;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.MyApiClient;
+
 import timber.log.Timber;
 
 /*
@@ -40,7 +42,8 @@ public class TermsNConditionWeb extends Fragment {
         pb_webview = (ProgressBar) v.findViewById(R.id.loading_bar_web);
 
         isDisconnected = !isOnline();
-        String url = "https://www.mypin.id/m.terms_conditions.html";
+        String url = MyApiClient.URL_TERMS;
+        Timber.e(url);
         loadUrl(url);
     }
 
@@ -114,37 +117,4 @@ public class TermsNConditionWeb extends Fragment {
         webview.loadUrl(url);
     }
 
-
-    /*@Override
-    public void onDetach() {
-        if(webview != null){
-           *//* ViewGroup view = (ViewGroup) getActivity().getWindow().getDecorView();
-            view.removeAllViews();*//*
-            webview.destroy();
-            webview = null;
-        }
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroyView() {
-        if(webview != null){
-            *//*ViewGroup view = (ViewGroup) getActivity().getWindow().getDecorView();
-            view.removeAllViews();*//*
-            webview.destroy();
-            webview = null;
-        }
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        if(webview != null){
-            *//*ViewGroup view = (ViewGroup) getActivity().getWindow().getDecorView();
-            view.removeAllViews();*//*
-            webview.destroy();
-            webview = null;
-        }
-        super.onDestroy();
-    }*/
 }

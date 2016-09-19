@@ -320,7 +320,7 @@ public class ListCollectionPayment extends ListFragment {
 
             Timber.d("isi params bank collection:" + params.toString());
 
-            MyApiClient.sentBankAccountCollection(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentBankAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

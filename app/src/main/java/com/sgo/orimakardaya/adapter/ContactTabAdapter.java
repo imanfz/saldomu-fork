@@ -1,0 +1,64 @@
+package com.sgo.orimakardaya.adapter;
+
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.ViewGroup;
+
+import com.sgo.orimakardaya.fragments.FragFAQ;
+import com.sgo.orimakardaya.fragments.HelpFragment;
+import com.viewpagerindicator.IconPagerAdapter;
+
+import java.util.List;
+
+/**
+ * Created by thinkpad on 1/14/2016.
+ */
+public class ContactTabAdapter extends FragmentStatePagerAdapter {
+
+    private final String[] TITLES;
+    private final Context mContext;
+
+    public ContactTabAdapter(FragmentManager fm, Context _context, String[] _titles) {
+        super(fm);
+        mContext = _context;
+        TITLES = _titles;
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        Log.v("POSITION", "position: " + position);
+        if(position == 0) {
+            return HelpFragment.newInstance();
+        }
+        if(position == 1) {
+            return FragFAQ.newInstance();
+        }
+        return null;
+    }
+
+    @Override
+    public int getCount() {
+        return TITLES.length;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return TITLES[position];
+    }
+
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        if (position >= getCount()) {
+            FragmentManager manager = ((Fragment) object).getFragmentManager();
+            FragmentTransaction trans = manager.beginTransaction();
+            trans.remove((Fragment) object);
+            trans.commit();
+        }
+    }
+}

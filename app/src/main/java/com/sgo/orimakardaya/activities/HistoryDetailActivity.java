@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.activities;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -32,12 +30,12 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.ocpsoft.prettytime.PrettyTime;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -62,7 +60,7 @@ public class HistoryDetailActivity extends BaseActivity {
     List<commentModel> listComment;
     TimelineCommentAdapter commentAdapter;
 
-    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic;
+    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic, type_post;
 
     ProgressDialog mProg;
 
@@ -101,45 +99,30 @@ public class HistoryDetailActivity extends BaseActivity {
         else
             mPic= Picasso.with(this);
 
-        Intent i = getIntent();
-        if(i != null) {
-            post_id = i.getStringExtra("post_id");
-            from_name = i.getStringExtra("from_name");
-            from_id = i.getStringExtra("from_id");
-            to_name = i.getStringExtra("to_name");
-            to_id = i.getStringExtra("to_id");
-            message = i.getStringExtra("message");
-            datetime = i.getStringExtra("datetime");
-            amountvalue = i.getStringExtra("amount");
-            profpic = i.getStringExtra("profpic");
-            ccy = i.getStringExtra("ccy");
-            tx_status = i.getStringExtra("tx_status");
-            with_profpic = i.getStringExtra("with_profpic");
+        Bundle i = getIntent().getExtras();
 
-            Timber.d("post_id", post_id);
+        post_id = i.getString(DefineValue.POST_ID);
+        from_name = i.getString(DefineValue.FROM_NAME);
+        from_id = i.getString(DefineValue.FROM_ID);
+        to_name = i.getString(DefineValue.TO_NAME);
+        to_id = i.getString(DefineValue.TO_ID);
+        message = i.getString(DefineValue.MESSAGE);
+        datetime = i.getString(DefineValue.DATE_TIME);
+        amountvalue = i.getString(DefineValue.AMOUNT);
+        profpic = i.getString(DefineValue.PROF_PIC);
+        ccy = i.getString(DefineValue.CCY_ID);
+        tx_status = i.getString(DefineValue.TX_STATUS);
+        with_profpic = i.getString(DefineValue.WITH_PROF_PIC);
+        type_post = i.getString(DefineValue.POST_TYPE,"");
 
-            if(profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
-                    .transform(new RoundImageTransformation(this))
-                    .into(iconPicture);
-            else
-                mPic.load(profpic)
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .transform(new RoundImageTransformation(this))
-                    .into(iconPicture);
-
+        if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
+            iconPictureRight.setVisibility(View.VISIBLE);
             if(with_profpic.equals(""))
                 mPic.load(R.drawable.user_unknown_menu)
                         .error(roundedImage)
                         .fit().centerInside()
                         .placeholder(R.anim.progress_animation)
-                        .transform(new RoundImageTransformation(getApplicationContext()))
+                        .transform(new RoundImageTransformation())
                         .into(iconPictureRight);
             else
                 mPic.load(with_profpic)
@@ -147,34 +130,44 @@ public class HistoryDetailActivity extends BaseActivity {
                         .placeholder(R.anim.progress_animation)
                         .fit()
                         .centerCrop()
-                        .transform(new RoundImageTransformation(getApplicationContext()))
+                        .transform(new RoundImageTransformation())
                         .into(iconPictureRight);
-
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date d = null;
-            try {
-                d = f.parse(datetime);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            long long_date = d.getTime();
-
-            String period = PeriodTime.getTimeAgo(long_date, this);
-
-            fromId.setText(from_name);
             toId.setText(to_name);
-            messageTransaction.setText(message);
-            dateTime.setText(period);
-            amount.setText(ccy + " " + amountvalue);
             textStatus.setText(tx_status);
-        } else {
+        }
+        else {
+            iconPictureRight.setVisibility(View.GONE);
+            toId.setText(tx_status);
+            textStatus.setText(getResources().getString(R.string.doing));
+        }
+
+        if(profpic != null && profpic.equals(""))
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
                 .placeholder(R.anim.progress_animation)
-                .transform(new RoundImageTransformation(this))
+                .transform(new RoundImageTransformation())
                 .into(iconPicture);
-        }
+        else
+            mPic.load(profpic)
+                .error(R.drawable.user_unknown_menu)
+                .placeholder(R.anim.progress_animation)
+                .fit()
+                .centerCrop()
+                .transform(new RoundImageTransformation())
+                .into(iconPicture);
+
+
+
+        PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
+        Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
+        String period = p.formatDuration(time1);
+
+        fromId.setText(from_name);
+        messageTransaction.setText(message);
+        dateTime.setText(period);
+        String _amount = ccy + " " + amountvalue;
+        amount.setText(_amount);
 
         commentAdapter = new TimelineCommentAdapter(this, listComment);
         lvComment.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -185,9 +178,9 @@ public class HistoryDetailActivity extends BaseActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
                 AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
-                builder.setTitle("Delete Comment");
-                builder.setMessage("Are you sure?");
-                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                builder.setTitle(getString(R.string.delete_comment));
+                builder.setMessage(getString(R.string.delete_comment_ask));
+                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String comment_id = Integer.toString(listComment.get(index).getComment_id());
@@ -199,7 +192,7 @@ public class HistoryDetailActivity extends BaseActivity {
                         removeComment(comment_id, post_id, from, to);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -274,7 +267,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:"+params.toString());
 
-            MyApiClient.getCommentList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -381,7 +374,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params add comment:"+params.toString());
 
-            MyApiClient.sentAddComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -489,7 +482,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove comment:"+params.toString());
 
-            MyApiClient.sentRemoveComment(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentRemoveComment(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -612,7 +605,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
            Timber.d("isi params get like list:"+params.toString());
 
-            MyApiClient.getLikeList(params, new JsonHttpResponseHandler() {
+            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -734,7 +727,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params add like:"+params.toString());
 
-            MyApiClient.sentAddLike(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -840,8 +833,8 @@ public class HistoryDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = false;
 
-            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
-            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
+//            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
+//            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
                     _ownerID,accessKey);
@@ -854,7 +847,7 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove like:"+params.toString());
 
-            MyApiClient.sentRemoveLike(params, new JsonHttpResponseHandler(){
+            MyApiClient.sentRemoveLike(this,params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

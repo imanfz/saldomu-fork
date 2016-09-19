@@ -4,6 +4,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                app:theme="@style/RegisterTheme"
                 android:background="@drawable/background_base"
         >
 
@@ -152,7 +153,7 @@
                         android:textAppearance="@style/TextAppearance.AppCompat.Button"
                         android:textColor="@color/colorPrimaryDark"
                         android:gravity="center"
-                        android:text="@string/reg2_btn_text_resend_token"
+                        android:text="@string/reg2_btn_text_resend_token_sms"
                         android:layout_gravity="center_horizontal"
                         android:background="@drawable/button_transparant"
                         />

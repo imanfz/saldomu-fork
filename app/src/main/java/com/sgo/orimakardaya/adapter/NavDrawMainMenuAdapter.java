@@ -40,7 +40,7 @@ public class NavDrawMainMenuAdapter extends ArrayAdapter<navdrawmainmenuModel> {
         rowView = inflater.inflate(R.layout.nav_draw_main_menu_selected_item, parent, false);
         TextView titleView = (TextView) rowView.findViewById(R.id.title_item_main_menu);
         titleView.setText(mModelArrayList.get(position).getTitle());
-        titleView.setCompoundDrawablesWithIntrinsicBounds(mModelArrayList.get(position).getIndexImage(),0,0,0);
+        titleView.setCompoundDrawablesWithIntrinsicBounds(mModelArrayList.get(position).getIndexImageSelected(),0,0,0);
       }
       else {
         rowView = inflater.inflate(R.layout.nav_draw_main_menu_item, parent, false);
@@ -65,5 +65,8 @@ public class NavDrawMainMenuAdapter extends ArrayAdapter<navdrawmainmenuModel> {
 
   public void setSelectedItem(int selectedItem) {
     if(!mModelArrayList.get(selectedItem).isGroupHeader())mSelectedItem = selectedItem;
+  }
+  public void setDefault() {
+    mSelectedItem = 0;
   }
 }

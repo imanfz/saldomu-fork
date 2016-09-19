@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.sgo.orimakardaya.Beans.RecepientModel;
 import com.sgo.orimakardaya.R;
+import com.sgo.orimakardaya.coreclass.DefineValue;
 
 import java.util.List;
 
@@ -61,11 +62,18 @@ public class RecipientAdapter extends BaseAdapter {
             holder = (ViewHolder)view.getTag();
         }
         int sdk = android.os.Build.VERSION.SDK_INT;
-        if(mObject.get(position).getStatus().equals(failed)){
+        if(mObject.get(position).getStatus().equals(DefineValue.FAILED)){
             if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
                 holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_red));
             } else {
                 holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_red));
+            }
+        }
+        else if(mObject.get(position).getIs_member_temp().equals(DefineValue.STRING_YES)){
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                holder.backgroundLayout.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
+            } else {
+                holder.backgroundLayout.setBackground( mContext.getResources().getDrawable(R.drawable.rounded_background_orange));
             }
         }
         else {

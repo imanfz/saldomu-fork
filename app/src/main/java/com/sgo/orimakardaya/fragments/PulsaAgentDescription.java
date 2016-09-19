@@ -16,6 +16,7 @@ import com.sgo.orimakardaya.Beans.listbankModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
@@ -58,7 +59,7 @@ public class PulsaAgentDescription extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = new SecurePreferences(getActivity());
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         cust_id = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -149,7 +150,7 @@ public class PulsaAgentDescription extends Fragment {
                 }
 
             }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
         }
     };
 
@@ -239,7 +240,7 @@ public class PulsaAgentDescription extends Fragment {
             else
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_EMO);
 
-            Timber.d("isi params sent payment DAP", params.toString());
+            Timber.d("isi params sent payment DAP" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -247,7 +248,7 @@ public class PulsaAgentDescription extends Fragment {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response payment DAP", response.toString());
+                            Timber.d("isi response payment DAP" +response.toString());
 
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmDAP(response.getString(WebParams.AMOUNT), response.getString(WebParams.AUTH_TYPE), response.getString(WebParams.TX_ID), response.getString(WebParams.CCY_ID),
@@ -261,12 +262,12 @@ public class PulsaAgentDescription extends Fragment {
                             }
 
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }else {
-                            Timber.d("Error isi response payment DAP", response.toString());
+                            Timber.d("Error isi response payment DAP"+response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             progdialog.dismiss();
@@ -283,14 +284,37 @@ public class PulsaAgentDescription extends Fragment {
                 }
 
                 @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
                     btn_submit.setEnabled(true);
-                    Log.w("Error Koneksi payment DAP", throwable.toString());
+                    Timber.w("Error Koneksi payment DAP:" + throwable.toString());
                 }
             };
 
-            MyApiClient.sentPaymentDAP(params, mHandler);
+            MyApiClient.sentPaymentDAP(getActivity(),params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
@@ -309,7 +333,7 @@ public class PulsaAgentDescription extends Fragment {
 
             Timber.d("isi params sent Bank DAP", params.toString());
 
-            MyApiClient.getBankDAP(params, new JsonHttpResponseHandler() {
+            MyApiClient.getBankDAP(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
@@ -383,10 +407,35 @@ public class PulsaAgentDescription extends Fragment {
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
-                    Log.w("Error Koneksi get Biller Type", throwable.toString());
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
                 }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    Timber.w("Error Koneksi Biller Type:"+throwable.toString());
+                }
+
+
             });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
@@ -405,14 +454,14 @@ public class PulsaAgentDescription extends Fragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, cust_id);
 
-            Timber.d("isi params reqtoken Sgo+", params.toString());
+            Timber.d("isi params reqtoken Sgo+" + params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(params, new JsonHttpResponseHandler() {
+            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response reqtoken ", response.toString());
+                        Timber.d("response reqtoken " + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             if(mTempBank.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
@@ -424,7 +473,7 @@ public class PulsaAgentDescription extends Fragment {
                                 changeToConfirmDAP(_amount,_merchant_type, _tx_id,_ccy_id,fee,_bank_code,_product_code);
 
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
+                            Timber.d("isi response autologout" +response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
@@ -443,11 +492,35 @@ public class PulsaAgentDescription extends Fragment {
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    progdialog.dismiss();
-                    btn_submit.setEnabled(true);
-                    Log.w("Error Koneksi request token", throwable.toString());
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
                 }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    btn_submit.setEnabled(true);
+                    Timber.w("Error Koneksi request token:"+throwable.toString());
+                }
+
             });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
