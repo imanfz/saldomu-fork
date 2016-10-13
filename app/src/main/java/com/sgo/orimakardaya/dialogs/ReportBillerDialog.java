@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -20,6 +21,11 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -86,7 +92,49 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         tv_txid_value.setText(args.getString(DefineValue.TX_ID));
 
         if (type != null) {
-            if(type.equals(DefineValue.BILLER)){
+            if(type.equals(DefineValue.BILLER_PLN)){
+                View mLayout = view.findViewById(R.id.report_biller_pln);
+                mLayout.setVisibility(View.VISIBLE);
+
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if(!isSuccess){
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+                View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
+                TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
+                desclayout.setVisibility(View.VISIBLE);
+                String source = args.getString(DefineValue.DETAIL,"");
+                String desc = "", value = "";
+                JSONObject mDataDesc;
+                try {
+                    mDataDesc = new JSONObject(source);
+                    Iterator keys = mDataDesc.keys();
+                    List<String> tempList = new ArrayList<>();
+                    JSONArray isi_value = new JSONArray();
+
+                    while(keys.hasNext()) {
+                        String temp = (String) keys.next();
+                        isi_value.put(mDataDesc.getString(temp));
+                        if(temp.equalsIgnoreCase("customer_id"))
+                            temp = getString(R.string.customer_id);
+
+                        tempList.add(temp);
+                    }
+
+//                    Collections.sort(tempList);
+                    JSONArray isi_field = new JSONArray(tempList);
+                    desc = String.valueOf(isi_field);
+                    value = String.valueOf(isi_value);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                createTableDesc(desc,value,mTableLayout);
+            }
+            else if(type.equals(DefineValue.BILLER)){
                 View mLayout = view.findViewById(R.id.report_biller);
                 mLayout.setVisibility(View.VISIBLE);
 
@@ -118,8 +166,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
 
+                Boolean isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION,false);
 
-                if(args.getInt(DefineValue.BUY_TYPE, 0) == BillerActivity.PAYMENT_TYPE){
+                if(isShowDescription){
                     tv_denom_text.setText(getString(R.string.billertoken_text_item_name));
                     View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
                     RelativeLayout mDescLayout = (RelativeLayout) mLayout.findViewById(R.id.billertoken_layout_deskripsi);
@@ -453,16 +502,23 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.WRAP_CONTENT);
             TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                    TableRow.LayoutParams.WRAP_CONTENT,8f);
+                    TableRow.LayoutParams.WRAP_CONTENT,8.0f);
             rowParams.setMargins(6,6,6,6);
+            TableRow.LayoutParams rowParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            rowParams2.setMargins(6,6,6,6);
+
 
             for (int i =0 ; i < desc_field.length();i++) {
                 detail_field = new TextView(getActivity());
                 detail_field.setGravity(Gravity.LEFT);
-                detail_field.setLayoutParams(rowParams);
+                detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+                detail_field.setLayoutParams(rowParams2);
                 detail_value = new TextView(getActivity());
-                detail_value.setGravity(Gravity.RIGHT);
+                detail_value.setGravity(Gravity.LEFT|Gravity.CENTER_VERTICAL);
+                detail_value.setTextSize(TypedValue.COMPLEX_UNIT_SP,13);
                 detail_value.setLayoutParams(rowParams);
+                detail_value.setPadding(6,0,0,0);
                 detail_value.setTypeface(Typeface.DEFAULT_BOLD);
                 layout_table_row = new TableRow(getActivity());
                 layout_table_row.setLayoutParams(tableParams);
@@ -483,5 +539,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         this.dismiss();
         callback.onOkButton();
     }
+
 
 }

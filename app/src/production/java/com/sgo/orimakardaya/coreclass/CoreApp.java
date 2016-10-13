@@ -151,7 +151,14 @@ public class CoreApp extends Application {
     private String copyBundledRealmFile(InputStream inputStream, String outFileName) {
         try {
             File file = new File(this.getFilesDir(), outFileName);
-            if(!file.exists()) {
+            long sizeraw = inputStream.available();
+            long sizefile = 0;
+            if(file.exists()) {
+                sizefile = file.length();
+                Timber.d("sizeRaw / sizeFile = "+ String.valueOf(sizeraw)+" / "+String.valueOf(sizefile));
+            }
+
+            if(sizeraw != sizefile) {
                 FileOutputStream outputStream = new FileOutputStream(file);
                 byte[] buf = new byte[1024];
                 int bytesRead;

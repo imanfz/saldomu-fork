@@ -80,6 +80,46 @@
                     android:layout_height="wrap_content"/>
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/billerinput_layout_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            >
+            <TextView
+                android:id="@+id/billerinput_text_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/billerinput_text_month"
+                android:paddingTop="10dp"
+                />
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <ImageView
+                    android:id="@+id/spinning_wheel_billerinput_month"
+                    android:visibility="invisible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/default_spinner"
+                    android:layout_centerInParent="true"
+                    />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                    android:id="@+id/spinner_billerinput_month"
+                    android:layout_gravity="center_horizontal"/>
+            </RelativeLayout>
+        </LinearLayout>
+
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:orientation="horizontal"

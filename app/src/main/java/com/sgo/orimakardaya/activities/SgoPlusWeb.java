@@ -246,6 +246,10 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userId);
 
+            if(reportType.equals(DefineValue.BILLER_PLN)){
+                params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
+            }
+
             Timber.d("isi params sent get Trx Status:" + params.toString());
 
             MyApiClient.sentGetTRXStatus(this, params, new JsonHttpResponseHandler() {
@@ -260,7 +264,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             String txstatus = response.getString(WebParams.TX_STATUS);
                             showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,totalAmount,fee,amount,
                                     txstatus,response.getString(WebParams.TX_REMARK),
-                                    reportType);
+                                    reportType,response);
                         }else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -271,7 +275,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             String msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(code.equals("0003")){
                                 showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType);
+                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response);
                             }
                             else
                                 showDialog(msg);
@@ -348,7 +352,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
-                                        String fee, String amount, String txStatus, String txRemark, String reportType) {
+                                        String fee, String amount, String txStatus, String txRemark, String reportType,
+                                        JSONObject response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -380,14 +385,25 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
+        if(reportType.equals(DefineValue.BILLER_PLN)){
+            if(getIntent().hasExtra(DefineValue.IS_PLN)) {
+                Boolean isPLN = getIntent().getBooleanExtra(DefineValue.IS_PLN,false);
+                if (isPLN && response.has(WebParams.DETAIL)) {
+                    args.putString(DefineValue.BILLER_TYPE, getIntent().getStringExtra(DefineValue.BILLER_TYPE));
+                    args.putString(DefineValue.DETAIL, response.optString(WebParams.DETAIL, ""));
+                }
+            }
+            setResult(MainPage.RESULT_BILLER);
 
-        if(reportType.equals(DefineValue.BILLER)){
+        }
+        else if(reportType.equals(DefineValue.BILLER)){
             args.putString(DefineValue.DENOM_DATA, mIntent.getStringExtra(DefineValue.DENOM_DATA));
             args.putInt(DefineValue.BUY_TYPE, mIntent.getIntExtra(DefineValue.BUY_TYPE, 0));
             args.putString(DefineValue.DESC_FIELD, mIntent.getStringExtra(DefineValue.DESC_FIELD));
             args.putString(DefineValue.DESC_VALUE, mIntent.getStringExtra(DefineValue.DESC_VALUE));
             args.putString(DefineValue.PAYMENT_NAME, mIntent.getStringExtra(DefineValue.PAYMENT_NAME));
             args.putString(DefineValue.DESTINATION_REMARK,mIntent.getStringExtra(DefineValue.DESTINATION_REMARK));
+            args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, mIntent.getBooleanExtra(DefineValue.IS_SHOW_DESCRIPTION,false));
             String amountDesired = mIntent.getStringExtra(DefineValue.AMOUNT_DESIRED);
             if(amountDesired.isEmpty())
                 args.putString(DefineValue.AMOUNT_DESIRED,amountDesired);

@@ -34,6 +34,7 @@ public class DefineValue {
     public static String IDR = "IDR";
     public static String PAYFRIENDS = "pf";
     public static String BILLER = "bl";
+    public static String BILLER_PLN = "pl";
     public static String BILLER_ESPAY = "blep";
     public static String TOPUP = "tp";
     public static String CASHOUT = "ct";
@@ -252,6 +253,7 @@ public class DefineValue {
     public static String MAX_TOPUP = "max_topup";
     public static String ALLOW_MEMBER_LEVEL = "allowMemberLevel";
     public static String CAN_TRANSFER = "canTransfer";
+    public static String TYPE_POST = "typePost";
 
     public static String DESTINATION_REMARK = "destinationRemark";
     public static String LINK_APP = "linkApp";
@@ -263,4 +265,11 @@ public class DefineValue {
     public static String WAITING_CLAIM = "WC";
     public static String USER_IS_NEW = "userIsNew";
 
+    public static String BILLER_TYPE_BPJS = "bpjs";
+    public static String BILLER_TYPE_PLN_TKN = "tkn";
+    public static String BILLER_TYPE_NON_TAG = "non";
+    public static String BILLER_TYPE_PLN = "pln";
+    public static String VALUE_ITEM_DATA = "valueItemData";
+    public static String IS_SHOW_DESCRIPTION = "isDescription";
+    public static String IS_PLN = "isPLN";
 }
