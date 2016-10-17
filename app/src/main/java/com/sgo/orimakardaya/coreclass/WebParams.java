@@ -320,20 +320,20 @@ public class WebParams {
     public static String IS_REGISTER = "is_register";
     public static String ALLOW_MEMBER_LEVEL = "allow_member_level";
     public static String CAN_TRANSFER = "can_transfer";
-
+	public static String IS_MEMBER_TEMP = "is_member_temp";
     public static String DEV_MODEL = "dev_model";
     public static String MAC_ADDR = "mac_addr";
     public static String BANK_GATEWAY = "bank_gateway";
-
+    public static String EXP_DURATION_HOUR = "exp_duration_hour";
     public static String UNREAD_NOTIF = "unread_notif";
+    public static String ID_RESULT = "id_result";
+    public static String HOLD_ID = "hold_id";
     public static String IMEI = "imei";
     public static String ICCID = "iccid";
     public static String SENT = "sent";
     public static String SENDER_ID = "sender_id";
 
     public static String IS_NEW_USER = "is_new_user";
-    public static String ID_RESULT = "id_result";
-    public static String HOLD_ID = "hold_id";
-    public static String EXP_DURATION_HOUR = "exp_duration_hour";
-	public static String IS_MEMBER_TEMP = "is_member_temp";
+    public static String ITEM_DATA = "item_data";
+    public static String IS_DETAIL = "is_detail";
 }

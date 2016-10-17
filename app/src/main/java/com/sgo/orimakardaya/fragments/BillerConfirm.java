@@ -55,7 +55,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
     View v;
     String tx_id,merchant_type,ccy_id,amount,item_name,cust_id, payment_name, amount_desire,fee,total_amount,
-            shareType, bank_code, product_code,product_payment_type,biller_name,userID,accessKey;
+            shareType, bank_code, product_code,product_payment_type,biller_name,userID,accessKey,biller_type_code;
     TextView tv_item_name_value,tv_amount_value,tv_id_cust, tv_payment_name, tv_fee_value, tv_total_amount_value;
     EditText et_token_value;
     Button btn_submit,btn_cancel,btn_resend;
@@ -63,7 +63,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     private int buy_code;
     private int attempt;
     private int failed;
-    Boolean is_input_amount, is_display_amount, is_sgo_plus, isPIN;
+    Boolean is_input_amount, is_display_amount, is_sgo_plus, isPIN, isFacebook = false, isShowDescription = false, isPLN = false;
     ProgressDialog progdialog;
     JSONArray isi_field, isi_value;
     ImageView mIconArrow;
@@ -120,7 +120,16 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         product_payment_type = args.getString(DefineValue.PRODUCT_PAYMENT_TYPE);
         biller_name = args.getString(DefineValue.BILLER_NAME,"");
         attempt = args.getInt(DefineValue.ATTEMPT,-1);
+        isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION,false);
+        biller_type_code = args.getString(DefineValue.BILLER_TYPE);
         Timber.d("isi args:"+args.toString());
+
+        if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)){
+            isPLN = true;
+        }
 
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
@@ -183,67 +192,64 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             TextView tv_biller_name_value = (TextView) layout_biller_name.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
         }
-        else if(buy_code == BillerActivity.PAYMENT_TYPE ) {
-            Timber.d("isi isdisplayamouny & isinputamount:"+is_display_amount +"\n"+ is_input_amount );
-            if(is_display_amount){
-                try {
-                    View layout_detail_payment = v.findViewById(R.id.billertoken_layout_payment);
-                    layout_detail_payment.setVisibility(View.VISIBLE);
-                    RelativeLayout mDescLayout = (RelativeLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_deskripsi);
-                    mTableLayout = (TableLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_table);
-                    mIconArrow = (ImageView) layout_detail_payment.findViewById(R.id.billertoken_arrow_desc);
-                    mDescLayout.setOnClickListener(descriptionClickListener);
-                    mIconArrow.setOnClickListener(descriptionClickListener);
 
-                    String description = args.getString(DefineValue.DESCRIPTION);
+        if(is_display_amount && isShowDescription){
+            try {
+                View layout_detail_payment = v.findViewById(R.id.billertoken_layout_payment);
+                layout_detail_payment.setVisibility(View.VISIBLE);
+                RelativeLayout mDescLayout = (RelativeLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_deskripsi);
+                mTableLayout = (TableLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_table);
+                mIconArrow = (ImageView) layout_detail_payment.findViewById(R.id.billertoken_arrow_desc);
+                mDescLayout.setOnClickListener(descriptionClickListener);
+                mIconArrow.setOnClickListener(descriptionClickListener);
 
-                    JSONObject mDataDesc = new JSONObject(description);
-                    TextView detail_field;
-                    TextView detail_value;
-                    TableRow layout_table_row;
-                    String value_detail_field,value_detail_value;
-                    Iterator keys = mDataDesc.keys();
-                    List<String> tempList = new ArrayList<String>();
+                String description = args.getString(DefineValue.DESCRIPTION);
 
-                    while(keys.hasNext()) {
-                        tempList.add((String) keys.next());
-                    }
-                    Collections.sort(tempList);
-                    isi_field = new JSONArray(tempList);
-                    isi_value = new JSONArray();
+                JSONObject mDataDesc = new JSONObject(description);
+                TextView detail_field;
+                TextView detail_value;
+                TableRow layout_table_row;
+                String value_detail_field,value_detail_value;
+                Iterator keys = mDataDesc.keys();
+                List<String> tempList = new ArrayList<String>();
 
-                    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-                            TableLayout.LayoutParams.WRAP_CONTENT);
-                    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT,8f);
-                    rowParams.setMargins(6,6,6,6);
-
-                    for (String aTempList : tempList) {
-                        value_detail_field = aTempList;
-                        value_detail_value = mDataDesc.getString(aTempList);
-                        isi_value.put(value_detail_value);
-
-                        detail_field = new TextView(getActivity());
-                        detail_field.setGravity(Gravity.LEFT);
-                        detail_field.setLayoutParams(rowParams);
-                        detail_value = new TextView(getActivity());
-                        detail_value.setGravity(Gravity.RIGHT);
-                        detail_value.setLayoutParams(rowParams);
-                        detail_value.setTypeface(Typeface.DEFAULT_BOLD);
-                        layout_table_row = new TableRow(getActivity());
-                        layout_table_row.setLayoutParams(tableParams);
-                        layout_table_row.addView(detail_field);
-                        layout_table_row.addView(detail_value);
-                        detail_field.setText(value_detail_field);
-                        detail_value.setText(value_detail_value);
-                        mTableLayout.addView(layout_table_row);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                while(keys.hasNext()) {
+                    tempList.add((String) keys.next());
                 }
-            }
+                Collections.sort(tempList);
+                isi_field = new JSONArray(tempList);
+                isi_value = new JSONArray();
 
+                TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                        TableLayout.LayoutParams.WRAP_CONTENT);
+                TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                        TableRow.LayoutParams.WRAP_CONTENT,8f);
+                rowParams.setMargins(6,6,6,6);
+
+                for (String aTempList : tempList) {
+                    value_detail_field = aTempList;
+                    value_detail_value = mDataDesc.getString(aTempList);
+                    isi_value.put(value_detail_value);
+
+                    detail_field = new TextView(getActivity());
+                    detail_field.setGravity(Gravity.LEFT);
+                    detail_field.setLayoutParams(rowParams);
+                    detail_value = new TextView(getActivity());
+                    detail_value.setGravity(Gravity.RIGHT);
+                    detail_value.setLayoutParams(rowParams);
+                    detail_value.setTypeface(Typeface.DEFAULT_BOLD);
+                    layout_table_row = new TableRow(getActivity());
+                    layout_table_row.setLayoutParams(tableParams);
+                    layout_table_row.addView(detail_field);
+                    layout_table_row.addView(detail_value);
+                    detail_field.setText(value_detail_field);
+                    detail_value.setText(value_detail_value);
+                    mTableLayout.addView(layout_table_row);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         if(is_input_amount){
@@ -596,6 +602,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userID);
+            if(isPLN){
+                params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
+            }
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
@@ -611,7 +620,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                             String txstatus = response.getString(WebParams.TX_STATUS);
                             showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
                                     sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount);
+                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response);
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -698,6 +707,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         i.putExtra(DefineValue.BUY_TYPE, buy_code);
         i.putExtra(DefineValue.PAYMENT_NAME,payment_name);
         i.putExtra(DefineValue.BILLER_NAME,biller_name);
+        i.putExtra(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
         i.putExtra(DefineValue.DESTINATION_REMARK, cust_id);
 
         double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(_fee);
@@ -716,6 +726,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         }
         if(is_input_amount)_isi_amount_desired = amount_desire;
 
+        if(isPLN){
+            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
+            args.putString(DefineValue.BILLER_TYPE,biller_type_code);
+            args.putBoolean(DefineValue.IS_PLN,isPLN);
+        }
+
 
         i.putExtra(DefineValue.DESC_FIELD, _isi_field);
         i.putExtra(DefineValue.DESC_VALUE, _isi_value);
@@ -726,7 +742,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount) {
+                                        String txRemark, String _amount, JSONObject response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, name);
@@ -740,6 +756,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.DESTINATION_REMARK, cust_id);
+        args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, isShowDescription);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){
@@ -778,6 +795,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             args.putString(DefineValue.AMOUNT_DESIRED, _isi_amount_desired);
         else
             args.putString(DefineValue.AMOUNT_DESIRED, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_isi_amount_desired));
+
+        if(isPLN && response.has(WebParams.DETAIL)){
+            args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
+            args.putString(DefineValue.BILLER_TYPE,biller_type_code);
+            args.putString(DefineValue.DETAIL,response.optString(WebParams.DETAIL,""));
+        }
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this, 0);

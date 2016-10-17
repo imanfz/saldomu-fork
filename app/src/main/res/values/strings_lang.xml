@@ -296,6 +296,7 @@
     <string name="biller_empty_data">Data tidak tersedia</string>
 
     <string name="biller_name">Nama</string>
+    <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
     <string name="billerinput_text_payment_remark">ID Pelanggan</string>
@@ -517,8 +518,7 @@
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
-    <string name="login_failed_attempt_1">Anda punya </string>
-    <string name="login_failed_attempt_2">kesempatan sebelum diblokir.</string>
+    <string name="login_failed_attempt_1">Anda punya %1$s kesempatan sebelum diblokir.</string>
     <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
@@ -689,4 +689,10 @@
     <string name="sim_network_locked">Jaringan Terkunci!</string>
     <string name="sim_pin_required">Dibutuhkan PIN untuk mengakses SIM!</string>
     <string name="sim_puk_required">Dibutuhkan PUK untuk mengakses SIM!</string>
+    <string name="period_month">period_month</string>
+    <string name="msisdn">msisdn</string>
+    <string name="customer_id">ID Pelanggan</string>
+    <string name="update">Perbaharuan</string>
+    <string name="maintenance">Pemeliharaan</string>
+    <string name="update_msg">Versi aplikasi sudah lama, segera perbaharui aplikasi.</string>
 </resources>

@@ -61,8 +61,8 @@ android {
             buildConfigField 'boolean', "isProdDomain", "true"
             buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             signingConfig signingConfigs.prodKey
-            versionCode = 15
-            versionName "2.14"
+            versionCode = 16
+            versionName "2.15"
         }
     }
 
@@ -94,10 +94,10 @@ android {
                 newName += "- debug"
             }
 
-            if (output.zipAlign) {
-                output.zipAlign.outputFile = new File((File) apk.parentFile, newName + '.apk');
-            }
-            output.packageApplication.outputFile = new File((File) apk.parentFile, newName + "-unaligned.apk")
+//            if (output.zipAlign) {
+//                output.zipAlign.outputFile = new File((File) apk.parentFile, newName + '.apk');
+//            }
+            output.packageApplication.outputFile = new File((File) apk.parentFile, newName + ".apk")
         }
     }
 }
