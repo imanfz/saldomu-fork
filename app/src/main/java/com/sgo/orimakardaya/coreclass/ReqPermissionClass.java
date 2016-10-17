@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
  * Created by yuddistirakiki on 6/9/16.
  */
 public class ReqPermissionClass {
+    public static final int PERMISSIONS_REQ_READEXTERNALSTORAGE = 125;
     public static final int PERMISSIONS_REQ_CAMERA = 124;
     public static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 123;
     public static final int PERMISSIONS_REQ_READPHONESTATE = 122;

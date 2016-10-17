@@ -689,6 +689,11 @@
     <string name="sim_network_locked">Jaringan Terkunci!</string>
     <string name="sim_pin_required">Dibutuhkan PIN untuk mengakses SIM!</string>
     <string name="sim_puk_required">Dibutuhkan PUK untuk mengakses SIM!</string>
+    <string name="success_saved_gallery">Tersimpan di galeri</string>
+    <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
+    <string name="saving_gallery">Menyimpan di galeri...</string>
+    <string name="foldername_struk">Struk PIN Akardaya</string>
+
     <string name="period_month">period_month</string>
     <string name="msisdn">msisdn</string>
     <string name="customer_id">ID Pelanggan</string>
