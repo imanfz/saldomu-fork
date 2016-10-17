@@ -54,12 +54,12 @@ public class BillerDesciption extends Fragment {
     View v, layout_biller_name;
     String tx_id, biller_name, biller_comm_id ,biller_comm_code, biller_api_key,
             ccy_id,amount, item_name, description, cust_id, item_id,
-            payment_name,shareType, callback_url,userID,accessKey;
+            payment_name,shareType, callback_url,userID,accessKey, biller_type_code, value_item_data;
     TextView tv_biller_name_value,tv_item_name_value,tv_amount_value, tv_id_cust;
     EditText et_desired_amount;
     Button btn_submit,btn_cancel;
     int buy_type;
-    Boolean  is_input_amount, is_display_amount;
+    Boolean  is_input_amount, is_display_amount,isFacebook = false,isShowDescription = false;
     ProgressDialog progdialog;
     ImageView mIconArrow;
     TableLayout mTableLayout;
@@ -119,7 +119,9 @@ public class BillerDesciption extends Fragment {
         item_id = args.getString(DefineValue.ITEM_ID,"");
         cust_id = args.getString(DefineValue.CUST_ID,"");
         buy_type = args.getInt(DefineValue.BUY_TYPE, 0);
-
+        biller_type_code = args.getString(DefineValue.BILLER_TYPE);
+        if(args.containsKey(DefineValue.VALUE_ITEM_DATA))
+            value_item_data = args.getString(DefineValue.VALUE_ITEM_DATA);
 
         mBillerData = realm.where(Biller_Data_Model.class).
                 equalTo(WebParams.COMM_ID,biller_comm_id).
@@ -133,83 +135,30 @@ public class BillerDesciption extends Fragment {
         callback_url = mBillerData.getCallback_url();
     }
 
-    public void initializeLayout(){
+    public void initializeLayout() {
 
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
         tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
         View amount_layout = v.findViewById(R.id.billertoken_amount_layout);
-        if(is_display_amount){
+        if (is_display_amount) {
             amount_layout.setVisibility(View.VISIBLE);
         }
 
 
-        if(buy_type == BillerActivity.PURCHASE_TYPE){
+        if (buy_type == BillerActivity.PURCHASE_TYPE) {
             tv_biller_name_value = (TextView) v.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
-        }
-        else if(buy_type == BillerActivity.PAYMENT_TYPE ) {
+            if (is_display_amount && biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)) {
+                initializeDescriptionLayout();
+            }
+        } else if (buy_type == BillerActivity.PAYMENT_TYPE) {
             layout_biller_name.setVisibility(View.GONE);
-            if(is_display_amount){
-                try {
-                    View mDescLayout = v.findViewById(R.id.billertoken_layout_deskripsi);
-                    mDescLayout.setVisibility(View.VISIBLE);
-
-                    mTableLayout = (TableLayout) v.findViewById(R.id.billertoken_layout_table);
-                    mIconArrow = (ImageView) mDescLayout.findViewById(R.id.billertoken_arrow_desc);
-
-                    mIconArrow.setOnClickListener(descriptionClickListener);
-                    mDescLayout.setOnClickListener(descriptionClickListener);
-
-                    JSONObject mDataDesc = new JSONObject(description);
-                    TextView detail_field;
-                    TextView detail_value;
-                    TableRow layout_table_row;
-                    String value_detail_field,value_detail_value;
-                    Iterator keys = mDataDesc.keys();
-                    List<String> tempList = new ArrayList<String>();
-
-                    while(keys.hasNext()) {
-                        tempList.add((String) keys.next());
-                    }
-                    Collections.sort(tempList);
-                    isi_field = new JSONArray(tempList);
-                    isi_value = new JSONArray();
-
-                    TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
-                            TableLayout.LayoutParams.WRAP_CONTENT);
-                    TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
-                            TableRow.LayoutParams.WRAP_CONTENT,8f);
-                    rowParams.setMargins(6,6,6,6);
-
-                    mTableLayout.removeAllViews();
-                    for (String aTempList : tempList) {
-                        value_detail_field = aTempList;
-                        value_detail_value = mDataDesc.getString(aTempList);
-                        isi_value.put(value_detail_value);
-
-                        detail_field = new TextView(getActivity());
-                        detail_field.setGravity(Gravity.LEFT);
-                        detail_field.setLayoutParams(rowParams);
-                        detail_value = new TextView(getActivity());
-                        detail_value.setGravity(Gravity.RIGHT);
-                        detail_value.setLayoutParams(rowParams);
-                        detail_value.setTypeface(Typeface.DEFAULT_BOLD);
-                        layout_table_row = new TableRow(getActivity());
-                        layout_table_row.setLayoutParams(tableParams);
-                        layout_table_row.addView(detail_field);
-                        layout_table_row.addView(detail_value);
-                        detail_field.setText(value_detail_field);
-                        detail_value.setText(value_detail_value);
-                        mTableLayout.addView(layout_table_row);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            if (is_display_amount) {
+                initializeDescriptionLayout();
             }
 
-            if(is_input_amount){
+            if (is_input_amount) {
                 View inputAmountLayout = v.findViewById(R.id.billertoken_layout_amount_desired);
                 inputAmountLayout.setVisibility(View.VISIBLE);
                 et_desired_amount = (EditText) v.findViewById(R.id.billertoken_amount_desired_value);
@@ -224,25 +173,84 @@ public class BillerDesciption extends Fragment {
         spin_payment_options.setOnItemSelectedListener(spinnerPaymentListener);
 
         if (isVisible()) {
-                ArrayList<String> tempDataPaymentName = new ArrayList<>();
-                paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+            ArrayList<String> tempDataPaymentName = new ArrayList<>();
+            paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
-                for (int i = 0; i < mListBankBiller.size(); i++) {
-                    if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-                        paymentData.add(mListBankBiller.get(i).getProduct_name());
-                    } else {
-                        tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
-                    }
+            for (int i = 0; i < mListBankBiller.size(); i++) {
+                if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
+                    paymentData.add(mListBankBiller.get(i).getProduct_name());
+                } else {
+                    tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
                 }
-                if (!tempDataPaymentName.isEmpty())
-                    Collections.sort(tempDataPaymentName);
+            }
+            if (!tempDataPaymentName.isEmpty())
+                Collections.sort(tempDataPaymentName);
 
-                paymentData.addAll(tempDataPaymentName);
-                adapterPaymentOptions.notifyDataSetChanged();
+            paymentData.addAll(tempDataPaymentName);
+            adapterPaymentOptions.notifyDataSetChanged();
         }
 
-        if(progdialog !=null && progdialog.isShowing())
+        if (progdialog != null && progdialog.isShowing())
             progdialog.dismiss();
+    }
+    private void initializeDescriptionLayout(){
+        isShowDescription = true;
+        try {
+            View mDescLayout = v.findViewById(R.id.billertoken_layout_deskripsi);
+            mDescLayout.setVisibility(View.VISIBLE);
+
+            mTableLayout = (TableLayout) v.findViewById(R.id.billertoken_layout_table);
+            mIconArrow = (ImageView) mDescLayout.findViewById(R.id.billertoken_arrow_desc);
+
+            mIconArrow.setOnClickListener(descriptionClickListener);
+            mDescLayout.setOnClickListener(descriptionClickListener);
+
+            JSONObject mDataDesc = new JSONObject(description);
+            TextView detail_field;
+            TextView detail_value;
+            TableRow layout_table_row;
+            String value_detail_field,value_detail_value;
+            Iterator keys = mDataDesc.keys();
+            List<String> tempList = new ArrayList<String>();
+
+            while(keys.hasNext()) {
+                tempList.add((String) keys.next());
+            }
+            Collections.sort(tempList);
+            isi_field = new JSONArray(tempList);
+            isi_value = new JSONArray();
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT,8f);
+            rowParams.setMargins(6,6,6,6);
+
+            mTableLayout.removeAllViews();
+            for (String aTempList : tempList) {
+                value_detail_field = aTempList;
+                value_detail_value = mDataDesc.getString(aTempList);
+                isi_value.put(value_detail_value);
+
+                detail_field = new TextView(getActivity());
+                detail_field.setGravity(Gravity.LEFT);
+                detail_field.setLayoutParams(rowParams);
+                detail_value = new TextView(getActivity());
+                detail_value.setGravity(Gravity.RIGHT);
+                detail_value.setLayoutParams(rowParams);
+                detail_value.setTypeface(Typeface.DEFAULT_BOLD);
+                layout_table_row = new TableRow(getActivity());
+                layout_table_row.setLayoutParams(tableParams);
+                layout_table_row.addView(detail_field);
+                layout_table_row.addView(detail_value);
+                detail_field.setText(value_detail_field);
+                detail_value.setText(value_detail_value);
+                mTableLayout.addView(layout_table_row);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -367,6 +375,15 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userID);
+            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+                JSONObject detail = new JSONObject();
+                try {
+                    detail.put(getString(R.string.period_month), value_item_data);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                params.put(WebParams.ITEM_DATA, detail.toString());
+            }
 
             Timber.d("isi params sent inquiry biller:"+params.toString());
 
@@ -387,9 +404,7 @@ public class BillerDesciption extends Fragment {
                             ccy_id = response.getString(WebParams.CCY_ID);
                             amount = response.getString(WebParams.AMOUNT);
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
-
-                            if(buy_type == BillerActivity.PAYMENT_TYPE)
-                                   description =  response.getString(WebParams.DESCRIPTION);
+                            description =  response.getString(WebParams.DESCRIPTION);
 
                             if(isAdded())
                                 initializeLayout();
@@ -447,6 +462,7 @@ public class BillerDesciption extends Fragment {
 
                     if(progdialog.isShowing())
                         progdialog.dismiss();
+                    getFragmentManager().popBackStack();
                     Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
                 }
 
@@ -745,7 +761,6 @@ public class BillerDesciption extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
         TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
@@ -797,8 +812,7 @@ public class BillerDesciption extends Fragment {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                    changeToConfirmBiller(fee, merchant_type, bank_code, product_code,-1);
+                changeToConfirmBiller(fee, merchant_type, bank_code, product_code,-1);
 
                 dialog.dismiss();
             }
@@ -814,6 +828,7 @@ public class BillerDesciption extends Fragment {
                                        String product_code, int attempt) {
 
         Bundle mArgs = new Bundle();
+        mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION,isShowDescription);
         mArgs.putString(DefineValue.TX_ID,tx_id);
         mArgs.putString(DefineValue.CCY_ID,ccy_id);
         mArgs.putString(DefineValue.AMOUNT, amount);
@@ -832,6 +847,7 @@ public class BillerDesciption extends Fragment {
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
+        mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
 
         mArgs.putString(DefineValue.BANK_CODE, bank_code);
         mArgs.putString(DefineValue.PRODUCT_CODE, product_code);

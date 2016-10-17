@@ -169,17 +169,13 @@ public class Login extends Fragment implements View.OnClickListener {
                             if(code.equals(DefineValue.ERROR_0042)){
                                 int failed = response.optInt(WebParams.FAILED_ATTEMPT,0);
                                 int max = response.optInt(WebParams.MAX_FAILED,0);
-                                String message = "";
+                                String message;
 
-                                switch ((max-failed)){
-                                    case 0 : message = getString(R.string.login_failed_attempt_3);
-                                        break;
-                                    case 1 : message = getString(R.string.login_failed_attempt_1)+" 1 "+getString(R.string.login_failed_attempt_2);
-                                        break;
-                                    case 2 : message = getString(R.string.login_failed_attempt_1)+" 2 "+getString(R.string.login_failed_attempt_2);
-                                        break;
-                                    case 3 : message = getString(R.string.login_failed_attempt_1)+" 3 "+getString(R.string.login_failed_attempt_2);
-                                        break;
+                                if(max-failed == 0){
+                                    message = getString(R.string.login_failed_attempt_3);
+                                }
+                                else {
+                                    message = getString(R.string.login_failed_attempt_1,max-failed);
                                 }
 
                                 showDialog(message);
