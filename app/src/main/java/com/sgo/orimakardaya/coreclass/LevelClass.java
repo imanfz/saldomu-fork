@@ -89,16 +89,13 @@ public class LevelClass {
             if (prev != null) {
                 ft.remove(prev);
             }
-            ft.addToBackStack(null);
-            dialog_frag.show(ft, "dialog");
+            ft.add(dialog_frag,null);
+            ft.commitAllowingStateLoss();
         }
     }
 
     public void getHelpList() {
         try {
-//            if(progdialog == null)
-//                progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-//            progdialog.show();
             String ownerId = getSp().getString(DefineValue.USERID_PHONE,"");
             String accessKey = getSp().getString(DefineValue.ACCESS_KEY,"");
 
