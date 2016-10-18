@@ -258,6 +258,7 @@ public class SMSDialog extends Dialog {
 
     private void sentInquirySMS (){
         try{
+            Timber.d("idx fail = "+String.valueOf(idx_fail));
             if(idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())){
                 if(!isStop) {
 
@@ -299,6 +300,8 @@ public class SMSDialog extends Dialog {
                                     }, 3000);
 
                                 } else {
+
+
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -360,6 +363,7 @@ public class SMSDialog extends Dialog {
                 cdTimer.cancel();
                 MyApiClient.CancelRequestWS(getContext(),true);
                 isStop = true;
+                idx_fail = 0;
             }
 
 
