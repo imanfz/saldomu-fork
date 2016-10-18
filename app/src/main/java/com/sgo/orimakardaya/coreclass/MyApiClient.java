@@ -11,9 +11,12 @@ import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.sgo.orimakardaya.BuildConfig;
+import com.sgo.orimakardaya.R;
 
 import org.apache.commons.codec.binary.Base64;
 
+import java.io.InputStream;
+import java.security.KeyStore;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
@@ -41,15 +44,17 @@ public class MyApiClient {
         return singleton;
     }
 
-    public static void initialize(Context _context) {
+    public static MyApiClient Initialize(Context _context) {
         if(singleton == null) {
             singleton = new MyApiClient(_context);
         }
+        return singleton;
     }
     public static Boolean PROD_FAILURE_FLAG = true;
     public static Boolean IS_PROD = BuildConfig.isProdDomain;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
     public static Boolean IS_INTERNET_BANKING;
+    public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
 
@@ -169,7 +174,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
-    public static void initializeAddress(){
+    public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
@@ -274,6 +279,16 @@ public class MyApiClient {
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
+
+        getInstance().syncHttpClient.setTimeout(TIMEOUT);
+        if(PROD_FLAG_ADDRESS)
+            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+        getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
+
+        getInstance().asyncHttpClient.setTimeout(TIMEOUT);
+        if(PROD_FLAG_ADDRESS)
+            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+        getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
     }
 
 
@@ -432,29 +447,49 @@ public class MyApiClient {
         getClient().setCookieStore(cookieStore);
     }
 
-    public static void get(String url, AsyncHttpResponseHandler responseHandler) {
-        if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
-        getClient().setURLEncodingEnabled(true);
-        getClient().get(getInstance().getmContext(), url, responseHandler);
+    public static void get(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+        getClient().get(mContext, url, responseHandler);
     }
 
     public static void post(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        if(PROD_FLAG_ADDRESS)getClient().setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
         getClient().post(mContext, url, params, responseHandler);
+        Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
 
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared
         if (Looper.myLooper() == null) {
-            getInstance().syncHttpClient.setTimeout(TIMEOUT);
-            getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
             return getInstance().syncHttpClient;
         }
-        getInstance().asyncHttpClient.setTimeout(TIMEOUT);
-        getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         return getInstance().asyncHttpClient;
+    }
+
+    private MySSLSocketFactory getSSLSocketFactory(){
+        try {
+            // Get an instance of the Bouncy Castle KeyStore format
+            KeyStore trusted = KeyStore.getInstance("BKS");
+            // Get the raw resource, which contains the keystore with
+            // your trusted certificates (root and any intermediate certs)
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            try {
+                // InitializeAddress the keystore with the provided trusted certificates
+                // Also provide the password of the keystore
+                trusted.load(in, PRIVATE_KEY.toCharArray());
+            } finally {
+                in.close();
+            }
+            // Pass the keystore to the SSLSocketFactory. The factory is responsible
+            // for the verification of the server certificate.
+
+            MySSLSocketFactory test = new MySSLSocketFactory(trusted);
+            test.setHostnameVerifier(MySSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+
+            return test;
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
     }
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
@@ -883,22 +918,22 @@ public class MyApiClient {
     //get Data------------------------------------------------------------------------------------------
 
 
-    public static void getBillerType( AsyncHttpResponseHandler responseHandler) {
+    public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Biller Type:"+LINK_GET_BILLER_TYPE);
-        get(LINK_GET_BILLER_TYPE, responseHandler);
+        get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
     }
 
-    public static void getAllBank( AsyncHttpResponseHandler responseHandler) {
-        get(LINK_GET_ALL_BANK, responseHandler);
+    public static void getAllBank(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        get(mContext,LINK_GET_ALL_BANK, responseHandler);
     }
 
-    public static void getAppVersion( AsyncHttpResponseHandler responseHandler) {
-        get(LINK_APP_VERSION, responseHandler);
+    public static void getAppVersion(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        get(mContext,LINK_APP_VERSION, responseHandler);
     }
 	
-	public static void getHelpPIN( AsyncHttpResponseHandler responseHandler) {
+	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN:"+LINK_HELP_PIN);
-        get(LINK_HELP_PIN, responseHandler);
+        get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
     public Context getmContext() {
@@ -907,10 +942,6 @@ public class MyApiClient {
 
     public void setmContext(Context mContext) {
         this.mContext = mContext;
-    }
-	
-    public static void sentGCMToken( AsyncHttpResponseHandler responseHandler) {
-        get("http://116.90.162.173:18080/gcm/registerGCM.php", responseHandler);
     }
 
 }
