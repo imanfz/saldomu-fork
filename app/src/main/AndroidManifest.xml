@@ -2,12 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.sgo.orimakardaya"
-          android:versionCode="11"
-          android:versionName="2.10"
         >
-    <uses-sdk android:minSdkVersion="16"
-              android:targetSdkVersion="22"
-            />
 
     <supports-screens
             android:anyDensity="true"
