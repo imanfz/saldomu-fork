@@ -524,7 +524,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                         else {
                             progdialog.dismiss();
                             if(code.equals("0059")||code.equals("0164")){
-                                showDialogSMS(nama_bank);
+                                showDialogErrorSMS(nama_bank,code,response.optString(WebParams.ERROR_MESSAGE,""));
                             }
                             else {
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -606,7 +606,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         dialog.show();
     }
 
-    void showDialogSMS(final String _nama_bank) {
+    void showDialogErrorSMS(final String _nama_bank, String error_code, String error_msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -621,21 +621,33 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));
-        Message.setText(getString(R.string.topup_not_registered_1) + " " + _nama_bank + " " + getString(R.string.topup_not_registered_2));
-        btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+        if(error_code.equals("0059")){
+//            Message.setText(getString(R.string.topup_not_registered,_nama_bank));
+            Message.setText(error_msg);
+            btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+            btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME,_nama_bank);
+                    switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
 
-                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                newIntent.putExtra(DefineValue.BANK_NAME,_nama_bank);
-                switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
-
-                dialog.dismiss();
-            }
-        });
-
+                    dialog.dismiss();
+                }
+            });
+        }
+        else if(error_code.equals("0164")) {
+            Message.setText(error_msg);
+            btnDialogOTP.setText(getString(R.string.close));
+            btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    getActivity().finish();
+                }
+            });
+        }
         spin_namaBank.setSelection(0);
         spin_produkBank.setSelection(0);
         jumlahSGO_value.setText("");

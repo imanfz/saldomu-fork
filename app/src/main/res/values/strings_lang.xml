@@ -206,8 +206,7 @@
     <string name="topup_token_total_amount">Total Jumlah</string>
     <string name="description">Deskripsi</string>
     <string name="topup_dialog_not_registered">SMS Banking Belum Terdaftar</string>
-    <string name="topup_not_registered_1">No Handphone SMS Banking</string>
-    <string name="topup_not_registered_2">Anda belum tersimpan di sistem kami. Klik Daftar untuk mendaftar.</string>
+    <string name="topup_not_registered">No Handphone SMS Banking %1$s Anda belum tersimpan di sistem kami. Klik Daftar untuk mendaftar.</string>
 
     <string name="listatm_item_expand_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_item_expand_ins_2">Pilih Transfer ke Bank Mandiri </string>
@@ -592,7 +591,7 @@
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
-    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo (PIN), Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
+    <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo , Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership Anda ke Principal dengan membawa Kartu Identitas Anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>

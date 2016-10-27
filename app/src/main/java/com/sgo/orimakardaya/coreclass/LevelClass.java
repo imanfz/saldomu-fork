@@ -46,6 +46,11 @@ public class LevelClass {
         this.setSp(sp);
     }
 
+    public LevelClass(FragmentActivity activity) {
+        this.setActivity(activity);
+        this.setSp(CustomSecurePref.getInstance().getmSecurePrefs());
+    }
+
     public Boolean isLevel1QAC(){
         return isAllowedLevel && isLevel1;
     }
