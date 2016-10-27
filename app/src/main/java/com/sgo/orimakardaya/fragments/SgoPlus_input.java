@@ -390,6 +390,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                                 sentObject.tx_id = response.getString(WebParams.TX_ID);
                                 sentObject.product_code = response.getString(WebParams.PRODUCT_CODE);
                                 sentObject.bank_kode = bank_kode;
+                                sentObject.nama_bank = nama_bank;
                                 sentObject.comm_code = response.getString(WebParams.COMM_CODE);
                                 sentObject.fee = response.getString(WebParams.FEE);
                                 sentObject.amount = amount;
@@ -598,10 +599,6 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                 dialog.dismiss();
             }
         });
-
-        spin_namaBank.setSelection(0);
-        spin_produkBank.setSelection(0);
-        jumlahSGO_value.setText("");
 
         dialog.show();
     }

@@ -305,7 +305,7 @@ public class MyApiClient {
 
 
 
-    public static final int TIMEOUT = 120000; // 200 x 1000 = 3 menit
+    public static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
