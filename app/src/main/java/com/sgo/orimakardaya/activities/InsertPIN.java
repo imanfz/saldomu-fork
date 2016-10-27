@@ -206,7 +206,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
-            MyApiClient.getHelpPIN(new JsonHttpResponseHandler() {
+            MyApiClient.getHelpPIN(this,new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

@@ -491,18 +491,25 @@ public class CollectionInput extends Fragment {
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
         TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
 
+        final LevelClass levelClass = new LevelClass(getActivity());
+
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));
-        Message.setText(getString(R.string.topup_not_registered_1) + " " + _nama_bank + " " + getString(R.string.topup_not_registered_2));
+        Message.setText(getString(R.string.topup_not_registered, _nama_bank));
         btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+
+        if(levelClass.isLevel1QAC())
+            btnDialogOTP.setText(getString(R.string.ok));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                newIntent.putExtra(DefineValue.BANK_NAME,_nama_bank);
-                switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
+                if(!levelClass.isLevel1QAC()) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                    switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
+                }
 
                 dialog.dismiss();
             }

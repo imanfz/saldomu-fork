@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -101,25 +102,29 @@ public class SMSDialog extends Dialog {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progBar.setProgress(0);
-                tvMessage.setText(getContext().getString(R.string.dialog_sms_msg2));
-                progBar.setVisibility(View.VISIBLE);
-                progText.setVisibility(View.VISIBLE);
-                btnOk.setVisibility(View.GONE);
-                btnCancel.setVisibility(View.GONE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_process));
+                if(InetHandler.isNetworkAvailable(getContext())){
+                    progBar.setProgress(0);
+                    tvMessage.setText(getContext().getString(R.string.dialog_sms_msg2));
+                    progBar.setVisibility(View.VISIBLE);
+                    progText.setVisibility(View.VISIBLE);
+                    btnOk.setVisibility(View.GONE);
+                    btnCancel.setVisibility(View.GONE);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_process));
+                    } else {
+                        img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
+                    }
+
+                    isStop = false;
+                    idx_fail = 0;
+                    sentInquirySMS();
+                    cdTimer.start();
+                    if (deListener != null)
+                        deListener.onClickOkButton(v, false);
                 }
                 else {
-                    img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
+                    Toast.makeText(getContext(),getContext().getString(R.string.inethandler_dialog_message),Toast.LENGTH_SHORT).show();
                 }
-
-                isStop = false;
-                idx_fail = 0;
-                sentInquirySMS();
-                cdTimer.start();
-                if (deListener!=null)
-                    deListener.onClickOkButton(v,false);
             }
         });
 
@@ -235,7 +240,7 @@ public class SMSDialog extends Dialog {
             img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon));
         }
         else {
-            img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
+            img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon));
         }
         DestroyDialog();
     }
@@ -258,9 +263,9 @@ public class SMSDialog extends Dialog {
 
     private void sentInquirySMS (){
         try{
+            Timber.d("idx fail = "+String.valueOf(idx_fail));
             if(idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())){
                 if(!isStop) {
-
                     RequestParams params = new RequestParams();
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
@@ -299,6 +304,8 @@ public class SMSDialog extends Dialog {
                                     }, 3000);
 
                                 } else {
+
+
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -357,9 +364,9 @@ public class SMSDialog extends Dialog {
                 else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
-                cdTimer.cancel();
                 MyApiClient.CancelRequestWS(getContext(),true);
-                isStop = true;
+                DestroyDialog();
+                idx_fail = 0;
             }
 
 

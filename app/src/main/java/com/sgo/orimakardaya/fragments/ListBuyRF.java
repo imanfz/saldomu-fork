@@ -89,7 +89,7 @@ public class ListBuyRF extends Fragment{
     public void getBiller(){
         try{
 
-            MyApiClient.getBillerType(new JsonHttpResponseHandler() {
+            MyApiClient.getBillerType(getActivity(),new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
