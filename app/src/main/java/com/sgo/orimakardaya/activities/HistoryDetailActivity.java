@@ -167,7 +167,10 @@ public class HistoryDetailActivity extends BaseActivity {
         messageTransaction.setText(message);
         dateTime.setText(period);
         String _amount = ccy + " " + amountvalue;
-        amount.setText(_amount);
+        if(amountvalue.equals("0") || amountvalue.isEmpty())
+            amount.setVisibility(View.GONE);
+        else
+            amount.setText(_amount);
 
         commentAdapter = new TimelineCommentAdapter(this, listComment);
         lvComment.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
@@ -261,7 +264,7 @@ public class HistoryDetailActivity extends BaseActivity {
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.POST_ID, post_id);
-            params.put(WebParams.TO, from_id);
+            params.put(WebParams.TO, to_id);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -599,7 +602,7 @@ public class HistoryDetailActivity extends BaseActivity {
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.POST_ID, post_id);
-            params.put(WebParams.TO, from_id);
+            params.put(WebParams.TO, to_id);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 

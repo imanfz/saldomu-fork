@@ -199,12 +199,10 @@ public class FragNotification extends Fragment {
                     sentReadNotif(mObj.getNotif_id(), position);
                     Intent data = new Intent();
                     data.putExtra(DefineValue.POST_ID,mObjDetail.getString(WebParams.POST_ID));
-                    data.putExtra(DefineValue.TO_ID,mObj.getFrom_id());
-//                    data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
-                    data.putExtra(DefineValue.FROM_NAME,mObj.getFrom_name());
+                    data.putExtra(DefineValue.TO_ID,mObj.getTo_id());
+                    data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
                     if(mObj.getTo_id().equals(_userid))
-                        data.putExtra(DefineValue.TO_NAME, getString(R.string.you));
-//                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
+                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
 
                     data.putExtra(DefineValue.FROM_ID,mObj.getTo_id());
 
@@ -215,9 +213,9 @@ public class FragNotification extends Fragment {
                     data.putExtra(DefineValue.DATE_TIME,mObj.getDate_time());
                     data.putExtra(DefineValue.CCY_ID,mObjDetail.getString(WebParams.CCY_ID));
                     data.putExtra(DefineValue.AMOUNT,mObjDetail.getString(WebParams.AMOUNT));
-                    data.putExtra(DefineValue.PROF_PIC,mObj.getFrom_profile_picture());
+                    data.putExtra(DefineValue.PROF_PIC,_profpic);
                     data.putExtra(DefineValue.TX_STATUS,mObjDetail.getString(WebParams.TYPECAPTION));
-                    data.putExtra(DefineValue.WITH_PROF_PIC,_profpic);
+                    data.putExtra(DefineValue.WITH_PROF_PIC,mObj.getFrom_profile_picture());
                     data.putExtra(DefineValue.POST_TYPE, mObjDetail.getString(WebParams.TYPEPOST));
                     if(mObj.getNotif_type() == NotificationActivity.TYPE_LIKE)
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_LIKE);
@@ -394,7 +392,7 @@ public class FragNotification extends Fragment {
 
                             JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
 
-                            String title = null, detail = null, time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
+                            String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
                             mData.clear();
                             mDataNotifDetail.clear();
                             int notif_type, image = 0;
@@ -426,12 +424,14 @@ public class FragNotification extends Fragment {
                                             case NotificationActivity.TYPE_LIKE:
                                                 image = 0;
                                                 title = from_name + " " + getString(R.string.notif_text_like_name) + " : ";
-                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                 break;
                                             case NotificationActivity.TYPE_COMMENT:
                                                 image = 0;
                                                 title = from_name + " " + getString(R.string.notif_text_comment_name) + " : ";
-                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                 break;
                                             case NotificationActivity.TYPE_TRANSFER:
                                                 image = R.drawable.ic_cash_in;
