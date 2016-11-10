@@ -375,6 +375,7 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.COMM_ID_REMARK,MyApiClient.COMM_ID);
             if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
                 JSONObject detail = new JSONObject();
                 try {
