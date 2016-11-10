@@ -5,8 +5,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.*;
 import android.os.Process;
-import android.util.Log;
-import com.sgo.orimakardaya.coreclass.AppInfoHandler;
+
+import com.sgo.orimakardaya.loader.UtilsLoader;
 
 import timber.log.Timber;
 
@@ -18,6 +18,7 @@ public class AppInfoService extends Service {
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;
     private Activity mainPageContext = null;
+    private UtilsLoader utilsLoader;
 
     public static final long LOOPING_TIME = 50000; // 30 detik = 30 * 1000 ms
 
@@ -31,8 +32,9 @@ public class AppInfoService extends Service {
         public void run() {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             if(mainPageContext != null) {
-                AppInfoHandler mBH = new AppInfoHandler(mainPageContext);
-                mBH.getAppVersion();
+                if(utilsLoader == null)
+                    utilsLoader = new UtilsLoader(mainPageContext);
+                utilsLoader.getAppVersion();
             }
             Timber.i("Service jalankan call AppInfo Service");
             if(!isServiceDestroyed)mHandler.postDelayed(this, LOOPING_TIME);

@@ -66,7 +66,7 @@ public class CoreApp extends Application {
         set_instance(this);
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
-        MyApiClient.initialize(this);
+        MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
         int checkExistence;
 
@@ -117,8 +117,7 @@ public class CoreApp extends Application {
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
 
-
-        MyApiClient.initializeAddress();
+        myApiClient.InitializeAddress();
         Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(

@@ -2,10 +2,12 @@ package com.sgo.orimakardaya.dialogs;/*
   Created by Administrator on 3/6/2015.
  */
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.widget.*;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
+import com.sgo.orimakardaya.coreclass.ViewToBitmap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +40,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private OnDialogOkCallback callback;
     private Activity mContext;
     private Boolean isActivty = false;
-
+    String trx_id;
+    private ViewToBitmap viewToBitmap;
+    ImageView saveimage, shareimage;
+    ReqPermissionClass reqPermissionClass;
+    private static final int recCodeShareImage = 11;
+    private static final int recCodeSaveImage = 12;
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -90,6 +99,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         TextView tv_trans_remark_sub = (TextView) view.findViewById(R.id.dialog_report_transaction_remark_sub);
         tv_date_value.setText(args.getString(DefineValue.DATE_TIME));
         tv_txid_value.setText(args.getString(DefineValue.TX_ID));
+        trx_id = args.getString(DefineValue.TX_ID);
+
 
         if (type != null) {
             if(type.equals(DefineValue.BILLER_PLN)){
@@ -483,15 +494,81 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         Button btn_ok = (Button) view.findViewById(R.id.dialog_reportbiller_btn_ok);
 
+        if(viewToBitmap == null)
+            viewToBitmap = new ViewToBitmap(getContext());
+        reqPermissionClass = new ReqPermissionClass(getActivity());
+        reqPermissionClass.setTargetFragment(this);
+
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         btn_ok.setOnClickListener(this);
 
+        final LinearLayout content = (LinearLayout) view.findViewById(R.id.rlid);
+        saveimage = (ImageView) view.findViewById(R.id.img_download);
+        shareimage = (ImageView) view.findViewById(R.id.img_share);
+
+        saveimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveimage.setEnabled(false);
+                saveimage.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveimage.setEnabled(true);
+                    }
+                }, 3000);
+
+                String[] separated = trx_id.split("\n");
+                String filename = separated[0];
+                if(reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeSaveImage)) {
+                    if (viewToBitmap.Convert(content, filename))
+                        Toast.makeText(getContext(), getContext().getString(R.string.success_saved_gallery), Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(getContext(), getContext().getString(R.string.failed_save_gallery), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        shareimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareimage.setEnabled(false);
+                shareimage.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        shareimage.setEnabled(true);
+                    }
+                }, 4000);
+
+                String[] separated = trx_id.split("\n");
+                String filename = separated[0];
+                if(reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeShareImage))
+                    viewToBitmap.shareIntentApp(content,filename);
+
+            }
+        });
+
         return view;
     }
 
-    public void createTableDesc(String _desc_field,String _desc_value,TableLayout mTableLayout){
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeSaveImage)) {
+            saveimage.performClick();
+        }
+        else if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeShareImage)) {
+            shareimage.performClick();
+        }
+    }
+
+
+    public void createTableDesc(String _desc_field, String _desc_value, TableLayout mTableLayout){
         try {
             JSONArray desc_field = new JSONArray(_desc_field);
             JSONArray desc_value = new JSONArray(_desc_value);

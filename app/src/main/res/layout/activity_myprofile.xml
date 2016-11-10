@@ -376,7 +376,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:maxLength="@integer/et_id"
-                        android:inputType="number"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
                         android:layout_marginTop="4dp"
                         />
 

@@ -50,9 +50,19 @@ import timber.log.Timber;
  */
 public class NavigationDrawMenu extends ListFragment{
 
+    public static final int MHOME = 0;
     public static final int MTOPUP = 1;
-    public static final int MPAYFRIENDS = 2;
-    public static final int MASK4MONEY = 3;
+    public static final int MPAYFRIENDS= 2;
+    public static final int MASK4MONEY= 3;
+    public static final int MBUY= 4;
+    public static final int MCASHOUT= 5;
+    public static final int MMYFRIENDS= 6;
+    public static final int MMYGROUP= 7;
+    public static final int MREPORT= 8;
+    public static final int MSETTINGS= 9;
+    public static final int MHELP= 10;
+    public static final int MLOGOUT= 11;
+    public static final int MDAP= 12;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -63,13 +73,10 @@ public class NavigationDrawMenu extends ListFragment{
     ListView mListView;
     private View v;
     public NavDrawMainMenuAdapter mAdapter;
-    Boolean isLevel1,isRegisteredLevel,isAllowedLevel;
     Bundle _SaveInstance;
     SecurePreferences sp;
-    String contactCenter,listContactPhone = "", listAddress="";
     Activity act;
     ProgressDialog progdialog;
-    public String levelValue;
     private LevelClass levelClass;
 
     @Override
@@ -111,11 +118,9 @@ public class NavigationDrawMenu extends ListFragment{
             }
         });
 
-
         btn_refresh_balance = (ImageView) v.findViewById(R.id.btn_refresh_balance);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
-
         btn_refresh_balance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,10 +129,7 @@ public class NavigationDrawMenu extends ListFragment{
                 getBalance();
             }
         });
-
-
-
-        BalanceModel mBal = BalanceModel.load(BalanceModel.class, 1);
+        BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
         if(mBal != null)
             setBalanceToUI(mBal);
 
@@ -245,43 +247,41 @@ public class NavigationDrawMenu extends ListFragment{
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        selectItem(position, null);
+        mAdapter.setSelectedItem(position);
+        mAdapter.notifyDataSetChanged();
+        selectItem(mAdapter.getItem(position).getNavItemId(), null);
     }
 
     private ArrayList<navdrawmainmenuModel> generateData(){
-        ArrayList<navdrawmainmenuModel> models = new ArrayList<navdrawmainmenuModel>();
-        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_main_menu),true));                                        //0
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_home_icon_color,getString(R.string.menu_item_title_home),false));              //
-//        models.add(new navdrawmainmenuModel(R.drawable.ic_accounts_icon_color,getString(R.string.menu_item_title_accounts),false));        //
-
-        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),false));              //1
-        models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),false));    //2
-        models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),false));            //3
-        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,0,getString(R.string.menu_item_title_pulsa_agent), false));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,0,getString(R.string.menu_item_title_buy),false));             //4
+        ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
+        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),MTOPUP));              //1
+        models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
+        models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
+        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,0,getString(R.string.menu_item_title_pulsa_agent), MDAP));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,0,getString(R.string.menu_item_title_buy),MBUY));             //4
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
 
 
-        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_account),true));                                         //7
-        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),false));        //8
+        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_account)));                                         //7
+        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,0,getString(R.string.menu_item_title_my_groups),false));          //9
 
-        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_supports),true));                                        //10
-        models.add(new navdrawmainmenuModel(R.drawable.ic_report,0,getString(R.string.menu_item_title_report),false));              //6
-        models.add(new navdrawmainmenuModel(R.drawable.ic_setting,0,getString(R.string.menu_item_title_setting),false));                    //11
-        models.add(new navdrawmainmenuModel(R.drawable.ic_help,0,getString(R.string.menu_item_title_help),false));                          //12
-        models.add(new navdrawmainmenuModel(0,0,getString(R.string.menu_group_title_logout),true));                                        //13
-        models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,0,getString(R.string.menu_item_title_logout),false));                 //14
+        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
+        models.add(new navdrawmainmenuModel(R.drawable.ic_report,0,getString(R.string.menu_item_title_report),MREPORT));              //6
+        models.add(new navdrawmainmenuModel(R.drawable.ic_setting,0,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
+        models.add(new navdrawmainmenuModel(R.drawable.ic_help,0,getString(R.string.menu_item_title_help),MHELP));                          //12
+        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
+        models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,0,getString(R.string.menu_item_title_logout),MLOGOUT));                 //14
 
         return models;
     }
 
-    public void selectItem(int position, Bundle data){
+    public void selectItem(int itemId, Bundle data){
         Fragment newFragment;
         Intent newIntent;
-        mAdapter.setSelectedItem(position);
-        mAdapter.notifyDataSetChanged();
-        switch (position) {
+
+        switch (itemId) {
             case MTOPUP:
                 newFragment = new ListTopUp();
                 switchFragment(newFragment, getString(R.string.toolbar_title_topup));
@@ -305,47 +305,36 @@ public class NavigationDrawMenu extends ListFragment{
                     switchFragment(newFragment, getString(R.string.menu_item_title_ask_for_money));
                 }
                 break;
-            case 4:
+            case MDAP:
                 newFragment = new FragPulsaAgent();
                 switchFragment(newFragment, getString(R.string.toolbar_title_pulsa_agent));
                 break;
-            case 5:
+            case MBUY:
                 newFragment = new ListBuy();
                 switchFragment(newFragment, getString(R.string.toolbar_title_purchase));
                 break;
-//            case 6:
-//                if(isAllowedLevel && isLevel1) {
-//                    if(isRegisteredLevel)
-//                        showDialogLevelRegistered();
-//                    else
-//                        showDialogLevel();
-//                }else {
-//                    newFragment = new ListCashOut();
-//                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
-//                }
-//                break;
 
-            case 7:
+            case MMYFRIENDS:
                 newFragment = new ListMyFriends();
                 switchFragment(newFragment, getString(R.string.toolbar_title_myfriends));
                 break;
-//            case 8:
-//                newFragment = new FragMyGroup();
-//                switchFragment(newFragment, getString(R.string.toolbar_title_mygroup));
-//                break;
-            case 9:
+            case MMYGROUP:
+                newFragment = new FragMyGroup();
+                switchFragment(newFragment, getString(R.string.toolbar_title_mygroup));
+                break;
+            case MREPORT:
                 newFragment = new ReportTab();
                 switchFragment(newFragment, getString(R.string.menu_item_title_report));
                 break;
-            case 10:
+            case MSETTINGS:
                 newFragment = new ListSettings();
                 switchFragment(newFragment, getString(R.string.menu_item_title_setting));
                 break;
-            case 11:
+            case MHELP:
                 newFragment = new ContactTab();
                 switchFragment(newFragment, getString(R.string.menu_item_title_help));
                 break;
-            case 13:
+            case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());
                 alertbox.setTitle(getString(R.string.warning));
                 alertbox.setMessage(getString(R.string.exit_message));

@@ -3,6 +3,8 @@ package com.sgo.orimakardaya.dialogs;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -40,7 +42,7 @@ public class DefinedDialog {
     }
 
     public static void showErrorDialog(Context context, String message) {
-        showErrorDialog(context, message, null);
+        showErrorDialog(context, message,null);
     }
 
     public static void showErrorDialog(Context context, String message, final DialogButtonListener mButtonListener) {
@@ -54,7 +56,6 @@ public class DefinedDialog {
         // set values for custom dialog components - text, image and button
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_error_ok);
         TextView Message = (TextView)dialog.findViewById(R.id.message_dialog_error);
-
         Message.setText(message);
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,5 +108,16 @@ public class DefinedDialog {
             }
         });
         return dialog;
+    }
+
+    public static AlertDialog BuildAlertDialog(Context context, String title, String msg, int icon, Boolean isCancelable,
+                                               String okbtn, DialogInterface.OnClickListener ok){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(msg)
+                .setIcon(icon)
+                .setCancelable(isCancelable)
+                .setPositiveButton(okbtn, ok);
+        return builder.create();
     }
 }

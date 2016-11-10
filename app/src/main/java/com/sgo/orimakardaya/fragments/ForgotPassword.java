@@ -235,7 +235,7 @@ public class ForgotPassword extends Fragment {
             progDialog.setIndeterminate(true);
             progDialog.setVisibility(View.VISIBLE);
 
-            MyApiClient.getHelpPIN(new JsonHttpResponseHandler() {
+            MyApiClient.getHelpPIN(getActivity(), new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

@@ -49,12 +49,25 @@ public class UserProfileHandler {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
-
                         Timber.d("isi request sent user profile:" + response.toString());
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
+                            mEditor.putString(DefineValue.PROFILE_ADDRESS,response.getString(WebParams.ADDRESS));
+                            mEditor.putString(DefineValue.PROFILE_BIO,response.getString(WebParams.BIO));
+                            mEditor.putString(DefineValue.PROFILE_COUNTRY,response.getString(WebParams.COUNTRY));
+                            mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
+                            mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
+                            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID,response.getString(WebParams.SOCIAL_ID));
+                            mEditor.putString(DefineValue.PROFILE_HOBBY,response.getString(WebParams.HOBBY));
+                            mEditor.putString(DefineValue.PROFILE_POB,response.getString(WebParams.POB));
+                            mEditor.putString(DefineValue.PROFILE_GENDER,response.getString(WebParams.GENDER));
+                            mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE));
+                            mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
+                            mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
+                            mEditor.apply();
                         } else {
                             code = response.getString(WebParams.ERROR_MESSAGE);
 //                            Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
