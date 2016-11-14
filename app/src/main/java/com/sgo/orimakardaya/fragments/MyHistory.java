@@ -95,7 +95,8 @@ public class MyHistory extends BaseFragmentMainPage {
                 i.putExtra(DefineValue.FROM_NAME, listHistory.get(position).getOwner());
                 i.putExtra(DefineValue.FROM_ID, listHistory.get(position).getOwner_id());
                 i.putExtra(DefineValue.TO_NAME, listHistory.get(position).getWith());
-                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getWith_id());
+//                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getWith_id());
+                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getOwner_id());
                 i.putExtra(DefineValue.MESSAGE, listHistory.get(position).getPost());
                 i.putExtra(DefineValue.DATE_TIME, listHistory.get(position).getDatetime());
                 i.putExtra(DefineValue.CCY_ID, listHistory.get(position).getCcy_id());
@@ -215,10 +216,14 @@ public class MyHistory extends BaseFragmentMainPage {
                                     String ccy_id = mArrayPost.getJSONObject(i).getString(WebParams.CCY_ID);
                                     String datetime = mArrayPost.getJSONObject(i).getString(WebParams.DATETIME);
                                     String owner = mArrayPost.getJSONObject(i).getString(WebParams.OWNER);
+                                    if(owner.equalsIgnoreCase("you"))
+                                        owner = getString(R.string.you);
                                     String owner_id = mArrayPost.getJSONObject(i).getString(WebParams.OWNER_ID);
                                     String owner_profile_picture = mArrayPost.getJSONObject(i).getString(WebParams.OWNER_PROFILE_PICTURE);
                                     String with_id = mArrayPost.getJSONObject(i).getString(WebParams.WITH_ID);
                                     String with = mArrayPost.getJSONObject(i).getString(WebParams.WITH);
+                                    if(with.equalsIgnoreCase("you"))
+                                        with = getString(R.string.you);
                                     String with_profile_picture = mArrayPost.getJSONObject(i).getString(WebParams.WITH_PROFILE_PICTURE);
                                     String tx_status = mArrayPost.getJSONObject(i).getString(WebParams.TX_STATUS);
                                     String typepost = mArrayPost.getJSONObject(i).getString(WebParams.TYPEPOST);
