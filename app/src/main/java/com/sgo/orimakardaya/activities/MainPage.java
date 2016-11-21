@@ -32,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -116,10 +117,14 @@ public class MainPage extends BaseActivity{
 	
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
