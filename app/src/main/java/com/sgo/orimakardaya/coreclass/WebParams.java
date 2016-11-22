@@ -337,4 +337,5 @@ public class WebParams {
     public static String ITEM_DATA = "item_data";
     public static String IS_DETAIL = "is_detail";
     public static String COMM_ID_REMARK = "comm_id_remark";
+    public static String DISABLE = "disable";
 }
