@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "948562567739",
+    "firebase_url": "https://akardaya-eb06b.firebaseio.com",
+    "project_id": "akardaya-eb06b",
+    "storage_bucket": "akardaya-eb06b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948562567739:android:b5301509f0498089",
+        "android_client_info": {
+          "package_name": "com.sgo.devorimakardaya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948562567739-kfr3b26ik264gh7r5cakprcg4dc75h5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1LfX5I7gMGvZpiohY5a_-sroLISSDZis"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948562567739:android:2823452d81b534dd",
+        "android_client_info": {
+          "package_name": "com.sgo.orimakardaya"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948562567739-kfr3b26ik264gh7r5cakprcg4dc75h5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1LfX5I7gMGvZpiohY5a_-sroLISSDZis"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

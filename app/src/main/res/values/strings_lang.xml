@@ -698,6 +698,7 @@
     <string name="customer_id">ID Pelanggan</string>
     <string name="update">Perbaharuan</string>
     <string name="maintenance">Pemeliharaan</string>
+    <string name="maintenance_message">Aplikasi tidak dapat di akses. Silahkan coba beberapa saat lagi.</string>
     <string name="update_msg">Versi aplikasi sudah lama, segera perbaharui aplikasi.</string>
 
 </resources>

@@ -239,41 +239,59 @@ public class UtilsLoader {
                             String arrayApp = response.optString(WebParams.APP_DATA,"");
                             if(!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
                                 final JSONObject mObject = new JSONObject(arrayApp);
-                                String package_version = mObject.getString(WebParams.PACKAGE_VERSION);
-                                final String package_name = mObject.getString(WebParams.PACKAGE_NAME);
-                                final String type = mObject.getString(WebParams.TYPE);
-                                Timber.d("Isi Version Name / version code:"+DefineValue.VERSION_NAME + " / " + DefineValue.VERSION_CODE);
-                                if (!package_version.equals(DefineValue.VERSION_NAME)) {
+                                if(mObject.getString(WebParams.DISABLE).equals("1")) {
+                                    String message = getmActivity().getResources().getString(R.string.maintenance_message);
                                     DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    if (type.equalsIgnoreCase("1")) {
-                                                        try {
-                                                            getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
-                                                        } catch (android.content.ActivityNotFoundException anfe) {
-                                                            getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
-                                                        }
-                                                    } else if (type.equalsIgnoreCase("2")) {
-                                                        String download_url = "";
-                                                        try {
-                                                            download_url = mObject.getString(WebParams.DOWNLOAD_URL);
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                        if (!Patterns.WEB_URL.matcher(download_url).matches())
-                                                            download_url = "http://www.google.com";
-                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(download_url)));
-                                                    }
-                                                    getmActivity().finish();
-                                                    android.os.Process.killProcess(android.os.Process.myPid());
-                                                    System.exit(0);
-                                                    getmActivity().getParent().finish();
-                                                }
-                                            };
-                                    AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.update),
-                                            getmActivity().getString(R.string.update_msg),android.R.drawable.ic_dialog_alert,false,
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getmActivity().finish();
+                                            android.os.Process.killProcess(android.os.Process.myPid());
+                                            System.exit(0);
+                                            getmActivity().getParent().finish();
+                                        }
+                                    };
+                                    AlertDialog alertDialog =  DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
+                                            message,android.R.drawable.ic_dialog_alert,false,
                                             getmActivity().getString(R.string.ok),okListener);
                                     alertDialog.show();
+                                }
+                                else {
+                                    String package_version = mObject.getString(WebParams.PACKAGE_VERSION);
+                                    final String package_name = mObject.getString(WebParams.PACKAGE_NAME);
+                                    final String type = mObject.getString(WebParams.TYPE);
+                                    Timber.d("Isi Version Name / version code:" + DefineValue.VERSION_NAME + " / " + DefineValue.VERSION_CODE);
+                                    if (!package_version.equals(DefineValue.VERSION_NAME)) {
+                                        DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (type.equalsIgnoreCase("1")) {
+                                                    try {
+                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + package_name)));
+                                                    } catch (android.content.ActivityNotFoundException anfe) {
+                                                        getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + package_name)));
+                                                    }
+                                                } else if (type.equalsIgnoreCase("2")) {
+                                                    String download_url = "";
+                                                    try {
+                                                        download_url = mObject.getString(WebParams.DOWNLOAD_URL);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    if (!Patterns.WEB_URL.matcher(download_url).matches())
+                                                        download_url = "http://www.google.com";
+                                                    getmActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(download_url)));
+                                                }
+                                                getmActivity().finish();
+                                                android.os.Process.killProcess(android.os.Process.myPid());
+                                                System.exit(0);
+                                                getmActivity().getParent().finish();
+                                            }
+                                        };
+                                        AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.update),
+                                                getmActivity().getString(R.string.update_msg), android.R.drawable.ic_dialog_alert, false,
+                                                getmActivity().getString(R.string.ok), okListener);
+                                        alertDialog.show();
+                                    }
                                 }
                             }
                         }

@@ -14,6 +14,7 @@ import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -466,7 +467,7 @@ public class MyApiClient {
         return getInstance().asyncHttpClient;
     }
 
-    private MySSLSocketFactory getSSLSocketFactory(){
+    public SSLSocketFactory getSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
@@ -474,7 +475,7 @@ public class MyApiClient {
             // your trusted certificates (root and any intermediate certs)
             InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
             try {
-                // InitializeAddress the keystore with the provided trusted certificates
+                // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
                 trusted.load(in, PRIVATE_KEY.toCharArray());
             } finally {
@@ -482,15 +483,16 @@ public class MyApiClient {
             }
             // Pass the keystore to the SSLSocketFactory. The factory is responsible
             // for the verification of the server certificate.
-
-            MySSLSocketFactory test = new MySSLSocketFactory(trusted);
-            test.setHostnameVerifier(MySSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-
-            return test;
+            SSLSocketFactory sf = new SSLSocketFactory(trusted);
+            // Hostname verification from certificate
+            // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
+            sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            return sf;
         } catch (Exception e) {
             throw new AssertionError(e);
         }
     }
+
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
