@@ -170,15 +170,20 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Timber.d("isi url tombol-tombolnya:"+ url);
-                if (url.contains("isclose=1")){
-                    setResult(MainPage.RESULT_BALANCE);
-                    getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                                 fee, amount,reportType,commId,transType, shareType);
+                if(URLUtil.isValidUrl(url)) {
+                    if (url.contains("isclose=1")) {
+                        setResult(MainPage.RESULT_BALANCE);
+                            getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
+                                    fee, amount, reportType, commId, transType, shareType);
+                        Timber.wtf("masuk is close");
+                    }
+                    else if (url.contains("isback=1")){
+                        setResult(MainPage.RESULT_BALANCE);
+                        onOkButton();
+                    }
+                    else
+                        view.loadUrl(url);
                 }
-                else if (url.contains("isback=1")){
-                    setResult(MainPage.RESULT_BALANCE);
-                    onOkButton();
-                } else view.loadUrl(url);
 
                 return true;
             }
