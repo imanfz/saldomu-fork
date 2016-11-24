@@ -5,5 +5,5 @@
           android:orderInCategory="99"
           android:title="@string/menuitem_title_information"
           android:icon="@drawable/ic_info_white_36dp"
-          someNamespace:showAsAction="always" />
+          someNamespace:showAsAction="ifRoom" />
 </menu>
