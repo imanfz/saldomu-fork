@@ -95,8 +95,7 @@ public class MyHistory extends BaseFragmentMainPage {
                 i.putExtra(DefineValue.FROM_NAME, listHistory.get(position).getOwner());
                 i.putExtra(DefineValue.FROM_ID, listHistory.get(position).getOwner_id());
                 i.putExtra(DefineValue.TO_NAME, listHistory.get(position).getWith());
-//                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getWith_id());
-                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getOwner_id());
+                i.putExtra(DefineValue.TO_ID, listHistory.get(position).getWith_id());
                 i.putExtra(DefineValue.MESSAGE, listHistory.get(position).getPost());
                 i.putExtra(DefineValue.DATE_TIME, listHistory.get(position).getDatetime());
                 i.putExtra(DefineValue.CCY_ID, listHistory.get(position).getCcy_id());
