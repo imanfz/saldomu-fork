@@ -166,7 +166,7 @@ public class HistoryDetailActivity extends BaseActivity {
         fromId.setText(from_name);
         messageTransaction.setText(message);
         dateTime.setText(period);
-        String _amount = ccy + " " + amountvalue;
+        String _amount = ccy + " " + CurrencyFormat.format(amountvalue);
         if(amountvalue.equals("0") || amountvalue.isEmpty())
             amount.setVisibility(View.GONE);
         else
@@ -264,7 +264,7 @@ public class HistoryDetailActivity extends BaseActivity {
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.POST_ID, post_id);
-            params.put(WebParams.TO, to_id);
+            params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -602,7 +602,7 @@ public class HistoryDetailActivity extends BaseActivity {
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
                     _ownerID,accessKey);
             params.put(WebParams.POST_ID, post_id);
-            params.put(WebParams.TO, to_id);
+            params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -1116,8 +1116,13 @@ public class HistoryDetailActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(RESULT);
-                finish();
+				if(getSupportFragmentManager().getBackStackEntryCount()>0) {
+                    getSupportFragmentManager().popBackStack();
+                }
+                else{
+                    setResult(RESULT);
+                    finish();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
