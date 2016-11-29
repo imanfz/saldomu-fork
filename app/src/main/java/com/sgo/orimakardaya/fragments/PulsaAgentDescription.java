@@ -2,6 +2,7 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,11 +17,16 @@ import com.sgo.orimakardaya.Beans.listbankModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
+import com.sgo.orimakardaya.activities.TopUpActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.ErrorDefinition;
 import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
+import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import org.apache.http.Header;
@@ -479,9 +485,38 @@ public class PulsaAgentDescription extends Fragment {
                             test.showDialoginActivity(getActivity(),message);
                         }else {
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                            switch (code) {
+                                case "0059":
+                                    showDialogSMS(mTempBank.getBank_name());
+                                    break;
+                                case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance);
+
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
+                                        }
+                                    });
+                                    dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(PulsaAgentDescription.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    break;
+                                default:
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getFragmentManager().popBackStack();
+                                    break;
+                            }
                         }
                         btn_submit.setEnabled(true);
                         if(progdialog.isShowing())
@@ -525,6 +560,44 @@ public class PulsaAgentDescription extends Fragment {
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }
+    }
+
+    void showDialogSMS(final String _nama_bank) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
+        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+
+        final LevelClass levelClass = new LevelClass(getActivity());
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.topup_dialog_not_registered));
+        Message.setText(getString(R.string.topup_not_registered,_nama_bank));
+        btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+        if(levelClass.isLevel1QAC())
+            btnDialogOTP.setText(getString(R.string.ok));
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!levelClass.isLevel1QAC()) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                    switchActivity(newIntent);
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
