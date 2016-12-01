@@ -263,8 +263,8 @@ public class NavigationDrawMenu extends ListFragment{
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
 
 
-        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_account)));                                         //7
-        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
+//        models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_account)));                                         //7
+//        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,0,getString(R.string.menu_item_title_my_groups),false));          //9
 
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10

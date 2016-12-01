@@ -61,8 +61,8 @@ android {
             buildConfigField 'boolean', "isProdDomain", "true"
             buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             signingConfig signingConfigs.prodKey
-            versionCode = 17
-            versionName "2.16"
+            versionCode = 18
+            versionName "2.17"
         }
     }
 
