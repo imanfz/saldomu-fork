@@ -283,12 +283,12 @@ public class MyApiClient {
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+            getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+            getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
     }
 
@@ -359,42 +359,6 @@ public class MyApiClient {
 
         return hash;
     }
-
-    /*public static RequestParams getSignatureWithParams(String commID, String linknya, Context context){
-
-        String webServiceName = getWebserviceName(linknya);
-        SecurePreferences sp = new SecurePreferences(context);
-        String user_id = sp.getString(CoreApp.USERID_PHONE,"");
-        String access_key = sp.getString(CoreApp.ACCESS_KEY,"");
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String noID = commID + user_id;
-
-        String msgnya = uuidnya+dtime+APP_ID+webServiceName+noID;
-
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(access_key.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        RequestParams params = new RequestParams();
-        params.put(WebParams.RC_UUID, uuidnya);
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-
-        return params;
-    }*/
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key){
 
@@ -488,6 +452,32 @@ public class MyApiClient {
             // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
             sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
             return sf;
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private MySSLSocketFactory getUntrustSSLSocketFactory(){
+        try {
+            // Get an instance of the Bouncy Castle KeyStore format
+            KeyStore trusted = KeyStore.getInstance("BKS");
+            // Get the raw resource, which contains the keystore with
+            // your trusted certificates (root and any intermediate certs)
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            try {
+                // InitializeAddress the keystore with the provided trusted certificates
+                // Also provide the password of the keystore
+                trusted.load(in, PRIVATE_KEY.toCharArray());
+            } finally {
+                in.close();
+            }
+            // Pass the keystore to the SSLSocketFactory. The factory is responsible
+            // for the verification of the server certificate.
+
+            MySSLSocketFactory test = new MySSLSocketFactory(trusted);
+            test.setHostnameVerifier(MySSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+
+            return test;
         } catch (Exception e) {
             throw new AssertionError(e);
         }
