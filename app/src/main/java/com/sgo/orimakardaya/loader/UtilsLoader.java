@@ -52,15 +52,15 @@ public class UtilsLoader {
         this.sp = _sp;
     }
 
-    public Activity getmActivity() {
+    private Activity getmActivity() {
         return mActivity;
     }
 
-    public void setmActivity(Activity mActivity) {
+    private void setmActivity(Activity mActivity) {
                     this.mActivity = mActivity;
                 }
 
-    public void getDataBalance(final OnLoadDataListener mListener){
+    public void getDataBalance(Boolean is_auto,final OnLoadDataListener mListener){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
                     sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
@@ -68,6 +68,8 @@ public class UtilsLoader {
             params.put(WebParams.MEMBER_ID, member_id);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            String isAuto = (is_auto)? DefineValue.STRING_YES:DefineValue.STRING_NO;
+            params.put(WebParams.IS_AUTO,isAuto);
 
             Timber.d("isi params get Balance Loader:" + params.toString());
             if(!member_id.isEmpty()) {
