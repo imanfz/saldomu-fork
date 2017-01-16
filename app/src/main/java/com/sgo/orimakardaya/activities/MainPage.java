@@ -744,7 +744,7 @@ public class MainPage extends BaseActivity{
             }
             if(resultCode == RESULT_BALANCE){
                 Timber.w("Masuk result Balance");
-                mNavDrawer.getBalance();
+                mNavDrawer.getBalance(true);
             }
             if(resultCode == RESULT_NOTIF){
                 Timber.w("Masuk result notif");
@@ -936,7 +936,7 @@ public class MainPage extends BaseActivity{
 //        if(mBH !=null)
 //            mBH.getDataBalance();
         if(mNavDrawer != null)
-            mNavDrawer.getBalance();
+            mNavDrawer.getBalance(true);
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));

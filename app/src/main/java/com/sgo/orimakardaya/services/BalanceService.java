@@ -61,7 +61,7 @@ public class BalanceService extends Service {
 
     public void runBalance(){
         if(!isServiceDestroyed()) {
-            mBl.getDataBalance(new OnLoadDataListener() {
+            mBl.getDataBalance(true,new OnLoadDataListener() {
                 @Override
                 public void onSuccess(Object deData) {
                     Timber.d("runBalance service onsuccess");

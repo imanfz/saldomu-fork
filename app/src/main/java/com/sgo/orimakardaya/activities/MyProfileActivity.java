@@ -266,6 +266,10 @@ public class MyProfileActivity extends BaseActivity {
         et_name.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
         et_address.setText(sp.getString(DefineValue.PROFILE_ADDRESS,""));
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL,""));
+        if(et_email.getText().toString().isEmpty())
+            et_email.setEnabled(true);
+        else
+            et_email.setEnabled(false);
         et_socialID.setText(sp.getString(DefineValue.PROFILE_SOCIAL_ID,""));
         et_pob.setText(sp.getString(DefineValue.PROFILE_POB,""));
         et_bio.setText(sp.getString(DefineValue.PROFILE_BIO,""));

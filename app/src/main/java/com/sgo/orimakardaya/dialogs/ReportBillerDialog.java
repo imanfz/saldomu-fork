@@ -115,9 +115,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-                View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
                 TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
-                desclayout.setVisibility(View.VISIBLE);
                 String source = args.getString(DefineValue.DETAIL,"");
                 String desc = "", value = "";
                 JSONObject mDataDesc;
