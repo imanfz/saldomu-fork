@@ -126,7 +126,7 @@ public class NavigationDrawMenu extends ListFragment{
             public void onClick(View v) {
                 btn_refresh_balance.setEnabled(false);
                 btn_refresh_balance.startAnimation(frameAnimation);
-                getBalance();
+                getBalance(false);
             }
         });
         BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
@@ -153,8 +153,8 @@ public class NavigationDrawMenu extends ListFragment{
             periodeLimit.setText(R.string.header_daily_limit);
     }
 
-    public void getBalance(){
-        new UtilsLoader(getActivity(),sp).getDataBalance(new OnLoadDataListener() {
+    public void getBalance(Boolean isAuto){
+        new UtilsLoader(getActivity(),sp).getDataBalance(isAuto,new OnLoadDataListener() {
             @Override
             public void onSuccess(Object deData) {
                 setBalanceToUI((BalanceModel) deData);

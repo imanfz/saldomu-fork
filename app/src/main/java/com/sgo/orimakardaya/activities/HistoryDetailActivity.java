@@ -180,30 +180,32 @@ public class HistoryDetailActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
-                AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
-                builder.setTitle(getString(R.string.delete_comment));
-                builder.setMessage(getString(R.string.delete_comment_ask));
-                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String comment_id = Integer.toString(listComment.get(index).getComment_id());
-                        String post_id = listComment.get(index).getPost_id();
-                        String from = listComment.get(index).getFrom_id();
-                        String to = listComment.get(index).getTo_id();
-                        listComment.clear();
-                        commentModel.deleteByPostId(post_id);
-                        removeComment(comment_id, post_id, from, to);
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                if(listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
+                    builder.setTitle(getString(R.string.delete_comment));
+                    builder.setMessage(getString(R.string.delete_comment_ask));
+                    builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String comment_id = Integer.toString(listComment.get(index).getComment_id());
+                            String post_id = listComment.get(index).getPost_id();
+                            String from = listComment.get(index).getFrom_id();
+                            String to = listComment.get(index).getTo_id();
+                            listComment.clear();
+                            commentModel.deleteByPostId(post_id);
+                            removeComment(comment_id, post_id, from, to);
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog alertDelete = builder.create();
-                alertDelete.show();
+                    AlertDialog alertDelete = builder.create();
+                    alertDelete.show();
+                }
 
                 return false;
             }
