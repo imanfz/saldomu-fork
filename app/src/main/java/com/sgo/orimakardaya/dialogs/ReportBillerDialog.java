@@ -115,9 +115,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-                View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
                 TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
-                desclayout.setVisibility(View.VISIBLE);
                 String source = args.getString(DefineValue.DETAIL,"");
                 String desc = "", value = "";
                 JSONObject mDataDesc;
@@ -181,12 +179,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 if(isShowDescription){
                     tv_denom_text.setText(getString(R.string.billertoken_text_item_name));
-                    View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
                     RelativeLayout mDescLayout = (RelativeLayout) mLayout.findViewById(R.id.billertoken_layout_deskripsi);
 
                     if(!args.getString(DefineValue.DESC_FIELD,"").isEmpty()){
                         mDescLayout.setVisibility(View.VISIBLE);
-                        desclayout.setVisibility(View.VISIBLE);
                         final TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
                         final ImageView mIconArrow = (ImageView) mLayout.findViewById(R.id.billertoken_arrow_desc);
 
