@@ -51,18 +51,18 @@ import timber.log.Timber;
 public class NavigationDrawMenu extends ListFragment{
 
     public static final int MHOME = 0;
-    public static final int MTOPUP = 1;
+    private static final int MTOPUP = 1;
     public static final int MPAYFRIENDS= 2;
     public static final int MASK4MONEY= 3;
-    public static final int MBUY= 4;
+    private static final int MBUY= 4;
     public static final int MCASHOUT= 5;
-    public static final int MMYFRIENDS= 6;
-    public static final int MMYGROUP= 7;
-    public static final int MREPORT= 8;
-    public static final int MSETTINGS= 9;
-    public static final int MHELP= 10;
-    public static final int MLOGOUT= 11;
-    public static final int MDAP= 12;
+    private static final int MMYFRIENDS= 6;
+    private static final int MMYGROUP= 7;
+    private static final int MREPORT= 8;
+    private static final int MSETTINGS= 9;
+    private static final int MHELP= 10;
+    private static final int MLOGOUT= 11;
+    private static final int MDAP= 12;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -70,12 +70,10 @@ public class NavigationDrawMenu extends ListFragment{
     private Animation frameAnimation;
     private ImageView btn_refresh_balance;
 
-    ListView mListView;
     private View v;
-    public NavDrawMainMenuAdapter mAdapter;
-    Bundle _SaveInstance;
-    SecurePreferences sp;
-    Activity act;
+    private NavDrawMainMenuAdapter mAdapter;
+    private Bundle _SaveInstance;
+    private SecurePreferences sp;
     ProgressDialog progdialog;
     private LevelClass levelClass;
 
@@ -90,11 +88,10 @@ public class NavigationDrawMenu extends ListFragment{
         super.onActivityCreated(savedInstanceState);
         _SaveInstance = savedInstanceState;
 
-        act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
-        mListView = (ListView) v.findViewById(android.R.id.list);
+        ListView mListView = (ListView) v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
 
         LinearLayout llHeaderProfile = (LinearLayout) v.findViewById(R.id.llHeaderProfile);
@@ -207,14 +204,14 @@ public class NavigationDrawMenu extends ListFragment{
             mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation()).into(headerCustImage);
         }
         else {
             mPic.load(_url_profpic)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation()).into(headerCustImage);
         }
 
@@ -238,12 +235,6 @@ public class NavigationDrawMenu extends ListFragment{
         if(levelClass != null)
             levelClass.refreshData();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -279,7 +270,6 @@ public class NavigationDrawMenu extends ListFragment{
 
     public void selectItem(int itemId, Bundle data){
         Fragment newFragment;
-        Intent newIntent;
 
         switch (itemId) {
             case MTOPUP:

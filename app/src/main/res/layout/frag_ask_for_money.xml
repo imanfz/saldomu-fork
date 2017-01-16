@@ -218,9 +218,8 @@
                         android:maxLength="10"
                         android:inputType="number"
                         android:hint="@string/askformoney_hint_amount"
-                        android:singleLine="true"
-                        android:paddingLeft="10dp"
-                        />
+                    android:paddingLeft="10dp"
+                    android:maxLines="1" />
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

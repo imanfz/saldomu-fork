@@ -3,6 +3,7 @@ package com.sgo.orimakardaya.adapter;/*
  */
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +27,15 @@ public class NavDrawMainMenuAdapter extends ArrayAdapter<navdrawmainmenuModel> {
     this.mModelArrayList = _modelArrayList;
   }
 
+  @NonNull
   @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
+  public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
     // 1. Create inflater
     LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     // 2. Get rowView from inflater
-    View rowView = null;
+    View rowView;
     if(!mModelArrayList.get(position).isGroupHeader()){
 
 

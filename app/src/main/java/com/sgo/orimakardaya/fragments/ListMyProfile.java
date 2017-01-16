@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +19,9 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
  */
 public class ListMyProfile extends ListFragment {
 
-    View v;
+    private View v;
 
-    SecurePreferences sp;
-    String authType;
+    private SecurePreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -36,7 +34,7 @@ public class ListMyProfile extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
+        String authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
         String[] _data = null;
         if(authType.equalsIgnoreCase("OTP")) {
@@ -56,7 +54,6 @@ public class ListMyProfile extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
-        Fragment f;
         switch (position) {
             case 0:
                 i = new Intent(getActivity(), MyProfileActivity.class);

@@ -140,6 +140,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/menu_item_title_pay_friends"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_gravity="center_horizontal"
             android:background="@color/light_blue_800"
             android:textColor="@color/white"/>
@@ -150,6 +151,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/menu_item_title_ask_for_money"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_gravity="center_horizontal"
             android:background="@color/light_blue_800"
             android:textColor="@color/white"/>

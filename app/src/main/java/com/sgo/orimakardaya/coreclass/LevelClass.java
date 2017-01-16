@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.coreclass;/*
  */
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
@@ -99,7 +98,7 @@ public class LevelClass {
         }
     }
 
-    public void getHelpList() {
+    private void getHelpList() {
         try {
             String ownerId = getSp().getString(DefineValue.USERID_PHONE,"");
             String accessKey = getSp().getString(DefineValue.ACCESS_KEY,"");
@@ -195,8 +194,6 @@ public class LevelClass {
         String contactCenter = getSp().getString(DefineValue.LIST_CONTACT_CENTER, "");
         if(sp.contains(DefineValue.LEVEL_VALUE)) {
             String i = sp.getString(DefineValue.LEVEL_VALUE, "0");
-            if(i == null)
-                i = "0";
             isLevel1 = Integer.valueOf(i) == 1;
         }
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
@@ -219,19 +216,19 @@ public class LevelClass {
         }
     }
 
-    public FragmentActivity getActivity() {
+    private FragmentActivity getActivity() {
         return activity;
     }
 
-    public void setActivity(FragmentActivity activity) {
+    private void setActivity(FragmentActivity activity) {
         this.activity = activity;
     }
 
-    public SecurePreferences getSp() {
+    private SecurePreferences getSp() {
         return sp;
     }
 
-    public void setSp(SecurePreferences sp) {
+    private void setSp(SecurePreferences sp) {
         this.sp = sp;
     }
 }

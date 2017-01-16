@@ -34,18 +34,22 @@ public class BalanceService extends Service {
     private Activity mainPageContext = null;
     private Messenger messenger;
 
-    public static final long LOOPING_TIME_BALANCE =  50000; // 30 detik = 30 * 1000 ms
-    public static final long LOOPING_TIME_NOTIF   = 120000;
+    private static final long LOOPING_TIME_BALANCE =  50000; // 30 detik = 30 * 1000 ms
+    private static final long LOOPING_TIME_NOTIF   = 120000;
     private SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
     private UtilsLoader mBl;
 
     //public static final long LOOPING_TIME_BALANCE = 200000; // 30 detik = 30 * 1000 ms
     //public static final long LOOPING_TIME_NOTIF = 150000;
 
-    private Handler mHandler = new Handler(){
+    private static class MyHandler extends Handler {
+        @Override
         public void handleMessage(Message msg) {
+
         }
-    };
+    }
+
+    private MyHandler mHandler = new MyHandler();
 
     private Runnable callBalance = new Runnable() {
         @Override
@@ -139,11 +143,11 @@ public class BalanceService extends Service {
         return START_STICKY;
     }
 
-    public boolean isServiceDestroyed() {
+    private boolean isServiceDestroyed() {
         return isServiceDestroyed;
     }
 
-    public void setServiceDestroyed(boolean isServiceDestroyed) {
+    private void setServiceDestroyed(boolean isServiceDestroyed) {
         this.isServiceDestroyed = isServiceDestroyed;
     }
 

@@ -34,7 +34,7 @@ public class ReportListModel {
     return datetime;
   }
 
-  public void setDatetime(String datetime) {
+  private void setDatetime(String datetime) {
     this.datetime = datetime;
   }
 
@@ -42,7 +42,7 @@ public class ReportListModel {
     return type;
   }
 
-  public void setType(String type) {
+  private void setType(String type) {
     this.type = type;
   }
 
@@ -50,7 +50,7 @@ public class ReportListModel {
     return ccyID;
   }
 
-  public void setCcyID(String ccyID) {
+  private void setCcyID(String ccyID) {
     this.ccyID = ccyID;
   }
 
@@ -58,7 +58,7 @@ public class ReportListModel {
     return amount;
   }
 
-  public void setAmount(String amount) {
+  private void setAmount(String amount) {
     this.amount = amount;
   }
 
@@ -66,7 +66,7 @@ public class ReportListModel {
     return trxId;
   }
 
-  public void setTrxId(String trxId) {
+  private void setTrxId(String trxId) {
     this.trxId = trxId;
   }
 
@@ -74,7 +74,7 @@ public class ReportListModel {
     return description;
   }
 
-  public void setDescription(String description) {
+  private void setDescription(String description) {
     this.description = description;
   }
 
@@ -82,7 +82,7 @@ public class ReportListModel {
     return remark;
   }
 
-  public void setRemark(String remark) {
+  private void setRemark(String remark) {
     this.remark = remark;
   }
 
@@ -90,7 +90,7 @@ public class ReportListModel {
     return detail;
   }
 
-  public void setDetail(String detail) {
+  private void setDetail(String detail) {
     this.detail = detail;
   }
 
@@ -98,7 +98,7 @@ public class ReportListModel {
     return commId;
   }
 
-  public void setCommId(String commId) {
+  private void setCommId(String commId) {
     this.commId = commId;
   }
 
@@ -106,7 +106,7 @@ public class ReportListModel {
     return alias;
   }
 
-  public void setAlias(String alias) {
+  private void setAlias(String alias) {
     this.alias = alias;
   }
 }

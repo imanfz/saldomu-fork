@@ -97,7 +97,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 	 * @param context
 	 *            the caller's context
 	 */
-	public SecurePreferencesOld(Context context) {
+	private SecurePreferencesOld(Context context) {
 		// Proxy design pattern
 		if (SecurePreferencesOld.sFile == null) {
 			SecurePreferencesOld.sFile = PreferenceManager
@@ -109,7 +109,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 			String value = SecurePreferencesOld.sFile.getString(key, null);
 			if (value == null) {
 				value = SecurePreferencesOld.generateAesKeyValue();
-				SecurePreferencesOld.sFile.edit().putString(key, value).commit();
+				SecurePreferencesOld.sFile.edit().putString(key, value).apply();
             }
 			SecurePreferencesOld.sKey = SecurePreferencesOld.decode(value);
 
@@ -122,7 +122,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 		}
         // initialize OnSecurePreferencesChangeListener HashMap
         sOnSharedPreferenceChangeListeners =
-                new HashMap<OnSharedPreferenceChangeListener, OnSharedPreferenceChangeListener>(10);
+				new HashMap<>(10);
 	}
 
 	private static String encode(byte[] input) {
@@ -275,7 +275,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 	@Override
 	public Map<String, String> getAll() {
 		final Map<String, ?> encryptedMap = SecurePreferencesOld.sFile.getAll();
-		final Map<String, String> decryptedMap = new HashMap<String, String>(
+		final Map<String, String> decryptedMap = new HashMap<>(
 				encryptedMap.size());
 		for (Entry<String, ?> entry : encryptedMap.entrySet()) {
 			try {
@@ -319,7 +319,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 		if (encryptedSet == null) {
 			return defaultValues;
 		}
-		final Set<String> decryptedSet = new HashSet<String>(
+		final Set<String> decryptedSet = new HashSet<>(
 				encryptedSet.size());
 		for (String encryptedValue : encryptedSet) {
 			decryptedSet.add(SecurePreferencesOld.decrypt(encryptedValue));
@@ -439,7 +439,7 @@ public class SecurePreferencesOld implements SharedPreferences {
 		@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 		public SharedPreferences.Editor putStringSet(String key,
 				Set<String> values) {
-			final Set<String> encryptedValues = new HashSet<String>(
+			final Set<String> encryptedValues = new HashSet<>(
 					values.size());
 			for (String value : values) {
 				encryptedValues.add(SecurePreferencesOld.encrypt(value));

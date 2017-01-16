@@ -18,7 +18,7 @@ import timber.log.Timber;
  * Created by yuddistirakiki on 3/28/16.
  */
 public class FabInstance {
-    MaterialSheetFab materialSheetFab;
+    private MaterialSheetFab materialSheetFab;
     public static final int ITEM_FAB_PAYFRIENDS = 0;
     public static final int ITEM_FAB_ASK4MONEY = 1;
     public static final int ITEM_FAB_SHARE = 2;
@@ -40,7 +40,7 @@ public class FabInstance {
     }
 
 
-    public FabInstance(final Activity mContext,final OnBtnListener mListener){
+    private FabInstance(final Activity mContext, final OnBtnListener mListener){
 
         Fab fab = (Fab) mContext.findViewById(R.id.fab);
         View sheetView = mContext.findViewById(R.id.fab_sheet);
@@ -126,7 +126,7 @@ public class FabInstance {
         }
     }
 
-    public static int getColor(Context context, int id) {
+    private static int getColor(Context context, int id) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 23) {
             return ContextCompat.getColor(context, id);

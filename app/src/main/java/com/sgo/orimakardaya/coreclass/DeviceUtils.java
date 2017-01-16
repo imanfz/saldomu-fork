@@ -30,7 +30,7 @@ public class DeviceUtils {
                 Settings.Secure.ANDROID_ID);
     }
 
-    public Context getmContext() {
+    private Context getmContext() {
         return mContext;
     }
 

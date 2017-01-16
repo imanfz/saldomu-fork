@@ -7,7 +7,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
 @Table(name = "Member")
-public class listmemberModel extends Model {
+class listmemberModel extends Model {
 
     @Column
     private String member_id;
@@ -30,7 +30,7 @@ public class listmemberModel extends Model {
         return member_id;
     }
 
-    public void setMember_id(String member_id) {
+    private void setMember_id(String member_id) {
         this.member_id = member_id;
     }
 
@@ -38,7 +38,7 @@ public class listmemberModel extends Model {
         return member_code;
     }
 
-    public void setMember_code(String member_code) {
+    private void setMember_code(String member_code) {
         this.member_code = member_code;
     }
 }

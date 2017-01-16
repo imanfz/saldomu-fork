@@ -3,7 +3,6 @@ package com.sgo.orimakardaya.fragments;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -46,16 +45,34 @@ import timber.log.Timber;
  * Created by thinkpad on 11/20/2015.
  */
 public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
-    View v;
-    SecurePreferences sp;
-    LinearLayout layoutOTP;
-    TextView txtTxId, txtBankName, txtAccno, txtAccName, txtCurrency, txtNominal, txtFee, txtTotal;
-    EditText tokenValue;
-    Button btnProcess;
-    ProgressDialog progdialog;
-    String name, userID, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
-    boolean isPIN, isOTP;
-    int pin_attempt=-1;
+    private View v;
+    private SecurePreferences sp;
+    private LinearLayout layoutOTP;
+    private TextView txtTxId;
+    private TextView txtBankName;
+    private TextView txtAccno;
+    private TextView txtAccName;
+    private TextView txtCurrency;
+    private TextView txtNominal;
+    private TextView txtFee;
+    private TextView txtTotal;
+    private EditText tokenValue;
+    private Button btnProcess;
+    private ProgressDialog progdialog;
+    private String name;
+    private String userID;
+    private String accessKey;
+    private String txId;
+    private String bankName;
+    private String accNo;
+    private String ccyId;
+    private String nominal;
+    private String accName;
+    private String fee;
+    private String total;
+    private boolean isPIN;
+    private boolean isOTP;
+    private int pin_attempt=-1;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -128,7 +145,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         }
     }
 
-    Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -156,7 +173,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         }
     };
 
-    public void confirmCashout(String _token){
+    private void confirmCashout(String _token){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -266,7 +283,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(tokenValue.getText().toString().length()==0){
             tokenValue.requestFocus();
             tokenValue.setError(getString(R.string.cashout_validation_otp));
@@ -310,7 +327,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -322,6 +339,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -353,7 +371,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             tokenValue.setText(_kode_otp);

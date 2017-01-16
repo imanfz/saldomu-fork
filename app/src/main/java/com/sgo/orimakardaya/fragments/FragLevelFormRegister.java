@@ -55,25 +55,33 @@ import timber.log.Timber;
  */
 public class FragLevelFormRegister extends Fragment {
 
-    View v;
-    Activity act;
-    EditText et_socialid;
-    EditText et_address;
-    EditText et_pob;
-    EditText et_name;
+    private View v;
+    private Activity act;
+    private EditText et_socialid;
+    private EditText et_address;
+    private EditText et_pob;
+    private EditText et_name;
 //    EditText et_bom;
-    EditText et_email;
-    TextView tv_dob;
-    String dedate = "",userID,accessKey,custID,contactCenter,listContactPhone = "", listAddress = "";
-    Spinner sp_socialid,sp_country, sp_gender;
-    DatePickerDialog dpd;
-    SecurePreferences sp;
-    DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
-    DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID","INDONESIA"));
-    ProgressDialog progdialog;
-    String[] gender_value= new String[]{"L","P"};
-    Calendar nowCalendar;
-    ArrayList<String> dataCountry = new ArrayList<>();
+private EditText et_email;
+    private TextView tv_dob;
+    private String dedate = "";
+    private String userID;
+    private String accessKey;
+    private String custID;
+    private String contactCenter;
+    private String listContactPhone = "";
+    private String listAddress = "";
+    private Spinner sp_socialid;
+    private Spinner sp_country;
+    private Spinner sp_gender;
+    private DatePickerDialog dpd;
+    private SecurePreferences sp;
+    private DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+    private DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID","INDONESIA"));
+    private ProgressDialog progdialog;
+    private String[] gender_value= new String[]{"L","P"};
+    private Calendar nowCalendar;
+    private ArrayList<String> dataCountry = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -184,7 +192,7 @@ public class FragLevelFormRegister extends Fragment {
                 dataCountry.add(getString(R.string.myprofile_spinner_default));
                 dataCountry.add(CountryModel.Indonesia);
                 dataCountry.addAll(Arrays.asList(CountryModel.allCountry));
-                final ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, dataCountry);
+                final ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, dataCountry);
                 adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 sp_country.setAdapter(adapter2);
 
@@ -208,7 +216,7 @@ public class FragLevelFormRegister extends Fragment {
     }
 
 
-    Button.OnClickListener prosesListener = new Button.OnClickListener(){
+    private Button.OnClickListener prosesListener = new Button.OnClickListener(){
 
         @Override
         public void onClick(View v) {
@@ -222,7 +230,7 @@ public class FragLevelFormRegister extends Fragment {
     };
 
 
-    DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             dedate = dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
@@ -233,7 +241,7 @@ public class FragLevelFormRegister extends Fragment {
     };
 
 
-    public void FillLayoutData() throws JSONException {
+    private void FillLayoutData() throws JSONException {
         et_socialid.setText(sp.getString(DefineValue.PROFILE_SOCIAL_ID,""));
         et_address.setText(sp.getString(DefineValue.PROFILE_ADDRESS,""));
         et_pob.setText(sp.getString(DefineValue.PROFILE_POB,""));
@@ -270,7 +278,7 @@ public class FragLevelFormRegister extends Fragment {
                 dataSpinnerSocialID[i] = mData.getJSONObject(i).getString(WebParams.TYPE);
             }
 
-            ArrayAdapter<String> socialidAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, dataSpinnerSocialID);
+            ArrayAdapter<String> socialidAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, dataSpinnerSocialID);
             socialidAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             sp_socialid.setAdapter(socialidAdapter);
 
@@ -307,7 +315,7 @@ public class FragLevelFormRegister extends Fragment {
     }
 
 
-    public void sentExecCust(){
+    private void sentExecCust(){
         try{
 
             if(progdialog == null)
@@ -350,7 +358,7 @@ public class FragLevelFormRegister extends Fragment {
                         Timber.d("response execute customer:"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             SecurePreferences.Editor mEdit = sp.edit();
-                            int member_level = sp.getInt(DefineValue.LEVEL_VALUE,1);
+//                            int member_level = sp.getInt(DefineValue.LEVEL_VALUE,1);
                             mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
                             mEdit.putString(DefineValue.PROFILE_DOB, dob);
                             mEdit.putString(DefineValue.PROFILE_ADDRESS,et_address.getText().toString());
@@ -452,7 +460,7 @@ public class FragLevelFormRegister extends Fragment {
     }
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_name.getText().toString().length()==0){
             et_name.requestFocus();
             et_name.setError(this.getString(R.string.myprofile_validation_name));
@@ -505,7 +513,6 @@ public class FragLevelFormRegister extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -519,7 +526,7 @@ public class FragLevelFormRegister extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getHelpList() {
+    private void getHelpList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +74,7 @@ public class ForgotPassword extends Fragment {
         et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
 
-    Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -106,7 +105,7 @@ public class ForgotPassword extends Fragment {
         }
     };
 
-    Button.OnClickListener submitForgotPassListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitForgotPassListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -140,7 +139,7 @@ public class ForgotPassword extends Fragment {
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
-    public void sentData(final String value_pin){
+    private void sentData(final String value_pin){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -230,7 +229,7 @@ public class ForgotPassword extends Fragment {
         }
     }
 
-    public void getHelpPin(final ProgressBar progDialog, final TextView Message){
+    private void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
             progDialog.setIndeterminate(true);
             progDialog.setVisibility(View.VISIBLE);
@@ -241,14 +240,14 @@ public class ForgotPassword extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
 
-                    String id, message_value;
+                    String message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
                         JSONObject mObject;
                         if (ForgotPassword.this.isVisible()) {
                             for (int i = 0; i < arrayContact.length(); i++) {
                                 mObject = arrayContact.getJSONObject(i);
-                                id = mObject.optString(WebParams.ID, "0");
+//                                id = mObject.optString(WebParams.ID, "0");
                                 if (i==0) {
                                     message_value = Message.getText().toString()+"\n"+
                                             mObject.optString(WebParams.DESCRIPTION, "") + " " +
@@ -272,22 +271,22 @@ public class ForgotPassword extends Fragment {
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
+                    failure();
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
+                    failure();
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
+                    failure();
                 }
 
-                private void failure(Throwable throwable){
+                private void failure(){
                     progDialog.setIndeterminate(false);
                     progDialog.setVisibility(View.GONE);
                     Message.setVisibility(View.VISIBLE);
@@ -299,7 +298,7 @@ public class ForgotPassword extends Fragment {
         }
     }
 
-    void showDialog(String message_error){
+    private void showDialog(String message_error){
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -339,7 +338,7 @@ public class ForgotPassword extends Fragment {
     }
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_user_id.getText().toString().length()==0){
             DefinedDialog.showErrorDialog(getActivity(),getString(R.string.forgetpass_edittext_validation),null);
             return false;

@@ -38,17 +38,18 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public static final int RESULT_PIN_VALUE = 302;
 
-    SecurePreferences sp;
-    String valuePin;
-    Boolean IsForgotPassword;
-    Fragment toShow;
-    TextView tv_attempt ;
+    private SecurePreferences sp;
+    private String valuePin;
+    private Boolean IsForgotPassword;
+    private Fragment toShow;
+    private TextView tv_attempt ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         View v = this.findViewById(android.R.id.content);
+        assert v != null;
         tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
         Timber.d("masuk UtilsLoader");
         String userId  = sp.getString(DefineValue.USERID_PHONE,"");
@@ -132,7 +133,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         return R.layout.create_pin;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.input_pin));
     }
@@ -169,7 +170,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     }
 
-    void showDialogForgotPin(){
+    private void showDialogForgotPin(){
         // Create custom dialog object
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -204,14 +205,14 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         dialog.show();
     }
 
-    public void getHelpPin(final ProgressBar progDialog, final TextView Message){
+    private void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
             MyApiClient.getHelpPIN(this,new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    String id, message_value;
+                    String message_value;
                     try {
                         JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
                         JSONObject mObject;

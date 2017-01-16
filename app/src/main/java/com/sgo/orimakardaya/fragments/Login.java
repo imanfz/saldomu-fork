@@ -48,15 +48,16 @@ import timber.log.Timber;
  */
 public class Login extends Fragment implements View.OnClickListener {
 
-    String userIDfinale = null;
-    Fragment newFrag;
-    Button btnforgetPass, btnRegister;
-    EditText userIDValue,passLoginValue;
-    ImageView image_spinner;
-    Button btnLogin;
-    Animation frameAnimation;
-    MaterialRippleLayout btnLayout;
-    View v;
+    private String userIDfinale = null;
+    private Button btnforgetPass;
+    private Button btnRegister;
+    private EditText userIDValue;
+    private EditText passLoginValue;
+    private ImageView image_spinner;
+    private Button btnLogin;
+    private Animation frameAnimation;
+    private MaterialRippleLayout btnLayout;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -109,7 +110,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
                 break;
             case R.id.btn_forgetPass :
-                newFrag = new ForgotPassword();
+                Fragment newFrag = new ForgotPassword();
                 switchFragment(newFrag,"forgot password",true);
                 break;
             case R.id.btn_register :
@@ -120,7 +121,7 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
 
-    public void sentData(){
+    private void sentData(){
         try{
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
@@ -251,7 +252,7 @@ public class Login extends Fragment implements View.OnClickListener {
         }
     }
 
-    void showDialog(String message) {
+    private void showDialog(String message) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -295,9 +296,9 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
     private boolean checkCommunity(JSONObject response){
-        String arraynya = null;
+
         try {
-            arraynya = response.getString(WebParams.COMMUNITY);
+            String arraynya = response.getString(WebParams.COMMUNITY);
             if(!arraynya.isEmpty()){
                 JSONArray arrayJson = new JSONArray(arraynya);
                 for(int i = 0 ; i < arrayJson.length();i++){
@@ -314,7 +315,7 @@ public class Login extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    public void setLoginProfile(JSONObject response){
+    private void setLoginProfile(JSONObject response){
         getActivity();
         SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor = prefs.edit();
@@ -419,7 +420,7 @@ public class Login extends Fragment implements View.OnClickListener {
         mEditor.apply();
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(userIDValue.getText().toString().length()==0){
             userIDValue.requestFocus();
             userIDValue.setError(this.getString(R.string.login_validation_userID));

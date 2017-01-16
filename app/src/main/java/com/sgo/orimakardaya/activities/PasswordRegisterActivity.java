@@ -23,10 +23,11 @@ import com.sgo.orimakardaya.dialogs.DefinedDialog;
  */
 public class PasswordRegisterActivity extends BaseActivity {
 
-    EditText et_pass_new, et_pass_retype;
-    CheckBox cb_show_pass;
-    Button btn_next;
-    SecurePreferences sp;
+    private EditText et_pass_new;
+    private EditText et_pass_retype;
+    private CheckBox cb_show_pass;
+    private Button btn_next;
+    private SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         cb_show_pass = (CheckBox) findViewById(R.id.cb_showPass_changepass);
         btn_next = (Button) findViewById(R.id.btn_next_newPass);
 
+        assert btn_next != null;
         btn_next.setOnClickListener(btnSubmitNewPassListener);
         cb_show_pass.setOnCheckedChangeListener(showPassword);
     }
@@ -51,7 +53,7 @@ public class PasswordRegisterActivity extends BaseActivity {
     }
 
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         disableHomeIcon();
         setActionBarTitle(getString(R.string.changepass_ab_createpass));
     }
@@ -62,7 +64,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         return true;
     }
 
-    Button.OnClickListener btnSubmitNewPassListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnSubmitNewPassListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(PasswordRegisterActivity.this)) {
@@ -78,7 +80,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         }
     };
 
-    CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
+    private CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if(!b){
@@ -92,9 +94,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         }
     };
 
-    public void finishChild(Intent data){
-
-        String auth = getIntent().getStringExtra(DefineValue.AUTHENTICATION_TYPE);
+    private void finishChild(Intent data){
 
 //        if (auth.equals(DefineValue.AUTH_TYPE_PIN))
             setResult(LoginActivity.RESULT_PIN,data);
@@ -103,7 +103,7 @@ public class PasswordRegisterActivity extends BaseActivity {
         finish();
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_pass_new.getText().toString().length()==0){
             et_pass_new.requestFocus();
             et_pass_new.setError(this.getString(R.string.changepass_edit_error_newpass));
@@ -129,6 +129,5 @@ public class PasswordRegisterActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        return;
     }
 }

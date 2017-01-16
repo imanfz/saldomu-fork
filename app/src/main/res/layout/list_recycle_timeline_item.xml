@@ -176,7 +176,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorSecondary" />
 
             <LinearLayout
                     android:id="@+id/layout_comment1"
@@ -222,7 +225,10 @@
 
             </LinearLayout>
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorSecondary" />
 
             <LinearLayout
                     android:id="@+id/layout_comment2"
@@ -276,7 +282,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/colorSecondary"></View>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorSecondary" />
 
             <LinearLayout android:orientation="horizontal"
                           android:layout_width="match_parent"
@@ -291,7 +300,10 @@
                            android:layout_gravity="center"
                            android:src="@drawable/ic_like_inactive"/>
 
-                <View android:layout_width="1dp" android:layout_height="35dp" android:background="@color/colorSecondary"></View>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="35dp"
+                    android:background="@color/colorSecondary" />
 
                 <ImageView android:id="@+id/image_comment"
                            android:layout_width="30dp"

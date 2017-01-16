@@ -27,9 +27,8 @@ import timber.log.Timber;
  * Created by thinkpad on 1/14/2016.
  */
 public class FragFAQ extends Fragment {
-    private WebView webview;
     SecurePreferences sp;
-    View v;
+    private View v;
 
     public static FragFAQ newInstance() {
         FragFAQ mFrag = new FragFAQ();
@@ -52,8 +51,8 @@ public class FragFAQ extends Fragment {
     }
 
 
-    public void loadUrl(String url) {
-        webview = (WebView) v.findViewById(R.id.webViewFAQ);
+    private void loadUrl(String url) {
+        WebView webview = (WebView) v.findViewById(R.id.webViewFAQ);
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);

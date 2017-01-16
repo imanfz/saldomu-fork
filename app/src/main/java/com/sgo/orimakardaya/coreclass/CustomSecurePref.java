@@ -5,16 +5,11 @@ package com.sgo.orimakardaya.coreclass;/*
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 
 import com.securepreferences.SecurePreferences;
 import com.tozny.crypto.android.AesCbcWithIntegrity;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.security.GeneralSecurityException;
 
 import timber.log.Timber;
@@ -96,7 +91,7 @@ public class CustomSecurePref {
 
     }
 
-    public void setmContext(Context mContext) {
+    private void setmContext(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -104,7 +99,7 @@ public class CustomSecurePref {
         return mSecurePrefs;
     }
 
-    public void setmSecurePrefs(SecurePreferences mSecurePrefs) {
+    private void setmSecurePrefs(SecurePreferences mSecurePrefs) {
         this.mSecurePrefs = mSecurePrefs;
     }
 
@@ -169,7 +164,7 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
         mEdit.remove(DefineValue.TIMELINE_FIRST_TIME);
 
-        mEdit.commit();
+        mEdit.apply();
 
     }
 }

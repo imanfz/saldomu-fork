@@ -45,16 +45,11 @@ public class Introduction extends AppIntro{
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
-    @Override
     public void onSlideChanged() {
 
     }
 
-    public void openLogin(){
+    private void openLogin(){
         Intent i = new Intent(this,LoginActivity.class);
         startActivity(i);
         this.finish();

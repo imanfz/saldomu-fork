@@ -5,4 +5,4 @@ package com.venmo.android.pin;
  * network request). {@link PinFragment} will background the logic in your {@code AsyncValidator} if
  * you implement it.
  */
-public interface AsyncValidator extends Validator {}
+interface AsyncValidator extends Validator {}

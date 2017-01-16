@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -51,28 +50,52 @@ public class BillerDesciption extends Fragment {
 
     public final static String TAG = "BILLER_DESCRIPTION";
 
-    View v, layout_biller_name;
-    String tx_id, biller_name, biller_comm_id ,biller_comm_code, biller_api_key,
-            ccy_id,amount, item_name, description, cust_id, item_id,
-            payment_name,shareType, callback_url,userID,accessKey, biller_type_code, value_item_data;
-    TextView tv_biller_name_value,tv_item_name_value,tv_amount_value, tv_id_cust;
-    EditText et_desired_amount;
-    Button btn_submit,btn_cancel;
-    int buy_type;
-    Boolean  is_input_amount, is_display_amount,isFacebook = false,isShowDescription = false;
-    ProgressDialog progdialog;
-    ImageView mIconArrow;
-    TableLayout mTableLayout;
-    JSONArray isi_field, isi_value;
-    listbankModel mTempBank;
-    Spinner spin_payment_options;
-    SecurePreferences sp;
-    List<String> paymentData;
-    ArrayAdapter<String> adapterPaymentOptions;
+    private View v;
+    private View layout_biller_name;
+    private String tx_id;
+    private String biller_name;
+    private String biller_comm_id;
+    private String biller_comm_code;
+    private String biller_api_key;
+    private String ccy_id;
+    private String amount;
+    private String item_name;
+    private String description;
+    private String cust_id;
+    private String item_id;
+    private String payment_name;
+    private String shareType;
+    private String callback_url;
+    private String userID;
+    private String accessKey;
+    private String biller_type_code;
+    private String value_item_data;
+    private TextView tv_biller_name_value;
+    private TextView tv_item_name_value;
+    private TextView tv_amount_value;
+    private TextView tv_id_cust;
+    private EditText et_desired_amount;
+    private Button btn_submit;
+    private Button btn_cancel;
+    private int buy_type;
+    private Boolean  is_input_amount;
+    private Boolean is_display_amount;
+    Boolean isFacebook = false;
+    private Boolean isShowDescription = false;
+    private ProgressDialog progdialog;
+    private ImageView mIconArrow;
+    private TableLayout mTableLayout;
+    private JSONArray isi_field;
+    private JSONArray isi_value;
+    private listbankModel mTempBank;
+    private Spinner spin_payment_options;
+    private SecurePreferences sp;
+    private List<String> paymentData;
+    private ArrayAdapter<String> adapterPaymentOptions;
     private Biller_Data_Model mBillerData;
     private List<bank_biller_model> mListBankBiller;
     private RealmChangeListener realmListener;
-    Realm realm;
+    private Realm realm;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,7 +158,7 @@ public class BillerDesciption extends Fragment {
         callback_url = mBillerData.getCallback_url();
     }
 
-    public void initializeLayout() {
+    private void initializeLayout() {
 
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
@@ -211,7 +234,7 @@ public class BillerDesciption extends Fragment {
             TableRow layout_table_row;
             String value_detail_field,value_detail_value;
             Iterator keys = mDataDesc.keys();
-            List<String> tempList = new ArrayList<String>();
+            List<String> tempList = new ArrayList<>();
 
             while(keys.hasNext()) {
                 tempList.add((String) keys.next());
@@ -253,7 +276,7 @@ public class BillerDesciption extends Fragment {
         }
     }
 
-    TextWatcher jumlahChangeListener = new TextWatcher() {
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -277,7 +300,7 @@ public class BillerDesciption extends Fragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
@@ -301,7 +324,7 @@ public class BillerDesciption extends Fragment {
     };
 
 
-    View.OnClickListener descriptionClickListener = new View.OnClickListener() {
+    private View.OnClickListener descriptionClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
@@ -342,7 +365,7 @@ public class BillerDesciption extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -364,7 +387,7 @@ public class BillerDesciption extends Fragment {
     };
 
 
-    public void sentInquiryBiller(){
+    private void sentInquiryBiller(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -491,7 +514,7 @@ public class BillerDesciption extends Fragment {
         }
     }
 
-    public void sentPaymentBiller(final String _amount){
+    private void sentPaymentBiller(final String _amount){
         try{
 
             progdialog.show();
@@ -610,8 +633,8 @@ public class BillerDesciption extends Fragment {
 
 
 
-    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code, final String fee,
-                                 final String merchant_type, final String _bank_code, final int _attempt){
+    private void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code, final String fee,
+                                  final String merchant_type, final String _bank_code, final int _attempt){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
@@ -753,7 +776,7 @@ public class BillerDesciption extends Fragment {
         }
     }
 
-    void showDialogSMS(final String _nama_bank) {
+    private void showDialogSMS(final String _nama_bank) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -791,7 +814,7 @@ public class BillerDesciption extends Fragment {
         dialog.show();
     }
 
-    void showDialog(final String fee, final String merchant_type, final String product_code, final String bank_code) {
+    private void showDialog(final String fee, final String merchant_type, final String product_code, final String bank_code) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -892,7 +915,7 @@ public class BillerDesciption extends Fragment {
     }
 
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             getFragmentManager().popBackStack();
@@ -900,7 +923,7 @@ public class BillerDesciption extends Fragment {
     };
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(is_input_amount){
             if(et_desired_amount.getText().toString().length()==0){
                 et_desired_amount.requestFocus();

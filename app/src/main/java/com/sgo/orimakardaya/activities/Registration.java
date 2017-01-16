@@ -1,49 +1,35 @@
 package com.sgo.orimakardaya.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
+
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.fragments.FirstScreen;
 import com.sgo.orimakardaya.fragments.TermsNConditionWeb;
 import com.sgo.orimakardaya.loader.UtilsLoader;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import timber.log.Timber;
 
 
 public class Registration extends BaseActivity{
 
-    android.support.v4.app.FragmentManager fragmentManager;
-
-    public static Activity fa;
+    private static Activity fa;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +46,7 @@ public class Registration extends BaseActivity{
 
             FirstScreen fs = new FirstScreen();
             fs.setArguments(getIntent().getExtras());
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.myfragment, fs,"fs");
             fragmentTransaction.commit();
@@ -101,7 +87,7 @@ public class Registration extends BaseActivity{
 
     }
 
-    public void switchActivity(Intent mIntent) {
+    private void switchActivity(Intent mIntent) {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         startActivity(mIntent);
     }
@@ -171,7 +157,7 @@ public class Registration extends BaseActivity{
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(true);
+                changeFragment();
                 dialog.dismiss();
             }
         });
@@ -179,7 +165,7 @@ public class Registration extends BaseActivity{
         dialog.show();
     }
 
-    public void changeFragment(Boolean submit){
+    private void changeFragment(){
         Intent i = new Intent(this,LoginActivity.class);
         switchActivity(i);
     }

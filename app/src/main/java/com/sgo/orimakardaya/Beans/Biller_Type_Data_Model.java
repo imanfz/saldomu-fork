@@ -1,9 +1,5 @@
 package com.sgo.orimakardaya.Beans;
 
-import com.sgo.orimakardaya.coreclass.WebParams;
-
-import org.json.JSONObject;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

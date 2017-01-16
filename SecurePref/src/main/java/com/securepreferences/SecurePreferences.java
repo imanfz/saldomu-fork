@@ -91,7 +91,7 @@ public class SecurePreferences implements SharedPreferences {
 	 * @param context should be ApplicationContext not Activity
 	 * @param iterationCount The iteration count for the keys generation
 	 */
-	public SecurePreferences(Context context, int iterationCount) {
+	private SecurePreferences(Context context, int iterationCount) {
 		this(context, "", null, iterationCount);
 	}
 
@@ -112,7 +112,7 @@ public class SecurePreferences implements SharedPreferences {
 	 * @param context should be ApplicationContext not Activity
 	 * @param iterationCount The iteration count for the keys generation
 	 */
-	public SecurePreferences(Context context, final String password, final String sharedPrefFilename, int iterationCount) {
+	private SecurePreferences(Context context, final String password, final String sharedPrefFilename, int iterationCount) {
 		this(context, null, password, sharedPrefFilename, iterationCount);
 	}
 
@@ -221,7 +221,7 @@ public class SecurePreferences implements SharedPreferences {
 	 * @return String to be used as the AESkey Pref key
 	 * @throws GeneralSecurityException if something goes wrong in generation
 	 */
-	public String generateAesKeyName(Context context, int iterationCount) throws GeneralSecurityException
+	private String generateAesKeyName(Context context, int iterationCount) throws GeneralSecurityException
 	{
 		final String password = context.getPackageName();
 		final byte[] salt = getDeviceSerialNumber(context).getBytes();
@@ -274,7 +274,7 @@ public class SecurePreferences implements SharedPreferences {
 	 * @param prefKey
 	 * @return SHA-256 Hash of the preference key
 	 */
-	public static String hashPrefKey(String prefKey)  {
+	private static String hashPrefKey(String prefKey)  {
 		final MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("SHA-256");
@@ -283,11 +283,7 @@ public class SecurePreferences implements SharedPreferences {
 
 			return Base64.encodeToString(digest.digest(), AesCbcWithIntegrity.BASE64_FLAGS);
 
-		} catch (NoSuchAlgorithmException e) {
-			if (sLoggingEnabled) {
-				Log.w(TAG, "Problem generating hash", e);
-			}
-		} catch (UnsupportedEncodingException e) {
+		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 			if (sLoggingEnabled) {
 				Log.w(TAG, "Problem generating hash", e);
 			}
@@ -345,7 +341,7 @@ public class SecurePreferences implements SharedPreferences {
 	public Map<String, String> getAll() {
 		//wont be null as per http://androidxref.com/5.1.0_r1/xref/frameworks/base/core/java/android/app/SharedPreferencesImpl.java
 		final Map<String, ?> encryptedMap = sharedPreferences.getAll();
-		final Map<String, String> decryptedMap = new HashMap<String, String>(
+		final Map<String, String> decryptedMap = new HashMap<>(
 				encryptedMap.size());
 		for (Entry<String, ?> entry : encryptedMap.entrySet()) {
 			try {
@@ -405,7 +401,7 @@ public class SecurePreferences implements SharedPreferences {
 		if (encryptedSet == null) {
 			return defaultValues;
 		}
-		final Set<String> decryptedSet = new HashSet<String>(
+		final Set<String> decryptedSet = new HashSet<>(
 				encryptedSet.size());
 		for (String encryptedValue : encryptedSet) {
 			decryptedSet.add(decrypt(encryptedValue));
@@ -491,13 +487,13 @@ public class SecurePreferences implements SharedPreferences {
 	 * @param context should be ApplicationContext not Activity
 	 * @param iterationCount The iteration count for the keys generation
 	 */
-	public void handlePasswordChange(String newPassword, Context context, int iterationCount) throws GeneralSecurityException {
+	private void handlePasswordChange(String newPassword, Context context, int iterationCount) throws GeneralSecurityException {
 
 		final byte[] salt = getDeviceSerialNumber(context).getBytes();
 		AesCbcWithIntegrity.SecretKeys newKey = AesCbcWithIntegrity.generateKeyFromPassword(newPassword, salt, iterationCount);
 
 		Map<String, ?> allOfThePrefs = sharedPreferences.getAll();
-		Map<String, String> unencryptedPrefs = new HashMap<String, String>(allOfThePrefs.size());
+		Map<String, String> unencryptedPrefs = new HashMap<>(allOfThePrefs.size());
 		Iterator<String> keysIterator = allOfThePrefs.keySet().iterator();
 
 		String keyName = null;
@@ -527,7 +523,7 @@ public class SecurePreferences implements SharedPreferences {
 
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.clear();
-		editor.commit();
+		editor.apply();
 
 		//refresh the sharedPreferences object ref: I found it was retaining old ref/values
 		sharedPreferences = null;
@@ -539,16 +535,14 @@ public class SecurePreferences implements SharedPreferences {
 		SharedPreferences.Editor updatedEditor = sharedPreferences.edit();
 
 		//iterate through the unencryptedPrefs encrypting each one with new key
-		Iterator<String> unencryptedPrefsKeys = unencryptedPrefs.keySet().iterator();
-		while (unencryptedPrefsKeys.hasNext()) {
-			String prefKey = unencryptedPrefsKeys.next();
+		for (String prefKey : unencryptedPrefs.keySet()) {
 			String prefPlainText = unencryptedPrefs.get(prefKey);
 			updatedEditor.putString(prefKey, encrypt(prefPlainText));
 		}
-		updatedEditor.commit();
+		updatedEditor.apply();
 	}
 
-	public void handleSecretKeyChange(AesCbcWithIntegrity.SecretKeys newSecret, Context context, int iterationCount) throws GeneralSecurityException {
+	public void handleSecretKeyChange(AesCbcWithIntegrity.SecretKeys newSecret, Context context, int iterationCount) {
 
 		Map<String, ?> allOfThePrefs = sharedPreferences.getAll();
 		Map<String, String> unencryptedPrefs = new HashMap<>(allOfThePrefs.size());
@@ -570,7 +564,7 @@ public class SecurePreferences implements SharedPreferences {
 
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.clear();
-		editor.commit();
+		editor.apply();
 
 		//refresh the sharedPreferences object ref: I found it was retaining old ref/values
 		sharedPreferences = null;
@@ -586,7 +580,7 @@ public class SecurePreferences implements SharedPreferences {
 			String prefPlainText = unencryptedPrefs.get(prefKey);
 			updatedEditor.putString(prefKey, encrypt(prefPlainText));
 		}
-		updatedEditor.commit();
+		updatedEditor.apply();
 	}
 
 	public void handlePasswordChange(String newPassword, Context context) throws GeneralSecurityException {
@@ -645,7 +639,7 @@ public class SecurePreferences implements SharedPreferences {
 		@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 		public SharedPreferences.Editor putStringSet(String key,
 													 Set<String> values) {
-			final Set<String> encryptedValues = new HashSet<String>(
+			final Set<String> encryptedValues = new HashSet<>(
 					values.size());
 			for (String value : values) {
 				encryptedValues.add(encrypt(value));
@@ -735,7 +729,6 @@ public class SecurePreferences implements SharedPreferences {
 
 		if(!decryptKeys) {
 			registerOnSharedPreferenceChangeListener(listener);
-			return;
 		}
 
 

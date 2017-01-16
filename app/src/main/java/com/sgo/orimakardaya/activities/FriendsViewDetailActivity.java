@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.MenuItem;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
@@ -19,11 +18,15 @@ import timber.log.Timber;
  */
 public class FriendsViewDetailActivity extends BaseActivity {
 
-    SecurePreferences sp;
-    FragmentManager fragmentManager;
+    private SecurePreferences sp;
+    private FragmentManager fragmentManager;
 
-    int RESULT;
-    String imgUrl, name, id, phone, email;
+    private int RESULT;
+    private String imgUrl;
+    private String name;
+    private String id;
+    private String phone;
+    private String email;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class FriendsViewDetailActivity extends BaseActivity {
         return R.layout.activity_friends_view_detail;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(name);
     }

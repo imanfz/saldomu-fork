@@ -37,9 +37,10 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     private List<listTimeLineModel> mData;
     private int rowLayout;
     private Context mContext;
-    OnItemClickListener mItemClickListener;
-    SecurePreferences sp;
-    String user_id,accessKey;
+    private OnItemClickListener mItemClickListener;
+    private SecurePreferences sp;
+    private String user_id;
+    private String accessKey;
 
     public TimeLineRecycleAdapter(List<listTimeLineModel> _mData, int _rowLayout, Context _mContext){
         mData = _mData;
@@ -191,7 +192,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
 
 
-    public void setImageProfPic(String _data, QuickContactBadge _holder){
+    private void setImageProfPic(String _data, QuickContactBadge _holder){
         /*
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
@@ -217,7 +218,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(_holder);
         }
@@ -226,13 +227,13 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                 .error(roundedImage)
                 .fit()
                 .centerCrop()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(_holder);
         }
     }
 
-    public void swap(List<listTimeLineModel> datas){
+    private void swap(List<listTimeLineModel> datas){
         mData.clear();
         mData.addAll(datas);
         notifyDataSetChanged();
@@ -286,7 +287,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -294,7 +295,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     }
 
 
-    public void addLike(final String post_id, String from_id, final String jumlahLike) {
+    private void addLike(final String post_id, String from_id, final String jumlahLike) {
         try {
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
                     user_id,accessKey);
@@ -371,7 +372,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     }
 
 
-    public void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
+    private void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
         try {
 
 

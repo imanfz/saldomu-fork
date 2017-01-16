@@ -16,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +26,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.CashoutActivity;
 import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.adapter.NominalAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
@@ -52,21 +50,32 @@ import timber.log.Timber;
  */
 public class FragCashOut extends Fragment {
 
-    View v;
-    SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-    LinearLayout layout_acc_name;
-    Spinner sp_privacy, sp_bank;
-    EditText etAccNo, etNominal, etAccName;
-    TextView txtBalance;
-    Button btnProcess;
-    ProgressDialog progdialog;
+    private View v;
+    private SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    private LinearLayout layout_acc_name;
+    private Spinner sp_privacy;
+    private Spinner sp_bank;
+    private EditText etAccNo;
+    private EditText etNominal;
+    private EditText etAccName;
+    private TextView txtBalance;
+    private Button btnProcess;
+    private ProgressDialog progdialog;
 
-    int privacy, start = 0;
-    String userID, accessKey, memberId, balance, bankCashout, bankCode, bankName, bankGateway;
-    ArrayList<String> arrBankName;
-    ArrayList<String> arrBankCode;
-    ArrayList<String> arrBankGateway;
-    boolean isBankGateway = false;
+    private int privacy;
+    private int start = 0;
+    private String userID;
+    private String accessKey;
+    private String memberId;
+    private String balance;
+    private String bankCashout;
+    private String bankCode;
+    private String bankName;
+    private String bankGateway;
+    private ArrayList<String> arrBankName;
+    private ArrayList<String> arrBankCode;
+    private ArrayList<String> arrBankGateway;
+    private boolean isBankGateway = false;
 
 
     @Override
@@ -146,7 +155,7 @@ public class FragCashOut extends Fragment {
         sp_privacy.setAdapter(spinAdapter);
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, arrBankName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, arrBankName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_bank.setAdapter(adapter);
         sp_bank.setOnItemSelectedListener(spinnerNamaBankListener);
@@ -156,7 +165,7 @@ public class FragCashOut extends Fragment {
         btnProcess.setOnClickListener(btnProcessListener);
     }
 
-    Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -173,7 +182,7 @@ public class FragCashOut extends Fragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -186,7 +195,7 @@ public class FragCashOut extends Fragment {
     };
 
 
-    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -214,7 +223,7 @@ public class FragCashOut extends Fragment {
         }
     };
 
-    public void reqCashout(final String _acctNo, final String _amount, final String _accName){
+    private void reqCashout(final String _acctNo, final String _amount, final String _accName){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -348,7 +357,7 @@ public class FragCashOut extends Fragment {
         }
     }
 
-    public void initializeBankCashout(){
+    private void initializeBankCashout(){
 
         arrBankName = new ArrayList<>();
         arrBankCode = new ArrayList<>();
@@ -370,7 +379,7 @@ public class FragCashOut extends Fragment {
 
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(etAccNo.getText().toString().length()==0){
             etAccNo.requestFocus();
             etAccNo.setError(getString(R.string.cashout_accno_validation));

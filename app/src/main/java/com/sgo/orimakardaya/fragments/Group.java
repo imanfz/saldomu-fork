@@ -23,8 +23,8 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 public class Group extends BaseFragmentMainPage {
 
-    ArrayList<HomeGroupObject> groups;
-    PinnedSectionListView lvGroup;
+    private ArrayList<HomeGroupObject> groups;
+    private PinnedSectionListView lvGroup;
 
     @Override
     protected int getInflateFragmentLayout() {
@@ -46,7 +46,7 @@ public class Group extends BaseFragmentMainPage {
 
     }
 
-    public boolean canScrollUp(View view) {
+    private boolean canScrollUp(View view) {
         if (android.os.Build.VERSION.SDK_INT < 14) {
             if (view instanceof AbsListView) {
                 final AbsListView absListView = (AbsListView) view;
@@ -68,7 +68,7 @@ public class Group extends BaseFragmentMainPage {
         lvGroup = (PinnedSectionListView) mView.findViewById(R.id.lvGroup);
         int sectionPosition = 0;
         int listPosition = 0;
-        groups = new ArrayList<HomeGroupObject>();
+        groups = new ArrayList<>();
         for(int i=0 ; i<1 ; i++) {
             HomeGroupObject homeGroupObject = new HomeGroupObject();
             homeGroupObject.setType(0);

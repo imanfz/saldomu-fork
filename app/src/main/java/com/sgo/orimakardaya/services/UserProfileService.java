@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.*;
 import android.os.Process;
-import android.widget.Toast;
 
 import com.sgo.orimakardaya.coreclass.UserProfileHandler;
 
@@ -19,12 +18,16 @@ public class UserProfileService extends Service {
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;
     private Activity mainPageContext = null;
-    public static final long LOOPING_TIME = 5000;
+    private static final long LOOPING_TIME = 5000;
 
-    private Handler mHandler = new Handler(){
+    private static class MyHandler extends Handler {
+        @Override
         public void handleMessage(Message msg) {
+
         }
-    };
+    }
+
+    private MyHandler mHandler = new MyHandler();
 
     private Runnable callUserProfile = new Runnable() {
         @Override
@@ -63,7 +66,7 @@ public class UserProfileService extends Service {
         return isServiceDestroyed;
     }
 
-    public void setServiceDestroyed(boolean isServiceDestroyed) {
+    private void setServiceDestroyed(boolean isServiceDestroyed) {
         this.isServiceDestroyed = isServiceDestroyed;
     }
 

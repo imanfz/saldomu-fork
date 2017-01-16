@@ -43,7 +43,7 @@ public class ReportListEspayModel {
     return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    private void setDatetime(String datetime) {
     this.datetime = datetime;
     }
 
@@ -51,7 +51,7 @@ public class ReportListEspayModel {
     return buss_scheme_name;
     }
 
-    public void setBuss_scheme_name(String buss_scheme_name) {
+    private void setBuss_scheme_name(String buss_scheme_name) {
     this.buss_scheme_name = buss_scheme_name;
     }
 
@@ -59,7 +59,7 @@ public class ReportListEspayModel {
     return comm_name;
     }
 
-    public void setComm_name(String comm_name) {
+    private void setComm_name(String comm_name) {
     this.comm_name = comm_name;
     }
 
@@ -67,7 +67,7 @@ public class ReportListEspayModel {
     return ccy_id;
     }
 
-    public void setCcy_id(String ccy_id) {
+    private void setCcy_id(String ccy_id) {
     this.ccy_id = ccy_id;
     }
 
@@ -75,7 +75,7 @@ public class ReportListEspayModel {
     return amount;
     }
 
-    public void setAmount(String amount) {
+    private void setAmount(String amount) {
     this.amount = amount;
     }
 
@@ -83,7 +83,7 @@ public class ReportListEspayModel {
     return admin_fee;
     }
 
-    public void setAdmin_fee(String admin_fee) {
+    private void setAdmin_fee(String admin_fee) {
     this.admin_fee = admin_fee;
     }
 
@@ -91,7 +91,7 @@ public class ReportListEspayModel {
     return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
     this.description = description;
     }
 
@@ -99,7 +99,7 @@ public class ReportListEspayModel {
     return remark;
     }
 
-    public void setRemark(String remark) {
+    private void setRemark(String remark) {
     this.remark = remark;
     }
 
@@ -107,7 +107,7 @@ public class ReportListEspayModel {
     return tx_id;
     }
 
-    public void setTx_id(String tx_id) {
+    private void setTx_id(String tx_id) {
     this.tx_id = tx_id;
     }
 
@@ -115,7 +115,7 @@ public class ReportListEspayModel {
     return comm_id;
     }
 
-    public void setComm_id(String comm_id) {
+    private void setComm_id(String comm_id) {
     this.comm_id = comm_id;
     }
 
@@ -123,7 +123,7 @@ public class ReportListEspayModel {
     return bank_name;
     }
 
-    public void setBank_name(String bank_name) {
+    private void setBank_name(String bank_name) {
     this.bank_name = bank_name;
     }
 
@@ -131,7 +131,7 @@ public class ReportListEspayModel {
     return product_name;
     }
 
-    public void setProduct_name(String product_name) {
+    private void setProduct_name(String product_name) {
     this.product_name = product_name;
     }
 
@@ -139,7 +139,7 @@ public class ReportListEspayModel {
     return tx_status;
     }
 
-    public void setTx_status(String tx_status) {
+    private void setTx_status(String tx_status) {
     this.tx_status = tx_status;
     }
 

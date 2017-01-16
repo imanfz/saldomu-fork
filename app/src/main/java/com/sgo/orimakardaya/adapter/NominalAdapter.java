@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by thinkpad on 3/18/2015.
  */
-public class NominalAdapter extends BaseAdapter {
+class NominalAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private List<String> nominal;

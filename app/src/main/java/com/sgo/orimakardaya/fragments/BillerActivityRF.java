@@ -44,10 +44,11 @@ public class BillerActivityRF extends Fragment{
     public static final String BILLERACTIV_TAG = "billerActivRF";
 
     View v;
-    String userID,accessKey;
-    SecurePreferences sp;
-    Boolean isBillerDataExe;
-    Boolean isDenomExe;
+    private String userID;
+    private String accessKey;
+    private SecurePreferences sp;
+    private Boolean isBillerDataExe;
+    private Boolean isDenomExe;
     private Realm realm;
     private RealmChangeListener realmListener;
 
@@ -127,7 +128,7 @@ public class BillerActivityRF extends Fragment{
         }
     }
 
-    public void addToQueeing(Object obj){
+    private void addToQueeing(Object obj){
         if(Queing == null)
             Queing = new ArrayList<>();
 
@@ -163,7 +164,7 @@ public class BillerActivityRF extends Fragment{
         };
     }
     
-    public void runQueing(){
+    private void runQueing(){
         if(Queing.size()>0){
             for (Object obj : Queing){
                 if(obj instanceof exeBillerData){
@@ -214,7 +215,7 @@ public class BillerActivityRF extends Fragment{
     }
 
 
-    public void getBiller(final String _biller_type_code, final Boolean withDenom){
+    private void getBiller(final String _biller_type_code, final Boolean withDenom){
         try{
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
             userID = sp.getString(DefineValue.USERID_PHONE, "");
@@ -413,7 +414,7 @@ public class BillerActivityRF extends Fragment{
     }
 
 
-    public void getDenomRetail(final String _comm_id, final String _comm_name){
+    private void getDenomRetail(final String _comm_id, final String _comm_name){
 
         Biller_Data_Model mBillerData = realm.copyFromRealm(realm.where(Biller_Data_Model.class).
                 equalTo(WebParams.COMM_ID,_comm_id).
@@ -442,7 +443,7 @@ public class BillerActivityRF extends Fragment{
             getDenom(_comm_id,_comm_name);
     }
 
-    public void getDenom(final String _comm_id, final String _comm_name){
+    private void getDenom(final String _comm_id, final String _comm_name){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_DENOM_RETAIL,
                     userID,accessKey);
@@ -545,7 +546,7 @@ public class BillerActivityRF extends Fragment{
         }
     }
 
-    public Boolean isUIFragmentValid(){
+    private Boolean isUIFragmentValid(){
         if(getActivity() == null)
             return null;
 

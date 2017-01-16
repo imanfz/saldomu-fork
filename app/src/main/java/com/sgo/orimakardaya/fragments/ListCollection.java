@@ -14,9 +14,6 @@ import com.sgo.orimakardaya.activities.CollectionActivity;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.List;
 
@@ -27,10 +24,10 @@ import io.realm.Realm;
  */
 public class ListCollection extends ListFragment {
 
-    View v;
-    Realm realm;
+    private View v;
+    private Realm realm;
 //    private JSONArray mData;
-    List<Account_Collection_Model> refObj;
+private List<Account_Collection_Model> refObj;
 
     public static ListCollection newInstance() {
         ListCollection mFrag = new ListCollection();
@@ -86,7 +83,7 @@ public class ListCollection extends ListFragment {
     }
 
 
-    public void openIntentBiller(int position){
+    private void openIntentBiller(int position){
         Intent i = new Intent(getActivity(), CollectionActivity.class);
 //        try {
 //            i.putExtra(DefineValue.COLLECTION_DATA,mData.getJSONObject(position).toString());

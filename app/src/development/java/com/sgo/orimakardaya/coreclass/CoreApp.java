@@ -40,14 +40,14 @@ import timber.log.Timber;
  */
 public class CoreApp extends Application {
 
-    public Activity mCurrentActivity = null;
+    private Activity mCurrentActivity = null;
     private static CoreApp _instance;
 
-    public static CoreApp get_instance() {
+    private static CoreApp get_instance() {
         return _instance;
     }
 
-    public static void set_instance(CoreApp _instance) {
+    private static void set_instance(CoreApp _instance) {
         CoreApp._instance = _instance;
     }
 

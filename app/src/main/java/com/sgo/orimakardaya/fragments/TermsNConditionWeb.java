@@ -6,13 +6,12 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 
@@ -25,9 +24,9 @@ public class TermsNConditionWeb extends Fragment {
 
     private WebView webview;
     ViewGroup container;
-    Boolean isDisconnected;
-    View v;
-    ProgressBar pb_webview;
+    private Boolean isDisconnected;
+    private View v;
+    private ProgressBar pb_webview;
 
     @Nullable
     @Override
@@ -48,7 +47,7 @@ public class TermsNConditionWeb extends Fragment {
     }
 
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
@@ -56,7 +55,7 @@ public class TermsNConditionWeb extends Fragment {
 
 
     @SuppressWarnings("deprecation")
-    public void loadUrl(String url) {
+    private void loadUrl(String url) {
         webview = (WebView) v.findViewById(R.id.webview);
 //        webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         WebSettings webSettings = webview.getSettings();
