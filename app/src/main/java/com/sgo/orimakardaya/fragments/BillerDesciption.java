@@ -47,7 +47,7 @@ import timber.log.Timber;
  */
 public class BillerDesciption extends Fragment {
 
-
+    public final static int REQUEST_BillerInqReq = 22 ;
     public final static String TAG = "BILLER_DESCRIPTION";
 
     private View v;
@@ -690,7 +690,7 @@ public class BillerDesciption extends Fragment {
                                         public void onClick(DialogInterface dialog, int which) {
                                             Intent mI = new Intent(getActivity(), TopUpActivity.class);
                                             mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
+                                            startActivityForResult(mI, REQUEST_BillerInqReq);
                                         }
                                     });
                                     dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
@@ -769,10 +769,8 @@ public class BillerDesciption extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainPage.REQUEST_FINISH) {
-            if(resultCode == MainPage.RESULT_NORMAL){
+        if (requestCode == REQUEST_BillerInqReq) {
                 sentInquiryBiller();
-            }
         }
     }
 
