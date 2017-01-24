@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Toast;
 
 import com.sgo.orimakardaya.R;
 
@@ -25,7 +24,6 @@ import timber.log.Timber;
 public class ViewToBitmap {
 
     private Context context;
-    private File f;
 
     public ViewToBitmap(Context _context){
         this.context = _context;
@@ -43,6 +41,7 @@ public class ViewToBitmap {
 
         try {
             String direktori_path = File.separator + "DCIM"+ File.separator + context.getString(R.string.foldername_struk);
+            File f;
             if (Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)) {
                 File file = new File(Environment.getExternalStorageDirectory()+direktori_path) ;
                 if (!file.exists()) {

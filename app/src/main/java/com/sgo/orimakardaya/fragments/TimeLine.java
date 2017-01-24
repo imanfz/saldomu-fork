@@ -39,7 +39,7 @@ import timber.log.Timber;
  */
 public class TimeLine extends BaseFragmentMainPage {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
     private RecyclerView currentRecyclerView;
     private TimeLineRecycleAdapter currentAdapter;
@@ -56,8 +56,8 @@ public class TimeLine extends BaseFragmentMainPage {
     private String isTimelineNew;
 
     private List<listTimeLineModel> listTimeline;
-    int start = 0;
-    RecyclerView mRecyclerView;
+    private int start = 0;
+    private RecyclerView mRecyclerView;
 
     /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -136,7 +136,7 @@ public class TimeLine extends BaseFragmentMainPage {
 
     }
 
-    public void initializeDataPost(){
+    private void initializeDataPost(){
         listTimeline.addAll(listTimeLineModel.getAll());
         if(listTimeline.size() > 0) {
             layout_alert.setVisibility(View.GONE);
@@ -160,7 +160,7 @@ public class TimeLine extends BaseFragmentMainPage {
         }
     }
 
-    public void getTimelineList(final PtrFrameLayout frameLayout, final int mPage) {
+    private void getTimelineList(final PtrFrameLayout frameLayout, final int mPage) {
         try {
 
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -190,7 +190,7 @@ public class TimeLine extends BaseFragmentMainPage {
                             Timber.d("isi params timeline list:"+response.toString());
 //                            Log.d("list listTimeline", Integer.toString(listTimeline.size()));
 
-                            List<listTimeLineModel> mListTimeline = new ArrayList<listTimeLineModel>();
+                            List<listTimeLineModel> mListTimeline = new ArrayList<>();
 
                             JSONArray mArrayPost = new JSONArray(response.getString(WebParams.DATA_POSTS));
                             for (int i = 0; i < mArrayPost.length(); i++) {
@@ -328,12 +328,12 @@ public class TimeLine extends BaseFragmentMainPage {
                 }
 
                 private void failure(Throwable throwable){
-                    if(TimeLine.this.isVisible()) {
+//                    if(TimeLine.this.isVisible()) {
 //                        if (MyApiClient.PROD_FAILURE_FLAG)
 //                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
 //                        else
 //                            Toast.makeText(getActivity(), throwable.getCause().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+//                    }
                     Timber.w("Error Koneksi Timeline:"+throwable.toString());
                 }
 
@@ -344,7 +344,7 @@ public class TimeLine extends BaseFragmentMainPage {
         }
     }
 
-    public void insertPostToDB(List<listTimeLineModel> mListTimeline){
+    private void insertPostToDB(List<listTimeLineModel> mListTimeline){
         ActiveAndroid.beginTransaction();
         listTimeLineModel mTm;
 
@@ -421,27 +421,27 @@ public class TimeLine extends BaseFragmentMainPage {
         mRecyclerView.smoothScrollToPosition(0);
     }
 
-    public LinearLayoutManager getCurrentLayoutManag() {
+    private LinearLayoutManager getCurrentLayoutManag() {
         return currentLayoutManag;
     }
 
-    public void setCurrentLayoutManag(LinearLayoutManager currentLayoutManag) {
+    private void setCurrentLayoutManag(LinearLayoutManager currentLayoutManag) {
         this.currentLayoutManag = currentLayoutManag;
     }
 
-    public TimeLineRecycleAdapter getCurrentAdapter() {
+    private TimeLineRecycleAdapter getCurrentAdapter() {
         return currentAdapter;
     }
 
-    public void setCurrentAdapter(TimeLineRecycleAdapter currentAdapter) {
+    private void setCurrentAdapter(TimeLineRecycleAdapter currentAdapter) {
         this.currentAdapter = currentAdapter;
     }
 
-    public RecyclerView getCurrentRecyclerView() {
+    private RecyclerView getCurrentRecyclerView() {
         return currentRecyclerView;
     }
 
-    public void setCurrentRecyclerView(RecyclerView currentRecyclerView) {
+    private void setCurrentRecyclerView(RecyclerView currentRecyclerView) {
         this.currentRecyclerView = currentRecyclerView;
     }
 

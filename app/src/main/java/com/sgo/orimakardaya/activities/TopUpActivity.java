@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -28,10 +27,9 @@ import timber.log.Timber;
  */
 public class TopUpActivity extends BaseActivity {
 
-    FragmentManager fragmentManager;
-    String transaction_type;
-    Boolean is_full_activity = false;
-    boolean isSMSBanking = false;
+    private String transaction_type;
+    private Boolean is_full_activity = false;
+    private boolean isSMSBanking = false;
     private SMSclass smSclass;
     private ReqPermissionClass reqPermissionClass;
 
@@ -73,7 +71,7 @@ public class TopUpActivity extends BaseActivity {
                 mFrag = new SgoPlus_input();
             }
             mFrag.setArguments(mArgs);
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.topUpActivityContent, mFrag, "sgoInput");
             fragmentTransaction.commitAllowingStateLoss();
@@ -111,7 +109,7 @@ public class TopUpActivity extends BaseActivity {
         try{
             unregisterReceiver(smSclass.simStateReceiver);
         }
-        catch (Exception e){}
+        catch (Exception ignored){}
         registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
     }
 
@@ -129,7 +127,7 @@ public class TopUpActivity extends BaseActivity {
         }
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         if(transaction_type != null && !transaction_type.isEmpty()) {
             if (transaction_type.equals(DefineValue.INTERNET_BANKING))

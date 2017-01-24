@@ -20,7 +20,7 @@ import com.sgo.orimakardaya.coreclass.DefineValue;
  */
 public class ListEvoucherHP extends ListFragment {
 
-    View v;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

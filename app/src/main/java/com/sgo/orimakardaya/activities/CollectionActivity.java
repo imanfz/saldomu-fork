@@ -6,13 +6,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.fragments.ListCollectionPayment;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import timber.log.Timber;
 
@@ -21,7 +18,6 @@ import timber.log.Timber;
  */
 public class CollectionActivity extends BaseActivity {
 
-    FragmentManager fragmentManager;
     String _collection_data;
 
 
@@ -46,7 +42,7 @@ public class CollectionActivity extends BaseActivity {
             mArgs.putString(DefineValue.COMMUNITY_NAME,mBun.getString(DefineValue.COMMUNITY_NAME,""));
             Fragment mFrag = new ListCollectionPayment();
             mFrag.setArguments(mArgs);
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.collection_content, mFrag,mBun.getString(DefineValue.COMMUNITY_NAME,""));
             fragmentTransaction.commit();
@@ -120,7 +116,7 @@ public class CollectionActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(String title){
+    private void InitializeToolbar(String title){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(title);
     }

@@ -99,10 +99,9 @@ public class FragCashOutAgen extends Fragment {
         try {
             JSONArray arrayContact = new JSONArray(contactCenter);
             JSONObject mObject;
-            String id;
             for(int i=0; i < arrayContact.length() ; i++ ) {
                 mObject = arrayContact.getJSONObject(i);
-                id = mObject.optString(WebParams.ID, "0");
+//                id = mObject.optString(WebParams.ID, "0");
                 if(i==0) {
                     listContactPhone = mObject.optString(WebParams.NAME,"")+"\n"+
                             mObject.optString(WebParams.CONTACT_PHONE,"")+" "+
@@ -244,7 +243,7 @@ public class FragCashOutAgen extends Fragment {
 
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(isOTP && et_otp.getText().toString().length()==0){
             et_otp.requestFocus();
             et_otp.setError(this.getString(R.string.forgetpass_edittext_validation));
@@ -280,7 +279,7 @@ public class FragCashOutAgen extends Fragment {
         }
     }
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -294,7 +293,7 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    public void sentInquiryWithdraw(){
+    private void sentInquiryWithdraw(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -403,7 +402,7 @@ public class FragCashOutAgen extends Fragment {
         }
     }
 
-    public void sentReqCodeWithdraw(String tokenid){
+    private void sentReqCodeWithdraw(String tokenid){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -521,7 +520,7 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    public void sentResendToken(){
+    private void sentResendToken(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -633,7 +632,7 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    public void sentDelWithdraw(){
+    private void sentDelWithdraw(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -742,7 +741,7 @@ public class FragCashOutAgen extends Fragment {
         }
     }
 
-    public void getHelpList() {
+    private void getHelpList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
 //            progdialog.show();

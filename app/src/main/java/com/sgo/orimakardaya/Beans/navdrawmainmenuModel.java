@@ -40,7 +40,7 @@ public class navdrawmainmenuModel {
     return title;
     }
 
-    public void setTitle(String title) {
+    private void setTitle(String title) {
     this.title = title;
     }
 
@@ -48,7 +48,7 @@ public class navdrawmainmenuModel {
     return isGroupHeader;
     }
 
-    public void setGroupHeader(boolean isGroupHeader) {
+    private void setGroupHeader(boolean isGroupHeader) {
     this.isGroupHeader = isGroupHeader;
     }
 
@@ -56,7 +56,7 @@ public class navdrawmainmenuModel {
     return indexImage;
     }
 
-    public void setIndexImage(int indexImage) {
+    private void setIndexImage(int indexImage) {
     this.indexImage = indexImage;
     }
 
@@ -64,7 +64,7 @@ public class navdrawmainmenuModel {
         return indexImageSelected;
     }
 
-    public void setIndexImageSelected(int indexImageSelected) {
+    private void setIndexImageSelected(int indexImageSelected) {
         this.indexImageSelected = indexImageSelected;
     }
 
@@ -72,7 +72,7 @@ public class navdrawmainmenuModel {
         return navItemId;
     }
 
-    public void setNavItemId(int navItemId) {
+    private void setNavItemId(int navItemId) {
         this.navItemId = navItemId;
     }
 }

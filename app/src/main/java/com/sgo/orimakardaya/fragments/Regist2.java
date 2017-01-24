@@ -26,7 +26,6 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.CreatePIN;
 import com.sgo.orimakardaya.activities.LoginActivity;
 import com.sgo.orimakardaya.activities.PasswordRegisterActivity;
-import com.sgo.orimakardaya.activities.Registration;
 import com.sgo.orimakardaya.coreclass.*;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.securities.Md5;
@@ -43,14 +42,27 @@ import timber.log.Timber;
  */
 public class Regist2 extends Fragment {
 
-    SecurePreferences sp;
-    Button btnResend, btnSubmit,btnCancel;
-    String noHPValue,namaValue,emailValue,authType,custID, token, pass, confPass, memberID;
-    int max_resend_sms, max_resend_email;
-    EditText TokenValue;
-    TextView mNoHPValue,mNamaValue,mEmail;
-    ProgressDialog progdialog;
-    View v;
+    private SecurePreferences sp;
+    private Button btnResend;
+    private Button btnSubmit;
+    private Button btnCancel;
+    private String noHPValue;
+    private String namaValue;
+    private String emailValue;
+    private String authType;
+    private String custID;
+    private String token;
+    private String pass;
+    private String confPass;
+    private String memberID;
+    private int max_resend_sms;
+    private int max_resend_email;
+    private EditText TokenValue;
+    private TextView mNoHPValue;
+    private TextView mNamaValue;
+    private TextView mEmail;
+    private ProgressDialog progdialog;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +108,7 @@ public class Regist2 extends Fragment {
     }
 
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -108,7 +120,7 @@ public class Regist2 extends Fragment {
         }
     };
 
-    Button.OnClickListener resendListener = new Button.OnClickListener() {
+    private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -120,7 +132,7 @@ public class Regist2 extends Fragment {
         }
     };
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             DefineValue.NOBACK = false;
@@ -142,7 +154,7 @@ public class Regist2 extends Fragment {
         startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
     }
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -158,7 +170,7 @@ public class Regist2 extends Fragment {
     }
 
     //Resend Token
-    public void requestResendToken(final String is_sms, final String is_email){
+    private void requestResendToken(final String is_sms, final String is_email){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -279,7 +291,7 @@ public class Regist2 extends Fragment {
     }
 
     //Submit
-    public void sentData(){
+    private void sentData(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -377,7 +389,7 @@ public class Regist2 extends Fragment {
             }
         }
     }
-    public void sendCreatePass(){
+    private void sendCreatePass(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -455,7 +467,7 @@ public class Regist2 extends Fragment {
         }
 
     }
-    public void sendCreatePin(Intent data){
+    private void sendCreatePin(Intent data){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -529,7 +541,7 @@ public class Regist2 extends Fragment {
 
     }
 
-    void showDialog(){
+    private void showDialog(){
 
         saveImeiICCIDDevice();
 
@@ -572,7 +584,7 @@ public class Regist2 extends Fragment {
         SMSclass smSclass = new SMSclass(getActivity());
         edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
         edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
-        edit.commit();
+        edit.apply();
     }
 
     private void switchFragment(Fragment i, String name, Boolean isBackstack){
@@ -583,7 +595,7 @@ public class Regist2 extends Fragment {
         fca.switchContent(i,name,isBackstack);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(TokenValue.getText().toString().length()==0){
             TokenValue.requestFocus();
             TokenValue.setError(this.getString(R.string.regist2_validation_otp));
@@ -600,7 +612,7 @@ public class Regist2 extends Fragment {
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -614,6 +626,7 @@ public class Regist2 extends Fragment {
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){

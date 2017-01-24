@@ -17,10 +17,10 @@ import java.io.IOException;
 
 public class GeneralizeImage {
 
-    Context mContext;
-    String mFilePath;
-    Uri mUri;
-    Bitmap mBitmap;
+    private Context mContext;
+    private String mFilePath;
+    private Uri mUri;
+    private Bitmap mBitmap;
 
     public GeneralizeImage(Context _context, String _file_path){
         this.mFilePath = _file_path;
@@ -132,8 +132,8 @@ public class GeneralizeImage {
         return mfile;
     }
 
-    public static Bitmap readBitmap(Context context, Uri selectedImage) {
-        Bitmap bm = null;
+    private static Bitmap readBitmap(Context context, Uri selectedImage) {
+        Bitmap bm;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.RGB_565;
         options.inScaled = false;
@@ -145,6 +145,7 @@ public class GeneralizeImage {
             return null;
         } finally {
             try {
+                assert fileDescriptor != null;
                 bm = BitmapFactory.decodeFileDescriptor(
                         fileDescriptor.getFileDescriptor(), null, options);
                 fileDescriptor.close();

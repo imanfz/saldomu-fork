@@ -90,7 +90,7 @@ public class PinKeyboardView extends KeyboardView {
             }
             if (key.label != null) {
                 String label = key.label.toString();
-                float desiredW = mPaint.measureText(label);
+//                float desiredW = mPaint.measureText(label);
                 float desiredH = mPaint.measureText(label);
                 float x = key.x + (key.width / 2);
                 float y = key.y + (key.height / 2) + (desiredH / 2);

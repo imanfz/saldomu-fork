@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
 import com.sgo.orimakardaya.R;
@@ -21,24 +18,14 @@ import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /*
@@ -46,17 +33,20 @@ import timber.log.Timber;
  */
 public final class TabBuyItem extends ListFragment {
 
-    View v,layout_empty;
+    private View v;
+    private View layout_empty;
     ProgressDialog out;
-    SecurePreferences sp;
-    String userID,accessKey, biller_type;
-    Biller_Type_Data_Model mBillerType;
+    private SecurePreferences sp;
+    private String userID;
+    private String accessKey;
+    private String biller_type;
+    private Biller_Type_Data_Model mBillerType;
     private RealmChangeListener realmListener;
-    List<Biller_Type_Data_Model> mBillerTypeData;
-    ArrayList<String> _data;
-    ListView listView1;
-    EasyAdapter adapter;
-    Realm realm;
+    private List<Biller_Type_Data_Model> mBillerTypeData;
+    private ArrayList<String> _data;
+    private ListView listView1;
+    private EasyAdapter adapter;
+    private Realm realm;
 
 
     public static TabBuyItem newInstance(String biller_type) {
@@ -131,7 +121,7 @@ public final class TabBuyItem extends ListFragment {
         listView1.setAdapter(adapter);
     }
 
-    public class NameComparator implements Comparator<String>
+    private class NameComparator implements Comparator<String>
     {
         public int compare(String left, String right) {
             return left.compareTo(right);
@@ -293,7 +283,7 @@ public final class TabBuyItem extends ListFragment {
 //        switchActivity(i);
 //    }
 
-    public void openIntentBiller(String _biller_type, String _biller_name){
+    private void openIntentBiller(String _biller_type, String _biller_name){
         Intent i = new Intent(getActivity(), BillerActivity.class);
         i.putExtra(DefineValue.BILLER_TYPE,_biller_type);
         i.putExtra(DefineValue.BILLER_NAME,_biller_name);

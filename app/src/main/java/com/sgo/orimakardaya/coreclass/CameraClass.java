@@ -1,29 +1,21 @@
 package com.sgo.orimakardaya.coreclass;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -33,14 +25,14 @@ import timber.log.Timber;
 public abstract class CameraClass extends BaseActivity {
 
     public final static String TAG = CameraClass.class.getName();
-    protected final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 115;
+    private final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 115;
 
-    protected static final String DATE_CAMERA_INTENT_STARTED_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.dateCameraIntentStarted";
-    protected static Date dateCameraIntentStarted = null;
-    protected static final String CAMERA_PIC_URI_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.CAMERA_PIC_URI_STATE";
+    private static final String DATE_CAMERA_INTENT_STARTED_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.dateCameraIntentStarted";
+    private static Date dateCameraIntentStarted = null;
+    private static final String CAMERA_PIC_URI_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.CAMERA_PIC_URI_STATE";
     private static Uri cameraPicUri = null;
-    protected static final String ROTATE_X_DEGREES_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.ROTATE_X_DEGREES_STATE";
-    protected static int rotateXDegrees = 0;
+    private static final String ROTATE_X_DEGREES_STATE = BuildConfig.APPLICATION_ID+".android.photo.TakePhotoActivity.ROTATE_X_DEGREES_STATE";
+    private static int rotateXDegrees = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,11 +104,12 @@ public abstract class CameraClass extends BaseActivity {
                     myCursor.moveToFirst();
                 }
                 // This will actually give you the file path location of the image.
+                assert myCursor != null;
                 String largeImagePath = myCursor.getString(myCursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATA));
                 Uri tempCameraPicUri = Uri.fromFile(new File(largeImagePath));
                 if (tempCameraPicUri != null) {
                     dateOfPicture = new Date(myCursor.getLong(myCursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.DATE_TAKEN)));
-                    if (dateOfPicture != null && dateOfPicture.after(dateCameraIntentStarted)) {
+                    if (dateOfPicture.after(dateCameraIntentStarted)) {
                         cameraPicUri = tempCameraPicUri;
                         rotateXDegrees = myCursor.getInt(myCursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION));
                     }
@@ -147,7 +140,7 @@ public abstract class CameraClass extends BaseActivity {
         return null;
     }
 
-    protected void showWarningDialog(String message) {
+    private void showWarningDialog(String message) {
         DefinedDialog.showErrorDialog(this, message, new DefinedDialog.DialogButtonListener() {
             @Override
             public void onClickButton(View v, boolean isLongClick) {
@@ -156,12 +149,12 @@ public abstract class CameraClass extends BaseActivity {
         });
     }
 
-    protected void onCanceled()
+    private void onCanceled()
     {
         logMessage("Camera Intent was canceled");
     }
 
-    protected void logMessage(String exceptionMessage)
+    private void logMessage(String exceptionMessage)
     {
         Timber.d(getClass().getName(), exceptionMessage);
     }

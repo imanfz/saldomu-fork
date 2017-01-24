@@ -105,7 +105,7 @@ public class DenomModel {
         return id;
     }
 
-    public void setId(String id) {
+    private void setId(String id) {
         this.id = id;
     }
 
@@ -113,7 +113,7 @@ public class DenomModel {
         return price;
     }
 
-    public void setPrice(String price) {
+    private void setPrice(String price) {
         this.price = price;
     }
 
@@ -121,7 +121,7 @@ public class DenomModel {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 }

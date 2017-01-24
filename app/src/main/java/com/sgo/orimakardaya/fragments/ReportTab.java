@@ -22,7 +22,7 @@ import java.util.List;
 /*
   Created by Administrator on 7/7/2015.
  */
-public class ReportTab extends Fragment implements InformationDialog.OnDialogOkCallback{
+public class ReportTab extends Fragment {
 
     private ReportTabAdapter currentAdapternya;
     SecurePreferences sp;
@@ -57,7 +57,7 @@ public class ReportTab extends Fragment implements InformationDialog.OnDialogOkC
 
             dialogI = InformationDialog.newInstance(this,10);
 
-            List<ListFragment> mList = new ArrayList<ListFragment>();
+            List<ListFragment> mList = new ArrayList<>();
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
             mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
             mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
@@ -75,11 +75,11 @@ public class ReportTab extends Fragment implements InformationDialog.OnDialogOkC
         }
     }
 
-    public View getCurrentView() {
+    private View getCurrentView() {
         return currentView;
     }
 
-    public void setCurrentView(View currentView) {
+    private void setCurrentView(View currentView) {
         this.currentView = currentView;
     }
 
@@ -87,7 +87,7 @@ public class ReportTab extends Fragment implements InformationDialog.OnDialogOkC
         return currentAdapternya;
     }
 
-    public void setCurrentAdapternya(ReportTabAdapter currentAdapternya) {
+    private void setCurrentAdapternya(ReportTabAdapter currentAdapternya) {
         this.currentAdapternya = currentAdapternya;
     }
 
@@ -104,8 +104,4 @@ public class ReportTab extends Fragment implements InformationDialog.OnDialogOkC
         }
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
 }

@@ -39,14 +39,20 @@ import timber.log.Timber;
  */
 public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
-    SecurePreferences sp;
-    ProgressDialog progdialog;
-    String currentPin, newPin, confirmPin;
-    FrameLayout frameLayout;
-    Fragment insertPin, createPin;
-    TextView tv_title;
-    String memberID, commID,userID,accessKey;
-    PinFragmentConfiguration configNew, configCurrent;
+    private SecurePreferences sp;
+    private ProgressDialog progdialog;
+    private String currentPin;
+    private String newPin;
+    private String confirmPin;
+    private Fragment insertPin;
+    private Fragment createPin;
+    private TextView tv_title;
+    private String memberID;
+    private String commID;
+    private String userID;
+    private String accessKey;
+    private PinFragmentConfiguration configNew;
+    private PinFragmentConfiguration configCurrent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         InitializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
-        frameLayout = (FrameLayout) findViewById(R.id.root);
+        assert v != null;
         tv_title = (TextView) v.findViewById(R.id.pin_title);
         tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
 
@@ -104,7 +110,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         return R.layout.activity_change_pin;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.changepin_ab_changepin));
     }
@@ -136,19 +142,19 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
     }
 
-    public void finishChild(){
+    private void finishChild(){
         setResult(MainPage.RESULT_NORMAL);
         this.finish();
     }
 
-    public void setFragmentInsertPin() {
+    private void setFragmentInsertPin() {
         insertPin = PinFragment.newInstanceForVerification(configCurrent);
         getFragmentManager().beginTransaction()
                 .add(R.id.root, insertPin)
                 .commit();
     }
 
-    public void sendChangePin() {
+    private void sendChangePin() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 

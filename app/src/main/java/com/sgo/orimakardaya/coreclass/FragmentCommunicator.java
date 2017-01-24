@@ -5,5 +5,5 @@ package com.sgo.orimakardaya.coreclass;/*
 import java.util.HashMap;
 
 public interface FragmentCommunicator {
-    public void respond(HashMap<String,String> data, Boolean flag);
+    void respond(HashMap<String, String> data, Boolean flag);
 }

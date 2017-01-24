@@ -42,10 +42,11 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     private List<listHistoryModel> mData;
     private int rowLayout;
     private Context mContext;
-    OnItemClickListener mItemClickListener;
-    SecurePreferences sp;
-    String user_id,accessKey;
-    SimpleHolder simpleHolder;
+    private OnItemClickListener mItemClickListener;
+    private SecurePreferences sp;
+    private String user_id;
+    private String accessKey;
+    private SimpleHolder simpleHolder;
     ProgressViewHolder progHolder;
     private int visibleThreshold = 0;
     private int lastVisibleItem, totalItemCount;
@@ -106,7 +107,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
         this.loadingLoadMore = loadingLoadMore;
     }
 
-    public void LoadingLoadMoreFinish() {
+    private void LoadingLoadMoreFinish() {
         this.setLoadingLoadMore(false);
     }
 
@@ -261,7 +262,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 
 
 
-    public void setImageProfPic(String _data, QuickContactBadge _holder){
+    private void setImageProfPic(String _data, QuickContactBadge _holder){
         /*
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
@@ -283,11 +284,12 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
         else
             mPic= Picasso.with(mContext);
 
+        assert _data != null;
         if(_data != null && _data.equals("") || _data.isEmpty()){
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(_holder);
         }
@@ -296,13 +298,13 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
                 .error(roundedImage)
                 .fit()
                 .centerCrop()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(_holder);
         }
     }
 
-    public void swap(List<listHistoryModel> datas){
+    private void swap(List<listHistoryModel> datas){
         mData.clear();
         mData.addAll(datas);
         notifyDataSetChanged();
@@ -362,7 +364,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public void SetOnItemClickListener(final OnItemClickListener mItemClickListener) {
@@ -370,7 +372,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     }
 
 
-    public void addLike(final String post_id, String from_id, final String jumlahLike) {
+    private void addLike(final String post_id, String from_id, final String jumlahLike) {
         try {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
@@ -449,7 +451,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     }
 
 
-    public void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
+    private void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
         try {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,

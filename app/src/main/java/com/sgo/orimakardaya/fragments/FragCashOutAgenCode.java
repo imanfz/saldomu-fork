@@ -129,7 +129,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
 
     }
 
-    public void getTrxStatus(){
+    private void getTrxStatus(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -211,7 +211,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
         }
     }
 
-    void showDialogNotInput(String message){
+    private void showDialogNotInput(String message){
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

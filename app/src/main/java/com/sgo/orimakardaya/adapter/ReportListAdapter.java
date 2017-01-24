@@ -4,6 +4,7 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +13,14 @@ import android.widget.TextView;
 import com.sgo.orimakardaya.Beans.ReportListModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.CurrencyFormat;
-import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 
 import java.util.ArrayList;
 
 public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
 
-    Context context;
-    int layoutResourceId;
-    ArrayList<ReportListModel> data = null;
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<ReportListModel> data = null;
 
     public ReportListAdapter(Context context, int resource, ArrayList<ReportListModel> objects) {
         super(context, resource, objects);
@@ -29,8 +29,9 @@ public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
         this.data = objects;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         ListHolder holder;
 

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -44,24 +43,29 @@ import timber.log.Timber;
  */
 public class CollectionInput extends Fragment {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
     private List<String> listProductName;
     private HashMap<String,String> listBankProduct;
     private List<listbankModel> listDB;
 
-    View v;
-    Button btn_subSGO;
-    Spinner spin_namaBank,spin_produkBank;
-    EditText et_amount,et_remark;
-    String topupType;
-    String nama_bank,userID,accessKey;
-    Bundle args;
-    ProgressDialog progdialog;
-    ArrayAdapter<String> adapter3;
-    ImageView spinWheelBankName, spinWheelBankProduct;
-    Animation frameAnimation;
-    Spinner sp_privacy;
-    int privacy;
+    private View v;
+    private Button btn_subSGO;
+    private Spinner spin_namaBank;
+    private Spinner spin_produkBank;
+    private EditText et_amount;
+    private EditText et_remark;
+    private String topupType;
+    private String nama_bank;
+    private String userID;
+    private String accessKey;
+    private Bundle args;
+    private ProgressDialog progdialog;
+    private ArrayAdapter<String> adapter3;
+    private ImageView spinWheelBankName;
+    private ImageView spinWheelBankProduct;
+    private Animation frameAnimation;
+    private Spinner sp_privacy;
+    private int privacy;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,7 +112,7 @@ public class CollectionInput extends Fragment {
 
         String[] bankName = new String[mData.length()];
 
-        listDB = new ArrayList<listbankModel>();
+        listDB = new ArrayList<>();
 
         for(int i = 0; i < mData.length() ; i++){
             try {
@@ -125,13 +129,13 @@ public class CollectionInput extends Fragment {
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, bankName);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_namaBank.setAdapter(adapter);
         spin_namaBank.setOnItemSelectedListener(spinnerNamaBankListener);
 
-        listProductName = new ArrayList<String>();
-        adapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,listProductName);
+        listProductName = new ArrayList<>();
+        adapter3 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listProductName);
         adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_produkBank.setAdapter(adapter3);
 
@@ -146,7 +150,7 @@ public class CollectionInput extends Fragment {
 
     }
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -158,7 +162,7 @@ public class CollectionInput extends Fragment {
         }
     };
 
-    TextWatcher jumlahChangeListener = new TextWatcher() {
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -182,7 +186,7 @@ public class CollectionInput extends Fragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -194,7 +198,7 @@ public class CollectionInput extends Fragment {
             nama_bank = item.toString();
 
             listProductName.clear();
-            listBankProduct = new HashMap<String, String>();
+            listBankProduct = new HashMap<>();
 
             Thread deproses = new Thread() {
                 @Override
@@ -232,7 +236,7 @@ public class CollectionInput extends Fragment {
     };
 
 
-    Button.OnClickListener prosesListener = new Button.OnClickListener() {
+    private Button.OnClickListener prosesListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -250,8 +254,8 @@ public class CollectionInput extends Fragment {
     };
 
 
-    public void sentValidTopupCollection(String _comm_id,String _bank_code,String _product_code,String _amount,
-                                         final String _payment_remark){
+    private void sentValidTopupCollection(String _comm_id, String _bank_code, String _product_code, String _amount,
+                                          final String _payment_remark){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -371,9 +375,9 @@ public class CollectionInput extends Fragment {
     }
 
 
-    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _amount,
-                                 final String _payment_remark,final String _ccy_value, final String _bank_name, final String _bank_code,
-                                 final String _fee,final  String auth_type){
+    private void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _amount,
+                                  final String _payment_remark, final String _ccy_value, final String _bank_name, final String _bank_code,
+                                  final String _fee, final String auth_type){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
@@ -478,7 +482,7 @@ public class CollectionInput extends Fragment {
         }
     }
 
-    void showDialogSMS(final String _nama_bank) {
+    private void showDialogSMS(final String _nama_bank) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -522,8 +526,8 @@ public class CollectionInput extends Fragment {
         dialog.show();
     }
 
-    void showDialog(final String _tx_id, final String _product_code,final String _product_name, final String _product_value,
-                    final String _fee,final String _bank_code,final String _bank_name, final String _amount, final String auth_type) {
+    private void showDialog(final String _tx_id, final String _product_code, final String _product_name, final String _product_value,
+                            final String _fee, final String _bank_code, final String _bank_name, final String _amount, final String auth_type) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -553,8 +557,8 @@ public class CollectionInput extends Fragment {
         dialog.show();
     }
 
-    public void changeToDescription(String _tx_id, String _product_code,String _product_name,String _amount,String _remark,
-                                    String _ccy_id, String _bank_name,String _bank_code, String _fee,String _auth_type){
+    private void changeToDescription(String _tx_id, String _product_code, String _product_name, String _amount, String _remark,
+                                     String _ccy_id, String _bank_name, String _bank_code, String _fee, String _auth_type){
 
         Fragment newFrag = new CollectionDescription();
         Bundle mArgs = getArguments();
@@ -603,7 +607,7 @@ public class CollectionInput extends Fragment {
         keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_amount.getText().toString().length()==0){
             et_amount.requestFocus();
             et_amount.setError(this.getString(R.string.sgoplus_validation_jumlahSGOplus));

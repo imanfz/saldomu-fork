@@ -11,7 +11,7 @@ import timber.log.Timber;
 /**
  * Created by yuddistirakiki on 3/24/16.
  */
-public class CustomResponseHandler extends JsonHttpResponseHandler {
+class CustomResponseHandler extends JsonHttpResponseHandler {
 
 
     public CustomResponseHandler(){
@@ -66,7 +66,7 @@ public class CustomResponseHandler extends JsonHttpResponseHandler {
         }
     }
 
-    public void onFailure2(int statusCode, Header[] headers, String response, Throwable throwable) {
+    private void onFailure2(int statusCode, Header[] headers, String response, Throwable throwable) {
         Timber.d("statusCode : "+ String.valueOf(statusCode) + "response : "+ response);
     }
 }

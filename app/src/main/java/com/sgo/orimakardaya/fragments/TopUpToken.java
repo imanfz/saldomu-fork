@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
-import android.text.InputType;
-import android.text.method.DigitsKeyListener;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -37,18 +34,38 @@ import timber.log.Timber;
  */
 public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
 
-    String txID,productCode,productName,commCode,phoneDestination,bankName,jumlahnya,bankCode,topupType,fee, shareType,userID,accessKey;
-    int max_length_token = 6;
-    EditText tokenValue;
-    TextView mBankName,mBankProduct,mAmount,mBankChannel,mPhoneNumber;
-    Button btnSubmit,btnCancel, btnResend;
-    ProgressDialog progdialog;
-    Boolean isIB = false;
+    private String txID;
+    private String productCode;
+    private String productName;
+    private String commCode;
+    private String phoneDestination;
+    private String bankName;
+    private String jumlahnya;
+    private String bankCode;
+    private String topupType;
+    private String fee;
+    private String shareType;
+    private String userID;
+    private String accessKey;
+    private int max_length_token = 6;
+    private EditText tokenValue;
+    private TextView mBankName;
+    private TextView mBankProduct;
+    private TextView mAmount;
+    private TextView mBankChannel;
+    private TextView mPhoneNumber;
+    private Button btnSubmit;
+    private Button btnCancel;
+    private Button btnResend;
+    private ProgressDialog progdialog;
+    private Boolean isIB = false;
 
-    LinearLayout emoneyLayout,pulsaLayout;
-    int max_token_resend = 3;
-    View v, layout_btn_resend;
-    SecurePreferences sp;
+    private LinearLayout emoneyLayout;
+    private LinearLayout pulsaLayout;
+    private int max_token_resend = 3;
+    private View v;
+    private View layout_btn_resend;
+    private SecurePreferences sp;
 
 
 
@@ -101,7 +118,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             initializePulsa(args);
     }
 
-    public void initializeEmoney(Bundle _args){
+    private void initializeEmoney(Bundle _args){
 
         bankName = _args.getString(DefineValue.BANK_NAME,"");
         bankCode = _args.getString(DefineValue.BANK_CODE,"");
@@ -136,7 +153,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         mBankProduct = (TextView) v.findViewById(R.id.reqTopup_bank_product); mBankProduct.setText(productName);
     }
 
-    public void initializePulsa(Bundle _args){
+    private void initializePulsa(Bundle _args){
         String _bankChannel = _args.getString(DefineValue.BANK_CHANNEL,"");
 
         pulsaLayout = (LinearLayout) v.findViewById(R.id.topup_token_layout_pulsa);pulsaLayout.setVisibility(View.VISIBLE);
@@ -150,7 +167,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         setHasOptionsMenu(true);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -166,7 +183,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
     };
 
-    Button.OnClickListener resendListener = new Button.OnClickListener() {
+    private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -177,7 +194,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
     };
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -296,7 +313,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
     }
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             getFragmentManager().popBackStack();
@@ -406,8 +423,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     }
 
 
-    public void getTrxStatus(final String userName, final String txId, final String userId, final String bankName, final String bankProduct,
-                             final String fee, final String amount){
+    private void getTrxStatus(final String userName, final String txId, final String userId, final String bankName, final String bankProduct,
+                              final String fee, final String amount){
         try{
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
@@ -487,7 +504,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -583,7 +600,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -595,6 +612,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -626,7 +644,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
 //        if(_member_kode.equals(sp.getString(CoreApp.MEMBER_CODE,""))){
             tokenValue.setText(_kode_otp);
@@ -641,7 +659,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(tokenValue.getText().toString().length()==0){
             tokenValue.requestFocus();
             tokenValue.setError(this.getString(R.string.regist2_validation_otp));

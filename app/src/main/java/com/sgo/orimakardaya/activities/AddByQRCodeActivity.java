@@ -59,15 +59,17 @@ import timber.log.Timber;
  */
 public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
-    SecurePreferences sp;
-    int RESULT;
+    private SecurePreferences sp;
+    private int RESULT;
 
-    QRCodeReaderView mydecoderview;
-    ImageView imageBarcode;
-    TextView tvIDBarcode;
-    AlertDialog dialogContact;
-    FrameLayout flScanner;
-    String _ownerID, custName, custPhone, custEmail,accessKey;
+    private QRCodeReaderView mydecoderview;
+    private ImageView imageBarcode;
+    private AlertDialog dialogContact;
+    private String _ownerID;
+    private String custName;
+    private String custPhone;
+    private String custEmail;
+    private String accessKey;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,9 +93,9 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         mydecoderview.setOnQRCodeReadListener(this);
 
         imageBarcode = (ImageView) findViewById(R.id.image_barcode);
-        tvIDBarcode = (TextView) findViewById(R.id.idBarcode);
+        TextView tvIDBarcode = (TextView) findViewById(R.id.idBarcode);
 
-        flScanner = (FrameLayout) findViewById(R.id.llQRCodeScanner);
+        FrameLayout flScanner = (FrameLayout) findViewById(R.id.llQRCodeScanner);
         mydecoderview.getLayoutParams().width = width;
         flScanner.getLayoutParams().height = height;
 
@@ -113,7 +115,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
     }
 
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.title_add_friends));
     }
@@ -129,7 +131,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         return super.onOptionsItemSelected(item);
     }
 
-    public void insertContact(List<friendModel> mfriendModel){
+    private void insertContact(List<friendModel> mfriendModel){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
@@ -212,7 +214,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         }
     }
 
-    public void insertFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
+    private void insertFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
         ActiveAndroid.initialize(getApplicationContext());
         ActiveAndroid.beginTransaction();
         friendModel mFm;
@@ -269,7 +271,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
 
     }
 
-    public class friendAdapter implements JsonSerializer<friendModel> {
+    private class friendAdapter implements JsonSerializer<friendModel> {
 
         @Override
         public JsonElement serialize(friendModel _friendModel, Type type, JsonSerializationContext jsonSerializationContext) {
@@ -284,7 +286,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         }
     }
 
-    public void generateQRCode() {
+    private void generateQRCode() {
         String qrInputText = "Name : " + custName + "\n" +
                 "No HP : " + custPhone + "\n" +
                 "Email : " + custEmail;
@@ -351,7 +353,7 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
                             //masukin kontak ke hp
                             addContactToPhone(name, phone, email);
                             //kirim kontak ke server
-                            List<friendModel> mfriendModel = new ArrayList<friendModel>();
+                            List<friendModel> mfriendModel = new ArrayList<>();
                             mfriendModel.add(new friendModel(name, phone, "", "", email, _ownerID));
                             insertContact(mfriendModel);
 
@@ -410,12 +412,12 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         mydecoderview.getCameraManager().stopPreview();
     }
 
-    public void addContactToPhone(String names,
-                           String phoneNumbers,
-                           String emails) {
+    private void addContactToPhone(String names,
+                                   String phoneNumbers,
+                                   String emails) {
 
 
-        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
 
         ops.add(ContentProviderOperation.newInsert(
                 ContactsContract.RawContacts.CONTENT_URI)

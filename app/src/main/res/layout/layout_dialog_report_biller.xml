@@ -128,10 +128,10 @@
                 android:id="@+id/dialog_reportbiller_payment_options_value"
                 android:text="Rp. 200000"
                 android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View
@@ -149,10 +149,10 @@
                 android:id="@+id/dialog_reportbiller_amount_value"
                 android:text="Rp. 200000"
                 android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <TableRow
@@ -186,11 +186,11 @@
                         android:id="@+id/dialog_reportbiller_amount_desired_value"
                         android:text="Toufan"
                         android:layout_weight="2"
-                        android:singleLine="true"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:gravity="right"
-                        android:padding="3dip" />
+                        android:padding="3dip"
+                        android:maxLines="1" />
 
                 </LinearLayout>
 
@@ -212,10 +212,10 @@
                 android:id="@+id/dialog_reportbiller_fee_value"
                 android:text="Rp. 200000"
                 android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View
@@ -233,10 +233,10 @@
                 android:id="@+id/dialog_reportbiller_total_amount_value"
                 android:text="Rp. 200000"
                 android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
     </TableLayout>

@@ -4,7 +4,7 @@ package com.sgo.orimakardaya.coreclass;/*
 
 import java.util.Locale;
 
-public class LocaleUtils {
+class LocaleUtils {
 
   public static Locale fromString(String locale) {
     String parts[] = locale.split("_", -1);

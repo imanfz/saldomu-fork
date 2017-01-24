@@ -26,11 +26,7 @@ import com.sgo.orimakardaya.coreclass.NoHPFormat;
 import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -44,7 +40,7 @@ public class BillerInput extends Fragment {
 
     public final static String TAG = "BILLER_INPUT";
 
-    public String[] billerType = {  "PLS",  //pulsa  0
+    private String[] billerType = {  "PLS",  //pulsa  0
                                     "TKN",  //voucher listrik  1
                                     "CC",   //Kartu Kredit   2
                                     "CCL",  //Cicilan  3
@@ -63,29 +59,44 @@ public class BillerInput extends Fragment {
                                     "RMH",  //Perumahan  16
                                     "BPJS"}; //BILLER_TYPE_BPJS 17
 
-    View v, layout_denom, layout_month;
-    TextView tv_denom,tv_payment_remark, tv_month;
-    EditText et_payment_remark;
-    Spinner spin_denom, spin_month;
-    Button btn_submit;
-    ImageView spinWheelDenom, spinWheelMonth;
-    ProgressDialog progdialog;
-    Animation frameAnimation;
-    String biller_type_code,biller_comm_id,biller_comm_name, denom_item_id, biller_api_key, biller_item_id,
-            final_payment_remark, buy_type;
-    int buy_code;
-    ArrayList<String> _denomData, _monthData;
+    private View v;
+    private View layout_denom;
+    private View layout_month;
+    private TextView tv_denom;
+    private TextView tv_payment_remark;
+    private TextView tv_month;
+    private EditText et_payment_remark;
+    private Spinner spin_denom;
+    private Spinner spin_month;
+    private Button btn_submit;
+    private ImageView spinWheelDenom;
+    private ImageView spinWheelMonth;
+    private ProgressDialog progdialog;
+    private Animation frameAnimation;
+    private String biller_type_code;
+    private String biller_comm_id;
+    private String biller_comm_name;
+    private String denom_item_id;
+    String biller_api_key;
+    private String biller_item_id;
+    private String final_payment_remark;
+    private String buy_type;
+    private int buy_code;
+    private ArrayList<String> _denomData;
+    private ArrayList<String> _monthData;
     private Biller_Data_Model mBillerData;
     private Biller_Type_Data_Model mBillerTypeData;
     private List<Denom_Data_Model> mListDenomData;
     private RealmChangeListener realmListener;
-    Boolean isToken, isHaveItemID;
-    Spinner sp_privacy;
-    int privacy;
-    String digitsListener ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    Realm realm;
-    ArrayAdapter<String> adapterDenom, adapterMonth;
-    String selectedMonth;
+    private Boolean isToken;
+    Boolean isHaveItemID;
+    private Spinner sp_privacy;
+    private int privacy;
+    private String digitsListener ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private Realm realm;
+    private ArrayAdapter<String> adapterDenom;
+    private ArrayAdapter<String> adapterMonth;
+    private String selectedMonth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -308,7 +319,7 @@ public class BillerInput extends Fragment {
     }
 
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -320,7 +331,7 @@ public class BillerInput extends Fragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             denom_item_id = mListDenomData.get(i).getItem_id();
@@ -333,7 +344,7 @@ public class BillerInput extends Fragment {
     };
 
 
-    Spinner.OnItemSelectedListener spinnerMonthListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerMonthListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
             selectedMonth = Integer.toString(pos+1);
@@ -345,7 +356,7 @@ public class BillerInput extends Fragment {
         }
     };
 
-    Button.OnClickListener submitInputListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -361,7 +372,7 @@ public class BillerInput extends Fragment {
         }
     };
 
-    void showDialog( String _payment_remark) {
+    private void showDialog(String _payment_remark) {
 
 
         Bundle mArgs = getArguments();
@@ -390,7 +401,7 @@ public class BillerInput extends Fragment {
         spin_month.setSelection(0);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_payment_remark.getText().toString().length() == 0 || et_payment_remark.getText().toString().equals("0") || et_payment_remark.length() == 1){
             et_payment_remark.requestFocus();
             if(biller_type_code.equals(billerType[0]))

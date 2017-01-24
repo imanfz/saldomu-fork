@@ -37,7 +37,7 @@ import timber.log.Timber;
  */
 public class MyHistory extends BaseFragmentMainPage {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
     private LinearLayout layout_alert, layout_list;
     private Button btnRefresh;
@@ -53,7 +53,7 @@ public class MyHistory extends BaseFragmentMainPage {
     private String isTimelineNew;
 
     private List<listHistoryModel> listHistory;
-    int start = 0;
+    private int start = 0;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -125,7 +125,7 @@ public class MyHistory extends BaseFragmentMainPage {
 
 
 
-    OnLoadMoreListener onLoadMoreListener = new OnLoadMoreListener() {
+    private OnLoadMoreListener onLoadMoreListener = new OnLoadMoreListener() {
         @Override
         public void onLoadMore() {
             //add null , so the adapter will check view_type and show progress bar at bottom
@@ -145,7 +145,7 @@ public class MyHistory extends BaseFragmentMainPage {
         }
     }
 
-    public void initializeDataPost(){
+    private void initializeDataPost(){
         listHistory.addAll(listHistoryModel.getAll());
         if(listHistory.size() > 0) {
             layout_alert.setVisibility(View.GONE);
@@ -160,7 +160,7 @@ public class MyHistory extends BaseFragmentMainPage {
         mAdapter.notifyDataSetChanged();
     }
 
-    public void getHistoryList(final PtrFrameLayout frameLayout, final int mPage) {
+    private void getHistoryList(final PtrFrameLayout frameLayout, final int mPage) {
         try {
 
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -347,7 +347,7 @@ public class MyHistory extends BaseFragmentMainPage {
         }
     }
 
-    public void insertPostToDB(List<listHistoryModel> mListTimeline){
+    private void insertPostToDB(List<listHistoryModel> mListTimeline){
         ActiveAndroid.beginTransaction();
         listHistoryModel mTm;
         new listHistoryModel();
@@ -416,11 +416,11 @@ public class MyHistory extends BaseFragmentMainPage {
         mRecyclerView.smoothScrollToPosition(0);
     }
 
-    public LinearLayoutManager getCurrentLayoutManag() {
+    private LinearLayoutManager getCurrentLayoutManag() {
         return currentLayoutManag;
     }
 
-    public void setCurrentLayoutManag(LinearLayoutManager currentLayoutManag) {
+    private void setCurrentLayoutManag(LinearLayoutManager currentLayoutManag) {
         this.currentLayoutManag = currentLayoutManag;
     }
 

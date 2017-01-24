@@ -97,7 +97,7 @@ public class commentModel extends Model{
         return from_profile_picture;
     }
 
-    public void setFrom_profile_picture(String from_profile_picture) {
+    private void setFrom_profile_picture(String from_profile_picture) {
         this.from_profile_picture = from_profile_picture;
     }
 
@@ -105,7 +105,7 @@ public class commentModel extends Model{
         return to_profile_picture;
     }
 
-    public void setTo_profile_picture(String to_profile_picture) {
+    private void setTo_profile_picture(String to_profile_picture) {
         this.to_profile_picture = to_profile_picture;
     }
 
@@ -113,7 +113,7 @@ public class commentModel extends Model{
         return comment_id;
     }
 
-    public void setComment_id(int comment_id) {
+    private void setComment_id(int comment_id) {
         this.comment_id = comment_id;
     }
 
@@ -121,7 +121,7 @@ public class commentModel extends Model{
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    private void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 
@@ -129,7 +129,7 @@ public class commentModel extends Model{
         return from_id;
     }
 
-    public void setFrom_id(String from_id) {
+    private void setFrom_id(String from_id) {
         this.from_id = from_id;
     }
 
@@ -137,7 +137,7 @@ public class commentModel extends Model{
         return from_name;
     }
 
-    public void setFrom_name(String from_name) {
+    private void setFrom_name(String from_name) {
         this.from_name = from_name;
     }
 
@@ -145,7 +145,7 @@ public class commentModel extends Model{
         return post_id;
     }
 
-    public void setPost_id(String post_id) {
+    private void setPost_id(String post_id) {
         this.post_id = post_id;
     }
 
@@ -153,7 +153,7 @@ public class commentModel extends Model{
         return reply;
     }
 
-    public void setReply(String reply) {
+    private void setReply(String reply) {
         this.reply = reply;
     }
 
@@ -161,7 +161,7 @@ public class commentModel extends Model{
         return to_id;
     }
 
-    public void setTo_id(String to_id) {
+    private void setTo_id(String to_id) {
         this.to_id = to_id;
     }
 
@@ -169,7 +169,7 @@ public class commentModel extends Model{
         return to_name;
     }
 
-    public void setTo_name(String to_name) {
+    private void setTo_name(String to_name) {
         this.to_name = to_name;
     }
 }

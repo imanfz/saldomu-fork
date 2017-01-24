@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -42,22 +41,28 @@ public class BuyEVoucherHPInput extends Fragment {
     private String[] namaProductBank;
     private String[] produkMANDIRI = {"MANDIRIIB","MANDIRISMS"};
     private String[] listDenomName;
-    ArrayList<DenomModel> mArrayListDenom;
+    private ArrayList<DenomModel> mArrayListDenom;
 
     private String _jumlah,_denomPayment,member_pulsa_id,userID,accessKey;
     private String _noHPdestination="";
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
-    View v;
-    Button btn_submit_evoucher;
-    Spinner spin_produkBank,spin_denom;
-    EditText noHP_value;
-    String bank_kode,produckBank_kode,memberID,topupType,nama_bank;
-    ProgressDialog progdialog;
-    ArrayAdapter<String> adapter2;
-    ImageView spinWheelBankProduct, spinWheelDenom;
-    Animation frameAnimation;
+    private View v;
+    private Button btn_submit_evoucher;
+    private Spinner spin_produkBank;
+    private Spinner spin_denom;
+    private EditText noHP_value;
+    private String bank_kode;
+    private String produckBank_kode;
+    private String memberID;
+    private String topupType;
+    String nama_bank;
+    private ProgressDialog progdialog;
+    private ArrayAdapter<String> adapter2;
+    private ImageView spinWheelBankProduct;
+    private ImageView spinWheelDenom;
+    private Animation frameAnimation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,17 +107,17 @@ public class BuyEVoucherHPInput extends Fragment {
 
     private void InitializeSpinner(){
         namaProductBank = getResources().getStringArray(R.array.evoucer_productbank_list);
-        mArrayListDenom = new ArrayList<DenomModel>();
+        mArrayListDenom = new ArrayList<>();
         listDenomName = new String[DenomModel.allDenom.length];
 
         bank_kode = "008";
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,namaProductBank);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, namaProductBank);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_produkBank.setAdapter(adapter);
         spin_produkBank.setOnItemSelectedListener(spinnerProductBankListener);
 
 
-        adapter2 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,listDenomName);
+        adapter2 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, listDenomName);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_denom.setAdapter(adapter2);
         spin_denom.setOnItemSelectedListener(spinnerDenomListener);
@@ -142,7 +147,7 @@ public class BuyEVoucherHPInput extends Fragment {
         deproses.run();
     }
 
-    Spinner.OnItemSelectedListener spinnerProductBankListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerProductBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -158,7 +163,7 @@ public class BuyEVoucherHPInput extends Fragment {
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -174,7 +179,7 @@ public class BuyEVoucherHPInput extends Fragment {
     };
 
 
-    Button.OnClickListener prosesTopupPulsaSGOListener = new Button.OnClickListener() {
+    private Button.OnClickListener prosesTopupPulsaSGOListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(inputValidation()){
@@ -183,7 +188,7 @@ public class BuyEVoucherHPInput extends Fragment {
         }
     };
 
-    public void getMemberPulsa(){
+    private void getMemberPulsa(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -265,7 +270,7 @@ public class BuyEVoucherHPInput extends Fragment {
         }
     }
 
-    public void setMemberPulsa(String response){
+    private void setMemberPulsa(String response){
 
         try {
             JSONArray arrayJson = new JSONArray(response);
@@ -275,7 +280,7 @@ public class BuyEVoucherHPInput extends Fragment {
         }
     }
 
-    public void sentDataValidTopupPulsaRetail(){
+    private void sentDataValidTopupPulsaRetail(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -379,7 +384,7 @@ public class BuyEVoucherHPInput extends Fragment {
     }
 
 
-    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code){
+    private void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
@@ -400,7 +405,7 @@ public class BuyEVoucherHPInput extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.w("isi response req token pulsa retail:"+response.toString());
                             progdialog.dismiss();
-                            showDialog(_tx_id,_product_code,_comm_code,response.getString(WebParams.PRODUCT_VALUE));
+                            showDialog(_tx_id,_product_code,_comm_code);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
@@ -454,7 +459,7 @@ public class BuyEVoucherHPInput extends Fragment {
         }
     }
 
-    void showDialog(final String _tx_id, final String _product_code, final String _comm_code, final String _product_value ) {
+    private void showDialog(final String _tx_id, final String _product_code, final String _comm_code) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -497,7 +502,7 @@ public class BuyEVoucherHPInput extends Fragment {
     }
 
 
-    void showDialogError() {
+    private void showDialogError() {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -556,7 +561,7 @@ public class BuyEVoucherHPInput extends Fragment {
         fca.switchContent(i,name,isBackstack);
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(noHP_value.getText().toString().length()==0){
             noHP_value.requestFocus();
             noHP_value.setError(this.getString(R.string.regist1_validation_nohp));

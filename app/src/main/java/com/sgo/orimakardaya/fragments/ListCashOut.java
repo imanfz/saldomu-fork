@@ -41,15 +41,15 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListCashOut extends ListFragment implements InformationDialog.OnDialogOkCallback {
+public class ListCashOut extends ListFragment {
 
-    SecurePreferences sp;
-    View v;
-    ArrayList<String> _listType;
-    EasyAdapter adapter;
+    private SecurePreferences sp;
+    private View v;
     private InformationDialog dialogI;
-    String userID, accessKey, memberID;
-    Boolean is_full_activity = false;
+    private String userID;
+    private String accessKey;
+    private String memberID;
+    private Boolean is_full_activity = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,10 +71,10 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
         if(mArgs != null && !mArgs.isEmpty())
             is_full_activity = mArgs.getBoolean(DefineValue.IS_ACTIVITY_FULL,false);
 
-        _listType = new ArrayList<>();
+        ArrayList<String> _listType = new ArrayList<>();
         Collections.addAll(_listType, getResources().getStringArray(R.array.list_cash_out));
 
-        adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
+        EasyAdapter adapter = new EasyAdapter(getActivity(), R.layout.list_view_item_with_arrow, _listType);
 
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
@@ -92,7 +92,7 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
         setHasOptionsMenu(true);
     }
 
-    public void getBankCashout(){
+    private void getBankCashout(){
         try {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -180,7 +180,7 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
-        String itemName = String.valueOf(l.getAdapter().getItem(position));
+//        String itemName = String.valueOf(l.getAdapter().getItem(position));
         if(position == 0) {
             i = new Intent(getActivity(), CashoutActivity.class);
             i.putExtra(DefineValue.CASHOUT_TYPE,DefineValue.CASHOUT_BANK);
@@ -228,8 +228,4 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
     }
 
 
-    @Override
-    public void onOkButton() {
-
-    }
 }

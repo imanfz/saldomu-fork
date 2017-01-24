@@ -35,7 +35,7 @@ public class ReportAskListModel {
         return reason;
     }
 
-    public void setReason(String reason) {
+    private void setReason(String reason) {
         this.reason = reason;
     }
 
@@ -43,7 +43,7 @@ public class ReportAskListModel {
         return status;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
@@ -51,7 +51,7 @@ public class ReportAskListModel {
         return alias;
     }
 
-    public void setAlias(String alias) {
+    private void setAlias(String alias) {
         this.alias = alias;
     }
 
@@ -59,7 +59,7 @@ public class ReportAskListModel {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    private void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -67,7 +67,7 @@ public class ReportAskListModel {
         return ccyID;
     }
 
-    public void setCcyID(String ccyID) {
+    private void setCcyID(String ccyID) {
         this.ccyID = ccyID;
     }
 
@@ -75,7 +75,7 @@ public class ReportAskListModel {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    private void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 
@@ -83,7 +83,7 @@ public class ReportAskListModel {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description = description;
     }
 
@@ -91,7 +91,7 @@ public class ReportAskListModel {
         return detail;
     }
 
-    public void setDetail(String detail) {
+    private void setDetail(String detail) {
         this.detail = detail;
     }
 
@@ -99,7 +99,7 @@ public class ReportAskListModel {
         return remark;
     }
 
-    public void setRemark(String remark) {
+    private void setRemark(String remark) {
         this.remark = remark;
     }
 
@@ -107,7 +107,7 @@ public class ReportAskListModel {
         return trxId;
     }
 
-    public void setTrxId(String trxId) {
+    private void setTrxId(String trxId) {
         this.trxId = trxId;
     }
 
@@ -115,7 +115,7 @@ public class ReportAskListModel {
         return type;
     }
 
-    public void setType(String type) {
+    private void setType(String type) {
         this.type = type;
     }
 }

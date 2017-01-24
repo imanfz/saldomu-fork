@@ -1,8 +1,6 @@
 package com.sgo.orimakardaya.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import com.sgo.orimakardaya.Beans.MyGroupObject;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.MyPicasso;
-import com.sgo.orimakardaya.coreclass.RoundImageTransformation;
 import com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge;
 import com.squareup.picasso.Picasso;
 
@@ -23,12 +20,12 @@ import java.util.ArrayList;
  * Created by thinkpad on 4/16/2015.
  */
 public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView.PinnedSectionListAdapter{
-    Context context;
+    private Context context;
     private LayoutInflater mInflater;
     private ArrayList<MyGroupObject> groups;
 
-    public static final int FIRST = 0; //Textview
-    public static final int SECOND = 1; //Listview
+    private static final int FIRST = 0; //Textview
+    private static final int SECOND = 1; //Listview
 
     public MyGroupAdapter(Context context, ArrayList<MyGroupObject> groups) {
         this.mInflater = LayoutInflater.from(context);
@@ -82,9 +79,6 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
 
             holder.txtMemberName.setText(groups.get(position).getMemberName());
 
-            Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_unknown_menu);
-            RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-
             Picasso mPic;
             if(MyApiClient.PROD_FLAG_ADDRESS)
                 mPic = MyPicasso.getImageLoader(context);
@@ -99,18 +93,13 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
             else
                 mPic.load(myGroupObject.getMemberProfilePicture())
                     .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .fit()
                     .centerCrop()
                     .into(holder.qc_pic);
         }
 
         return view;
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
     }
 
     @Override
@@ -129,11 +118,7 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
 
     @Override
     public boolean isItemViewTypePinned(int viewType) {
-        if(viewType == FIRST){
-            return true;
-        }else{
-            return false;
-        }
+        return viewType == FIRST;
     }
 
     private class ViewHolder {

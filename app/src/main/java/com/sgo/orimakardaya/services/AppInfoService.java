@@ -20,12 +20,16 @@ public class AppInfoService extends Service {
     private Activity mainPageContext = null;
     private UtilsLoader utilsLoader;
 
-    public static final long LOOPING_TIME = 50000; // 30 detik = 30 * 1000 ms
+    private static final long LOOPING_TIME = 50000; // 30 detik = 30 * 1000 ms
 
-    private Handler mHandler = new Handler(){
+    private static class MyHandler extends Handler {
+        @Override
         public void handleMessage(Message msg) {
+
         }
-    };
+    }
+
+    private MyHandler mHandler = new MyHandler();
 
     private Runnable callBalance = new Runnable() {
         @Override
@@ -66,7 +70,7 @@ public class AppInfoService extends Service {
         return isServiceDestroyed;
     }
 
-    public void setServiceDestroyed(boolean isServiceDestroyed) {
+    private void setServiceDestroyed(boolean isServiceDestroyed) {
         this.isServiceDestroyed = isServiceDestroyed;
     }
 

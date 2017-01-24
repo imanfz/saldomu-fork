@@ -43,11 +43,11 @@ public class ImageSlide extends Fragment {
         imgContainer.setImageResource(mImage[getIndexImage()]);
     }
 
-    public int getIndexImage() {
+    private int getIndexImage() {
         return indexImage;
     }
 
-    public void setIndexImage(int indexImage) {
+    private void setIndexImage(int indexImage) {
         this.indexImage = indexImage;
     }
 }

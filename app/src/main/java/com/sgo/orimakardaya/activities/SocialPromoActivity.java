@@ -23,10 +23,9 @@ import com.sgo.orimakardaya.coreclass.MyApiClient;
  */
 public class SocialPromoActivity extends BaseActivity {
 
-    private WebView webview;
-    SecurePreferences sp;
-    int RESULT;
-    WebView webView;
+    private SecurePreferences sp;
+    private int RESULT;
+//    WebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +47,8 @@ public class SocialPromoActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    public void loadUrl(String url) {
-        webview = (WebView) findViewById(R.id.webViewPromo);
+    private void loadUrl(String url) {
+        WebView webview = (WebView) findViewById(R.id.webViewPromo);
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -114,7 +113,7 @@ public class SocialPromoActivity extends BaseActivity {
         return R.layout.activity_social_promo;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.social_promo));
     }

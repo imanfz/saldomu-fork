@@ -2,12 +2,10 @@ package com.sgo.orimakardaya.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -18,10 +16,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
@@ -51,10 +47,11 @@ public class SMSDialog extends Dialog {
     private final static int max_fail_connect = 5; //5 minute
     private static Boolean isStop;
     private String imeiDevice,ICCIDDevice;
-    SMSclass smsClass;
-    String message1, timeStamp;
-    SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
-    Handler handler;
+    private SMSclass smsClass;
+    private String message1;
+    private String timeStamp;
+    private SMSclass.SMS_VERIFY_LISTENER smsVerifyListener;
+    private Handler handler;
     private int idx_fail;
 
 

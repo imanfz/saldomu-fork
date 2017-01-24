@@ -1,7 +1,5 @@
 package com.sgo.orimakardaya.coreclass;
 
-import android.content.Context;
-
 import java.util.Date;
 
 /**
@@ -30,7 +28,7 @@ public class PeriodTime {
     private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
 
 
-    public static String getTimeAgo2(long time, Context ctx) {
+    public static String getTimeAgo2(long time) {
         if (time < 1000000000000L) {
             // if timestamp given in seconds, convert to millis
             time *= 1000;

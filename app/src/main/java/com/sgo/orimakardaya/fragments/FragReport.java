@@ -47,8 +47,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_ASK = 0x0299395;
     final static int REPORT_SCASH = 0x0299394;
     final static int REPORT_ESPAY = 0x0299393;
-    final String DATEFROM = "tagFrom";
-    final String DATETO = "tagTo";
+    private final String DATEFROM = "tagFrom";
+    private final String DATETO = "tagTo";
     final private String item_desc_listrik = "Listrik";
     final private String item_desc_pln = "Voucher Token Listrik";
     final private String item_desc_non = "PLN Non-Taglis";
@@ -58,23 +58,28 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private View v;
     private LinearLayout layout_filter;
     private int height;
-    String OrifromDate;
-    String OritoDate;
-    ListView lv_report;
-    ViewGroup footerLayout;
-    ToggleButton filter_btn;
-    ImageView spining_progress;
-    MaterialRippleLayout btn_loadmore;
-    TextView tv_date_from,tv_date_to ;
-    ProgressDialog out;
+    private String OrifromDate;
+    private String OritoDate;
+    private ListView lv_report;
+    private ViewGroup footerLayout;
+    private ToggleButton filter_btn;
+    private ImageView spining_progress;
+    private MaterialRippleLayout btn_loadmore;
+    private TextView tv_date_from;
+    private TextView tv_date_to ;
+    private ProgressDialog out;
     private ListAdapter UniAdapter = null;
-    SecurePreferences sp;
-    Calendar date_from, date_to,bak_date_to,bak_date_from;
-    Animation frameAnimation;
-    Button btn_refresh;
-    int page,report_type;
+    private SecurePreferences sp;
+    private Calendar date_from;
+    private Calendar date_to;
+    private Calendar bak_date_to;
+    private Calendar bak_date_from;
+    private Animation frameAnimation;
+    private Button btn_refresh;
+    private int page;
+    private int report_type;
     private PtrFrameLayout mPtrFrame;
-    View emptyLayout;
+    private View emptyLayout;
 
 
     public static FragReport newInstance(int _report_type) {
@@ -177,17 +182,17 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         setLoadMore(true);
         if(report_type == REPORT_SCASH){
-            ArrayList <ReportListModel> mData = new ArrayList<ReportListModel>();
+            ArrayList <ReportListModel> mData = new ArrayList<>();
             ReportListAdapter adapter = new ReportListAdapter(getActivity(),R.layout.list_transaction_report_item,mData);
             lv_report.setAdapter(adapter);
         }
         else if(report_type == REPORT_ESPAY) {
-            ArrayList <ReportListEspayModel> mData = new ArrayList<ReportListEspayModel>();
+            ArrayList <ReportListEspayModel> mData = new ArrayList<>();
             ReportListEspayAdapter adapter = new ReportListEspayAdapter(getActivity(),R.layout.list_transaction_report_espay_item,mData);
             lv_report.setAdapter(adapter);
         }
         else  if(report_type == REPORT_ASK){
-            ArrayList <ReportAskListModel> mData = new ArrayList<ReportAskListModel>();
+            ArrayList <ReportAskListModel> mData = new ArrayList<>();
             ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(),R.layout.list_request_report_item,mData);
             lv_report.setAdapter(adapter);
         }
@@ -238,7 +243,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }, 50);
     }
 
-    public boolean canScroolUp() {
+    private boolean canScroolUp() {
         return lv_report != null && (lv_report.getAdapter().getCount() == 0 || lv_report.getFirstVisiblePosition() == 0 && lv_report.getChildAt(0).getTop() == 0);
     }
 
@@ -265,7 +270,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         return format.format(src.getTime());
     }
 
-    ToggleButton.OnClickListener filterBtnListener = new View.OnClickListener() {
+    private ToggleButton.OnClickListener filterBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             boolean on = ((ToggleButton) v).isChecked();
@@ -280,7 +285,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     };
 
-    DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             String dedate;
@@ -301,7 +306,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     };
 
 
-    public void getDataReport(int _page, final String _date_from, String _date_to, final Boolean isRefresh){
+    private void getDataReport(int _page, final String _date_from, String _date_to, final Boolean isRefresh){
         try{
             if(isRefresh == null){
                 Timber.wtf("masuk ptr");
@@ -580,7 +585,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
 
-    public void ClearDataAdapter(){
+    private void ClearDataAdapter(){
         if(report_type == REPORT_SCASH){
             ReportListAdapter ya = (ReportListAdapter) getUniAdapter();
             ya.clear();
@@ -595,7 +600,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-    public void NotifyDataChange(){
+    private void NotifyDataChange(){
         if(report_type == REPORT_SCASH){
             ReportListAdapter ya = (ReportListAdapter) getUniAdapter();
             ya.notifyDataSetChanged();
@@ -610,7 +615,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-    public void AddNewData(Object ok){
+    private void AddNewData(Object ok){
         if(report_type == REPORT_SCASH){
             ReportListAdapter ya = (ReportListAdapter) getUniAdapter();
             ReportListModel obj = (ReportListModel) ok;
@@ -629,7 +634,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
 
-    ListView.OnItemClickListener reportItemListener = new AdapterView.OnItemClickListener() {
+    private ListView.OnItemClickListener reportItemListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if(report_type == REPORT_ASK) {
@@ -645,7 +650,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     };
 
 
-    public void getTrxStatus(final Object _object){
+    private void getTrxStatus(final Object _object){
         try{
             out = DefinedDialog.CreateProgressDialog(getActivity(), null);
             out.show();
@@ -757,7 +762,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-    public void ShowDialog(Object _object, String txstatus, String txremark, JSONObject response){
+    private void ShowDialog(Object _object, String txstatus, String txremark, JSONObject response){
         if(report_type == REPORT_SCASH) {
             ReportListModel mobj = (ReportListModel) _object;
             showReportBillerDialog(mobj.getDatetime(), mobj.getDetail(), mobj.getTrxId(), mobj.getType(), mobj.getDescription(),
@@ -771,7 +776,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-    public void slidingView(final View vFrom){
+    private void slidingView(final View vFrom){
 
         CollapseExpandAnimation anim ;
 
@@ -909,11 +914,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
-    public View getV() {
+    private View getV() {
         return v;
     }
 
-    public void setV(View v) {
+    private void setV(View v) {
         this.v = v;
     }
 
@@ -922,11 +927,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     }
 
-    public ListAdapter getUniAdapter() {
+    private ListAdapter getUniAdapter() {
         return UniAdapter;
     }
 
-    public void setUniAdapter(ListAdapter adapter) {
+    private void setUniAdapter(ListAdapter adapter) {
         this.UniAdapter = adapter;
     }
 

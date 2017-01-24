@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,30 +52,36 @@ import timber.log.Timber;
 /*
   Created by thinkpad on 3/11/2015.
  */
-public class FragPayFriends extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class FragPayFriends extends Fragment {
 
     private boolean isNotification = false;
     private InformationDialog dialogI;
-    ImageView imgProfile, imgRecipients;
-    TextView txtName,txtNumberRecipients;
-    Spinner sp_privacy;
-    RecipientEditTextView phoneRetv;
-    Button btnGetOTP;
-    EditText etAmount, etMessage;
-    String _memberId,userID,accessKey;
-    List<String> listName;
+    private ImageView imgProfile;
+    private ImageView imgRecipients;
+    private TextView txtName;
+    private TextView txtNumberRecipients;
+    private Spinner sp_privacy;
+    private RecipientEditTextView phoneRetv;
+    private Button btnGetOTP;
+    private EditText etAmount;
+    private EditText etMessage;
+    private String _memberId;
+    private String userID;
+    private String accessKey;
+    private List<String> listName;
 
-    int privacy,max_member_trans;
+    private int privacy;
+    private int max_member_trans;
 
-    SecurePreferences sp;
-    Bundle bundle;
-    DrawableRecipientChip[] chips;
+    private SecurePreferences sp;
+    private Bundle bundle;
+    private DrawableRecipientChip[] chips;
 
-    ProgressDialog progdialog;
+    private ProgressDialog progdialog;
 
-    View v;
+    private View v;
 
-    String authType;
+    private String authType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -239,7 +244,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         }
     }
 
-    public void setNumberRecipients(){
+    private void setNumberRecipients(){
 
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
@@ -256,7 +261,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
     }
 
 
-    TextWatcher jumlahChangeListener = new TextWatcher() {
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -280,7 +285,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -302,11 +307,6 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
             setNumberRecipients();
         }
     };
-
-    @Override
-    public void onOkButton() {
-
-    }
 
     private class TempObjectData{
 
@@ -355,7 +355,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         }
     }
 
-    Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -367,7 +367,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
                     String amount = etAmount.getText().toString();
                     String message = etMessage.getText().toString();
                     Boolean recipientValidation = true;
-                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
+                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
 
                     String finalNumber, finalName;
 
@@ -377,7 +377,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
 
                     chips = new DrawableRecipientChip[phoneRetv.getSortedRecipients().length];
                     chips = phoneRetv.getSortedRecipients();
-                    listName = new ArrayList<String>();
+                    listName = new ArrayList<>();
                     phoneRetv.clearFocus();
                     if (chips.length <= max_member_trans) {
                         for (DrawableRecipientChip chip : chips) {
@@ -416,13 +416,13 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         }
     };
 
-    public boolean isAlpha(String name) {
+    private boolean isAlpha(String name) {
         Pattern p = Pattern.compile("[a-zA-Z]");
         Matcher m = p.matcher(name);
         return m.find();
     }
 
-    public void sentData(String _message, String _data, final String _nameJson){
+    private void sentData(String _message, String _data, final String _nameJson){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -571,7 +571,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         mdialog.show();
     }
 
-    void showDialog(final String _data_transfer, final String _nameJson, final String _message, final String _data_mapper) {
+    private void showDialog(final String _data_transfer, final String _nameJson, final String _message, final String _data_mapper) {
         phoneRetv.setText(null);
         if(authType.equalsIgnoreCase("OTP")) {
             // Create custom dialog object
@@ -642,7 +642,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
     }
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(phoneRetv.getText().toString().length()==0){
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
@@ -678,7 +678,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
         getActivity().startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
     }
 
-    public void setImageProfPic(){
+    private void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
@@ -701,7 +701,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
@@ -709,7 +709,7 @@ public class FragPayFriends extends Fragment implements InformationDialog.OnDial
             mPic.load(_url_profpic)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }

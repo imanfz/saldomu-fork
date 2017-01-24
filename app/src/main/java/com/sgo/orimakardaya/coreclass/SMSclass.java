@@ -1,6 +1,5 @@
 package com.sgo.orimakardaya.coreclass;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -12,17 +11,12 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.Introduction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,9 +31,9 @@ import timber.log.Timber;
 public class SMSclass {
 
     private Context mContext;
-    TelephonyManager telephonyManager;
-    BroadcastReceiver receiverSent;
-    BroadcastReceiver receiverDelivered;
+    private TelephonyManager telephonyManager;
+    private BroadcastReceiver receiverSent;
+    private BroadcastReceiver receiverDelivered;
 
     private static final String SMS_VERIFY = "REG IMEI "+MyApiClient.COMM_ID;
 
@@ -226,11 +220,11 @@ public class SMSclass {
         return telephonyManager.getSimSerialNumber();
     }
 
-    public Context getmContext() {
+    private Context getmContext() {
         return mContext;
     }
 
-    public void setmContext(Context mContext) {
+    private void setmContext(Context mContext) {
         this.mContext = mContext;
     }
 
@@ -335,27 +329,35 @@ public class SMSclass {
 
     private static final int OP_WRITE_SMS = 15;
 
-    public static boolean isWriteEnabled(Context context) {
+    private static boolean isWriteEnabled(Context context) {
         int uid = getUid(context);
         Object opRes = checkOp(context, OP_WRITE_SMS, uid);
 
         if (opRes instanceof Integer) {
-            return (Integer) opRes == AppOpsManager.MODE_ALLOWED;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                return (Integer) opRes == AppOpsManager.MODE_ALLOWED;
+            }
         }
         return false;
     }
 
-    public static boolean setWriteEnabled(Context context, boolean enabled) {
+    private static boolean setWriteEnabled(Context context, boolean enabled) {
         int uid = getUid(context);
-        int mode = enabled ?
-                AppOpsManager.MODE_ALLOWED : AppOpsManager.MODE_IGNORED;
+        int mode = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            mode = enabled ?
+                    AppOpsManager.MODE_ALLOWED : AppOpsManager.MODE_IGNORED;
+        }
 
         return setMode(context, OP_WRITE_SMS, uid, mode);
     }
 
     private static Object checkOp(Context context, int code, int uid) {
         AppOpsManager appOpsManager =
-                (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+                null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        }
         Class appOpsManagerClass = appOpsManager.getClass();
 
         try {
@@ -367,20 +369,14 @@ public class SMSclass {
                     appOpsManagerClass.getMethod("checkOp", types);
 
             Object[] args = new Object[3];
-            args[0] = Integer.valueOf(code);
-            args[1] = Integer.valueOf(uid);
+            args[0] = code;
+            args[1] = uid;
             args[2] = context.getPackageName();
             Object result = checkOpMethod.invoke(appOpsManager, args);
 
             return result;
         }
-        catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e) {
+        catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
         return null;
@@ -389,7 +385,10 @@ public class SMSclass {
     private static boolean setMode(Context context, int code,
                                    int uid, int mode) {
         AppOpsManager appOpsManager =
-                (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+                null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+        }
         Class appOpsManagerClass = appOpsManager.getClass();
 
         try {
@@ -402,19 +401,15 @@ public class SMSclass {
                     appOpsManagerClass.getMethod("setMode", types);
 
             Object[] args = new Object[4];
-            args[0] = Integer.valueOf(code);
-            args[1] = Integer.valueOf(uid);
+            args[0] = code;
+            args[1] = uid;
             args[2] = context.getPackageName();
-            args[3] = Integer.valueOf(mode);
+            args[3] = mode;
             setModeMethod.invoke(appOpsManager, args);
 
             return true;
         }
-        catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return false;
