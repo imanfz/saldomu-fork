@@ -156,7 +156,7 @@
                                 />
                         <TextView
                             android:id="@+id/dialog_reportbiller_date_time"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:minEms="9"
@@ -180,7 +180,7 @@
                                 />
                         <TextView
                             android:id="@+id/dialog_reportbiller_tx_id"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"

@@ -44,51 +44,51 @@ import timber.log.Timber;
  */
 public class HistoryDetailActivity extends BaseActivity {
 
-    SecurePreferences sp;
-    int RESULT;
-    String _ownerID,accessKey;
+    private int RESULT;
+    private String _ownerID;
+    private String accessKey;
 
-    RoundedQuickContactBadge iconPicture, iconPictureRight;
-    TextView fromId,toId,messageTransaction,amount,dateTime;
-    ImageView imageLove, imageSendComment;
-    EditText etComment;
-    ListView lvComment;
-    TextView textLove, textStatus;
-    boolean like = false;
-    List<likeModel> listLike;
+    private ImageView imageLove;
+    private ImageView imageSendComment;
+    private EditText etComment;
+    private ListView lvComment;
+    private TextView textLove;
+    private boolean like = false;
+    private List<likeModel> listLike;
 
-    List<commentModel> listComment;
-    TimelineCommentAdapter commentAdapter;
+    private List<commentModel> listComment;
+    private TimelineCommentAdapter commentAdapter;
 
-    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic, type_post;
+    private String post_id;
+    private String from_id;
 
-    ProgressDialog mProg;
+    private ProgressDialog mProg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         InitializeToolbar();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         listLike = new ArrayList<>();
         listComment = new ArrayList<>();
 
-        iconPicture = (RoundedQuickContactBadge) findViewById(R.id.icon_picture);
-        iconPictureRight = (RoundedQuickContactBadge) findViewById(R.id.icon_picture_right);
-        fromId = (TextView) findViewById(R.id.from_id);
-        toId = (TextView)findViewById(R.id.to_id);
-        messageTransaction = (TextView)findViewById(R.id.message_transaction);
-        amount = (TextView)findViewById(R.id.amount);
-        dateTime = (TextView)findViewById(R.id.datetime);
+        RoundedQuickContactBadge iconPicture = (RoundedQuickContactBadge) findViewById(R.id.icon_picture);
+        RoundedQuickContactBadge iconPictureRight = (RoundedQuickContactBadge) findViewById(R.id.icon_picture_right);
+        TextView fromId = (TextView) findViewById(R.id.from_id);
+        TextView toId = (TextView) findViewById(R.id.to_id);
+        TextView messageTransaction = (TextView) findViewById(R.id.message_transaction);
+        TextView amount = (TextView) findViewById(R.id.amount);
+        TextView dateTime = (TextView) findViewById(R.id.datetime);
         imageLove = (ImageView)findViewById(R.id.image_love);
         imageSendComment = (ImageView)findViewById(R.id.image_comment);
         etComment = (EditText)findViewById(R.id.detail_value_comment);
         textLove = (TextView)findViewById(R.id.detail_value_love);
         lvComment = (ListView)findViewById(R.id.lvComment);
-        textStatus = (TextView)findViewById(R.id.status);
+        TextView textStatus = (TextView) findViewById(R.id.status);
 
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -102,18 +102,18 @@ public class HistoryDetailActivity extends BaseActivity {
         Bundle i = getIntent().getExtras();
 
         post_id = i.getString(DefineValue.POST_ID);
-        from_name = i.getString(DefineValue.FROM_NAME);
+        String from_name = i.getString(DefineValue.FROM_NAME);
         from_id = i.getString(DefineValue.FROM_ID);
-        to_name = i.getString(DefineValue.TO_NAME);
-        to_id = i.getString(DefineValue.TO_ID);
-        message = i.getString(DefineValue.MESSAGE);
-        datetime = i.getString(DefineValue.DATE_TIME);
-        amountvalue = i.getString(DefineValue.AMOUNT);
-        profpic = i.getString(DefineValue.PROF_PIC);
-        ccy = i.getString(DefineValue.CCY_ID);
-        tx_status = i.getString(DefineValue.TX_STATUS);
-        with_profpic = i.getString(DefineValue.WITH_PROF_PIC);
-        type_post = i.getString(DefineValue.POST_TYPE,"");
+        String to_name = i.getString(DefineValue.TO_NAME);
+        String to_id = i.getString(DefineValue.TO_ID);
+        String message = i.getString(DefineValue.MESSAGE);
+        String datetime = i.getString(DefineValue.DATE_TIME);
+        String amountvalue = i.getString(DefineValue.AMOUNT);
+        String profpic = i.getString(DefineValue.PROF_PIC);
+        String ccy = i.getString(DefineValue.CCY_ID);
+        String tx_status = i.getString(DefineValue.TX_STATUS);
+        String with_profpic = i.getString(DefineValue.WITH_PROF_PIC);
+        String type_post = i.getString(DefineValue.POST_TYPE, "");
 
         if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
             iconPictureRight.setVisibility(View.VISIBLE);
@@ -121,13 +121,13 @@ public class HistoryDetailActivity extends BaseActivity {
                 mPic.load(R.drawable.user_unknown_menu)
                         .error(roundedImage)
                         .fit().centerInside()
-                        .placeholder(R.anim.progress_animation)
+                        .placeholder(R.drawable.progress_animation)
                         .transform(new RoundImageTransformation())
                         .into(iconPictureRight);
             else
                 mPic.load(with_profpic)
                         .error(R.drawable.user_unknown_menu)
-                        .placeholder(R.anim.progress_animation)
+                        .placeholder(R.drawable.progress_animation)
                         .fit()
                         .centerCrop()
                         .transform(new RoundImageTransformation())
@@ -145,13 +145,13 @@ public class HistoryDetailActivity extends BaseActivity {
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(iconPicture);
         else
             mPic.load(profpic)
                 .error(R.drawable.user_unknown_menu)
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .fit()
                 .centerCrop()
                 .transform(new RoundImageTransformation())
@@ -251,7 +251,7 @@ public class HistoryDetailActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    public void setImageLove() {
+    private void setImageLove() {
         if(!like) {
             imageLove.setImageResource(R.drawable.ic_like_inactive);
         }
@@ -260,7 +260,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void getCommentList() {
+    private void getCommentList() {
         try {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
@@ -363,7 +363,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void addComment(String reply) {
+    private void addComment(String reply) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -472,7 +472,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void removeComment(String comment_id, final String post_id, String from, String to) {
+    private void removeComment(String comment_id, final String post_id, String from, String to) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -597,7 +597,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void getLikeList() {
+    private void getLikeList() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -716,7 +716,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void addLike() {
+    private void addLike() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = true;
@@ -833,7 +833,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void removeLike(String like_id, String from, String to) {
+    private void removeLike(String like_id, String from, String to) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = false;
@@ -960,7 +960,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     }
 
-    public void insertLikeToDB(List<likeModel> mListLike){
+    private void insertLikeToDB(List<likeModel> mListLike){
         likeModel.deleteByPostId(post_id);
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
@@ -990,7 +990,7 @@ public class HistoryDetailActivity extends BaseActivity {
         });
     }
 
-    public void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
+    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         commentModel mTm;
@@ -1053,7 +1053,7 @@ public class HistoryDetailActivity extends BaseActivity {
         });
     }
 
-    ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(HistoryDetailActivity.this)) {
@@ -1080,7 +1080,7 @@ public class HistoryDetailActivity extends BaseActivity {
         }
     };
 
-    ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             String reply = etComment.getText().toString();
@@ -1109,7 +1109,7 @@ public class HistoryDetailActivity extends BaseActivity {
         return R.layout.activity_history_detail;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_history_detail));
     }
@@ -1130,7 +1130,7 @@ public class HistoryDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setLove() {
+    private void setLove() {
         String peopleLove = "";
         for(int i = 0 ; i < listLike.size() ; i++) {
             if(i == listLike.size()-1) {

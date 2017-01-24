@@ -49,7 +49,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class SgoPlus_input extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class SgoPlus_input extends Fragment {
 
     private HashMap<String,String> listBankName;
     private HashMap<String,String> listBankProduct;
@@ -57,18 +57,24 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     private ArrayList<String> BankProduct;
     private InformationDialog dialogI;
 
-    View v;
-    Button btn_subSGO;
-    Spinner spin_namaBank,spin_produkBank;
-    EditText jumlahSGO_value;
-    String   memberID,topupType,nama_bank,userID,accessKey;
-    ProgressDialog progdialog;
-    ArrayAdapter<String> adapter3;
-    ImageView spinWheelBankName, spinWheelBankProduct;
-    Animation frameAnimation;
-    Spinner sp_privacy;
-    int privacy;
-    boolean isSMSBanking = false;
+    private View v;
+    private Button btn_subSGO;
+    private Spinner spin_namaBank;
+    private Spinner spin_produkBank;
+    private EditText jumlahSGO_value;
+    private String   memberID;
+    private String topupType;
+    private String nama_bank;
+    private String userID;
+    private String accessKey;
+    private ProgressDialog progdialog;
+    private ArrayAdapter<String> adapter3;
+    private ImageView spinWheelBankName;
+    private ImageView spinWheelBankProduct;
+    private Animation frameAnimation;
+    private Spinner sp_privacy;
+    private int privacy;
+    private boolean isSMSBanking = false;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
     private ReqPermissionClass reqPermissionClass;
@@ -181,7 +187,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         try{
             getActivity().unregisterReceiver(smSclass.simStateReceiver);
         }
-        catch (Exception e){}
+        catch (Exception ignored){}
         getActivity().registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
     }
 
@@ -233,12 +239,12 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
                 }
             }
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, bankName);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankName);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spin_namaBank.setAdapter(adapter);
             spin_namaBank.setOnItemSelectedListener(spinnerNamaBankListener);
 
-            adapter3 = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,BankProduct);
+            adapter3 = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, BankProduct);
             adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spin_produkBank.setAdapter(adapter3);
 
@@ -255,7 +261,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     }
 
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -267,7 +273,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         }
     };
 
-    TextWatcher jumlahChangeListener = new TextWatcher() {
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -291,7 +297,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -304,7 +310,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
             Timber.d("nama bank:" + nama_bank);
 
             BankProduct.clear();
-            listBankProduct  = new HashMap<String, String>();
+            listBankProduct  = new HashMap<>();
 
             Thread deproses = new Thread() {
             @Override
@@ -340,7 +346,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     };
 
 
-    Button.OnClickListener prosesSGOplusListener = new Button.OnClickListener() {
+    private Button.OnClickListener prosesSGOplusListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -358,7 +364,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
 
 
 
-    public void sentDataValidTopup(final String bank_kode, String product_code, final String product_name){
+    private void sentDataValidTopup(final String bank_kode, String product_code, final String product_name){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -486,7 +492,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         jumlahSGO_value.setText("");
     }
 
-    public void sentDataReqToken(SentObject _sentObject){
+    private void sentDataReqToken(SentObject _sentObject){
         try{
 
             SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -603,7 +609,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         dialog.show();
     }
 
-    void showDialogErrorSMS(final String _nama_bank, String error_code, String error_msg) {
+    private void showDialogErrorSMS(final String _nama_bank, String error_code, String error_msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -678,7 +684,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         }
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(jumlahSGO_value.getText().toString().length()==0){
             jumlahSGO_value.requestFocus();
             jumlahSGO_value.setError(this.getString(R.string.sgoplus_validation_jumlahSGOplus));
@@ -720,11 +726,6 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onOkButton() {
-
     }
 
     @Override

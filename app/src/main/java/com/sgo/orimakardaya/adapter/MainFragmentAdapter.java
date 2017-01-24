@@ -4,7 +4,6 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.content.Context;
 import android.support.v4.app.*;
-import android.util.Log;
 import android.view.ViewGroup;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
@@ -19,7 +18,7 @@ public class MainFragmentAdapter extends FragmentStatePagerAdapter implements Ic
     private final String[] TITLES;
     private final Context mContext;
     public BaseFragmentMainPage mCurrentFragment;
-    public List<BaseFragmentMainPage> mListFrag;
+    private List<BaseFragmentMainPage> mListFrag;
 
     public MainFragmentAdapter(FragmentManager fm, Context _context, List<BaseFragmentMainPage> _mListFrag) {
         super(fm);

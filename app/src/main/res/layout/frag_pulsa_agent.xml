@@ -151,7 +151,6 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:text="@string/pulsa_phone_number"
                     android:textColor="@color/colorPrimaryDark"
-                    android:inputType="number"
                     android:paddingTop="10dp"
                     />
             <EditText

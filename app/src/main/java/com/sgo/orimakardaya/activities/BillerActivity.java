@@ -10,8 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.Biller_Data_Model;
 import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
@@ -19,21 +17,12 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
 import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.fragments.BillerActivityRF;
 import com.sgo.orimakardaya.fragments.BillerDesciption;
 import com.sgo.orimakardaya.fragments.BillerInput;
 import com.sgo.orimakardaya.fragments.ListBillerMerchant;
-import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -46,20 +35,23 @@ import timber.log.Timber;
  */
 public class BillerActivity extends BaseActivity {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
     public final static int PAYMENT_TYPE = 221;
     public final static int PURCHASE_TYPE = 222;
 
     public final static String FRAG_BIL_LIST_MERCHANT = "listMerchant";
     public final static String FRAG_BIL_INPUT = "bilInput";
     public final static String FRAG_BIL_DESCRIPTION = "bilDesc";
-    FragmentManager fragmentManager;
-    String _biller_merchant_name,userID,accessKey,_biller_type_code;
-    Boolean isOneBiller;
-    Boolean isEmptyBiller;
-    Biller_Type_Data_Model mBillerTypeData;
-    List<Biller_Data_Model> mListBillerData;
-    Realm realm;
+    private FragmentManager fragmentManager;
+    private String _biller_merchant_name;
+    private String userID;
+    private String accessKey;
+    private String _biller_type_code;
+    private Boolean isOneBiller;
+    private Boolean isEmptyBiller;
+    private Biller_Type_Data_Model mBillerTypeData;
+    private List<Biller_Data_Model> mListBillerData;
+    private Realm realm;
     private RealmChangeListener realmListener;
     BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
@@ -164,7 +156,7 @@ public class BillerActivity extends BaseActivity {
     }
 
 
-    public void initializeListBiller(){
+    private void initializeListBiller(){
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.BILLER_TYPE,_biller_type_code);
         Fragment mLBM ;
@@ -240,7 +232,7 @@ public class BillerActivity extends BaseActivity {
         ToggleKeyboard.hide_keyboard(this);
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(){
         setResult(MainPage.RESULT_BALANCE);
     }
 
@@ -267,7 +259,7 @@ public class BillerActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.biller_ab_title));
     }

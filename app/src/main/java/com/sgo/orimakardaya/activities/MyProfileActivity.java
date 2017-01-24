@@ -1,18 +1,15 @@
 package com.sgo.orimakardaya.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -37,7 +34,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.CountryModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
-import com.sgo.orimakardaya.coreclass.CameraClass;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
@@ -80,30 +76,52 @@ public class MyProfileActivity extends BaseActivity {
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
 
-    String[] list_hobby;
+    private String[] list_hobby;
 
-    SecurePreferences sp;
-    TextView tv_dob, tv_verified;
-    EditText et_name,et_address,et_email, et_socialID,et_bio,et_pob,et_bom;
-    Button btn_submit_update_profile;
-    Spinner spinner_country,spinner_hobby,spinner_gender,spinner_id_types;
-    ImageView spinWheelCountry,profilePicContent, profileVerified;
-    Animation frameAnimation;
-    ArrayAdapter<String> adapter2, adapterHobby;
-    String selectedCountry,selectedHobby;
-    String date_dob, tempCountry,tempHobby,userID,accessKey;
-    DateFormat fromFormat,toFormat,toFormat2;
-    ProgressDialog progdialog;
-    String dedate;
-    Uri mCapturedImageURI;
-    ProgressBar prgLoading;
-    int RESULT;
-    boolean is_verified = false,is_first_time = false;
-    String dateNow;
-    DatePickerDialog dpd;
-    String[] gender_value= new String[]{"L","P"};
-    Boolean isLevel1,isRegisteredLevel;
-    ReqPermissionClass reqPermissionClass;
+    private SecurePreferences sp;
+    private TextView tv_dob;
+    private TextView tv_verified;
+    private EditText et_name;
+    private EditText et_address;
+    private EditText et_email;
+    private EditText et_socialID;
+    private EditText et_bio;
+    private EditText et_pob;
+    private EditText et_bom;
+    private Button btn_submit_update_profile;
+    private Spinner spinner_country;
+    private Spinner spinner_hobby;
+    private Spinner spinner_gender;
+    private Spinner spinner_id_types;
+    private ImageView spinWheelCountry;
+    private ImageView profilePicContent;
+    private ImageView profileVerified;
+    private Animation frameAnimation;
+    private ArrayAdapter<String> adapter2;
+    private ArrayAdapter<String> adapterHobby;
+    private String selectedCountry;
+    private String selectedHobby;
+    private String date_dob;
+    private String tempCountry;
+    private String tempHobby;
+    private String userID;
+    private String accessKey;
+    private DateFormat fromFormat;
+    private DateFormat toFormat;
+    private DateFormat toFormat2;
+    private ProgressDialog progdialog;
+    private String dedate;
+    private Uri mCapturedImageURI;
+    private ProgressBar prgLoading;
+    private int RESULT;
+    private boolean is_verified = false;
+    private boolean is_first_time = false;
+    private String dateNow;
+    private DatePickerDialog dpd;
+    private String[] gender_value= new String[]{"L","P"};
+    private Boolean isLevel1;
+    private Boolean isRegisteredLevel;
+    private ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -126,6 +144,7 @@ public class MyProfileActivity extends BaseActivity {
 
         View v = this.findViewById(android.R.id.content);
 
+        assert v != null;
         prgLoading = (ProgressBar) v.findViewById(R.id.prgLoading);
         profilePicContent = (ImageView) v.findViewById(R.id.myprofile_pic_content);
         et_name = (EditText) v.findViewById(R.id.myprofile_value_name);
@@ -161,6 +180,7 @@ public class MyProfileActivity extends BaseActivity {
                     closethis();
                 }
             });
+
 
         }
         else {
@@ -238,7 +258,7 @@ public class MyProfileActivity extends BaseActivity {
         return R.layout.activity_myprofile;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         if(is_first_time)disableHomeIcon();
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
@@ -259,7 +279,7 @@ public class MyProfileActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void initializeData(){
+    private void initializeData(){
 
         RESULT = MainPage.RESULT_NORMAL;
 
@@ -342,7 +362,7 @@ public class MyProfileActivity extends BaseActivity {
         list_hobby = getResources().getStringArray(R.array.list_myprofile_hobby);
         adapterHobby = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,list_hobby) {
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
                 View v;
 
                 // If this is the initial dummy entry, make it hidden
@@ -396,7 +416,7 @@ public class MyProfileActivity extends BaseActivity {
                 dataSpinnerSocialID[i] = mData.getJSONObject(i).getString(WebParams.TYPE);
             }
 
-            ArrayAdapter<String> socialidAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,dataSpinnerSocialID );
+            ArrayAdapter<String> socialidAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, dataSpinnerSocialID);
             socialidAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner_id_types.setAdapter(socialidAdapter);
 
@@ -426,7 +446,7 @@ public class MyProfileActivity extends BaseActivity {
 
     }
 
-    TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
+    private TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -434,7 +454,7 @@ public class MyProfileActivity extends BaseActivity {
         }
     };
 
-    DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             dedate = dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
@@ -449,7 +469,7 @@ public class MyProfileActivity extends BaseActivity {
         }
     };
 
-    Button.OnClickListener btnSubmitUpdateListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnSubmitUpdateListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
                 if(InetHandler.isNetworkAvailable(MyProfileActivity.this)) {
@@ -479,7 +499,7 @@ public class MyProfileActivity extends BaseActivity {
         }
     };
 
-    public void setImageProfPic(){
+    private void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
@@ -502,7 +522,7 @@ public class MyProfileActivity extends BaseActivity {
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation()).into(profilePicContent);
         }
         else {
@@ -510,14 +530,14 @@ public class MyProfileActivity extends BaseActivity {
                 .error(roundedImage)
                 .fit()
                 .centerCrop()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(profilePicContent);
         }
 
     }
 
-    public void sendDataUpdate(){
+    private void sendDataUpdate(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
@@ -633,7 +653,7 @@ public class MyProfileActivity extends BaseActivity {
         AlertDialog.Builder a = new AlertDialog.Builder(MyProfileActivity.this);
         a.setCancelable(true);
         a.setTitle("Choose Profile Picture");
-        a.setAdapter(new ArrayAdapter<String>(MyProfileActivity.this, android.R.layout.simple_list_item_1, items),
+        a.setAdapter(new ArrayAdapter<>(MyProfileActivity.this, android.R.layout.simple_list_item_1, items),
                 new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int which) {
@@ -680,7 +700,7 @@ public class MyProfileActivity extends BaseActivity {
         }
     }
 
-    public void runCamera(){
+    private void runCamera(){
         String fileName = "temp.jpg";
 
         ContentValues values = new ContentValues();
@@ -748,6 +768,8 @@ public class MyProfileActivity extends BaseActivity {
                     GeneralizeImage mGI = new GeneralizeImage(this,filePath);
                     //getOrientationImage();
                     uploadFileToServer(mGI.Convert());
+                    assert cursor != null;
+                    cursor.close();
                 }
                 else{
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
@@ -759,7 +781,7 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void uploadFileToServer(File photoFile) {
-        Picasso.with(this).load(R.anim.progress_animation).into(profilePicContent);
+        Picasso.with(this).load(R.drawable.progress_animation).into(profilePicContent);
         prgLoading.setVisibility(View.VISIBLE);
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
@@ -846,7 +868,7 @@ public class MyProfileActivity extends BaseActivity {
         });
     }
 
-    public void setLoginProfile(JSONObject response){
+    private void setLoginProfile(JSONObject response){
         SecurePreferences prefs = sp;
         SecurePreferences.Editor mEditor = prefs.edit();
 
@@ -876,7 +898,7 @@ public class MyProfileActivity extends BaseActivity {
         RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
 
         int compare = 100;
         if(date_dob != null) {
@@ -972,7 +994,7 @@ public class MyProfileActivity extends BaseActivity {
         this.finish();
     }
 
-    public static boolean isValidEmail(CharSequence target) {
+    private static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }

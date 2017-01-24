@@ -18,7 +18,8 @@
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-                      android:orientation="horizontal">
+                      android:orientation="horizontal"
+            android:baselineAligned="false">
 
             <com.balysv.materialripple.MaterialRippleLayout
                     android:id="@+id/layout_btn_resend"
@@ -383,8 +384,7 @@
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:inputType="number|numberPassword"
                         android:maxLength="4"
-                        android:singleLine="false"
-                        android:hint="@string/regist2_edithint_otp"
+                    android:hint="@string/regist2_edithint_otp"
                         />
 
                 <TextView

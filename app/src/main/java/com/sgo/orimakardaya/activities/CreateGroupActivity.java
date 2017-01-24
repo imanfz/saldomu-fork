@@ -35,7 +35,7 @@ import timber.log.Timber;
  */
 public class CreateGroupActivity extends BaseActivity {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
     private int RESULT;
 
     private EditText etGroupName, etDesc;
@@ -54,7 +54,7 @@ public class CreateGroupActivity extends BaseActivity {
         return R.layout.activity_create_group;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_my_groups));
     }
@@ -95,25 +95,25 @@ public class CreateGroupActivity extends BaseActivity {
 
     }
 
-    Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             finish();
         }
     };
 
-    Button.OnClickListener btnSaveListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnSaveListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(!etGroupName.getText().toString().equals("") && !etGroupName.getText().toString().equals(" ")) {
                 phoneRetv.requestFocus();
-                ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
+                ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
 
                 String finalNumber;
 
                 chips = phoneRetv.getSortedRecipients();
 
-                listName = new ArrayList<String>();
+                listName = new ArrayList<>();
 
                 for (DrawableRecipientChip chip : chips) {
                     Timber.v("DrawableChip:"+chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
@@ -142,7 +142,7 @@ public class CreateGroupActivity extends BaseActivity {
         }
     };
 
-    public void sentData(String members) {
+    private void sentData(String members) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();

@@ -1,7 +1,6 @@
 package com.sgo.orimakardaya.coreclass;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -22,9 +21,10 @@ import timber.log.Timber;
  */
 public class NotificationHandler {
 
-    SecurePreferences sp=null;
-    Context mContext = null;
-    String userID,accessKey;
+    private SecurePreferences sp=null;
+    private Context mContext = null;
+    private String userID;
+    private String accessKey;
 
     public NotificationHandler(Context dContext, SecurePreferences mSp) {
         mContext = dContext;

@@ -71,15 +71,13 @@ public class PromoAdapter extends BaseAdapter {
         else
             mPic= Picasso.with(context);
 
-        if(pic.equals("") || pic.equals(null)){
-        }
-        else {
+        if(!pic.equals("")){
             mPic.load(pic)
                 .fit()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .into(holder.imagePromo);
 
-            if(name.equals("") || name.equals(null)) {
+            if(name.equals("")) {
                 holder.llPromoDesc.setVisibility(View.GONE);
             }
             else {

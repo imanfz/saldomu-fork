@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,16 +34,20 @@ import timber.log.Timber;
  */
 public class ChangePassword extends BaseActivity implements View.OnClickListener {
 
-    TextView tv_firsttime_msg;
-    EditText et_pass_current,et_pass_new, et_pass_retype;
-    CheckBox cb_show_pass;
-    Button btn_submit_changepass,btn_batal_changepass;
-    SecurePreferences sp;
-    ProgressDialog progdialog;
-    String userID,accessKey;
+    private TextView tv_firsttime_msg;
+    private EditText et_pass_current;
+    private EditText et_pass_new;
+    private EditText et_pass_retype;
+    private CheckBox cb_show_pass;
+    private Button btn_submit_changepass;
+    private Button btn_batal_changepass;
+    private SecurePreferences sp;
+    private ProgressDialog progdialog;
+    private String userID;
+    private String accessKey;
     private boolean is_first_time;
     private int lenght_auth_min, validIdx;
-    PasswordValidator mPassValid;
+    private PasswordValidator mPassValid;
 
     private static final String PASSWORD_PATTERN =
             "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
@@ -85,7 +88,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         return R.layout.activity_change_password;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         if(is_first_time) disableHomeIcon();
         else setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.changepass_ab_changepass));
@@ -132,7 +135,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         }
     }
 
-    CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
+    private CheckBox.OnCheckedChangeListener showPassword = new CheckBox.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if(!b){
@@ -148,7 +151,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         }
     };
 
-    public void sendChangePassword(){
+    private void sendChangePassword(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
@@ -225,7 +228,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         }
     }
 
-    public void finishChild(){
+    private void finishChild(){
         if(is_first_time)
             setResult(MainPage.RESULT_FIRST_TIME);
         else
@@ -233,7 +236,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         this.finish();
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_pass_current.getText().toString().length()==0){
             et_pass_current.requestFocus();
             et_pass_current.setError(this.getString(R.string.changepass_edit_error_currentpass));

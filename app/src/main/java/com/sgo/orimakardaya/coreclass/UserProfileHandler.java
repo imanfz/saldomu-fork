@@ -1,13 +1,6 @@
 package com.sgo.orimakardaya.coreclass;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
-import android.util.Patterns;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -24,9 +17,8 @@ import timber.log.Timber;
  * Created by thinkpad on 4/12/2016.
  */
 public class UserProfileHandler {
-    Context mContext = null;
-    SecurePreferences sp;
-    String userID, memberID;
+    private Context mContext = null;
+    private SecurePreferences sp;
 
     public UserProfileHandler(Context s) {
         mContext = s;
@@ -34,8 +26,8 @@ public class UserProfileHandler {
 
     public void sentUserProfile() {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        memberID = sp.getString(DefineValue.MEMBER_ID, "");
+        String userID = sp.getString(DefineValue.USERID_PHONE, "");
+        String memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
         try{
             RequestParams params = new RequestParams();
@@ -68,9 +60,6 @@ public class UserProfileHandler {
                             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
                             mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
                             mEditor.apply();
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-//                            Toast.makeText(mContext, code, Toast.LENGTH_LONG).show();
                         }
 
                     } catch (JSONException e) {

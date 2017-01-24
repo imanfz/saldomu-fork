@@ -103,10 +103,10 @@
                 android:layout_gravity="center_vertical"
                 android:minEms="20"
                 android:layout_weight="1"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View
@@ -127,11 +127,11 @@
                 android:id="@+id/dialog_reportpayfriends_amount_value"
                 android:text="IDR. 12313130,00"
                 android:layout_weight="2"
-                android:singleLine="true"
                 android:layout_gravity="center_vertical"
                 android:layout_width="0dp"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View
@@ -152,11 +152,11 @@
                 android:id="@+id/dialog_reportpayfriends_fee_value"
                 android:text="Axis 1000"
                 android:layout_weight="2"
-                android:singleLine="true"
                 android:layout_width="0dp"
                 android:layout_gravity="center_vertical"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View
@@ -177,11 +177,11 @@
                 android:id="@+id/dialog_reportpayfriends_totalamount_value"
                 android:text="Rp. 200000"
                 android:layout_weight="2"
-                android:singleLine="true"
                 android:layout_width="0dp"
                 android:layout_gravity="center_vertical"
                 android:gravity="right"
-                android:padding="3dip" />
+                android:padding="3dip"
+                android:maxLines="1" />
         </TableRow>
 
         <View

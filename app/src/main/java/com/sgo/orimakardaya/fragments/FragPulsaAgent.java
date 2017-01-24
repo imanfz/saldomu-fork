@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,27 +39,48 @@ import timber.log.Timber;
  * Created by thinkpad on 9/11/2015.
  */
 public class FragPulsaAgent extends Fragment{
-    View v, layout_denom, layout_member, layout_remark, layout_nominal;
-    Activity act;
-    SecurePreferences sp;
-    String member_dap,userID,accessKey;
+    private View v;
+    private View layout_denom;
+    private View layout_member;
+    private View layout_remark;
+    private View layout_nominal;
+    private Activity act;
+    private SecurePreferences sp;
+    private String member_dap;
+    private String userID;
+    private String accessKey;
 
-    TextView tv_denom,tv_payment_remark;
-    EditText et_payment_remark;
-    Spinner spin_denom, spin_member, spin_nominal;
-    Button btn_submit;
-    ImageView spinWheelDenom, spinWheelMember, spinWheelNominal;
-    ProgressDialog out;
-    Animation frameAnimation;
-    Spinner sp_privacy;
+    private TextView tv_denom;
+    private TextView tv_payment_remark;
+    private EditText et_payment_remark;
+    private Spinner spin_denom;
+    private Spinner spin_member;
+    private Spinner spin_nominal;
+    private Button btn_submit;
+    private ImageView spinWheelDenom;
+    private ImageView spinWheelMember;
+    private ImageView spinWheelNominal;
+    private ProgressDialog out;
+    private Animation frameAnimation;
+    private Spinner sp_privacy;
 
-    String member_id, item_id, item_name, final_payment_remark, member_code, catalog_id = "", operator_id, operator_name;
-    String[] _denomData, _memberData, _catalogData, _nominalData;
+    private String member_id;
+    private String item_id;
+    private String item_name;
+    private String final_payment_remark;
+    private String member_code;
+    private String catalog_id = "";
+    private String operator_id;
+    private String operator_name;
+    private String[] _denomData;
+    private String[] _memberData;
+    private String[] _catalogData;
+    private String[] _nominalData;
     private HashMap<String,String> mDenomData, mMemberData, mNominalData;
-    int privacy;
-    boolean flagDenom = true;
-    ArrayAdapter<String> adapterDenom;
-    ArrayAdapter<String> adapterNominal;
+    private int privacy;
+    private boolean flagDenom = true;
+    private ArrayAdapter<String> adapterDenom;
+    private ArrayAdapter<String> adapterNominal;
 
     @Override
     public void onResume() {
@@ -112,11 +132,11 @@ public class FragPulsaAgent extends Fragment{
         btn_submit.setOnClickListener(submitInputListener);
 
         try {
-            if (!member_dap.equals("") && !member_dap.equals(null) && !member_dap.equals("null")) {
+            if (!member_dap.equals("") && member_dap!=null && !member_dap.equals("null")) {
                 JSONArray array_member_dap = new JSONArray(member_dap);
 
                 _memberData = new String[array_member_dap.length()];
-                final ArrayAdapter<String> adapterMember = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, _memberData);
+                final ArrayAdapter<String> adapterMember = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _memberData);
                 adapterMember.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_member.setAdapter(adapterMember);
                 spin_member.setOnItemSelectedListener(spinnerMemberListener);
@@ -134,7 +154,7 @@ public class FragPulsaAgent extends Fragment{
                 }
                 else {
                     layout_member.setVisibility(View.VISIBLE);
-                    mMemberData = new HashMap<String, String>();
+                    mMemberData = new HashMap<>();
                     Thread deproses = new Thread() {
                         @Override
                         public void run() {
@@ -179,8 +199,8 @@ public class FragPulsaAgent extends Fragment{
         }
     }
 
-    public void initializeDenom(String denom_data){
-        if(!denom_data.equals("") && !denom_data.equals(null) && !denom_data.equals("null")){
+    private void initializeDenom(String denom_data){
+        if(!denom_data.equals("") && denom_data!=null && !denom_data.equals("null")){
             layout_denom.setVisibility(View.VISIBLE);
             layout_remark.setVisibility(View.VISIBLE);
             btn_submit.setVisibility(View.VISIBLE);
@@ -189,7 +209,7 @@ public class FragPulsaAgent extends Fragment{
                 mArray = new JSONArray(denom_data);
                 _denomData = new String[mArray.length()];
                 _catalogData = new String[mArray.length()];
-                adapterDenom = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,_denomData);
+                adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
                 adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spin_denom.setAdapter(adapterDenom);
                 spin_denom.setOnItemSelectedListener(spinnerDenomListener);
@@ -199,7 +219,7 @@ public class FragPulsaAgent extends Fragment{
                 spinWheelDenom.startAnimation(frameAnimation);
 
                 final JSONArray finalMArray = mArray;
-                mDenomData = new HashMap<String, String>();
+                mDenomData = new HashMap<>();
                 Thread deproses = new Thread(){
                     @Override
                     public void run() {
@@ -247,8 +267,8 @@ public class FragPulsaAgent extends Fragment{
     }
 
 
-    public void initializeNominal(String denom_data){
-        if(!denom_data.equals("") && !denom_data.equals(null) && !denom_data.equals("null")){
+    private void initializeNominal(String denom_data){
+        if(!denom_data.equals("") && denom_data!=null && !denom_data.equals("null")){
             layout_denom.setVisibility(View.VISIBLE);
             layout_remark.setVisibility(View.VISIBLE);
             layout_nominal.setVisibility(View.VISIBLE);
@@ -267,7 +287,7 @@ public class FragPulsaAgent extends Fragment{
                 spinWheelNominal.startAnimation(frameAnimation);
 
                 final JSONArray finalMArray = mArray;
-                mNominalData = new HashMap<String, String>();
+                mNominalData = new HashMap<>();
                 Thread deproses = new Thread(){
                     @Override
                     public void run() {
@@ -307,7 +327,7 @@ public class FragPulsaAgent extends Fragment{
         out.dismiss();
     }
 
-    public void getDenomDAP(){
+    private void getDenomDAP(){
         try{
             out = DefinedDialog.CreateProgressDialog(getActivity(), null);
 
@@ -380,7 +400,7 @@ public class FragPulsaAgent extends Fragment{
         }
     }
 
-    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -392,7 +412,7 @@ public class FragPulsaAgent extends Fragment{
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerMemberListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerMemberListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
@@ -407,7 +427,7 @@ public class FragPulsaAgent extends Fragment{
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
@@ -423,7 +443,7 @@ public class FragPulsaAgent extends Fragment{
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerNominalListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerNominalListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
@@ -437,7 +457,7 @@ public class FragPulsaAgent extends Fragment{
         }
     };
 
-    Button.OnClickListener submitInputListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitInputListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(inputValidation()){
@@ -447,7 +467,7 @@ public class FragPulsaAgent extends Fragment{
         }
     };
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_payment_remark.getText().toString().length()==0){
             et_payment_remark.requestFocus();
             et_payment_remark.setError(this.getString(R.string.regist1_validation_nohp));
@@ -456,7 +476,7 @@ public class FragPulsaAgent extends Fragment{
         return true;
     }
 
-    void showDialog(String _payment_remark,String _item_id, String _item_name, String _operator_id, String _operator_name) {
+    private void showDialog(String _payment_remark, String _item_id, String _item_name, String _operator_id, String _operator_name) {
         Intent i = new Intent(act, PulsaAgentActivity.class);
         i.putExtra(DefineValue.MEMBER_ID, member_id);
         i.putExtra(DefineValue.DENOM_ITEM_ID, _item_id);

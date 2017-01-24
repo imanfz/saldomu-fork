@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,10 @@ import java.util.ArrayList;
  */
 public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterable {
 
-    Context context;
-    int layoutResourceId;
-    ArrayList<friendModel> data = null;
-    ArrayList<friendModel> originalData = null;
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<friendModel> data = null;
+    private ArrayList<friendModel> originalData = null;
     private ItemFilter mFilter;
 
     public FriendAdapter(Context context, int resource, ArrayList<friendModel> objects) {
@@ -38,12 +39,13 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.originalData = new ArrayList<friendModel>();
+        this.originalData = new ArrayList<>();
         this.originalData.addAll(friendModel.getAll());
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         ListHolder holder;
 
@@ -83,7 +85,7 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
         else
             mPic.load(getPhotoUri(itemnya.getContact_id()))
                 .error(R.drawable.user_unknown_menu)
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .fit()
                 .centerCrop()
                 .into(holder.qc_pic);
@@ -91,7 +93,7 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
         return row;
     }
 
-    public Uri getPhotoUri(int id) {
+    private Uri getPhotoUri(int id) {
         Cursor cur = null;
         try {
             cur = this.context.getContentResolver().query(
@@ -116,7 +118,7 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
             try {
                 if( cur != null && !cur.isClosed() )
                     cur.close();
-            } catch(Exception ex) {}
+            } catch(Exception ignored) {}
         }
         Uri person = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, id);
         return Uri.withAppendedPath(person, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
@@ -128,6 +130,7 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
         RoundedQuickContactBadge qc_pic;
     }
 
+    @NonNull
     @Override
     public Filter getFilter() {
         if (mFilter == null){
@@ -144,14 +147,14 @@ public class FriendAdapter extends ArrayAdapter<friendModel> implements Filterab
 
             FilterResults results = new FilterResults();
 
-            if(constraint == null || constraint.length() == 0){
-                ArrayList<friendModel> list = new ArrayList<friendModel>(originalData);
+            if(constraint.length() == 0){
+                ArrayList<friendModel> list = new ArrayList<>(originalData);
                 results.values = list;
                 results.count = list.size();
             }
             else {
-                final ArrayList<friendModel> list = new ArrayList<friendModel>(originalData);
-                final ArrayList<friendModel> nlist = new ArrayList<friendModel>();
+                final ArrayList<friendModel> list = new ArrayList<>(originalData);
+                final ArrayList<friendModel> nlist = new ArrayList<>();
                 int count = list.size();
 
                 for (int i = 0; i < count; i++) {

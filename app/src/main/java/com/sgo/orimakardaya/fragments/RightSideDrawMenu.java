@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,17 +38,16 @@ import timber.log.Timber;
  */
 public class RightSideDrawMenu extends Fragment {
 
-    PtrFrameLayout ptrFrameLayout;
-    ListView lvPromo;
-    ImageView title;
-    ArrayList<PromoObject> listPromo;
+    private PtrFrameLayout ptrFrameLayout;
+    private ArrayList<PromoObject> listPromo;
 
-    SecurePreferences sp;
-    String _ownerID,accessKey;
-    int page = 0;
-    String count = "5";
+    private SecurePreferences sp;
+    private String _ownerID;
+    private String accessKey;
+    private int page = 0;
+    private String count = "5";
 
-    PromoAdapter promoAdapter;
+    private PromoAdapter promoAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,12 +63,12 @@ public class RightSideDrawMenu extends Fragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         ptrFrameLayout = (PtrFrameLayout) getActivity().findViewById(R.id.promo_ptr_frame);
-        lvPromo = (ListView) getActivity().findViewById(R.id.lvPromo);
-        title = (ImageView) getActivity().findViewById(R.id.title);
+        ListView lvPromo = (ListView) getActivity().findViewById(R.id.lvPromo);
+        ImageView title = (ImageView) getActivity().findViewById(R.id.title);
 
         title.setImageResource(R.drawable.socialpromo_icon_bar);
 
-        listPromo = new ArrayList<PromoObject>();
+        listPromo = new ArrayList<>();
 
         promoAdapter = new PromoAdapter(getActivity().getApplicationContext(), listPromo);
         lvPromo.setAdapter(promoAdapter);
@@ -108,7 +106,7 @@ public class RightSideDrawMenu extends Fragment {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
 //                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                return !canScrollUp(((ListView) content)); // or cast with ListView
+                return !canScrollUp(content); // or cast with ListView
             }
 
             public boolean canScrollUp(View view) {
@@ -135,7 +133,7 @@ public class RightSideDrawMenu extends Fragment {
             ptrFrameLayout.autoRefresh();
     }
 
-    public void getPromoList() {
+    private void getPromoList() {
         try {
 
             RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_PROMO_LIST,
@@ -156,9 +154,7 @@ public class RightSideDrawMenu extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi params promo list:"+response.toString());
                             String count = response.getString(WebParams.COUNT);
-                            if(count.equals("0")) {
-                            }
-                            else {
+                            if(!count.equals("0")) {
                                 JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
 
                                 for (int i = 0; i < mArrayPromo.length(); i++) {
@@ -177,7 +173,7 @@ public class RightSideDrawMenu extends Fragment {
                                         }
                                     }
 
-                                    if (flagSame == false) {
+                                    if (!flagSame) {
                                         String name = mArrayPromo.getJSONObject(i).getString(WebParams.NAME);
                                         String description = mArrayPromo.getJSONObject(i).getString(WebParams.DESCRIPTION);
                                         String banner_pic = mArrayPromo.getJSONObject(i).getString(WebParams.BANNER_PIC);
@@ -204,10 +200,6 @@ public class RightSideDrawMenu extends Fragment {
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginMain(getActivity(),message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-
                         }
 
                     } catch (JSONException e) {

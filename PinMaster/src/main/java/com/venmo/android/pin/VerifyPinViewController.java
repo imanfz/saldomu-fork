@@ -31,7 +31,7 @@ class VerifyPinViewController extends BaseViewController {
         };
     }
 
-    protected void validate(final String submission) {
+    private void validate(final String submission) {
         final Validator validator = getConfig().getValidator();
         if (validator instanceof AsyncValidator) {
             getOutAndInAnim(mPinputView, mProgressBar).start();
@@ -76,7 +76,7 @@ class VerifyPinViewController extends BaseViewController {
     private void resetIncorrectPinCount() {
         getDefaultSharedPreferences(mContext).edit()
                 .putInt(KEY_INCORRECT_PIN_ATTEMPTS, 0)
-                .commit();
+                .apply();
     }
 
     private void incrementFailedAttempts() {
@@ -85,7 +85,7 @@ class VerifyPinViewController extends BaseViewController {
         boolean attemptsDepleted = maxTries > 0 && failedAttempts >= maxTries;
         getDefaultSharedPreferences(mContext).edit()
                 .putInt(KEY_INCORRECT_PIN_ATTEMPTS, attemptsDepleted ? 0 : failedAttempts)
-                .commit();
+                .apply();
         TryDepletionListener depletionListener = getConfig().tryDepletionListener();
         if (attemptsDepleted && depletionListener != null) {
             depletionListener.onTriesDepleted();

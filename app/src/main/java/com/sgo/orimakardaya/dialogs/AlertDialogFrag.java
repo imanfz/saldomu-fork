@@ -69,11 +69,11 @@ public class AlertDialogFrag extends DialogFragment {
 
 
 
-  public Boolean getOnlyPositive() {
+  private Boolean getOnlyPositive() {
     return onlyPositive;
   }
 
-  public void setOnlyPositive(Boolean onlyPositive) {
+  private void setOnlyPositive(Boolean onlyPositive) {
     this.onlyPositive = onlyPositive;
   }
 

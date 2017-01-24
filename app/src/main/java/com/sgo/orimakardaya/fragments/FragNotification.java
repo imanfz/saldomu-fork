@@ -43,7 +43,7 @@ public class FragNotification extends Fragment {
 
 
 
-    View v;
+    private View v;
 
     private final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
     private NotificationListAdapter mAdapter;
@@ -54,7 +54,7 @@ public class FragNotification extends Fragment {
     private PtrFrameLayout mPtr;
     private View empty_layout;
     private NotificationModelClass tempMData;
-    ProgressDialog out;
+    private ProgressDialog out;
     private SecurePreferences sp;
     private boolean flagClaim = false;
 
@@ -75,7 +75,7 @@ public class FragNotification extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _memberId = sp.getString(DefineValue.MEMBER_ID, "");
         _userid = sp.getString(DefineValue.USERID_PHONE, "");
         _profpic = sp.getString(DefineValue.IMG_URL, "");
@@ -136,7 +136,7 @@ public class FragNotification extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
+//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
 
                 /*if(viewHolder != null)
                     Log.d("on item visible idx position", "visible itemnya");
@@ -160,8 +160,6 @@ public class FragNotification extends Fragment {
         });
         sentRetrieveNotif(true);
         getActivity().setResult(MainPage.RESULT_NORMAL);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
 
@@ -259,7 +257,7 @@ public class FragNotification extends Fragment {
         }
     }
 
-    public boolean canScroolUp() {
+    private boolean canScroolUp() {
         //Log.wtf(" adapter get item count", String.valueOf(mAdapter.getItemCount()));
         //Log.wtf(" Recycle view sama dengan null", String.valueOf(mRecyclerView == null));
         //Log.wtf(" layout manager find first completely visilble item position", String.valueOf(mLayoutManager.findFirstCompletelyVisibleItemPosition()));
@@ -629,9 +627,10 @@ public class FragNotification extends Fragment {
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.w("isi response sent claim non member:" + response.toString());
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                        if (code.equals(WebParams.SUCCESS_CODE)) {
+//
+//                        } else
+                        if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();

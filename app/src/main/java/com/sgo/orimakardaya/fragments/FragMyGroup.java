@@ -7,11 +7,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.*;
 import android.widget.AbsListView;
 import android.widget.Toast;
-import com.hb.views.PinnedSectionListView;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -42,10 +41,10 @@ import timber.log.Timber;
  */
 public class FragMyGroup extends ListFragment {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
-    ProgressDialog progdialog;
-    PtrFrameLayout ptrFrameLayout;
+    private ProgressDialog progdialog;
+    private PtrFrameLayout ptrFrameLayout;
     private ArrayList<MyGroupObject> groups = null;
     private int sectionPosition = 0;
     private int listPosition = 0;
@@ -53,7 +52,7 @@ public class FragMyGroup extends ListFragment {
     private String _ownerID,accessKey;
     private String page = "0";
 
-    MyGroupAdapter myGroupAdapter;
+    private MyGroupAdapter myGroupAdapter;
 
     @Override
     public void onStart() {
@@ -62,7 +61,7 @@ public class FragMyGroup extends ListFragment {
         sectionPosition = 0;
         listPosition = 0;
         page = "0";
-        groups = new ArrayList<MyGroupObject>();
+        groups = new ArrayList<>();
         groups.clear();
         getGroupList();
         initializeAdapter();
@@ -107,7 +106,7 @@ public class FragMyGroup extends ListFragment {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
 //                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                return !canScrollUp(((PinnedSectionListView) content));
+                return !canScrollUp(content);
             }
 
             public boolean canScrollUp(View view) {
@@ -129,7 +128,7 @@ public class FragMyGroup extends ListFragment {
 
     }
 
-    public void getGroupList() {
+    private void getGroupList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -152,13 +151,13 @@ public class FragMyGroup extends ListFragment {
                         String code = response.getString(WebParams.ERROR_CODE);
                         String count = response.getString(WebParams.COUNT);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && count != "0") {
+                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
                             Timber.d("isi params group list:"+response.toString());
                             JSONArray mArrayGroup = new JSONArray(response.getString(WebParams.DATA_GROUP));
                             for(int i = 0 ; i < mArrayGroup.length() ; i++) {
                                 String groupid = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_ID);
                                 String groupName = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_NAME);
-                                String groupDesc = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_DESC);
+//                                String groupDesc = mArrayGroup.getJSONObject(i).getString(WebParams.GROUP_DESC);
 
                                 boolean flagSame = false;
 
@@ -174,7 +173,7 @@ public class FragMyGroup extends ListFragment {
                                     }
                                 }
 
-                                if(flagSame == false) {
+                                if(!flagSame) {
                                     MyGroupObject myGroupObject = new MyGroupObject();
                                     myGroupObject.setType(0);
                                     myGroupObject.setGroupID(groupid);
@@ -187,7 +186,7 @@ public class FragMyGroup extends ListFragment {
                                         JSONArray mArrayMember = new JSONArray(mArrayGroup.getJSONObject(i).getString(WebParams.MEMBERS));
 
                                         for (int j = 0; j < mArrayMember.length(); j++) {
-                                            String memberid = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_ID);
+//                                            String memberid = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_ID);
                                             String memberName = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_NAME);
                                             String memberProfilePicture = mArrayMember.getJSONObject(j).getString(WebParams.MEMBER_PROFILE_PICTURE);
 

@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -41,7 +40,7 @@ public class MyApiClient {
         this.setmContext(_context);
     }
 
-    public static MyApiClient getInstance( ) {
+    private static MyApiClient getInstance() {
         return singleton;
     }
 
@@ -55,7 +54,7 @@ public class MyApiClient {
     public static Boolean IS_PROD = BuildConfig.isProdDomain;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
     public static Boolean IS_INTERNET_BANKING;
-    public static final String PRIVATE_KEY = "590mobil3";
+    private static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
 
@@ -65,9 +64,9 @@ public class MyApiClient {
 
     //Link webservices Signature
 
-    public static String LINK_REGISTRASI;
-    public static String LINK_VALID_REGISTRASI;
-    public static String LINK_LOGIN;
+    private static String LINK_REGISTRASI;
+    private static String LINK_VALID_REGISTRASI;
+    private static String LINK_LOGIN;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -76,22 +75,22 @@ public class MyApiClient {
     public static String LINK_SALDO;
     //public static final String LINK_BANK_LIST;
     public static String LINK_BANK_LIST;
-    public static String LINK_REQ_TOKEN_REGIST;
-    public static String LINK_GET_ALL_BANK;
+    private static String LINK_REQ_TOKEN_REGIST;
+    private static String LINK_GET_ALL_BANK;
     public static String LINK_TOPUP_PULSA_RETAIL;
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
-    public static String LINK_FORGOT_PASSWORD;
+    private static String LINK_FORGOT_PASSWORD;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
 
     public static String LINK_PROD_TOPUP_RETAIL;
-    public static String LINK_GET_BILLER_TYPE;
+    private static String LINK_GET_BILLER_TYPE;
     public static String LINK_LIST_BILLER;
     public static String LINK_DENOM_RETAIL;
-    public static String LINK_REQ_TOKEN_BILLER;
-    public static String LINK_CONFIRM_BILLER;
+    private static String LINK_REQ_TOKEN_BILLER;
+    private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
     public static String LINK_UPLOAD_PROFILE_PIC;
     public static String LINK_LIST_BANK_BILLER;
@@ -102,7 +101,7 @@ public class MyApiClient {
 
     public static String LINK_ASKFORMONEY_SUBMIT;
     public static String LINK_NOTIF_RETRIEVE;
-    public static String LINK_NOTIF_READ;
+    private static String LINK_NOTIF_READ;
 
     public static String LINK_REQ_TOKEN_P2P_NOTIF;
     public static String LINK_CONFIRM_TRANS_P2P_NOTIF;
@@ -121,7 +120,7 @@ public class MyApiClient {
     public static String LINK_ADD_LIKE;
     public static String LINK_REMOVE_LIKE;
 
-    public static String LINK_CREATE_PIN;
+    private static String LINK_CREATE_PIN;
     public static String LINK_CHANGE_PIN;
 
     public static String LINK_INQUIRY_BILLER;
@@ -132,16 +131,16 @@ public class MyApiClient {
     public static String LINK_BANK_ACCOUNT_COLLECTION;
     public static String LINK_TOP_UP_ACCOUNT_COLLECTION;
     public static String LINK_COMM_ACCOUNT_COLLECTION;
-    public static String LINK_COMM_ESPAY;
+    private static String LINK_COMM_ESPAY;
 
-	public static String LINK_APP_VERSION;
-    public static String LINK_HELP_LIST;
+	private static String LINK_APP_VERSION;
+    private static String LINK_HELP_LIST;
 
     public static String LINK_INQUIRY_MOBILE;
     public static String LINK_REQUEST_TOKEN_SB;
     public static String LINK_CONFIRM_TOKEN_SB;
 
-    public static String LINK_INSERT_PASSWORD;
+    private static String LINK_INSERT_PASSWORD;
     public static String LINK_REPORT_ESPAY;
 
     public static String LINK_INQUIRY_MOBILE_JATIM;
@@ -153,26 +152,26 @@ public class MyApiClient {
     public static String LINK_PAYMENT_DAP;
 	
 	public static String LINK_LOGOUT;
-    public static String LINK_CREATE_PIN_PASS;
+    private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_ASK4MONEY_REJECT;
 
-    public static String LINK_INQUIRY_CUST;
+    private static String LINK_INQUIRY_CUST;
     public static String LINK_EXEC_CUST;
 	
 	public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
-    public static String LINK_HELP_PIN;
+    private static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
     public static String LINK_DELTRX_WITHDRAW;
-    public static String LINK_CREATE_PASS;
+    private static String LINK_CREATE_PASS;
     public static String LINK_GET_FAILED_PIN;
-    public static String LINK_ATMTOPUP;
+    private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
-    public static String LINK_USER_PROFILE;
-    public static String LINK_INQUIRY_SMS;
+    private static String LINK_USER_PROFILE;
+    private static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
     public void InitializeAddress(){
@@ -306,7 +305,7 @@ public class MyApiClient {
 
 
 
-    public static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
+    private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
@@ -323,7 +322,7 @@ public class MyApiClient {
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
 
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-    public AsyncHttpClient syncHttpClient= new SyncHttpClient();
+    private AsyncHttpClient syncHttpClient= new SyncHttpClient();
 
     public static UUID getUUID(){
         return UUID.randomUUID();
@@ -394,7 +393,7 @@ public class MyApiClient {
         return params;
     }
 
-    public static byte[] encodeUrlSafe(byte[] data) {
+    private static byte[] encodeUrlSafe(byte[] data) {
         byte[] encode = Base64.encodeBase64(data);
         for (int i = 0; i < encode.length; i++) {
             if (encode[i] == '+') {
@@ -412,11 +411,11 @@ public class MyApiClient {
         getClient().setCookieStore(cookieStore);
     }
 
-    public static void get(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+    private static void get(Context mContext, String url, AsyncHttpResponseHandler responseHandler) {
         getClient().get(mContext, url, responseHandler);
     }
 
-    public static void post(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    private static void post(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler);
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
@@ -928,11 +927,11 @@ public class MyApiClient {
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
-    public Context getmContext() {
+    private Context getmContext() {
         return mContext;
     }
 
-    public void setmContext(Context mContext) {
+    private void setmContext(Context mContext) {
         this.mContext = mContext;
     }
 

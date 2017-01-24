@@ -14,7 +14,7 @@ public class AlertDialogLogout {
 
   private static AlertDialogLogout instance = null;
   private static AlertDialog adInstance;
-  protected AlertDialogLogout() {
+  private AlertDialogLogout() {
     // Exists only to defeat instantiation.
   }
   public static AlertDialogLogout getInstance() {
@@ -79,11 +79,11 @@ public class AlertDialogLogout {
         fca.switchLogout();
     }
 
-    public AlertDialog getAdInstance() {
+    private AlertDialog getAdInstance() {
         return adInstance;
     }
 
-    public void setAdInstance(AlertDialog adInstance) {
+    private void setAdInstance(AlertDialog adInstance) {
         AlertDialogLogout.adInstance = adInstance;
     }
 }

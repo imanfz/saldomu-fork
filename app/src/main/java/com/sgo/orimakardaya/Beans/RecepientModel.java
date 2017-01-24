@@ -23,7 +23,7 @@ public class RecepientModel {
         return status;
     }
 
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
@@ -31,7 +31,7 @@ public class RecepientModel {
         return number;
     }
 
-    public void setNumber(String number) {
+    private void setNumber(String number) {
         this.number = number;
     }
 
@@ -39,7 +39,7 @@ public class RecepientModel {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
@@ -47,7 +47,7 @@ public class RecepientModel {
         return tx_id;
     }
 
-    public void setTx_id(String tx_id) {
+    private void setTx_id(String tx_id) {
         this.tx_id = tx_id;
     }
 
@@ -55,7 +55,7 @@ public class RecepientModel {
         return is_member_temp;
     }
 
-    public void setIs_member_temp(String is_member_temp) {
+    private void setIs_member_temp(String is_member_temp) {
         this.is_member_temp = is_member_temp;
     }
 }

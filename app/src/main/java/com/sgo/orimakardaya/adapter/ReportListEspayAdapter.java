@@ -4,6 +4,7 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,9 @@ import java.util.ArrayList;
 
 public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
 
-    Context context;
-    int layoutResourceId;
-    ArrayList<ReportListEspayModel> data = null;
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<ReportListEspayModel> data = null;
 
     public ReportListEspayAdapter(Context context, int resource, ArrayList<ReportListEspayModel> objects) {
         super(context, resource, objects);
@@ -29,8 +30,9 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         this.data = objects;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         ListHolder holder;
 

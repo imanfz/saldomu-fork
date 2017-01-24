@@ -27,7 +27,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
-public class Crypto {
+class Crypto {
 
     private static final String TAG = Crypto.class.getSimpleName();
 
@@ -49,7 +49,7 @@ public class Crypto {
                     p.getInfo(), p.getVersion());
             Log.d(TAG, providerStr);
             Set<Service> services = p.getServices();
-            List<String> algs = new ArrayList<String>();
+            List<String> algs = new ArrayList<>();
             for (Service s : services) {
                 boolean match = true;
                 if (algFilter != null) {
@@ -85,7 +85,7 @@ public class Crypto {
 
     }
 
-    public static byte[] generateIv(int length) {
+    private static byte[] generateIv(int length) {
         byte[] b = new byte[length];
         random.nextBytes(b);
 
@@ -106,9 +106,7 @@ public class Crypto {
 
             return String.format("%s%s%s", toBase64(iv), DELIMITER,
                     toBase64(cipherText));
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (GeneralSecurityException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -117,8 +115,8 @@ public class Crypto {
 
 
 
-    public static String toHex(byte[] bytes) {
-        StringBuffer buff = new StringBuffer();
+    private static String toHex(byte[] bytes) {
+        StringBuilder buff = new StringBuilder();
         for (byte b : bytes) {
             buff.append(String.format("%02X", b));
         }
@@ -126,11 +124,11 @@ public class Crypto {
         return buff.toString();
     }
 
-    public static String toBase64(byte[] bytes) {
+    private static String toBase64(byte[] bytes) {
         return Base64.encodeToString(bytes, Base64.NO_WRAP);
     }
 
-    public static byte[] fromBase64(String base64) {
+    private static byte[] fromBase64(String base64) {
         return Base64.decode(base64, Base64.NO_WRAP);
     }
 
@@ -152,9 +150,7 @@ public class Crypto {
             String plainrStr = new String(plaintext, "UTF-8");
 
             return plainrStr;
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (GeneralSecurityException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -202,7 +198,7 @@ public class Crypto {
         return (RSAPublicKey) loadPublicKey(keyAlias);
     }
 
-    public static PublicKey loadPublicKey(String keyAlias)
+    private static PublicKey loadPublicKey(String keyAlias)
             throws GeneralSecurityException, IOException {
         java.security.KeyStore ks = java.security.KeyStore
                 .getInstance("AndroidKeyStore");

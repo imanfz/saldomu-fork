@@ -50,7 +50,7 @@ public class NotificationModelClass {
         return id_result;
     }
 
-    public void setId_result(String id_result) {
+    private void setId_result(String id_result) {
         this.id_result = id_result;
     }
 
@@ -58,7 +58,7 @@ public class NotificationModelClass {
         return from_profile_picture;
     }
 
-    public void setFrom_profile_picture(String from_profile_picture) {
+    private void setFrom_profile_picture(String from_profile_picture) {
         this.from_profile_picture = from_profile_picture;
     }
 
@@ -66,7 +66,7 @@ public class NotificationModelClass {
         return image;
     }
 
-    public void setImage(int image) {
+    private void setImage(int image) {
         this.image = image;
     }
 
@@ -74,7 +74,7 @@ public class NotificationModelClass {
         return detail;
     }
 
-    public void setDetail(String detail) {
+    private void setDetail(String detail) {
         this.detail = detail;
     }
 
@@ -82,7 +82,7 @@ public class NotificationModelClass {
         return title;
     }
 
-    public void setTitle(String title) {
+    private void setTitle(String title) {
         this.title = title;
     }
 
@@ -90,7 +90,7 @@ public class NotificationModelClass {
         return time;
     }
 
-    public void setTime(String time) {
+    private void setTime(String time) {
         this.time = time;
     }
 
@@ -106,7 +106,7 @@ public class NotificationModelClass {
         return notif_type;
     }
 
-    public void setNotif_type(int notif_type) {
+    private void setNotif_type(int notif_type) {
         this.notif_type = notif_type;
     }
 
@@ -114,7 +114,7 @@ public class NotificationModelClass {
         return notif_detail;
     }
 
-    public void setNotif_detail(JSONObject notif_detail) {
+    private void setNotif_detail(JSONObject notif_detail) {
         this.notif_detail = notif_detail;
     }
 
@@ -122,7 +122,7 @@ public class NotificationModelClass {
         return from_name;
     }
 
-    public void setFrom_name(String from_name) {
+    private void setFrom_name(String from_name) {
         this.from_name = from_name;
     }
 
@@ -130,7 +130,7 @@ public class NotificationModelClass {
         return notif_id;
     }
 
-    public void setNotif_id(String notif_id) {
+    private void setNotif_id(String notif_id) {
         this.notif_id = notif_id;
     }
 
@@ -138,7 +138,7 @@ public class NotificationModelClass {
         return from_id;
     }
 
-    public void setFrom_id(String from_id) {
+    private void setFrom_id(String from_id) {
         this.from_id = from_id;
     }
 
@@ -146,7 +146,7 @@ public class NotificationModelClass {
         return date_time;
     }
 
-    public void setDate_time(String date_time) {
+    private void setDate_time(String date_time) {
         this.date_time = date_time;
     }
 
@@ -154,7 +154,7 @@ public class NotificationModelClass {
         return to_id;
     }
 
-    public void setTo_id(String to_id) {
+    private void setTo_id(String to_id) {
         this.to_id = to_id;
     }
 }

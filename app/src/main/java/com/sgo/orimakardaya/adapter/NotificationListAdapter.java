@@ -34,8 +34,8 @@ import java.util.ArrayList;
  */
 public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHolder> implements RejectNotifDialog.OnItemSelectedListener{
 
-    final int VIEW_TYPE_READED = 10;
-    final int VIEW_TYPE_UNREAD = 20;
+    private final int VIEW_TYPE_READED = 10;
+    private final int VIEW_TYPE_UNREAD = 20;
 
     private ArrayList<NotificationModelClass> mData;
     private LayoutInflater mInflater;
@@ -192,7 +192,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         }
     }
 
-    public void showDialog(String _req_id, String _trx_id, String _from, String _amount, String _ccy_id) {
+    private void showDialog(String _req_id, String _trx_id, String _from, String _amount, String _ccy_id) {
 
         FragmentManager fm = ((Activity)mContext).getFragmentManager();
         RejectNotifDialog dialog_frag = new RejectNotifDialog();
@@ -214,7 +214,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         return mData.size();
     }
 
-    public void setImageProfPic(String _data, QuickContactBadge _holder){
+    private void setImageProfPic(String _data, QuickContactBadge _holder){
         /*
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
@@ -240,7 +240,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
             mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(_holder);
         }
@@ -249,7 +249,7 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
                     .error(roundedImage)
                     .fit()
                     .centerCrop()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(_holder);
         }

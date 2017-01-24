@@ -5,16 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.CoreApp;
 import com.sgo.orimakardaya.coreclass.LifeCycleHandler;
 
 import timber.log.Timber;

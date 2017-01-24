@@ -27,7 +27,7 @@ public class MyPicasso {
     }
 
 
-    static OkHttpClient getUnsafeOkHttpClient() {
+    private static OkHttpClient getUnsafeOkHttpClient() {
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -68,7 +68,7 @@ public class MyPicasso {
         }
     }
 
-    public static class TrustEverythingTrustManager implements X509TrustManager {
+    private static class TrustEverythingTrustManager implements X509TrustManager {
         public java.security.cert.X509Certificate[] getAcceptedIssuers() {
             return null;
         }
@@ -82,7 +82,7 @@ public class MyPicasso {
         }
     }
 
-    public static class VerifyEverythingHostnameVerifier implements
+    private static class VerifyEverythingHostnameVerifier implements
             HostnameVerifier {
 
         public boolean verify(String string, SSLSession sslSession) {

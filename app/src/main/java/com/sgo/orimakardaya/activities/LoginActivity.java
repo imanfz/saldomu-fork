@@ -1,34 +1,19 @@
 package com.sgo.orimakardaya.activities;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Patterns;
 import android.view.Menu;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
-import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
 import com.sgo.orimakardaya.fragments.Login;
-import com.sgo.orimakardaya.fragments.Regist1;
 import com.sgo.orimakardaya.loader.UtilsLoader;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import timber.log.Timber;
 
@@ -37,13 +22,13 @@ import timber.log.Timber;
  */
 public class LoginActivity extends BaseActivity {
 
-    public static final int REQUEST_EXIT = 0 ;
+    private static final int REQUEST_EXIT = 0 ;
     public static final int RESULT_PIN = 1 ;
     public static final int RESULT_NORMAL = 2 ;
     public static final int RESULT_FINISHING = 5 ;
     public static final int ACTIVITY_RESULT = 3;
 
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

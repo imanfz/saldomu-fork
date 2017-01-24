@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,16 +36,27 @@ import timber.log.Timber;
  */
 public class FragRegisterSMSBankingConfirm extends Fragment {
 
-    View v, layout_dll;
-    SecurePreferences sp;
-    ProgressDialog progdialog;
+    private View v;
+    private View layout_dll;
+    private SecurePreferences sp;
+    private ProgressDialog progdialog;
 
-    TextView tvNo, tvName, tvTglLahir;
-    EditText etToken;
-    Button btnConfirm;
-    Boolean isJatim = false;
+    private TextView tvNo;
+    private TextView tvName;
+    private TextView tvTglLahir;
+    private EditText etToken;
+    private Button btnConfirm;
+    private Boolean isJatim = false;
 
-    String acc_no, acc_name, tgl_lahir, no_hp, ccy_id, token_id, cust_id,userID,accessKey;
+    private String acc_no;
+    private String acc_name;
+    private String tgl_lahir;
+    private String no_hp;
+    private String ccy_id;
+    private String token_id;
+    private String cust_id;
+    private String userID;
+    private String accessKey;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -97,7 +107,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         return v;
     }
 
-    Button.OnClickListener btnConfTokenListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnConfTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -114,7 +124,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         }
     };
 
-    public boolean inputValidation() {
+    private boolean inputValidation() {
         if (etToken.getText().toString().length() == 0 || etToken.getText().toString().equals("")) {
             etToken.requestFocus();
             etToken.setError(getString(R.string.regist2_validation_otp));
@@ -123,7 +133,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         return true;
     }
 
-    public void confirmTokenSB() {
+    private void confirmTokenSB() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -215,7 +225,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         }
     }
 
-    public void getTokenSB() {
+    private void getTokenSB() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -234,9 +244,8 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                     progdialog.dismiss();
                     Timber.d("isi response get token SB:"+response.toString());
 
-                    String code = null;
                     try {
-                        code = response.getString(WebParams.ERROR_CODE);
+                        String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             token_id = response.getString(WebParams.TOKEN_ID);
 
@@ -309,7 +318,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -322,6 +331,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -362,7 +372,7 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(no_hp.equals(_member_kode)){
             etToken.setText(_kode_otp);

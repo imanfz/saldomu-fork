@@ -1,13 +1,11 @@
 package com.sgo.orimakardaya.loader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;

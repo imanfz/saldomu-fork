@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -59,22 +60,24 @@ import timber.log.Timber;
   Created by Administrator on 1/27/2015.
  */
 public class ListMyFriends extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        PopupMenu.OnItemSelectedListener, InformationDialog.OnDialogOkCallback {
+        PopupMenu.OnItemSelectedListener {
 
     private static final int CONTACTS_LOADER = 10;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    View v;
-    View layout_check_contact, layout_list_contact, layout_loading_contact;
+    private View v;
+    private View layout_check_contact;
+    private View layout_list_contact;
+    private View layout_loading_contact;
     private MyFriendAdapter mAdapter;
     private ArrayList<myFriendModel> mMFM;
     private ContentResolver mCR;
-    Button btn_check_contact;
+    private Button btn_check_contact;
     private Cursor mCursor;
-    CircleProgressBar loadingCircle;
-    SecurePreferences sp;
+    private CircleProgressBar loadingCircle;
+    private SecurePreferences sp;
     private String _ownerID,isContactNew,accessKey;
-    PopupMenu mPopMenu;
-    EditText etSearchFriend;
+    private PopupMenu mPopMenu;
+    private EditText etSearchFriend;
 
     private InformationDialog dialogI;
 
@@ -82,8 +85,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     private final static int PAY = 1;
     private final static int VIEW_DETAIL = 2;
 
-    int positionSelected;
-    int mState;
+    private int positionSelected;
+    private int mState;
     private int HIDE_MENU = 100;
     private int SHOW_MENU = 200;
 
@@ -108,11 +111,11 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public void onItemSelected(MenuItem item) {
-        Fragment newFragment;
+//        Fragment newFragment;
         Bundle args;
         switch (item.getItemId()) {
             case ASK_FOR_MONEY:
-                newFragment = new FragAskForMoney();
+//                newFragment = new FragAskForMoney();
                 args = new Bundle();
                 args.putString("image", mMFM.get(positionSelected).getImg_url());
                 args.putString("name", mMFM.get(positionSelected).getFull_name());
@@ -126,7 +129,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 break;
 
             case PAY:
-                newFragment = new FragPayFriends();
+//                newFragment = new FragPayFriends();
                 args = new Bundle();
                 args.putString("image", mMFM.get(positionSelected).getImg_url());
                 args.putString("name", mMFM.get(positionSelected).getFull_name());
@@ -161,11 +164,6 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -188,7 +186,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
         dialogI = InformationDialog.newInstance(this,9);
 
-        mMFM = new ArrayList<myFriendModel>();
+        mMFM = new ArrayList<>();
         mAdapter = new MyFriendAdapter(getActivity(),R.layout.list_myfriends_item,mMFM);
         setListAdapter(mAdapter);
         getListView().setTextFilterEnabled(true);
@@ -237,11 +235,6 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Timber.d("options menu add contact");
         inflater.inflate(R.menu.list_contacts, menu);
@@ -269,8 +262,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                 {
                     Toast.makeText(getActivity().getApplicationContext(), getString(R.string.check_contact_first), Toast.LENGTH_LONG).show();
                 }
-                else if (mState == SHOW_MENU){
-                }
+//                else if (mState == SHOW_MENU){
+//                }
                 return true;
             case R.id.menu_item_contact_list:
                 if (mState == HIDE_MENU)
@@ -292,7 +285,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         }
     }
 
-    Button.OnClickListener checkContactListener = new Button.OnClickListener() {
+    private Button.OnClickListener checkContactListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getContext().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -306,7 +299,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     };
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -318,13 +311,13 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         }
     }
 
-    public void runLoader(){
+    private void runLoader(){
         crossfadingView(layout_check_contact, layout_loading_contact);
         loadingCircle.setMax(100);
         getLoaderManager().initLoader(CONTACTS_LOADER, null, this);
     }
 
-    public void crossfadingView(final View vFrom, final View vTo){
+    private void crossfadingView(final View vFrom, final View vTo){
         final Animation out = AnimationUtils.makeOutAnimation(getActivity(), true);
         final Animation in = AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in);
         getActivity().runOnUiThread(new Runnable() {
@@ -338,7 +331,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         });
     }
 
-    public void initializeDataFriend(){
+    private void initializeDataFriend(){
         Timber.d("initializeDataFriend");
         mMFM.addAll(myFriendModel.getAll());
         mAdapter.notifyDataSetChanged();
@@ -348,8 +341,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
-        String[] projectionFields =  new String[] { ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME };
+//        String[] projectionFields =  new String[] { ContactsContract.Contacts._ID,
+//                ContactsContract.Contacts.DISPLAY_NAME };
         // Construct the loader
 
         String select = "((" + Contacts.DISPLAY_NAME + " NOTNULL) AND ("
@@ -384,7 +377,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                     public void run() {
                         Looper.prepare();
                         ActiveAndroid.initialize(getActivity());
-                        List<friendModel> mListFriendModel = new ArrayList<friendModel>();
+                        List<friendModel> mListFriendModel = new ArrayList<>();
                         String _name;
                         String _id;
 
@@ -474,7 +467,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    public void insertContact(List<friendModel> mfriendModel){
+    private void insertContact(List<friendModel> mfriendModel){
         try{
 
             RequestParams params;
@@ -585,7 +578,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         }
     }
 
-    public void insertFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
+    private void insertFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
         try {
             ActiveAndroid.beginTransaction();
             friendModel mFm;
@@ -778,20 +771,15 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
         }
     }*/
 
-    public Cursor getmCursor() {
+    private Cursor getmCursor() {
         return mCursor;
     }
 
-    public void setmCursor(Cursor mCursor) {
+    private void setmCursor(Cursor mCursor) {
         this.mCursor = mCursor;
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
-
-    public class friendAdapter implements JsonSerializer<friendModel> {
+    private class friendAdapter implements JsonSerializer<friendModel> {
 
         @Override
         public JsonElement serialize(friendModel _friendModel, Type type, JsonSerializationContext jsonSerializationContext) {

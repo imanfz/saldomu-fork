@@ -10,7 +10,7 @@ import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.activeandroid.util.Log;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.GroupCommentObject;
 import com.sgo.orimakardaya.R;
@@ -27,21 +27,26 @@ import timber.log.Timber;
  */
 public class GroupDetailActivity extends BaseActivity {
 
-    SecurePreferences sp;
-    int RESULT;
+    private SecurePreferences sp;
+    private int RESULT;
 
-    TextView txtSection, txtPay, txtGetPaid, txtDesc, txtDate;
-    RoundedQuickContactBadge iconPicture;
-    ImageView imageLove, imageSendComment;
-    EditText etComment;
-    ListView lvComment;
-    TextView textLove;
+    TextView txtSection;
+    private TextView txtPay;
+    private TextView txtGetPaid;
+    private TextView txtDesc;
+    private TextView txtDate;
+    private RoundedQuickContactBadge iconPicture;
+    private ImageView imageLove;
+    private ImageView imageSendComment;
+    private EditText etComment;
+    private ListView lvComment;
+    private TextView textLove;
 
-    boolean love;
-    ArrayList<String> arrayLove;
+    private boolean love;
+    private ArrayList<String> arrayLove;
 
-    ArrayList<GroupCommentObject> listComment;
-    GroupCommentAdapter commentAdapter;
+    private ArrayList<GroupCommentObject> listComment;
+    private GroupCommentAdapter commentAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,7 @@ public class GroupDetailActivity extends BaseActivity {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         love = false;
-        arrayLove = new ArrayList<String>();
+        arrayLove = new ArrayList<>();
         arrayLove.add("Kim");
         arrayLove.add("Lee");
         arrayLove.add("Mr Park");
@@ -81,7 +86,7 @@ public class GroupDetailActivity extends BaseActivity {
 
         Intent i = getIntent();
         if(i != null) {
-            String groupName = i.getStringExtra("groupname");
+//            String groupName = i.getStringExtra("groupname");
             String pay = i.getStringExtra("pay");
             String getpaid = i.getStringExtra("getpaid");
             String desc = i.getStringExtra("desc");
@@ -93,13 +98,13 @@ public class GroupDetailActivity extends BaseActivity {
                 mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(iconPicture);
             else
                 mPic.load(profpic)
                     .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .fit()
                     .centerCrop()
                     .transform(new RoundImageTransformation())
@@ -113,12 +118,12 @@ public class GroupDetailActivity extends BaseActivity {
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(iconPicture);
         }
 
-        listComment = new ArrayList<GroupCommentObject>();
+        listComment = new ArrayList<>();
         GroupCommentObject comment = new GroupCommentObject();
         comment.setName("Lee");
         comment.setMessage("wew");
@@ -166,7 +171,7 @@ public class GroupDetailActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             love = !love;
@@ -188,7 +193,7 @@ public class GroupDetailActivity extends BaseActivity {
         }
     };
 
-    ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             String message = etComment.getText().toString();
@@ -209,7 +214,7 @@ public class GroupDetailActivity extends BaseActivity {
         return R.layout.activity_group_detail;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_group_detail));
     }
@@ -225,7 +230,7 @@ public class GroupDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setLove() {
+    private void setLove() {
         String peopleLove = "";
         for(int i = 0 ; i < arrayLove.size() ; i++) {
             if(i == arrayLove.size()-1) {

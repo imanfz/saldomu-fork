@@ -37,17 +37,45 @@ import timber.log.Timber;
  * Created by thinkpad on 9/15/2015.
  */
 public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
-    View v;
-    TextView tv_operator_value,tv_nominal_value,tv_amount_value,tv_phone_number, tv_payment_name, tv_fee_value, tv_total_amount_value;
-    EditText et_token_value;
-    Button btn_submit,btn_cancel;
-    SecurePreferences sp;
-    ProgressDialog progdialog;
+    private View v;
+    private TextView tv_operator_value;
+    private TextView tv_nominal_value;
+    private TextView tv_amount_value;
+    private TextView tv_phone_number;
+    private TextView tv_payment_name;
+    private TextView tv_fee_value;
+    private TextView tv_total_amount_value;
+    private EditText et_token_value;
+    private Button btn_submit;
+    private Button btn_cancel;
+    private SecurePreferences sp;
+    private ProgressDialog progdialog;
 
-    String tx_id,ccy_id,amount,item_name,cust_id, payment_name,fee,total_amount, merchant_type, phone_number, shareType, bank_code,
-            product_code,product_payment_type, api_key, callback_url, comm_code, comm_id, product_value, operator_id, operator_name,
-            userID,accessKey;
-    Boolean is_sgo_plus, isPIN;
+    private String tx_id;
+    private String ccy_id;
+    private String amount;
+    private String item_name;
+    private String cust_id;
+    private String payment_name;
+    private String fee;
+    private String total_amount;
+    private String merchant_type;
+    private String phone_number;
+    private String shareType;
+    private String bank_code;
+    private String product_code;
+    private String product_payment_type;
+    private String api_key;
+    private String callback_url;
+    private String comm_code;
+    private String comm_id;
+    private String product_value;
+    private String operator_id;
+    private String operator_name;
+    private String userID;
+    private String accessKey;
+    private Boolean is_sgo_plus;
+    private Boolean isPIN;
 
     @Nullable
     @Override
@@ -86,7 +114,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         initializeLayout();
     }
 
-    public void initializeLayout() {
+    private void initializeLayout() {
 
         Bundle args = getArguments();
         cust_id = args.getString(DefineValue.CUST_ID, "");
@@ -161,7 +189,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         switchActivityIB(i);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -191,7 +219,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         }
     };
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             hideKeyboard();
@@ -225,7 +253,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
                         Timber.d("isi response insertTrxTOpupSGOL", response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getTrxStatus(tx_id, comm_id);
-                            setResultActivity(MainPage.RESULT_BALANCE);
+                            setResultActivity();
                         }
                         else if(message.equals("PIN tidak sesuai")) {
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -292,7 +320,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         }
     }
 
-    public void getTrxStatus(final String txId, String comm_id){
+    private void getTrxStatus(final String txId, String comm_id){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
@@ -415,7 +443,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -451,13 +479,13 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    public void exit(){
+    private void exit(){
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_token_value.getText().toString().length()==0){
             et_token_value.requestFocus();
             et_token_value.setError(this.getString(R.string.regist2_validation_otp));
@@ -467,12 +495,12 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     }
 
 
-    private void setResultActivity(int result){
+    private void setResultActivity(){
         if (getActivity() == null)
             return;
 
         PulsaAgentActivity fca = (PulsaAgentActivity) getActivity();
-        fca.setResultActivity(result);
+        fca.setResultActivity();
     }
 
     @Override
@@ -517,7 +545,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     }
 
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -529,6 +557,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -560,7 +589,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             et_token_value.setText(_kode_otp);
@@ -589,7 +618,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     }
 
 
-    public void hideKeyboard(){
+    private void hideKeyboard(){
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

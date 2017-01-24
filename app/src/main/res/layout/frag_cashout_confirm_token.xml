@@ -273,8 +273,7 @@
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:inputType="number|numberPassword"
                         android:maxLength="4"
-                        android:singleLine="false"
-                        android:hint="@string/regist2_edithint_otp"
+                    android:hint="@string/regist2_edithint_otp"
                         />
 
                 <TextView

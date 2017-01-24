@@ -4,6 +4,7 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +17,15 @@ import java.util.Arrays;
 
 public class EasyAdapter extends ArrayAdapter<String> {
 
-    Context context;
-    int layoutResourceId;
+    private Context context;
+    private int layoutResourceId;
     private ArrayList<String> adata;
 
     public EasyAdapter(Context context, int layoutResourceId, String[] data) {
         super(context, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
-        this.adata =  new ArrayList<String>();
+        this.adata = new ArrayList<>();
         this.adata.addAll(Arrays.asList(data));
     }
 
@@ -35,8 +36,9 @@ public class EasyAdapter extends ArrayAdapter<String> {
         this.adata = data;
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         ListHolder holder;
 

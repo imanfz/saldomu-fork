@@ -5,7 +5,6 @@ package com.sgo.orimakardaya.dialogs;/*
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.http.SslError;
 import android.os.Build;
@@ -14,16 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.webkit.ClientCertRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
@@ -34,25 +28,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BillerActivity;
-import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.coreclass.DateTimeFormat;
-import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import timber.log.Timber;
 
@@ -68,21 +49,12 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     private String urlAddress = MyApiClient.URL_FAQ;
 
 
-    private OnDialogOkCallback callback;
     private Activity mContext;
     private Boolean isActivty = false, isDisconnected;
     private View v;
     private int type;
     private ProgressBar progbar;
-    WebView webview;
     private boolean shown = false;
-
-
-    public interface OnDialogOkCallback {
-        void onOkButton();
-    }
-
-
 
     public static InformationDialog newInstance(Activity _context, int idx) {
         InformationDialog f = new InformationDialog();
@@ -107,24 +79,9 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        try {
-            if(isActivty)
-                callback = (OnDialogOkCallback) getActivity();
-            else
-                callback = (OnDialogOkCallback) getTargetFragment();
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
-        }
-    }
-
-    @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         this.dismiss();
-        callback.onOkButton();
     }
 
     @Override
@@ -160,9 +117,9 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
         loadUrl(urlAddress + colName);
     }
 
-    public void loadUrl(String url) {
+    private void loadUrl(String url) {
         Timber.d(url);
-        webview = (WebView) v.findViewById(R.id.webview);
+        WebView webview = (WebView) v.findViewById(R.id.webview);
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -245,7 +202,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         this.dismiss();
-        callback.onOkButton();
     }
 
     @Override

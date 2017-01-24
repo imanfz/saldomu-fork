@@ -21,11 +21,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.LoginActivity;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.InetHandler;
@@ -49,20 +46,22 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment{
 
-    String namaValid = "";
-    String emailValid = "";
-    String noHPValid = "";
-    String token_id = "";
-    String max_resend_token = "3";
-    String auth_type = "";
-    EditText namaValue,emailValue,noHPValue;
-    Button btnLanjut;
-    CheckBox cb_terms;
-    View v;
+    private String namaValid = "";
+    private String emailValid = "";
+    private String noHPValid = "";
+    private String token_id = "";
+    private String max_resend_token = "3";
+    private String auth_type = "";
+    private EditText namaValue;
+    private EditText emailValue;
+    private EditText noHPValue;
+    private Button btnLanjut;
+    private CheckBox cb_terms;
+    private View v;
 
-    Fragment mFragment;
-    ProgressDialog progdialog;
-    ReqPermissionClass reqPermissionClass;
+    private Fragment mFragment;
+    private ProgressDialog progdialog;
+    private ReqPermissionClass reqPermissionClass;
 
 
     @Override
@@ -134,7 +133,7 @@ public class Regist1 extends Fragment{
         }
     }
 
-    Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
+    private Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
 
         @Override
         public void onClick(View view) {
@@ -164,7 +163,7 @@ public class Regist1 extends Fragment{
         fca.switchActivity(i, LoginActivity.ACTIVITY_RESULT);
     }
 
-    public void sentData(final String noHP){
+    private void sentData(final String noHP){
         try{
                 progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
                 progdialog.show();
@@ -259,7 +258,7 @@ public class Regist1 extends Fragment{
 
 
 
-    public void changeActivity(Boolean login){
+    private void changeActivity(Boolean login){
         if(login){
             DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -281,7 +280,7 @@ public class Regist1 extends Fragment{
         }
     }
 
-    void showDialog(final String code) {
+    private void showDialog(final String code) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -320,7 +319,7 @@ public class Regist1 extends Fragment{
 
     //----------------------------------------------------------------------------------------------------------------
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(noHPValue.getText().toString().length()==0){
             noHPValue.requestFocus();
             noHPValue.setError(getResources().getString(R.string.regist1_validation_nohp));
@@ -346,7 +345,7 @@ public class Regist1 extends Fragment{
 
 
 
-    public static boolean isValidEmail(CharSequence target) {
+    private static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 }

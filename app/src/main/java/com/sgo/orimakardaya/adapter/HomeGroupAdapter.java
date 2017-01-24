@@ -23,12 +23,12 @@ import java.util.ArrayList;
  * Created by thinkpad on 4/13/2015.
  */
 public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListView.PinnedSectionListAdapter{
-    Context context;
+    private Context context;
     private LayoutInflater mInflater;
     private ArrayList<HomeGroupObject> groups;
 
-    public static final int FIRST = 0; //Textview
-    public static final int SECOND = 1; //Listview
+    private static final int FIRST = 0; //Textview
+    private static final int SECOND = 1; //Listview
 
     public HomeGroupAdapter(Context context, ArrayList<HomeGroupObject> groups) {
         this.mInflater = LayoutInflater.from(context);
@@ -92,11 +92,11 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
             else
                 mPic= Picasso.with(context);
 
-            if(profpic.equals("") || profpic.equals(null)){
+            if(profpic.equals("")){
                 mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(holder.qc_pic);
             }
@@ -105,7 +105,7 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
                     .error(roundedImage)
                     .fit()
                     .centerCrop()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(holder.qc_pic);
             }
@@ -137,11 +137,7 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
 
     @Override
     public boolean isItemViewTypePinned(int viewType) {
-        if(viewType == FIRST){
-            return true;
-        }else{
-            return false;
-        }
+        return viewType == FIRST;
     }
 
     private class ViewHolder {

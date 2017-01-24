@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.google.gson.Gson;
@@ -48,29 +47,43 @@ import timber.log.Timber;
  */
 public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    public static String TAG_FRAGPAYFRIENDCONFIRM = "com.sgo.mdevcash.fragments.FragPayfriendsConfirm";
+    private static String TAG_FRAGPAYFRIENDCONFIRM = "com.sgo.mdevcash.fragments.FragPayfriendsConfirm";
 
-    String dataJson, dataName, message, memberID, txID, dataMapper,userID,accessKey;
-    SecurePreferences sp;
-    Boolean isNotification = false;
-    double amountEach,totalAmount,fee;
-    LinearLayout layoutOTP;
-    ImageView imgProfile, imgRecipients;
-    ListView listRecipient;
-    TextView txtName, txtMessage, txtNumberRecipients;
-    EditText etOTP;
-    Button btnSubmit, btnCancel, btnResend;
-    ProgressDialog progdialog;
+    private String dataJson;
+    private String dataName;
+    private String message;
+    private String memberID;
+    private String txID;
+    private String dataMapper;
+    private String userID;
+    private String accessKey;
+    private SecurePreferences sp;
+    private Boolean isNotification = false;
+    private double amountEach;
+    private double totalAmount;
+    private double fee;
+    private LinearLayout layoutOTP;
+    private ImageView imgProfile;
+    private ImageView imgRecipients;
+    private ListView listRecipient;
+    private TextView txtName;
+    private TextView txtMessage;
+    private TextView txtNumberRecipients;
+    private EditText etOTP;
+    private Button btnSubmit;
+    private Button btnCancel;
+    private Button btnResend;
+    private ProgressDialog progdialog;
     private int max_token_resend = 3, total_receive_recepient = 0, attempt=-1;
-    View v;
-    AlertDialogFrag mDialogNonMember;
+    private View v;
+    private AlertDialogFrag mDialogNonMember;
 
-    List<String> listName;
-    List<RecepientModel> listObjectRecipient;
-    List<TempTxID> mTempTxID;
-    List<RecepientModel> list_non_member;
+    private List<String> listName;
+    private List<RecepientModel> listObjectRecipient;
+    private List<TempTxID> mTempTxID;
+    private List<RecepientModel> list_non_member;
 
-    String authType;
+    private String authType;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -286,7 +299,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         setHasOptionsMenu(true);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
 
@@ -315,7 +328,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }
     }
 
-    Button.OnClickListener resendListener = new Button.OnClickListener() {
+    private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -330,7 +343,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }
     };
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(etOTP.getText().toString().length()==0){
             etOTP.requestFocus();
             etOTP.setError(this.getString(R.string.regist2_validation_otp));
@@ -363,7 +376,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     }
 
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -372,7 +385,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         });
     }
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             getActivity().finish();
@@ -393,7 +406,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }
     }
 
-    public void sentDataConfirm(String _data, String _token){
+    private void sentDataConfirm(String _data, String _token){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -470,7 +483,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                             if(isFailed != mArrayData.length()){
 
                                 String name = sp.getString(DefineValue.USER_NAME,"");
-                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
+//                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
 
                                 if(list_non_member.size() == mArrayData.length()){
                                     showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
@@ -583,7 +596,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         dialognya.show();
     }
 
-    public void sentResendToken(String _data){
+    private void sentResendToken(String _data){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -666,7 +679,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
 
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -694,7 +707,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         dialog.show();
     }
 
-    public static boolean setListViewHeightBasedOnItems(ListView listView) {
+    private static void setListViewHeightBasedOnItems(ListView listView) {
 
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter != null) {
@@ -718,17 +731,11 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             params.height = totalItemsHeight + totalDividersHeight;
             listView.setLayoutParams(params);
             listView.requestLayout();
-
-            return true;
-
-        } else {
-            return false;
         }
-
     }
 
 
-    public void setImageProfPic(){
+    private void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
@@ -751,7 +758,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
@@ -760,7 +767,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                 .error(roundedImage)
                 .fit()
                 .centerCrop()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
@@ -802,7 +809,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -814,6 +821,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             Timber.wtf("masuk myreceiver fragpayfriends");
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -845,7 +853,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             etOTP.setText(_kode_otp);

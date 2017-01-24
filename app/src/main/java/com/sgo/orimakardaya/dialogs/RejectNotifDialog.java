@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,11 +37,18 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 
     public static final String TAG = "Reject Dialog";
 
-    SecurePreferences sp;
-    EditText etRemark;
-    TextView btnOk, btnCancel;
+    private SecurePreferences sp;
+    private EditText etRemark;
+    private TextView btnOk;
+    private TextView btnCancel;
 
-    String _userId, _accessKey, req_id, trx_id, from, amount, ccy_id;
+    private String _userId;
+    private String _accessKey;
+    private String req_id;
+    private String trx_id;
+    private String from;
+    private String amount;
+    private String ccy_id;
 
     private OnItemSelectedListener mListener;
 

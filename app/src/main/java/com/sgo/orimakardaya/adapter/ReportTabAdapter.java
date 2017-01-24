@@ -4,7 +4,6 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.content.Context;
 import android.support.v4.app.*;
-import android.util.Log;
 import android.view.ViewGroup;
 import com.viewpagerindicator.IconPagerAdapter;
 
@@ -16,8 +15,8 @@ public class ReportTabAdapter extends FragmentStatePagerAdapter implements IconP
 
     private final String[] TITLES;
     private final Context mContext;
-    public ListFragment mCurrentFragment;
-    public List<ListFragment> mListFrag;
+    private ListFragment mCurrentFragment;
+    private List<ListFragment> mListFrag;
 
     public ReportTabAdapter(FragmentManager fm, Context _context, List<ListFragment> _mListFrag,String[] _titles) {
         super(fm);

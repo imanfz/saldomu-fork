@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,13 +42,17 @@ import timber.log.Timber;
  */
 public class ListCollectionPayment extends ListFragment {
 
-    View v;
+    private View v;
 
-    ProgressDialog progdialog;
-    String commID,userID,accessKey;
-    ArrayList<String> _listType;
-    ArrayList<TempObjectData> listBankIB, listBankSMS, listBankScash;
-    CollectionBankAdapter adapter;
+    private ProgressDialog progdialog;
+    private String commID;
+    private String userID;
+    private String accessKey;
+    private ArrayList<String> _listType;
+    private ArrayList<TempObjectData> listBankIB;
+    private ArrayList<TempObjectData> listBankSMS;
+    private ArrayList<TempObjectData> listBankScash;
+    private CollectionBankAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,11 +67,11 @@ public class ListCollectionPayment extends ListFragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        _listType = new ArrayList<String>();
+        _listType = new ArrayList<>();
 
-        listBankIB = new ArrayList<TempObjectData>();
-        listBankSMS = new ArrayList<TempObjectData>();
-        listBankScash = new ArrayList<TempObjectData>();
+        listBankIB = new ArrayList<>();
+        listBankSMS = new ArrayList<>();
+        listBankScash = new ArrayList<>();
 
         Bundle bundle = getArguments();
         commID = bundle.getString(DefineValue.COMMUNITY_ID);
@@ -246,7 +249,7 @@ public class ListCollectionPayment extends ListFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void separateType(JSONArray _mdata) {
+    private void separateType(JSONArray _mdata) {
         try {
             for(int j=0 ; j<_mdata.length() ; j++) {
                 boolean flagSame = false;
@@ -305,7 +308,7 @@ public class ListCollectionPayment extends ListFragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void sentBankCollect(){
+    private void sentBankCollect(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();

@@ -29,13 +29,13 @@ import static java.util.concurrent.Executors.newSingleThreadExecutor;
 abstract class BaseViewController {
 
     private ExecutorService mExecutor;
-    protected PinFragment mPinFragment;
-    protected Context mContext;
-    protected PinputView mPinputView;
-    protected PinKeyboardView mKeyboardView;
-    protected TextView mHeaderText;
-    protected ProgressBar mProgressBar;
-    protected View mRootView;
+    PinFragment mPinFragment;
+    Context mContext;
+    PinputView mPinputView;
+    private PinKeyboardView mKeyboardView;
+    TextView mHeaderText;
+    ProgressBar mProgressBar;
+    View mRootView;
 
     /*package*/ BaseViewController(PinFragment f, View v) {
         mPinFragment = f;
@@ -89,11 +89,11 @@ abstract class BaseViewController {
         });
     }
 
-    protected PinFragmentConfiguration getConfig() {
+    PinFragmentConfiguration getConfig() {
         return mPinFragment.getConfig();
     }
 
-    protected Animator getOutAnim(View v) {
+    private Animator getOutAnim(View v) {
         float start = v.getX();
         float end = -v.getWidth();
         ObjectAnimator out = ObjectAnimator.ofFloat(v, "x", start, end);
@@ -102,7 +102,7 @@ abstract class BaseViewController {
         return out;
     }
 
-    protected Animator getInAnim(View v) {
+    private Animator getInAnim(View v) {
         float start = mRootView.getWidth();
         float end = (start / 2) - (v.getWidth() / 2);
         final ObjectAnimator in = ObjectAnimator.ofFloat(v, "x", start, end);
@@ -111,7 +111,7 @@ abstract class BaseViewController {
         return in;
     }
 
-    protected Animator getOutAndInAnim(final PinputView out, final View in) {
+    Animator getOutAndInAnim(final PinputView out, final View in) {
         Animator a = getOutAnim(out);
         a.addListener(new AnimatorListener() {
             @Override
@@ -140,11 +140,11 @@ abstract class BaseViewController {
         mPinputView.getText().clear();
     }
 
-    protected void runAsync(Runnable runnable) {
+    void runAsync(Runnable runnable) {
         getExecutor().submit(runnable);
     }
 
-    protected void postToMain(Runnable runnable) {
+    void postToMain(Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
 

@@ -45,23 +45,32 @@ import timber.log.Timber;
  */
 public class FragFriendsViewDetail extends Fragment {
 
-    View v;
-    RoundedQuickContactBadge friendsPicContent;
-    TextView tvName , tvPhone, tvEmail;
+    private RoundedQuickContactBadge friendsPicContent;
+    private TextView tvName;
+    private TextView tvPhone;
+    private TextView tvEmail;
 //    TextView tvID;
-    Button btnAsk, btnPay;
-    int RESULT;
-    String imgUrl, name, id, phone, email;
-    Boolean isLevel1,isRegisteredLevel;
-    String contactCenter,listContactPhone = "",listAddress = "";
-    SecurePreferences sp;
+private Button btnAsk;
+    private Button btnPay;
+    private int RESULT;
+    private String imgUrl;
+    private String name;
+    private String id;
+    private String phone;
+    private String email;
+    private Boolean isLevel1;
+    private Boolean isRegisteredLevel;
+    private String contactCenter;
+    private String listContactPhone = "";
+    private String listAddress = "";
+    private SecurePreferences sp;
     static boolean successUpgrade = false;
-    ProgressDialog progdialog;
-    Activity act;
+    private ProgressDialog progdialog;
+    private Activity act;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_friends_view_detail, container, false);
+        View v = inflater.inflate(R.layout.frag_friends_view_detail, container, false);
         return v;
     }
 
@@ -127,7 +136,7 @@ public class FragFriendsViewDetail extends Fragment {
             else
                 mPic.load(imgUrl)
                     .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .fit()
                     .centerCrop()
                     .into(friendsPicContent);
@@ -259,7 +268,7 @@ public class FragFriendsViewDetail extends Fragment {
         }
     }
 
-    public void getHelpList() {
+    private void getHelpList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();

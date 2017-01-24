@@ -31,42 +31,45 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content">
 
-            <ImageView android:background="@drawable/cell_shape"
-                       android:src="@drawable/ic_help_phone"
-                       android:layout_weight="1"
-                       android:layout_width="0dp"
-                       android:minHeight="50dp"></ImageView>
+            <ImageView
+                android:background="@drawable/cell_shape"
+                android:src="@drawable/ic_help_phone"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:minHeight="50dp" />
 
-            <TextView android:background="@drawable/cell_shape_white"
-                      android:padding="10dp"
-                      android:id="@+id/help_phone_value"
-                      android:layout_weight="7"
-                      android:layout_width="0dp"
-                      android:minHeight="50dp"
-                      android:textColor="@color/colorPrimary"
-                      android:textSize="@dimen/abc_text_size_medium_material"></TextView>
+            <TextView
+                android:background="@drawable/cell_shape_white"
+                android:padding="10dp"
+                android:id="@+id/help_phone_value"
+                android:layout_weight="7"
+                android:layout_width="0dp"
+                android:minHeight="50dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_medium_material" />
 
         </TableRow>
         <TableRow android:id="@+id/tr_mail" android:gravity="center" android:layout_width="match_parent" android:layout_height="wrap_content">
 
-            <ImageView android:background="@drawable/cell_shape"
-                       android:src="@drawable/ic_help_mail"
-                       android:layout_weight="1"
-                       android:layout_width="0dp"
-                       android:minHeight="50dp"></ImageView>
+            <ImageView
+                android:background="@drawable/cell_shape"
+                android:src="@drawable/ic_help_mail"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:minHeight="50dp" />
 
-            <TextView android:id="@+id/help_mail_value"
-                      android:background="@drawable/cell_shape_white"
-                      android:paddingTop="7dp"
-                      android:paddingBottom="7dp"
-                      android:paddingRight="10dp"
-                      android:paddingLeft="10dp"
-                      android:layout_weight="7"
-                      android:layout_width="0dp"
-                      android:minHeight="50dp"
-                      android:singleLine="false"
-                      android:textColor="@color/colorPrimary"
-                      android:textSize="@dimen/abc_text_size_small_material"></TextView>
+            <TextView
+                android:id="@+id/help_mail_value"
+                android:background="@drawable/cell_shape_white"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:layout_weight="7"
+                android:layout_width="0dp"
+                android:minHeight="50dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/abc_text_size_small_material" />
 
         </TableRow>
     </TableLayout>
