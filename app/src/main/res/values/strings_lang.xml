@@ -302,6 +302,7 @@
     <string name="billerinput_text_payment_remark_Pulsa">Nomor Handphone</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>
     <string name="billerinput_text_payment_remark_CC">Nomor Kartu Kredit</string>
+    <string name="billerinput_text_payment_remark_PAM">Nomor Pelanggan</string>
     <string name="billerinput_text_payment_remark_PST">Kode Pemesanan / Kode Pembayaran</string>
     <string name="billerinput_text_payment_remark_RMH">ID Pelanggan / No Kontrak</string>
     <string name="billerinput_text_payment_remark_asuransi">Nomor Polis</string>

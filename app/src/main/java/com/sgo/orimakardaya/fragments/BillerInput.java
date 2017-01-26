@@ -236,6 +236,12 @@ public class BillerInput extends Fragment {
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_CC));
             et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
         }
+        else if(biller_type_code.equals(billerType[6])){
+            buy_type = _buy_type[1];
+            buy_code = BillerActivity.PAYMENT_TYPE;
+            tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_PAM));
+            et_payment_remark.setInputType(InputType.TYPE_CLASS_NUMBER);
+        }
         else if(biller_type_code.equals(billerType[7])){
             buy_type = _buy_type[1];
             buy_code = BillerActivity.PAYMENT_TYPE;
