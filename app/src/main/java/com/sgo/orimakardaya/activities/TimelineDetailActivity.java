@@ -45,52 +45,52 @@ import timber.log.Timber;
  */
 public class TimelineDetailActivity extends BaseActivity {
 
-    SecurePreferences sp;
-    int RESULT;
-    String _ownerID,accessKey;
+    private int RESULT;
+    private String _ownerID;
+    private String accessKey;
 
-    RoundedQuickContactBadge iconPicture, iconPictureRight;
-    TextView fromId,toId,messageTransaction,amount,dateTime;
-    ImageView imageLove, imageSendComment;
-    EditText etComment;
-    ListView lvComment;
-    TextView textLove, textStatus;
-    boolean like = false;
-    List<likeModel> listLike;
+    private ImageView imageLove;
+    private ImageView imageSendComment;
+    private EditText etComment;
+    private ListView lvComment;
+    private TextView textLove;
+    private boolean like = false;
+    private List<likeModel> listLike;
 
-    List<commentModel> listComment;
-    TimelineCommentAdapter commentAdapter;
+    private List<commentModel> listComment;
+    private TimelineCommentAdapter commentAdapter;
 
-    String post_id, from_name, from_id, to_name, to_id, message, datetime, amountvalue, profpic, ccy, tx_status, with_profpic, type_post;
+    private String post_id;
+    private String from_id;
 
 
-    ProgressDialog mProg;
+    private ProgressDialog mProg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         InitializeToolbar();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        listLike = new ArrayList<likeModel>();
-        listComment = new ArrayList<commentModel>();
+        listLike = new ArrayList<>();
+        listComment = new ArrayList<>();
 
-        iconPicture = (RoundedQuickContactBadge) findViewById(R.id.icon_picture);
-        iconPictureRight = (RoundedQuickContactBadge) findViewById(R.id.icon_picture_right);
-        fromId = (TextView) findViewById(R.id.from_id);
-        toId = (TextView)findViewById(R.id.to_id);
-        messageTransaction = (TextView)findViewById(R.id.message_transaction);
-        amount = (TextView)findViewById(R.id.amount);
-        dateTime = (TextView)findViewById(R.id.datetime);
+        RoundedQuickContactBadge iconPicture = (RoundedQuickContactBadge) findViewById(R.id.icon_picture);
+        RoundedQuickContactBadge iconPictureRight = (RoundedQuickContactBadge) findViewById(R.id.icon_picture_right);
+        TextView fromId = (TextView) findViewById(R.id.from_id);
+        TextView toId = (TextView) findViewById(R.id.to_id);
+        TextView messageTransaction = (TextView) findViewById(R.id.message_transaction);
+        TextView amount = (TextView) findViewById(R.id.amount);
+        TextView dateTime = (TextView) findViewById(R.id.datetime);
         imageLove = (ImageView)findViewById(R.id.image_love);
         imageSendComment = (ImageView)findViewById(R.id.image_comment);
         etComment = (EditText)findViewById(R.id.detail_value_comment);
         textLove = (TextView)findViewById(R.id.detail_value_love);
         lvComment = (ListView)findViewById(R.id.lvComment);
-        textStatus = (TextView)findViewById(R.id.status);
+        TextView textStatus = (TextView) findViewById(R.id.status);
 
         Bitmap bm = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -104,18 +104,18 @@ public class TimelineDetailActivity extends BaseActivity {
         Intent i = getIntent();
         if(i != null) {
             post_id = i.getStringExtra("post_id");
-            from_name = i.getStringExtra("from_name");
+            String from_name = i.getStringExtra("from_name");
             from_id = i.getStringExtra("from_id");
-            to_name = i.getStringExtra("to_name");
-            to_id = i.getStringExtra("to_id");
-            message = i.getStringExtra("message");
-            datetime = i.getStringExtra("datetime");
-            amountvalue = i.getStringExtra("amount");
-            profpic = i.getStringExtra("profpic");
-            ccy = i.getStringExtra("ccy");
-            tx_status = i.getStringExtra("tx_status");
-            with_profpic = i.getStringExtra("with_profpic");
-            type_post = i.getStringExtra("type_post");
+            String to_name = i.getStringExtra("to_name");
+            String to_id = i.getStringExtra("to_id");
+            String message = i.getStringExtra("message");
+            String datetime = i.getStringExtra("datetime");
+            String amountvalue = i.getStringExtra("amount");
+            String profpic = i.getStringExtra("profpic");
+            String ccy = i.getStringExtra("ccy");
+            String tx_status = i.getStringExtra("tx_status");
+            String with_profpic = i.getStringExtra("with_profpic");
+            String type_post = i.getStringExtra("type_post");
 
             likeModel.deleteByPostId(post_id);
 
@@ -125,13 +125,13 @@ public class TimelineDetailActivity extends BaseActivity {
                     mPic.load(R.drawable.user_unknown_menu)
                             .error(roundedImage)
                             .fit().centerInside()
-                            .placeholder(R.anim.progress_animation)
+                            .placeholder(R.drawable.progress_animation)
                             .transform(new RoundImageTransformation())
                             .into(iconPictureRight);
                 else
                     mPic.load(with_profpic)
                             .error(R.drawable.user_unknown_menu)
-                            .placeholder(R.anim.progress_animation)
+                            .placeholder(R.drawable.progress_animation)
                             .fit()
                             .centerCrop()
                             .transform(new RoundImageTransformation())
@@ -149,13 +149,13 @@ public class TimelineDetailActivity extends BaseActivity {
                 mPic.load(R.drawable.user_unknown_menu)
                     .error(roundedImage)
                     .fit().centerInside()
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .transform(new RoundImageTransformation())
                     .into(iconPicture);
             else
                 mPic.load(profpic)
                     .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.anim.progress_animation)
+                    .placeholder(R.drawable.progress_animation)
                     .fit()
                     .centerCrop()
                     .transform(new RoundImageTransformation())
@@ -187,7 +187,7 @@ public class TimelineDetailActivity extends BaseActivity {
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(iconPicture);
         }
@@ -200,30 +200,32 @@ public class TimelineDetailActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
-                AlertDialog.Builder builder = new AlertDialog.Builder(TimelineDetailActivity.this);
-                builder.setTitle(getString(R.string.delete_comment));
-                builder.setMessage(getString(R.string.delete_comment_ask));
-                builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String comment_id = Integer.toString(listComment.get(index).getComment_id());
-                        String post_id = listComment.get(index).getPost_id();
-                        String from = listComment.get(index).getFrom_id();
-                        String to = listComment.get(index).getTo_id();
-                        listComment.clear();
-                        commentModel.deleteByPostId(post_id);
-                        removeComment(comment_id, post_id, from, to);
-                    }
-                });
-                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                if(listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(TimelineDetailActivity.this);
+                    builder.setTitle(getString(R.string.delete_comment));
+                    builder.setMessage(getString(R.string.delete_comment_ask));
+                    builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String comment_id = Integer.toString(listComment.get(index).getComment_id());
+                            String post_id = listComment.get(index).getPost_id();
+                            String from = listComment.get(index).getFrom_id();
+                            String to = listComment.get(index).getTo_id();
+                            listComment.clear();
+                            commentModel.deleteByPostId(post_id);
+                            removeComment(comment_id, post_id, from, to);
+                        }
+                    });
+                    builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog alertDelete = builder.create();
-                alertDelete.show();
+                    AlertDialog alertDelete = builder.create();
+                    alertDelete.show();
+                }
 
                 return false;
             }
@@ -269,16 +271,16 @@ public class TimelineDetailActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    public void setImageLove() {
-        if(like == false) {
+    private void setImageLove() {
+        if(!like) {
             imageLove.setImageResource(R.drawable.ic_like_inactive);
         }
-        else if(like == true){
+        else {
             imageLove.setImageResource(R.drawable.ic_like_active);
         }
     }
 
-    public void getCommentList() {
+    private void getCommentList() {
         try {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
@@ -301,7 +303,7 @@ public class TimelineDetailActivity extends BaseActivity {
                             Timber.d("isi params comment list:" + response.toString());
 
                             JSONArray mArrayComment = new JSONArray(response.getString(WebParams.DATA_COMMENTS));
-                            List<commentModel> mListComment = new ArrayList<commentModel>();
+                            List<commentModel> mListComment = new ArrayList<>();
                             for (int i = 0; i < mArrayComment.length(); i++) {
                                 int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
                                 boolean flagSameComment = false;
@@ -318,7 +320,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(flagSameComment == false) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -380,7 +382,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void addComment(String reply) {
+    private void addComment(String reply) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -409,7 +411,7 @@ public class TimelineDetailActivity extends BaseActivity {
                             Timber.d("isi params add comment:" + response.toString());
                             String data_comments = response.getString(WebParams.DATA_COMMENTS);
                             JSONArray mArrayComment = new JSONArray(data_comments);
-                            List<commentModel> mListComment = new ArrayList<commentModel>();
+                            List<commentModel> mListComment = new ArrayList<>();
                             for (int i = 0; i < mArrayComment.length(); i++) {
                                 int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
                                 boolean flagSameComment = false;
@@ -426,7 +428,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(flagSameComment == false) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -492,7 +494,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void removeComment(String comment_id, final String post_id, String from, String to) {
+    private void removeComment(String comment_id, final String post_id, String from, String to) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -520,7 +522,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
                             String data_comments = response.getString(WebParams.DATA_COMMENTS);
                             JSONArray mArrayComment = new JSONArray(data_comments);
-                            List<commentModel> mListComment = new ArrayList<commentModel>();
+                            List<commentModel> mListComment = new ArrayList<>();
                             for (int i = 0; i < mArrayComment.length(); i++) {
                                 int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
                                 boolean flagSameComment = false;
@@ -537,7 +539,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                     }
                                 }
 
-                                if(flagSameComment == false) {
+                                if(!flagSameComment) {
                                     String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                     String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                     String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -618,7 +620,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void getLikeList() {
+    private void getLikeList() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -643,7 +645,7 @@ public class TimelineDetailActivity extends BaseActivity {
                             Timber.d("isi response like list:" + response.toString());
 
                             JSONArray mArrayLike = new JSONArray(response.getString(WebParams.DATA_LIKES));
-                            List<likeModel> mListLike = new ArrayList<likeModel>();
+                            List<likeModel> mListLike = new ArrayList<>();
                             for (int i = 0; i < mArrayLike.length(); i++) {
                                 int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
@@ -732,7 +734,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void addLike() {
+    private void addLike() {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = true;
@@ -761,7 +763,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
                             String data_likes = response.getString(WebParams.DATA_LIKES);
                             JSONArray mArrayLike = new JSONArray(data_likes);
-                            List<likeModel> mListLike = new ArrayList<likeModel>();
+                            List<likeModel> mListLike = new ArrayList<>();
                             for (int i = 0; i < mArrayLike.length(); i++) {
                                 int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
@@ -804,7 +806,7 @@ public class TimelineDetailActivity extends BaseActivity {
                             test.showDialoginActivity(TimelineDetailActivity.this, message);
                         } else if (code.equals(WebParams.NO_DATA_CODE)) {
                             textLove.setText("");
-                            List<likeModel> mListLike = new ArrayList<likeModel>();
+                            List<likeModel> mListLike = new ArrayList<>();
                             insertLikeToDB(mListLike);
                             Timber.d("isi error add like:" + response.toString());
                         } else {
@@ -850,7 +852,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void removeLike(String like_id, String from, String to) {
+    private void removeLike(String like_id, String from, String to) {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = false;
@@ -880,7 +882,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
                             String data_likes = response.getString(WebParams.DATA_LIKES);
                             JSONArray mArrayLike = new JSONArray(data_likes);
-                            List<likeModel> mListLike = new ArrayList<likeModel>();
+                            List<likeModel> mListLike = new ArrayList<>();
                             for (int i = 0; i < mArrayLike.length(); i++) {
                                 int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
@@ -929,7 +931,7 @@ public class TimelineDetailActivity extends BaseActivity {
                             listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
                             listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
                             listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
-                            List<likeModel> mListLike = new ArrayList<likeModel>();
+                            List<likeModel> mListLike = new ArrayList<>();
                             insertLikeToDB(mListLike);
                             Timber.d("isi error remove like:"+ response.toString());
                         } else {
@@ -976,7 +978,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     }
 
-    public void insertLikeToDB(List<likeModel> mListLike){
+    private void insertLikeToDB(List<likeModel> mListLike){
         likeModel.deleteByPostId(post_id);
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
@@ -985,7 +987,6 @@ public class TimelineDetailActivity extends BaseActivity {
         Timber.d("arraylike length:"+ String.valueOf(mListLike.size()));
         if(mListLike.size()>0){
             for (int i = 0; i < mListLike.size(); i++) {
-                mTm = new likeModel();
                 mTm = mListLike.get(i);
                 mTm.save();
                 Timber.d("idx array like:"+ String.valueOf(i));
@@ -1006,7 +1007,7 @@ public class TimelineDetailActivity extends BaseActivity {
         });
     }
 
-    public void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
+    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         commentModel mTm;
@@ -1014,7 +1015,6 @@ public class TimelineDetailActivity extends BaseActivity {
         Timber.d("arrayComment length:"+ String.valueOf(mListComment.size()));
         if(mListComment.size()>0){
             for (int i = 0; i < mListComment.size(); i++) {
-                mTm = new commentModel();
                 mTm = mListComment.get(i);
                 mTm.save();
                 Timber.d("idx array comment:"+ String.valueOf(i));
@@ -1070,17 +1070,13 @@ public class TimelineDetailActivity extends BaseActivity {
         });
     }
 
-    ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(TimelineDetailActivity.this)) {
-                if (like == false) {
-                    like = true;
-                } else if (like == true) {
-                    like = false;
-                }
+                like = !like;
 //            String custName = sp.getString(CoreApp.CUST_NAME, getString(R.string.text_strip));
-                if (like == false) {
+                if (!like) {
                     imageLove.setImageResource(R.drawable.ic_like_inactive);
 
                     for (int i = 0; i < listLike.size(); i++) {
@@ -1092,7 +1088,7 @@ public class TimelineDetailActivity extends BaseActivity {
                         }
                     }
 
-                } else if (like == true) {
+                } else {
                     imageLove.setImageResource(R.drawable.ic_like_active);
                     addLike();
                 }
@@ -1101,7 +1097,7 @@ public class TimelineDetailActivity extends BaseActivity {
         }
     };
 
-    ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
+    private ImageView.OnClickListener imageCommentListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
             String reply = etComment.getText().toString();
@@ -1130,7 +1126,7 @@ public class TimelineDetailActivity extends BaseActivity {
         return R.layout.activity_timeline_detail;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_timeline_detail));
     }
@@ -1146,7 +1142,7 @@ public class TimelineDetailActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setLove() {
+    private void setLove() {
         String peopleLove = "";
         for(int i = 0 ; i < listLike.size() ; i++) {
             if(i == listLike.size()-1) {

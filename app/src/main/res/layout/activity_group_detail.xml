@@ -166,11 +166,12 @@
                     android:src="@drawable/ic_comment"/>
 
 
-            <ListView android:id="@+id/lvComment"
-                      android:paddingLeft="10dp"
-                      android:divider="@null"
-                      android:layout_width="match_parent"
-                      android:layout_height="wrap_content"></ListView>
+            <ListView
+                android:id="@+id/lvComment"
+                android:paddingLeft="10dp"
+                android:divider="@null"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

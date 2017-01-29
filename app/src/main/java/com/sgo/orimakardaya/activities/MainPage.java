@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Patterns;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -75,7 +74,7 @@ import timber.log.Timber;
 public class MainPage extends BaseActivity{
 
     public static final int REQUEST_FINISH = 0 ;//untuk Request Code dari child activity ke parent activity
-    public static final int RESULT_ERROR = -1 ;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
+    private static final int RESULT_ERROR = -1 ;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
     public static final int RESULT_LOGOUT = 1;//untuk Result Code dari child activity ke parent activity kalau sukses (aplikasi auto logout)
     public static final int RESULT_NORMAL = 2 ;//untuk Result Code dari child activity ke parent activity kalau normal (aplikasi close ke parent activity)
     public static final int RESULT_BALANCE = 3;
@@ -91,19 +90,19 @@ public class MainPage extends BaseActivity{
     private final static int FIRST_SCREEN_INTRO = 2;
 
     public static String action_id = "";
-    protected static boolean activityVisible;
+    private static boolean activityVisible;
     private static int AmountNotif = 0;
 
-    String flagLogin = DefineValue.STRING_NO;
-    String userID;
-    String accessKey;
-    SecurePreferences sp;
-    Fragment mContent;
-    NavigationDrawMenu mNavDrawer;
-    FragmentManager mFragmentManager;
+    private String flagLogin = DefineValue.STRING_NO;
+    private String userID;
+    private String accessKey;
+    private SecurePreferences sp;
+    private Fragment mContent;
+    private NavigationDrawMenu mNavDrawer;
+    private FragmentManager mFragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    ProgressDialog progdialog;
+    private ProgressDialog progdialog;
     private RelativeLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
     private FrameLayout mRightDrawerRelativeLayout;
@@ -120,6 +119,9 @@ public class MainPage extends BaseActivity{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Obtain the FirebaseAnalytics instance.
+        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
@@ -232,6 +234,7 @@ public class MainPage extends BaseActivity{
         }
     };
 
+
     private Handler handler=new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -294,7 +297,7 @@ public class MainPage extends BaseActivity{
         isBoundUserProfile = false;
     }
 
-    public void InitializeNavDrawer(){
+    private void InitializeNavDrawer(){
         mFragmentManager = getSupportFragmentManager();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
@@ -419,7 +422,7 @@ public class MainPage extends BaseActivity{
 //        }
 //    }
 
-    public void getDataListMember(){
+    private void getDataListMember(){
         try{
 
             String comm_id = sp.getString(DefineValue.COMMUNITY_ID,"");
@@ -543,19 +546,19 @@ public class MainPage extends BaseActivity{
         mth.start();
     }
 
-    public void showChangePassword(){
+    private void showChangePassword(){
             Intent i = new Intent(this, ChangePassword.class);
             i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
             switchActivity(i, ACTIVITY_RESULT);
     }
 
-    public void showMyProfile(){
+    private void showMyProfile(){
         Intent i = new Intent(this, MyProfileActivity.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }
 
-    public void showCreatePin() {
+    private void showCreatePin() {
         Intent i = new Intent(this, CreatePIN.class);
         switchActivity(i, MainPage.ACTIVITY_RESULT);
 
@@ -565,7 +568,7 @@ public class MainPage extends BaseActivity{
 //----------------------------------------------------------------------------------------------------------------
 
 
-    public void openFirstScreen(int index){
+    private void openFirstScreen(int index){
         Intent i;
         switch(index){
             case FIRST_SCREEN_LOGIN :
@@ -577,7 +580,7 @@ public class MainPage extends BaseActivity{
             default:
                 i = new Intent(this,LoginActivity.class);
                 break;
-        };
+        }
         startActivity(i);
         this.finish();
     }
@@ -641,7 +644,7 @@ public class MainPage extends BaseActivity{
     public void switchLogout() {
         sentLogout();
     }
-    public void Logout() {
+    private void Logout() {
 
         String balance = sp.getString(DefineValue.BALANCE, "");
         String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
@@ -651,11 +654,11 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
-        mEditor.commit();
+        mEditor.apply();
         openFirstScreen(FIRST_SCREEN_LOGIN);
     }
 	
-	public void sentLogout(){
+	private void sentLogout(){
         try{
             if(progdialog != null && !progdialog.isShowing()) {
                 progdialog = DefinedDialog.CreateProgressDialog(this, "");
@@ -739,7 +742,7 @@ public class MainPage extends BaseActivity{
             }
             if(resultCode == RESULT_BALANCE){
                 Timber.w("Masuk result Balance");
-                mNavDrawer.getBalance();
+                mNavDrawer.getBalance(true);
             }
             if(resultCode == RESULT_NOTIF){
                 Timber.w("Masuk result notif");
@@ -793,7 +796,7 @@ public class MainPage extends BaseActivity{
         }
     }
 
-    public Boolean isLogin(){
+    private Boolean isLogin(){
         flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if(flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
@@ -801,7 +804,7 @@ public class MainPage extends BaseActivity{
         return flagLogin.equals(DefineValue.STRING_YES);
     }
 
-    public void showLogoutDialog(){
+    private void showLogoutDialog(){
         AlertDialog.Builder alertbox=new AlertDialog.Builder(this);
         alertbox.setTitle("Warning");
         alertbox.setMessage("Exit Application?");
@@ -931,7 +934,7 @@ public class MainPage extends BaseActivity{
 //        if(mBH !=null)
 //            mBH.getDataBalance();
         if(mNavDrawer != null)
-            mNavDrawer.getBalance();
+            mNavDrawer.getBalance(true);
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));

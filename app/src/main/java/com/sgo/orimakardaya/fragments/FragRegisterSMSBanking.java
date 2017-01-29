@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -42,21 +41,28 @@ import timber.log.Timber;
  */
 public class FragRegisterSMSBanking extends Fragment {
 
-    View v, layout_dll;
+    private View v;
+    private View layout_dll;
 
-    listbankModel mLB;
-    SecurePreferences sp;
-    ArrayList<String> bankName;
-    ProgressDialog progdialog;
-    EditText etPhone, etAccNo;
-    Spinner spinBankName;
-    TextView tvDOB;
-    Button btnRegister;
+    private listbankModel mLB;
+    private SecurePreferences sp;
+    private ArrayList<String> bankName;
+    private ProgressDialog progdialog;
+    private EditText etPhone;
+    private EditText etAccNo;
+    private Spinner spinBankName;
+    private TextView tvDOB;
+    private Button btnRegister;
 
-    String dedate = null, date_dob = null;
-    String custID,bank_name,userID,accessKey;
+    private String dedate = null;
+    private String date_dob = null;
+    private String custID;
+    private String bank_name;
+    private String userID;
+    private String accessKey;
 
-    DateFormat fromFormat,toFormat2;
+    private DateFormat fromFormat;
+    private DateFormat toFormat2;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -81,8 +87,8 @@ public class FragRegisterSMSBanking extends Fragment {
         fromFormat = new SimpleDateFormat("yyyy-MM-dd");
         toFormat2 = new SimpleDateFormat("dd-M-yyyy");
 
-        bankName = new ArrayList<String>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, bankName);
+        bankName = new ArrayList<>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankName);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinBankName.setAdapter(adapter);
         spinBankName.setOnItemSelectedListener(spinnerNamaBankListener);
@@ -91,7 +97,7 @@ public class FragRegisterSMSBanking extends Fragment {
     }
 
 
-    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -117,7 +123,7 @@ public class FragRegisterSMSBanking extends Fragment {
         return v;
     }
 
-    public void getBankList(){
+    private void getBankList(){
         try{
             if(progdialog == null)
                 progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
@@ -210,7 +216,7 @@ public class FragRegisterSMSBanking extends Fragment {
     }
 
 
-    public void insertBankList(JSONArray arrayJson){
+    private void insertBankList(JSONArray arrayJson){
         try {
 
             mLB = new listbankModel();
@@ -241,7 +247,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     }
 
-    TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
+    private TextView.OnClickListener textDOBListener = new TextView.OnClickListener() {
         @Override
         public void onClick(View v) {
             Calendar now = Calendar.getInstance();
@@ -255,7 +261,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     };
 
-    DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
+    private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
             dedate = dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
@@ -270,7 +276,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     };
 
-    Button.OnClickListener btnGetTokenListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnGetTokenListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -287,7 +293,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     };
 
-    public void sentInquiryMobileJTM(final String _bank_name){
+    private void sentInquiryMobileJTM(final String _bank_name){
         try{
             if(progdialog == null)
                 progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
@@ -365,7 +371,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     }
 
-    public void getDataSB() {
+    private void getDataSB() {
         try {
             if(progdialog == null)
                 progdialog = DefinedDialog.CreateProgressDialog(getActivity(),"");
@@ -509,7 +515,7 @@ public class FragRegisterSMSBanking extends Fragment {
         }
     }
 
-    void showDialog(final String _bank_name,final String _no_hp , final String _token_id) {
+    private void showDialog(final String _bank_name, final String _no_hp, final String _token_id) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -545,7 +551,7 @@ public class FragRegisterSMSBanking extends Fragment {
         dialog.show();
     }
 
-    public boolean inputValidation() {
+    private boolean inputValidation() {
         if (etPhone.getText().toString().length() == 0 || etPhone.getText().toString().equals("")) {
             etPhone.requestFocus();
             etPhone.setError(getString(R.string.regist1_validation_nohp));

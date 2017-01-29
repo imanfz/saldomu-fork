@@ -38,16 +38,15 @@ import timber.log.Timber;
  */
 public class HelpFragment extends Fragment {
 
-    SecurePreferences sp;
-    View v;
-    Activity act;
-    String ownerId,accessKey;
+    private SecurePreferences sp;
+    private View v;
+    private Activity act;
+    private String ownerId;
+    private String accessKey;
 
-    ListView mListView;
-
-    ArrayList<HelpModel> listHelp;
-    HelpAdapter mAdapter;
-    ProgressDialog progdialog;
+    private ArrayList<HelpModel> listHelp;
+    private HelpAdapter mAdapter;
+    private ProgressDialog progdialog;
 
     public static HelpFragment newInstance() {
         return new HelpFragment();
@@ -69,7 +68,7 @@ public class HelpFragment extends Fragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         listHelp = new ArrayList<>();
-        mListView = (ListView) v.findViewById(R.id.lvHelpCenter);
+        ListView mListView = (ListView) v.findViewById(R.id.lvHelpCenter);
 
         getHelpList();
 
@@ -77,7 +76,7 @@ public class HelpFragment extends Fragment {
         mListView.setAdapter(mAdapter);
     }
 
-    public void getHelpList() {
+    private void getHelpList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();

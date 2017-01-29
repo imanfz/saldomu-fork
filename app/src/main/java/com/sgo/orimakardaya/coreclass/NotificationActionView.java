@@ -88,12 +88,12 @@ public class NotificationActionView extends RelativeLayout
 		mText.setVisibility((mCount == 0) ? View.GONE : View.VISIBLE);
 	}
 	
-	public void setCountDelta(int delta)
+	private void setCountDelta(int delta)
 	{
 		setCount(Math.max(0, getCount() + delta));
 	}
 	
-	public int getCount()
+	private int getCount()
 	{
 		return mCount;
 	}
@@ -218,12 +218,12 @@ public class NotificationActionView extends RelativeLayout
 		int count;
 		
 		
-		protected SavedState(Parcelable superState)
+		SavedState(Parcelable superState)
 		{
 			super(superState);
 		}
 		
-		protected SavedState(Parcel source)
+		SavedState(Parcel source)
 		{
 			super(source);
 			count = source.readInt();

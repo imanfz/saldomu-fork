@@ -9,12 +9,11 @@ import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 
 /**
- * Created by thinkpad on 6/3/2015.
+ * Created by sgo on 6/3/2015.
  */
 public class AboutAppsActivity extends BaseActivity {
 
-    int RESULT;
-    TextView versionDetail;
+    private int RESULT;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,7 +21,7 @@ public class AboutAppsActivity extends BaseActivity {
 
         InitializeToolbar();
 
-        versionDetail = (TextView) findViewById(R.id.version_detail);
+        TextView versionDetail = (TextView) findViewById(R.id.version_detail);
         try
         {
             String app_ver = this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
@@ -37,7 +36,7 @@ public class AboutAppsActivity extends BaseActivity {
         RESULT = MainPage.RESULT_NORMAL;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.title_about_app));
     }

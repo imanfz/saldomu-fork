@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -32,12 +31,16 @@ import timber.log.Timber;
  */
 public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
-    SecurePreferences sp;
-    String mValuePin;
-    String memberID, commID, confirmPin,userID,accessKey;
-    Boolean isRegist=false;
+    private SecurePreferences sp;
+    private String mValuePin;
+    private String memberID;
+    private String commID;
+    private String confirmPin;
+    private String userID;
+    private String accessKey;
+    private Boolean isRegist=false;
 
-    ProgressDialog mProg;
+    private ProgressDialog mProg;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,7 +94,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         return R.layout.create_pin;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         if(!isRegist) setActionBarIcon(R.drawable.ic_arrow_left);
         else disableHomeIcon();
         setActionBarTitle(getString(R.string.create_pin));
@@ -126,7 +129,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         else finishChild();
     }
 
-    public void sendCreatePin() {
+    private void sendCreatePin() {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
@@ -208,7 +211,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         }
     }
 
-    public void finishChild(){
+    private void finishChild(){
         if(!isRegist) {
             setResult(MainPage.RESULT_NORMAL);
         }
@@ -229,6 +232,5 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
             setResult(MainPage.RESULT_LOGOUT);
             finish();
         }
-        else return;
     }
 }

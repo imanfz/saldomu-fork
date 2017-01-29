@@ -2,11 +2,12 @@ package com.sgo.orimakardaya.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -16,11 +17,16 @@ import com.sgo.orimakardaya.Beans.listbankModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.activities.PulsaAgentActivity;
+import com.sgo.orimakardaya.activities.RegisterSMSBankingActivity;
+import com.sgo.orimakardaya.activities.TopUpActivity;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.orimakardaya.coreclass.ErrorDefinition;
 import com.sgo.orimakardaya.coreclass.InetHandler;
+import com.sgo.orimakardaya.coreclass.LevelClass;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
+import com.sgo.orimakardaya.dialogs.AlertDialogFrag;
 import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
 import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import org.apache.http.Header;
@@ -40,20 +46,36 @@ import timber.log.Timber;
  */
 public class PulsaAgentDescription extends Fragment {
 
-    View v;
-    SecurePreferences sp;
-    TextView tv_operator_value, tv_id_cust, tv_nominal;
-    Spinner spin_payment_options;
-    Button btn_submit,btn_cancel;
-    ProgressDialog progdialog;
+    private View v;
+    private SecurePreferences sp;
+    private TextView tv_operator_value;
+    private TextView tv_id_cust;
+    private TextView tv_nominal;
+    private Spinner spin_payment_options;
+    private Button btn_submit;
+    private Button btn_cancel;
+    private ProgressDialog progdialog;
 
-    List<String> paymentData;
+    private List<String> paymentData;
     private List<listbankModel> mDataPayment;
-    ArrayAdapter<String> adapterPaymentOptions;
-    listbankModel mTempBank;
+    private ArrayAdapter<String> adapterPaymentOptions;
+    private listbankModel mTempBank;
 
-    String cust_id, member_id, phone_number, item_id, item_name, payment_name, comm_id, comm_name, comm_code,
-            api_key, callback_url,share_type, operator_id, operator_name,accessKey;
+    private String cust_id;
+    private String member_id;
+    private String phone_number;
+    private String item_id;
+    private String item_name;
+    private String payment_name;
+    private String comm_id;
+    private String comm_name;
+    private String comm_code;
+    private String api_key;
+    private String callback_url;
+    private String share_type;
+    private String operator_id;
+    private String operator_name;
+    private String accessKey;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -86,11 +108,11 @@ public class PulsaAgentDescription extends Fragment {
         tv_operator_value.setText(operator_name);
         tv_nominal.setText(item_name);
 
-        paymentData = new ArrayList<String>();
+        paymentData = new ArrayList<>();
         adapterPaymentOptions = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,paymentData){
             @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                View v = null;
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+                View v;
 
                 // If this is the initial dummy entry, make it hidden
                 if (position == 0) {
@@ -130,7 +152,7 @@ public class PulsaAgentDescription extends Fragment {
         return v;
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(payment_name.equals(getString(R.string.billerinput_text_spinner_default_payment))){
             spin_payment_options.requestFocus();
             Toast.makeText(getActivity(),getString(R.string.billerinput_validation_spinner_default_payment),Toast.LENGTH_LONG).show();
@@ -140,7 +162,7 @@ public class PulsaAgentDescription extends Fragment {
         return true;
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -154,14 +176,14 @@ public class PulsaAgentDescription extends Fragment {
         }
     };
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             getActivity().finish();
         }
     };
 
-    Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
+    private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
@@ -211,7 +233,7 @@ public class PulsaAgentDescription extends Fragment {
         switchFragment(newFrag, PulsaAgentActivity.FRAG_PULSA_DESCRIPTION,null,true);
     }
 
-    public void sentPaymentDAP(){
+    private void sentPaymentDAP(){
         try{
             progdialog.show();
 
@@ -321,7 +343,7 @@ public class PulsaAgentDescription extends Fragment {
         }
     }
 
-    public void getBankDAP(){
+    private void getBankDAP(){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -343,9 +365,9 @@ public class PulsaAgentDescription extends Fragment {
                             String arrayBank = response.getString(WebParams.BANK_DATA);
                             if(!arrayBank.equals("")) {
                                 JSONArray mData = new JSONArray(arrayBank);
-                                mDataPayment = new ArrayList<listbankModel>();
-                                ArrayList<String> tempDataPaymentName = new ArrayList<String>();
-                                ArrayList<listbankModel> tempMDataPayment = new ArrayList<listbankModel>();
+                                mDataPayment = new ArrayList<>();
+                                ArrayList<String> tempDataPaymentName = new ArrayList<>();
+                                ArrayList<listbankModel> tempMDataPayment = new ArrayList<>();
 
                                 paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
@@ -442,7 +464,7 @@ public class PulsaAgentDescription extends Fragment {
         }
     }
 
-    public void sentDataReqToken(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String _product_code, final String fee,
+    private void sentDataReqToken(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String _product_code, final String fee,
                                   final String _bank_code){
         try{
 
@@ -479,9 +501,38 @@ public class PulsaAgentDescription extends Fragment {
                             test.showDialoginActivity(getActivity(),message);
                         }else {
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                            switch (code) {
+                                case "0059":
+                                    showDialogSMS(mTempBank.getBank_name());
+                                    break;
+                                case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance);
+
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
+                                        }
+                                    });
+                                    dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(PulsaAgentDescription.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    break;
+                                default:
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getFragmentManager().popBackStack();
+                                    break;
+                            }
                         }
                         btn_submit.setEnabled(true);
                         if(progdialog.isShowing())
@@ -527,17 +578,51 @@ public class PulsaAgentDescription extends Fragment {
         }
     }
 
+    private void showDialogSMS(final String _nama_bank) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
+        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+
+        final LevelClass levelClass = new LevelClass(getActivity());
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.topup_dialog_not_registered));
+        Message.setText(getString(R.string.topup_not_registered,_nama_bank));
+        btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
+        if(levelClass.isLevel1QAC())
+            btnDialogOTP.setText(getString(R.string.ok));
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!levelClass.isLevel1QAC()) {
+                    Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
+                    switchActivity(newIntent);
+                }
+
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainPage.REQUEST_FINISH) {
-            if(resultCode == MainPage.RESULT_NORMAL){
-            }
-        }
     }
 
 
-    void showDialog(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String fee, final String product_code, final String bank_code) {
+    private void showDialog(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String fee, final String product_code, final String bank_code) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -567,7 +652,7 @@ public class PulsaAgentDescription extends Fragment {
         dialog.show();
     }
 
-    public class PaymentNameComparator implements Comparator<listbankModel>
+    private class PaymentNameComparator implements Comparator<listbankModel>
     {
         public int compare(listbankModel left, listbankModel right) {
             return left.getProduct_name().compareTo(right.getProduct_name());

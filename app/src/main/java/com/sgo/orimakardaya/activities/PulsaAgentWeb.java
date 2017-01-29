@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.http.SslError;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.*;
 import android.webkit.*;
@@ -42,14 +40,22 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     private WebView webview;
     private String app_name = "SGO Plus Payment Gateaway";
     private String SGO_PLUS_URL = "";
-    String masterDomainSGOplus,userID,accessKey;
-    String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
-    String prodDomainSGOPlus = "https://secure.sgo.co.id/";
-    String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
-    String bankName, bankProduct,bankCode, paymentName, item_name, operator_name;
-    Boolean isBCA, isDisconnected;
-    Intent mIntent;
-    ProgressDialog out;
+    private String masterDomainSGOplus;
+    private String userID;
+    private String accessKey;
+    private String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
+    private String prodDomainSGOPlus = "https://secure.sgo.co.id/";
+    private String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
+    String bankName;
+    private String bankProduct;
+    private String bankCode;
+    private String paymentName;
+    private String item_name;
+    private String operator_name;
+    Boolean isBCA;
+    private Boolean isDisconnected;
+    private Intent mIntent;
+    private ProgressDialog out;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,13 +124,13 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         setResult(MainPage.RESULT_NORMAL);
     }
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public int gen_numb() {
+    private int gen_numb() {
         Random r = new Random( System.currentTimeMillis() );
         return ((1 + r.nextInt(9)) * 100000000 + r.nextInt(100000000));
     }
@@ -135,10 +141,11 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     }
 
     @SuppressWarnings("deprecation")
-    public void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
-                        final String fee, final String amount, final String reportType, final String commId,
-                        final String transType,final String shareType) {
+    private void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
+                         final String fee, final String amount, final String reportType, final String commId,
+                         final String transType, final String shareType) {
         webview = (WebView) findViewById(R.id.webview);
+        assert webview != null;
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -205,9 +212,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     }
 
 
-    public void getTrxStatus(final String userName, final String date, final String txId, final String userId,
-                             final String totalAmount, final String fee, final String amount, final String reportType,
-                             final String comm_id,final String transtype, final String shareType){
+    private void getTrxStatus(final String userName, final String date, final String txId, final String userId,
+                              final String totalAmount, final String fee, final String amount, final String reportType,
+                              final String comm_id, final String transtype, final String shareType){
         try{
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
@@ -257,7 +264,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.w("Error Koneksi get trx status", throwable.toString());
+                    Log.w("Error get trx status", throwable.toString());
                 }
             });
         }catch (Exception e){
@@ -265,7 +272,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         }
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -380,7 +387,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         return super.onKeyDown(keyCode, event);
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.sgoplusweb_ab_title));
     }

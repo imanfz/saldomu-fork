@@ -48,7 +48,8 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginRight="40dp"
                 android:layout_marginLeft="40dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="8dp"
+                android:baselineAligned="false">
 
                 <com.balysv.materialripple.MaterialRippleLayout
                     android:id="@+id/layout_btn_resend"
@@ -327,13 +328,13 @@
                         android:layout_gravity="center_vertical"
                         android:hint="@string/regist2_edithint_otp"
                         android:inputType="number|numberPassword"
-                        android:singleLine="true"
                         android:textColorHint="@color/semi_transparant"
                         android:textColor="@color/grey_1000b"
                         android:textStyle="bold"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:maxLines="1" />
 
                 </LinearLayout>
 

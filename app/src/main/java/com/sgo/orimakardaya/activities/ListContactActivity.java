@@ -16,8 +16,6 @@ import timber.log.Timber;
  */
 public class ListContactActivity extends BaseActivity {
 
-    FragmentManager fragmentManager;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +27,7 @@ public class ListContactActivity extends BaseActivity {
             }
 
             ListContacts listContact = new ListContacts();
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.list_contact_content, listContact,"listContact");
             fragmentTransaction.commit();
@@ -67,7 +65,7 @@ public class ListContactActivity extends BaseActivity {
         return true;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.list_contact_title));
     }

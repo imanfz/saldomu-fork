@@ -1,16 +1,7 @@
 package com.sgo.orimakardaya.Beans;
 
-import com.activeandroid.Model;
-import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-import com.sgo.orimakardaya.coreclass.WebParams;
-
-import org.json.JSONObject;
-
-import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 /**

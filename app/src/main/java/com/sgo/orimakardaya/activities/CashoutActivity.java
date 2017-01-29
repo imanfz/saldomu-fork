@@ -22,7 +22,6 @@ import timber.log.Timber;
  * Created by thinkpad on 11/20/2015.
  */
 public class CashoutActivity extends BaseActivity {
-    FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class CashoutActivity extends BaseActivity {
             else
                 newFragment = new FragCashOut();
 
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.cashout_confirm_content, newFragment,"cashout");
             fragmentTransaction.commit();
@@ -76,7 +75,7 @@ public class CashoutActivity extends BaseActivity {
         return R.layout.activity_cashout_confirm;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_cash_out));
     }

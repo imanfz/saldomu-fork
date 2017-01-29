@@ -9,10 +9,8 @@ import com.activeandroid.Model;
 import com.activeandroid.TableInfo;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
-import com.activeandroid.util.SQLiteUtils;
 import com.sgo.orimakardaya.coreclass.WebParams;
 
 import org.json.JSONObject;
@@ -98,7 +96,7 @@ public class BalanceModel extends Model implements Parcelable {
         readFromParcel(in);
     }
 
-    public void readFromParcel(Parcel in)
+    private void readFromParcel(Parcel in)
     {
         // We just need to read back each
         // field in the order that it was

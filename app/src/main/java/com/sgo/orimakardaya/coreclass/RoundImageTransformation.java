@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.coreclass;/*
   Created by Administrator on 12/15/2014.
  */
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -13,6 +12,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+
 import com.squareup.picasso.Transformation;
 
 import java.lang.Override;
@@ -43,7 +44,7 @@ public class RoundImageTransformation extends Drawable implements Transformation
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void draw(@NonNull Canvas canvas) {
         canvas.drawOval(mRectF, mPaint);
     }
 

@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#80FFFFFF"
         >
 
     <LinearLayout android:id="@+id/myfriends_bottom_layout"
@@ -185,8 +184,7 @@
 
                 <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
                         android:id="@+id/friends_pic_content"
-                        android:layout_centerInParent="true"
-                        android:layout_height="@dimen/friends_pic_content"
+                    android:layout_height="@dimen/friends_pic_content"
                         android:layout_width="@dimen/friends_pic_content"
                         android:scaleType="centerCrop"/>
 

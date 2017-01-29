@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -53,22 +52,52 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
     public final static String TAG = "BILLER_CONFIRM";
 
-    View v;
-    String tx_id,merchant_type,ccy_id,amount,item_name,cust_id, payment_name, amount_desire,fee,total_amount,
-            shareType, bank_code, product_code,product_payment_type,biller_name,userID,accessKey,biller_type_code;
-    TextView tv_item_name_value,tv_amount_value,tv_id_cust, tv_payment_name, tv_fee_value, tv_total_amount_value;
-    EditText et_token_value;
-    Button btn_submit,btn_cancel,btn_resend;
+    private View v;
+    private String tx_id;
+    private String merchant_type;
+    private String ccy_id;
+    private String amount;
+    private String item_name;
+    private String cust_id;
+    private String payment_name;
+    private String amount_desire;
+    private String fee;
+    private String total_amount;
+    private String shareType;
+    private String bank_code;
+    private String product_code;
+    private String product_payment_type;
+    private String biller_name;
+    private String userID;
+    private String accessKey;
+    private String biller_type_code;
+    private TextView tv_item_name_value;
+    private TextView tv_amount_value;
+    private TextView tv_id_cust;
+    private TextView tv_payment_name;
+    private TextView tv_fee_value;
+    private TextView tv_total_amount_value;
+    private EditText et_token_value;
+    private Button btn_submit;
+    private Button btn_cancel;
+    private Button btn_resend;
     private int max_token_resend = 3;
     private int buy_code;
     private int attempt;
     private int failed;
-    Boolean is_input_amount, is_display_amount, is_sgo_plus, isPIN, isFacebook = false, isShowDescription = false, isPLN = false;
-    ProgressDialog progdialog;
-    JSONArray isi_field, isi_value;
-    ImageView mIconArrow;
-    TableLayout mTableLayout;
-    SecurePreferences sp;
+    private Boolean is_input_amount;
+    private Boolean is_display_amount;
+    private Boolean is_sgo_plus;
+    private Boolean isPIN;
+    Boolean isFacebook = false;
+    private Boolean isShowDescription = false;
+    private Boolean isPLN = false;
+    private ProgressDialog progdialog;
+    private JSONArray isi_field;
+    private JSONArray isi_value;
+    private ImageView mIconArrow;
+    private TableLayout mTableLayout;
+    private SecurePreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -99,7 +128,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         initializeLayout();
     }
 
-    public void initializeLayout(){
+    private void initializeLayout(){
 
         Bundle args = getArguments();
         cust_id = args.getString(DefineValue.CUST_ID,"");
@@ -147,7 +176,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 View layout_btn_resend = v.findViewById(R.id.layout_btn_resend);
                 btn_resend = (Button) v.findViewById(R.id.billertoken_btn_resend);
                 et_token_value = (EditText) layoutOTP.findViewById(R.id.billertoken_token_value);
-                int max_length_token = 4;
+                int max_length_token;
                 if(product_payment_type.equals(DefineValue.BANKLIST_TYPE_SMS)){
                     if(bank_code.equals("114"))
                         max_length_token = 5;
@@ -211,7 +240,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 TableRow layout_table_row;
                 String value_detail_field,value_detail_value;
                 Iterator keys = mDataDesc.keys();
-                List<String> tempList = new ArrayList<String>();
+                List<String> tempList = new ArrayList<>();
 
                 while(keys.hasNext()) {
                     tempList.add((String) keys.next());
@@ -262,7 +291,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
     }
 
-    View.OnClickListener descriptionClickListener = new View.OnClickListener() {
+    private View.OnClickListener descriptionClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
@@ -304,7 +333,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         setHasOptionsMenu(true);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -347,7 +376,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
-    Button.OnClickListener resendListener = new Button.OnClickListener() {
+    private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -409,7 +438,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             getTrxStatus(tx_id,args.getString(DefineValue.BILLER_COMM_ID),_amount);
-                            setResultActivity(MainPage.RESULT_BALANCE);
+                            setResultActivity();
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -587,7 +616,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     }
 
 
-    public void getTrxStatus(final String txId, String comm_id, final String _amount){
+    private void getTrxStatus(final String txId, String comm_id, final String _amount){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
@@ -807,7 +836,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -843,15 +872,15 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
     }
 
-    private void setResultActivity(int result){
+    private void setResultActivity(){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.setResultActivity(result);
+        fca.setResultActivity();
     }
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -861,7 +890,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         });
     }
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             exit();
@@ -869,7 +898,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     };
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_token_value.getText().toString().length()==0){
             et_token_value.requestFocus();
             et_token_value.setError(this.getString(R.string.regist2_validation_otp));
@@ -918,7 +947,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         fca.togglerBroadcastReceiver(_on,myReceiver);
     }
 
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle mBundle = intent.getExtras();
@@ -930,6 +959,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
             if(mBundle != null){
                 Object[] pdus = (Object[]) mBundle.get("pdus");
+                assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
                 for (int i = 0; i < mSMS.length ; i++){
@@ -961,14 +991,14 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         }
     };
 
-    public final void insertTokenEdit(String _kode_otp, String _member_kode){
+    private void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             et_token_value.setText(_kode_otp);
         }
     }
 
-    public void exit(){
+    private void exit(){
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }

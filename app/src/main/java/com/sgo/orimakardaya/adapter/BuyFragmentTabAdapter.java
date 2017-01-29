@@ -7,19 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.fragments.ListCollection;
 import com.sgo.orimakardaya.fragments.TabBuyItem;
-import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import timber.log.Timber;
 
 public class BuyFragmentTabAdapter extends FragmentStatePagerAdapter {
 

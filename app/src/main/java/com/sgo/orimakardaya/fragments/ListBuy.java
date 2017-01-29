@@ -1,12 +1,10 @@
 package com.sgo.orimakardaya.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,50 +12,35 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
+
 import com.sgo.orimakardaya.Beans.Account_Collection_Model;
 import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.adapter.BuyFragmentTabAdapter;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DateTimeFormat;
 import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmChangeListener;
-import timber.log.Timber;
 
 /*
   Created by Administrator on 1/30/2015.
  */
-public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class ListBuy extends Fragment {
 
-    View v,layout_empty;
-    TabPageIndicator tabs;
-    ViewPager pager;
-    BuyFragmentTabAdapter adapternya;
-    ProgressDialog out;
-    ListBuyRF mWorkFragment;
+    private View v;
+    private View layout_empty;
+    private TabPageIndicator tabs;
+    private ViewPager pager;
+    private BuyFragmentTabAdapter adapternya;
+    private ProgressDialog out;
+    private ListBuyRF mWorkFragment;
     private RealmChangeListener realmListener;
-    ArrayList<String> Title_tab;
+    private ArrayList<String> Title_tab;
 //    String userID,accessKey;
 
     private InformationDialog dialogI;
@@ -179,11 +162,6 @@ public class ListBuy extends Fragment implements InformationDialog.OnDialogOkCal
             out.dismiss();
         pager.setVisibility(View.VISIBLE);
         tabs.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void onOkButton() {
 
     }
 

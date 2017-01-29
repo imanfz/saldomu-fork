@@ -10,7 +10,6 @@ import android.net.NetworkInfo;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.*;
 import android.webkit.*;
 import android.widget.Button;
@@ -46,14 +45,19 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private WebView webview;
     private String app_name = "SGO Plus Payment Gateaway";
     private String SGO_PLUS_URL = "";
-    String masterDomainSGOplus,userID,accessKey;
-    String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
-    String prodDomainSGOPlus = "https://secure.sgo.co.id/";
-    String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
-    String bankName, bankProduct,bankCode;
-    Boolean isBCA, isDisconnected;
-    Intent mIntent;
-    ProgressDialog out;
+    private String masterDomainSGOplus;
+    private String userID;
+    private String accessKey;
+    private String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
+    private String prodDomainSGOPlus = "https://secure.sgo.co.id/";
+    private String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
+    private String bankName;
+    private String bankProduct;
+    private String bankCode;
+    Boolean isBCA;
+    private Boolean isDisconnected;
+    private Intent mIntent;
+    private ProgressDialog out;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -119,13 +123,13 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         setResult(MainPage.RESULT_NORMAL);
     }
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public int gen_numb() {
+    private int gen_numb() {
         Random r = new Random( System.currentTimeMillis() );
         return ((1 + r.nextInt(9)) * 100000000 + r.nextInt(100000000));
     }
@@ -136,10 +140,11 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     }
 
     @SuppressWarnings("deprecation")
-    public void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
-                        final String fee, final String amount, final String reportType, final String commId,
-                        final String transType,final String shareType) {
+    private void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
+                         final String fee, final String amount, final String reportType, final String commId,
+                         final String transType, final String shareType) {
         webview = (WebView) findViewById(R.id.webview);
+        assert webview != null;
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
@@ -170,15 +175,20 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Timber.d("isi url tombol-tombolnya:"+ url);
-                if (url.contains("isclose=1")){
-                    setResult(MainPage.RESULT_BALANCE);
-                    getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                                 fee, amount,reportType,commId,transType, shareType);
+                if(URLUtil.isValidUrl(url)) {
+                    if (url.contains("isclose=1")) {
+                        setResult(MainPage.RESULT_BALANCE);
+                            getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
+                                    fee, amount, reportType, commId, transType, shareType);
+                        Timber.wtf("masuk is close");
+                    }
+                    else if (url.contains("isback=1")){
+                        setResult(MainPage.RESULT_BALANCE);
+                        onOkButton();
+                    }
+                    else
+                        view.loadUrl(url);
                 }
-                else if (url.contains("isback=1")){
-                    setResult(MainPage.RESULT_BALANCE);
-                    onOkButton();
-                } else view.loadUrl(url);
 
                 return true;
             }
@@ -229,9 +239,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     }
 
 
-    public void getTrxStatus(final String userName, final String date, final String txId, final String userId,
-                             final String totalAmount, final String fee, final String amount, final String reportType,
-                             final String comm_id,final String transtype, final String shareType){
+    private void getTrxStatus(final String userName, final String date, final String txId, final String userId,
+                              final String totalAmount, final String fee, final String amount, final String reportType,
+                              final String comm_id, final String transtype, final String shareType){
         try{
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
@@ -322,7 +332,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         }
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -455,7 +465,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         return super.onKeyDown(keyCode, event);
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.sgoplusweb_ab_title));
     }

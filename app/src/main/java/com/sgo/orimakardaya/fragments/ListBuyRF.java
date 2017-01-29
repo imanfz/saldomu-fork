@@ -40,8 +40,9 @@ public class ListBuyRF extends Fragment{
     public static final String LISTBUYRF_TAG = "listbuyRF";
 
     View v;
-    String userID,accessKey;
-    SecurePreferences sp;
+    private String userID;
+    private String accessKey;
+    private SecurePreferences sp;
 
     private Realm realm;
 
@@ -64,15 +65,13 @@ public class ListBuyRF extends Fragment{
     }
 
 
-    public void getDataBiller(){
+    private void getDataBiller(){
         String date = realm.where(Biller_Type_Data_Model.class).findFirst().getLast_update();
 
         int compare = 100;
         if(date != null) {
-            Date dob = null;
-            Date now = null;
-            dob = DateTimeFormat.convertStringtoCustomDate(date);
-            now = DateTimeFormat.getCurrDate();
+            Date dob = DateTimeFormat.convertStringtoCustomDate(date);
+            Date now = DateTimeFormat.getCurrDate();
 
             if (dob != null) {
                 if (now != null) {
@@ -86,7 +85,7 @@ public class ListBuyRF extends Fragment{
     }
 
 
-    public void getBiller(){
+    private void getBiller(){
         try{
 
             MyApiClient.getBillerType(getActivity(),new JsonHttpResponseHandler() {
@@ -135,7 +134,7 @@ public class ListBuyRF extends Fragment{
         }
     }
 
-    public void getDataCollection(final JSONArray arrayBiller){
+    private void getDataCollection(final JSONArray arrayBiller){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMM_ACCOUNT_COLLECTION,

@@ -5,15 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.ViewGroup;
 
 import com.sgo.orimakardaya.fragments.FragFAQ;
 import com.sgo.orimakardaya.fragments.HelpFragment;
-import com.viewpagerindicator.IconPagerAdapter;
-
-import java.util.List;
 
 /**
  * Created by thinkpad on 1/14/2016.

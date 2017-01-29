@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -14,6 +13,7 @@ import com.sgo.orimakardaya.BuildConfig;
 import com.sgo.orimakardaya.R;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -40,7 +40,7 @@ public class MyApiClient {
         this.setmContext(_context);
     }
 
-    public static MyApiClient getInstance( ) {
+    private static MyApiClient getInstance() {
         return singleton;
     }
 
@@ -54,7 +54,7 @@ public class MyApiClient {
     public static Boolean IS_PROD = BuildConfig.isProdDomain;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
     public static Boolean IS_INTERNET_BANKING;
-    public static final String PRIVATE_KEY = "590mobil3";
+    private static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
 
@@ -64,9 +64,9 @@ public class MyApiClient {
 
     //Link webservices Signature
 
-    public static String LINK_REGISTRASI;
-    public static String LINK_VALID_REGISTRASI;
-    public static String LINK_LOGIN;
+    private static String LINK_REGISTRASI;
+    private static String LINK_VALID_REGISTRASI;
+    private static String LINK_LOGIN;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -75,22 +75,22 @@ public class MyApiClient {
     public static String LINK_SALDO;
     //public static final String LINK_BANK_LIST;
     public static String LINK_BANK_LIST;
-    public static String LINK_REQ_TOKEN_REGIST;
-    public static String LINK_GET_ALL_BANK;
+    private static String LINK_REQ_TOKEN_REGIST;
+    private static String LINK_GET_ALL_BANK;
     public static String LINK_TOPUP_PULSA_RETAIL;
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
-    public static String LINK_FORGOT_PASSWORD;
+    private static String LINK_FORGOT_PASSWORD;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
 
     public static String LINK_PROD_TOPUP_RETAIL;
-    public static String LINK_GET_BILLER_TYPE;
+    private static String LINK_GET_BILLER_TYPE;
     public static String LINK_LIST_BILLER;
     public static String LINK_DENOM_RETAIL;
-    public static String LINK_REQ_TOKEN_BILLER;
-    public static String LINK_CONFIRM_BILLER;
+    private static String LINK_REQ_TOKEN_BILLER;
+    private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
     public static String LINK_UPLOAD_PROFILE_PIC;
     public static String LINK_LIST_BANK_BILLER;
@@ -101,7 +101,7 @@ public class MyApiClient {
 
     public static String LINK_ASKFORMONEY_SUBMIT;
     public static String LINK_NOTIF_RETRIEVE;
-    public static String LINK_NOTIF_READ;
+    private static String LINK_NOTIF_READ;
 
     public static String LINK_REQ_TOKEN_P2P_NOTIF;
     public static String LINK_CONFIRM_TRANS_P2P_NOTIF;
@@ -120,7 +120,7 @@ public class MyApiClient {
     public static String LINK_ADD_LIKE;
     public static String LINK_REMOVE_LIKE;
 
-    public static String LINK_CREATE_PIN;
+    private static String LINK_CREATE_PIN;
     public static String LINK_CHANGE_PIN;
 
     public static String LINK_INQUIRY_BILLER;
@@ -131,16 +131,16 @@ public class MyApiClient {
     public static String LINK_BANK_ACCOUNT_COLLECTION;
     public static String LINK_TOP_UP_ACCOUNT_COLLECTION;
     public static String LINK_COMM_ACCOUNT_COLLECTION;
-    public static String LINK_COMM_ESPAY;
+    private static String LINK_COMM_ESPAY;
 
-	public static String LINK_APP_VERSION;
-    public static String LINK_HELP_LIST;
+	private static String LINK_APP_VERSION;
+    private static String LINK_HELP_LIST;
 
     public static String LINK_INQUIRY_MOBILE;
     public static String LINK_REQUEST_TOKEN_SB;
     public static String LINK_CONFIRM_TOKEN_SB;
 
-    public static String LINK_INSERT_PASSWORD;
+    private static String LINK_INSERT_PASSWORD;
     public static String LINK_REPORT_ESPAY;
 
     public static String LINK_INQUIRY_MOBILE_JATIM;
@@ -152,26 +152,26 @@ public class MyApiClient {
     public static String LINK_PAYMENT_DAP;
 	
 	public static String LINK_LOGOUT;
-    public static String LINK_CREATE_PIN_PASS;
+    private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
     public static String LINK_ASK4MONEY_REJECT;
 
-    public static String LINK_INQUIRY_CUST;
+    private static String LINK_INQUIRY_CUST;
     public static String LINK_EXEC_CUST;
 	
 	public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
-    public static String LINK_HELP_PIN;
+    private static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
     public static String LINK_DELTRX_WITHDRAW;
-    public static String LINK_CREATE_PASS;
+    private static String LINK_CREATE_PASS;
     public static String LINK_GET_FAILED_PIN;
-    public static String LINK_ATMTOPUP;
+    private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
-    public static String LINK_USER_PROFILE;
-    public static String LINK_INQUIRY_SMS;
+    private static String LINK_USER_PROFILE;
+    private static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
     public void InitializeAddress(){
@@ -282,12 +282,12 @@ public class MyApiClient {
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+            getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
+            getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
     }
 
@@ -305,7 +305,7 @@ public class MyApiClient {
 
 
 
-    public static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
+    private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
@@ -322,7 +322,7 @@ public class MyApiClient {
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
 
     private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-    public AsyncHttpClient syncHttpClient= new SyncHttpClient();
+    private AsyncHttpClient syncHttpClient= new SyncHttpClient();
 
     public static UUID getUUID(){
         return UUID.randomUUID();
@@ -359,42 +359,6 @@ public class MyApiClient {
         return hash;
     }
 
-    /*public static RequestParams getSignatureWithParams(String commID, String linknya, Context context){
-
-        String webServiceName = getWebserviceName(linknya);
-        SecurePreferences sp = new SecurePreferences(context);
-        String user_id = sp.getString(CoreApp.USERID_PHONE,"");
-        String access_key = sp.getString(CoreApp.ACCESS_KEY,"");
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String noID = commID + user_id;
-
-        String msgnya = uuidnya+dtime+APP_ID+webServiceName+noID;
-
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(access_key.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
-        RequestParams params = new RequestParams();
-        params.put(WebParams.RC_UUID, uuidnya);
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-
-        return params;
-    }*/
-
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key){
 
         String webServiceName = getWebserviceName(linknya);
@@ -429,7 +393,7 @@ public class MyApiClient {
         return params;
     }
 
-    public static byte[] encodeUrlSafe(byte[] data) {
+    private static byte[] encodeUrlSafe(byte[] data) {
         byte[] encode = Base64.encodeBase64(data);
         for (int i = 0; i < encode.length; i++) {
             if (encode[i] == '+') {
@@ -447,11 +411,11 @@ public class MyApiClient {
         getClient().setCookieStore(cookieStore);
     }
 
-    public static void get(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+    private static void get(Context mContext, String url, AsyncHttpResponseHandler responseHandler) {
         getClient().get(mContext, url, responseHandler);
     }
 
-    public static void post(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+    private static void post(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler);
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
@@ -466,7 +430,33 @@ public class MyApiClient {
         return getInstance().asyncHttpClient;
     }
 
-    private MySSLSocketFactory getSSLSocketFactory(){
+    public SSLSocketFactory getSSLSocketFactory(){
+        try {
+            // Get an instance of the Bouncy Castle KeyStore format
+            KeyStore trusted = KeyStore.getInstance("BKS");
+            // Get the raw resource, which contains the keystore with
+            // your trusted certificates (root and any intermediate certs)
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            try {
+                // Initialize the keystore with the provided trusted certificates
+                // Also provide the password of the keystore
+                trusted.load(in, PRIVATE_KEY.toCharArray());
+            } finally {
+                in.close();
+            }
+            // Pass the keystore to the SSLSocketFactory. The factory is responsible
+            // for the verification of the server certificate.
+            SSLSocketFactory sf = new SSLSocketFactory(trusted);
+            // Hostname verification from certificate
+            // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
+            sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            return sf;
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    private MySSLSocketFactory getUntrustSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
@@ -491,6 +481,7 @@ public class MyApiClient {
             throw new AssertionError(e);
         }
     }
+
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
@@ -936,11 +927,11 @@ public class MyApiClient {
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
-    public Context getmContext() {
+    private Context getmContext() {
         return mContext;
     }
 
-    public void setmContext(Context mContext) {
+    private void setmContext(Context mContext) {
         this.mContext = mContext;
     }
 

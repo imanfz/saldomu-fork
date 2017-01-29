@@ -52,16 +52,34 @@ import timber.log.Timber;
  */
 public class CollectionDescription extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
-    String txID,productCode,productName,commCode,commId,apiKey,callbackUrl,remark,bankName,jumlahnya,bankCode,fee,
-            shareType, topuptype,userID,accessKey;
-    Button btnSubmit,btnCancel,btnResend;
-    EditText et_token;
-    int max_token_resend = 3,max_length_token, attempt = -1;
-    ProgressDialog progdialog;
-    View v;
-    Boolean isPIN = false;
+    private String txID;
+    private String productCode;
+    private String productName;
+    private String commCode;
+    private String commId;
+    private String apiKey;
+    private String callbackUrl;
+    private String remark;
+    private String bankName;
+    private String jumlahnya;
+    private String bankCode;
+    private String fee;
+    private String shareType;
+    private String topuptype;
+    private String userID;
+    private String accessKey;
+    private Button btnSubmit;
+    private Button btnCancel;
+    private Button btnResend;
+    private EditText et_token;
+    private int max_token_resend = 3;
+    private int max_length_token;
+    private int attempt = -1;
+    private ProgressDialog progdialog;
+    private View v;
+    private Boolean isPIN = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -86,7 +104,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         initializeData();
     }
 
-    public void initializeData(){
+    private void initializeData(){
         Bundle args = getArguments();
 
         txID = args.getString(DefineValue.TX_ID,"");
@@ -164,7 +182,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
 
     }
 
-    public void changeTextBtnSub() {
+    private void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -180,7 +198,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         setHasOptionsMenu(true);
     }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
+    private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -210,7 +228,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     };
 
 
-    Button.OnClickListener resendListener = new Button.OnClickListener() {
+    private Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
@@ -440,7 +458,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     }
 
 
-    public void getTrxStatus(final String txId, String comm_id, final String _amount){
+    private void getTrxStatus(final String txId, String comm_id, final String _amount){
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
@@ -589,7 +607,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    void showDialog(String msg) {
+    private void showDialog(String msg) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -618,7 +636,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     }
 
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(et_token.getText().toString().length()==0){
             et_token.requestFocus();
             et_token.setError(this.getString(R.string.regist2_validation_otp));
@@ -636,7 +654,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     }
 
 
-    Button.OnClickListener cancelListener = new Button.OnClickListener() {
+    private Button.OnClickListener cancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             getFragmentManager().popBackStack();

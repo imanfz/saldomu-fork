@@ -1,10 +1,7 @@
 package com.sgo.orimakardaya.loader;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.MyApiClient;
 
 import org.apache.http.Header;
@@ -15,10 +12,10 @@ import timber.log.Timber;
 /**
  * Created by yuddistirakiki on 3/1/16.
  */
-public class GCMLoader {
+class GCMLoader {
 
-    public static final String BASE_URL = "http://116.90.162.173:18080/gcm/registerGCM.php";
-    public static final String APP_TYPE = "PIN";
+    private static final String BASE_URL = "http://116.90.162.173:18080/gcm/registerGCM.php";
+    private static final String APP_TYPE = "PIN";
     public GCMLoader(){
 
     }

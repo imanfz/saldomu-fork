@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.R;
@@ -22,9 +21,6 @@ import timber.log.Timber;
  */
 public class PayFriendsConfirmTokenActivity extends BaseActivity {
 
-    FragmentManager fragmentManager;
-    String _memberID;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +32,7 @@ public class PayFriendsConfirmTokenActivity extends BaseActivity {
             }
 
             SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-            _memberID = sp.getString(DefineValue.MEMBER_ID,"");
+            String _memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
             Intent intent    = getIntent();
             Bundle args = new Bundle();
@@ -49,7 +45,7 @@ public class PayFriendsConfirmTokenActivity extends BaseActivity {
             Fragment newFragment = new FragPayFriendsConfirm();
             newFragment.setArguments(args);
 
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.payfriends_confirm_token_content, newFragment,"payfriendconfirmtoken");
             fragmentTransaction.commit();
@@ -106,7 +102,7 @@ public class PayFriendsConfirmTokenActivity extends BaseActivity {
         return R.layout.activity_pay_friends_confirm_token;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.payfriends_ab_title_activity));
     }

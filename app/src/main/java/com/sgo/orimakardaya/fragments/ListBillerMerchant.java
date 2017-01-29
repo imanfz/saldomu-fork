@@ -1,15 +1,11 @@
 package com.sgo.orimakardaya.fragments;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
-import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.Biller_Data_Model;
 import com.sgo.orimakardaya.Beans.Biller_Type_Data_Model;
@@ -18,14 +14,7 @@ import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.adapter.EasyAdapter;
 import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
 import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,14 +30,16 @@ public class ListBillerMerchant extends ListFragment {
 
     public final static String TAG = "LIST_BILLER_MERCHANT";
 
-    View v;
-    String userID,accessKey,billerTypeCode;
-    List<Biller_Data_Model> mListBillerData;
-    Biller_Type_Data_Model mBillerType;
-    EasyAdapter adapter;
-    ArrayList<String> _data;
+    private View v;
+    private String userID;
+    private String accessKey;
+    private String billerTypeCode;
+    private List<Biller_Data_Model> mListBillerData;
+    private Biller_Type_Data_Model mBillerType;
+    private EasyAdapter adapter;
+    private ArrayList<String> _data;
     private RealmChangeListener realmListener;
-    Realm realm;
+    private Realm realm;
 
 
     @Override
@@ -87,7 +78,7 @@ public class ListBillerMerchant extends ListFragment {
         realm.addChangeListener(realmListener);
     }
 
-    public void initializeData(){
+    private void initializeData(){
         Bundle args = getArguments();
         billerTypeCode = args.getString(DefineValue.BILLER_TYPE,"");
 

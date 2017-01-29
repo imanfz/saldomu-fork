@@ -43,7 +43,7 @@ public class FragNotification extends Fragment {
 
 
 
-    View v;
+    private View v;
 
     private final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
     private NotificationListAdapter mAdapter;
@@ -54,7 +54,7 @@ public class FragNotification extends Fragment {
     private PtrFrameLayout mPtr;
     private View empty_layout;
     private NotificationModelClass tempMData;
-    ProgressDialog out;
+    private ProgressDialog out;
     private SecurePreferences sp;
     private boolean flagClaim = false;
 
@@ -75,7 +75,7 @@ public class FragNotification extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         _memberId = sp.getString(DefineValue.MEMBER_ID, "");
         _userid = sp.getString(DefineValue.USERID_PHONE, "");
         _profpic = sp.getString(DefineValue.IMG_URL, "");
@@ -136,7 +136,7 @@ public class FragNotification extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
+//                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(mAdapter.getItemCount() - 1);
 
                 /*if(viewHolder != null)
                     Log.d("on item visible idx position", "visible itemnya");
@@ -160,8 +160,6 @@ public class FragNotification extends Fragment {
         });
         sentRetrieveNotif(true);
         getActivity().setResult(MainPage.RESULT_NORMAL);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
 
@@ -198,26 +196,41 @@ public class FragNotification extends Fragment {
                 case NotificationActivity.TYPE_LIKE:
                     sentReadNotif(mObj.getNotif_id(), position);
                     Intent data = new Intent();
+                    String tempFromID;
                     data.putExtra(DefineValue.POST_ID,mObjDetail.getString(WebParams.POST_ID));
-                    data.putExtra(DefineValue.TO_ID,mObj.getFrom_id());
+                    data.putExtra(DefineValue.TO_ID,mObj.getTo_id());
 //                    data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
-                    data.putExtra(DefineValue.FROM_NAME,mObj.getFrom_name());
-                    if(mObj.getTo_id().equals(_userid))
+
+                    if(mObj.getNotif_type() == NotificationActivity.TYPE_PAID) {
+                        data.putExtra(DefineValue.MESSAGE, mObjDetail.getString(WebParams.DESC));
+                        tempFromID = mObjDetail.getString(WebParams.FROM);
+                    }else {
+                        data.putExtra(DefineValue.MESSAGE, mObjDetail.getString(WebParams.MESSAGE));
+                        tempFromID = mObjDetail.getString(WebParams.FROM_USER_ID);
+                    }
+
+                    if(tempFromID.equals(_userid)){
+                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
+                        data.putExtra(DefineValue.PROF_PIC,_profpic);
+                        data.putExtra(DefineValue.TO_NAME, mObj.getFrom_name());
+                        data.putExtra(DefineValue.WITH_PROF_PIC,mObj.getFrom_profile_picture());
+
+                    }else {
+                        data.putExtra(DefineValue.FROM_NAME,mObj.getFrom_name());
+                        data.putExtra(DefineValue.PROF_PIC,mObj.getFrom_profile_picture());
                         data.putExtra(DefineValue.TO_NAME, getString(R.string.you));
+                        data.putExtra(DefineValue.WITH_PROF_PIC,_profpic);
+                    }
+//                    if(mObj.getTo_id().equals(_userid))
 //                        data.putExtra(DefineValue.FROM_NAME,getString(R.string.you));
 
-                    data.putExtra(DefineValue.FROM_ID,mObj.getTo_id());
-
-                    if(mObj.getNotif_type() == NotificationActivity.TYPE_PAID)
-                        data.putExtra(DefineValue.MESSAGE,mObjDetail.getString(WebParams.DESC));
-                    else
-                        data.putExtra(DefineValue.MESSAGE,mObjDetail.getString(WebParams.MESSAGE));
+                    data.putExtra(DefineValue.FROM_ID,mObj.getFrom_id());
                     data.putExtra(DefineValue.DATE_TIME,mObj.getDate_time());
                     data.putExtra(DefineValue.CCY_ID,mObjDetail.getString(WebParams.CCY_ID));
                     data.putExtra(DefineValue.AMOUNT,mObjDetail.getString(WebParams.AMOUNT));
-                    data.putExtra(DefineValue.PROF_PIC,mObj.getFrom_profile_picture());
+//                    data.putExtra(DefineValue.PROF_PIC,_profpic);
                     data.putExtra(DefineValue.TX_STATUS,mObjDetail.getString(WebParams.TYPECAPTION));
-                    data.putExtra(DefineValue.WITH_PROF_PIC,_profpic);
+//                    data.putExtra(DefineValue.WITH_PROF_PIC,mObj.getFrom_profile_picture());
                     data.putExtra(DefineValue.POST_TYPE, mObjDetail.getString(WebParams.TYPEPOST));
                     if(mObj.getNotif_type() == NotificationActivity.TYPE_LIKE)
                         data.putExtra(DefineValue.NOTIF_TYPE, NotificationActivity.TYPE_LIKE);
@@ -244,7 +257,7 @@ public class FragNotification extends Fragment {
         }
     }
 
-    public boolean canScroolUp() {
+    private boolean canScroolUp() {
         //Log.wtf(" adapter get item count", String.valueOf(mAdapter.getItemCount()));
         //Log.wtf(" Recycle view sama dengan null", String.valueOf(mRecyclerView == null));
         //Log.wtf(" layout manager find first completely visilble item position", String.valueOf(mLayoutManager.findFirstCompletelyVisibleItemPosition()));
@@ -379,8 +392,10 @@ public class FragNotification extends Fragment {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        if (isDialog)
-                            out.dismiss();
+                        if (isDialog) {
+                            if(out.isShowing())
+                                out.dismiss();
+                        }
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.w("isi response Retrieve Notif:"+response.toString());
@@ -394,7 +409,7 @@ public class FragNotification extends Fragment {
 
                             JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
 
-                            String title = null, detail = null, time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
+                            String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
                             mData.clear();
                             mDataNotifDetail.clear();
                             int notif_type, image = 0;
@@ -426,12 +441,14 @@ public class FragNotification extends Fragment {
                                             case NotificationActivity.TYPE_LIKE:
                                                 image = 0;
                                                 title = from_name + " " + getString(R.string.notif_text_like_name) + " : ";
-                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                 break;
                                             case NotificationActivity.TYPE_COMMENT:
                                                 image = 0;
                                                 title = from_name + " " + getString(R.string.notif_text_comment_name) + " : ";
-                                                detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
                                                 break;
                                             case NotificationActivity.TYPE_TRANSFER:
                                                 image = R.drawable.ic_cash_in;
@@ -554,7 +571,8 @@ public class FragNotification extends Fragment {
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
                     if (isDialog)
-                        out.dismiss();
+                        if(out.isShowing())
+                            out.dismiss();
                     getActivity().setResult(MainPage.RESULT_NOTIF);
                     getActivity().finish();
                     Timber.w("Error Koneksi Notif Retrieve:"+throwable.toString());
@@ -565,7 +583,8 @@ public class FragNotification extends Fragment {
                     super.onCancel();
                     Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     if (isDialog)
-                        out.dismiss();
+                        if(out.isShowing())
+                            out.dismiss();
                     getActivity().setResult(MainPage.RESULT_NOTIF);
                     getActivity().finish();
                     Timber.w("Error Koneksi Notif Retrieve");
@@ -602,14 +621,16 @@ public class FragNotification extends Fragment {
 
                     try {
                         if (isDialog)
-                            out.dismiss();
+                            if(out.isShowing())
+                                out.dismiss();
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.w("isi response sent claim non member:" + response.toString());
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                        if (code.equals(WebParams.SUCCESS_CODE)) {
+//
+//                        } else
+                        if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -649,7 +670,8 @@ public class FragNotification extends Fragment {
                     else
                         Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
                     if (isDialog)
-                        out.dismiss();
+                        if(out.isShowing())
+                            out.dismiss();
                     getActivity().setResult(MainPage.RESULT_NOTIF);
                     getActivity().finish();
                     Timber.w("Error Koneksi claim non member:" + throwable.toString());
@@ -660,7 +682,8 @@ public class FragNotification extends Fragment {
                     super.onCancel();
                     Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     if (isDialog)
-                        out.dismiss();
+                        if(out.isShowing())
+                            out.dismiss();
                     getActivity().setResult(MainPage.RESULT_NOTIF);
                     getActivity().finish();
                     Timber.w("Error Koneksi claim non member");

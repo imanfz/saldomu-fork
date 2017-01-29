@@ -36,7 +36,7 @@ public class PinputView extends TextView {
     private static final String TAG = PinputView.class.getSimpleName();
     private static final String KEY_SAVED_INSTANCE_STATE = "com.venmo.pin.pinputview.state";
     private static final String KEY_SAVED_STATE_PIN = "com.venmo.pin.pinputview.savedPin";
-    public static final int VIBRATE_LENGTH_DEFAULT = 300;
+    private static final int VIBRATE_LENGTH_DEFAULT = 300;
 
     private int mCharPadding;
     private Pair<Drawable, Drawable>[] mDrawables;
@@ -48,7 +48,7 @@ public class PinputView extends TextView {
     private int mErrorVibrationLen = VIBRATE_LENGTH_DEFAULT;
 
     public interface OnCommitListener {
-        public void onPinCommit(PinputView view, String submission);
+        void onPinCommit(PinputView view, String submission);
     }
 
     public PinputView(Context context) {
@@ -184,7 +184,7 @@ public class PinputView extends TextView {
         setVibrateOnError(vibrate, PinputView.VIBRATE_LENGTH_DEFAULT);
     }
 
-    public void setVibrateOnError(boolean vibrate, int millis) {
+    private void setVibrateOnError(boolean vibrate, int millis) {
         mVibrateOnError = vibrate;
         mErrorVibrationLen = millis;
     }
@@ -225,7 +225,7 @@ public class PinputView extends TextView {
     }
 
     //TODO: maybe change this to setPin(Drawable) and use clone to make as many as we need
-    protected Drawable makeCharShape(float size, int color, Rect bounds) {
+    private Drawable makeCharShape(float size, int color, Rect bounds) {
         Shape shape = new OvalShape();
         shape.resize(size, size);
         ShapeDrawable drawable = new ShapeDrawable(shape);
@@ -235,7 +235,7 @@ public class PinputView extends TextView {
         return drawable;
     }
 
-    protected void animateDrawableIn(Drawable foreground, Drawable background) {
+    private void animateDrawableIn(Drawable foreground, Drawable background) {
         final ShapeDrawable front = (ShapeDrawable) foreground;
         final ShapeDrawable back = (ShapeDrawable) background;
         float to = ((ShapeDrawable) background).getShape().getWidth();

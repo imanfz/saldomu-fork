@@ -5,7 +5,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Menu;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
@@ -18,8 +17,6 @@ import timber.log.Timber;
  * Created by thinkpad on 6/12/2015.
  */
 public class RegisterSMSBankingActivity extends BaseActivity {
-
-    FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,7 @@ public class RegisterSMSBankingActivity extends BaseActivity {
             mBun.putString(DefineValue.BANK_NAME, bank_name);
             newFragment.setArguments(mBun);
 
-            fragmentManager = getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.register_sms_content, newFragment,"registersmsbanking");
             fragmentTransaction.commit();
@@ -84,7 +81,7 @@ public class RegisterSMSBankingActivity extends BaseActivity {
         return R.layout.activity_register_sms_banking;
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.title_register_sms_banking));
     }

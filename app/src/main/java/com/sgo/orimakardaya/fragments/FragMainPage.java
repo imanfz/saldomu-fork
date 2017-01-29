@@ -32,7 +32,7 @@ public class FragMainPage extends Fragment {
 
     private MainFragmentAdapter currentAdapternya;
     private PtrFrameLayout currentPtrFrame;
-    SecurePreferences sp;
+    private SecurePreferences sp;
     private View currentView;
 
     @Override
@@ -52,7 +52,7 @@ public class FragMainPage extends Fragment {
         TitlePageIndicator tabs;
         ViewPager pager;
         getActivity().invalidateOptionsMenu();
-        final List<BaseFragmentMainPage> mList = new ArrayList<BaseFragmentMainPage>();
+        final List<BaseFragmentMainPage> mList = new ArrayList<>();
         mList.add(new Home());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
@@ -133,27 +133,27 @@ public class FragMainPage extends Fragment {
         super.onAttach(activity);
     }
 
-    public MainFragmentAdapter getCurrentAdapternya() {
+    private MainFragmentAdapter getCurrentAdapternya() {
         return currentAdapternya;
     }
 
-    public void setCurrentAdapternya(MainFragmentAdapter currentAdapternya) {
+    private void setCurrentAdapternya(MainFragmentAdapter currentAdapternya) {
         this.currentAdapternya = currentAdapternya;
     }
 
-    public PtrFrameLayout getCurrentPtrFrame() {
+    private PtrFrameLayout getCurrentPtrFrame() {
         return currentPtrFrame;
     }
 
-    public void setCurrentPtrFrame(PtrFrameLayout currentPtrFrame) {
+    private void setCurrentPtrFrame(PtrFrameLayout currentPtrFrame) {
         this.currentPtrFrame = currentPtrFrame;
     }
 
-    public View getCurrentView() {
+    private View getCurrentView() {
         return currentView;
     }
 
-    public void setCurrentView(View currentView) {
+    private void setCurrentView(View currentView) {
         this.currentView = currentView;
     }
 

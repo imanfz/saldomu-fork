@@ -22,11 +22,9 @@ public class ListATM extends BaseActivity {
 
     private String[] _namaBank;
 
-    ExpandListATMAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, String> listDataChild;
-    SecurePreferences sp;
+    private List<String> listDataHeader;
+    private HashMap<String, String> listDataChild;
+    private SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,11 +36,11 @@ public class ListATM extends BaseActivity {
         _namaBank = getResources().getStringArray(R.array.listatm_namabank_list);
 
         // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.expand_list_atm);
+        ExpandableListView expListView = (ExpandableListView) findViewById(R.id.expand_list_atm);
         // preparing list data
         prepareListData();
 
-        listAdapter = new ExpandListATMAdapter(this, listDataHeader, listDataChild);
+        ExpandListATMAdapter listAdapter = new ExpandListATMAdapter(this, listDataHeader, listDataChild);
 
         // setting list adapter
         expListView.setAdapter(listAdapter);
@@ -50,8 +48,8 @@ public class ListATM extends BaseActivity {
     }
 
     private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, String>();
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<>();
 
         listDataHeader.addAll(Arrays.asList(_namaBank));
 
@@ -61,7 +59,7 @@ public class ListATM extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.atm));
     }

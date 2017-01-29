@@ -1,116 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_marginLeft="@dimen/abc_text_size_medium_material"
-                android:layout_marginTop="@dimen/abc_text_size_medium_material"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-    <TableLayout android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_centerInParent="true"
-                 android:stretchColumns="1">
-        <TableRow>
-            <TextView
-                    android:text="@string/report_dialog_text_userid"
-                    android:layout_weight="1"
-                    android:minEms="7"
-                    android:padding="3dip"
-                    />
-            <TextView
-                    android:id="@+id/dialog_report_userid_value"
-                    android:text="6281285229384"
-                    android:layout_weight="2"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="3dip" />
-        </TableRow>
-
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="8dp"
-                android:background="@color/grey_300"/>
-
-        <TableRow>
-            <TextView
-                    android:text="@string/report_dialog_text_adminname"
-                    android:layout_weight="0"
-                    android:padding="3dip" />
-            <TextView
-                    android:id="@+id/dialog_report_adminname_value"
-                    android:text="ADMIN BACKEND"
-                    android:layout_weight="2"
-                    android:layout_width="wrap_content"
-                    android:gravity="right"
-                    android:padding="3dip" />
-        </TableRow>
-
-        <View   android:id="@+id/lineAlias"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="8dp"
-                android:background="@color/grey_300"/>
-
-        <TableRow android:id="@+id/trAlias">
-            <TextView
-                android:text="@string/amount"
-                android:layout_weight="0"
-                android:padding="3dip" />
-            <TextView
-                android:id="@+id/dialog_report_amount_value"
-                android:text="IDR 12,00"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginLeft="@dimen/abc_text_size_medium_material"
+    android:layout_marginTop="@dimen/abc_text_size_medium_material"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1">
+    <TableRow>
+        <TextView
+                android:text="@string/report_dialog_text_userid"
                 android:layout_weight="1"
-                android:singleLine="true"
+                android:minEms="7"
+                android:padding="3dip"
+                />
+        <TextView
+                android:id="@+id/dialog_report_userid_value"
+                android:text="6281285229384"
+                android:layout_weight="2"
                 android:layout_width="wrap_content"
                 android:gravity="right"
                 android:padding="3dip" />
-        </TableRow>
+    </TableRow>
 
-        <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_margin="8dp"
-                android:background="@color/grey_300"/>
-
-        <TableRow>
-            <TextView
-                android:text="@string/fee"
-                android:layout_weight="0"
-                android:padding="3dip" />
-            <TextView
-                android:id="@+id/dialog_report_fee_value"
-                android:text="Rp. 200000"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:layout_width="wrap_content"
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
-
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="8dp"
             android:background="@color/grey_300"/>
 
-        <TableRow>
-            <TextView
-                android:text="@string/total_amount"
+    <TableRow>
+        <TextView
+                android:text="@string/report_dialog_text_adminname"
                 android:layout_weight="0"
                 android:padding="3dip" />
-            <TextView
-                android:id="@+id/dialog_report_total_amount_value"
-                android:text="bayar lawakan"
-                android:layout_weight="1"
-                android:singleLine="true"
+        <TextView
+                android:id="@+id/dialog_report_adminname_value"
+                android:text="ADMIN BACKEND"
+                android:layout_weight="2"
                 android:layout_width="wrap_content"
                 android:gravity="right"
                 android:padding="3dip" />
-        </TableRow>
+    </TableRow>
 
+    <View   android:id="@+id/lineAlias"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
 
-    </TableLayout>
+    <TableRow android:id="@+id/trAlias">
+        <TextView
+            android:text="@string/amount"
+            android:layout_weight="0"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_report_amount_value"
+            android:text="IDR 12,00"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip"
+            android:maxLines="1" />
+    </TableRow>
 
-</RelativeLayout>
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/fee"
+            android:layout_weight="0"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_report_fee_value"
+            android:text="Rp. 200000"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip"
+            android:maxLines="1" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/total_amount"
+            android:layout_weight="0"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_report_total_amount_value"
+            android:text="bayar lawakan"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip"
+            android:maxLines="1" />
+    </TableRow>
+
+</TableLayout>

@@ -10,7 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.Animation;
@@ -18,7 +17,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.*;
 import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BillerActivity;
 import com.sgo.orimakardaya.coreclass.DefineValue;
 import com.sgo.orimakardaya.coreclass.ReqPermissionClass;
 import com.sgo.orimakardaya.coreclass.ViewToBitmap;
@@ -40,10 +38,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private OnDialogOkCallback callback;
     private Activity mContext;
     private Boolean isActivty = false;
-    String trx_id;
+    private String trx_id;
     private ViewToBitmap viewToBitmap;
-    ImageView saveimage, shareimage;
-    ReqPermissionClass reqPermissionClass;
+    private ImageView saveimage;
+    private ImageView shareimage;
+    private ReqPermissionClass reqPermissionClass;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
 
@@ -115,9 +114,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-                View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
                 TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
-                desclayout.setVisibility(View.VISIBLE);
                 String source = args.getString(DefineValue.DETAIL,"");
                 String desc = "", value = "";
                 JSONObject mDataDesc;
@@ -568,7 +565,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     }
 
 
-    public void createTableDesc(String _desc_field, String _desc_value, TableLayout mTableLayout){
+    private void createTableDesc(String _desc_field, String _desc_value, TableLayout mTableLayout){
         try {
             JSONArray desc_field = new JSONArray(_desc_field);
             JSONArray desc_value = new JSONArray(_desc_value);

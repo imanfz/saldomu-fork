@@ -12,7 +12,11 @@ import com.sgo.orimakardaya.R;
 
 public class NotificationHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
-    public TextView name,detail,time,dll, btnAccept, btnReject, btnClaim;
+    public TextView name;
+    public TextView detail;
+    public TextView time;
+    public TextView dll;
+    public TextView btnReject;
     public ImageView icon;
     private ClickListener clickListener;
     public LinearLayout layout_button_ask, layout_button_claim;
@@ -26,9 +30,9 @@ public class NotificationHolder extends RecyclerView.ViewHolder implements View.
         icon = (ImageView)itemView.findViewById(R.id.img_notif);
         dll = (TextView)itemView.findViewById(R.id.txt_dll);
         iconPicture = (QuickContactBadge)itemView.findViewById(R.id.icon_picture);
-        btnAccept = (TextView)itemView.findViewById(R.id.btn_accept);
+        TextView btnAccept = (TextView) itemView.findViewById(R.id.btn_accept);
         btnReject = (TextView)itemView.findViewById(R.id.btn_reject);
-        btnClaim = (TextView)itemView.findViewById(R.id.btn_claim);
+        TextView btnClaim = (TextView) itemView.findViewById(R.id.btn_claim);
         layout_button_ask = (LinearLayout)itemView.findViewById(R.id.layout_button_ask);
         layout_button_claim = (LinearLayout)itemView.findViewById(R.id.layout_button_claim);
 

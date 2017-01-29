@@ -193,9 +193,8 @@
                         android:maxLength="17"
                         android:inputType="number"
                         android:hint="@string/cashout_nominal_hint"
-                        android:singleLine="true"
-                        android:paddingLeft="10dp"
-                        />
+                    android:paddingLeft="10dp"
+                    android:maxLines="1" />
 
             </LinearLayout>
 

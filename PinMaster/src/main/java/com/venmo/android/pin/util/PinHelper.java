@@ -60,7 +60,7 @@ public class PinHelper {
     public static void resetDefaultSavedPin(Context c) {
         getDefaultSharedPreferences(c).edit()
                 .clear()
-                .commit();
+                .apply();
     }
 
     public static boolean doesMatchDefaultPin(Context c, String pin) {
@@ -69,9 +69,7 @@ public class PinHelper {
             return validate(pin.toCharArray(),
                     getPinHashFromPreferences(def),
                     getSaltFromPreferences(def));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("error validating pin", e);
-        } catch (InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException("error validating pin", e);
         }
     }
@@ -83,9 +81,7 @@ public class PinHelper {
 
             // save salt & pin after successful hashing
             saveToPreferences(getDefaultSharedPreferences(context), salt, hash);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("error saving pin: ", e);
-        } catch (InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new RuntimeException("error saving pin: ", e);
         }
     }
@@ -94,7 +90,7 @@ public class PinHelper {
         prefs.edit()
                 .putString(KEY_PR_SALT, encode(salt))
                 .putString(KEY_PINPUT_PIN_HASH, encode(hash))
-                .commit();
+                .apply();
     }
 
     private static byte[] getSaltFromPreferences(SharedPreferences prefs) {

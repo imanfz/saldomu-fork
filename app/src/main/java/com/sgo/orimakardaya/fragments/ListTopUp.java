@@ -44,19 +44,26 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListTopUp extends ListFragment implements InformationDialog.OnDialogOkCallback {
+public class ListTopUp extends ListFragment {
 
-    View v,nodata_view,list_view;
-    TextView tv_textNoData;
-    Button btn_noData;
-    SecurePreferences sp;
-    ArrayList<String> _listType;
-    String listBankIB, listBankSMS,userID,accessKey,memberID;
-    EasyAdapter adapter;
-    ArrayList<listbankModel> mlistbankIB = null, mlistbankSMS = null;
-    Boolean is_full_activity = false;
+    private View v;
+    private View nodata_view;
+    private View list_view;
+    private TextView tv_textNoData;
+    private Button btn_noData;
+    private SecurePreferences sp;
+    private ArrayList<String> _listType;
+    private String listBankIB;
+    private String listBankSMS;
+    private String userID;
+    private String accessKey;
+    private String memberID;
+    private EasyAdapter adapter;
+    private ArrayList<listbankModel> mlistbankIB = null;
+    private ArrayList<listbankModel> mlistbankSMS = null;
+    private Boolean is_full_activity = false;
     Boolean isLevel1 = false;
-    LevelClass levelClass;
+    private LevelClass levelClass;
     private InformationDialog dialogI;
 
     @Override
@@ -90,7 +97,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
         if(mArgs != null && !mArgs.isEmpty())
             is_full_activity = mArgs.getBoolean(DefineValue.IS_ACTIVITY_FULL,false);
 
-        _listType = new ArrayList<String>();
+        _listType = new ArrayList<>();
 
         adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _listType);
 
@@ -116,7 +123,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
         setHasOptionsMenu(true);
     }
 
-    public void getBankList(){
+    private void getBankList(){
         try {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -248,7 +255,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
         }
     }
 
-    public void insertBankList(JSONArray arrayJson){
+    private void insertBankList(JSONArray arrayJson){
         listbankModel mLB;
         try {
 
@@ -270,7 +277,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
 
                 if(mLB.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                     if(mlistbankIB == null)
-                        mlistbankIB = new ArrayList<listbankModel>();
+                        mlistbankIB = new ArrayList<>();
 
                     mlistbankIB.add(mLB);
 
@@ -278,7 +285,7 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
 
                 if(mLB.getProduct_type().equals(DefineValue.BANKLIST_TYPE_SMS)){
                     if(mlistbankSMS == null)
-                        mlistbankSMS = new ArrayList<listbankModel>();
+                        mlistbankSMS = new ArrayList<>();
 
                     mlistbankSMS.add(mLB);
                 }
@@ -422,8 +429,4 @@ public class ListTopUp extends ListFragment implements InformationDialog.OnDialo
     }
 
 
-    @Override
-    public void onOkButton() {
-
-    }
 }

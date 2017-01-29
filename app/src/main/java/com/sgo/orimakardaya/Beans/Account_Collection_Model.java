@@ -1,8 +1,5 @@
 package com.sgo.orimakardaya.Beans;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;

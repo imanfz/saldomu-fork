@@ -17,13 +17,10 @@ import com.sgo.orimakardaya.adapter.ContactTabAdapter;
 import com.sgo.orimakardaya.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by thinkpad on 1/14/2016.
  */
-public class ContactTab extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class ContactTab extends Fragment {
 
     private ContactTabAdapter currentAdapternya;
     SecurePreferences sp;
@@ -85,11 +82,11 @@ public class ContactTab extends Fragment implements InformationDialog.OnDialogOk
         }
     }
 
-    public View getCurrentView() {
+    private View getCurrentView() {
         return currentView;
     }
 
-    public void setCurrentView(View currentView) {
+    private void setCurrentView(View currentView) {
         this.currentView = currentView;
     }
 
@@ -97,12 +94,8 @@ public class ContactTab extends Fragment implements InformationDialog.OnDialogOk
         return currentAdapternya;
     }
 
-    public void setCurrentAdapternya(ContactTabAdapter currentAdapternya) {
+    private void setCurrentAdapternya(ContactTabAdapter currentAdapternya) {
         this.currentAdapternya = currentAdapternya;
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
 }

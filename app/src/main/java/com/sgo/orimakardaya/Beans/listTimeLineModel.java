@@ -226,7 +226,7 @@ public class listTimeLineModel extends Model {
         return tx_status;
     }
 
-    public void setTx_status(String tx_status) {
+    private void setTx_status(String tx_status) {
         this.tx_status = tx_status;
     }
 
@@ -234,7 +234,7 @@ public class listTimeLineModel extends Model {
         return timeline_id;
     }
 
-    public void setTimeline_id(int timeline_id) {
+    private void setTimeline_id(int timeline_id) {
         this.timeline_id = timeline_id;
     }
 
@@ -242,7 +242,7 @@ public class listTimeLineModel extends Model {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    private void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 
@@ -250,7 +250,7 @@ public class listTimeLineModel extends Model {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    private void setAmount(String amount) {
         this.amount = amount;
     }
 
@@ -258,7 +258,7 @@ public class listTimeLineModel extends Model {
         return balance;
     }
 
-    public void setBalance(String balance) {
+    private void setBalance(String balance) {
         this.balance = balance;
     }
 
@@ -266,7 +266,7 @@ public class listTimeLineModel extends Model {
         return ccy_id;
     }
 
-    public void setCcy_id(String ccy_id) {
+    private void setCcy_id(String ccy_id) {
         this.ccy_id = ccy_id;
     }
 
@@ -274,7 +274,7 @@ public class listTimeLineModel extends Model {
         return numcomments;
     }
 
-    public void setNumcomments(String numcomments) {
+    private void setNumcomments(String numcomments) {
         this.numcomments = numcomments;
     }
 
@@ -282,7 +282,7 @@ public class listTimeLineModel extends Model {
         return numlikes;
     }
 
-    public void setNumlikes(String numlikes) {
+    private void setNumlikes(String numlikes) {
         this.numlikes = numlikes;
     }
 
@@ -290,7 +290,7 @@ public class listTimeLineModel extends Model {
         return numviews;
     }
 
-    public void setNumviews(String numviews) {
+    private void setNumviews(String numviews) {
         this.numviews = numviews;
     }
 
@@ -298,7 +298,7 @@ public class listTimeLineModel extends Model {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    private void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -306,7 +306,7 @@ public class listTimeLineModel extends Model {
         return owner_id;
     }
 
-    public void setOwner_id(String owner_id) {
+    private void setOwner_id(String owner_id) {
         this.owner_id = owner_id;
     }
 
@@ -314,7 +314,7 @@ public class listTimeLineModel extends Model {
         return owner_profile_picture;
     }
 
-    public void setOwner_profile_picture(String owner_profile_picture) {
+    private void setOwner_profile_picture(String owner_profile_picture) {
         this.owner_profile_picture = owner_profile_picture;
     }
 
@@ -322,7 +322,7 @@ public class listTimeLineModel extends Model {
         return post;
     }
 
-    public void setPost(String post) {
+    private void setPost(String post) {
         this.post = post;
     }
 
@@ -330,7 +330,7 @@ public class listTimeLineModel extends Model {
         return privacy;
     }
 
-    public void setPrivacy(String privacy) {
+    private void setPrivacy(String privacy) {
         this.privacy = privacy;
     }
 
@@ -338,7 +338,7 @@ public class listTimeLineModel extends Model {
         return share;
     }
 
-    public void setShare(String share) {
+    private void setShare(String share) {
         this.share = share;
     }
 
@@ -346,7 +346,7 @@ public class listTimeLineModel extends Model {
         return typecaption;
     }
 
-    public void setTypecaption(String typecaption) {
+    private void setTypecaption(String typecaption) {
         this.typecaption = typecaption;
     }
 
@@ -354,7 +354,7 @@ public class listTimeLineModel extends Model {
         return typepost;
     }
 
-    public void setTypepost(String typepost) {
+    private void setTypepost(String typepost) {
         this.typepost = typepost;
     }
 
@@ -362,7 +362,7 @@ public class listTimeLineModel extends Model {
         return with;
     }
 
-    public void setWith(String with) {
+    private void setWith(String with) {
         this.with = with;
     }
 
@@ -370,7 +370,7 @@ public class listTimeLineModel extends Model {
         return with_id;
     }
 
-    public void setWith_id(String with_id) {
+    private void setWith_id(String with_id) {
         this.with_id = with_id;
     }
 
@@ -378,7 +378,7 @@ public class listTimeLineModel extends Model {
         return with_profile_picture;
     }
 
-    public void setWith_profile_picture(String with_profile_picture) {
+    private void setWith_profile_picture(String with_profile_picture) {
         this.with_profile_picture = with_profile_picture;
     }
 
@@ -386,7 +386,7 @@ public class listTimeLineModel extends Model {
         return comment_id_1;
     }
 
-    public void setComment_id_1(String comment_id_1) {
+    private void setComment_id_1(String comment_id_1) {
         this.comment_id_1 = comment_id_1;
     }
 
@@ -394,7 +394,7 @@ public class listTimeLineModel extends Model {
         return comment_id_2;
     }
 
-    public void setComment_id_2(String comment_id_2) {
+    private void setComment_id_2(String comment_id_2) {
         this.comment_id_2 = comment_id_2;
     }
 
@@ -402,7 +402,7 @@ public class listTimeLineModel extends Model {
         return from_name_1;
     }
 
-    public void setFrom_name_1(String from_name_1) {
+    private void setFrom_name_1(String from_name_1) {
         this.from_name_1 = from_name_1;
     }
 
@@ -410,7 +410,7 @@ public class listTimeLineModel extends Model {
         return from_name_2;
     }
 
-    public void setFrom_name_2(String from_name_2) {
+    private void setFrom_name_2(String from_name_2) {
         this.from_name_2 = from_name_2;
     }
 
@@ -418,7 +418,7 @@ public class listTimeLineModel extends Model {
         return from_profile_picture_1;
     }
 
-    public void setFrom_profile_picture_1(String from_profile_picture_1) {
+    private void setFrom_profile_picture_1(String from_profile_picture_1) {
         this.from_profile_picture_1 = from_profile_picture_1;
     }
 
@@ -426,7 +426,7 @@ public class listTimeLineModel extends Model {
         return from_profile_picture_2;
     }
 
-    public void setFrom_profile_picture_2(String from_profile_picture_2) {
+    private void setFrom_profile_picture_2(String from_profile_picture_2) {
         this.from_profile_picture_2 = from_profile_picture_2;
     }
 
@@ -434,7 +434,7 @@ public class listTimeLineModel extends Model {
         return reply_1;
     }
 
-    public void setReply_1(String reply_1) {
+    private void setReply_1(String reply_1) {
         this.reply_1 = reply_1;
     }
 
@@ -442,7 +442,7 @@ public class listTimeLineModel extends Model {
         return reply_2;
     }
 
-    public void setReply_2(String reply_2) {
+    private void setReply_2(String reply_2) {
         this.reply_2 = reply_2;
     }
 
@@ -450,7 +450,7 @@ public class listTimeLineModel extends Model {
         return comments;
     }
 
-    public void setComments(String comments) {
+    private void setComments(String comments) {
         this.comments = comments;
     }
 
@@ -458,7 +458,7 @@ public class listTimeLineModel extends Model {
         return isLike;
     }
 
-    public void setIsLike(String isLike) {
+    private void setIsLike(String isLike) {
         this.isLike = isLike;
     }
 
@@ -466,7 +466,7 @@ public class listTimeLineModel extends Model {
         return likes;
     }
 
-    public void setLikes(String likes) {
+    private void setLikes(String likes) {
         this.likes = likes;
     }
 }

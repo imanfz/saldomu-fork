@@ -20,16 +20,8 @@ import com.viewpagerindicator.CirclePageIndicator;
  */
 public class FirstScreen extends Fragment {
 
-    Button btnDaftar,btnLogin;
-    Fragment mFragment;
-    View v;
-
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private Button btnLogin;
+    private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,7 +33,7 @@ public class FirstScreen extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        btnDaftar = (Button) v.findViewById(R.id.btn_daftar);
+        Button btnDaftar = (Button) v.findViewById(R.id.btn_daftar);
         btnLogin = (Button) v.findViewById(R.id.btn_login);
 
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.firstscreen_pager);
@@ -56,15 +48,15 @@ public class FirstScreen extends Fragment {
         btnLogin.setOnClickListener(bukaLogin);
     }
 
-    Button.OnClickListener bukaReg = new Button.OnClickListener(){
+    private Button.OnClickListener bukaReg = new Button.OnClickListener(){
         @Override
         public void onClick(View view) {
-            mFragment = new Regist1();
+            Fragment mFragment = new Regist1();
             switchFragment(mFragment,"reg1",true);
         }
     };
 
-    Button.OnClickListener bukaLogin = new Button.OnClickListener(){
+    private Button.OnClickListener bukaLogin = new Button.OnClickListener(){
         @Override
         public void onClick(View view) {
             Intent i = new Intent(getActivity(),LoginActivity.class);

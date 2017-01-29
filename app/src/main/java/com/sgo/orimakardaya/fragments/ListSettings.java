@@ -2,7 +2,6 @@ package com.sgo.orimakardaya.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,12 +24,12 @@ import com.sgo.orimakardaya.coreclass.LevelClass;
 /**
  * Created by thinkpad on 6/11/2015.
  */
-public class ListSettings extends ListFragment implements InformationDialog.OnDialogOkCallback {
-    View v;
+public class ListSettings extends ListFragment {
+    private View v;
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
     private InformationDialog dialogI;
-    Boolean isLevel1;
+    private Boolean isLevel1;
     private LevelClass levelClass;
 
     @Override
@@ -87,7 +86,6 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Intent i;
-        Fragment f;
 
         if(isLevel1){
             switch (position) {
@@ -148,8 +146,4 @@ public class ListSettings extends ListFragment implements InformationDialog.OnDi
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
 }

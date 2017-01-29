@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.android.ex.chips.BaseRecipientAdapter;
@@ -41,24 +40,30 @@ import timber.log.Timber;
 /*
  * Created by thinkpad on 3/17/2015.
  */
-public class FragAskForMoney extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class FragAskForMoney extends Fragment {
 
-    View v;
-    ImageView imgProfile, imgRecipients;
-    TextView txtName,txtNumberRecipients;
-    RecipientEditTextView phoneRetv;
-    Spinner sp_privacy;
-    Button btnRequestMoney;
-    EditText etAmount, etMessage;
-    String _memberId, _userid,accessKey;
-    ProgressDialog progdialog;
+    private View v;
+    private ImageView imgProfile;
+    private ImageView imgRecipients;
+    private TextView txtName;
+    private TextView txtNumberRecipients;
+    private RecipientEditTextView phoneRetv;
+    private Spinner sp_privacy;
+    private Button btnRequestMoney;
+    private EditText etAmount;
+    private EditText etMessage;
+    private String _memberId;
+    private String _userid;
+    private String accessKey;
+    private ProgressDialog progdialog;
 
-    int privacy,max_member_trans;
+    private int privacy;
+    private int max_member_trans;
     private InformationDialog dialogI;
 
-    SecurePreferences sp;
-    DrawableRecipientChip[] chips;
-    int memberLevel;
+    private SecurePreferences sp;
+    private DrawableRecipientChip[] chips;
+    private int memberLevel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -193,7 +198,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         dialogI = InformationDialog.newInstance(this,6);
     }
 
-    TextWatcher jumlahChangeListener = new TextWatcher() {
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -217,7 +222,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         }
     };
 
-    public void setNumberRecipients(){
+    private void setNumberRecipients(){
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
         } else {
@@ -259,11 +264,6 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         }
     };
 
-    @Override
-    public void onOkButton() {
-
-    }
-
     private class TempObjectData{
 
         private String send_to;
@@ -280,7 +280,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
 
     }
 
-    Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
+    private Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
@@ -290,7 +290,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
                     String finalNumber;
                     Boolean recipientValidation = true;
                     String message = etMessage.getText().toString();
-                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<TempObjectData>();
+                    ArrayList<TempObjectData> mTempObjectDataList = new ArrayList<>();
 
                     String check = phoneRetv.getText().toString();
                     if ((!check.isEmpty()) && check.substring(check.length() - 1).equals(","))
@@ -335,14 +335,14 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         }
     };
 
-    public boolean isAlpha(String name) {
+    private boolean isAlpha(String name) {
         Pattern p = Pattern.compile("[a-zA-Z]");
         Matcher m = p.matcher(name);
         return m.find();
     }
 
 
-    public void sentData(final String _message, final String _data){
+    private void sentData(final String _message, final String _data){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -370,7 +370,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             JSONArray mArrayData;
-                            String messageDialog = null, recipient="",amount = null, recipient_name = "";
+                            String messageDialog = null, recipient="",amount, recipient_name = "";
                             try {
                                 mArrayData = new JSONArray(_data);
                                 for(int i=0;i<mArrayData.length();i++){
@@ -443,7 +443,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         }
     }
 
-    void preDialog(final String _message, final String _data){
+    private void preDialog(final String _message, final String _data){
         String message = getString(R.string.askfriends_predialog_msg1)+" "+chips.length+" "+getString(R.string.askfriends_predialog_msg2);
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.askfriends_predialog_title))
@@ -462,7 +462,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
     }
 
 
-    void showDialog(String messageDialog) {
+    private void showDialog(String messageDialog) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -505,7 +505,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         dialog.show();
     }
 
-    public boolean inputValidation(){
+    private boolean inputValidation(){
         if(phoneRetv.getText().toString().length()==0){
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
@@ -531,7 +531,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
         return true;
     }
 
-    public void setImageProfPic(){
+    private void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
@@ -554,7 +554,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
             mPic.load(R.drawable.user_unknown_menu)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }
@@ -562,7 +562,7 @@ public class FragAskForMoney extends Fragment implements InformationDialog.OnDia
             mPic.load(_url_profpic)
                 .error(roundedImage)
                 .fit().centerInside()
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
                 .into(imgProfile);
         }

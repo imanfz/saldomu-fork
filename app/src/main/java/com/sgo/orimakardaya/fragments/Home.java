@@ -10,14 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.activeandroid.ActiveAndroid;
-import com.securepreferences.SecurePreferences;
 import com.sgo.orimakardaya.Beans.BalanceModel;
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.activities.MainPage;
 import com.sgo.orimakardaya.coreclass.BaseFragmentMainPage;
 import com.sgo.orimakardaya.coreclass.CurrencyFormat;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
 import com.sgo.orimakardaya.services.BalanceService;
 import com.txusballesteros.widgets.FitChart;
 import com.txusballesteros.widgets.FitChartValue;
@@ -56,9 +53,6 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
         Button askformoney = (Button) mView.findViewById(R.id.askformoney);
         askformoney.setOnClickListener(this);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-//        balance = sp.getString(DefineValue.BALANCE,"0");
-
         BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
         if(mBal != null) {
             balance = mBal.getAmount();
@@ -71,7 +65,7 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
 
     }
 
-    public void setUIBalance(){
+    private void setUIBalance(){
         ibalance = Integer.parseInt(balance.replaceAll("[^0-9]", ""));
         ibalance = ibalance / 100;
         total_temp = (float)ibalance / (float)slimit;
@@ -148,11 +142,6 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
     };
 
     private IntentFilter filter = new IntentFilter(BalanceService.INTENT_ACTION_BALANCE);
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
 
     @Override
     public void onResume() {

@@ -4,6 +4,7 @@ package com.sgo.orimakardaya.adapter;/*
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +23,10 @@ import java.util.ArrayList;
 
 public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filterable {
 
-    Context context;
-    int layoutResourceId;
-    ArrayList<myFriendModel> data = null;
-    ArrayList<myFriendModel> originalData = null;
+    private Context context;
+    private int layoutResourceId;
+    private ArrayList<myFriendModel> data = null;
+    private ArrayList<myFriendModel> originalData = null;
     private ItemFilter mFilter;
 
     public MyFriendAdapter(Context context, int resource, ArrayList<myFriendModel> objects) {
@@ -33,12 +34,13 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
         this.layoutResourceId = resource;
         this.context = context;
         this.data = objects;
-        this.originalData = new ArrayList<myFriendModel>();
+        this.originalData = new ArrayList<>();
         this.originalData.addAll(myFriendModel.getAll());
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View row = convertView;
         ListHolder holder;
 
@@ -70,7 +72,7 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
         else
             mPic= Picasso.with(context);
 
-        if(itemnya != null && itemnya.getImg_url().isEmpty())
+        if(itemnya.getImg_url().isEmpty())
             mPic.load(R.drawable.user_unknown_menu)
                 .fit()
                 .centerCrop()
@@ -78,7 +80,7 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
         else
             mPic.load(itemnya.getImg_url())
                 .error(R.drawable.user_unknown_menu)
-                .placeholder(R.anim.progress_animation)
+                .placeholder(R.drawable.progress_animation)
                 .fit()
                 .centerCrop()
                 .into(holder.qc_pic);
@@ -92,6 +94,7 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
         RoundedQuickContactBadge qc_pic;
     }
 
+    @NonNull
     @Override
     public Filter getFilter() {
         if (mFilter == null){
@@ -108,14 +111,14 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
 
             FilterResults results = new FilterResults();
 
-            if(constraint == null || constraint.length() == 0){
-                ArrayList<myFriendModel> list = new ArrayList<myFriendModel>(originalData);
+            if(constraint.length() == 0){
+                ArrayList<myFriendModel> list = new ArrayList<>(originalData);
                 results.values = list;
                 results.count = list.size();
             }
             else {
-                final ArrayList<myFriendModel> list = new ArrayList<myFriendModel>(originalData);
-                final ArrayList<myFriendModel> nlist = new ArrayList<myFriendModel>();
+                final ArrayList<myFriendModel> list = new ArrayList<>(originalData);
+                final ArrayList<myFriendModel> nlist = new ArrayList<>();
                 int count = list.size();
 
                 for (int i = 0; i < count; i++) {

@@ -20,8 +20,13 @@ import timber.log.Timber;
  */
 public class PulsaAgentActivity extends BaseActivity {
 
-    FragmentManager fragmentManager;
-    String member_id, item_id, item_name, phone_number, share_type, operator_id, operator_name;
+    private String member_id;
+    private String item_id;
+    private String item_name;
+    private String phone_number;
+    private String share_type;
+    private String operator_id;
+    private String operator_name;
 
     public final static String FRAG_PULSA_DESCRIPTION = "pulsaDesc";
     public final static String FRAG_PULSA_CONFIRM = "pulsaConfirm";
@@ -48,7 +53,7 @@ public class PulsaAgentActivity extends BaseActivity {
         return R.layout.activity_pulsa_agent;
     }
 
-    public void initializePulsaAgent(){
+    private void initializePulsaAgent(){
         Bundle mArgs = new Bundle();
         Fragment newFragment = new PulsaAgentDescription();
         mArgs.putString(DefineValue.MEMBER_ID, member_id);
@@ -60,7 +65,7 @@ public class PulsaAgentActivity extends BaseActivity {
         mArgs.putString(DefineValue.OPERATOR_NAME, operator_name);
         newFragment.setArguments(mArgs);
 
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.pulsa_agent_content, newFragment,getString(R.string.toolbar_title_pulsa_agent));
         fragmentTransaction.commit();
@@ -115,7 +120,7 @@ public class PulsaAgentActivity extends BaseActivity {
         ToggleKeyboard.hide_keyboard(this);
     }
 
-    public void setResultActivity(int result){
+    public void setResultActivity(){
         setResult(MainPage.RESULT_BALANCE);
     }
 

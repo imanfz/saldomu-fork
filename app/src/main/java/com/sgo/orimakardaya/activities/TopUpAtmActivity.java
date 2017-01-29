@@ -19,13 +19,8 @@ import java.util.List;
 /**
  * Created by thinkpad on 5/28/2015.
  */
-public class TopUpAtmActivity extends BaseActivity implements InformationDialog.OnDialogOkCallback {
+public class TopUpAtmActivity extends BaseActivity {
 
-    SecurePreferences sp;
-    String bankCode, bankName, noVA, maxTopupValue;
-    ListView lvAtm;
-    TopupATMAdapter mAdapter;
-    List<TopupATMObject> mList;
     private InformationDialog dialogI;
 
     @Override
@@ -33,15 +28,15 @@ public class TopUpAtmActivity extends BaseActivity implements InformationDialog.
         super.onCreate(savedInstanceState);
         InitializeToolbar();
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        bankCode = sp.getString(DefineValue.BANK_ATM_CODE, "");
-        bankName = sp.getString(DefineValue.BANK_ATM_NAME, "");
-        noVA = sp.getString(DefineValue.NO_VA,"");
-        maxTopupValue = sp.getString(DefineValue.MAX_TOPUP,"");
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        String bankCode = sp.getString(DefineValue.BANK_ATM_CODE, "");
+        String bankName = sp.getString(DefineValue.BANK_ATM_NAME, "");
+        String noVA = sp.getString(DefineValue.NO_VA, "");
+        String maxTopupValue = sp.getString(DefineValue.MAX_TOPUP, "");
 
-        lvAtm = (ListView) findViewById(R.id.lvAtm);
+        ListView lvAtm = (ListView) findViewById(R.id.lvAtm);
 
-        mList = new ArrayList<TopupATMObject>();
+        List<TopupATMObject> mList = new ArrayList<>();
         String[] arrayBankCode = bankCode.split(",");
         String[] arrayNoVA = noVA.split(",");
         String[] arrayBankName = bankName.split(",");
@@ -54,13 +49,13 @@ public class TopUpAtmActivity extends BaseActivity implements InformationDialog.
             mList.add(mObject);
         }
 
-        mAdapter = new TopupATMAdapter(getApplicationContext(), mList, maxTopupValue);
+        TopupATMAdapter mAdapter = new TopupATMAdapter(getApplicationContext(), mList, maxTopupValue);
         lvAtm.setAdapter(mAdapter);
 
         dialogI = InformationDialog.newInstance(this,1);
     }
 
-    public void InitializeToolbar() {
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.atm));
     }
@@ -91,9 +86,5 @@ public class TopUpAtmActivity extends BaseActivity implements InformationDialog.
         return R.layout.activity_topup_atm;
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
 }
 

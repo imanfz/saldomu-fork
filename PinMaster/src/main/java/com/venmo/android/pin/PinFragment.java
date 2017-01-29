@@ -27,8 +27,8 @@ public class PinFragment extends Fragment {
     }
 
     public interface Listener {
-        public void onValidated();
-        public void onPinCreated();
+        void onValidated();
+        void onPinCreated();
     }
 
     public static PinFragment newInstanceForVerification() {
@@ -86,7 +86,7 @@ public class PinFragment extends Fragment {
         }
     }
 
-    public void setConfig(PinFragmentConfiguration config) {
+    private void setConfig(PinFragmentConfiguration config) {
         mConfig = config;
     }
 

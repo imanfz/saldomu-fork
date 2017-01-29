@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
+
 import com.sgo.orimakardaya.R;
 import com.sgo.orimakardaya.coreclass.BaseActivity;
 import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
@@ -37,7 +37,7 @@ public class LevelFormRegisterActivity extends BaseActivity {
 
     }
 
-    public void InitializeToolbar(){
+    private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.level_title));
     }
@@ -84,9 +84,6 @@ public class LevelFormRegisterActivity extends BaseActivity {
         Timber.d("isi request code:"+String.valueOf(requestCode));
         Timber.d("isi result Code:"+String.valueOf(resultCode));
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainPage.REQUEST_FINISH) {
 
-
-        }
     }
 }

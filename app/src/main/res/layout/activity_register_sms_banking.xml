@@ -6,17 +6,12 @@
         >
     <include android:id="@+id/main_toolbar"
              layout="@layout/toolbar_main"/>
-    <ScrollView
-            android:layout_height="fill_parent"
+
+    <FrameLayout
+        android:layout_below="@id/main_toolbar"
+            android:id="@+id/register_sms_content"
             android:layout_width="fill_parent"
-            android:layout_below="@id/main_toolbar"
-            android:fillViewport="true"
+            android:layout_height="wrap_content"
             >
-        <FrameLayout
-                android:id="@+id/register_sms_content"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                >
-        </FrameLayout>
-    </ScrollView>
+    </FrameLayout>
 </RelativeLayout>

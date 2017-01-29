@@ -35,21 +35,18 @@ import java.util.ArrayList;
  */
 public class ListContacts extends ListFragment implements PopupMenu.OnItemSelectedListener {
 
-    View v;
-    View layout_list_contact;
+    private View v;
     private FriendAdapter mAdapter;
     private ArrayList<friendModel> mMFM;
 
-    SecurePreferences sp;
+    private SecurePreferences sp;
     private String _ownerID,isContactNew;
-
-    EditText etSearchContact;
 
     private final static int CONTACT = 0;
     private final static int SMS = 1;
     private final static int EMAIL = 2;
 
-    int positionSelected;
+    private int positionSelected;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,7 +77,7 @@ public class ListContacts extends ListFragment implements PopupMenu.OnItemSelect
     public void onItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case CONTACT:
-                Toast.makeText(getActivity().getApplicationContext(),"Contact " + mMFM.get(positionSelected).getFull_name().toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity().getApplicationContext(),"Contact " + mMFM.get(positionSelected).getFull_name(), Toast.LENGTH_LONG).show();
                 break;
 
             case SMS:
@@ -122,13 +119,13 @@ public class ListContacts extends ListFragment implements PopupMenu.OnItemSelect
         _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
         isContactNew = sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
 
-        mMFM = new ArrayList<friendModel>();
+        mMFM = new ArrayList<>();
         mMFM.addAll(friendModel.getAll());
 
-        layout_list_contact = v.findViewById(R.id.layout_list_contact);
+        View layout_list_contact = v.findViewById(R.id.layout_list_contact);
         layout_list_contact.setVisibility(View.VISIBLE);
 
-        etSearchContact = (EditText) v.findViewById(R.id.etSearchContact);
+        EditText etSearchContact = (EditText) v.findViewById(R.id.etSearchContact);
 
         mAdapter = new FriendAdapter(getActivity(),R.layout.list_myfriends_item,mMFM);
         setListAdapter(mAdapter);
@@ -150,11 +147,6 @@ public class ListContacts extends ListFragment implements PopupMenu.OnItemSelect
 
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     public void crossfadingView(final View vFrom, final View vTo){
