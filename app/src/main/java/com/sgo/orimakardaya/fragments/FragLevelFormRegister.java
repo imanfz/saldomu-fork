@@ -334,6 +334,7 @@ private EditText et_email;
             params.put(WebParams.CUST_BIRTH_PLACE, et_pob.getText().toString());
             params.put(WebParams.CUST_MOTHER_NAME, sp.getString(DefineValue.PROFILE_BOM, ""));
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
+            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.IS_REGISTER, "Y");
 
             final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
