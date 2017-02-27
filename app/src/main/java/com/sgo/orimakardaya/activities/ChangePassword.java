@@ -45,6 +45,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private ProgressDialog progdialog;
     private String userID;
     private String accessKey;
+    private String member_id;
     private boolean is_first_time;
     private int lenght_auth_min, validIdx;
     private PasswordValidator mPassValid;
@@ -59,6 +60,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        member_id = sp.getString(DefineValue.MEMBER_ID,"");
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST))
@@ -162,6 +164,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
             params.put(WebParams.OLD_PASSWORD,et_pass_current.getText().toString());
             params.put(WebParams.NEW_PASSWORD,et_pass_new.getText().toString());
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.MEMBER_ID, member_id);
 
             Timber.d("isi params Change Password:" + params.toString());
 
