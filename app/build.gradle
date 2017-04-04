@@ -48,6 +48,7 @@ android {
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
             buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:59088/akardaya/\""
+//            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/akardaya2/\""
             versionCode = 1
             versionName "1.0"
         }
