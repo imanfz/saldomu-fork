@@ -43,8 +43,8 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     private String masterDomainSGOplus;
     private String userID;
     private String accessKey;
-    private String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
-    private String prodDomainSGOPlus = "https://secure.sgo.co.id/";
+    private String devDomainSGOPlus = "https://sandbox-kit.espay.id/";
+    private String prodDomainSGOPlus = "https://kit.espay.id/";
     private String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
     String bankName;
     private String bankProduct;

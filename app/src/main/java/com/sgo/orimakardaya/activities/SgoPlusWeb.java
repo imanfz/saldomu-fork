@@ -48,8 +48,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private String masterDomainSGOplus;
     private String userID;
     private String accessKey;
-    private String devDomainSGOPlus = "http://secure-dev.sgo.co.id/";
-    private String prodDomainSGOPlus = "https://secure.sgo.co.id/";
+    private String devDomainSGOPlus = "https://sandbox-kit.espay.id/";
+    private String prodDomainSGOPlus = "https://kit.espay.id/";
     private String prodDomainSGOPlusMandiri = "https://scm.bankmandiri.co.id/sgo+/";
     private String bankName;
     private String bankProduct;

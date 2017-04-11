@@ -476,6 +476,7 @@ public class Regist2 extends Fragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
             params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.USER_ID, custID);
 
             Timber.d("params create pin:"+params.toString());
 
