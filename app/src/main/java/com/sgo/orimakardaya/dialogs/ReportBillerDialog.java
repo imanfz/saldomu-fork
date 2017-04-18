@@ -378,7 +378,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_desc.setText(args.getString(DefineValue.DESCRIPTION, ""));
                 tv_remark.setText(args.getString(DefineValue.REMARK,""));
                 tv_bank_name.setText(args.getString(DefineValue.BANK_NAME,""));
-                tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME,""));
+                if (args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("S-Cash"))
+                {
+                    tv_product_name.setText("AKARDAYA");
+                }
+                else tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME,""));
             }
             else if(type.equals(DefineValue.PULSA_AGENT)){
                 View mLayout = view.findViewById(R.id.report_dialog_dap);
