@@ -208,7 +208,7 @@ public class MyHistory extends BaseFragmentMainPage {
                                     }
                                 }
 
-                                if (!flagSame) {
+                                if (!flagSame && isAdded()) {
                                     String post = mArrayPost.getJSONObject(i).getString(WebParams.POST);
                                     String amount = mArrayPost.getJSONObject(i).getString(WebParams.AMOUNT);
                                     String balance = mArrayPost.getJSONObject(i).getString(WebParams.BALANCE);
