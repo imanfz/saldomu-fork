@@ -163,7 +163,15 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         tv_item_name_value.setText(item_name);
         tv_id_cust.setText(cust_id);
         tv_amount_value.setText(ccy_id+". "+ CurrencyFormat.format(amount));
-        tv_payment_name.setText(payment_name);
+//        tv_payment_name.setText(payment_name);
+        if(payment_name.equalsIgnoreCase("S-cash"))
+        {
+            tv_payment_name.setText("AKARDAYA");
+        }
+        else
+        {
+            tv_payment_name.setText(payment_name);
+        }
         tv_fee_value.setText(ccy_id+". "+CurrencyFormat.format(fee));
 
         tv_total_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(total_amount));
