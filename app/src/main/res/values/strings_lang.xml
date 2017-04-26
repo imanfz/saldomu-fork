@@ -537,7 +537,7 @@
     <string name="myprofile_warning_message_firsttime">Apakah Anda yakin memproses data yang Anda isi?</string>
 
     <string name="dialog_title_less_balance">Sisa Saldo Tidak Cukup.</string>
-    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo AKARDAYA Anda ?</string>
+    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo SCash Anda ?</string>
 
     <string name="regist1_subtext_facebook">Masukan nomor telepon anda untuk melengkapi proses registrasi</string>
     <string name="payfriend_confirm_text_share">Bagikan :</string>
