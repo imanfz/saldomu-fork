@@ -385,7 +385,7 @@ public class PulsaAgentDescription extends Fragment {
                                     );
 
                                     if(mBob.getProduct_code().equals(DefineValue.SCASH)){
-                                        String tempProductName ="AKARDAYA";
+                                        String tempProductName = mBob.getProduct_name();
                                         mDataPayment.add(mBob);
                                         paymentData.add(tempProductName);
                                     }
