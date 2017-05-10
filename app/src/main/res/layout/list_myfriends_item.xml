@@ -6,7 +6,7 @@
               android:padding="8dp"
               android:layout_height="wrap_content">
 
-    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+    <com.sgo.hpku.coreclass.RoundedQuickContactBadge
                        android:id="@+id/contact_icon_friends"
                        android:layout_height="?android:attr/listPreferredItemHeight"
                        android:layout_width="?android:attr/listPreferredItemHeight"

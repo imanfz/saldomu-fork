@@ -30,7 +30,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.sgo.orimakardaya"
+        applicationId "com.sgo.hpku"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -40,10 +40,10 @@ android {
 
     productFlavors {
         development {
-            applicationId "com.sgo.devorimakardaya"
-            resValue "string", "appname", "DEV AKARDAYA"
-            resValue "string", "dbname", "DevOriMAkardaya.db"
-            resValue "string", "realmname", "akardayadev.realm"
+            applicationId "com.sgo.hpkudev"
+            resValue "string", "appname", "DEV HPKu"
+            resValue "string", "dbname", "DevHPKu.db"
+            resValue "string", "realmname", "hpkudev.realm"
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
@@ -53,10 +53,10 @@ android {
             versionName "1.0"
         }
         production {
-            applicationId "com.sgo.orimakardaya"
-            resValue "string", "appname", "PIN m-akardaya"
-            resValue "string", "dbname", "m-akardaya.db"
-            resValue "string", "realmname", "akardaya.realm"
+            applicationId "com.sgo.hpku"
+            resValue "string", "appname", "HPKu"
+            resValue "string", "dbname", "hpku.db"
+            resValue "string", "realmname", "hpku.realm"
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
@@ -82,9 +82,9 @@ android {
     applicationVariants.all { variant ->
         def fileName
         if (variant.baseName.contains("development")) {
-            fileName = "DEV-AKARDAYA"
+            fileName = "Dev HPKu"
         } else {
-            fileName = "m-akardaya"
+            fileName = "HPKu"
         }
         variant.outputs.each { output ->
             def apk = output.outputFile;
@@ -134,8 +134,8 @@ dependencies {
     compile 'com.android.support:design:23.4.0'
     compile 'com.gordonwong:material-sheet-fab:1.2'
     compile 'joda-time:joda-time:2.9.3'
-    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.google.firebase:firebase-crash:9.6.1'
+//    compile 'com.google.firebase:firebase-core:9.6.1'
+//    compile 'com.google.firebase:firebase-crash:9.6.1'
     debugCompile 'com.uphyca:stetho_realm:0.8.0'
     debugCompile 'com.facebook.stetho:stetho:1.3.1'
     compile project(':PinMaster')
@@ -143,4 +143,4 @@ dependencies {
     compile project(':VPI')
     compile project(':SecurePref')
 }
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

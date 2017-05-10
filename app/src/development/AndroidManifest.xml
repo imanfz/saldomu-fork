@@ -5,13 +5,13 @@
 
         <meta-data android:name="AA_DB_NAME" android:value="@string/dbname"/>
         <meta-data android:name="AA_DB_VERSION" android:value="2" />
-        <meta-data android:name="AA_MODELS" android:value=" com.sgo.devorimakardaya.Beans.communityModel,
-                                                            com.sgo.devorimakardaya.Beans.friendModel,
-                                                            com.sgo.devorimakardaya.Beans.myFriendModel,
-                                                            com.sgo.devorimakardaya.Beans.listTimeLineModel,
-                                                            com.sgo.devorimakardaya.Beans.listHistoryModel,
-                                                            com.sgo.devorimakardaya.Beans.likeModel,
-                                                            com.sgo.devorimakardaya.Beans.commentModel,
-                                                            com.sgo.devorimakardaya.Beans.BalanceModel" />
+        <meta-data android:name="AA_MODELS" android:value=" com.sgo.hpkudev.Beans.communityModel,
+                                                            com.sgo.hpkudev.Beans.friendModel,
+                                                            com.sgo.hpkudev.Beans.myFriendModel,
+                                                            com.sgo.hpkudev.Beans.listTimeLineModel,
+                                                            com.sgo.hpkudev.Beans.listHistoryModel,
+                                                            com.sgo.hpkudev.Beans.likeModel,
+                                                            com.sgo.hpkudev.Beans.commentModel,
+                                                            com.sgo.hpkudev.Beans.BalanceModel" />
     </application>
 </manifest>

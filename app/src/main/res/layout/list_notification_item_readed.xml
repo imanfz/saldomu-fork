@@ -34,7 +34,7 @@
                 android:visibility="gone"
                 />
 
-        <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+        <com.sgo.hpku.coreclass.RoundedQuickContactBadge
                 android:id="@+id/icon_picture"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone"

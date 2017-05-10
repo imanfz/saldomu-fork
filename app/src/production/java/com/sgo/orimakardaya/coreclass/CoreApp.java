@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.coreclass;
+package com.sgo.hpku.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
@@ -10,16 +10,16 @@ import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.sgo.orimakardaya.Beans.BalanceModel;
-import com.sgo.orimakardaya.Beans.commentModel;
-import com.sgo.orimakardaya.Beans.communityModel;
-import com.sgo.orimakardaya.Beans.friendModel;
-import com.sgo.orimakardaya.Beans.likeModel;
-import com.sgo.orimakardaya.Beans.listHistoryModel;
-import com.sgo.orimakardaya.Beans.listTimeLineModel;
-import com.sgo.orimakardaya.Beans.myFriendModel;
-import com.sgo.orimakardaya.BuildConfig;
-import com.sgo.orimakardaya.R;
+import com.sgo.hpku.Beans.BalanceModel;
+import com.sgo.hpku.Beans.commentModel;
+import com.sgo.hpku.Beans.communityModel;
+import com.sgo.hpku.Beans.friendModel;
+import com.sgo.hpku.Beans.likeModel;
+import com.sgo.hpku.Beans.listHistoryModel;
+import com.sgo.hpku.Beans.listTimeLineModel;
+import com.sgo.hpku.Beans.myFriendModel;
+import com.sgo.hpku.BuildConfig;
+import com.sgo.hpku.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

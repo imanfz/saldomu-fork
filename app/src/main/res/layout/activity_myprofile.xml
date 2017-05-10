@@ -180,7 +180,7 @@
                         />
             
 
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                     android:id="@+id/myprofile_value_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                         android:id="@+id/myprofile_value_pob"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -260,7 +260,7 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                         android:id="@+id/myprofile_value_address"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -327,7 +327,7 @@
                     android:textSize="@dimen/abc_text_size_medium_material"
                     android:textStyle="bold"
                     />
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                     android:id="@+id/myprofile_value_birth_mother"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -370,7 +370,7 @@
                             android:layout_gravity="right"
                             android:gravity="right"/>
                 </LinearLayout>
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                         android:id="@+id/myprofile_value_social_id"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -420,7 +420,7 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                         android:id="@+id/myprofile_value_email"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -467,7 +467,7 @@
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:textStyle="bold"
                         />
-                <com.sgo.orimakardaya.coreclass.CustomEditText
+                <com.sgo.hpku.coreclass.CustomEditText
                         android:id="@+id/myprofile_value_bio"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
