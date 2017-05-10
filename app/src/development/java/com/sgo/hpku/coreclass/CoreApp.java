@@ -83,9 +83,9 @@ public class CoreApp extends Application {
         int checkExistence;
 
         if(BuildConfig.FLAVOR.equals("development"))
-            checkExistence = CoreApp.this.getResources().getIdentifier("akardayadev", "raw", CoreApp.this.getPackageName());
+            checkExistence = CoreApp.this.getResources().getIdentifier("hpkurealmdev", "raw", CoreApp.this.getPackageName());
         else
-            checkExistence = CoreApp.this.getResources().getIdentifier("akardaya", "raw", CoreApp.this.getPackageName());
+            checkExistence = CoreApp.this.getResources().getIdentifier("hpkurealm", "raw", CoreApp.this.getPackageName());
 
 
         if ( checkExistence != 0 ) {
