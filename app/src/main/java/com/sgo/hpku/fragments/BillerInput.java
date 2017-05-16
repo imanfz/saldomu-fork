@@ -128,7 +128,10 @@ public class BillerInput extends Fragment {
         tv_month = (TextView) v.findViewById(R.id.billerinput_text_month);
         spinWheelMonth = (ImageView) v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
-
+        if(args.containsKey(DefineValue.BILLER_ID_NUMBER))
+        {
+            et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
+        }
         btn_submit.setOnClickListener(submitInputListener);
         layout_denom.setVisibility(View.VISIBLE);
 

@@ -214,7 +214,7 @@ public class ListBuyRF extends Fragment{
         realm.beginTransaction();
 
         if (arrayBiller.length() > 0) {
-            realm.clear(Biller_Type_Data_Model.class);
+            realm.delete(Biller_Type_Data_Model.class);
             Biller_Data_Model mListBillerData;
             int i;
             int j;
@@ -259,7 +259,7 @@ public class ListBuyRF extends Fragment{
                                 findFirst();
                         if(delList.getDenom_data_models().size()>0)
                             delList.getDenom_data_models().deleteAllFromRealm();
-                        delList.removeFromRealm();
+                        delList.deleteFromRealm();
                     }
                 }
                 isHave = false;
@@ -268,7 +268,7 @@ public class ListBuyRF extends Fragment{
 
 
         if (arrayCollection.length() > 0) {
-          realm.clear(Account_Collection_Model.class);
+          realm.delete(Account_Collection_Model.class);
           Account_Collection_Model mACLobj;
           try {
               for (int i = 0; i < arrayCollection.length(); i++) {

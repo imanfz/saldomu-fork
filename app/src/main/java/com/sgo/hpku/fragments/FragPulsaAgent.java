@@ -86,12 +86,14 @@ public class FragPulsaAgent extends Fragment{
     public void onResume() {
         super.onResume();
         flagDenom = true;
-        setDefault();
+//        setDefault();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+
 
         act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -114,6 +116,14 @@ public class FragPulsaAgent extends Fragment{
         spinWheelNominal = (ImageView) v.findViewById(R.id.spinning_wheel_pulsainput_nominal);
         btn_submit = (Button) v.findViewById(R.id.btn_submit_pulsainput);
         sp_privacy = (Spinner) v.findViewById(R.id.privacy_spinner);
+
+        Bundle bundle = getArguments();
+        if(bundle!=null)
+        {
+            String no_hp;
+            no_hp=bundle.getString(DefineValue.PHONE_NUMBER);
+            et_payment_remark.setText(no_hp);
+        }
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);

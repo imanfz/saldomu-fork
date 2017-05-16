@@ -50,18 +50,18 @@ import timber.log.Timber;
 public class NavigationDrawMenu extends ListFragment{
 
     public static final int MHOME = 0;
-    private static final int MTOPUP = 1;
+    public static final int MTOPUP = 1;
     public static final int MPAYFRIENDS= 2;
     public static final int MASK4MONEY= 3;
-    private static final int MBUY= 4;
+    public static final int MBUY= 4;
     public static final int MCASHOUT= 5;
     private static final int MMYFRIENDS= 6;
     private static final int MMYGROUP= 7;
-    private static final int MREPORT= 8;
+    public static final int MREPORT= 8;
     private static final int MSETTINGS= 9;
     private static final int MHELP= 10;
     private static final int MLOGOUT= 11;
-    private static final int MDAP= 12;
+    public static final int MDAP= 12;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -296,6 +296,7 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MDAP:
                 newFragment = new FragPulsaAgent();
+                if (data != null && !data.isEmpty()) newFragment.setArguments(data);
                 switchFragment(newFragment, getString(R.string.toolbar_title_pulsa_agent));
                 break;
             case MBUY:

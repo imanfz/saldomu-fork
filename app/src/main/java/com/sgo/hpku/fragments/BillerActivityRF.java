@@ -311,7 +311,7 @@ public class BillerActivityRF extends Fragment{
                             findFirst();
                     if (mObj.getItem_id().isEmpty())
                         temptData.add(realm.copyFromRealm(mObj));
-                    mObj.removeFromRealm();
+                    mObj.deleteFromRealm();
                 }
             }
 
@@ -384,7 +384,7 @@ public class BillerActivityRF extends Fragment{
                                     delList = realm.where(Denom_Data_Model.class).
                                             equalTo(WebParams.DENOM_ITEM_ID, temptData.get(i).getDenom_data_models().get(j).getItem_id()).
                                             findFirst();
-                                    delList.removeFromRealm();
+                                    delList.deleteFromRealm();
                                 }
                             }
 
@@ -520,7 +520,7 @@ public class BillerActivityRF extends Fragment{
                             mObj = realm.where(Denom_Data_Model.class).
                                     equalTo(WebParams.DENOM_ITEM_ID, refObj.get(i).getItem_id()).
                                     findFirst();
-                            mObj.removeFromRealm();
+                            mObj.deleteFromRealm();
                         }
                     }
 

@@ -187,7 +187,7 @@ public class DefineValue {
     public static String BANKLIST_DATA = "banklistData";
     public static String MAX_MEMBER_TRANS = "maxMemberTrans";
     public static String IS_MD5 = "isMD5";
-
+    public static String BILLER_ID_NUMBER = "billerIdNumber";
     public static String DENOM_ITEM_ID = "denomItemID";
     public static String DENOM_ITEM_NAME = "denomItemName";
     public static String PHONE_NUMBER = "phoneNumber";

@@ -55,6 +55,7 @@ public class BillerActivity extends BaseActivity {
     private RealmChangeListener realmListener;
     BillerActivityRF mWorkFragment;
     ProgressDialog progdialog;
+    String IdNumber=null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,9 +72,15 @@ public class BillerActivity extends BaseActivity {
         realm = Realm.getDefaultInstance();
         Intent intent    = getIntent();
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
+        Timber.d("isi biller type code " + _biller_type_code);
         _biller_merchant_name = intent.getStringExtra(DefineValue.BILLER_NAME);
+        Timber.d("isi biller merchant name " +_biller_merchant_name);
         isEmptyBiller = false;
 
+        if(intent.hasExtra(DefineValue.BILLER_ID_NUMBER))
+        {
+            IdNumber=intent.getStringExtra(DefineValue.BILLER_ID_NUMBER);
+        }
         Timber.d("isi biller activity " + intent.getExtras().toString());
         InitializeToolbar();
 
@@ -167,6 +174,10 @@ public class BillerActivity extends BaseActivity {
             mArgs.putString(DefineValue.COMMUNITY_ID,mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME,mListBillerData.get(0).getComm_name());
             mArgs.putString(DefineValue.BILLER_ITEM_ID,mListBillerData.get(0).getItem_id());
+            if (IdNumber!=null)
+            {
+                mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
+            }
             tag = BillerInput.TAG;
         }
         else {

@@ -97,7 +97,8 @@ public class CoreApp extends Application {
             deleteBundledRealmFile(getString(R.string.realmname));
         }
 
-        RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder()
                 .name(getString(R.string.realmname))
                 .schemaVersion(getResources().getInteger(R.integer.realscheme))
                 .migration(new CustomRealMigration())

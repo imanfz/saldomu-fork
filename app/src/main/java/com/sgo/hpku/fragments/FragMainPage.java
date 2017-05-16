@@ -53,7 +53,8 @@ public class FragMainPage extends Fragment {
         ViewPager pager;
         getActivity().invalidateOptionsMenu();
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
-        mList.add(new Home());
+//        mList.add(new Home());
+        mList.add(new FragHomeNew());
         mList.add(new MyHistory());
         mList.add(new TimeLine());
 //        mList.add(new Group());
