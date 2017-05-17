@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     >
 
-    <com.sgo.orimakardaya.coreclass.Fab
+    <com.sgo.hpku.coreclass.Fab
         android:id="@+id/fab"
         style="@style/Widget.MaterialSheetFab.Fab"
         android:layout_alignParentBottom="true"

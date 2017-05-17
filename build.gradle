@@ -5,7 +5,11 @@ buildscript {
         jcenter()
     }
     dependencies {
+<<<<<<< HEAD
         classpath 'com.android.tools.build:gradle:2.2.3'
+=======
+        classpath 'com.android.tools.build:gradle:2.3.2'
+>>>>>>> b71082f37e91d652559aab6430e9e7ff2c4dc177
         classpath "io.realm:realm-gradle-plugin:3.0.0"
         classpath 'com.google.gms:google-services:3.0.0'
 
@@ -19,7 +23,7 @@ allprojects {
         jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        maven { url 'https://github.com/uPhyca/stetho-realm/raw/master/maven-repo' }
+        maven { url 'https://github.com/linchaolong/stetho-realm/raw/master/maven-repo' }
     }
 }
 
