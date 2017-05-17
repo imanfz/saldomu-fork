@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/bbstransaksi_bottom_layout"
+        android:background="@color/windowBackgroundColor"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_bk"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="@string/kembali"
+                android:id="@+id/back_btn"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/card_bk_orange"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="@string/next"
+                android:id="@+id/proses_btn"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+        android:layout_above="@id/bbstransaksi_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideOverlay">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/grey_1000w"
+            android:layout_margin="6dp">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_large_material"/>
+
+            <LinearLayout
+                android:id="@+id/bbstransaksi_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.faber.circlestepview.CircleStepView
+                    android:id="@+id/circle_step_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_marginBottom="15dp"
+                    app:circlestep_circle_count="3"
+                    app:circlestep_path_color="@color/colorPrimaryDark"
+                    app:circlestep_current_inner_circle_color="@color/colorPrimary"
+                    app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
+                    app:circlestep_circle_color="@color/grey_500"
+                    app:circlestep_circle_text_size="14sp"
+                    app:circlestep_text_below_circle_size="14sp"
+                    app:circlestep_text_below_circle_color="@color/grey_800"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorPrimary"></View>
+
+                <LinearLayout android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:gravity="center"
+                    >
+
+                    <TextView android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rp."
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size_large_material"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        />
+
+                    <EditText
+                        android:id="@+id/jumlah_transfer_edit"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:inputType="number"
+                        android:maxLength="8"
+                        android:hint="@string/jumlah_transfer_hint"
+                        android:paddingLeft="10dp"
+                        android:gravity="center"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textStyle="italic"
+                    android:gravity="right"
+                    android:text="(contoh: 1.000.000)"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/from"/>
+
+                <com.sgo.indonesiakoe.coreclass.CustomAutoCompleteTextView
+                    android:id="@+id/rekening_agen_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="@string/rekening_bank_agent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textStyle="italic"
+                    android:gravity="right"
+                    android:text="(contoh: BANK BCA)"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:text="@string/to"/>
+
+                <com.sgo.indonesiakoe.coreclass.CustomAutoCompleteTextView
+                    android:id="@+id/rekening_member_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="@string/rekening_bank_member"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textStyle="italic"
+                    android:gravity="right"
+                    android:text="(contoh: BANK MANDIRI)"/>
+            </LinearLayout>
+
+            <include android:id="@+id/empty_layout"
+                layout="@layout/empty_bbs_cashout" />
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

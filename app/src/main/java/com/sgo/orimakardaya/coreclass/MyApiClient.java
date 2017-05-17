@@ -174,6 +174,24 @@ public class MyApiClient {
     private static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
+    public static String LINK_RESEND_TOKEN_LKD;
+    public static String LINK_BBS_CITY;
+    public static String LINK_GLOBAL_BBS_COMM;
+    public static String LINK_GLOBAL_BBS_BANK_C2A;
+    public static String LINK_GLOBAL_BBS_INSERT_C2A;
+    public static String LINK_BBS_BANK_ACCOUNT;
+    public static String LINK_BBS_BANK_ACCOUNT_DELETE;
+    public static String LINK_BBS_BANK_REG_ACCT;
+    public static String LINK_BBS_JOIN_AGENT;
+    public static String LINK_BBS_CONFIRM_ACCT;
+    public static String LINK_BBS_REQ_ACCT;
+    public static String LINK_BBS_GLOBAL_COMM;
+    public static String LINK_TRX_STATUS_BBS;
+    public static String LINK_GLOBAL_BBS_BANK_A2C;
+    public static String LINK_GLOBAL_BBS_INSERT_A2C;
+    public static String LINK_BBS_LIST_MEMBER_A2C;
+    public static String LINK_BBS_OTP_MEMBER_A2C;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
@@ -280,6 +298,24 @@ public class MyApiClient {
         LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
 
+        LINK_RESEND_TOKEN_LKD  = headaddressfinal + "ResendToken/Invoke";
+        LINK_BBS_CITY = headaddressfinal + "ServiceBBSCity/getAllBBSCity";
+        LINK_GLOBAL_BBS_COMM = headaddressfinal + "GlobalBBSComm/Retrieve";
+        LINK_GLOBAL_BBS_BANK_C2A = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
+        LINK_GLOBAL_BBS_INSERT_C2A = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
+        LINK_BBS_BANK_ACCOUNT = headaddressfinal + "BBSBankAccount/Retrieve";
+        LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
+        LINK_BBS_BANK_REG_ACCT = headaddressfinal + "BBSBankRegAcct/Retrieve";
+        LINK_BBS_CONFIRM_ACCT = headaddressfinal + "BBSConfirmAcct/Invoke";
+        LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
+        LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
+        LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
+        LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
+        LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
+        LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
+        LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
+
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
             getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
@@ -312,6 +348,7 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPMAKARDA1443547914WO0NU"; //prod pulsa agent
     public static String COMM_ID_PROD = "EMONEYMAKA1429005701H921A";  //prod
+    public static String COMM_CODE = "EMONEYMAKA";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+628111946677";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
@@ -420,6 +457,18 @@ public class MyApiClient {
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
 
+    public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getClient().post(mContext, url, params, responseHandler).setTag(tag);
+        Timber.d("isis timeoutnya : " + String.valueOf(getClient().getConnectTimeout()));
+    }
+
+    public static void postSync(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient.post(mContext, url, params, responseHandler);
+    }
+
+    public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient.get(mContext, url, responseHandler);
+    }
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared
@@ -486,6 +535,11 @@ public class MyApiClient {
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
         getClient().cancelRequests(_context, interruptIfRunning);
+    }
+
+    public static void CancelRequestWSByTag(String tag,Boolean interruptIfRunning)
+    {
+        getClient().cancelRequestsByTAG(tag, interruptIfRunning);
     }
     //----------------------------------------------------------------------------------------------------
 
@@ -906,6 +960,106 @@ public class MyApiClient {
         Timber.wtf("address sent claim non member transfer:"+LINK_CLAIM_TRANSFER_NON_MEMBER);
         post(mContext,LINK_CLAIM_TRANSFER_NON_MEMBER, params, responseHandler);
     }
+
+    public static void sentResendTokenLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent resend token LKD:"+LINK_RESEND_TOKEN_LKD);
+        post(mContext,LINK_RESEND_TOKEN_LKD, params, responseHandler);
+    }
+
+    public static void getGlobalBBSComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs comm:"+ LINK_GLOBAL_BBS_COMM);
+        if(tag != null)
+            postByTag(mContext,tag,LINK_GLOBAL_BBS_COMM,params,responseHandler);
+        else
+            post(mContext, LINK_GLOBAL_BBS_COMM, params, responseHandler);
+    }
+
+    public static void getGlobalBBSBankC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs bank C2A:"+ LINK_GLOBAL_BBS_BANK_C2A);
+        post(mContext, LINK_GLOBAL_BBS_BANK_C2A, params, responseHandler);
+    }
+
+    public static void sentGlobalBBSInsertC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert C2A:"+ LINK_GLOBAL_BBS_INSERT_C2A);
+        post(mContext, LINK_GLOBAL_BBS_INSERT_C2A, params, responseHandler);
+    }
+
+    public static void sentBBSBankAccountRetreive(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank account retreive:"+ LINK_BBS_BANK_ACCOUNT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_BANK_ACCOUNT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_BANK_ACCOUNT, params, responseHandler);
+    }
+
+    public static void sentBBSBankAccountDelete(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank account delete:"+ LINK_BBS_BANK_ACCOUNT_DELETE);
+        post(mContext, LINK_BBS_BANK_ACCOUNT_DELETE, params, responseHandler);
+    }
+
+    public static void sentBBSBankRegAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank reg account:"+ LINK_BBS_BANK_REG_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_BANK_REG_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_BANK_REG_ACCT, params, responseHandler);
+    }
+
+    public static void sentBBSJoinAgent(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs join agent:"+ LINK_BBS_JOIN_AGENT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_JOIN_AGENT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_JOIN_AGENT, params, responseHandler);
+    }
+    public static void sentBBSReqAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs req acct:"+ LINK_BBS_REQ_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_REQ_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_REQ_ACCT, params, responseHandler);
+    }
+    public static void sentBBSConfirmAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs confirm acct:"+ LINK_BBS_CONFIRM_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_CONFIRM_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_CONFIRM_ACCT, params, responseHandler);
+    }
+
+    public static void sentRetreiveGlobalComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address retreive global Comm:"+ LINK_BBS_GLOBAL_COMM);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_GLOBAL_COMM, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_GLOBAL_COMM, params, responseHandler);
+    }
+
+    public static void sentGetTRXStatusBBS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent get trx status bbs:"+LINK_TRX_STATUS_BBS);
+        post(mContext,LINK_TRX_STATUS_BBS, params, responseHandler);
+    }
+
+    public static void getGlobalBBSBankA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent global bbs bank a2c:" + LINK_GLOBAL_BBS_BANK_A2C);
+        post(mContext, LINK_GLOBAL_BBS_BANK_A2C, params, responseHandler);
+    }
+
+    public static void sentGlobalBBSInsertA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_GLOBAL_BBS_INSERT_A2C);
+        post(mContext, LINK_GLOBAL_BBS_INSERT_A2C, params, responseHandler);
+    }
+
+    public static void sentBBSListMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_LIST_MEMBER_A2C);
+        post(mContext, LINK_BBS_LIST_MEMBER_A2C, params, responseHandler);
+    }
+
+    public static void sentBBSOTPMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_OTP_MEMBER_A2C);
+        post(mContext, LINK_BBS_OTP_MEMBER_A2C, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
@@ -925,6 +1079,14 @@ public class MyApiClient {
 	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN:"+LINK_HELP_PIN);
         get(mContext,LINK_HELP_PIN, responseHandler);
+    }
+
+    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSCity:"+LINK_BBS_CITY);
+        if(isSync)
+            getSync(mContext,LINK_BBS_CITY,responseHandler);
+        else
+            get(mContext,LINK_BBS_CITY, responseHandler);
     }
 
     private Context getmContext() {

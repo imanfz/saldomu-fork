@@ -63,6 +63,7 @@ public class NavigationDrawMenu extends ListFragment{
     private static final int MHELP= 10;
     private static final int MLOGOUT= 11;
     private static final int MDAP= 12;
+    public static final int MBBS= 15;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -76,6 +77,7 @@ public class NavigationDrawMenu extends ListFragment{
     private SecurePreferences sp;
     ProgressDialog progdialog;
     private LevelClass levelClass;
+    private String flow_agent_type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +91,7 @@ public class NavigationDrawMenu extends ListFragment{
         _SaveInstance = savedInstanceState;
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        flow_agent_type = sp.getString(DefineValue.FLOW_AGENT_TYPE,DefineValue.LKD);
         levelClass = new LevelClass(getActivity(),sp);
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = (ListView) v.findViewById(android.R.id.list);
@@ -246,6 +249,8 @@ public class NavigationDrawMenu extends ListFragment{
     private ArrayList<navdrawmainmenuModel> generateData(){
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
+        if(flow_agent_type.equalsIgnoreCase(DefineValue.BBS))
+            models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),MTOPUP));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
@@ -323,6 +328,10 @@ public class NavigationDrawMenu extends ListFragment{
             case MHELP:
                 newFragment = new ContactTab();
                 switchFragment(newFragment, getString(R.string.menu_item_title_help));
+                break;
+            case MBBS:
+                newFragment = new ListBBS();
+                switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
                 break;
             case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());

@@ -110,5 +110,17 @@
         <item name="android:maxHeight">20dip</item>
     </style>
 
+    <style name="AddFabStyle" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/fab_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/fab_spacing</item>
+        <item name="android:layout_marginLeft">@dimen/fab_spacing</item>
+        <item name="android:layout_marginRight">@dimen/fab_spacing</item>
+        <item name="android:elevation" tools:ignore="NewApi">@dimen/fab_elevation</item>
+        <item name="android:src">@drawable/ic_add_white_36dp</item>
+        <item name="fabSize">normal</item>
+        <item name="borderWidth">0dp</item>
+    </style>
 
 </resources>

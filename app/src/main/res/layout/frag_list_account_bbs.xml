@@ -1,0 +1,92 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/grey_300">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="@color/grey_1000w"
+        android:layout_margin="6dp"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_groups_icon_color"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            >
+            <ProgressBar
+                android:id="@+id/loading_progres_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                />
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:spinnerMode="dropdown"
+                android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                android:id="@+id/spinner_community" />
+            <TextView
+                android:id="@+id/tv_comm_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium_material"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <in.srain.cube.views.ptr.PtrFrameLayout
+        android:id="@+id/rotate_header_list_view_frame"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        cube_ptr:ptr_duration_to_close="200"
+        cube_ptr:ptr_duration_to_close_header="1000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/grey_1000w"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
+            >
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:background="@color/white"
+                android:divider="@color/transparant"
+                android:id="@+id/rek_listview"
+                />
+
+            <include android:id="@+id/empty_layout"
+                android:visibility="gone"
+                layout="@layout/empty_view"/>
+
+
+        </RelativeLayout>
+    </in.srain.cube.views.ptr.PtrFrameLayout>
+
+</LinearLayout>

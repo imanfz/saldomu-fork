@@ -45,6 +45,8 @@ android {
             resValue "string", "dbname", "DevOriMAkardaya.db"
             resValue "string", "realmname", "akardayadev.realm"
             resValue "integer", "realscheme", "0"
+            resValue "string", "realmBBSName", "hpkubbsdev.realm"
+            resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
             buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:59088/akardaya/\""
@@ -58,6 +60,8 @@ android {
             resValue "string", "dbname", "m-akardaya.db"
             resValue "string", "realmname", "akardaya.realm"
             resValue "integer", "realscheme", "0"
+            resValue "string", "realmBBSName", "hpkubbs.realm"
+            resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
@@ -136,6 +140,7 @@ dependencies {
     compile 'joda-time:joda-time:2.9.3'
     compile 'com.google.firebase:firebase-core:9.6.1'
     compile 'com.google.firebase:firebase-crash:9.6.1'
+    compile 'com.faber.circlestepview:library:1.0.0@aar'
     debugCompile 'com.uphyca:stetho_realm:0.8.0'
     debugCompile 'com.facebook.stetho:stetho:1.3.1'
     compile project(':PinMaster')

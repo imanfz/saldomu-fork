@@ -487,6 +487,58 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
             }
+
+            else if(type.equals(DefineValue.BBS_CASHIN) || type.equals(DefineValue.BBS_CASHOUT) || type.equals(DefineValue.BBS_MEMBER_OTP)){
+                View report_layout;
+                if(type.equals(DefineValue.BBS_CASHIN)) {
+                    report_layout = view.findViewById(R.id.report_bbs_cashin);
+
+                    TextView tvNoDestination = (TextView) report_layout.findViewById(R.id.tvNoDestination);
+
+                    String benef_type =  args.getString(DefineValue.TYPE_BENEF,"");
+                    if(benef_type.equalsIgnoreCase(DefineValue.ACCT))
+                        tvNoDestination.setText(R.string.number_destination);
+                    else
+                        tvNoDestination.setText(R.string.number_hp_destination);
+                }else
+                    report_layout = view.findViewById(R.id.report_bbs_cashout);
+
+                report_layout.setVisibility(View.VISIBLE);
+                Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+
+                tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                if(!isSuccess){
+                    String transRemark = args.getString(DefineValue.TRX_REMARK);
+                    tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                    tv_trans_remark_sub.setText(transRemark);
+                }
+
+                TextView tv_useerid_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_userid_value);
+                TextView tv_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_membername_value);
+                TextView tv_source_bank_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_source_bank_value);
+                TextView tv_source_acc_no_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_bank_source_acct_no_value);
+                TextView tv_source_acc_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
+                TextView tv_benef_bank_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_benef_bank_value);
+                TextView tv_benef_acc_no_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_bank_benef_acct_no_value);
+                TextView tv_benef_acc_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbs_bank_benef_acc_name_value);
+                TextView tv_product_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_product_name_value);
+                TextView tv_amount_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_amount_value);
+                TextView tv_fee_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_fee_value);
+                TextView tv_total_amount_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_totalamount_value);
+
+                tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
+                tv_name_value.setText(args.getString(DefineValue.USER_NAME));
+                tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
+                tv_source_acc_no_value.setText(args.getString(DefineValue.SOURCE_ACCT_NO));
+                tv_source_acc_name_value.setText(args.getString(DefineValue.SOURCE_ACCT_NAME));
+                tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_BENEF));
+                tv_benef_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
+                tv_benef_acc_name_value.setText(args.getString(DefineValue.NAME_BENEF));
+                tv_product_name_value.setText(args.getString(DefineValue.BANK_PRODUCT));
+                tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee_value.setText(args.getString(DefineValue.FEE));
+                tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+            }
         }
 
         Button btn_ok = (Button) view.findViewById(R.id.dialog_reportbiller_btn_ok);
@@ -554,11 +606,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+        if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
                 ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeSaveImage)) {
             saveimage.performClick();
         }
-        else if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+        else if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
                 ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE+recCodeShareImage)) {
             shareimage.performClick();
         }

@@ -195,8 +195,7 @@ public class SgoPlus_input extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (reqPermissionClass.checkOnPermissionRequest(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
                 smsDialog.sentSms();
         }
         else {
