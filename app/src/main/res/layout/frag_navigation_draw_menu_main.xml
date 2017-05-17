@@ -51,6 +51,7 @@
                           android:textColor="@color/grey_1000w"
                           android:maxLength="25"
                           android:textSize="@dimen/abc_text_size_title_material"
+                          style="@style/TextViewEllipsize"
                         />
                 <TextView android:id="@+id/header_cust_id"
                           android:layout_width="wrap_content"

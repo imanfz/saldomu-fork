@@ -426,7 +426,17 @@ public class MyApiClient {
         if (Looper.myLooper() == null) {
             return getInstance().syncHttpClient;
         }
-
+        final String user = "dev.api.mobile";
+        final String password = "590@dev.api.mobile!";
+        final String fetchURL = "http://116.90.162.173:59088/hpku";
+//        final String encoded = Base64.getEncoder().encodeToString((user + ':' + password).getBytes(StandardCharsets.UTF_8));
+        getInstance().asyncHttpClient.addHeader("dev.api.mobile", "590@dev.api.mobile!");
+//                .prepareGet(fetchURL)
+//                .addHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoded)
+//                .execute()
+//                .get()
+//                .getResponseBody(StandardCharsets.UTF_8.name());
+//        System.out.println(body);
         return getInstance().asyncHttpClient;
     }
 

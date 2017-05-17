@@ -53,13 +53,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                        android:layout_gravity="left"
-                        android:layout_marginRight="4dp"
+                            android:layout_gravity="left"
+                            android:layout_marginRight="4dp"
                             android:textSize="@dimen/abc_text_size_small_material"
                             android:text="Wargit"
                             android:layout_weight="5"
                             android:textStyle="bold"
                             android:textColor="@color/grey_1000b"
+                            style="@style/TextViewEllipsize"
                             />
 
                     <TextView
@@ -77,14 +78,15 @@
                             android:id="@+id/to_id"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:layout_marginLeft="6dp"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="6dp"
                             android:gravity="center"
                             android:textSize="@dimen/abc_text_size_small_material"
                             android:text="Yuddistiraasd "
                             android:layout_weight="5"
                             android:textStyle="bold"
                             android:textColor="@color/grey_1000b"
+                            style="@style/TextViewEllipsize"
                             />
                 </LinearLayout>
 
