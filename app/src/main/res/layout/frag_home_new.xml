@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/windowBackgroundColor">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/saldo"
+        android:text="Saldo"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="47dp"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rp"
+            android:text="Rp."
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="25dp"
+            android:textSize="20sp"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_saldo"
+            android:text="123.000"
+            android:layout_marginBottom="25dp"
+            android:textSize="26sp"
+            android:layout_toRightOf="@+id/rp"
+            android:textColor="@color/colorPrimary"
+            />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorSecondaryWhiteFixed">
+        <GridView
+            android:layout_weight="1"
+            android:numColumns="auto_fit"
+            android:gravity="center"
+            android:columnWidth="100dp"
+            android:stretchMode="columnWidth"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/grid"
+            android:padding="2dp"
+            android:background="@color/colorSecondaryWhiteFixed"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            />
+
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            android:background="@color/colorSecondaryWhiteFixed"/>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/colorSecondaryWhiteFixed">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@color/transparant">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:text="Pulsa"
+                        android:gravity="center"
+                        android:id="@+id/tv_pulsa"
+                        android:textSize="14sp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:visibility="visible"
+                        android:id="@+id/view_pulsa"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="BPJS"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:id="@+id/tv_bpjs"
+                        android:textSize="14sp"
+                        />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:visibility="invisible"
+                        android:id="@+id/view_bpjs"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Listrik PLN"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:id="@+id/tv_listrikPLN"
+                        android:textSize="14sp"/>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:id="@+id/view_listrikPLN"
+                        android:visibility="invisible"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="horizontal"
+
+                android:background="@color/white">
+                <EditText
+                    android:id="@+id/input"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:hint="Masukkan No. Hp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="5"
+                    android:textSize="12sp"
+                    />
+                <Button
+                    android:id="@+id/btn_beli"
+                    android:layout_width="25dp"
+                    android:layout_height="20dp"
+                    android:text="Beli"
+                    android:textColor="@color/white"
+                    android:background="@color/colorPrimary"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
