@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,12 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BBSActivity;
-import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.adapter.EasyAdapter;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BBSActivity;
+import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.adapter.EasyAdapter;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DefineValue;
 
 /**
  * Created by thinkpad on 1/25/2017.

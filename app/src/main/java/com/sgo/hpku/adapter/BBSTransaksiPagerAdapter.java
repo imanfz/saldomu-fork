@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.adapter;
+package com.sgo.hpku.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,9 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.fragments.BBSTransaksiPagerItem;
+import com.sgo.hpku.R;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
 
 /**
  * Created by thinkpad on 5/8/2017.

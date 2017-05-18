@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.adapter;/*
+package com.sgo.hpku.adapter;/*
   Created by Administrator on 1/18/2015.
  */
 
@@ -12,8 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.sgo.orimakardaya.Beans.AccountBBS;
-import com.sgo.orimakardaya.R;
+import com.sgo.hpku.Beans.AccountBBS;
+import com.sgo.hpku.R;
 
 import java.util.ArrayList;
 

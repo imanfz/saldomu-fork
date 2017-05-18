@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.coreclass;
+package com.sgo.hpku.coreclass;
 
 import io.realm.DynamicRealm;
 import io.realm.FieldAttribute;

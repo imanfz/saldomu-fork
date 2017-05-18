@@ -163,6 +163,7 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.MAX_TOPUP);
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
         mEdit.remove(DefineValue.TIMELINE_FIRST_TIME);
+        mEdit.remove(DefineValue.FLOW_AGENT_TYPE);
 
         mEdit.apply();
 

@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.coreclass;
+package com.sgo.hpku.widgets;
 
 import android.content.Context;
 import android.graphics.Rect;

@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,9 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BBSActivity;
-import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.hpku.fragments.BBSTransaksiAmount;
+import com.sgo.hpku.fragments.ListAccountBBS;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BBSActivity;
+import com.sgo.hpku.coreclass.DefineValue;
 
 /**
  * Created by thinkpad on 5/4/2017.

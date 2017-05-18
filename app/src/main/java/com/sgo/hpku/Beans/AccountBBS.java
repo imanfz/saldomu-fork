@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.Beans;
+package com.sgo.hpku.Beans;
 
 /**
  * Created by yuddistirakiki on 2/2/17.

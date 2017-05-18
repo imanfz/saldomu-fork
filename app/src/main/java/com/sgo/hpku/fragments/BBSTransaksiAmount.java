@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,15 +14,16 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.faber.circlestepview.CircleStepView;
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BBSActivity;
-import com.sgo.orimakardaya.coreclass.CustomAutoCompleteTextView;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.RealmManager;
-import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.entityRealm.BBSBankModel;
-import com.sgo.orimakardaya.entityRealm.BBSCommModel;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BBSActivity;
+import com.sgo.hpku.widgets.CustomAutoCompleteTextView;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
+import com.sgo.hpku.coreclass.ToggleKeyboard;
+import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.entityRealm.BBSBankModel;
+import com.sgo.hpku.entityRealm.BBSCommModel;
+import com.sgo.hpku.fragments.BBSTransaksiInformasi;
 
 import java.util.ArrayList;
 import java.util.HashMap;

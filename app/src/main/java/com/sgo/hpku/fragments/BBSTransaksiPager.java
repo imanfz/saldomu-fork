@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,8 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.adapter.BBSTransaksiPagerAdapter;
+import com.sgo.hpku.R;
+import com.sgo.hpku.adapter.BBSTransaksiPagerAdapter;
+import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
 
 /**
  * Created by thinkpad on 5/8/2017.

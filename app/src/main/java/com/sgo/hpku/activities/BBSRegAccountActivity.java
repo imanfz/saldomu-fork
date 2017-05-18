@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.activities;
+package com.sgo.hpku.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.BaseActivity;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
-import com.sgo.orimakardaya.fragments.BBSConfirmAcct;
-import com.sgo.orimakardaya.fragments.BBSRegisterAcct;
+import com.sgo.hpku.R;
+import com.sgo.hpku.coreclass.BaseActivity;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.ToggleKeyboard;
+import com.sgo.hpku.fragments.BBSConfirmAcct;
+import com.sgo.hpku.fragments.BBSRegisterAcct;
 
 import timber.log.Timber;
 

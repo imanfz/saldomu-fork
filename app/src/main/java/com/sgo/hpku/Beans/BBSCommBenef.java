@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.Beans;
+package com.sgo.hpku.Beans;
 
 /**
  * Created by thinkpad on 1/31/2017.

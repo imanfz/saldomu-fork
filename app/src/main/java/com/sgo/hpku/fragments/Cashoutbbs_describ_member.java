@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 /*
   Created by Administrator on 1/31/2017.
  */
@@ -25,23 +25,23 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.BBSActivity;
-import com.sgo.orimakardaya.activities.InsertPIN;
-import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.activities.SgoPlusWeb;
-import com.sgo.orimakardaya.coreclass.CurrencyFormat;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.ErrorDefinition;
-import com.sgo.orimakardaya.coreclass.InetHandler;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.interfaces.OnLoadDataListener;
-import com.sgo.orimakardaya.loader.UtilsLoader;
-import com.sgo.orimakardaya.securities.Md5;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BBSActivity;
+import com.sgo.hpku.activities.InsertPIN;
+import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.activities.SgoPlusWeb;
+import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.ErrorDefinition;
+import com.sgo.hpku.coreclass.InetHandler;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.dialogs.AlertDialogLogout;
+import com.sgo.hpku.dialogs.DefinedDialog;
+import com.sgo.hpku.interfaces.OnLoadDataListener;
+import com.sgo.hpku.loader.UtilsLoader;
+import com.sgo.hpku.securities.Md5;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

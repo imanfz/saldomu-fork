@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -31,17 +31,17 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.Beans.AccountBBS;
-import com.sgo.orimakardaya.Beans.BBSComm;
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.adapter.ListAccountBBSAdapter;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.securities.Md5;
+import com.sgo.hpku.Beans.AccountBBS;
+import com.sgo.hpku.Beans.BBSComm;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.adapter.ListAccountBBSAdapter;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.dialogs.DefinedDialog;
+import com.sgo.hpku.securities.Md5;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

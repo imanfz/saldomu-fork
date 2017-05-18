@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 /*
   Created by Administrator on 1/30/2017.
  */
@@ -23,18 +23,19 @@ import com.faber.circlestepview.CircleStepView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.activities.MainPage;
-import com.sgo.orimakardaya.coreclass.CurrencyFormat;
-import com.sgo.orimakardaya.coreclass.CustomSecurePref;
-import com.sgo.orimakardaya.coreclass.DateTimeFormat;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.InetHandler;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.WebParams;
-import com.sgo.orimakardaya.dialogs.AlertDialogLogout;
-import com.sgo.orimakardaya.dialogs.DefinedDialog;
-import com.sgo.orimakardaya.dialogs.ReportBillerDialog;
+import com.sgo.hpku.fragments.BBSTransaksiAmount;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DateTimeFormat;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.InetHandler;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.dialogs.AlertDialogLogout;
+import com.sgo.hpku.dialogs.DefinedDialog;
+import com.sgo.hpku.dialogs.ReportBillerDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

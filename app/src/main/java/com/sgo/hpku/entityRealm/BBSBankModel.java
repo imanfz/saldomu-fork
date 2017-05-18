@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.entityRealm;
+package com.sgo.hpku.entityRealm;
 
 import io.realm.RealmObject;
 

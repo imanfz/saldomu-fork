@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.activities;
+package com.sgo.hpku.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Intent;
@@ -10,18 +10,19 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.BaseActivity;
-import com.sgo.orimakardaya.coreclass.DefineValue;
-import com.sgo.orimakardaya.coreclass.MyApiClient;
-import com.sgo.orimakardaya.coreclass.ToggleKeyboard;
-import com.sgo.orimakardaya.fragments.BBSCashInConfirm;
-import com.sgo.orimakardaya.fragments.BBSJoinAgentInput;
-import com.sgo.orimakardaya.fragments.BBSTransaksiInformasi;
-import com.sgo.orimakardaya.fragments.BBSTransaksiPager;
-import com.sgo.orimakardaya.fragments.BBSTransaksiPagerItem;
-import com.sgo.orimakardaya.fragments.Cashoutbbs_describ_member;
-import com.sgo.orimakardaya.fragments.ListAccountBBS;
+import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BBSRegAccountActivity;
+import com.sgo.hpku.coreclass.BaseActivity;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.ToggleKeyboard;
+import com.sgo.hpku.fragments.BBSCashInConfirm;
+import com.sgo.hpku.fragments.BBSJoinAgentInput;
+import com.sgo.hpku.fragments.BBSTransaksiInformasi;
+import com.sgo.hpku.fragments.BBSTransaksiPager;
+import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
+import com.sgo.hpku.fragments.Cashoutbbs_describ_member;
+import com.sgo.hpku.fragments.ListAccountBBS;
 
 import timber.log.Timber;
 

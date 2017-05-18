@@ -1,4 +1,4 @@
-package com.sgo.orimakardaya.fragments;
+package com.sgo.hpku.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sgo.orimakardaya.R;
-import com.sgo.orimakardaya.coreclass.DefineValue;
+import com.sgo.hpku.fragments.BBSTransaksiAmount;
+import com.sgo.hpku.R;
+import com.sgo.hpku.coreclass.DefineValue;
 
 /**
  * Created by thinkpad on 5/10/2017.
