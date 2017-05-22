@@ -35,7 +35,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-        buildConfigField 'String', "AppID", "\"AKD\""
+
     }
 
     productFlavors {
@@ -47,10 +47,13 @@ android {
             resValue "integer", "realscheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
-            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:59088/hpku/\""
+//            buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:59088/hpku/\""
+            buildConfigField 'String', "HeadAddress", '"http://116.90.162.173:59088/hpku/"'
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/akardaya2/\""
             versionCode = 1
             versionName "1.0"
+            buildConfigField 'String', "AppID", "\"AKD\""
+            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
         }
         production {
             applicationId "com.sgo.hpku"
@@ -65,6 +68,7 @@ android {
             signingConfig signingConfigs.prodKey
             versionCode = 21
             versionName "2.20"
+            buildConfigField 'String', "AppID", "\"AKD\""
         }
     }
 
