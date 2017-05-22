@@ -110,5 +110,9 @@
         <item name="android:maxHeight">20dip</item>
     </style>
 
+    <style name="TextViewEllipsize" parent="">
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
 
 </resources>

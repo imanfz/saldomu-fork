@@ -43,12 +43,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                    android:layout_gravity="left"
+                        android:layout_gravity="left"
                         android:textSize="@dimen/abc_text_size_medium_material"
                         android:text="Wargit"
                         android:layout_weight="5"
                         android:textStyle="bold"
                         android:textColor="@color/grey_1000b"
+                        style="@style/TextViewEllipsize"
                         />
 
                 <TextView
@@ -72,6 +73,7 @@
                         android:layout_weight="5"
                         android:textStyle="bold"
                         android:textColor="@color/grey_1000b"
+                        style="@style/TextViewEllipsize"
                         />
             </LinearLayout>
 

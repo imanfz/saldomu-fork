@@ -3,6 +3,7 @@ package com.sgo.hpku.coreclass;
 import android.content.Context;
 import android.os.Looper;
 
+import com.facebook.stetho.server.http.HttpHeaders;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.MySSLSocketFactory;
@@ -32,6 +33,8 @@ public class MyApiClient {
 
     private static MyApiClient singleton = null;
     private Context mContext;
+    private AsyncHttpClient asyncHttpClient;
+    private AsyncHttpClient syncHttpClient;
 
     public MyApiClient(){
 
@@ -47,6 +50,10 @@ public class MyApiClient {
     public static MyApiClient Initialize(Context _context) {
         if(singleton == null) {
             singleton = new MyApiClient(_context);
+            singleton.asyncHttpClient=new AsyncHttpClient();
+            singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.syncHttpClient=new SyncHttpClient();
+            singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
         }
         return singleton;
     }
@@ -317,12 +324,12 @@ public class MyApiClient {
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.AppID;
+
     public static String CCY_VALUE = "IDR";
     public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
 
-    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-    private AsyncHttpClient syncHttpClient= new SyncHttpClient();
+
 
     public static UUID getUUID(){
         return UUID.randomUUID();
@@ -338,7 +345,7 @@ public class MyApiClient {
         return tokens.nextToken();
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+APP_ID+WebServiceName+noID;
+        String msgnya = uuidnya+date+BuildConfig.AppIDHpku+WebServiceName+noID;
 
         String hash = null;
         Mac sha256_HMAC;
@@ -364,7 +371,7 @@ public class MyApiClient {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+APP_ID+webServiceName+ commID + user_id;
+        String msgnya = uuidnya+dtime+BuildConfig.AppIDHpku+webServiceName+ commID + user_id;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
@@ -426,8 +433,14 @@ public class MyApiClient {
         if (Looper.myLooper() == null) {
             return getInstance().syncHttpClient;
         }
-
         return getInstance().asyncHttpClient;
+    }
+
+    private static String getBasicAuth() {
+        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
+        byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
+        String encode = new String(encodeByte);
+        return encode.replace('+','-').replace('/','_');
     }
 
     public SSLSocketFactory getSSLSocketFactory(){
