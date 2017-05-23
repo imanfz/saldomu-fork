@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
@@ -64,6 +65,17 @@ public class Regist1 extends Fragment{
     private ProgressDialog progdialog;
     private ReqPermissionClass reqPermissionClass;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        reqPermissionClass = new ReqPermissionClass(getActivity());
+        reqPermissionClass.setTargetFragment(this);
+
+        progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        progdialog.dismiss();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -169,7 +181,6 @@ public class Regist1 extends Fragment{
 
     private void sentData(final String noHP){
         try{
-                progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
                 progdialog.show();
 
                 btnLanjut.setEnabled(false);
