@@ -140,7 +140,6 @@ public class Regist1 extends Fragment{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_READ_SMS)){
             if (isSimExists()) {
-
                 TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                 String Nomor1 = tm.getLine1Number();
 

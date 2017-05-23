@@ -131,7 +131,6 @@ public class WebParams {
 	public static String DESC = "desc";
     public static String REQUEST_ID = "request_id";
     public static String SEND_TO = "send_to";
-
     public static String DATA_CONTACT = "data_contact";
     public static String DATA_FRIEND = "data_friend";
 

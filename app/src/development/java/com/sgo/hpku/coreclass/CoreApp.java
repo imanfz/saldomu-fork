@@ -228,5 +228,4 @@ public class CoreApp extends Application {
         this.mCurrentActivity = mCurrentActivity;
     }
 
-
 }

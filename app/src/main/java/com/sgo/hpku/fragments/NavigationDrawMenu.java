@@ -251,6 +251,7 @@ public class NavigationDrawMenu extends ListFragment{
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
 //        if(flow_agent_type.equalsIgnoreCase(DefineValue.BBS))
             models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
+
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),MTOPUP));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
@@ -302,6 +303,7 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MDAP:
                 newFragment = new FragPulsaAgent();
+                if (data != null && !data.isEmpty()) newFragment.setArguments(data);
                 switchFragment(newFragment, getString(R.string.toolbar_title_pulsa_agent));
                 break;
             case MBUY:
