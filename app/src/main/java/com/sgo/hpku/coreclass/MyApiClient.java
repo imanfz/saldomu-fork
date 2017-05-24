@@ -284,7 +284,14 @@ public class MyApiClient {
         LINK_ATMTOPUP       = headaddressfinal + "ATMTopUp/Retrieve";
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
-        LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
+        if(BuildConfig.isProdDomain)
+        {
+            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/edik2/" + "InquirySMS/Retrieve";
+        }
+        else
+        {
+            LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
+        }
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
