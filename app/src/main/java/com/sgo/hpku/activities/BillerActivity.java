@@ -257,7 +257,7 @@ public class BillerActivity extends BaseActivity {
 //                Log.d("onActivity result", "Biller Activity masuk result normal" + " / " + getSupportFragmentManager().getBackStackEntryCount());
                 if(getSupportFragmentManager().getBackStackEntryCount()>1){
                     FragmentManager fm = getSupportFragmentManager();
-                    fm.popBackStack(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fm.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 //                    Log.d("onActivity result", "Biller Activity masuk backstack entry > 1");
                 }
             }
