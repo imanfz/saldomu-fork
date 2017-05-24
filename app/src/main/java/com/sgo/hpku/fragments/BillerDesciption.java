@@ -96,6 +96,8 @@ public class BillerDesciption extends Fragment {
     private List<bank_biller_model> mListBankBiller;
     private RealmChangeListener realmListener;
     private Realm realm;
+    Boolean isPLN = false;
+    String fee;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -156,6 +158,12 @@ public class BillerDesciption extends Fragment {
         biller_comm_code = mBillerData.getComm_code();
         biller_api_key = mBillerData.getApi_key();
         callback_url = mBillerData.getCallback_url();
+
+        if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)){
+            isPLN = true;
+            }
     }
 
     private void initializeLayout() {
@@ -189,6 +197,14 @@ public class BillerDesciption extends Fragment {
             }
         }
 
+        if(isPLN){
+            View layout_fee = v.findViewById(R.id.billertoken_fee_layout);
+            ((TextView)(layout_fee.findViewById(R.id.billertoken_fee_value))).setText(ccy_id + ". " +CurrencyFormat.format(fee));
+            layout_fee.setVisibility(View.VISIBLE);
+            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
+            String deAmount = String.valueOf(mAmount);
+            tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(deAmount));
+            }
         paymentData = new ArrayList<>();
         adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
         adapterPaymentOptions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -303,18 +319,18 @@ public class BillerDesciption extends Fragment {
     private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Object item = adapterView.getItemAtPosition(i);
-            payment_name = item.toString();
-            for (i = 0; i < mListBankBiller.size() ; i++ ){
-                if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
-                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
-                                                    mListBankBiller.get(i).getBank_name(),
-                                                    mListBankBiller.get(i).getProduct_code(),
-                                                    mListBankBiller.get(i).getProduct_name(),
-                                                    mListBankBiller.get(i).getProduct_type(),
-                                                    mListBankBiller.get(i).getProduct_h2h());
-                }
-            }
+//            Object item = adapterView.getItemAtPosition(i);
+//            payment_name = item.toString();
+//            for (i = 0; i < mListBankBiller.size() ; i++ ){
+//                if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
+//                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
+//                                                    mListBankBiller.get(i).getBank_name(),
+//                                                    mListBankBiller.get(i).getProduct_code(),
+//                                                    mListBankBiller.get(i).getProduct_name(),
+//                                                    mListBankBiller.get(i).getProduct_type(),
+//                                                    mListBankBiller.get(i).getProduct_h2h());
+//                }
+//            }
         }
 
         @Override
@@ -429,7 +445,9 @@ public class BillerDesciption extends Fragment {
                             amount = response.getString(WebParams.AMOUNT);
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
                             description =  response.getString(WebParams.DESCRIPTION);
-
+                            if(isPLN && response.has(WebParams.ADMINFEE)) {
+                                fee = response.optString(WebParams.ADMINFEE, "");
+                                }
                             if(isAdded())
                                 initializeLayout();
                             else
@@ -555,8 +573,7 @@ public class BillerDesciption extends Fragment {
                             Timber.d("isi response payment biller:"+response.toString());
 
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
-                                changeToConfirmBiller(response.getString(WebParams.FEE), response.optString(WebParams.MERCHANT_TYPE, ""),
-                                        bank_code,product_code,-1);
+                                changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),bank_code,product_code,-1);
                                 progdialog.dismiss();
                                 btn_submit.setEnabled(true);
                             }
@@ -565,7 +582,7 @@ public class BillerDesciption extends Fragment {
                                 if(attempt != -1)
                                     attempt = response.optInt(WebParams.MAX_FAILED,3) - attempt ;
 
-                                sentDataReqToken(tx_id,product_code,biller_comm_code,response.getString(WebParams.FEE),
+                                sentDataReqToken(tx_id,product_code,biller_comm_code,fee,
                                         response.optString(WebParams.MERCHANT_TYPE, ""),bank_code,attempt);
                             }
 
@@ -886,10 +903,16 @@ public class BillerDesciption extends Fragment {
 
         if(is_input_amount) {
             String desired_amount = et_desired_amount.getText().toString();
-            totalAmount = Double.parseDouble(desired_amount) + + Double.parseDouble(fee);
+            totalAmount = Double.parseDouble(desired_amount) +  Double.parseDouble(fee);
             mArgs.putString(DefineValue.AMOUNT_DESIRED,desired_amount );
             mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
         }
+        if(isPLN){
+            double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
+            String deAmount = String.valueOf(mAmount);
+            mArgs.putString(DefineValue.AMOUNT, deAmount);
+            mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(amount));
+            }
 
         Fragment newFrag = new BillerConfirm();
         newFrag.setArguments(mArgs);

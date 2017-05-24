@@ -16,6 +16,7 @@
                       android:orientation="vertical"
                       android:background="@color/grey_1000w"
                       android:layout_margin="3dp"
+                      android:animateLayoutChanges="true"
                 >
 
             <LinearLayout
@@ -92,7 +93,31 @@
                         />
             </LinearLayout>
 
-
+            <LinearLayout
+                android:id="@+id/billertoken_fee_layout"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
+            >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fee"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textStyle="bold"
+                />
+                <TextView
+                    android:id="@+id/billertoken_fee_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                />
+            </LinearLayout>
 
 
             <LinearLayout android:id="@+id/billertoken_amount_layout"
