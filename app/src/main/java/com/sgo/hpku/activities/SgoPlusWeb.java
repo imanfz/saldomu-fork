@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.*;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.hpku.BuildConfig;
 import com.sgo.hpku.R;
 import com.sgo.hpku.coreclass.*;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
@@ -152,6 +154,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        if (Build.VERSION.SDK_INT >= 21 && BuildConfig.DEBUG) {
+            webSettings.setMixedContentMode( WebSettings.MIXED_CONTENT_ALWAYS_ALLOW );
+            }
         if (android.os.Build.VERSION.SDK_INT<=11) {
             webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
         }
