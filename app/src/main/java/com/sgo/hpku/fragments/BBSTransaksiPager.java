@@ -20,7 +20,7 @@ import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
 
 public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChangeListener{
 
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSTransaksiPager";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiPager";
     private View v;
     private ViewPager mViewPager;
     private int dotsCount;

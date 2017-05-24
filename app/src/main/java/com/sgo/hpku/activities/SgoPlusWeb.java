@@ -426,11 +426,11 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             args.putString(DefineValue.BANK_PRODUCT, bankProduct);
             args.putString(DefineValue.REMARK,mIntent.getStringExtra(DefineValue.REMARK));
         }
-//        else if(reportType.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
-//            Intent data = new Intent();
-//            data.putExtra(DefineValue.TX_STATUS, txStatus);
-//            setResult(MainPage.RESULT_BBS_STATUS, data);
-//        }
+        else if(reportType.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
+            Intent data = new Intent();
+            data.putExtra(DefineValue.TX_STATUS, txStatus);
+            setResult(MainPage.RESULT_BBS_STATUS, data);
+        }
 
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), ReportBillerDialog.TAG);

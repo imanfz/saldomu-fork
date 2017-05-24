@@ -46,7 +46,7 @@ import timber.log.Timber;
 
 public class BBSRegisterAcct extends Fragment {
 
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSRegisterAcct";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSRegisterAcct";
     private final static String TYPE_ACCT = "ACCT";
 
     private View v;

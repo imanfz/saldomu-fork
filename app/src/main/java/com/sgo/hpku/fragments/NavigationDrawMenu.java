@@ -77,7 +77,6 @@ public class NavigationDrawMenu extends ListFragment{
     private SecurePreferences sp;
     ProgressDialog progdialog;
     private LevelClass levelClass;
-    private String flow_agent_type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,7 +90,6 @@ public class NavigationDrawMenu extends ListFragment{
         _SaveInstance = savedInstanceState;
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        flow_agent_type = sp.getString(DefineValue.FLOW_AGENT_TYPE,DefineValue.LKD);
         levelClass = new LevelClass(getActivity(),sp);
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = (ListView) v.findViewById(android.R.id.list);
@@ -249,8 +247,7 @@ public class NavigationDrawMenu extends ListFragment{
     private ArrayList<navdrawmainmenuModel> generateData(){
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
-//        if(flow_agent_type.equalsIgnoreCase(DefineValue.BBS))
-            models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
 
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),MTOPUP));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2

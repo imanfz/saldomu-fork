@@ -342,9 +342,6 @@ public class WebParams {
 
     public static String TX_AMOUNT = "tx_amount";
     public static String SCHEME_CODE= "scheme_code";
-    public static String BBS_CITY= "bbs_city";
-    public static String COMM_SOURCE= "comm_source";
-    public static String COMM_BENEF= "comm_benef";
     public static String SOURCE_PRODUCT_CODE= "source_product_code";
     public static String BENEF_PRODUCT_CODE= "benef_product_code";
     public static String SOURCE_PRODUCT_TYPE= "source_product_type";
@@ -372,7 +369,6 @@ public class WebParams {
     public static String RECEIVER_ID= "receiver_id";
     public static String BENEF_CITY_CODE= "benef_city_code";
     public static String BENEF_CITY_NAME= "benef_city_name";
-    public static String FLOW_AGENT_TYPE = "flow_agent_type";
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
 }

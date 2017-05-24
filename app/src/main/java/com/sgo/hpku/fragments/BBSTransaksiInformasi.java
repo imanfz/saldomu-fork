@@ -65,7 +65,7 @@ import timber.log.Timber;
  */
 
 public class BBSTransaksiInformasi extends Fragment {
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSTransaksiInformasi";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
 
     private View v, cityLayout, noHPPengirimLayout;

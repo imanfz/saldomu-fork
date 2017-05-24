@@ -304,10 +304,6 @@ public class DefineValue {
     public static String ACCT = "ACCT";
     public static String USER_ID = "userId";
     public static String BBS_CASHOUT = "bbsCashout";
-    public static String FLOW_AGENT_TYPE = "flowAgentType";
-    public static String LKD = "lkd";
-    public static String REKENING_AGENT = "rekeningAgent";
-    public static String REKENING_MEMBER = "rekeningMember";
     public static String SOURCE_PRODUCT_CODE = "sourceProductCode";
     public static String SOURCE_PRODUCT_TYPE = "sourceProductType";
     public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";

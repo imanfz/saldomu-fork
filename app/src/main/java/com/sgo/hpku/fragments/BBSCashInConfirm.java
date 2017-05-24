@@ -59,7 +59,7 @@ import timber.log.Timber;
  */
 
 public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSCashInConfirm";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSCashInConfirm";
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private TextView tvTitle;

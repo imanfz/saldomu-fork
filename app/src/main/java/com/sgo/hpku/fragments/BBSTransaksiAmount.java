@@ -36,7 +36,7 @@ import io.realm.Realm;
  */
 
 public class BBSTransaksiAmount extends Fragment {
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSTransaksiAmount";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiAmount";
 
     private View v, inputForm, emptyLayout;
     private TextView tvTitle;

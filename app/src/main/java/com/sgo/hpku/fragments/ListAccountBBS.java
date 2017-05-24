@@ -58,7 +58,7 @@ import timber.log.Timber;
 
 public class ListAccountBBS extends Fragment implements View.OnClickListener {
 
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.ListAccountBBS";
+    public final static String TAG = "com.sgo.hpku.fragments.ListAccountBBS";
 
     private View v;
     private ListView lv;

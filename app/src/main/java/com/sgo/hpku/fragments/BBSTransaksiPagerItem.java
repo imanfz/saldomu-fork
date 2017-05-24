@@ -21,7 +21,7 @@ import com.sgo.hpku.coreclass.DefineValue;
  */
 
 public class BBSTransaksiPagerItem extends Fragment {
-    public final static String TAG = "com.sgo.indonesiakoe.fragments.BBSTransaksiPagerItem";
+    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiPagerItem";
 
     private View v, layout;
     private String title;
