@@ -30,12 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
-//import com.google.firebase.analytics.FirebaseAnalytics;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.commentModel;
 import com.sgo.hpku.Beans.likeModel;
 import com.sgo.hpku.Beans.listHistoryModel;
@@ -239,17 +237,6 @@ public class MainPage extends BaseActivity{
         }
     };
 
-
-    private Handler handler=new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.arg1 == 0){
-                mNavDrawer.setBalanceToUI((BalanceModel)msg.obj);
-            }
-        }
-    };
-
-
     private void doUnbindService() {
         Timber.i("Main Page service connection Unbind ........");
         unbindService(myServiceConnection);
@@ -262,7 +249,6 @@ public class MainPage extends BaseActivity{
         if (!isBound) {
             Timber.i("Main Page service connection Masuk binding");
             Intent bindIntent = new Intent(this, BalanceService.class);
-            bindIntent.putExtra(DefineValue.DATA,new Messenger(handler));
             isBound = bindService(bindIntent, myServiceConnection,
                     Context.BIND_AUTO_CREATE);
         }
@@ -651,15 +637,16 @@ public class MainPage extends BaseActivity{
     }
     private void Logout() {
 
-        String balance = sp.getString(DefineValue.BALANCE, "");
-        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
+        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
-        mEditor.apply();
+        //di commit bukan apply, biar yakin udah ke di write datanya
+        mEditor.commit();
         openFirstScreen(FIRST_SCREEN_LOGIN);
     }
 	

@@ -1,14 +1,16 @@
 package com.sgo.hpku.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,7 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.navdrawmainmenuModel;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.MainPage;
@@ -32,10 +33,10 @@ import com.sgo.hpku.adapter.NavDrawMainMenuAdapter;
 import com.sgo.hpku.coreclass.CurrencyFormat;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.MyPicasso;
 import com.sgo.hpku.coreclass.RoundImageTransformation;
-import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.interfaces.OnLoadDataListener;
 import com.sgo.hpku.loader.UtilsLoader;
 import com.sgo.hpku.services.BalanceService;
@@ -77,6 +78,15 @@ public class NavigationDrawMenu extends ListFragment{
     private SecurePreferences sp;
     ProgressDialog progdialog;
     private LevelClass levelClass;
+    private IntentFilter filter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        filter = new IntentFilter();
+        filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -127,10 +137,8 @@ public class NavigationDrawMenu extends ListFragment{
                 getBalance(false);
             }
         });
-        BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
-        if(mBal != null)
-            setBalanceToUI(mBal);
 
+        setBalanceToUI();
     }
 
     @Override
@@ -139,13 +147,13 @@ public class NavigationDrawMenu extends ListFragment{
         refreshDataNavDrawer();
     }
 
-    public void setBalanceToUI(BalanceModel deData){
-        headerCurrency.setText(deData.getCcy_id());
-        balanceValue.setText(CurrencyFormat.format(deData.getAmount()));
-        currencyLimit.setText(deData.getCcy_id());
-        limitValue.setText(CurrencyFormat.format(deData.getRemain_limit()));
+    public void setBalanceToUI(){
+        headerCurrency.setText(sp.getString(DefineValue.BALANCE_CCYID,""));
+        balanceValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT,"")));
+        currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID,""));
+        limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT,"")));
 
-        if (deData.getPeriod_limit().equals("Monthly"))
+        if (sp.getString(DefineValue.BALANCE_PERIOD_LIMIT,"").equals("Monthly"))
             periodeLimit.setText(R.string.header_monthly_limit);
         else
             periodeLimit.setText(R.string.header_daily_limit);
@@ -155,29 +163,21 @@ public class NavigationDrawMenu extends ListFragment{
         new UtilsLoader(getActivity(),sp).getDataBalance(isAuto,new OnLoadDataListener() {
             @Override
             public void onSuccess(Object deData) {
-                setBalanceToUI((BalanceModel) deData);
+                setBalanceToUI();
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
-
-                Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
-                i.putExtra(BalanceModel.BALANCE_PARCELABLE, (BalanceModel) deData);
-                LocalBroadcastManager.getInstance(getActivity())
-                        .sendBroadcast(i);
             }
 
             @Override
             public void onFail(String message) {
-
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
             }
 
             @Override
             public void onFailure() {
-
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
-
             }
         });
     }
@@ -380,4 +380,29 @@ public class NavigationDrawMenu extends ListFragment{
         mAdapter.setDefault();
         mAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(action.equals(BalanceService.INTENT_ACTION_BALANCE)){
+                setBalanceToUI();
+            }
+        }
+    };
+
 }
