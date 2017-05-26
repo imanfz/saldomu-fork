@@ -7,44 +7,40 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/saldo"
-        android:text="Saldo"
+        android:text="@string/balance"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="47dp"
-        android:layout_marginTop="10dp"
-        android:textSize="20sp"
+        android:layout_marginRight="47dp"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/text_size_medium_material"
 
         />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp">
+        android:orientation="horizontal"
+        android:layout_marginLeft="47dp"
+        android:layout_marginRight="47dp"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rp"
-            android:text="Rp."
-            android:layout_marginLeft="70dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="25dp"
-            android:textSize="20sp"
-
+            android:text="@string/currency"
+            android:textSize="@dimen/text_size_large_material"
             />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_saldo"
             android:text="123.000"
-            android:layout_marginBottom="25dp"
-            android:textSize="26sp"
-            android:layout_toRightOf="@+id/rp"
+            android:textSize="@dimen/text_size_display_1_material"
             android:textColor="@color/colorPrimary"
             />
-    </RelativeLayout>
+    </LinearLayout>
 
 
     <LinearLayout
@@ -53,13 +49,13 @@
         android:orientation="vertical"
         android:background="@color/colorSecondaryWhiteFixed">
         <GridView
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:numColumns="auto_fit"
             android:gravity="center"
             android:columnWidth="100dp"
             android:stretchMode="columnWidth"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/grid"
             android:padding="2dp"
             android:background="@color/colorSecondaryWhiteFixed"
@@ -68,22 +64,22 @@
             />
 
 
-        <View
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:layout_margin="5dp"
-            android:background="@color/colorSecondaryWhiteFixed"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="8dp"-->
+            <!--android:layout_margin="5dp"-->
+            <!--android:background="@color/colorSecondaryWhiteFixed"/>-->
+
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/colorSecondaryWhiteFixed">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:padding="8dp"
                 android:background="@color/transparant">
 
                 <LinearLayout
@@ -95,7 +91,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
-                        android:text="Pulsa"
+                        android:text="@string/menu_item_title_pulsa_agent"
                         android:gravity="center"
                         android:id="@+id/tv_pulsa"
                         android:textSize="14sp"/>
@@ -117,7 +113,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="BPJS"
+                        android:text="@string/newhome_bpjs"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:id="@+id/tv_bpjs"
@@ -142,7 +138,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="Listrik PLN"
+                        android:text="@string/newhome_listrik_pln"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:id="@+id/tv_listrikPLN"
@@ -156,32 +152,31 @@
                         android:id="@+id/view_listrikPLN"
                         android:visibility="invisible"/>
                 </LinearLayout>
-
-
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
 
+                android:padding="8dp"
+                android:gravity="center_vertical"
                 android:background="@color/white">
                 <EditText
                     android:id="@+id/input"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:hint="Masukkan No. Hp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/edittext_hint_id"
                     android:layout_marginLeft="5dp"
-                    android:layout_weight="5"
+                    android:layout_weight="1"
                     android:textSize="12sp"
                     />
                 <Button
                     android:id="@+id/btn_beli"
-                    android:layout_width="25dp"
-                    android:layout_height="20dp"
-                    android:text="Beli"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/menu_item_title_buy"
                     android:textColor="@color/white"
                     android:background="@color/colorPrimary"
-                    android:layout_weight="1"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"/>
             </LinearLayout>
