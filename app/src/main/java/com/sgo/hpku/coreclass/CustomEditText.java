@@ -33,5 +33,7 @@ public class CustomEditText extends EditText {
         super.onTextChanged(text, start, lengthBefore, lengthAfter);
         if (this.getText().toString().equals(" "))
             this.setText("");
+        if(this.getText().toString().equals("0"))
+            this.setText("");
     }
 }

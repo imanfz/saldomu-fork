@@ -2,7 +2,7 @@ package com.sgo.hpku.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
-import com.facebook.stetho.server.http.HttpHeaders;
+
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.MySSLSocketFactory;
@@ -32,8 +32,8 @@ public class MyApiClient {
 
     private static MyApiClient singleton = null;
     private Context mContext;
-//    private AsyncHttpClient asyncHttpClient;
-//    private AsyncHttpClient syncHttpClient;
+    private AsyncHttpClient asyncHttpClient;
+    private AsyncHttpClient syncHttpClient;
 
     public MyApiClient(){
 
@@ -362,8 +362,6 @@ public class MyApiClient {
     public static String CCY_VALUE = "IDR";
     public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
-    private AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-    private AsyncHttpClient syncHttpClient= new SyncHttpClient();
 
     public static UUID getUUID(){
         return UUID.randomUUID();

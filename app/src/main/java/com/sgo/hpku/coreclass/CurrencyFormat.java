@@ -8,24 +8,42 @@ import java.util.Locale;
 
 public class CurrencyFormat {
 
-  public static String format(double number){
-    DecimalFormat svSE = new DecimalFormat("#,###,###,##0.00");
-    DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
-    symbols.setDecimalSeparator(',');
-    symbols.setGroupingSeparator('.');
-    svSE.setDecimalFormatSymbols(symbols);
+
+    private static final CharSequence symbols = ",";
+
+    public static String format(double number){
+        DecimalFormat svSE = new DecimalFormat("#,###,###,##0.00");
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(new Locale("id", "ID"));
+        symbols.setDecimalSeparator(',');
+        symbols.setGroupingSeparator('.');
+        svSE.setDecimalFormatSymbols(symbols);
 
     return svSE.format(number);
   }
 
-  public static String format(String number){
-      double temp = Double.valueOf(number);
-      return format(temp);
-  }
+    public static String format(String number){
+        if(number == null)
+            return "";
+
+        if(number.contains(symbols) || number.isEmpty())
+          return number;
+        double temp = Double.valueOf(number);
+        return format(temp);
+    }
 
   public static String format(int number){
     double temp = (double) number;
     return format(temp);
   }
+
+    public static String deleteDecimal(String number){
+        if(!number.isEmpty()) {
+            double temp1 = Double.valueOf(number);
+            if(temp1 == (long) temp1)
+                return String.valueOf((int)temp1);
+        }
+        return number;
+    }
+
 
 }
