@@ -4,6 +4,7 @@ package com.sgo.hpku.adapter;/*
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class NavDrawMainMenuAdapter extends ArrayAdapter<navdrawmainmenuModel> {
       rowView = inflater.inflate(R.layout.nav_draw_main_menu_group, parent, false);
       TextView titleView = (TextView) rowView.findViewById(R.id.nav_draw_main_menu_header);
       titleView.setText(mModelArrayList.get(position).getTitle());
+      titleView.setTextColor(ContextCompat.getColor(mContext, R.color.white));
 
     }
     // 5. retrn rowView

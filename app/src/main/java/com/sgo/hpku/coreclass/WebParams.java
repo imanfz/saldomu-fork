@@ -249,6 +249,7 @@ public class WebParams {
     public static String SETTINGS = "settings";
     public static String MAX_MEMBER_TRANSFER = "max_member_transfer";
     public static String ADMIN_FEE = "admin_fee";
+    public static String ADMINFEE ="ADMIN FEE";
 
     public static String ACCOUNT_DATA = "account_data";
     public static String ACCOUNT_NO = "account_no";
