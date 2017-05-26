@@ -27,40 +27,40 @@ public class DateTimeFormat {
 
 
     public static String getCurrentDateTime(){
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
-      return df.format(Calendar.getInstance().getTime());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
+        return df.format(Calendar.getInstance().getTime());
     }
 
     public static String formatToID (String _date){
-      if(_date.isEmpty())
-          return null;
+        if(_date.isEmpty())
+            return null;
 
-      DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
-      DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", new Locale("ID","INDONESIA"));
-      String newDate = "";
-      try {
-        newDate = toFormat.format(fromFormat.parse(_date));
-      } catch (ParseException e) {
-        e.printStackTrace();
-      }
-      return newDate;
+        DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
+        DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", new Locale("ID","INDONESIA"));
+        String newDate = "";
+        try {
+            newDate = toFormat.format(fromFormat.parse(_date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newDate;
     }
 
     public static String getCurrentDateTimeScalable(Context mContext){
-      Boolean is24hours = android.text.format.DateFormat.is24HourFormat(mContext);
-      DateFormat df ;
-      if (is24hours) {
-          df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", new Locale("ID","INDONESIA"));
-          return df.format(Calendar.getInstance().getTime());
-      }else{
-          df = new SimpleDateFormat("yyyy-MM-dd hh:mm a", new Locale("ID","INDONESIA"));
-          return df.format(Calendar.getInstance().getTime());
-      }
+        Boolean is24hours = android.text.format.DateFormat.is24HourFormat(mContext);
+        DateFormat df ;
+        if (is24hours) {
+            df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", new Locale("ID","INDONESIA"));
+            return df.format(Calendar.getInstance().getTime());
+        }else{
+            df = new SimpleDateFormat("yyyy-MM-dd hh:mm a", new Locale("ID","INDONESIA"));
+            return df.format(Calendar.getInstance().getTime());
+        }
     }
 
     public static String getCurrentDate(){
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
-      return df.format(Calendar.getInstance().getTime());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        return df.format(Calendar.getInstance().getTime());
     }
 
     public static Date getCurrDate(){
@@ -68,20 +68,20 @@ public class DateTimeFormat {
     }
 
     public static String getCurrentDateMinus(int minus){
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
-      Calendar calendar=Calendar.getInstance();
-      calendar.add(Calendar.DAY_OF_YEAR, -minus);
-      return df.format(calendar.getTime());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -minus);
+        return df.format(calendar.getTime());
     }
 
     public static java.util.Date convertStringtoCustomDateTime(String _date){
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
-      try {
-          return dateFormat.parse(_date);
-      } catch (ParseException e) {
-          e.printStackTrace();
-      }
-      return null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        try {
+            return dateFormat.parse(_date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static java.util.Date convertStringtoCustomDate(String _date){
@@ -96,6 +96,11 @@ public class DateTimeFormat {
 
     public static String convertDatetoString(Date _date){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        return dateFormat.format(_date);
+    }
+
+    public static String convertDatetoString(Date _date, String format){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("id","ID"));
         return dateFormat.format(_date);
     }
 

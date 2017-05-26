@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <!-- Button Close -->
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="top|end"
+        android:id="@+id/closeBtn"
+        android:scaleType="fitXY"
+        android:src="@drawable/close" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:paddingBottom="15dp" >
+
+        <!-- 1 -->
+        <!-- Load Content Fragment-->
+        <FrameLayout
+            android:id="@+id/detailProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <!-- END Load Content Fragment-->
+
+        <!-- 2 -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" >
+
+            <!-- 2.1 -->
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/agentMapBtn"
+                android:scaleType="fitXY"
+                android:src="@drawable/location" />
+
+            <!-- 2.2 -->
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp" >
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="@string/cash_in_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_column="2"
+                        android:text="@string/colon_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:text="YES"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        style="@style/CashInCashOutAgentProfileBbs" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="@string/cash_out_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_column="2"
+                        android:text="@string/colon_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:text="NO"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        style="@style/CashInCashOutAgentProfileBbs" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="@string/availability_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_column="2"
+                        android:text="@string/colon_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:text="YES"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        style="@style/CashInCashOutAgentProfileBbs" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:text="@string/rate_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:layout_column="2"
+                        android:text="@string/colon_agent_profile_bbs_label"
+                        style="@style/CashInCashOutLabelAgentProfileBbs" />
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="20dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/rate" />
+
+                </TableRow>
+
+            </TableLayout>
+
+            <!-- 2.3 -->
+            <View
+                android:layout_width="1dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp"
+                android:background="#663300" />
+
+            <!-- 2.4 -->
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginStart="3dp" >
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="15dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/email" />
+
+                    <TextView
+                        android:text="ida@yahoo.com"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
+                        android:textSize="10sp"
+                        android:layout_column="2" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="5dp">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="15dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/whatsapp" />
+
+                    <TextView
+                        android:text="021-12313213"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_column="2" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginTop="5dp">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="15dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/call" />
+
+                    <TextView
+                        android:text="081807128119"
+                        android:textSize="10sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_column="2" />
+
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
+
+
+        <!-- 3 -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:background="@drawable/border">
+
+                <ImageView
+                    android:id="@+id/callBtn"
+                    android:scaleType="fitXY"
+                    style="@style/PhoneCallIconAgentProfileBbs" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
+                android:background="@drawable/border">
+
+                <ImageView
+                    android:id="@+id/smsBtn"
+                    android:scaleType="fitXY"
+                    style="@style/SmsIconAgentProfileBbs" />
+
+            </LinearLayout>
+
+            <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:background="@drawable/border">
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:id="@+id/emailBtn"
+                style="@style/EmailIconAgentProfileBbs" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
+                android:background="@drawable/border">
+
+                <ImageView
+                    android:scaleType="fitXY"
+                    android:id="@+id/navigationBtn"
+                    style="@style/DirectionIconAgentProfileBbs" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- 4 -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/button_agent_detail_bbs_fragment_dialog_label"
+            android:paddingRight="120dp"
+            android:paddingLeft="120dp"
+            android:id="@+id/bookBtn"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

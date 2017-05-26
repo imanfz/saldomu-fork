@@ -154,7 +154,21 @@
 
     <string-array name="contact_tab_list">
         <item>Pusat Bantuan</item>
-        <item>FAQ</item>
+    </string-array>
+    <string-array name="list_closed_type">
+        <item>Pilih</item>
+        <item>Hari</item>
+        <item>Tanggal</item>
+    </string-array>
+
+    <string-array name="list_menu_kelola">
+        <item>Merchant</item>
+        <item>Agent</item>
+    </string-array>
+
+    <string-array name="list_tab_bbs_search_agent">
+        <item>Map</item>
+        <item>List</item>
     </string-array>
 
 </resources>

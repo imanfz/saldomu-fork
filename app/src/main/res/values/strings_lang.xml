@@ -195,6 +195,12 @@
     <string name="menu_item_history_detail">RIWAYAT</string>
     <string name="menu_item_group_detail">GRUP</string>
     <string name="menu_item_share">Bagikan</string>
+    <string name="menu_item_bbs_register_location">Register Member Shop</string>
+    <string name="menu_item_bbs_search_toko">Search Toko</string>
+    <string name="menu_item_search_agent">Search Agent</string>
+    <string name="menu_item_title_kelola">Kelola</string>
+    <string name="menu_item_title_list_toko">Manage Member</string>
+    <string name="menu_item_title_list_approval">List Approval</string>
 
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank</string>
@@ -692,14 +698,121 @@
     <string name="success_saved_gallery">Tersimpan di galeri</string>
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
     <string name="saving_gallery">Menyimpan di galeri...</string>
+    <string name="community">Komunitas</string>
     <string name="foldername_struk">Struk PIN HPKu</string>
 
     <string name="period_month">period_month</string>
     <string name="msisdn">msisdn</string>
     <string name="customer_id">ID Pelanggan</string>
     <string name="update">Perbaharuan</string>
-    <string name="maintenance">Pemeliharaan</string>
-    <string name="maintenance_message">Aplikasi tidak dapat di akses. Silahkan coba beberapa saat lagi.</string>
+    <!-- request_bbs_activity -->
+    <string name="header_desc_request_bbs_activity_label">Request for cash pickup and we will reach you within 30 minutes..</string>
+    <string name="title_search_request_bbs_activity_label">Search Agent Based On :</string>
+    <string name="current_location_request_bbs_activity_label">Current Location</string>
+    <string name="search_location_hint_request_bbs_activity_label">Cari Lokasi</string>
+    <string name="title_info_request_bbs_activity_label">Information</string>
+    <string name="list_info1_request_bbs_activity_label">Service is currently is available in Jakarta</string>
+    <string name="list_info2_request_bbs_activity_label">For security you will receive an OTP to complete on the above mentioned number</string>
+    <string name="list_info3_request_bbs_activity_label">Zero pickup changes</string>
+    <string name="button_request_bbs_activity_label">Request Cash In</string>
+    <!-- END request_bbs_activity -->
+    <!-- progress_dialog_bbs -->
+    <string name="content1_progress_dialog_bbs_label">Please Wait</string>
+    <string name="content2_progress_dialog_bbs_label">Searching near agents..</string>
+    <!-- END progress_dialog_bbs -->
+	<string name="maintenance">Pemeliharaan</string>
+    <!-- agent_profile_bbs -->
+    <string name="distance_agent_profile_bbs_label">Distance : \u0020</string>
+    <string name="distance_measurement_agent_profile_bbs_label">\u0020</string>
+    <string name="last_online_agent_profile_bbs_label">Last Online : \u0020</string>
+    <string name="cash_in_agent_profile_bbs_label">Nabung</string>
+    <string name="cash_out_agent_profile_bbs_label">Tarik Tunai</string>
+    <string name="colon_agent_profile_bbs_label">:</string>
+    <string name="availability_agent_profile_bbs_label">Available</string>
+    <string name="rate_agent_profile_bbs_label">Rating</string>
+    <!-- END agent_profile_bbs -->
+    <!-- book_bbs_fragment -->
+    <string name="cash_in_book_bbs_fragment_label">NABUNG</string>
+    <string name="cash_out_book_bbs_fragment_label">TARIK TUNAI</string>
+    <string name="button_book_bbs_fragment_label">PROCESS NOW</string>
+    <string name="footer_title_book_bbs_fragment_label">I WANT TO :</string>
+    <!-- END book_bbs_fragment -->
+    <!-- agent_detail_bbs_fragment_dialog -->
+    <string name="button_agent_detail_bbs_fragment_dialog_label">BOOK</string>
+    <!-- END agent_detail_bbs_fragment_dialog -->
+    <!-- process_bbs_fragment -->
+    <string name="button_process_bbs_fragment_label">CONFIRM</string>
+    <string name="info_process_bbs_fragment_label">Maximum Cash Out Rp 1 Juta</string>
+    <string name="ccy_process_bbs_fragment_label">Rp.</string>
+    <!-- END process_bbs_fragment -->
+    <!-- display_error_bbs -->
+    <string name="button_display_error_bbs_label">Back</string>
+    <!-- END display_error_bbs -->
+    <!-- agent_map_bbs_fragment -->
+    <string name="info_agent_map_bbs_fragment_label">PICK UP</string>
+    <!-- END agent_map_bbs_fragment -->
+    <!-- aod -->
+    <string name="err_agent_not_found">Agent not found</string>
+    <string name="list_shop_member">List Shop Member</string>
+    <string name="shop_member_detail">Member Detail</string>
+    <string name="member_name">Nama Member</string>
+    <string name="shop_name">Nama Toko</string>
+    <string name="merchant_category">Category</string>
+
+	<string name="maintenance_message">Aplikasi tidak dapat di akses. Silahkan coba beberapa saat lagi.</string>
     <string name="update_msg">Versi aplikasi sudah lama, segera perbaharui aplikasi.</string>
 
+    <string name="toolbar_title_merchant_category">Merchant Category</string>
+    <string name="toolbar_title_setup_open_hour">Setup Open Hour</string>
+    <string name="title_setup_shop_hour">Setup Opening Hour</string>
+    <string name="setup_shop_hour">Apakah toko Anda buka 24 jam ?</string>
+    <string name="err_empty_coordinate_message">Silakan pilih koordinat dari lokasi Anda</string>
+    <string name="err_empty_categories">Silakan pilih minimal satu kategori</string>
+    <string name="please_setup_opening_hour">Please setup opening hour</string>
+    <string name="start_hour">Start Hour</string>
+    <string name="end_hour">End Hour</string>
+    <string name="pick_time">Pilih Jam</string>
+    <string name="setting_kapan_tutup_toko">Apakan ada jadwal hari/tanggal tertentu tutup toko?</string>
+    <string name="tutup_toko_per_hari">Apakah tutup toko per hari atau tanggal?</string>
+    <string name="closed_shop_per">Tutup toko per</string>
+    <string name="err_empty_pick">Silakan pilih minimal 1 data</string>
+    <string name="err_empty_hour">Silakan pilih start dan end hour dari masing-masing opening hour</string>
+    <string name="err_empty_closed_dates">Silakan pilih tanggal tutup toko</string>
+    <string name="err_empty_closed_days">Silakan pilih hari tutup toko</string>
+    <string name="setup_merchant_category">Setup Merchant Category</string>
+    <string name="update_merchant_location">Setting Lokasi</string>
+    <string name="district">Kota/Kabupaten</string>
+    <string name="province">Propinsi</string>
+    <string name="err_empty_merchant_address">Silakan isi dengan alamat</string>
+    <string name="merchant">Merchant</string>
+    <string name="agent">Agent</string>
+
+    <string name="setting_merchant">Kelola Merchant</string>
+    <string name="setting_agent">Kelola Agent</string>
+    <string name="category">Kategori</string>
+    <string name="no_telp">No Telp</string>
+    <string name="setup_agent_open_hour">Waktu Beroperasi</string>
+    <string name="setup_location">Lokasi</string>
+    <string name="setup_tutup_manual">Tutup Manual</string>
+    <string name="setup_shop_status">Setup Shop Status</string>
+    <string name="shop_open">Open</string>
+    <string name="shop_close">Close</string>
+    <string name="title_setup_shop_status">Setup Shop Open/Closed Date</string>
+    <string name="setup_shop_date">Setup Shop Date</string>
+    <string name="set_shop_date">Set Shop Date</string>
+    <string name="set_shop_hour">Set Shop Hour</string>
+    <string name="choose_date">Pilih Tanggal</string>
+    <string name="shop_date">Tanggal</string>
+    <string name="err_empty_shop_date">Silakan pilih shop date</string>
+    <string name="setting_setup_shop_hour">Setting Open Hour</string>
+    <string name="err_empty_shop_hour">Silakan isi shop hour</string>
+    <string name="type_your_keyword">Type your keyword here</string>
+    <string name="search_agent">Cari Agen</string>
+    <string name="cari_alamat">Cari Berdasarkan Alamat</string>
+    <string name="shop_list">Manage Member</string>
+    <string name="list_approval">List Approval</string>
+    <string name="closed_shop_today">Tutup toko hari ini?</string>
+    <string name="setting_tutup_toko">Setting Tutup Toko?</string>
+    <string name="setting_shop_remark">Keterangan</string>
+    <string name="map_navigation">Map Route Direction Navigation</string>
 </resources>

@@ -25,6 +25,10 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.navdrawmainmenuModel;
 import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BbsMemberShopActivity;
+import com.sgo.hpku.activities.BbsMerchantCommunityList;
+import com.sgo.hpku.activities.BbsSearchByLocationActivity;
+import com.sgo.hpku.activities.BbsSearchTokoActivity;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.MyProfileActivity;
 import com.sgo.hpku.adapter.NavDrawMainMenuAdapter;
@@ -62,6 +66,12 @@ public class NavigationDrawMenu extends ListFragment{
     private static final int MHELP= 10;
     private static final int MLOGOUT= 11;
     public static final int MDAP= 12;
+    private static final int MREGISTERLOCATION = 13;
+    private static final int MREGISTERTOKO = 14;
+    private static final int MSEARCHAGENT = 15;
+    private static final int MKELOLA=16;
+    private static final int MLISTTOKO=17;
+    private static final int MLISTAPPROVAL=18;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -257,6 +267,14 @@ public class NavigationDrawMenu extends ListFragment{
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,0,getString(R.string.menu_item_title_my_groups),false));          //9
 
+        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_kelola), MKELOLA));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
+        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
+        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
+        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));
+
+
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,0,getString(R.string.menu_item_title_report),MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting,0,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
@@ -340,6 +358,32 @@ public class NavigationDrawMenu extends ListFragment{
                         });
                 alertbox.show();
                 break;
+            case MREGISTERLOCATION:
+                startActivity(new Intent(getActivity(), BbsMerchantCommunityList.class));
+                //startActivity(new Intent(getActivity(), BbsMerchantSetupHourActivity.class));
+                break;
+            case MREGISTERTOKO:
+                startActivity(new Intent(getActivity(), BbsSearchTokoActivity.class));
+                break;
+            case MSEARCHAGENT:
+                //startActivity(new Intent(getActivity(), SearchAgentActivity.class));
+                startActivity(new Intent(getActivity(), BbsSearchByLocationActivity.class));
+                break;
+            case MKELOLA:
+                newFragment = new FragMenuKelola();
+                switchFragment(newFragment, getString(R.string.menu_item_title_kelola));
+                break;
+
+            case MLISTAPPROVAL:
+                Intent intentApproval = new Intent(getActivity(), BbsMemberShopActivity.class);
+                intentApproval.putExtra("flagApprove", DefineValue.STRING_NO);
+                startActivity(intentApproval);
+                break;
+            case MLISTTOKO:
+                Intent intentListToko = new Intent(getActivity(), BbsMemberShopActivity.class);
+                intentListToko.putExtra("flagApprove", DefineValue.STRING_YES);
+                startActivity(intentListToko);
+                break;
         }
     }
 
@@ -372,7 +416,6 @@ public class NavigationDrawMenu extends ListFragment{
         mAdapter.setDefault();
         mAdapter.notifyDataSetChanged();
     }
-
 
 
 }

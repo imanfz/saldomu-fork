@@ -1,34 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.sgo.hpku"
-        >
+          package="com.sgo.hpku">
 
     <supports-screens
-            android:anyDensity="true"
-            android:largeScreens="true"
-            android:normalScreens="true"
-            android:resizeable="true"
-            android:xlargeScreens="true"
-            android:smallScreens="true" />
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
 
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
     <application
         tools:replace="android:label"
         android:icon="@mipmap/ic_logo_ad"
@@ -39,186 +42,224 @@
         android:launchMode="singleTask"
         android:largeHeap="true"
         android:hardwareAccelerated="true"
-        android:name="com.sgo.hpku.coreclass.CoreApp"
-        >
+        android:name="com.sgo.hpku.coreclass.CoreApp">
 
         <activity android:name="com.sgo.hpku.activities.Registration"
                   android:configChanges="screenSize|keyboardHidden|orientation"
                   android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-        <activity android:name="com.sgo.hpku.activities.MainPage"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                  android:exported="true"
-                >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-        <activity android:name="com.sgo.hpku.activities.LoginActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                />
+                  android:windowSoftInputMode="stateAlwaysHidden">
 
-        <activity android:name="com.sgo.hpku.activities.ListATM"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.SgoPlusWeb"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.MyProfileActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.ChangePassword"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.EvoucherHPActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.BillerActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.PayFriendsConfirmTokenActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.TopUpActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.NotificationActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.FriendsViewDetailActivity"
-                  android:configChanges="orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.CreatePIN"
-                  android:configChanges="orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.CreateGroupActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.TimelineDetailActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.HistoryDetailActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.GroupDetailActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.SocialPromoActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.AddByQRCodeActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.InsertPIN"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.TopUpAtmActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.CollectionActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.AboutAppsActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.RegisterSMSBankingActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.PulsaAgentActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.PulsaAgentWeb"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.PasswordRegisterActivity"
-              android:configChanges="orientation"
-              android:screenOrientation="portrait"
-              android:windowSoftInputMode="stateAlwaysHidden"
-            />
-        <activity android:name="com.sgo.hpku.activities.LevelFormRegisterActivity"
-                  android:configChanges="orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-	    <activity android:name="com.sgo.hpku.activities.CashoutActivity"
-                  android:configChanges="screenSize|keyboardHidden|orientation"
-                  android:screenOrientation="portrait"
-                  android:windowSoftInputMode="stateAlwaysHidden"
-                />
-        <activity android:name="com.sgo.hpku.activities.Introduction"
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.MainPage"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activities.LoginActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ListATM"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
-        <activity android:name="com.sgo.hpku.activities.ChangePIN"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.SgoPlusWeb"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
-        <activity android:name="com.sgo.hpku.activities.ListContactActivity"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.MyProfileActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
-        <service android:name="com.sgo.hpku.services.BalanceService"/>
-        <service android:name="com.sgo.hpku.services.AppInfoService"/>
-        <service android:name="com.sgo.hpku.services.UserProfileService"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.ChangePassword"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.EvoucherHPActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.BillerActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.PayFriendsConfirmTokenActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.TopUpActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.FriendsViewDetailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.CreatePIN"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.CreateGroupActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.TimelineDetailActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.HistoryDetailActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.GroupDetailActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.SocialPromoActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.AddByQRCodeActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.InsertPIN"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.TopUpAtmActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.CollectionActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.AboutAppsActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.RegisterSMSBankingActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.PulsaAgentActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.PulsaAgentWeb"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.PasswordRegisterActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.LevelFormRegisterActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.CashoutActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.Introduction"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.ChangePIN"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.ListContactActivity"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <service android:name=".services.BalanceService" />
+        <service android:name=".services.AppInfoService" />
+        <service android:name=".services.UserProfileService" />
+
+        <activity
+            android:name=".activities.BbsMerchantCommunityList"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name=".activities.BbsMemberLocationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".activities.BbsMerchantCategoryActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BbsMerchantSetupHourActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BbsSearchTokoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
+        <activity android:name=".activities.BbsSearchAgentActivity" />
+        <activity android:name=".activities.BbsSearchByLocationActivity" />
+        <activity android:name=".activities.BbsMemberShopActivity" />
+        <activity android:name=".activities.BbsMemberShopDetailActivity" />
+        <activity android:name=".activities.BbsSetupOpenHourActivity" />
+        <activity android:name=".activities.BbsSetupShopClosedActivity" />
+        <activity android:name=".activities.BbsMapNagivationActivity" />
+
     </application>
+
 </manifest>

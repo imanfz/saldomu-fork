@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/namaHari"
+        android:text="Nama Hari"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_medium_material"
+        android:textColor="@color/grey_500"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rowHour"
+        android:text=""
+        android:textColor="@color/grey_500"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_medium_material"
+        android:layout_marginBottom="8dp"/>
+
+
+    <!-- CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/chkDay" /-->
+
+</LinearLayout>

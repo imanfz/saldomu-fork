@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/grey_500"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/main_toolbar"
+        >
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ScrollView01"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/btnProses"
+            android:background="@color/white"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvOpen24Hours"
+                        android:text="@string/setup_shop_hour"
+                        android:layout_weight="1"
+                        />
+                    <Switch
+                        android:id="@+id/swOpen24Hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small"
+                    android:id="@+id/llSettingTutupToko"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvSettingTutupToko"
+                        android:text="@string/setting_tutup_toko"
+                        android:layout_weight="1"
+                        />
+                    <Switch
+                        android:id="@+id/swTutupToko"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llSetupClosedType"
+                    android:layout_below="@+id/llTutupToko"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="@dimen/spacing_large"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvClosedType"
+                        android:text="@string/tutup_toko_per_hari"
+                        />
+
+                    <Spinner
+                        android:id="@+id/spClosedType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvSelectedInfo" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llSetupOpeningHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="@dimen/spacing_large"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvSetupOpeningHour"
+                        android:text="@string/setup_agent_open_hour"
+                        />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/llSetupHours"
+                    android:background="@color/white">
+                    <GridView
+                        android:id="@+id/simpleGridView"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:layout_below="@+id/main_toolbar"
+                        android:horizontalSpacing="1dp"
+                        android:verticalSpacing="1dp"
+                        android:numColumns="2"/>
+                </LinearLayout>
+
+
+
+
+
+
+            </LinearLayout>
+        </ScrollView>
+
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/proses"
+            android:id="@+id/btnProses"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimaryDark"
+            />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

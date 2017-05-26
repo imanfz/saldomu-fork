@@ -67,7 +67,9 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HeadAddress;
+    public static String headaddressfinal = BuildConfig.HeadAddress+"hpku/";
+
+    public static String headaodaddressfinal    = BuildConfig.HeadAddress+"agentlocation/";
 
     //Link webservices Signature
 
@@ -307,7 +309,17 @@ public class MyApiClient {
     public static String URL_TERMS_PROD = "https://mobile.goworld.asia/static/pages/help/pin_terms_conditions_id_akardaya.html";
     public static String URL_TERMS_DEV = "http://116.90.162.173:59088/static/pages/help/pin_terms_conditions_id_akardaya.html";
 
-    //-----------------------------------------------------------------------------------------------------------------
+    public static String LINK_SEARCH_AGENT = "http://116.90.162.173:59088/aod/SearchAgent/Retrieve";
+    public static String LINK_CATEGORY_LIST = headaodaddressfinal + "Category/Retrieve";
+    public static String LINK_MEMBER_SHOP_LIST = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_MEMBER_SHOP_DETAIL = headaodaddressfinal + "Membershop/Detailmember";
+    public static String LINK_UPDATE_MEMBER_LOCATION = headaodaddressfinal + "Manage/UpdateMemberLocation";
+    public static String LINK_REGISTER_CATEGORY_SHOP = headaodaddressfinal + "Category/Registercategoryshop";
+    public static String LINK_SETUP_OPENING_HOUR = headaodaddressfinal + "Manage/Insertopenhour";
+    public static String LINK_SEARCH_TOKO = headaodaddressfinal + "Agent/Retrieve";
+    public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
+    public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
+    public static String LINK_GOOGLE_MAP_API_ROUTE = "http://maps.googleapis.com/maps/api/directions/json";
 
 
 
@@ -427,6 +439,12 @@ public class MyApiClient {
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
 
+    public static void postSync(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient.post(mContext, url, params, responseHandler);
+    }
+    public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient.get(mContext, url, responseHandler);
+    }
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared
@@ -948,4 +966,67 @@ public class MyApiClient {
         this.mContext = mContext;
     }
 
+    public static void updateMemberLocation(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update member location:"+LINK_UPDATE_MEMBER_LOCATION);
+        post(mContext,LINK_UPDATE_MEMBER_LOCATION, params, responseHandler);
+    }
+
+    public static void registerCategoryShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address register category shop:"+LINK_REGISTER_CATEGORY_SHOP);
+        post(mContext,LINK_REGISTER_CATEGORY_SHOP, params, responseHandler);
+    }
+
+    public static void setupOpeningHour(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address register category shop:"+LINK_SETUP_OPENING_HOUR);
+        post(mContext,LINK_SETUP_OPENING_HOUR, params, responseHandler);
+    }
+
+    public static void searchToko(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address search toko:"+LINK_SEARCH_TOKO);
+        post(mContext,LINK_SEARCH_TOKO, params, responseHandler);
+    }
+
+    public static void getCategoryList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get category list:"+LINK_CATEGORY_LIST);
+        post(mContext,LINK_CATEGORY_LIST, params, responseHandler);
+    }
+
+    public static void getMemberShopList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get member shop list:"+LINK_MEMBER_SHOP_LIST);
+        post(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
+    }
+
+    public static void getMemberShopDetail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get member shop detail:"+LINK_MEMBER_SHOP_DETAIL);
+        post(mContext,LINK_MEMBER_SHOP_DETAIL, params, responseHandler);
+    }
+
+    public static void searchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent search agent:"+LINK_SEARCH_AGENT);
+        post(mContext,LINK_SEARCH_AGENT, params, responseHandler);
+    }
+
+    public static void registerOpenCloseShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent register open close shop:"+LINK_REGISTER_OPEN_CLOSE_TOKO);
+        post(mContext,LINK_REGISTER_OPEN_CLOSE_TOKO, params, responseHandler);
+    }
+
+    public static void updateCloseShopToday(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent update close shop today:"+LINK_UPDATE_CLOSE_SHOP_TODAY);
+        post(mContext,LINK_UPDATE_CLOSE_SHOP_TODAY, params, responseHandler);
+    }
+
+    public static void getGoogleMapRoute(Context mContext, String queryString, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent google maps route:"+LINK_GOOGLE_MAP_API_ROUTE);
+
+        RequestParams params = new RequestParams();
+        postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
+    }
 }
