@@ -2,6 +2,11 @@ package com.sgo.hpku.coreclass;
 
 import android.content.Context;
 
+import com.sgo.hpku.Beans.Account_Collection_Model;
+import com.sgo.hpku.Beans.Biller_Data_Model;
+import com.sgo.hpku.Beans.Biller_Type_Data_Model;
+import com.sgo.hpku.Beans.Denom_Data_Model;
+import com.sgo.hpku.Beans.bank_biller_model;
 import com.sgo.hpku.R;
 //import com.sgo.hpku.entityRealm.Account_Collection_Model;
 import com.sgo.hpku.coreclass.AppRealMigration;
@@ -32,13 +37,13 @@ import timber.log.Timber;
 
 public class RealmManager {
 
-//    public static RealmConfiguration BillerConfiguration;
+    public static RealmConfiguration BillerConfiguration;
     public static RealmConfiguration BBSConfiguration;
 
-//    @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class, Biller_Data_Model.class, Biller_Type_Data_Model.class,
-//            Denom_Data_Model.class})
-//    private static class BillerModule {
-//    }
+    @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
+            Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
+    private static class BillerModule {
+    }
 
     @RealmModule(classes = { List_BBS_City.class})
     private static class AppModule {
@@ -49,10 +54,10 @@ public class RealmManager {
     }
 
     public static void init(Context mContext){
-//        File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
-//        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.akardayadev),file);
+        File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
+        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.hpkurealmdev),file);
 
-        File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));
+        file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.hpkubbsdev),file);
 
         Realm.init(mContext);
@@ -65,12 +70,12 @@ public class RealmManager {
 
         Realm.setDefaultConfiguration(config);
 
-//        BillerConfiguration = new RealmConfiguration.Builder()
-//                .name(mContext.getString(R.string.realmBillerName))
-//                .schemaVersion(mContext.getResources().getInteger(R.integer.realBillerscheme))
-//                .modules(new BillerModule())
-//                .migration(new BillerRealMigration())
-//                .build();
+        BillerConfiguration = new RealmConfiguration.Builder()
+                .name(mContext.getString(R.string.realmBillerName))
+                .schemaVersion(mContext.getResources().getInteger(R.integer.realBillerscheme))
+                .modules(new BillerModule())
+                .migration(new BillerRealMigration())
+                .build();
 
         BBSConfiguration = new RealmConfiguration.Builder()
                 .name(mContext.getString(R.string.realmBBSName))

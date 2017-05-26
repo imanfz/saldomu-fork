@@ -14,6 +14,7 @@ import com.sgo.hpku.activities.BillerActivity;
 import com.sgo.hpku.adapter.EasyAdapter;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.WebParams;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ListBillerMerchant extends ListFragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         _data = new ArrayList<>();
         adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);

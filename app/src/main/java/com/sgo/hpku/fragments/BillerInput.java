@@ -23,6 +23,7 @@ import com.sgo.hpku.activities.BillerActivity;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.InetHandler;
 import com.sgo.hpku.coreclass.NoHPFormat;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.DefinedDialog;
 
@@ -138,7 +139,7 @@ public class BillerInput extends Fragment {
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         initializeLayout();
         initializeSpinnerDenom();
