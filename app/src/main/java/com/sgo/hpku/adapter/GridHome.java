@@ -62,12 +62,7 @@ public class GridHome extends BaseAdapter {
         }
         textView.setText(text[position]);
         imageView.setImageResource(Imageid[position]);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         return grid;
     }
 
