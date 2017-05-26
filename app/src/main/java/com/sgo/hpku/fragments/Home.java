@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.sgo.hpku.Beans.BalanceModel;
+import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.coreclass.BaseFragmentMainPage;
 import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.services.BalanceService;
 import com.txusballesteros.widgets.FitChart;
 import com.txusballesteros.widgets.FitChartValue;
@@ -34,6 +36,7 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
     private Integer slimit = 1000000, ibalance = 0;
     private Float stemp, total_temp;
     private FitChart fitChart;
+    private SecurePreferences sp;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -53,19 +56,20 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
         Button askformoney = (Button) mView.findViewById(R.id.askformoney);
         askformoney.setOnClickListener(this);
 
-        BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
-        if(mBal != null) {
-            balance = mBal.getAmount();
-            ccy_id = mBal.getCcy_id();
-            mlimit = mBal.getRemain_limit();
-            type_periode = mBal.getPeriod_limit();
-        }
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        Boolean is_agent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         setUIBalance();
 
     }
 
-    private void setUIBalance(){
+    public void setUIBalance(){
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT,"0");
+        String ccy_id = sp.getString(DefineValue.BALANCE_CCYID,"");
+        String mlimit = sp.getString(DefineValue.BALANCE_REMAIN_LIMIT,"0");
+        String type_periode = sp.getString(DefineValue.BALANCE_PERIOD_LIMIT,"");
+
         ibalance = Integer.parseInt(balance.replaceAll("[^0-9]", ""));
         ibalance = ibalance / 100;
         total_temp = (float)ibalance / (float)slimit;
@@ -127,17 +131,7 @@ public class Home extends BaseFragmentMainPage implements View.OnClickListener {
         @Override
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
-            Bundle extras=intent.getExtras();
-            BalanceModel msg=extras.getParcelable(BalanceModel.BALANCE_PARCELABLE);
-
-            if (msg != null) {
-                balance = msg.getAmount();
-                mlimit = msg.getRemain_limit();
-                ccy_id = msg.getCcy_id();
-                type_periode = msg.getPeriod_limit();
-                setUIBalance();
-            }
-
+            setUIBalance();
         }
     };
 

@@ -62,7 +62,6 @@ public class GridHome extends BaseAdapter {
         }
         textView.setText(text[position]);
         imageView.setImageResource(Imageid[position]);
-
         return grid;
     }
 

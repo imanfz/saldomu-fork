@@ -17,6 +17,7 @@ import com.sgo.hpku.R;
 import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.ToggleKeyboard;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.fragments.BillerActivityRF;
@@ -69,7 +70,7 @@ public class BillerActivity extends BaseActivity {
             return;
         }
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         Intent intent    = getIntent();
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         Timber.d("isi biller type code " + _biller_type_code);

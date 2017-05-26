@@ -18,6 +18,7 @@ import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DateTimeFormat;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 
@@ -152,7 +153,7 @@ public class BillerActivityRF extends Fragment{
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         Queing = new ArrayList<>();
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
 
         realmListener = new RealmChangeListener() {

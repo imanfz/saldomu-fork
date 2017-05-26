@@ -801,4 +801,6 @@
     <string name="cashoutmember_cancel_message">Anda yakin ingin membatalkan ?</string>
     <string name="cashoutmember_text_cashoutcode">Kode Tarik Tunai</string>
     <string name="cashoutmember_alert_no_tx">Silahkan hubungi agent terdekat</string>
+    <string name="newhome_bpjs">BPJS</string>
+    <string name="newhome_listrik_pln">Listrik PLN</string>
 </resources>

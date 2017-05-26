@@ -107,7 +107,11 @@ public class CustomSecurePref {
         SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();
 
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
-        mEdit.remove(DefineValue.BALANCE);
+        mEdit.remove(DefineValue.BALANCE_AMOUNT);
+        mEdit.remove(DefineValue.BALANCE_CCYID);
+        mEdit.putString(DefineValue.BALANCE_REMAIN_LIMIT,"0");
+        mEdit.remove(DefineValue.BALANCE_PERIOD_LIMIT);
+        mEdit.remove(DefineValue.BALANCE_NEXT_RESET);
         mEdit.remove(DefineValue.USERID_PHONE);
         mEdit.remove(DefineValue.USER_NAME);
         mEdit.remove(DefineValue.CUST_ID);

@@ -10,11 +10,28 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -26,7 +43,16 @@ import com.sgo.hpku.activities.BillerActivity;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.RegisterSMSBankingActivity;
 import com.sgo.hpku.activities.TopUpActivity;
-import com.sgo.hpku.coreclass.*;
+import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
+import com.sgo.hpku.coreclass.DateTimeFormat;
+import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.ErrorDefinition;
+import com.sgo.hpku.coreclass.InetHandler;
+import com.sgo.hpku.coreclass.LevelClass;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.RealmManager;
+import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogFrag;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
@@ -36,10 +62,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /*
@@ -94,7 +122,6 @@ public class BillerDesciption extends Fragment {
     private ArrayAdapter<String> adapterPaymentOptions;
     private Biller_Data_Model mBillerData;
     private List<bank_biller_model> mListBankBiller;
-    private RealmChangeListener realmListener;
     private Realm realm;
     Boolean isPLN = false;
     String fee;
@@ -125,7 +152,7 @@ public class BillerDesciption extends Fragment {
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         initializeData();
 
@@ -991,7 +1018,6 @@ public class BillerDesciption extends Fragment {
     @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed()) {
-            realm.removeChangeListener(realmListener);
             realm.close();
         }
         super.onDestroy();

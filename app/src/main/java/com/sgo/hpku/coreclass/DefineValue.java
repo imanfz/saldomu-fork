@@ -215,7 +215,12 @@ public class DefineValue {
     public static String FROM = "from";
     public static String STATUS = "status";
     public static String REASON = "reason";
-	public static String BALANCE = "balance";
+	public static String BALANCE_AMOUNT = "balanceAmount";
+    public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
+    public static String BALANCE_CCYID = "balaceCcyid";
+    public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
+    public static String BALANCE_PERIOD_LIMIT = "balancePeriodLimit";
+    public static String BALANCE_NEXT_RESET = "balanceNextReset";
     public static String NOTIF_TYPE = "notifType";
     public static String POST_ID = "postID";
     public static String sDefSystemLanguage;

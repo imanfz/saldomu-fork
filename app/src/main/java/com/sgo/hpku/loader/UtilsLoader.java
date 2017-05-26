@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
 import android.widget.Toast;
@@ -11,17 +12,17 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.coreclass.CoreApp;
-import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
 import com.sgo.hpku.interfaces.OnLoadDataListener;
+import com.sgo.hpku.services.BalanceService;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -43,6 +44,7 @@ public class UtilsLoader {
     }
     public UtilsLoader(Activity mAct){
         this.setmActivity(mAct);
+        this.sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
     public UtilsLoader(Activity mAct, SecurePreferences _sp){
@@ -90,25 +92,17 @@ public class UtilsLoader {
                                 }
 
                                 SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.BALANCE, CurrencyFormat.format(response.getDouble(WebParams.AMOUNT)));
-                                mEditor.putString(DefineValue.MAX_TOPUP,response.optString(WebParams.MAX_TOPUP, ""));
+                                mEditor.putString(DefineValue.BALANCE_AMOUNT, response.optString(WebParams.AMOUNT, ""));
+                                mEditor.putString(DefineValue.BALANCE_MAX_TOPUP,response.optString(WebParams.MAX_TOPUP, ""));
+                                mEditor.putString(DefineValue.BALANCE_CCYID,response.optString(WebParams.CCY_ID, ""));
+                                mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT,response.optString(WebParams.REMAIN_LIMIT, ""));
+                                mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT,response.optString(WebParams.PERIOD_LIMIT, ""));
+                                mEditor.putString(DefineValue.BALANCE_NEXT_RESET,response.optString(WebParams.NEXT_RESET, ""));
                                 mEditor.apply();
 
-                                BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
-                                if(mBal == null) {
-                                    mBal = new BalanceModel(response);
-                                    mBal.save();
-                                }
-                                else {
-                                    mBal.setAmount(response.optString(WebParams.AMOUNT, ""));
-                                    mBal.setCcy_id(response.optString(WebParams.CCY_ID, ""));
-                                    mBal.setRemain_limit(response.optString(WebParams.REMAIN_LIMIT, ""));
-                                    mBal.setPeriod_limit(response.optString(WebParams.PERIOD_LIMIT, ""));
-                                    mBal.setNext_reset(response.optString(WebParams.NEXT_RESET, ""));
-                                    mBal.save();
-                                }
-
-                                mListener.onSuccess(mBal);
+                                mListener.onSuccess(true);
+                                Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
+                                LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = response.getString(WebParams.ERROR_MESSAGE);
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();

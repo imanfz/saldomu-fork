@@ -26,6 +26,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.CashoutActivity;
 import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.coreclass.CurrencyFormat;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.InetHandler;
@@ -109,7 +110,7 @@ public class FragCashOut extends Fragment {
                             @Override
                             public void run() {
                                 if (FragCashOut.this.isVisible()) {
-                                    balance = MyApiClient.CCY_VALUE + " " + sp.getString(DefineValue.BALANCE, "");
+                                    balance = MyApiClient.CCY_VALUE + " " + CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT, ""));
                                     Timber.d("refresh balance:"+balance);
                                     txtBalance.setText(balance);
                                 }
@@ -135,7 +136,7 @@ public class FragCashOut extends Fragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         memberId = sp.getString(DefineValue.MEMBER_ID,"");
-        balance = MyApiClient.CCY_VALUE + " " +sp.getString(DefineValue.BALANCE,"");
+        balance = MyApiClient.CCY_VALUE + " " +CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT,""));
         bankCashout = sp.getString(DefineValue.BANK_CASHOUT,"");
 
         initializeBankCashout();

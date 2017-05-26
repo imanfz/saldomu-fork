@@ -18,6 +18,7 @@ import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.adapter.EasyAdapter;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.WebParams;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public final class TabBuyItem extends ListFragment {
 
         layout_empty = v.findViewById(R.id.empty_layout);
         layout_empty.setVisibility(View.GONE);
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         realmListener = new RealmChangeListener() {
             @Override
