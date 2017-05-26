@@ -286,7 +286,7 @@ public class MyApiClient {
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.isProdDomain)
         {
-            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/edik2/" + "InquirySMS/Retrieve";
+            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
         }
         else
         {

@@ -319,18 +319,20 @@ public class BillerDesciption extends Fragment {
     private Spinner.OnItemSelectedListener spinnerPaymentListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//            Object item = adapterView.getItemAtPosition(i);
-//            payment_name = item.toString();
-//            for (i = 0; i < mListBankBiller.size() ; i++ ){
-//                if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
-//                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
-//                                                    mListBankBiller.get(i).getBank_name(),
-//                                                    mListBankBiller.get(i).getProduct_code(),
-//                                                    mListBankBiller.get(i).getProduct_name(),
-//                                                    mListBankBiller.get(i).getProduct_type(),
-//                                                    mListBankBiller.get(i).getProduct_h2h());
-//                }
-//            }
+            Object item = adapterView.getItemAtPosition(i);
+            payment_name = item.toString();
+            for (i = 0; i < mListBankBiller.size() ; i++ ){
+                if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
+                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
+                                                    mListBankBiller.get(i).getBank_name(),
+                                                    mListBankBiller.get(i).getProduct_code(),
+                                                    mListBankBiller.get(i).getProduct_name(),
+                                                    mListBankBiller.get(i).getProduct_type(),
+                                                    mListBankBiller.get(i).getProduct_h2h());
+                }
+            }
+            item = adapterView.getItemAtPosition(i);
+            payment_name = item.toString();
         }
 
         @Override
