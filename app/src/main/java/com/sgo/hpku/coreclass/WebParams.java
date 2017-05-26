@@ -43,6 +43,7 @@ public class WebParams {
 
     public static String CCY_ID = "ccy_id";
     public static String AMOUNT = "amount";
+    public static String TOTAL_AMOUNT = "total_amount";
 
     public static String BANK_BILLER = "bank_biller";
     public static String BANK_DATA = "bank_data";
@@ -130,7 +131,6 @@ public class WebParams {
 	public static String DESC = "desc";
     public static String REQUEST_ID = "request_id";
     public static String SEND_TO = "send_to";
-	
     public static String DATA_CONTACT = "data_contact";
     public static String DATA_FRIEND = "data_friend";
 
@@ -339,4 +339,36 @@ public class WebParams {
     public static String COMM_ID_REMARK = "comm_id_remark";
     public static String DISABLE = "disable";
     public static String IS_AUTO = "is_auto";
+
+    public static String TX_AMOUNT = "tx_amount";
+    public static String SCHEME_CODE= "scheme_code";
+    public static String SOURCE_PRODUCT_CODE= "source_product_code";
+    public static String BENEF_PRODUCT_CODE= "benef_product_code";
+    public static String SOURCE_PRODUCT_TYPE= "source_product_type";
+    public static String BENEF_PRODUCT_TYPE= "benef_product_type";
+    public static String BENEF_PRODUCT_VALUE_CODE= "benef_product_value_code";
+    public static String BENEF_PRODUCT_VALUE_NAME= "benef_product_value_name";
+    public static String BENEF_ACCT_CITY= "benef_acct_city";
+    public static String BANK_ACCOUNT= "bank_account";
+    public static String BENEF_ACCT_TYPE= "benef_acct_type";
+    public static String BENEF_BANK_CODE= "benef_bank_code";
+    public static String BENEF_PRODUCT_VALUE_CITY= "benef_product_value_city";
+    public static String MEMBER_SHOP_PHONE= "member_shop_phone";
+    public static String TX_PRODUCT_CODE= "tx_product_code";
+    public static String TX_BANK_CODE= "tx_bank_code";
+    public static String TX_BANK_NAME= "tx_bank_name";
+    public static String TX_PRODUCT_NAME= "tx_product_name";
+    public static String SOURCE_BANK_NAME= "source_bank_name";
+    public static String SOURCE_ACCT_NO= "source_acct_no";
+    public static String SOURCE_ACCT_NAME= "source_acct_name";
+    public static String BENEF_BANK_NAME= "benef_bank_name";
+    public static String BENEF_ACCT_NO= "benef_acct_no";
+    public static String BENEF_ACCT_NAME= "benef_acct_name";
+    public static String SOURCE_PRODUCT_VALUE= "source_product_value";
+    public static String FEE_AMOUNT= "fee_amount";
+    public static String RECEIVER_ID= "receiver_id";
+    public static String BENEF_CITY_CODE= "benef_city_code";
+    public static String BENEF_CITY_NAME= "benef_city_name";
+    public static String COMM_TYPE = "comm_type";
+    public static String IS_AGENT = "is_agent";
 }

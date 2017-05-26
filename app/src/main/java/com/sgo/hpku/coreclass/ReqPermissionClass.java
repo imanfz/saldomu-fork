@@ -10,11 +10,12 @@ import android.support.v4.app.Fragment;
  * Created by yuddistirakiki on 6/9/16.
  */
 public class ReqPermissionClass {
-    public static final int PERMISSIONS_REQ_READEXTERNALSTORAGE = 125;
     public static final int PERMISSIONS_REQ_CAMERA = 124;
     public static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 123;
     public static final int PERMISSIONS_REQ_READPHONESTATE = 122;
     public static final int PERMISSIONS_SEND_SMS = 121;
+    public static final int PERMISSIONS_READ_SMS = 125;
+    public static final int PERMISSIONS_READ_CONTACTS = 126;
 
     private Activity mActive;
     private Fragment mFrag;
@@ -41,7 +42,7 @@ public class ReqPermissionClass {
             return true;
     }
 
-    public boolean checkOnPermissionRequest(int requestCode, @NonNull int[] grantResults, int reqCode) {
+    public boolean checkOnPermissionResult(int requestCode, @NonNull int[] grantResults, int reqCode) {
         return requestCode == reqCode && grantResults[0] == PackageManager.PERMISSION_GRANTED;
     }
 

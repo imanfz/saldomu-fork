@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:id="@+id/bbstransaksi_bottom_layout"
+        android:background="@color/windowBackgroundColor"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_bk"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="@string/kembali"
+                android:id="@+id/back_btn"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/card_bk_orange"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="@string/next"
+                android:id="@+id/proses_btn"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_above="@id/bbstransaksi_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideOverlay"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/grey_1000w"
+            android:layout_margin="6dp">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_large_material"/>
+
+            <com.faber.circlestepview.CircleStepView
+                android:id="@+id/circle_step_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_marginBottom="15dp"
+                app:circlestep_circle_count="3"
+                app:circlestep_path_color="@color/colorPrimaryDark"
+                app:circlestep_current_inner_circle_color="@color/colorPrimary"
+                app:circlestep_current_outer_circle_color="@color/colorPrimaryDark"
+                app:circlestep_circle_color="@color/grey_500"
+                app:circlestep_circle_text_size="14sp"
+                app:circlestep_text_below_circle_size="14sp"
+                app:circlestep_text_below_circle_color="@color/grey_800"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorPrimary"></View>
+
+            <EditText
+                android:id="@+id/no_tujuan_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/no_rekening_tujuan_hint"
+                android:inputType="number"
+                android:maxLength="20"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="6dp"
+                android:textColor="@color/colorSecondaryDark"
+                android:textStyle="italic"
+                android:gravity="right"
+                android:text="(contoh: 08xxxxxxxx)"/>
+
+            <EditText
+                android:id="@+id/name_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/nama_rekening_tujuan_hint"
+                android:inputType="text"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
+                android:maxLength="30"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="6dp"
+                android:textColor="@color/colorSecondaryDark"
+                android:textStyle="italic"
+                android:gravity="right"
+                android:text="(contoh: SUPRIADI)"/>
+
+            <LinearLayout android:id="@+id/bbscashin_city_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                >
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+                    <ImageView
+                        android:id="@+id/spinning_wheel_bbscashin_city"
+                        android:visibility="invisible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/default_spinner"
+                        android:layout_centerInParent="true"
+                        />
+                    <AutoCompleteTextView
+                        android:id="@+id/bbscashin_value_city_benef"
+                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/abc_text_size_medium_material"
+                        android:maxLength="30"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+                        android:inputType="textCapWords"
+                        android:hint="@string/kota_tujuan_hint"
+                        android:layout_gravity="center_horizontal">
+                        <requestFocus/>
+                    </AutoCompleteTextView>
+                </RelativeLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textStyle="italic"
+                    android:gravity="right"
+                    android:text="(contoh: JAKARTA)"/>
+            </LinearLayout>
+
+
+            <LinearLayout android:id="@+id/no_hp_pengirim_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                >
+                <EditText
+                    android:id="@+id/no_hp_pengirim_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/no_hp_pengirim_hint"
+                    android:inputType="number"
+                    android:maxLength="20"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textStyle="italic"
+                    android:gravity="right"
+                    android:text="(contoh: 08xxxxxxxx)"/>
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/message_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/remark_hint"
+                android:maxLength="50"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="6dp"
+                android:textColor="@color/colorSecondaryDark"
+                android:textStyle="italic"
+                android:gravity="right"
+                android:text="(Maks. 50 karakter)"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

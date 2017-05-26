@@ -677,9 +677,9 @@ public class MyProfileActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+        if (reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
                 ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)||
-                reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,
+                reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
                         ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
                 chooseCamera();
         }

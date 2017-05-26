@@ -172,6 +172,8 @@ public class DefineValue {
     public static String BANK_CODE = "bankCode";
     public static String PRODUCT_CODE = "productCode";
     public static String PRODUCT_NAME = "productName";
+    public static String PRODUCT_TYPE = "productType";
+    public static String PRODUCT_H2H = "productH2h";
     public static String BANK_ATM_CODE = "bankATMCode";
     public static String BANK_ATM_NAME = "bankATMName";
     public static String NO_VA = "noVA";
@@ -229,6 +231,10 @@ public class DefineValue {
 
     public static String BANK_CASHOUT = "bankCashout";
     public static String ACCT_NAME = "acctName";
+    public static String ACCT_TYPE = "acctType";
+    public static String ACCT_NO = "acctNo";
+    public static String ACCT_CITY_NAME = "acctCityName";
+    public static String ACCT_CITY_CODE = "acctCityCode";
 
     public static String FROM_NAME = "fromName";
     public static String FROM_ID = "fromID";
@@ -272,4 +278,37 @@ public class DefineValue {
     public static String VALUE_ITEM_DATA = "valueItemData";
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
+
+    public static String IS_AGENT = "isAgent";
+    public static String INDEX = "index";
+
+    //BBS
+    public static String BBS_COMM_ATC = "ATC";
+    public static String IS_JOIN_AGENT = "isJoinAgent";
+    public static String ATC = "ATC";
+    public static String CTA = "CTA";
+    public static String IS_UPDATE = "isUpdate";
+    public static String BENEF_CITY = "benefCity";
+    public static String BENEF_CITY_CODE = "benefCityCode";
+    public static String BANK_BENEF = "bankBenef";
+    public static String NAME_BENEF = "nameBenef";
+    public static String NO_BENEF = "noBenef";
+    public static String TYPE_BENEF = "typeBenef";
+    public static String NO_HP_BENEF = "noHPBenef";
+    public static String SOURCE_ACCT = "sourceAcct";
+    public static String SOURCE_ACCT_NO = "sourceAcctNo";
+    public static String SOURCE_ACCT_NAME = "sourceAcctName";
+    public static String BBS = "bbs";
+    public static String BBS_CASHIN = "bbsCashin";
+    public static String BBS_MEMBER_OTP = "bbsMemberOtp";
+    public static String ACCT = "ACCT";
+    public static String USER_ID = "userId";
+    public static String BBS_CASHOUT = "bbsCashout";
+    public static String SOURCE_PRODUCT_CODE = "sourceProductCode";
+    public static String SOURCE_PRODUCT_TYPE = "sourceProductType";
+    public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";
+    public static String SOURCE_PRODUCT_NAME = "sourceProductName";
+    public static String BENEF_PRODUCT_CODE = "benefProductCode";
+    public static String BENEF_PRODUCT_TYPE = "benefProductType";
+    public static String BENEF_PRODUCT_NAME = "benefProductName";
 }

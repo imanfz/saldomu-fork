@@ -82,6 +82,9 @@ public class MainPage extends BaseActivity{
     public static final int RESULT_BILLER = 7 ;
 	public static final int RESULT_REFRESH_NAVDRAW= 8;
     public static final int RESULT_FIRST_TIME = 9;
+    public static final int RESULT_BBS = 11;
+    public static final int RESULT_BBS_MEMBER_OTP = 12;
+    public static final int RESULT_BBS_STATUS= 13;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -111,7 +114,7 @@ public class MainPage extends BaseActivity{
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent;
 	
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
@@ -133,14 +136,16 @@ public class MainPage extends BaseActivity{
         if (!isLogin()) {
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
-                utilsLoader = new UtilsLoader(this,sp);
-                utilsLoader.getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+            agent = sp.getBoolean(DefineValue.IS_AGENT,false);
+
+            utilsLoader = new UtilsLoader(this,sp);
+            utilsLoader.getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
         }
 
     }
