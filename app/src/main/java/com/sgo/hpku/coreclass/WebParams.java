@@ -372,4 +372,5 @@ public class WebParams {
     public static String BENEF_CITY_NAME= "benef_city_name";
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
+    public static String PERIOD_MONTH = "period_month";
 }

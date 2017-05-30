@@ -438,7 +438,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             getTrxStatus(tx_id,args.getString(DefineValue.BILLER_COMM_ID),_amount);
-                            setResultActivity();
+                            setResultActivity(MainPage.RESULT_BALANCE);
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -872,12 +872,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
     }
 
-    private void setResultActivity(){
+    private void setResultActivity(int result){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.setResultActivity();
+        fca.setResultActivity(result);
     }
 
     private void changeTextBtnSub() {

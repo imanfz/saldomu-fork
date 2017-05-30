@@ -33,10 +33,13 @@ public class ListBBS extends ListFragment {
         super.onCreate(savedInstanceState);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent)
+        if(isAgent) {
             _data = getResources().getStringArray(R.array.list_bbs_agent);
-        else
+            sp.edit().putBoolean(DefineValue.IS_AGENT,false).apply();
+        }else {
             _data = getResources().getStringArray(R.array.list_bbs_member);
+            sp.edit().putBoolean(DefineValue.IS_AGENT,true).apply();
+        }
     }
 
     @Override
