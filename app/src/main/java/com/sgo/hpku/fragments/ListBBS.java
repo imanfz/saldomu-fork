@@ -26,17 +26,18 @@ public class ListBBS extends ListFragment {
     private View v;
     private boolean isJoin = false;
     String[] _data;
-    Boolean isAgent;
+//    Boolean isAgent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent)
-            _data = getResources().getStringArray(R.array.list_bbs_agent);
-        else
-            _data = getResources().getStringArray(R.array.list_bbs_member);
+//        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+//        if(isAgent)
+//            _data = getResources().getStringArray(R.array.list_bbs_agent);
+//        else
+//            _data = getResources().getStringArray(R.array.list_bbs_member);
+        _data = getResources().getStringArray(R.array.list_bbs);
     }
 
     @Override
@@ -59,14 +60,18 @@ public class ListBBS extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        int posIdx = -1;
-        if(isAgent) {
+        int posIdx;
+//        if(isAgent) {
             if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
                 posIdx = BBSActivity.LISTACCBBS;
             else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
                 posIdx = BBSActivity.TRANSACTION;
-        } else
-            posIdx = BBSActivity.CONFIRMCASHOUT;
+            else if(_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                posIdx = BBSActivity.CONFIRMCASHOUT;
+        else
+            posIdx = -1;
+//        } else
+//            posIdx = BBSActivity.CONFIRMCASHOUT;
 
         if(posIdx !=-1){
             Intent i = new Intent(getActivity(), BBSActivity.class);
