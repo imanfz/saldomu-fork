@@ -31,6 +31,7 @@ import com.sgo.hpku.coreclass.BaseFragmentMainPage;
 import com.sgo.hpku.coreclass.CurrencyFormat;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.services.BalanceService;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    private LevelClass levelClass;
     private SecurePreferences sp;
     int[] imageId = {
             R.drawable.ic_tambahsaldo,
@@ -81,7 +83,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
     @Override
@@ -98,6 +99,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(getActivity(),sp);
 
         btn_beli = (Button) v.findViewById(R.id.btn_beli);
         input = (EditText) v.findViewById(R.id.input);
@@ -181,10 +185,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchMenu(NavigationDrawMenu.MTOPUP,null);
                 }
                 else if (position == 1) {
-                    switchMenu(NavigationDrawMenu.MPAYFRIENDS,null);
+                    if(levelClass.isLevel1QAC()) {
+                        levelClass.showDialogLevel();
+                    }
+                    else switchMenu(NavigationDrawMenu.MPAYFRIENDS,null);
                 }
                 else if (position == 2) {
-                    switchMenu(NavigationDrawMenu.MASK4MONEY,null);
+                    if(levelClass.isLevel1QAC()) {
+                        levelClass.showDialogLevel();
+                    }
+                    else switchMenu(NavigationDrawMenu.MASK4MONEY,null);
                 }
                 else if (position == 3) {
                     switchMenu(NavigationDrawMenu.MBUY,null);
@@ -214,6 +224,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         });
 
         RefreshSaldo();
+        if(levelClass != null)
+            levelClass.refreshData();
     }
 
     private ArrayList<String> SetupListMenu(){
