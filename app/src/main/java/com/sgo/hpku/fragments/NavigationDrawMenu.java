@@ -330,6 +330,8 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MBBS:
                 newFragment = new ListBBS();
+                if(data != null)
+                    newFragment.setArguments(data);
                 switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
                 break;
             case MLOGOUT:
