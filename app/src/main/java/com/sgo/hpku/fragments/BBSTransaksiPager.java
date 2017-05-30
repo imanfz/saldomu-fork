@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 
 import com.sgo.hpku.R;
 import com.sgo.hpku.adapter.BBSTransaksiPagerAdapter;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
 
 /**
@@ -47,6 +48,21 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
         mViewPager.addOnPageChangeListener(this);
 
         setUiPageViewController();
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            String type = bundle.getString(DefineValue.TYPE,"");
+            if(type != null && !type.isEmpty()){
+                if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
+                    mViewPager.setCurrentItem(0);
+                else
+                    mViewPager.setCurrentItem(1);
+            }
+        }
     }
 
     private void setUiPageViewController() {

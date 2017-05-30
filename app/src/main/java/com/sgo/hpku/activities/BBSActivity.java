@@ -70,6 +70,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case TRANSACTION:
                     newFragment = new BBSTransaksiPager();
                     tag = BBSTransaksiPager.TAG;
+                    Bundle bundle = getIntent().getExtras();
+                    if(bundle != null){
+                        newFragment.setArguments(bundle);
+                    }
                     break;
                 case CONFIRMCASHOUT:
                     newFragment = new Cashoutbbs_describ_member();

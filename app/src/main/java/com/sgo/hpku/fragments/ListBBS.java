@@ -26,18 +26,18 @@ public class ListBBS extends ListFragment {
     private View v;
     private boolean isJoin = false;
     String[] _data;
-//    Boolean isAgent;
+    Boolean isAgent;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-//        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-//        if(isAgent)
-//            _data = getResources().getStringArray(R.array.list_bbs_agent);
-//        else
-//            _data = getResources().getStringArray(R.array.list_bbs_member);
-        _data = getResources().getStringArray(R.array.list_bbs);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        if(isAgent)
+            _data = getResources().getStringArray(R.array.list_bbs_agent);
+        else
+            _data = getResources().getStringArray(R.array.list_bbs_member);
+//        _data = getResources().getStringArray(R.array.list_bbs);
     }
 
     @Override
@@ -55,13 +55,23 @@ public class ListBBS extends ListFragment {
 
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            int posIdx = bundle.getInt(DefineValue.INDEX,-1);
+            if(posIdx != -1){
+                Intent i = new Intent(getActivity(), BBSActivity.class);
+                i.putExtras(bundle);
+                switchActivity(i,MainPage.ACTIVITY_RESULT);
+            }
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
         int posIdx;
-//        if(isAgent) {
+        if(isAgent) {
             if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
                 posIdx = BBSActivity.LISTACCBBS;
             else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
@@ -70,15 +80,14 @@ public class ListBBS extends ListFragment {
                 posIdx = BBSActivity.CONFIRMCASHOUT;
         else
             posIdx = -1;
-//        } else
-//            posIdx = BBSActivity.CONFIRMCASHOUT;
+        } else
+            posIdx = BBSActivity.CONFIRMCASHOUT;
 
         if(posIdx !=-1){
             Intent i = new Intent(getActivity(), BBSActivity.class);
             i.putExtra(DefineValue.INDEX, posIdx);
             switchActivity(i,MainPage.ACTIVITY_RESULT);
         }
-
     }
 
     private void switchActivity(Intent mIntent, int j){

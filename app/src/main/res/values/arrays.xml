@@ -171,4 +171,16 @@
     <string-array name="list_bbs_member">
         <item>@string/title_cash_out_member</item>
     </string-array>
+
+    <string-array name="list_menu_frag_new_home">
+        <item>@string/newhome_title_topup</item>
+        <item>@string/menu_item_title_pay_friends</item>
+        <item>@string/menu_item_title_ask_for_money</item>
+        <item>@string/menu_item_title_buy</item>
+        <item>@string/menu_item_title_report</item>
+    </string-array>
+    <string-array name="list_menu_frag_new_home_agent">
+        <item>@string/cash_in</item>
+        <item>@string/cash_out</item>
+    </string-array>
 </resources>

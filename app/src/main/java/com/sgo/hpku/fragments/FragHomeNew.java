@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 
+import com.sgo.hpku.activities.BBSActivity;
 import com.sgo.hpku.activities.BillerActivity;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.TopUpActivity;
@@ -32,6 +33,9 @@ import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.services.BalanceService;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import timber.log.Timber;
@@ -62,15 +66,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
             R.drawable.ic_tariktunai,
             R.drawable.ic_tariktunai,
     };
-    String[] text = {
-            "TAMBAH SALDO",
-            "BAYAR TEMAN",
-            "MINTA UANG",
-            "BELANJA",
-            "LAPORAN",
-            "CASH IN",
-            "CASH OUT",
-    } ;
+//    String[] text = {
+//            getString(R.string.newhome_title_topup),
+//            "BAYAR TEMAN",
+//            "MINTA UANG",
+//            "BELANJA",
+//            "LAPORAN",
+//            "CASH IN",
+//            "CASH OUT",
+//    } ;
 
     public FragHomeNew() {
         // Required empty public constructor
@@ -104,10 +108,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         tv_pulsa = (TextView) v.findViewById(R.id.tv_pulsa);
         tv_bpjs =(TextView) v.findViewById(R.id.tv_bpjs);
         tv_listrikPLN = (TextView) v.findViewById(R.id.tv_listrikPLN);
-        view_pulsa = (View) v.findViewById(R.id.view_pulsa);
-        view_bpjs = (View) v.findViewById(R.id.view_bpjs);
-        view_listrikPLN = (View) v.findViewById(R.id.view_listrikPLN);
-        GridHome adapter = new GridHome(getActivity(),text,imageId);
+        view_pulsa = v.findViewById(R.id.view_pulsa);
+        view_bpjs = v.findViewById(R.id.view_bpjs);
+        view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
+        GridHome adapter = new GridHome(getActivity(),SetupListMenu(),imageId);
         GridHome.setAdapter(adapter);
 
         btn_beli.setOnClickListener(new View.OnClickListener()
@@ -199,7 +203,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchMenu(NavigationDrawMenu.MREPORT,null);
                 }
                 else if (position == 5) {
-
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                    switchMenu(NavigationDrawMenu.MBBS,bundle);
+                }
+                else if (position == 6) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                    switchMenu(NavigationDrawMenu.MBBS,bundle);
                 }
                 else
                 {
@@ -214,6 +227,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if(levelClass != null)
             levelClass.refreshData();
     }
+
+    private ArrayList<String> SetupListMenu(){
+        String[] _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
+        ArrayList<String> data = new ArrayList<>() ;
+        Collections.addAll(data,_data);
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        if(isAgent) {
+            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
+            Collections.addAll(data,_data);
+        }
+        return data;
+    }
+
     private void switchMenu(int idx_menu,Bundle data){
         if (getActivity() == null)
             return;
