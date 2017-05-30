@@ -601,6 +601,8 @@ public class BillerDesciption extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response payment biller:"+response.toString());
 
+                            if (!isPLN)
+                                fee = response.getString(WebParams.FEE);
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),bank_code,product_code,-1);
                                 progdialog.dismiss();
