@@ -23,6 +23,8 @@ public class BBSRegAccountActivity extends BaseActivity implements BBSRegisterAc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fragmentManager = getSupportFragmentManager();
+
         if (findViewById(R.id.bbsreg_content) != null) {
             if (savedInstanceState != null) {
                 return;
@@ -32,7 +34,7 @@ public class BBSRegAccountActivity extends BaseActivity implements BBSRegisterAc
             Fragment newFragment = new BBSRegisterAcct();
             newFragment.setArguments(intent.getExtras());
 
-            fragmentManager = getSupportFragmentManager();
+
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbsreg_content, newFragment, BBSRegisterAcct.TAG);
             fragmentTransaction.commit();
