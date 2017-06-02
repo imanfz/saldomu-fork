@@ -23,7 +23,6 @@ import com.sgo.hpku.coreclass.ToggleKeyboard;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.entityRealm.BBSBankModel;
 import com.sgo.hpku.entityRealm.BBSCommModel;
-import com.sgo.hpku.fragments.BBSTransaksiInformasi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class BBSTransaksiAmount extends Fragment {
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private CustomAutoCompleteTextView actv_rekening_agent, actv_rekening_member;
+    private CustomAutoCompleteTextView actv_rekening_from, actv_rekening_to;
     private List<HashMap<String,String>> aListAgent, aListMember;
     private SimpleAdapter adapterAgent, adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
@@ -90,9 +89,9 @@ public class BBSTransaksiAmount extends Fragment {
             emptyLayout.setVisibility(View.GONE);
 
             //Getting the instance of AutoCompleteTextView
-            actv_rekening_agent = (CustomAutoCompleteTextView) v.findViewById(R.id.rekening_agen_value);
+            actv_rekening_from = (CustomAutoCompleteTextView) v.findViewById(R.id.rekening_agen_value);
             //Getting the instance of AutoCompleteTextView
-            actv_rekening_member = (CustomAutoCompleteTextView) v.findViewById(R.id.rekening_member_value);
+            actv_rekening_to = (CustomAutoCompleteTextView) v.findViewById(R.id.rekening_member_value);
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -109,6 +108,8 @@ public class BBSTransaksiAmount extends Fragment {
 
             BBSCommModel comm;
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                actv_rekening_from.setHint(getString(R.string.rekening_bank_agent));
+                actv_rekening_to.setHint(getString(R.string.rekening_bank_member));
                 comm = realm.where(BBSCommModel.class)
                         .equalTo(WebParams.SCHEME_CODE, CTA).findFirst();
                 listbankSource = realm.where(BBSBankModel.class)
@@ -119,6 +120,8 @@ public class BBSTransaksiAmount extends Fragment {
                         .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
                 setSourceBenef(listbankSource, listbankBenef);
             } else {
+                actv_rekening_from.setHint(getString(R.string.rekening_bank_member));
+                actv_rekening_to.setHint(getString(R.string.rekening_bank_agent));
                 comm = realm.where(BBSCommModel.class)
                         .equalTo(WebParams.SCHEME_CODE, ATC).findFirst();
                 listbankSource = realm.where(BBSBankModel.class)
@@ -127,7 +130,7 @@ public class BBSTransaksiAmount extends Fragment {
                 listbankBenef = realm.where(BBSBankModel.class)
                         .equalTo(WebParams.SCHEME_CODE, ATC)
                         .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
-                setSourceBenef(listbankBenef, listbankSource);
+                setSourceBenef(listbankSource, listbankBenef);
             }
 
             comm_id = comm.getComm_id();
@@ -166,30 +169,30 @@ public class BBSTransaksiAmount extends Fragment {
                 args.putString(DefineValue.API_KEY, api_key);
 
                 int sourcePos = 0, benefPos = 0;
-                if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                    String sourceName = actv_rekening_agent.getText().toString();
+//                if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                    String sourceName = actv_rekening_from.getText().toString();
                     for(int i = 0 ; i < aListAgent.size() ; i++) {
                         if(sourceName.equalsIgnoreCase(aListAgent.get(i).get("txt")))
                             sourcePos = i;
                     }
-                    String benefName = actv_rekening_member.getText().toString();
+                    String benefName = actv_rekening_to.getText().toString();
                     for(int i = 0 ; i < aListMember.size() ; i++) {
                         if(benefName.equalsIgnoreCase(aListMember.get(i).get("txt")))
                             benefPos = i;
                     }
-                }
-                else {
-                    String sourceName = actv_rekening_member.getText().toString();
-                    for(int i = 0 ; i < aListMember.size() ; i++) {
-                        if(sourceName.equalsIgnoreCase(aListMember.get(i).get("txt")))
-                            sourcePos = i;
-                    }
-                    String benefName = actv_rekening_agent.getText().toString();
-                    for(int i = 0 ; i < aListAgent.size() ; i++) {
-                        if(benefName.equalsIgnoreCase(aListAgent.get(i).get("txt")))
-                            benefPos = i;
-                    }
-                }
+//                }
+//                else {
+//                    String sourceName = actv_rekening_to.getText().toString();
+//                    for(int i = 0 ; i < aListMember.size() ; i++) {
+//                        if(sourceName.equalsIgnoreCase(aListMember.get(i).get("txt")))
+//                            sourcePos = i;
+//                    }
+//                    String benefName = actv_rekening_from.getText().toString();
+//                    for(int i = 0 ; i < aListAgent.size() ; i++) {
+//                        if(benefName.equalsIgnoreCase(aListAgent.get(i).get("txt")))
+//                            benefPos = i;
+//                    }
+//                }
 
                 args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(sourcePos).getProduct_code());
                 args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(sourcePos).getProduct_type());
@@ -264,8 +267,8 @@ public class BBSTransaksiAmount extends Fragment {
             aListMember.add(hm);
         }
 
-        actv_rekening_agent.setAdapter(adapterAgent);
-        actv_rekening_member.setAdapter(adapterMember);
+        actv_rekening_from.setAdapter(adapterAgent);
+        actv_rekening_to.setAdapter(adapterMember);
     }
 
     private boolean inputValidation() {
@@ -279,14 +282,14 @@ public class BBSTransaksiAmount extends Fragment {
             etAmount.setError(getString(R.string.payfriends_amount_zero));
             return false;
         }
-        if(actv_rekening_agent.getText().toString().length()==0){
-            actv_rekening_agent.requestFocus();
-            actv_rekening_agent.setError(getString(R.string.rekening_agent_error_message));
+        if(actv_rekening_from.getText().toString().length()==0){
+            actv_rekening_from.requestFocus();
+            actv_rekening_from.setError(getString(R.string.rekening_agent_error_message));
             return false;
         }
-        if(actv_rekening_member.getText().toString().length()==0){
-            actv_rekening_member.requestFocus();
-            actv_rekening_member.setError(getString(R.string.rekening_member_error_message));
+        if(actv_rekening_to.getText().toString().length()==0){
+            actv_rekening_to.requestFocus();
+            actv_rekening_to.setError(getString(R.string.rekening_member_error_message));
             return false;
         }
         return true;
