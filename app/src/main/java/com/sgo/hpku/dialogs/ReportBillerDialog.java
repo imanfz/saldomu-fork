@@ -86,6 +86,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
+        ViewStub stub = (ViewStub) view.findViewById(R.id.stub);
 
         Bundle args = getArguments();
         Timber.d("isi args report:" + args.toString());
@@ -103,8 +104,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         if (type != null) {
             if (type.equals(DefineValue.BILLER_PLN)) {
-                View mLayout = view.findViewById(R.id.report_biller_pln);
-                mLayout.setVisibility(View.VISIBLE);
+//                View mLayout = view.findViewById(R.id.report_biller_pln);
+                stub.setLayoutResource(R.layout.layout_dialog_report_biller_pln);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
@@ -114,7 +117,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-                TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
+                TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
                 String source = args.getString(DefineValue.DETAIL, "");
                 String desc = "", value = "";
                 JSONObject mDataDesc;
@@ -142,18 +145,20 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
                 createTableDesc(desc, value, mTableLayout);
             } else if (type.equals(DefineValue.BILLER)) {
-                View mLayout = view.findViewById(R.id.report_biller);
-                mLayout.setVisibility(View.VISIBLE);
+//                View mLayout = view.findViewById(R.id.report_biller);
+                stub.setLayoutResource(R.layout.layout_dialog_report_biller);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_useerid_value = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_userid_value);
-                TextView tv_name_value = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_name_value);
-                TextView tv_denom_value = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_denomretail_value);
-                TextView tv_amount_value = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_amount_value);
-                TextView tv_denom_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_text_denom);
-                TextView tv_payment_options_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_payment_options_value);
-                TextView tv_fee_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_fee_value);
-                TextView tv_total_amount_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_total_amount_value);
-                TextView tv_dest_remark_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_dest_remark_value);
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_userid_value);
+                TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_name_value);
+                TextView tv_denom_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_denomretail_value);
+                TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_amount_value);
+                TextView tv_denom_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_text_denom);
+                TextView tv_payment_options_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
+                TextView tv_fee_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_fee_value);
+                TextView tv_total_amount_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
+                TextView tv_dest_remark_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_dest_remark_value);
 
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
@@ -177,14 +182,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 if (isShowDescription) {
                     tv_denom_text.setText(getString(R.string.billertoken_text_item_name));
-                    View desclayout = mLayout.findViewById(R.id.dialog_reportbiller_layout_desc);
-                    RelativeLayout mDescLayout = (RelativeLayout) mLayout.findViewById(R.id.billertoken_layout_deskripsi);
+                    View desclayout = inflated.findViewById(R.id.dialog_reportbiller_layout_desc);
+                    RelativeLayout mDescLayout = (RelativeLayout) inflated.findViewById(R.id.billertoken_layout_deskripsi);
 
                     if (!args.getString(DefineValue.DESC_FIELD, "").isEmpty()) {
                         mDescLayout.setVisibility(View.VISIBLE);
                         desclayout.setVisibility(View.VISIBLE);
-                        final TableLayout mTableLayout = (TableLayout) mLayout.findViewById(R.id.billertoken_layout_table);
-                        final ImageView mIconArrow = (ImageView) mLayout.findViewById(R.id.billertoken_arrow_desc);
+                        final TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
+                        final ImageView mIconArrow = (ImageView) inflated.findViewById(R.id.billertoken_arrow_desc);
 
                         View.OnClickListener descriptionClickListener = new View.OnClickListener() {
                             @Override
@@ -228,7 +233,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     Timber.d("isi Amount desired:" + args.getString(DefineValue.AMOUNT_DESIRED));
 
                     if (!args.getString(DefineValue.AMOUNT_DESIRED, "").isEmpty()) {
-                        View inputAmountLayout = mLayout.findViewById(R.id.dialog_reportbiller_amount_desired_layout);
+                        View inputAmountLayout = inflated.findViewById(R.id.dialog_reportbiller_amount_desired_layout);
                         inputAmountLayout.setVisibility(View.VISIBLE);
                         TextView _desired_amount = (TextView) inputAmountLayout.findViewById(R.id.dialog_reportbiller_amount_desired_value);
                         _desired_amount.setText(args.getString(DefineValue.AMOUNT_DESIRED));
@@ -236,18 +241,19 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
 
             } else if (type.equals(DefineValue.PAYFRIENDS)) {
+                stub.setLayoutResource(R.layout.layout_dialog_report_payfriends);
+                View inflated = stub.inflate();
+//                LinearLayout mLayout = (LinearLayout) view.findViewById(R.id.report_payfriends);
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_userid_value);
+                TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_name_value);
+                TextView tv_recipients_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_recipients_value);
+                TextView tv_amount_each_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_amount_each_value);
+                TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_amount_value);
+                TextView tv_fee_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_fee_value);
+                TextView tv_total_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_totalamount_value);
+                TextView tv_message = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_message_value);
 
-                LinearLayout mLayout = (LinearLayout) view.findViewById(R.id.report_payfriends);
-                TextView tv_useerid_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_userid_value);
-                TextView tv_name_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_name_value);
-                TextView tv_recipients_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_recipients_value);
-                TextView tv_amount_each_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_amount_each_value);
-                TextView tv_amount_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_amount_value);
-                TextView tv_fee_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_fee_value);
-                TextView tv_total_amount_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_totalamount_value);
-                TextView tv_message = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_message_value);
-
-                mLayout.setVisibility(View.VISIBLE);
+                inflated.setVisibility(View.VISIBLE);
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
                 tv_recipients_value.setText(args.getString(DefineValue.RECIPIENTS));
@@ -258,21 +264,24 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_message.setText(args.getString(DefineValue.MESSAGE));
 
                 if (args.getString(DefineValue.RECIPIENTS_ERROR) != null) {
-                    LinearLayout mLayoutFailed = (LinearLayout) mLayout.findViewById(R.id.dialog_reportpayfriends_failed_layout);
-                    TextView tv_error_recipient_value = (TextView) mLayout.findViewById(R.id.dialog_reportpayfriends_errorrecipient_value);
+                    LinearLayout mLayoutFailed = (LinearLayout) inflated.findViewById(R.id.dialog_reportpayfriends_failed_layout);
+                    TextView tv_error_recipient_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_errorrecipient_value);
                     mLayoutFailed.setVisibility(View.VISIBLE);
                     tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
                 }
             } else if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
-                View topup_layout = view.findViewById(R.id.report_topup);
-                TextView tv_useerid_value = (TextView) topup_layout.findViewById(R.id.dialog_topup_userid_value);
-                TextView tv_name_value = (TextView) topup_layout.findViewById(R.id.dialog_topup_name_value);
-                TextView tv_bank_name = (TextView) topup_layout.findViewById(R.id.dialog_topup_bankname_value);
-                TextView tv_bank_product = (TextView) topup_layout.findViewById(R.id.dialog_topup_productbank_value);
-                TextView tv_fee = (TextView) topup_layout.findViewById(R.id.dialog_topup_fee_value);
-                TextView tv_amount = (TextView) topup_layout.findViewById(R.id.dialog_topup_amount_value);
-                TextView tv_total_amount = (TextView) topup_layout.findViewById(R.id.dialog_topup_total_amount_value);
-                topup_layout.setVisibility(View.VISIBLE);
+                stub.setLayoutResource(R.layout.layout_dialog_report_topup);
+                View inflated = stub.inflate();
+//                View topup_layout = view.findViewById(R.id.report_topup);
+
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_topup_userid_value);
+                TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_topup_name_value);
+                TextView tv_bank_name = (TextView) inflated.findViewById(R.id.dialog_topup_bankname_value);
+                TextView tv_bank_product = (TextView) inflated.findViewById(R.id.dialog_topup_productbank_value);
+                TextView tv_fee = (TextView) inflated.findViewById(R.id.dialog_topup_fee_value);
+                TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_topup_amount_value);
+                TextView tv_total_amount = (TextView) inflated.findViewById(R.id.dialog_topup_total_amount_value);
+                inflated.setVisibility(View.VISIBLE);
 
                 String amount = args.getString(DefineValue.AMOUNT);
                 String fee = args.getString(DefineValue.FEE);
@@ -296,24 +305,26 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount.setText(total_amount);
 
                 if (type.equals(DefineValue.COLLECTION)) {
-                    View layout_remark = topup_layout.findViewById(R.id.topup_remark_layout);
+                    View layout_remark = inflated.findViewById(R.id.topup_remark_layout);
                     layout_remark.setVisibility(View.VISIBLE);
                     TextView tv_remark = (TextView) layout_remark.findViewById(R.id.dialog_topup_message_value);
                     tv_remark.setText(args.getString(DefineValue.REMARK));
                 }
 
             } else if (type.equals(DefineValue.TRANSACTION)) {
-                View report_layout = view.findViewById(R.id.report_dialog);
-                report_layout.setVisibility(View.VISIBLE);
+//                View report_layout = view.findViewById(R.id.report_dialog);
+                stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                LinearLayout trAlias = (TableRow) report_layout.findViewById(R.id.trAlias);
-                View lineAlias = report_layout.findViewById(R.id.lineAlias);
-                TextView tv_detail = (TextView) report_layout.findViewById(R.id.dialog_report_trans_detail_value);
-                TextView tv_type = (TextView) report_layout.findViewById(R.id.dialog_report_trans_type_value);
-                TextView tv_desc = (TextView) report_layout.findViewById(R.id.dialog_report_trans_description_value);
-                TextView tv_alias = (TextView) report_layout.findViewById(R.id.dialog_report_trans_alias_value);
-                TextView tv_amount = (TextView) report_layout.findViewById(R.id.dialog_report_trans_amount_value);
-                TextView tv_remark = (TextView) report_layout.findViewById(R.id.dialog_report_trans_remark_value);
+                LinearLayout trAlias = (TableRow) inflated.findViewById(R.id.trAlias);
+                View lineAlias = inflated.findViewById(R.id.lineAlias);
+                TextView tv_detail = (TextView) inflated.findViewById(R.id.dialog_report_trans_detail_value);
+                TextView tv_type = (TextView) inflated.findViewById(R.id.dialog_report_trans_type_value);
+                TextView tv_desc = (TextView) inflated.findViewById(R.id.dialog_report_trans_description_value);
+                TextView tv_alias = (TextView) inflated.findViewById(R.id.dialog_report_trans_alias_value);
+                TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_trans_amount_value);
+                TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_trans_remark_value);
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
@@ -341,18 +352,20 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_detail.setText(detail);
             } else if (type.equals(DefineValue.TRANSACTION_ESPAY)) {
-                View report_layout = view.findViewById(R.id.report_dialog_espay);
-                report_layout.setVisibility(View.VISIBLE);
+//                View report_layout = view.findViewById(R.id.report_dialog_espay);
+                stub.setLayoutResource(R.layout.layout_dialog_report_espay_transaction);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_buss_scheme_name = (TextView) report_layout.findViewById(R.id.dialog_report_buss_scheme_name_value);
-                TextView tv_comm_name = (TextView) report_layout.findViewById(R.id.dialog_report_community_value);
-                TextView tv_amount = (TextView) report_layout.findViewById(R.id.dialog_report_trans_amount_value);
-                TextView tv_fee = (TextView) report_layout.findViewById(R.id.dialog_report_fee_value);
-                TextView tv_total_amount = (TextView) report_layout.findViewById(R.id.dialog_report_total_amount_value);
-                TextView tv_desc = (TextView) report_layout.findViewById(R.id.dialog_report_trans_description_value);
-                TextView tv_remark = (TextView) report_layout.findViewById(R.id.dialog_report_trans_remark_value);
-                TextView tv_bank_name = (TextView) report_layout.findViewById(R.id.dialog_report_bank_name_value);
-                TextView tv_product_name = (TextView) report_layout.findViewById(R.id.dialog_report_product_name_value);
+                TextView tv_buss_scheme_name = (TextView) inflated.findViewById(R.id.dialog_report_buss_scheme_name_value);
+                TextView tv_comm_name = (TextView) inflated.findViewById(R.id.dialog_report_community_value);
+                TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_trans_amount_value);
+                TextView tv_fee = (TextView) inflated.findViewById(R.id.dialog_report_fee_value);
+                TextView tv_total_amount = (TextView) inflated.findViewById(R.id.dialog_report_total_amount_value);
+                TextView tv_desc = (TextView) inflated.findViewById(R.id.dialog_report_trans_description_value);
+                TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_trans_remark_value);
+                TextView tv_bank_name = (TextView) inflated.findViewById(R.id.dialog_report_bank_name_value);
+                TextView tv_product_name = (TextView) inflated.findViewById(R.id.dialog_report_product_name_value);
 
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
@@ -373,8 +386,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_bank_name.setText(args.getString(DefineValue.BANK_NAME, ""));
                 tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
             } else if (type.equals(DefineValue.PULSA_AGENT)) {
-                View mLayout = view.findViewById(R.id.report_dialog_dap);
-                mLayout.setVisibility(View.VISIBLE);
+//                View mLayout = view.findViewById(R.id.report_dialog_dap);
+                stub.setLayoutResource(R.layout.layout_dialog_dap);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
                 TextView tv_useerid_value = (TextView) view.findViewById(R.id.dialog_report_userid_value);
                 TextView tv_name_value = (TextView) view.findViewById(R.id.dialog_report_name_value);
@@ -384,7 +399,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_payment_options_text = (TextView) view.findViewById(R.id.dialog_report_payment_options_value);
                 TextView tv_fee_value = (TextView) view.findViewById(R.id.dialog_reportdap_fee_value);
                 TextView tv_total_amount_value = (TextView) view.findViewById(R.id.dialog_reportdap_total_amount_value);
-                TextView tv_dest_remark_text = (TextView) mLayout.findViewById(R.id.dialog_reportbiller_dest_remark_value);
+                TextView tv_dest_remark_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_dest_remark_value);
 
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
@@ -406,17 +421,19 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
 
             } else if (type.equals(DefineValue.REQUEST)) {
-                View report_layout = view.findViewById(R.id.report_dialog_request);
-                report_layout.setVisibility(View.VISIBLE);
+//                View report_layout = view.findViewById(R.id.report_dialog_request);
+                stub.setLayoutResource(R.layout.layout_dialog_request);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_detail = (TextView) report_layout.findViewById(R.id.dialog_report_req_detail_value);
-                TextView tv_type = (TextView) report_layout.findViewById(R.id.dialog_report_req_type_value);
-                TextView tv_desc = (TextView) report_layout.findViewById(R.id.dialog_report_req_description_value);
-                TextView tv_alias = (TextView) report_layout.findViewById(R.id.dialog_report_req_alias_value);
-                TextView tv_amount = (TextView) report_layout.findViewById(R.id.dialog_report_req_amount_value);
-                TextView tv_remark = (TextView) report_layout.findViewById(R.id.dialog_report_req_remark_value);
-                TextView tv_status = (TextView) report_layout.findViewById(R.id.dialog_report_req_status_value);
-                TextView tv_reason = (TextView) report_layout.findViewById(R.id.dialog_report_req_reason_value);
+                TextView tv_detail = (TextView) inflated.findViewById(R.id.dialog_report_req_detail_value);
+                TextView tv_type = (TextView) inflated.findViewById(R.id.dialog_report_req_type_value);
+                TextView tv_desc = (TextView) inflated.findViewById(R.id.dialog_report_req_description_value);
+                TextView tv_alias = (TextView) inflated.findViewById(R.id.dialog_report_req_alias_value);
+                TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_req_amount_value);
+                TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_req_remark_value);
+                TextView tv_status = (TextView) inflated.findViewById(R.id.dialog_report_req_status_value);
+                TextView tv_reason = (TextView) inflated.findViewById(R.id.dialog_report_req_reason_value);
 
 
                 String detail = args.getString(DefineValue.DETAIL);
@@ -431,17 +448,19 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_status.setText(args.getString(DefineValue.STATUS, ""));
                 tv_reason.setText(args.getString(DefineValue.REASON, ""));
             } else if (type.equals(DefineValue.CASHOUT)) {
-                View report_layout = view.findViewById(R.id.report_cashout);
-                report_layout.setVisibility(View.VISIBLE);
+//                View report_layout = view.findViewById(R.id.report_cashout);
+                stub.setLayoutResource(R.layout.layout_dialog_report_cashout);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_useerid_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_userid_value);
-                TextView tv_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_name_value);
-                TextView tv_bank_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_bank_name_value);
-                TextView tv_bank_acc_no_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_bank_acc_no_value);
-                TextView tv_bank_acc_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_bank_acc_name_value);
-                TextView tv_nominal_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_nominal_value);
-                TextView tv_fee_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_fee_value);
-                TextView tv_total_amount_value = (TextView) report_layout.findViewById(R.id.dialog_reportcashout_totalamount_value);
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_userid_value);
+                TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_name_value);
+                TextView tv_bank_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_name_value);
+                TextView tv_bank_acc_no_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_acc_no_value);
+                TextView tv_bank_acc_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_acc_name_value);
+                TextView tv_nominal_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_nominal_value);
+                TextView tv_fee_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_fee_value);
+                TextView tv_total_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_totalamount_value);
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
@@ -452,14 +471,16 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
             } else if (type.equals(DefineValue.CASHOUT_TUNAI)) {
-                View report_layout = view.findViewById(R.id.report_cashout_tunai);
-                report_layout.setVisibility(View.VISIBLE);
+//                View report_layout = view.findViewById(R.id.report_cashout_tunai);
+                stub.setLayoutResource(R.layout.layout_dialog_report_cashouttunai);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
 
-                TextView tv_useerid_value = (TextView) report_layout.findViewById(R.id.dialog_report_userid_value);
-                TextView tv_nameadmin_value = (TextView) report_layout.findViewById(R.id.dialog_report_adminname_value);
-                TextView tv_amount = (TextView) report_layout.findViewById(R.id.dialog_report_amount_value);
-                TextView tv_fee = (TextView) report_layout.findViewById(R.id.dialog_report_fee_value);
-                TextView tv_totalamount = (TextView) report_layout.findViewById(R.id.dialog_report_total_amount_value);
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_report_userid_value);
+                TextView tv_nameadmin_value = (TextView) inflated.findViewById(R.id.dialog_report_adminname_value);
+                TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_amount_value);
+                TextView tv_fee = (TextView) inflated.findViewById(R.id.dialog_report_fee_value);
+                TextView tv_totalamount = (TextView) inflated.findViewById(R.id.dialog_report_total_amount_value);
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_nameadmin_value.setText(args.getString(DefineValue.NAME_ADMIN));
@@ -475,11 +496,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
             } else if (type.equals(DefineValue.BBS_CASHIN) || type.equals(DefineValue.BBS_CASHOUT) || type.equals(DefineValue.BBS_MEMBER_OTP)) {
-                View report_layout;
+                View inflated = stub.inflate();
                 if (type.equals(DefineValue.BBS_CASHIN)) {
-                    report_layout = view.findViewById(R.id.report_bbs_cashin);
-
-                    TextView tvNoDestination = (TextView) report_layout.findViewById(R.id.tvNoDestination);
+//                    report_layout = view.findViewById(R.id.report_bbs_cashin);
+                    stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
+                    TextView tvNoDestination = (TextView) inflated.findViewById(R.id.tvNoDestination);
 
                     String benef_type = args.getString(DefineValue.TYPE_BENEF, "");
                     if (benef_type.equalsIgnoreCase(DefineValue.ACCT))
@@ -487,9 +508,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     else
                         tvNoDestination.setText(R.string.number_hp_destination);
                 } else
-                    report_layout = view.findViewById(R.id.report_bbs_cashout);
-
-                report_layout.setVisibility(View.VISIBLE);
+//                    inflated = view.findViewById(R.id.report_bbs_cashout);
+                stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashout);
+                inflated.setVisibility(View.VISIBLE);
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
@@ -499,18 +520,18 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
 
-                TextView tv_useerid_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_userid_value);
-                TextView tv_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_membername_value);
-                TextView tv_source_bank_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_source_bank_value);
-                TextView tv_source_acc_no_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_bank_source_acct_no_value);
-                TextView tv_source_acc_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
-                TextView tv_benef_bank_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_benef_bank_value);
-                TextView tv_benef_acc_no_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_bank_benef_acct_no_value);
-                TextView tv_benef_acc_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbs_bank_benef_acc_name_value);
-                TextView tv_product_name_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_product_name_value);
-                TextView tv_amount_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_amount_value);
-                TextView tv_fee_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_fee_value);
-                TextView tv_total_amount_value = (TextView) report_layout.findViewById(R.id.dialog_reportbbs_totalamount_value);
+                TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_userid_value);
+                TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_membername_value);
+                TextView tv_source_bank_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_source_bank_value);
+                TextView tv_source_acc_no_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_bank_source_acct_no_value);
+                TextView tv_source_acc_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbs_bank_source_acc_name_value);
+                TextView tv_benef_bank_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_benef_bank_value);
+                TextView tv_benef_acc_no_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_bank_benef_acct_no_value);
+                TextView tv_benef_acc_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbs_bank_benef_acc_name_value);
+                TextView tv_product_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_product_name_value);
+                TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_amount_value);
+                TextView tv_fee_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_fee_value);
+                TextView tv_total_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
 
                 tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
                 tv_name_value.setText(args.getString(DefineValue.USER_NAME));
