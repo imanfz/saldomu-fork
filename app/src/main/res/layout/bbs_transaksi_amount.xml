@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/bbs_amount_form"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
     <LinearLayout android:id="@+id/bbstransaksi_bottom_layout"
         android:background="@color/windowBackgroundColor"
         android:layout_alignParentBottom="true"
@@ -160,64 +164,18 @@
                     android:gravity="right"
                     android:text="(contoh: 1.000.000)"/>
 
-                <TextView
+                <ViewStub
+                    android:id="@+id/transaksi_stub"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/from"/>
-
-                <com.sgo.hpku.widgets.CustomAutoCompleteTextView
-                    android:id="@+id/rekening_agen_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:hint="@string/rekening_bank_agent"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="6dp"
-                    android:textColor="@color/colorSecondaryDark"
-                    android:textStyle="italic"
-                    android:gravity="right"
-                    android:text="(contoh: BANK BCA)"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:text="@string/to"/>
-
-                <com.sgo.hpku.widgets.CustomAutoCompleteTextView
-                    android:id="@+id/rekening_member_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:hint="@string/rekening_bank_member"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:textColor="@color/colorSecondaryDark"
-                    android:textStyle="italic"
-                    android:gravity="right"
-                    android:text="(contoh: BANK MANDIRI)"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <include android:id="@+id/empty_layout"
-                layout="@layout/empty_bbs_cashout" />
         </LinearLayout>
     </ScrollView>
+    </RelativeLayout>
+    <include android:id="@+id/empty_layout"
+        layout="@layout/empty_bbs_view" />
+    <include android:id="@+id/empty_cashout_benef_layout"
+        layout="@layout/empty_bbs_cashout"
+        android:visibility="gone"/>
 </RelativeLayout>
