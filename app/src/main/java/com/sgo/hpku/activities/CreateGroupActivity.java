@@ -117,7 +117,7 @@ public class CreateGroupActivity extends BaseActivity {
 
                 for (DrawableRecipientChip chip : chips) {
                     Timber.v("DrawableChip:"+chip.getEntry().getDisplayName() + " " + chip.getEntry().getDestination());
-                    finalNumber = NoHPFormat.editNoHP(chip.getEntry().getDestination());
+                    finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
                     listName.add(chip.getEntry().getDisplayName());
                     mTempObjectDataList.add(new TempObjectData(finalNumber));
                 }
