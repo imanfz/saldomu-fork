@@ -795,6 +795,8 @@ public class MyProfileActivity extends BaseActivity {
             e.printStackTrace();
         }
 
+        Timber.d("params upload profile picture: " + params.toString());
+
         MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -823,7 +825,7 @@ public class MyProfileActivity extends BaseActivity {
                         AlertDialogLogout test = AlertDialogLogout.getInstance();
                         test.showDialoginActivity(MyProfileActivity.this, message);
                     } else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MyProfileActivity.this);
                         alert.setTitle("Upload Image");
                         alert.setMessage("Upload Image : " + error_message);
                         alert.setPositiveButton("OK", null);
