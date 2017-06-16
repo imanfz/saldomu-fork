@@ -10,7 +10,6 @@ import io.realm.annotations.PrimaryKey;
 public class BBSCommModel extends RealmObject {
 
     @PrimaryKey
-    private String member_code;
     private String comm_id;
     private String comm_code;
     private String comm_name;
@@ -18,14 +17,6 @@ public class BBSCommModel extends RealmObject {
     private String callback_url;
     private String scheme_code;
     private String last_update;
-
-    public String getMember_code() {
-        return member_code;
-    }
-
-    public void setMember_code(String member_code) {
-        this.member_code = member_code;
-    }
 
     public String getComm_id() {
         return comm_id;

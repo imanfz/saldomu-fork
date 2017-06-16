@@ -231,5 +231,6 @@
         <service android:name=".services.BalanceService"/>
         <service android:name=".services.AppInfoService"/>
         <service android:name=".services.UserProfileService"/>
+        <service android:name=".services.UpdateBBSCity" />
     </application>
 </manifest>
