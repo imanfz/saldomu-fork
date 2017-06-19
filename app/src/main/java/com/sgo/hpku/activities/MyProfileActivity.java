@@ -823,11 +823,12 @@ public class MyProfileActivity extends BaseActivity {
                         AlertDialogLogout test = AlertDialogLogout.getInstance();
                         test.showDialoginActivity(MyProfileActivity.this, message);
                     } else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder alert = new AlertDialog.Builder(MyProfileActivity.this);
                         alert.setTitle("Upload Image");
                         alert.setMessage("Upload Image : " + error_message);
                         alert.setPositiveButton("OK", null);
                         alert.show();
+
                     }
 
                 } catch (JSONException e) {

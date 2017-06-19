@@ -57,6 +57,7 @@ import com.sgo.hpku.fragments.RightSideDrawMenu;
 import com.sgo.hpku.loader.UtilsLoader;
 import com.sgo.hpku.services.AppInfoService;
 import com.sgo.hpku.services.BalanceService;
+import com.sgo.hpku.services.UpdateBBSCity;
 import com.sgo.hpku.services.UserProfileService;
 
 import org.apache.http.Header;
@@ -457,6 +458,7 @@ public class MainPage extends BaseActivity{
                                     progdialog.dismiss();
                                 checkField();
 
+                                callBBSCityService();
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
 
@@ -531,6 +533,10 @@ public class MainPage extends BaseActivity{
             }
         };
         mth.start();
+    }
+
+    private void callBBSCityService(){
+        UpdateBBSCity.startUpdateBBSCity(MainPage.this);
     }
 
     private void showChangePassword(){

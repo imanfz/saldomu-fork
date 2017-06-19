@@ -3,7 +3,7 @@ package com.sgo.hpku.widgets;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.AutoCompleteTextView;
+import android.view.MotionEvent;
 
 import java.util.HashMap;
 
@@ -11,7 +11,7 @@ import java.util.HashMap;
  * Created by thinkpad on 4/26/2017.
  */
 
-public class CustomAutoCompleteTextView extends AutoCompleteTextView {
+public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCompatAutoCompleteTextView {
 
     public CustomAutoCompleteTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,8 +36,27 @@ public class CustomAutoCompleteTextView extends AutoCompleteTextView {
                                   Rect previouslyFocusedRect) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
         if (focused) {
-            performFiltering(getText(), 0);
+            showDropDown();
         }
+    }
+
+//    @Override
+//    public void dismissDropDown() {
+//        if(isFocused())
+//            showDropDown();
+//    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(isFocused())
+            showDropDown();
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void setOnClickListener(OnClickListener listener) {
+        if(isFocused())
+            showDropDown();
     }
 
     /** Returns the country name corresponding to the selected item */
