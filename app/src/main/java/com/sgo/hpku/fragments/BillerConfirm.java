@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
 import android.view.*;
@@ -833,7 +834,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this, 0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.add(dialog, ReportBillerDialog.TAG);
+        ft.commitAllowingStateLoss();
     }
 
     private void showDialog(String msg) {
