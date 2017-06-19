@@ -7,7 +7,7 @@ import android.util.Log;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.SearchAgentActivity;
 import com.sgo.hpku.coreclass.BaseActivity;
-import com.sgo.hpku.models.AgentDetail;
+import com.sgo.hpku.entityRealm.AgentDetail;
 
 import io.realm.Realm;
 import io.realm.RealmResults;

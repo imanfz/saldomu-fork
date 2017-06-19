@@ -1,4 +1,4 @@
-package com.sgo.hpku.models;
+package com.sgo.hpku.entityRealm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;

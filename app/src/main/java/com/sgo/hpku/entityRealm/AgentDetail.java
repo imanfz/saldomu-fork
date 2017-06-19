@@ -1,4 +1,4 @@
-package com.sgo.hpku.models;
+package com.sgo.hpku.entityRealm;
 
 import java.util.ArrayList;
 

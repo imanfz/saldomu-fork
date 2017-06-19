@@ -20,7 +20,6 @@ import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.myFriendModel;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.LoginActivity;
@@ -296,9 +295,9 @@ public class Login extends Fragment implements View.OnClickListener {
     }
 
     private boolean checkCommunity(JSONObject response){
-
+        String arraynya;
         try {
-            String arraynya = response.getString(WebParams.COMMUNITY);
+            arraynya = response.getString(WebParams.COMMUNITY);
             if(!arraynya.isEmpty()){
                 JSONArray arrayJson = new JSONArray(arraynya);
                 for(int i = 0 ; i < arrayJson.length();i++){
@@ -326,16 +325,14 @@ public class Login extends Fragment implements View.OnClickListener {
 
             if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
                 mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
-                mEditor.putString(DefineValue.BALANCE,prefs.getString(DefineValue.PREVIOUS_BALANCE,"0"));
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
             }
             else {
                 if(prevContactFT.equals(DefineValue.NO)) {
                     myFriendModel.deleteAll();
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
-                BalanceModel.deleteAll();
-                mEditor.putString(DefineValue.BALANCE, "0");
-
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
             }
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);
@@ -399,6 +396,8 @@ public class Login extends Fragment implements View.OnClickListener {
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
                         else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+                        mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT,0)>0);
+
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
                         Timber.w("isi comm id yg bener:" + arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
                         break;

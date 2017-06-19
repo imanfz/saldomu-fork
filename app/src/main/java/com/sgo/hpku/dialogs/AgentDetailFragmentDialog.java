@@ -31,7 +31,7 @@ import com.sgo.hpku.activities.SearchAgentActivity;
 import com.sgo.hpku.coreclass.AgentConstant;
 import com.sgo.hpku.fragments.AgentMapFragment;
 import com.sgo.hpku.fragments.ProfileAgentFragment;
-import com.sgo.hpku.models.AgentDetail;
+import com.sgo.hpku.entityRealm.AgentDetail;
 import com.sgo.hpku.models.ShopDetail;
 
 import org.json.JSONException;

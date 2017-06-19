@@ -36,7 +36,7 @@ import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
-import com.sgo.hpku.models.MerchantCommunityList;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

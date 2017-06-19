@@ -223,6 +223,12 @@
                     <include android:id="@+id/report_biller_pln"
                         layout="@layout/layout_dialog_report_biller_pln"/>
 
+                    <include android:id="@+id/report_bbs_cashin"
+                        layout="@layout/layout_dialog_report_bbs_cashin"/>
+
+                    <include android:id="@+id/report_bbs_cashout"
+                        layout="@layout/layout_dialog_report_bbs_cashout"/>
+
                 </LinearLayout>
             <!--</ScrollView>-->
         </LinearLayout>

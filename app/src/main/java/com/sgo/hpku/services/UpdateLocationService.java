@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.sgo.hpku.R;
 import com.sgo.hpku.coreclass.DefineValue;
 
 import java.io.IOException;
@@ -110,6 +111,9 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
 
+        //Toast.makeText(getApplicationContext(),longitude.toString() + " -- " + latitude.toString(),Toast.LENGTH_LONG).show();
+
+        /*
         //Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         Geocoder geocoder = new Geocoder(this, new Locale("id"));
 
@@ -142,9 +146,7 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         }
 
         updateLocationMessageToActivity();
-
-        //Toast.makeText(getApplicationContext(), "Location changed! Longitude : " + String.valueOf(mLastLocation.getLongitude()) + " Latitude :" + String.valueOf(mLastLocation.getLatitude()),
-        //Toast.LENGTH_SHORT).show();
+        */
     }
 
     /**
@@ -181,10 +183,10 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
      * */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(DefineValue.INTERVAL_LOCATION_REQUEST);
-        mLocationRequest.setFastestInterval(DefineValue.FASTEST_INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setInterval(DefineValue.AGENT_INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setFastestInterval(DefineValue.AGENT_FASTEST_INTERVAL_LOCATION_REQUEST);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
+        mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
     }
 
     /**
@@ -208,8 +210,8 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
     }
 
     private void updateLocationMessageToActivity() {
-        Intent intent = new Intent("UpdateLocationIntent");
-        sendLocationBroadcast(intent);
+        //Intent intent = new Intent("UpdateLocationIntent");
+        //sendLocationBroadcast(intent);
     }
 
     private void sendLocationBroadcast(Intent intent){
@@ -233,6 +235,11 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         }
     };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
     public final class Constants {
         public static final int SUCCESS_RESULT = 0;

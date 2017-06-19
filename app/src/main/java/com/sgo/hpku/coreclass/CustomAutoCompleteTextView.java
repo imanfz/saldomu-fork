@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -13,7 +12,7 @@ import android.widget.RadioGroup;
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
-public class CustomAutoCompleteTextView extends AutoCompleteTextView {
+public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCompatAutoCompleteTextView {
 
     private Button btn;
     private RadioGroup locationRadioGroup;

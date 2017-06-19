@@ -53,18 +53,13 @@ public class GeneralizeImage {
             finaleBitmap = BitmapFactory.decodeFile(mFilePath);
         }
 
-        if(imageHeight > 3000 ){
-            imageHeight = imageHeight/4;
-            imageWidth  = imageWidth/4;
-        }
-        else {
+        if(imageHeight > 3800 || imageWidth > 3800  ){
             imageHeight = imageHeight/2;
             imageWidth  = imageWidth/2;
+            finaleBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, false);
         }
 
-        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, true);
-//        Bitmap oldBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeFile(mFilePath),100, 100, true);
-        Bitmap newBitmap = setOrientationBitmap(oldBitmap);
+        Bitmap newBitmap = setOrientationBitmap(finaleBitmap);
 
         String destFolder = mContext.getCacheDir().getAbsolutePath();
         String mFileName = "temp.jpeg";
@@ -145,7 +140,6 @@ public class GeneralizeImage {
             return null;
         } finally {
             try {
-                assert fileDescriptor != null;
                 bm = BitmapFactory.decodeFileDescriptor(
                         fileDescriptor.getFileDescriptor(), null, options);
                 fileDescriptor.close();

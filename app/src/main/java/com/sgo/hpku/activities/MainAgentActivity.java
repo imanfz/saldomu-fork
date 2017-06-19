@@ -39,8 +39,8 @@ import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.MainAgentIntentService;
 import com.sgo.hpku.coreclass.MainResultReceiver;
 import com.sgo.hpku.dialogs.AgentDetailFragmentDialog;
-import com.sgo.hpku.models.AgentDetail;
-import com.sgo.hpku.models.AgentServiceDetail;
+import com.sgo.hpku.entityRealm.AgentDetail;
+import com.sgo.hpku.entityRealm.AgentServiceDetail;
 
 import org.apache.http.Header;
 import org.json.JSONArray;

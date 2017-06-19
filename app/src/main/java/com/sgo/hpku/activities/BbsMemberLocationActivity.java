@@ -39,7 +39,7 @@ import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
-import com.sgo.hpku.models.MerchantCommunityList;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -137,8 +137,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
                     params.put(WebParams.APP_ID, BuildConfig.AppID);
-                    params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID);
-                    params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, memberDetail.getShopId());
                     params.put(WebParams.MEMBER_ID, memberDetail.getMemberId());
                     params.put(WebParams.DISTRICT, districtName);
@@ -147,7 +147,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.LATITUDE, selectedLat);
                     params.put(WebParams.LONGITUDE, selectedLong);
 
-                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + memberId.toUpperCase() + memberDetail.getShopId().toUpperCase()
+                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + memberDetail.getShopId().toUpperCase()
                             + BuildConfig.AppID + selectedLat + selectedLong));
 
                     params.put(WebParams.SIGNATURE, signature);

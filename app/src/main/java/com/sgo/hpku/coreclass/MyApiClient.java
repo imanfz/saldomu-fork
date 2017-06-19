@@ -3,7 +3,6 @@ package com.sgo.hpku.coreclass;
 import android.content.Context;
 import android.os.Looper;
 
-import com.facebook.stetho.server.http.HttpHeaders;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.MySSLSocketFactory;
@@ -183,6 +182,24 @@ public class MyApiClient {
     private static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 
+    public static String LINK_RESEND_TOKEN_LKD;
+    public static String LINK_BBS_CITY;
+    public static String LINK_GLOBAL_BBS_COMM;
+    public static String LINK_GLOBAL_BBS_BANK_C2A;
+    public static String LINK_GLOBAL_BBS_INSERT_C2A;
+    public static String LINK_BBS_BANK_ACCOUNT;
+    public static String LINK_BBS_BANK_ACCOUNT_DELETE;
+    public static String LINK_BBS_BANK_REG_ACCT;
+    public static String LINK_BBS_JOIN_AGENT;
+    public static String LINK_BBS_CONFIRM_ACCT;
+    public static String LINK_BBS_REQ_ACCT;
+    public static String LINK_BBS_GLOBAL_COMM;
+    public static String LINK_TRX_STATUS_BBS;
+    public static String LINK_GLOBAL_BBS_BANK_A2C;
+    public static String LINK_GLOBAL_BBS_INSERT_A2C;
+    public static String LINK_BBS_LIST_MEMBER_A2C;
+    public static String LINK_BBS_OTP_MEMBER_A2C;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
@@ -286,8 +303,33 @@ public class MyApiClient {
         LINK_ATMTOPUP       = headaddressfinal + "ATMTopUp/Retrieve";
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
-        LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
+        if(BuildConfig.isProdDomain)
+        {
+            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
+        }
+        else
+        {
+            LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
+        }
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
+
+        LINK_RESEND_TOKEN_LKD  = headaddressfinal + "ResendToken/Invoke";
+        LINK_BBS_CITY = headaddressfinal + "ServiceBBSCity/getAllBBSCity";
+        LINK_GLOBAL_BBS_COMM = headaddressfinal + "GlobalBBSComm/Retrieve";
+        LINK_GLOBAL_BBS_BANK_C2A = headaddressfinal + "GlobalBBSBankC2A/Retrieve";
+        LINK_GLOBAL_BBS_INSERT_C2A = headaddressfinal + "GlobalBBSInsertC2A/Invoke";
+        LINK_BBS_BANK_ACCOUNT = headaddressfinal + "BBSBankAccount/Retrieve";
+        LINK_BBS_BANK_ACCOUNT_DELETE = headaddressfinal + "DelBBSBankAcct/Invoke";
+        LINK_BBS_BANK_REG_ACCT = headaddressfinal + "BBSBankRegAcct/Retrieve";
+        LINK_BBS_CONFIRM_ACCT = headaddressfinal + "BBSConfirmAcct/Invoke";
+        LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
+        LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
+        LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
+        LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
+        LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
+        LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
+        LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
@@ -320,9 +362,13 @@ public class MyApiClient {
     public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
     public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
     public static String LINK_GOOGLE_MAP_API_ROUTE = "http://maps.googleapis.com/maps/api/directions/json";
-
-
-
+    public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
+    public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_UPDATE_LOCATION_MEMBER = headaodaddressfinal + "Transaction/Updatemember";
+    public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
+    public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
+    public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -331,17 +377,14 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPMAKARDA1443547914WO0NU"; //prod pulsa agent
     public static String COMM_ID_PROD = "EMONEYMAKA1429005701H921A";  //prod
-
+    public static String COMM_CODE = "EMONEYMAKA";  //prod
     public static String INCOMINGSMS_INFOBIP = "+628111946677";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.AppID;
-
     public static String CCY_VALUE = "IDR";
     public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
-
-
 
     public static UUID getUUID(){
         return UUID.randomUUID();
@@ -439,9 +482,15 @@ public class MyApiClient {
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
 
+    public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getClient().post(mContext, url, params, responseHandler).setTag(tag);
+        Timber.d("isis timeoutnya : " + String.valueOf(getClient().getConnectTimeout()));
+    }
+
     public static void postSync(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getInstance().syncHttpClient.post(mContext, url, params, responseHandler);
     }
+
     public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
         getInstance().syncHttpClient.get(mContext, url, responseHandler);
     }
@@ -451,6 +500,7 @@ public class MyApiClient {
         if (Looper.myLooper() == null) {
             return getInstance().syncHttpClient;
         }
+
         return getInstance().asyncHttpClient;
     }
 
@@ -517,6 +567,11 @@ public class MyApiClient {
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
         getClient().cancelRequests(_context, interruptIfRunning);
+    }
+
+    public static void CancelRequestWSByTag(String tag,Boolean interruptIfRunning)
+    {
+        getClient().cancelRequestsByTAG(tag, interruptIfRunning);
     }
     //----------------------------------------------------------------------------------------------------
 
@@ -937,6 +992,105 @@ public class MyApiClient {
         Timber.wtf("address sent claim non member transfer:"+LINK_CLAIM_TRANSFER_NON_MEMBER);
         post(mContext,LINK_CLAIM_TRANSFER_NON_MEMBER, params, responseHandler);
     }
+    public static void sentResendTokenLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent resend token LKD:"+LINK_RESEND_TOKEN_LKD);
+        post(mContext,LINK_RESEND_TOKEN_LKD, params, responseHandler);
+    }
+
+    public static void getGlobalBBSComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs comm:"+ LINK_GLOBAL_BBS_COMM);
+        if(tag != null)
+            postByTag(mContext,tag,LINK_GLOBAL_BBS_COMM,params,responseHandler);
+        else
+            post(mContext, LINK_GLOBAL_BBS_COMM, params, responseHandler);
+    }
+
+    public static void getGlobalBBSBankC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs bank C2A:"+ LINK_GLOBAL_BBS_BANK_C2A);
+        post(mContext, LINK_GLOBAL_BBS_BANK_C2A, params, responseHandler);
+    }
+
+    public static void sentGlobalBBSInsertC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert C2A:"+ LINK_GLOBAL_BBS_INSERT_C2A);
+        post(mContext, LINK_GLOBAL_BBS_INSERT_C2A, params, responseHandler);
+    }
+
+    public static void sentBBSBankAccountRetreive(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank account retreive:"+ LINK_BBS_BANK_ACCOUNT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_BANK_ACCOUNT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_BANK_ACCOUNT, params, responseHandler);
+    }
+
+    public static void sentBBSBankAccountDelete(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank account delete:"+ LINK_BBS_BANK_ACCOUNT_DELETE);
+        post(mContext, LINK_BBS_BANK_ACCOUNT_DELETE, params, responseHandler);
+    }
+
+    public static void sentBBSBankRegAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs bank reg account:"+ LINK_BBS_BANK_REG_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_BANK_REG_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_BANK_REG_ACCT, params, responseHandler);
+    }
+
+    public static void sentBBSJoinAgent(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs join agent:"+ LINK_BBS_JOIN_AGENT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_JOIN_AGENT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_JOIN_AGENT, params, responseHandler);
+    }
+    public static void sentBBSReqAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs req acct:"+ LINK_BBS_REQ_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_REQ_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_REQ_ACCT, params, responseHandler);
+    }
+    public static void sentBBSConfirmAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs confirm acct:"+ LINK_BBS_CONFIRM_ACCT);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_CONFIRM_ACCT, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_CONFIRM_ACCT, params, responseHandler);
+    }
+
+    public static void sentRetreiveGlobalComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address retreive global Comm:"+ LINK_BBS_GLOBAL_COMM);
+        if(tag != null)
+            postByTag(mContext,tag, LINK_BBS_GLOBAL_COMM, params, responseHandler);
+        else
+            post(mContext, LINK_BBS_GLOBAL_COMM, params, responseHandler);
+    }
+
+    public static void sentGetTRXStatusBBS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent get trx status bbs:"+LINK_TRX_STATUS_BBS);
+        post(mContext,LINK_TRX_STATUS_BBS, params, responseHandler);
+    }
+
+    public static void getGlobalBBSBankA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent global bbs bank a2c:" + LINK_GLOBAL_BBS_BANK_A2C);
+        post(mContext, LINK_GLOBAL_BBS_BANK_A2C, params, responseHandler);
+    }
+
+    public static void sentGlobalBBSInsertA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_GLOBAL_BBS_INSERT_A2C);
+        post(mContext, LINK_GLOBAL_BBS_INSERT_A2C, params, responseHandler);
+    }
+
+    public static void sentBBSListMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_LIST_MEMBER_A2C);
+        post(mContext, LINK_BBS_LIST_MEMBER_A2C, params, responseHandler);
+    }
+
+    public static void sentBBSOTPMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_OTP_MEMBER_A2C);
+        post(mContext, LINK_BBS_OTP_MEMBER_A2C, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
@@ -956,6 +1110,14 @@ public class MyApiClient {
 	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN:"+LINK_HELP_PIN);
         get(mContext,LINK_HELP_PIN, responseHandler);
+    }
+
+    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSCity:"+LINK_BBS_CITY);
+        if(isSync)
+            getSync(mContext,LINK_BBS_CITY,responseHandler);
+        else
+            get(mContext,LINK_BBS_CITY, responseHandler);
     }
 
     private Context getmContext() {
@@ -1023,10 +1185,53 @@ public class MyApiClient {
         post(mContext,LINK_UPDATE_CLOSE_SHOP_TODAY, params, responseHandler);
     }
 
+    public static void getListTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get trx agent list:"+LINK_TRANSACTION_AGENT);
+        post(mContext,LINK_TRANSACTION_AGENT, params, responseHandler);
+    }
+
+    public static void updateTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update approval trx agent:"+LINK_UPDATE_APPROVAL_TRX_AGENT);
+        post(mContext,LINK_UPDATE_APPROVAL_TRX_AGENT, params, responseHandler);
+    }
+
     public static void getGoogleMapRoute(Context mContext, String queryString, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent google maps route:"+LINK_GOOGLE_MAP_API_ROUTE);
 
         RequestParams params = new RequestParams();
         postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
     }
+
+    public static void updateLocationAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location agent:"+LINK_UPDATE_LOCATION_AGENT);
+        post(mContext,LINK_UPDATE_LOCATION_AGENT, params, responseHandler);
+    }
+
+    public static void updateLocationMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location member:"+LINK_UPDATE_LOCATION_MEMBER);
+        post(mContext,LINK_UPDATE_LOCATION_MEMBER, params, responseHandler);
+    }
+
+    public static void checkTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address check transaction member:"+LINK_CHECK_TRANSACTION_MEMBER);
+        post(mContext,LINK_CHECK_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void confirmTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address confirm transaction member:"+LINK_CONFIRM_TRANSACTION_MEMBER);
+        post(mContext,LINK_CONFIRM_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void cancelTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address cancel transaction member:"+LINK_CANCEL_TRANSACTION_MEMBER);
+        post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
+    }
 }
+

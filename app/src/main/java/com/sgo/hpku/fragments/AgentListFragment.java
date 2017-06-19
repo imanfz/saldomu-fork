@@ -19,6 +19,7 @@ import com.sgo.hpku.activities.BbsSearchByLocationActivity;
 import com.sgo.hpku.activities.MainAgentActivity;
 import com.sgo.hpku.adapter.AgentListArrayAdapter;
 import com.sgo.hpku.coreclass.AgentConstant;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MainResultReceiver;
 import com.sgo.hpku.dialogs.AgentDetailFragmentDialog;
 import com.sgo.hpku.models.ShopDetail;
@@ -41,9 +42,10 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     private Activity activity;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private AgentListArrayAdapter agentListArrayAdapter;
+    private String mobility;
 
-    public AgentListFragment() {
-
+    public AgentListFragment(String mobility) {
+        this.mobility = mobility;
     }
 
     @Override
@@ -119,11 +121,15 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
 
-        //show fragment dialog for agent detail
-        FragmentManager fragmentManager = getFragmentManager();
-        AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
-        agentDetailBbsFragmentDialog.setAgentInfoSingle(this.shopDetails.get(position),position);
-        agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
+
+            //show fragment dialog for agent detail
+            FragmentManager fragmentManager = getFragmentManager();
+            AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
+            agentDetailBbsFragmentDialog.setAgentInfoSingle(this.shopDetails.get(position), position);
+            agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
+
+        }
     }
 
     private void getAgentLocationSharedPreferences()

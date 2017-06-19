@@ -17,10 +17,12 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
 
-            <com.sgo.indonesiakoe.coreclass.CustomAutoCompleteTextView
+            <com.sgo.hpku.coreclass.CustomAutoCompleteTextView
                 android:id="@+id/searchLocationEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -30,8 +32,7 @@
                 android:textSize="15sp"
                 android:hint="@string/search_location_hint_request_bbs_activity_label" >
 
-                <requestFocus />
-            </com.sgo.indonesiakoe.coreclass.CustomAutoCompleteTextView>
+            </com.sgo.hpku.coreclass.CustomAutoCompleteTextView>
 
         </LinearLayout>
     </LinearLayout>

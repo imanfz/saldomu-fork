@@ -11,7 +11,6 @@
                                                             com.sgo.hpkudev.Beans.listTimeLineModel,
                                                             com.sgo.hpkudev.Beans.listHistoryModel,
                                                             com.sgo.hpkudev.Beans.likeModel,
-                                                            com.sgo.hpkudev.Beans.commentModel,
-                                                            com.sgo.hpkudev.Beans.BalanceModel" />
+                                                            com.sgo.hpkudev.Beans.commentModel" />
     </application>
 </manifest>

@@ -174,6 +174,8 @@ public class DefineValue {
     public static String BANK_CODE = "bankCode";
     public static String PRODUCT_CODE = "productCode";
     public static String PRODUCT_NAME = "productName";
+    public static String PRODUCT_TYPE = "productType";
+    public static String PRODUCT_H2H = "productH2h";
     public static String BANK_ATM_CODE = "bankATMCode";
     public static String BANK_ATM_NAME = "bankATMName";
     public static String NO_VA = "noVA";
@@ -215,7 +217,12 @@ public class DefineValue {
     public static String FROM = "from";
     public static String STATUS = "status";
     public static String REASON = "reason";
-	public static String BALANCE = "balance";
+	public static String BALANCE_AMOUNT = "balanceAmount";
+    public static String BALANCE_MAX_TOPUP = "balanceMaxTopup";
+    public static String BALANCE_CCYID = "balaceCcyid";
+    public static String BALANCE_REMAIN_LIMIT = "balanceRemainLimit";
+    public static String BALANCE_PERIOD_LIMIT = "balancePeriodLimit";
+    public static String BALANCE_NEXT_RESET = "balanceNextReset";
     public static String NOTIF_TYPE = "notifType";
     public static String POST_ID = "postID";
     public static String sDefSystemLanguage;
@@ -231,6 +238,10 @@ public class DefineValue {
 
     public static String BANK_CASHOUT = "bankCashout";
     public static String ACCT_NAME = "acctName";
+    public static String ACCT_TYPE = "acctType";
+    public static String ACCT_NO = "acctNo";
+    public static String ACCT_CITY_NAME = "acctCityName";
+    public static String ACCT_CITY_CODE = "acctCityCode";
 
     public static String FROM_NAME = "fromName";
     public static String FROM_ID = "fromID";
@@ -276,7 +287,6 @@ public class DefineValue {
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
 
-
     public static String SHOP_ID = "shop_id";
     public static String CLOSED_TYPE_NONE   = "NONE";
     public static String CLOSED_TYPE_DATE   = "DATE";
@@ -293,16 +303,90 @@ public class DefineValue {
 
     public static String CATEGORY_ID    = "category_id";
     public static String CATEGORY_NAME  = "category_name";
+    public static String CATEGORY_CODE  = "category_code";
+
     //GOOGLE MAP DEFINE PARAMETERS
     public static float ZOOM_CAMERA_POSITION                = 14.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 15000; //15 seconds
+    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
     public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
-    public static int DISPLACEMENT                          = 10;
+    public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
+
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 1; //30meter
+
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
+    public static int MEMBER_DISPLACEMENT                           = 1; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";
     public static String GMAP_MODE                          = "driving";
 	public static String RECEIVER_ID						= "GOMOBILE";
+
+    public static String IS_AGENT = "isAgent";
+
+    //BBS
+    public static String BBS_COMM_ATC = "ATC";
+    public static String IS_JOIN_AGENT = "isJoinAgent";
+    public static String ATC = "ATC";
+    public static String CTA = "CTA";
+    public static String IS_UPDATE = "isUpdate";
+    public static String BENEF_CITY = "benefCity";
+    public static String BENEF_CITY_CODE = "benefCityCode";
+    public static String BANK_BENEF = "bankBenef";
+    public static String NAME_BENEF = "nameBenef";
+    public static String NO_BENEF = "noBenef";
+    public static String TYPE_BENEF = "typeBenef";
+    public static String NO_HP_BENEF = "noHPBenef";
+    public static String SOURCE_ACCT = "sourceAcct";
+    public static String SOURCE_ACCT_NO = "sourceAcctNo";
+    public static String SOURCE_ACCT_NAME = "sourceAcctName";
+    public static String BBS = "bbs";
+    public static String BBS_CASHIN = "bbsCashin";
+    public static String BBS_MEMBER_OTP = "bbsMemberOtp";
+    public static String ACCT = "ACCT";
+    public static String USER_ID = "userId";
+    public static String BBS_CASHOUT = "bbsCashout";
+    public static String SOURCE_PRODUCT_CODE = "sourceProductCode";
+    public static String SOURCE_PRODUCT_TYPE = "sourceProductType";
+    public static String SOURCE_PRODUCT_H2H = "sourceProductH2h";
+    public static String SOURCE_PRODUCT_NAME = "sourceProductName";
+    public static String BENEF_PRODUCT_CODE = "benefProductCode";
+    public static String BENEF_PRODUCT_TYPE = "benefProductType";
+    public static String BENEF_PRODUCT_NAME = "benefProductName";
+
+    public static String BBS_SENDER_ID							= "GOAPK";
+    public static String BBS_RECEIVER_ID						= "GOMOBILE";
+    public static String BBS_AGENT_MOBILITY                     = "mobility";
+
+    public static String TX_ID2             = "tx_id";
+    public static String KEY_CODE           = "key_code";
+    public static String KEY_NAME           = "key_name";
+    public static String KEY_ADDRESS        = "key_address";
+    public static String KEY_DISTRICT       = "key_district";
+    public static String KEY_PROVINCE       = "key_province";
+    public static String KEY_COUNTRY        = "key_country";
+    public static String KEY_CCY            = "key_ccy";
+    public static String KEY_AMOUNT         = "key_amount";
+    public static String KEY_LATITUDE       = "key_latitude";
+    public static String KEY_LONGITUDE      = "key_longitude";
+
+    public static String STRING_ACCEPT      = "S";
+    public static String STRING_CANCEL      = "F";
+
+    public static String BBS_TX_ID          = "BbsTxId";
+    public static String BBS_MEMBER_ID      = "BbsMemberId";
+    public static String BBS_SHOP_ID        = "BbsShopId";
+    public static String LAST_LATITUDE      = "LastLatitude";
+    public static String LAST_LONGITUDE     = "LastLongitude";
+    public static String AGENT_LATITUDE         = "AgentLatitude";
+    public static String AGENT_LONGITUDE        = "AgentLongitude";
+    public static String MEMBER_LATITUDE        = "MemberLatitude";
+    public static String MEMBER_LONGITUDE       = "MemberLongitude";
+    public static String BENEF_LATITUDE         = "BenefLatitude";
+    public static String BENEF_LONGITUDE        = "BenefLongitude";
+    public static String TX_STATUS_OP           = "OP";
 }
 

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sgo.hpku.R;
-import com.sgo.hpku.models.MerchantCommunityList;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 import com.sgo.hpku.models.OpenHourDays;
 import com.sgo.hpku.models.SetupOpenHour;
 

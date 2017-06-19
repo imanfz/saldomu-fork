@@ -144,4 +144,5 @@
     <dimen name="margin_5dp">5dp</dimen>
 
     <dimen name="list_row_padding">14.0dip</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

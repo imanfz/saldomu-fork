@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name_prod" translatable="false">HPKu</string>
 
     <string name="drawer_open" translatable="false">Open</string>
@@ -9,5 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_bbs_map_view_by_agent">BbsMapViewByAgentActivity</string>
+    <string name="title_activity_bbs_map_view_by_member">BbsMapViewByMemberActivity</string>
 
 </resources>

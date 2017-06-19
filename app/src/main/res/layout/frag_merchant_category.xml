@@ -5,10 +5,10 @@
     tools:context="com.sgo.indonesiakoe.fragments.FragMerchantCategory">
 
     <LinearLayout
-        android:id="@+id/formMerchantCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+    android:id="@+id/formMerchantCategory"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
     </LinearLayout>
 

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_line_back"
+        android:orientation="horizontal"
+        android:paddingTop="12dp"
+        android:layout_toLeftOf="@+id/btn_delete"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:id="@+id/layout_data"
+        >
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TableRow android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                >
+                <TextView
+                    android:text="No Akun"
+                    android:padding="3dip" />
+                <TextView
+                    android:text=":"
+                    android:padding="3dip"
+                    android:gravity="right"
+                    />
+                <TextView
+                    android:id="@+id/account_id_value"
+                    android:text="1550006758034"
+                    android:gravity="left"
+                    android:layout_weight="1"
+                    android:padding="3dip" />
+            </TableRow>
+            <TableRow android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                >
+                <TextView
+                    android:text="Nama Lengkap"
+                    android:padding="3dip" />
+                <TextView
+                    android:text=":"
+                    android:gravity="right"
+                    android:padding="3dip" />
+                <TextView
+                    android:text="Yuddistira Kiki Wonggo s"
+                    android:id="@+id/account_name_value"
+                    android:gravity="left"
+                    android:layout_weight="1"
+                    android:padding="3dip" />
+            </TableRow>
+            <TableRow android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:id="@+id/listaccount_layout_city"
+                >
+                <TextView
+                    android:text="Kota"
+                    android:padding="3dip" />
+                <TextView
+                    android:text=":"
+                    android:gravity="right"
+                    android:padding="3dip" />
+                <TextView
+                    android:text="KOTAMEDAN"
+                    android:id="@+id/account_city_value"
+                    android:gravity="left"
+                    android:layout_weight="1"
+                    android:padding="3dip" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+
+
+
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:background="@drawable/card_bk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:textColor="@color/red_800"
+        android:layout_marginTop="14dp"
+        android:layout_alignParentRight="true" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Credit Card Visa / Master"
+        android:background="@drawable/white_bk"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="24dp"
+        android:textStyle="bold"
+        android:id="@+id/product_name_value"
+        />
+
+</RelativeLayout>

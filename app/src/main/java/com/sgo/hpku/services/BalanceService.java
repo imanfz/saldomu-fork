@@ -13,7 +13,6 @@ import android.os.Process;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.NotificationHandler;
@@ -32,16 +31,11 @@ public class BalanceService extends Service {
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;
     private Activity mainPageContext = null;
-    private Messenger messenger;
 
     private static final long LOOPING_TIME_BALANCE =  50000; // 30 detik = 30 * 1000 ms
     private static final long LOOPING_TIME_NOTIF   = 120000;
     private SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
     private UtilsLoader mBl;
-
-    //public static final long LOOPING_TIME_BALANCE = 200000; // 30 detik = 30 * 1000 ms
-    //public static final long LOOPING_TIME_NOTIF = 150000;
-
     private static class MyHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
@@ -49,7 +43,7 @@ public class BalanceService extends Service {
         }
     }
 
-    private MyHandler mHandler = new MyHandler();
+    MyHandler mHandler = new MyHandler();
 
     private Runnable callBalance = new Runnable() {
         @Override
@@ -69,23 +63,7 @@ public class BalanceService extends Service {
                 @Override
                 public void onSuccess(Object deData) {
                     Timber.d("runBalance service onsuccess");
-                    Message msg = Message.obtain();
-                    msg.obj = deData;
-                    msg.arg1 = 0;
-                    Intent i = new Intent(INTENT_ACTION_BALANCE);
-                    BalanceModel mObj = (BalanceModel) deData;
-
-                    i.putExtra(BalanceModel.BALANCE_PARCELABLE, mObj);
-                    try {
-                        messenger.send(msg);
-                        LocalBroadcastManager.getInstance(BalanceService.this)
-                                .sendBroadcast(i);
-                    } catch (android.os.RemoteException e1) {
-                        Timber.w(getClass().getName(), "Exception sending message", e1);
-                    }
                 }
-
-
 
                 @Override
                 public void onFail(String message) {
@@ -131,9 +109,9 @@ public class BalanceService extends Service {
         Timber.i("Masuk onBind Service");
         Bundle extras=intent.getExtras();
 
-        if (extras!=null) {
-            messenger=(Messenger)extras.get(DefineValue.DATA);
-        }
+//        if (extras!=null) {
+//            messenger=(Messenger)extras.get(DefineValue.DATA);
+//        }
         return testBinder;
     }
 

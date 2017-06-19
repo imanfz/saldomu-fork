@@ -79,7 +79,7 @@ public class FragMainPage extends Fragment {
             @Override
             public void onPageSelected(int i) {
 //                updateFab(i);
-                ToggleFAB(!(mList.get(i) instanceof Home));
+                ToggleFAB(!(i==0));
             }
 
             @Override

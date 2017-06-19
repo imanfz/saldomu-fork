@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsMemberLocationActivity;
 import com.sgo.hpku.activities.BbsMerchantCommunityList;
-import com.sgo.hpku.models.MerchantCommunityList;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 
 import org.json.JSONException;
 import org.json.JSONObject;

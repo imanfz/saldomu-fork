@@ -1,6 +1,7 @@
 package com.sgo.hpku.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,7 +66,7 @@ import java.util.Locale;
 public class AgentMapFragment extends Fragment implements MainResultReceiver.Receiver,
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
-        View.OnClickListener, AdapterView.OnItemClickListener, TextView.OnEditorActionListener {
+        View.OnClickListener, AdapterView.OnItemClickListener ,TextView.OnEditorActionListener {
 
     private Double searchLatitude;
     private Double searchLongitude;
@@ -102,13 +104,15 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private Location currentLocation;
     private LocationRequest mLocationRequest;
     SupportMapFragment mapFrag;
+    private String mobility;
 
-    public AgentMapFragment(Double currentLatitude, Double currentLongitude) {
+    public AgentMapFragment(Double currentLatitude, Double currentLongitude, String mobility) {
         //this.shopDetails = shopDetails;
         this.currentLatitude = currentLatitude;
         this.currentLongitude = currentLongitude;
         lastCoordinateMarker = null;
         lines = new ArrayList<>();
+        this.mobility = mobility;
         //setAgentMarker();
     }
 
@@ -148,7 +152,9 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
             searchLocationEditText.setOnItemClickListener(this);
             searchLocationEditText.setOnEditorActionListener(this);
-
+            searchLocationEditText.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
         }
 
@@ -621,7 +627,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-        if ( shopDetails.size() > 0 ) {
+        if ( shopDetails.size() > 0 && mobility.equals(DefineValue.STRING_NO) ) {
             for (Integer index : hashMarker.keySet()) {
                 if (marker.equals(hashMarker.get(index))) {
                     this.shopDetails.get(index).setIsPolyline("1");
@@ -736,6 +742,10 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 mainBbsActivity.setCoordinate(currentLatitude, currentLongitude);
 
                 globalMap.clear();
+
+                searchLocationEditText.clearFocus();
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
             }
             else

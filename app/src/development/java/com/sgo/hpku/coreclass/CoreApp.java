@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.multidex.MultiDex;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
@@ -13,7 +14,6 @@ import com.facebook.stetho.Stetho;
 
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.commentModel;
 import com.sgo.hpku.Beans.communityModel;
 import com.sgo.hpku.Beans.friendModel;
@@ -54,6 +54,7 @@ public class CoreApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(this);
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
@@ -80,33 +81,8 @@ public class CoreApp extends Application {
         CustomSecurePref.initialize(this);
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
-        int checkExistence;
 
-        if(BuildConfig.FLAVOR.equals("development"))
-            checkExistence = CoreApp.this.getResources().getIdentifier("hpkurealmdev", "raw", CoreApp.this.getPackageName());
-        else
-            checkExistence = CoreApp.this.getResources().getIdentifier("hpkurealm", "raw", CoreApp.this.getPackageName());
-
-
-        if ( checkExistence != 0 ) {
-            Timber.d("test ada raw");
-            copyBundledRealmFile(CoreApp.this.getResources().openRawResource(checkExistence), getString(R.string.realmname));
-        }
-        else {
-            Timber.d("test gak ada raw");
-            deleteBundledRealmFile(getString(R.string.realmname));
-        }
-
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder()
-                .name(getString(R.string.realmname))
-                .schemaVersion(getResources().getInteger(R.integer.realscheme))
-                .migration(new CustomRealMigration())
-                .build();
-
-        Realm.setDefaultConfiguration(config);
-
-
+        RealmManager.init(this);
 
         PackageInfo pInfo;
         try {
@@ -140,8 +116,7 @@ public class CoreApp extends Application {
                 listTimeLineModel.class,
                 listHistoryModel.class,
                 likeModel.class,
-                commentModel.class,
-                BalanceModel.class
+                commentModel.class
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
@@ -227,6 +202,5 @@ public class CoreApp extends Application {
     public void setCurrentActivity(Activity mCurrentActivity){
         this.mCurrentActivity = mCurrentActivity;
     }
-
 
 }

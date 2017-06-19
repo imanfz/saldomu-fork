@@ -17,6 +17,7 @@ import com.sgo.hpku.R;
 import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.ToggleKeyboard;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.fragments.BillerActivityRF;
@@ -69,7 +70,7 @@ public class BillerActivity extends BaseActivity {
             return;
         }
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
         Intent intent    = getIntent();
         _biller_type_code = intent.getStringExtra(DefineValue.BILLER_TYPE);
         Timber.d("isi biller type code " + _biller_type_code);
@@ -190,7 +191,7 @@ public class BillerActivity extends BaseActivity {
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.biller_content, mLBM,tag);
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
 
     }
@@ -217,14 +218,14 @@ public class BillerActivity extends BaseActivity {
                     .beginTransaction()
                     .replace(R.id.biller_content, mFragment, tag)
                     .addToBackStack(fragName)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
         else {
             Timber.d("bukan backstack:"+"masuk");
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.biller_content, mFragment, tag)
-                    .commit();
+                    .commitAllowingStateLoss();
 
         }
         if(next_frag_title!=null)setActionBarTitle(next_frag_title);
@@ -257,7 +258,7 @@ public class BillerActivity extends BaseActivity {
 //                Log.d("onActivity result", "Biller Activity masuk result normal" + " / " + getSupportFragmentManager().getBackStackEntryCount());
                 if(getSupportFragmentManager().getBackStackEntryCount()>1){
                     FragmentManager fm = getSupportFragmentManager();
-                    fm.popBackStack(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fm.popBackStackImmediate(BillerActivity.FRAG_BIL_INPUT, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 //                    Log.d("onActivity result", "Biller Activity masuk backstack entry > 1");
                 }
             }

@@ -90,7 +90,7 @@ public class BbsSearchCategoryAdapter extends RecyclerView.Adapter<BbsSearchCate
         public MyViewHolder(View view) {
             super(view);
             ivCategory          = (ImageView) view.findViewById(R.id.ivCategory);
-            //dtvCategoryName      = (TextView) view.findViewById(R.id.tvCategoryName);
+            tvCategoryName      = (TextView) view.findViewById(R.id.tvCategoryName);
 
             view.setOnClickListener(this);
         }

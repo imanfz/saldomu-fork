@@ -1,10 +1,14 @@
 package com.sgo.hpku.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,8 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 
 import com.sgo.hpku.activities.BillerActivity;
@@ -21,9 +27,13 @@ import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.TopUpActivity;
 import com.sgo.hpku.adapter.GridHome;
 import com.sgo.hpku.coreclass.BaseFragmentMainPage;
+import com.sgo.hpku.coreclass.CurrencyFormat;
+import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.services.BalanceService;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import timber.log.Timber;
 
 /**
  * Created by Lenovo Thinkpad on 5/10/2017.
@@ -31,6 +41,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridHome;
     Button btn_beli;
+    TextView tv_saldo;
     EditText input;
     TextView tv_pulsa;
     TextView tv_bpjs;
@@ -39,6 +50,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    private SecurePreferences sp;
     int[] imageId = {
             R.drawable.ic_tambahsaldo,
             R.drawable.ic_bayarteman1,
@@ -62,6 +74,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +86,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
         GridHome=(GridView)v.findViewById(R.id.grid);
+        tv_saldo = (TextView)v.findViewById(R.id.tv_saldo);
         return v;
 
     }
@@ -154,7 +172,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         GridHome.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Timber.d("masuk gridhomeonitemclicklistener");
                 if (position == 0) {
                     switchMenu(NavigationDrawMenu.MTOPUP,null);
                 }
@@ -181,6 +199,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
+
+        RefreshSaldo();
     }
     private void switchMenu(int idx_menu,Bundle data){
         if (getActivity() == null)
@@ -190,13 +210,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         fca.switchMenu(idx_menu, data);
     }
 
-//    Button.OnClickListener backListener = new Button.OnClickListener(){
-//
-//        @Override
-//        public void onClick(View v) {
-//            switchMenu();
-//        }
-//    }
+    private void RefreshSaldo(){
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT,"0");
+        tv_saldo.setText(CurrencyFormat.format(balance));
+    }
 
     @Override
     protected int getInflateFragmentLayout() {
@@ -216,5 +233,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
     @Override
     public void goToTop() {
 
+    }
+
+    private IntentFilter filter = new IntentFilter(BalanceService.INTENT_ACTION_BALANCE);
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Timber.d("receiver service balance");
+            RefreshSaldo();
+        }
+    };
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     }
 }

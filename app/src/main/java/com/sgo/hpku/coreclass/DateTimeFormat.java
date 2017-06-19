@@ -14,6 +14,7 @@ import java.util.Locale;
 public class DateTimeFormat {
 
     private static final Long OneHourMs = 3600000L;
+    public static Locale locale_id = new Locale("ID","INDONESIA");
 
     public static SimpleDateFormat getFormatYearHours(){
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
@@ -74,6 +75,13 @@ public class DateTimeFormat {
         return df.format(calendar.getTime());
     }
 
+    public static String getCurrentDatePlus(int plus){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, plus);
+        return df.format(calendar.getTime());
+    }
+
     public static java.util.Date convertStringtoCustomDateTime(String _date){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
         try {
@@ -82,6 +90,13 @@ public class DateTimeFormat {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String getCurrentDateTimePlusHour(int plus){
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.HOUR, plus);
+        return df.format(calendar.getTime());
     }
 
     public static java.util.Date convertStringtoCustomDate(String _date){

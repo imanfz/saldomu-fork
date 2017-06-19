@@ -2,12 +2,15 @@ package com.sgo.hpku.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -22,9 +25,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.navdrawmainmenuModel;
 import com.sgo.hpku.R;
+import com.sgo.hpku.activities.BbsApprovalAgentActivity;
+import com.sgo.hpku.activities.BbsMapViewByAgentActivity;
+import com.sgo.hpku.activities.BbsMapViewByMemberActivity;
 import com.sgo.hpku.activities.BbsMemberShopActivity;
 import com.sgo.hpku.activities.BbsMerchantCommunityList;
 import com.sgo.hpku.activities.BbsSearchByLocationActivity;
@@ -35,13 +40,14 @@ import com.sgo.hpku.adapter.NavDrawMainMenuAdapter;
 import com.sgo.hpku.coreclass.CurrencyFormat;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.MyPicasso;
 import com.sgo.hpku.coreclass.RoundImageTransformation;
-import com.sgo.hpku.coreclass.LevelClass;
 import com.sgo.hpku.interfaces.OnLoadDataListener;
 import com.sgo.hpku.loader.UtilsLoader;
 import com.sgo.hpku.services.BalanceService;
+import com.sgo.hpku.services.UpdateLocationService;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -66,12 +72,20 @@ public class NavigationDrawMenu extends ListFragment{
     private static final int MHELP= 10;
     private static final int MLOGOUT= 11;
     public static final int MDAP= 12;
+
     private static final int MREGISTERLOCATION = 13;
     private static final int MREGISTERTOKO = 14;
     private static final int MSEARCHAGENT = 15;
     private static final int MKELOLA=16;
     private static final int MLISTTOKO=17;
     private static final int MLISTAPPROVAL=18;
+
+    public static final int MBBS= 19;
+    private static final int MCATEGORYBBS=20;
+    private static final int MLISTTRXAGENT = 21;
+
+    private static final int MMAPVIEWBYAGENT = 22;  //temporary
+    private static final int MMAPVIEWBYMEMBER = 23; //temporary
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -85,6 +99,15 @@ public class NavigationDrawMenu extends ListFragment{
     private SecurePreferences sp;
     ProgressDialog progdialog;
     private LevelClass levelClass;
+    private IntentFilter filter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        filter = new IntentFilter();
+        filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,10 +158,8 @@ public class NavigationDrawMenu extends ListFragment{
                 getBalance(false);
             }
         });
-        BalanceModel mBal = BalanceModel.load(BalanceModel.class,1);
-        if(mBal != null)
-            setBalanceToUI(mBal);
 
+        setBalanceToUI();
     }
 
     @Override
@@ -147,13 +168,13 @@ public class NavigationDrawMenu extends ListFragment{
         refreshDataNavDrawer();
     }
 
-    public void setBalanceToUI(BalanceModel deData){
-        headerCurrency.setText(deData.getCcy_id());
-        balanceValue.setText(CurrencyFormat.format(deData.getAmount()));
-        currencyLimit.setText(deData.getCcy_id());
-        limitValue.setText(CurrencyFormat.format(deData.getRemain_limit()));
+    public void setBalanceToUI(){
+        headerCurrency.setText(sp.getString(DefineValue.BALANCE_CCYID,""));
+        balanceValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT,"")));
+        currencyLimit.setText(sp.getString(DefineValue.BALANCE_CCYID,""));
+        limitValue.setText(CurrencyFormat.format(sp.getString(DefineValue.BALANCE_REMAIN_LIMIT,"")));
 
-        if (deData.getPeriod_limit().equals("Monthly"))
+        if (sp.getString(DefineValue.BALANCE_PERIOD_LIMIT,"").equals("Monthly"))
             periodeLimit.setText(R.string.header_monthly_limit);
         else
             periodeLimit.setText(R.string.header_daily_limit);
@@ -163,29 +184,21 @@ public class NavigationDrawMenu extends ListFragment{
         new UtilsLoader(getActivity(),sp).getDataBalance(isAuto,new OnLoadDataListener() {
             @Override
             public void onSuccess(Object deData) {
-                setBalanceToUI((BalanceModel) deData);
+                setBalanceToUI();
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
-
-                Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
-                i.putExtra(BalanceModel.BALANCE_PARCELABLE, (BalanceModel) deData);
-                LocalBroadcastManager.getInstance(getActivity())
-                        .sendBroadcast(i);
             }
 
             @Override
             public void onFail(String message) {
-
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
             }
 
             @Override
             public void onFailure() {
-
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
-
             }
         });
     }
@@ -255,6 +268,8 @@ public class NavigationDrawMenu extends ListFragment{
     private ArrayList<navdrawmainmenuModel> generateData(){
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
+
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color,0,getString(R.string.menu_item_title_topup),MTOPUP));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,0,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,0,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
@@ -271,8 +286,16 @@ public class NavigationDrawMenu extends ListFragment{
         models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
         models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
         models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
-        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
-        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));
+
+        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MCATEGORYBBS));
+            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_title_map_member),MMAPVIEWBYMEMBER));
+        } else {
+            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_trx_agent),MLISTTRXAGENT));
+            //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_title_map_agent),MMAPVIEWBYAGENT));
+        }
+        //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
+        //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));
 
 
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
@@ -342,6 +365,10 @@ public class NavigationDrawMenu extends ListFragment{
                 newFragment = new ContactTab();
                 switchFragment(newFragment, getString(R.string.menu_item_title_help));
                 break;
+            case MBBS:
+                newFragment = new ListBBS();
+                switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                break;
             case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());
                 alertbox.setTitle(getString(R.string.warning));
@@ -362,13 +389,13 @@ public class NavigationDrawMenu extends ListFragment{
                 startActivity(new Intent(getActivity(), BbsMerchantCommunityList.class));
                 //startActivity(new Intent(getActivity(), BbsMerchantSetupHourActivity.class));
                 break;
-            case MREGISTERTOKO:
+            /*case MREGISTERTOKO:
                 startActivity(new Intent(getActivity(), BbsSearchTokoActivity.class));
                 break;
             case MSEARCHAGENT:
                 //startActivity(new Intent(getActivity(), SearchAgentActivity.class));
                 startActivity(new Intent(getActivity(), BbsSearchByLocationActivity.class));
-                break;
+                break;*/
             case MKELOLA:
                 newFragment = new FragMenuKelola();
                 switchFragment(newFragment, getString(R.string.menu_item_title_kelola));
@@ -383,6 +410,20 @@ public class NavigationDrawMenu extends ListFragment{
                 Intent intentListToko = new Intent(getActivity(), BbsMemberShopActivity.class);
                 intentListToko.putExtra("flagApprove", DefineValue.STRING_YES);
                 startActivity(intentListToko);
+                break;
+            case MCATEGORYBBS:
+                newFragment = new FragListCategoryBbs();
+                switchFragment(newFragment,getString(R.string.menu_item_search_agent));
+                break;
+            case MLISTTRXAGENT:
+                Intent intentTrxAgent = new Intent(getActivity(), BbsApprovalAgentActivity.class);
+                startActivity(intentTrxAgent);
+                break;
+            case MMAPVIEWBYAGENT:
+                startActivity(new Intent(getActivity(), BbsMapViewByAgentActivity.class));
+                break;
+            case MMAPVIEWBYMEMBER:
+                startActivity(new Intent(getActivity(), BbsMapViewByMemberActivity.class));
                 break;
         }
     }
@@ -417,5 +458,28 @@ public class NavigationDrawMenu extends ListFragment{
         mAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(action.equals(BalanceService.INTENT_ACTION_BALANCE)){
+                setBalanceToUI();
+            }
+        }
+    };
 
 }

@@ -63,8 +63,8 @@ import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.DefinedDialog;
 
-import com.sgo.hpku.models.AgentDetail;
-import com.sgo.hpku.models.AgentServiceDetail;
+import com.sgo.hpku.entityRealm.AgentDetail;
+import com.sgo.hpku.entityRealm.AgentServiceDetail;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import org.apache.http.Header;

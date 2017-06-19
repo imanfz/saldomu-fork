@@ -30,12 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
-//import com.google.firebase.analytics.FirebaseAnalytics;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.commentModel;
 import com.sgo.hpku.Beans.likeModel;
 import com.sgo.hpku.Beans.listHistoryModel;
@@ -59,6 +57,7 @@ import com.sgo.hpku.fragments.RightSideDrawMenu;
 import com.sgo.hpku.loader.UtilsLoader;
 import com.sgo.hpku.services.AppInfoService;
 import com.sgo.hpku.services.BalanceService;
+import com.sgo.hpku.services.UpdateLocationService;
 import com.sgo.hpku.services.UserProfileService;
 
 import org.apache.http.Header;
@@ -82,6 +81,9 @@ public class MainPage extends BaseActivity{
     public static final int RESULT_BILLER = 7 ;
 	public static final int RESULT_REFRESH_NAVDRAW= 8;
     public static final int RESULT_FIRST_TIME = 9;
+    public static final int RESULT_BBS = 11;
+    public static final int RESULT_BBS_MEMBER_OTP = 12;
+    public static final int RESULT_BBS_STATUS= 13;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -111,7 +113,7 @@ public class MainPage extends BaseActivity{
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile;
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent;
 	
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
@@ -133,15 +135,20 @@ public class MainPage extends BaseActivity{
         if (!isLogin()) {
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
-                utilsLoader = new UtilsLoader(this,sp);
-                utilsLoader.getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+            agent = sp.getBoolean(DefineValue.IS_AGENT,false);
+
+            utilsLoader = new UtilsLoader(this,sp);
+            utilsLoader.getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+
+            startService(new Intent(this, UpdateLocationService.class));
         }
+
 
     }
 
@@ -234,17 +241,6 @@ public class MainPage extends BaseActivity{
         }
     };
 
-
-    private Handler handler=new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.arg1 == 0){
-                mNavDrawer.setBalanceToUI((BalanceModel)msg.obj);
-            }
-        }
-    };
-
-
     private void doUnbindService() {
         Timber.i("Main Page service connection Unbind ........");
         unbindService(myServiceConnection);
@@ -257,7 +253,6 @@ public class MainPage extends BaseActivity{
         if (!isBound) {
             Timber.i("Main Page service connection Masuk binding");
             Intent bindIntent = new Intent(this, BalanceService.class);
-            bindIntent.putExtra(DefineValue.DATA,new Messenger(handler));
             isBound = bindService(bindIntent, myServiceConnection,
                     Context.BIND_AUTO_CREATE);
         }
@@ -461,14 +456,10 @@ public class MainPage extends BaseActivity{
 //                                getBalance(true);
                                 initializeNavDrawer();
                                 CheckNotification();
-                                String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
-                                if (bom_value.isEmpty()) {
-                                    showMyProfile();
-                                } else if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
-                                    showChangePassword();
-                                } else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
-                                    showCreatePin();
-                                }
+
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
+                                checkField();
 
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
@@ -564,6 +555,17 @@ public class MainPage extends BaseActivity{
 
     }
 
+    private void checkField(){
+        String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
+        if (bom_value.isEmpty()) {
+            showMyProfile();
+        } else if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
+            showChangePassword();
+        } else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
+            showCreatePin();
+        }
+    }
+
 
 //----------------------------------------------------------------------------------------------------------------
 
@@ -646,15 +648,16 @@ public class MainPage extends BaseActivity{
     }
     private void Logout() {
 
-        String balance = sp.getString(DefineValue.BALANCE, "");
-        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
+        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
-        mEditor.apply();
+        //di commit bukan apply, biar yakin udah ke di write datanya
+        mEditor.commit();
         openFirstScreen(FIRST_SCREEN_LOGIN);
     }
 	
@@ -682,7 +685,9 @@ public class MainPage extends BaseActivity{
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("logout:"+response.toString());
+                            stopService(new Intent(MainPage.this, UpdateLocationService.class));
                             Logout();
+
                         } else {
                             progdialog.dismiss();
                             Timber.d("isi error logout:"+response.toString());
@@ -783,12 +788,7 @@ public class MainPage extends BaseActivity{
                 mNavDrawer.refreshDataNavDrawer();
             }
             if(resultCode == RESULT_FIRST_TIME){
-                if(sp.getString(DefineValue.IS_CHANGED_PASS,"").equals(DefineValue.STRING_NO)) {
-                    showChangePassword();
-                }
-                else if(sp.getString(DefineValue.IS_HAVE_PIN,"").equalsIgnoreCase(DefineValue.STRING_NO)) {
-                    showCreatePin();
-                }
+                    checkField();
             }
         }
         else {

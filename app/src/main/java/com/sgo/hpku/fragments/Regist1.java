@@ -4,10 +4,13 @@ import android.Manifest;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +32,6 @@ import com.sgo.hpku.coreclass.InetHandler;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.NoHPFormat;
 import com.sgo.hpku.coreclass.ReqPermissionClass;
-import com.sgo.hpku.coreclass.SMSclass;
 import com.sgo.hpku.coreclass.ToggleKeyboard;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.DefinedDialog;
@@ -65,6 +67,17 @@ public class Regist1 extends Fragment{
 
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        reqPermissionClass = new ReqPermissionClass(getActivity());
+        reqPermissionClass.setTargetFragment(this);
+
+        progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        progdialog.dismiss();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.frag_regist1, container, false);
         return v;
@@ -97,12 +110,13 @@ public class Regist1 extends Fragment{
             }
         });
 
-        reqPermissionClass = new ReqPermissionClass(getActivity());
+        if(reqPermissionClass.checkPermission(Manifest.permission.READ_SMS,
+                ReqPermissionClass.PERMISSIONS_READ_SMS)) {
+            if (isSimExists()) {
 
-        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
-            SMSclass smSclass = new SMSclass(getActivity());
-            if(smSclass.isSimExists()){
-                String Nomor1 = smSclass.getSimNumber();
+                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                String Nomor1 = tm.getLine1Number();
+
                 noHPValue.setText(Nomor1);
             }
         }
@@ -124,10 +138,11 @@ public class Regist1 extends Fragment{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnPermissionRequest(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
-            SMSclass smSclass = new SMSclass(getActivity());
-            if(smSclass.isSimExists()){
-                String Nomor1 = smSclass.getSimNumber();
+        if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_READ_SMS)){
+            if (isSimExists()) {
+                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                String Nomor1 = tm.getLine1Number();
+
                 noHPValue.setText(Nomor1);
             }
         }
@@ -165,7 +180,6 @@ public class Regist1 extends Fragment{
 
     private void sentData(final String noHP){
         try{
-                progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
                 progdialog.show();
 
                 btnLanjut.setEnabled(false);
@@ -343,7 +357,31 @@ public class Regist1 extends Fragment{
         return true;
     }
 
+    public boolean isSimExists()
+    {
+        TelephonyManager telephonyManager = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+        int SIM_STATE = telephonyManager.getSimState();
 
+        if(SIM_STATE == TelephonyManager.SIM_STATE_READY)
+            return true;
+        else
+        {
+            switch(SIM_STATE)
+            {
+                case TelephonyManager.SIM_STATE_ABSENT: //SimState = "No Sim Found!";
+                    break;
+                case TelephonyManager.SIM_STATE_NETWORK_LOCKED: //SimState = "Network Locked!";
+                    break;
+                case TelephonyManager.SIM_STATE_PIN_REQUIRED: //SimState = "PIN Required to access SIM!";
+                    break;
+                case TelephonyManager.SIM_STATE_PUK_REQUIRED: //SimState = "PUK Required to access SIM!"; // Personal Unblocking Code
+                    break;
+                case TelephonyManager.SIM_STATE_UNKNOWN: //SimState = "Unknown SIM State!";
+                    break;
+            }
+            return false;
+        }
+    }
 
     private static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();

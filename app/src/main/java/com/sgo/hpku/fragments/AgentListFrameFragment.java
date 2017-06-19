@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsSearchAgentActivity;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.models.ShopDetail;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class AgentListFrameFragment extends Fragment {
     View rootView;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     AgentListFragment agentListFragment;
+    private String mobility = DefineValue.STRING_NO;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -28,9 +30,9 @@ public class AgentListFrameFragment extends Fragment {
         {
             rootView = inflater.inflate(R.layout.agent_list_frame_fragment, container, false);
 
-            agentListFragment = new AgentListFragment();
+            /*agentListFragment = new AgentListFragment(mobility);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.listContent, agentListFragment).commit();
+            fragmentTransaction.replace(R.id.listContent, agentListFragment).commit();*/
         }
 
         return rootView;

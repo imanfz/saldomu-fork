@@ -173,11 +173,11 @@ public class BbsSearchTokoActivity extends BaseActivity implements OnMapReadyCal
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.AppID);
-        params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.SHOP_ID, "");
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + BuildConfig.AppID));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID));
 
         params.put(WebParams.SIGNATURE, signature);
         //llHeaderProgress.setVisibility(View.VISIBLE);
@@ -265,14 +265,14 @@ public class BbsSearchTokoActivity extends BaseActivity implements OnMapReadyCal
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.AppID);
-        params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CATEGORY_ID, shopCategory.getCategoryId());
         params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LAST_CURRENT_LATITUDE, 0.0));
         params.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LAST_CURRENT_LONGITUDE, 0.0));
         params.put(WebParams.RADIUS, 5);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + BuildConfig.AppID + shopCategory.getCategoryId()
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopCategory.getCategoryId()
                 + BbsSearchTokoActivity.latitude + BbsSearchTokoActivity.longitude));
 
         params.put(WebParams.SIGNATURE, signature);

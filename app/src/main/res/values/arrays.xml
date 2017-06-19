@@ -171,4 +171,13 @@
         <item>List</item>
     </string-array>
 
+    <string-array name="list_bbs_agent">
+        <item>@string/title_bbs_list_account_bbs</item>
+        <item>@string/transaction</item>
+    </string-array>
+
+    <string-array name="list_bbs_member">
+        <item>@string/title_cash_out_member</item>
+    </string-array>
+
 </resources>

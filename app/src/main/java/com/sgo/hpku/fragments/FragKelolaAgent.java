@@ -21,7 +21,7 @@ import com.sgo.hpku.adapter.BbsMemberListAdapter;
 import com.sgo.hpku.adapter.KelolaAgentAdapter;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
-import com.sgo.hpku.models.MerchantCommunityList;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 import com.sgo.hpku.models.ShopDetail;
 
 import java.util.ArrayList;

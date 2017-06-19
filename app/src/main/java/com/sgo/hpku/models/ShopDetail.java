@@ -33,6 +33,20 @@ public class ShopDetail {
     private String setupOpenHour;
     private String shopZipCode;
 
+    //location service
+    private String amount;
+    private String categoryId;
+    private String categoryName;
+    private String categoryCode;
+    private String txId;
+    private String keyCode;
+    private String keyName;
+    private String keyAddress;
+    private String keyDistrict;
+    private String keyProvince;
+    private String keyCountry;
+    private String ccyId;
+
     public String getMemberId() {
         return memberId;
     }
@@ -241,5 +255,101 @@ public class ShopDetail {
 
     public void setShopZipCode(String shopZipCode) {
         this.shopZipCode = shopZipCode;
+    }
+
+    public String getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getCategoryCode() {
+        return categoryCode;
+    }
+
+    public void setCategoryCode(String categoryCode) {
+        this.categoryCode = categoryCode;
+    }
+
+    public String getTxId() {
+        return txId;
+    }
+
+    public void setTxId(String txId) {
+        this.txId = txId;
+    }
+
+    public String getKeyCode() {
+        return keyCode;
+    }
+
+    public void setKeyCode(String keyCode) {
+        this.keyCode = keyCode;
+    }
+
+    public String getKeyName() {
+        return keyName;
+    }
+
+    public void setKeyName(String keyName) {
+        this.keyName = keyName;
+    }
+
+    public String getKeyAddress() {
+        return keyAddress;
+    }
+
+    public void setKeyAddress(String keyAddress) {
+        this.keyAddress = keyAddress;
+    }
+
+    public String getKeyDistrict() {
+        return keyDistrict;
+    }
+
+    public void setKeyDistrict(String keyDistrict) {
+        this.keyDistrict = keyDistrict;
+    }
+
+    public String getKeyProvince() {
+        return keyProvince;
+    }
+
+    public void setKeyProvince(String keyProvince) {
+        this.keyProvince = keyProvince;
+    }
+
+    public String getKeyCountry() {
+        return keyCountry;
+    }
+
+    public void setKeyCountry(String keyCountry) {
+        this.keyCountry = keyCountry;
+    }
+
+    public String getCcyId() {
+        return ccyId;
+    }
+
+    public void setCcyId(String ccyId) {
+        this.ccyId = ccyId;
     }
 }

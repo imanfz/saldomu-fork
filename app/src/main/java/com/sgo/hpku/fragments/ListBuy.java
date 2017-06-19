@@ -18,6 +18,7 @@ import com.sgo.hpku.Beans.Biller_Type_Data_Model;
 import com.sgo.hpku.R;
 import com.sgo.hpku.adapter.BuyFragmentTabAdapter;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -94,7 +95,7 @@ public class ListBuy extends Fragment {
 
         pager.setPageMargin(pageMargin);
         dialogI = InformationDialog.newInstance(this,8);
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
 //        // auto updater realm biller
 //        FragmentManager fm = getFragmentManager();

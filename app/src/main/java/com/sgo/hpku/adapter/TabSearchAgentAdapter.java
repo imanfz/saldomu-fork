@@ -27,9 +27,10 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
     private FragmentManager fm;
     private Double currentLatitude;
     private Double currentLongitude;
+    private String mobility;
 
     public TabSearchAgentAdapter(android.support.v4.app.FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails,
-                                 Double currentLatitude, Double currentLongitude) {
+                                 Double currentLatitude, Double currentLongitude, String mobility) {
         super(fm);
         this.fm = fm;
         this.context = context;
@@ -37,6 +38,7 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
         this.shopDetails = shopDetails;
         this.currentLatitude = currentLatitude;
         this.currentLongitude = currentLongitude;
+        this.mobility = mobility;
     }
 
     @Override
@@ -50,10 +52,10 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
         switch(position)
         {
             case 0:
-                fragment = new AgentMapFragment(currentLatitude, currentLongitude);
+                fragment = new AgentMapFragment(currentLatitude, currentLongitude, mobility);
                 break;
             case 1:
-                fragment = new AgentListFragment();
+                fragment = new AgentListFragment(mobility);
                 break;
             default:
                 fragment = null;
