@@ -789,6 +789,8 @@ public class MainPage extends BaseActivity{
             }
             if(resultCode == RESULT_FIRST_TIME){
                     checkField();
+                mNavDrawer.refreshUINavDrawer();
+                mNavDrawer.refreshDataNavDrawer();
             }
         }
         else {
