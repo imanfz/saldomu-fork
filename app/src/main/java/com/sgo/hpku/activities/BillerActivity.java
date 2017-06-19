@@ -302,7 +302,7 @@ public class BillerActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(!realm.isInTransaction() && !realm.isClosed()) {
+        if(realm != null && !realm.isInTransaction() && !realm.isClosed()) {
 //            realm.removeChangeListener(realmListener);
             realm.close();
         }
