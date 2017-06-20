@@ -55,7 +55,8 @@ public class BBSTransaksiPagerItem extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.bbs_reg_acct, menu);
+        if(title.equalsIgnoreCase(getString(R.string.cash_out)))
+            inflater.inflate(R.menu.bbs_reg_acct, menu);
     }
 
     @Override
