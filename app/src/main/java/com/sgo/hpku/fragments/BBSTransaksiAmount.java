@@ -269,8 +269,6 @@ public class BBSTransaksiAmount extends Fragment {
     Button.OnClickListener backListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-
-            Timber.d("button back transaksi");
             getActivity().finish();
         }
     };
@@ -278,51 +276,54 @@ public class BBSTransaksiAmount extends Fragment {
     Button.OnClickListener prosesListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Timber.d("button proses transaksi");
             if(inputValidation()) {
-                Fragment newFrag = new BBSTransaksiInformasi();
-                Bundle args = new Bundle();
-                args.putString(DefineValue.TRANSACTION, transaksi);
-                args.putString(DefineValue.AMOUNT, etAmount.getText().toString());
-                args.putString(DefineValue.COMMUNITY_ID, comm_id);
-                args.putString(DefineValue.COMMUNITY_CODE, comm_code);
-                args.putString(DefineValue.MEMBER_CODE, member_code);
-                args.putString(DefineValue.CALLBACK_URL, callback_url);
-                args.putString(DefineValue.API_KEY, api_key);
-
-                int position = 0;
+                int position =-1;
                 String nameAcct = actv_rekening_member.getText().toString();
                 for(int i = 0 ; i < aListMember.size() ; i++) {
                     if(nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
                         position = i;
                 }
 
-                if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                    args.putString(DefineValue.BENEF_PRODUCT_CODE, listbankBenef.get(position).getProduct_code());
-                    args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
-                    args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
-                    args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
-                    args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
-                    if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
-                        String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
-                        String city_name = spBenefCity.getText().toString();
-                        args.putString(DefineValue.ACCT_CITY_CODE, city_id);
-                        args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                if(position != -1) {
+                    Fragment newFrag = new BBSTransaksiInformasi();
+                    Bundle args = new Bundle();
+                    args.putString(DefineValue.TRANSACTION, transaksi);
+                    args.putString(DefineValue.AMOUNT, etAmount.getText().toString());
+                    args.putString(DefineValue.COMMUNITY_ID, comm_id);
+                    args.putString(DefineValue.COMMUNITY_CODE, comm_code);
+                    args.putString(DefineValue.MEMBER_CODE, member_code);
+                    args.putString(DefineValue.CALLBACK_URL, callback_url);
+                    args.putString(DefineValue.API_KEY, api_key);
+
+                    if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                        args.putString(DefineValue.BENEF_PRODUCT_CODE, listbankBenef.get(position).getProduct_code());
+                        args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
+                        args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
+                        args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
+                        args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
+                        if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
+                            String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
+                            String city_name = spBenefCity.getText().toString();
+                            args.putString(DefineValue.ACCT_CITY_CODE, city_id);
+                            args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                        }
+                    } else {
+                        args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
+                        args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
+                        args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());
+                        args.putString(DefineValue.SOURCE_PRODUCT_H2H, listbankSource.get(position).getProduct_h2h());
+                        args.putString(DefineValue.SOURCE_ACCT_NO, etNoAcct.getText().toString());
+                        args.putString(DefineValue.BBS_COMM_ATC, comm_benef_atc);
                     }
+                    newFrag.setArguments(args);
+
+                    getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
+                            .addToBackStack(TAG).commit();
+                    ToggleKeyboard.hide_keyboard(act);
                 }
                 else {
-                    args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
-                    args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
-                    args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());
-                    args.putString(DefineValue.SOURCE_PRODUCT_H2H, listbankSource.get(position).getProduct_h2h());
-                    args.putString(DefineValue.SOURCE_ACCT_NO, etNoAcct.getText().toString());
-                    args.putString(DefineValue.BBS_COMM_ATC, comm_benef_atc);
+                    Toast.makeText(act, getString(R.string.no_match_member_acct_message), Toast.LENGTH_LONG).show();
                 }
-                newFrag.setArguments(args);
-
-                getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiInformasi.TAG)
-                        .addToBackStack(TAG).commit();
-                ToggleKeyboard.hide_keyboard(act);
             }
         }
     };

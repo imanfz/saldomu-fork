@@ -23,13 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,8 +48,6 @@ import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
 import com.sgo.hpku.dialogs.SMSDialog;
 import com.sgo.hpku.entityRealm.BBSBankModel;
-import com.sgo.hpku.entityRealm.List_BBS_City;
-import com.sgo.hpku.fragments.CashOutBBS_confirm_agent;
 import com.sgo.hpku.widgets.CustomAutoCompleteTextView;
 
 import org.apache.http.Header;
@@ -67,7 +60,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 import timber.log.Timber;
 
 /**
@@ -247,7 +239,18 @@ public class BBSTransaksiInformasi extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            int position = 0;
+            if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                source_product_code="";
+                source_product_name="";
+                source_product_type="";
+                source_product_h2h="";
+            }
+            else {
+                benef_product_code="";
+                benef_product_type="";
+                benef_product_name="";
+            }
+            int position;
             String nameAcct = actv_rekening_agent.getText().toString();
             for(int i = 0 ; i < aListAgent.size() ; i++) {
                 if(nameAcct.equalsIgnoreCase(aListAgent.get(i).get("txt"))) {
@@ -278,8 +281,6 @@ public class BBSTransaksiInformasi extends Fragment {
     Button.OnClickListener backListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-
-            Timber.d("button back informasi");
             if(getFragmentManager().getBackStackEntryCount() > 0) {
                 int index = getFragmentManager().getBackStackEntryCount() - 1;
                 FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(index);
@@ -297,8 +298,6 @@ public class BBSTransaksiInformasi extends Fragment {
     Button.OnClickListener nextListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-
-            Timber.d("button proses informasi");
             if(InetHandler.isNetworkAvailable(getActivity())) {
                 if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
                     isSMSBanking = true;
@@ -967,6 +966,16 @@ public class BBSTransaksiInformasi extends Fragment {
             if (etNoHp.getText().toString().length() == 0) {
                 etNoHp.requestFocus();
                 etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
+                return false;
+            }
+            if(source_product_code.equals("")) {
+                Toast.makeText(act, getString(R.string.no_match_agent_acct_message), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        }
+        else {
+            if(benef_product_code.equals("")) {
+                Toast.makeText(act, getString(R.string.no_match_agent_acct_message), Toast.LENGTH_LONG).show();
                 return false;
             }
         }
