@@ -25,11 +25,12 @@ import static org.junit.Assert.assertThat;
 @MediumTest
 public class InstrumentTest {
 
-    String noHpTest = "081285229384";
+    String noHpTest = "089985229384";
 
     @Test
     public void PrefixOperatorTest()throws Exception{
-        Context testContext = getInstrumentation().getContext();
+
+        Context testContext = getInstrumentation().getTargetContext();
         PrefixOperatorValidator.OperatorModel operatorModel =
                 PrefixOperatorValidator.validation(testContext,noHpTest);
         assertNotNull(operatorModel);
