@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -97,7 +98,7 @@ public class BBSTransaksiInformasi extends Fragment {
     private ReqPermissionClass reqPermissionClass;
     private Boolean isSMSBanking = false, isSimExist = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
-    private String userID, accessKey, comm_code, member_code, source_product_code, source_product_type,
+    private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
     no_benef, name_benef, no_source, city_name, comm_benef_atc;
@@ -277,8 +278,17 @@ public class BBSTransaksiInformasi extends Fragment {
     Button.OnClickListener backListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(getFragmentManager().getBackStackEntryCount() > 0)
+
+            Timber.d("button back informasi");
+            if(getFragmentManager().getBackStackEntryCount() > 0) {
+                int index = getFragmentManager().getBackStackEntryCount() - 1;
+                FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(index);
+                String tag = backEntry.getName();
+                Fragment prevFrag = getFragmentManager().findFragmentByTag(tag);
+                BBSTransaksiAmount amountfrag = (BBSTransaksiAmount) prevFrag;
+                amountfrag.setBack(true);
                 getFragmentManager().popBackStack();
+            }
             else
                 getActivity().finish();
         }
@@ -287,6 +297,8 @@ public class BBSTransaksiInformasi extends Fragment {
     Button.OnClickListener nextListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            Timber.d("button proses informasi");
             if(InetHandler.isNetworkAvailable(getActivity())) {
                 if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
                     isSMSBanking = true;
@@ -365,14 +377,9 @@ public class BBSTransaksiInformasi extends Fragment {
         for(int i = 0 ; i < _data.length() ; i++) {
             BBSBankModel bbsBankModel =  new BBSBankModel();
             try {
-//                bbsBankModel.setComm_id(_data.getJSONObject(i).getString(WebParams.COMM_ID));
-//                bbsBankModel.setComm_type(_data.getJSONObject(i).getString(WebParams.COMM_TYPE));
                 bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
                 bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
                 bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
-//                bbsBankModel.setProduct_h2h(_data.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
-//                bbsBankModel.setScheme_code(_data.getJSONObject(i).getString(WebParams.SCHEME_CODE));
-//                bbsBankModel.setBank_gateway(_data.getJSONObject(i).getString(WebParams.BANK_GATEWAY));
                 listbankBenef.add(bbsBankModel);
             } catch (JSONException e) {
                 e.printStackTrace();

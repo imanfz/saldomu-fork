@@ -37,7 +37,6 @@ public class ListBBS extends ListFragment {
             _data = getResources().getStringArray(R.array.list_bbs_agent);
         else
             _data = getResources().getStringArray(R.array.list_bbs_member);
-//        _data = getResources().getStringArray(R.array.list_bbs);
     }
 
     @Override

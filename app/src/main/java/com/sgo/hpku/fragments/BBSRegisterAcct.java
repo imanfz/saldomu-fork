@@ -67,6 +67,7 @@ public class BBSRegisterAcct extends Fragment {
     private ActionListener actionListener;
     private ArrayList<List_BBS_City> list_bbs_cities;
     public Boolean isUpdate = false;
+    private TextView tvEgNo;
 
     public interface ActionListener{
         void OnSuccessReqAcct(Bundle data);
@@ -126,6 +127,7 @@ public class BBSRegisterAcct extends Fragment {
         cityLayout = v.findViewById(R.id.bbsregistacct_city_layout);
         Button btnSave = (Button) v.findViewById(R.id.btn_save);
         city_textview_autocomplete = (AutoCompleteTextView) v.findViewById(R.id.bbsregistacct_value_city_benef2);
+        tvEgNo = (TextView) v.findViewById(R.id.tv_eg_no);
 
         btnSave.setOnClickListener(saveListener);
 
@@ -151,10 +153,14 @@ public class BBSRegisterAcct extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String productType = listDataBank.get(position).getProduct_type();
-                if(productType.equalsIgnoreCase(TYPE_ACCT))
+                if(productType.equalsIgnoreCase(TYPE_ACCT)) {
                     cityLayout.setVisibility(View.VISIBLE);
-                else
+                    tvEgNo.setText(getString(R.string.eg_no_acct));
+                }
+                else {
                     cityLayout.setVisibility(View.GONE);
+                    tvEgNo.setText(getString(R.string.eg_no_hp));
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {

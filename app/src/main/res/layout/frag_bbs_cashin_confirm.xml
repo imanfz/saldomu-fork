@@ -228,7 +228,7 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_text_no_destination"
                         android:layout_weight="1"
-                        android:text="@string/no_rekening_tujuan"
+                        android:text="@string/no_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView

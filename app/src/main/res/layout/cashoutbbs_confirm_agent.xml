@@ -192,7 +192,7 @@
                     <TextView
                         android:id="@+id/tv_user_id"
                         android:layout_weight="1"
-                        android:text="@string/no_rekening_tujuan"
+                        android:text="@string/no_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
