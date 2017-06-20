@@ -830,6 +830,7 @@ public class MyProfileActivity extends BaseActivity {
                         alert.setMessage("Upload Image : " + error_message);
                         alert.setPositiveButton("OK", null);
                         alert.show();
+
                     }
 
                 } catch (JSONException e) {
