@@ -377,7 +377,7 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPMAKARDA1443547914WO0NU"; //prod pulsa agent
     public static String COMM_ID_PROD = "EMONEYMAKA1429005701H921A";  //prod
-    public static String COMM_CODE = "EMONEYMAKA";  //prod
+    public static String COMM_CODE = "EMOMSCADM";  //dev
     public static String INCOMINGSMS_INFOBIP = "+628111946677";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 

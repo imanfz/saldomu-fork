@@ -244,7 +244,7 @@ public class BillerActivity extends BaseActivity {
         ToggleKeyboard.hide_keyboard(this);
     }
 
-    public void setResultActivity(){
+    public void setResultActivity(int result){
         setResult(MainPage.RESULT_BALANCE);
     }
 
@@ -302,7 +302,7 @@ public class BillerActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if(!realm.isInTransaction() && !realm.isClosed()) {
+        if(realm != null && !realm.isInTransaction() && !realm.isClosed()) {
 //            realm.removeChangeListener(realmListener);
             realm.close();
         }

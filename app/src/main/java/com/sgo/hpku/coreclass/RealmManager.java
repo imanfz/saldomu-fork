@@ -84,6 +84,7 @@ public class RealmManager {
                 .name(mContext.getString(R.string.realmBBSName))
                 .schemaVersion(mContext.getResources().getInteger(R.integer.realBBScheme))
                 .modules(new BBSModule())
+                .migration(new BBSRealMigration())
                 .build();
     }
 

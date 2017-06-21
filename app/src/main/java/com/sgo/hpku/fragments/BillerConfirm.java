@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
 import android.view.*;
@@ -438,7 +439,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             getTrxStatus(tx_id,args.getString(DefineValue.BILLER_COMM_ID),_amount);
-                            setResultActivity();
+                            setResultActivity(MainPage.RESULT_BALANCE);
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -833,7 +834,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this, 0);
-        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.add(dialog, ReportBillerDialog.TAG);
+        ft.commitAllowingStateLoss();
     }
 
     private void showDialog(String msg) {
@@ -872,12 +875,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
     }
 
-    private void setResultActivity(){
+    private void setResultActivity(int result){
         if (getActivity() == null)
             return;
 
         BillerActivity fca = (BillerActivity) getActivity();
-        fca.setResultActivity();
+        fca.setResultActivity(result);
     }
 
     private void changeTextBtnSub() {

@@ -425,4 +425,8 @@ public class WebParams {
     public static String SHOP_NAME      = "shop_name";
     public static String SHOP_PHONE     = "shop_phone";
     public static String MEMBER_TYPE    = "member_type";
+    public static String PERIOD_MONTH = "period_month";
+    public static String BBS_CITY= "bbs_city";
+    public static String COMM_SOURCE= "comm_source";
+    public static String COMM_BENEF= "comm_benef";
 }

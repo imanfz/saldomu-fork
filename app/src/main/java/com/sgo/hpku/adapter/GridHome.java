@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.sgo.hpku.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by Lenovo Thinkpad on 5/5/2017.
  */
@@ -21,12 +23,12 @@ public class GridHome extends BaseAdapter {
     }
 
     private Context mContext;
-    private final String[] text;
+    private final ArrayList<String> text;
     private final int[] Imageid;
     TextView textView;
     ImageView imageView;
 
-    public GridHome(Context c,String[] text,int[] Imageid ) {
+    public GridHome(Context c, ArrayList<String> text, int[] Imageid ) {
         mContext = c;
         this.Imageid = Imageid;
         this.text = text;
@@ -34,7 +36,7 @@ public class GridHome extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return text.length;
+        return text.size();
     }
 
     @Override
@@ -60,7 +62,7 @@ public class GridHome extends BaseAdapter {
         } else {
             grid = (View) convertView;
         }
-        textView.setText(text[position]);
+        textView.setText(text.get(position));
         imageView.setImageResource(Imageid[position]);
         return grid;
     }

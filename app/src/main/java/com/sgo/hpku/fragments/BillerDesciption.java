@@ -124,7 +124,8 @@ public class BillerDesciption extends Fragment {
     private List<bank_biller_model> mListBankBiller;
     private Realm realm;
     Boolean isPLN = false;
-    String fee;
+    String fee ="0";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -447,7 +448,7 @@ public class BillerDesciption extends Fragment {
             if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
                 JSONObject detail = new JSONObject();
                 try {
-                    detail.put(getString(R.string.period_month), value_item_data);
+                    detail.put(WebParams.PERIOD_MONTH, value_item_data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -601,8 +602,11 @@ public class BillerDesciption extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response payment biller:"+response.toString());
 
+                            if(!isPLN)
+                                fee = response.getString(WebParams.FEE);
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
-                                changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),bank_code,product_code,-1);
+                                changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),
+                                        bank_code,product_code,-1);
                                 progdialog.dismiss();
                                 btn_submit.setEnabled(true);
                             }
@@ -1017,7 +1021,7 @@ public class BillerDesciption extends Fragment {
 
     @Override
     public void onDestroy() {
-        if(!realm.isInTransaction() && !realm.isClosed()) {
+        if(realm != null && !realm.isInTransaction() && !realm.isClosed()) {
             realm.close();
         }
         super.onDestroy();

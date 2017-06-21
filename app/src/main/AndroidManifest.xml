@@ -226,10 +226,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <service android:name=".services.BalanceService" />
-        <service android:name=".services.AppInfoService" />
-        <service android:name=".services.UserProfileService" />
-
         <activity
             android:name=".activities.BbsMerchantCommunityList"
             android:configChanges="orientation"
@@ -270,12 +266,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
-        <service android:name=".services.BalanceService" />
-        <service android:name=".services.AppInfoService" />
-        <service android:name=".services.UserProfileService" />
-        <service android:name=".services.UpdateLocationService" />
-
         <activity android:name=".activities.BbsApprovalAgentActivity">
 
         </activity>
@@ -287,6 +277,11 @@
             android:name=".activities.BbsMapViewByMemberActivity"
             android:label="@string/title_activity_bbs_map_view_by_member"
             android:theme="@style/Theme.MyTheme"></activity>
+
+        <service android:name=".services.BalanceService" />
+        <service android:name=".services.AppInfoService" />
+        <service android:name=".services.UserProfileService" />
+        <service android:name=".services.UpdateLocationService" />
     </application>
 
 </manifest>

@@ -37,6 +37,7 @@ public class ListBBS extends ListFragment {
             _data = getResources().getStringArray(R.array.list_bbs_agent);
         else
             _data = getResources().getStringArray(R.array.list_bbs_member);
+//        _data = getResources().getStringArray(R.array.list_bbs);
     }
 
     @Override
@@ -54,17 +55,31 @@ public class ListBBS extends ListFragment {
 
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
+
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            int posIdx = bundle.getInt(DefineValue.INDEX,-1);
+            if(posIdx != -1){
+                Intent i = new Intent(getActivity(), BBSActivity.class);
+                i.putExtras(bundle);
+                switchActivity(i,MainPage.ACTIVITY_RESULT);
+            }
+        }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        int posIdx = -1;
+        int posIdx;
         if(isAgent) {
             if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
                 posIdx = BBSActivity.LISTACCBBS;
             else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
                 posIdx = BBSActivity.TRANSACTION;
+            else if(_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                posIdx = BBSActivity.CONFIRMCASHOUT;
+        else
+            posIdx = -1;
         } else
             posIdx = BBSActivity.CONFIRMCASHOUT;
 
@@ -73,7 +88,6 @@ public class ListBBS extends ListFragment {
             i.putExtra(DefineValue.INDEX, posIdx);
             switchActivity(i,MainPage.ACTIVITY_RESULT);
         }
-
     }
 
     private void switchActivity(Intent mIntent, int j){

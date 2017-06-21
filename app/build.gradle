@@ -59,8 +59,6 @@ android {
             buildConfigField 'boolean', "isProdDomain", "false"
             //buildConfigField 'String', "HeadAddress", "\"http://116.90.162.173:59088/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile-dev.espay.id/\""
-
-//            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/akardaya2/\""
             versionCode = 1
             versionName "1.0"
             buildConfigField 'String', "AppID", "\"AKD\""
