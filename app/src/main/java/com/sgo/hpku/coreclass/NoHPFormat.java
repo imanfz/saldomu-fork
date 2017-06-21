@@ -4,7 +4,7 @@ package com.sgo.hpku.coreclass;/*
 
 public class NoHPFormat {
 
-  public static String editNoHP (String noHP){
+  public static String formatTo62(String noHP){
       String result;
 
       if(!noHP.isEmpty()) {
@@ -19,4 +19,21 @@ public class NoHPFormat {
 
       return "";
   }
+
+    public static String formatTo08(String noHP){
+        String result;
+
+        if(!noHP.isEmpty()) {
+            if (noHP.charAt(0) == '+') result = "0" + noHP.substring(3);
+            else if (noHP.charAt(0) == '6') result = "0" + noHP.substring(2);
+            else if (noHP.charAt(0) == '2' && noHP.charAt(1) == '8') result = "0" +  noHP.substring(1);
+            else if (noHP.charAt(0) == '9') result = noHP;
+            else if (noHP.charAt(0) == '8') result = "0" + noHP;
+            else if (noHP.charAt(0) == '0' && noHP.charAt(1) == '8') result = noHP;
+            else result = "08" + noHP;
+            return result.replaceAll("[\\s\\-\\.\\^:,]","");
+        }
+
+        return "";
+    }
 }

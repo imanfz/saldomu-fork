@@ -811,4 +811,5 @@
     <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="nama_tujuan">Nama tujuan</string>
+    <string name="pulsaagent_spinner_choose_text">Pilih Operator</string>
 </resources>

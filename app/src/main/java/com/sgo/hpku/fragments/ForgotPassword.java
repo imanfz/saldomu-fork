@@ -110,7 +110,7 @@ public class ForgotPassword extends Fragment {
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
                 if(inputValidation()){
-                    userIDfinale = NoHPFormat.editNoHP(et_user_id.getText().toString());
+                    userIDfinale = NoHPFormat.formatTo62(et_user_id.getText().toString());
                     CallPINinput(0);
                 }
             }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));

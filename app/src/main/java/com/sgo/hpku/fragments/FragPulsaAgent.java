@@ -23,9 +23,12 @@ import com.sgo.hpku.activities.PulsaAgentActivity;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.PrefixOperatorValidator;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
+
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -81,6 +84,12 @@ public class FragPulsaAgent extends Fragment{
     private boolean flagDenom = true;
     private ArrayAdapter<String> adapterDenom;
     private ArrayAdapter<String> adapterNominal;
+    private Boolean firstTimeSpinner = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public void onResume() {
@@ -217,7 +226,7 @@ public class FragPulsaAgent extends Fragment{
             JSONArray mArray;
             try {
                 mArray = new JSONArray(denom_data);
-                _denomData = new String[mArray.length()];
+                _denomData = new String[mArray.length()+1];
                 _catalogData = new String[mArray.length()];
                 adapterDenom = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, _denomData);
                 adapterDenom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -234,9 +243,10 @@ public class FragPulsaAgent extends Fragment{
                     @Override
                     public void run() {
                         try {
+                            _denomData[0] = getString(R.string.pulsaagent_spinner_choose_text);
                             for (int i = 0 ;i< finalMArray.length();i++){
 //                                Timber.d("Json array isi", finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME) + "/" + finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_ID));
-                                _denomData[i] = finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME);
+                                _denomData[i+1] = finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME);
                                 mDenomData.put(finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_NAME),
                                         finalMArray.getJSONObject(i).getString(WebParams.DENOM_ITEM_ID));
                                 _catalogData[i] = finalMArray.getJSONObject(i).getString(WebParams.CATALOG_ID);
@@ -252,6 +262,7 @@ public class FragPulsaAgent extends Fragment{
                                 spinWheelDenom.setVisibility(View.GONE);
                                 spin_denom.setVisibility(View.VISIBLE);
                                 adapterDenom.notifyDataSetChanged();
+
                             }
                         });
                     }
@@ -265,6 +276,7 @@ public class FragPulsaAgent extends Fragment{
             layout_denom.setVisibility(View.GONE);
             layout_remark.setVisibility(View.GONE);
             btn_submit.setVisibility(View.GONE);
+
         }
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
@@ -274,6 +286,21 @@ public class FragPulsaAgent extends Fragment{
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
         out.dismiss();
+
+        String noHp = et_payment_remark.getText().toString();
+        if(!noHp.isEmpty()) {
+            PrefixOperatorValidator.OperatorModel operatorModel =
+                    PrefixOperatorValidator.validation(getActivity(), noHp);
+
+            if(operatorModel != null) {
+                for (int k = 0; k < _denomData.length; k++) {
+                    if (operatorModel.prefix_name.equalsIgnoreCase(_denomData[k])){
+                        spin_denom.setSelection(k);
+                    }
+                }
+
+            }
+        }
     }
 
 
@@ -440,11 +467,22 @@ public class FragPulsaAgent extends Fragment{
     private Spinner.OnItemSelectedListener spinnerDenomListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Object item = adapterView.getItemAtPosition(i);
-            operator_id = mDenomData.get(item.toString());
-            operator_name = _denomData[i];
-            catalog_id = _catalogData[i];
-            if(flagDenom) getDenomDAP();
+            if(firstTimeSpinner) {
+                Object item = adapterView.getItemAtPosition(i);
+                if (i > 0) {
+                    operator_id = mDenomData.get(item.toString());
+                    operator_name = _denomData[i];
+                    catalog_id = _catalogData[i - 1];
+                    if (flagDenom) getDenomDAP();
+                }
+                else {
+                    layout_nominal.setVisibility(View.GONE);
+                    btn_submit.setEnabled(false);
+                }
+            }
+            else {
+                firstTimeSpinner = true;
+            }
         }
 
         @Override
@@ -459,6 +497,7 @@ public class FragPulsaAgent extends Fragment{
             Object item = adapterView.getItemAtPosition(i);
             item_id = mNominalData.get(item.toString());
             item_name = _nominalData[i];
+            btn_submit.setEnabled(true);
         }
 
         @Override
