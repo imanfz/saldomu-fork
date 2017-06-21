@@ -30,10 +30,6 @@ public class Biller_Type_Data_Model extends RealmObject {
         return biller_type;
     }
 
-    public void setBiller_type(String biller_type) {
-        this.biller_type = biller_type;
-    }
-
     public String getBiller_type_id() {
         return biller_type_id;
     }

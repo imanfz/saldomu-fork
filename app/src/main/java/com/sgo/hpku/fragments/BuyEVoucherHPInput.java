@@ -285,7 +285,7 @@ public class BuyEVoucherHPInput extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
             String _member_id;
-            _noHPdestination = NoHPFormat.editNoHP(noHP_value.getText().toString());
+            _noHPdestination = NoHPFormat.formatTo62(noHP_value.getText().toString());
             String denomPattern = _noHPdestination +"|"+_denomPayment;
 
             if(topupType.equals(DefineValue.INTERNET_BANKING)){

@@ -372,7 +372,7 @@ public class BillerInput extends Fragment {
             if(InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
                     if (biller_type_code.equals(billerType[0]))
-                        final_payment_remark = NoHPFormat.editNoHP(String.valueOf(et_payment_remark.getText()));
+                        final_payment_remark = NoHPFormat.formatTo62(String.valueOf(et_payment_remark.getText()));
                     else
                         final_payment_remark = String.valueOf(et_payment_remark.getText());
                     showDialog(final_payment_remark);

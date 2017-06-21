@@ -397,7 +397,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
                                 if(pCur != null) {
                                     while (pCur.moveToNext()) {
-                                        _phoneTemp = NoHPFormat.editNoHP(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                                        _phoneTemp = NoHPFormat.formatTo62(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                                         switch (idx) {
                                             case 0:
                                                 _phone1 = _phoneTemp;

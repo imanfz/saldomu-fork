@@ -380,7 +380,7 @@ public class FragRegisterSMSBanking extends Fragment {
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE,
                     userID,accessKey);
-            params.put(WebParams.NO_HP, NoHPFormat.editNoHP(etPhone.getText().toString()) );
+            params.put(WebParams.NO_HP, NoHPFormat.formatTo62(etPhone.getText().toString()) );
             params.put(WebParams.TGL_LAHIR, tvDOB.getText().toString());
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.ACCT_NO, etAccNo.getText().toString());

@@ -101,7 +101,7 @@ public class Login extends Fragment implements View.OnClickListener {
             case R.id.btn_login :
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
-                        userIDfinale = NoHPFormat.editNoHP(userIDValue.getText().toString());
+                        userIDfinale = NoHPFormat.formatTo62(userIDValue.getText().toString());
                         sentData();
                     }
                 }
