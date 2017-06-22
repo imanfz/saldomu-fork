@@ -94,7 +94,8 @@ public class ListBuy extends Fragment {
         });
 
         pager.setPageMargin(pageMargin);
-        dialogI = InformationDialog.newInstance(this,8);
+        dialogI = InformationDialog.newInstance(8);
+        dialogI.setTargetFragment(this,0);
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
 //        // auto updater realm biller

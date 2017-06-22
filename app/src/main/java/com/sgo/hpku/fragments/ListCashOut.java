@@ -79,7 +79,8 @@ public class ListCashOut extends ListFragment {
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
-        dialogI = InformationDialog.newInstance(this,4);
+        dialogI = InformationDialog.newInstance(4);
+        dialogI.setTargetFragment(this,0);
 
         if(isAdded())
             getBankCashout();

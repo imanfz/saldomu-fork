@@ -68,7 +68,8 @@ public class ListSettings extends ListFragment {
         levelClass = new LevelClass(getActivity(),sp);
         levelClass.refreshData();
         isLevel1 = levelClass.isLevel1QAC();
-        dialogI = InformationDialog.newInstance(this,11);
+        dialogI = InformationDialog.newInstance(11);
+        dialogI.setTargetFragment(this,0);
         String[] _data;
 
         if(isLevel1)
