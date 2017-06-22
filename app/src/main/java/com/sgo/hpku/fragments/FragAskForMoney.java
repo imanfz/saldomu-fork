@@ -195,7 +195,8 @@ public class FragAskForMoney extends Fragment {
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
 
-        dialogI = InformationDialog.newInstance(this,6);
+        dialogI = InformationDialog.newInstance(6);
+        dialogI.setTargetFragment(this,0);
     }
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {

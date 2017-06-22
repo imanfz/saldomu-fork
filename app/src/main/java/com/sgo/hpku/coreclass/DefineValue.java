@@ -285,6 +285,7 @@ public class DefineValue {
     public static String IS_PLN = "isPLN";
 
     public static String IS_AGENT = "isAgent";
+    public static String IS_BBS = "isBBS";
     public static String INDEX = "index";
 
     //BBS

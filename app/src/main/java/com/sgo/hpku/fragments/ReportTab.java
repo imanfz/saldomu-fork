@@ -55,8 +55,8 @@ public class ReportTab extends Fragment {
             ViewPager pager;
             String[] titles = getActivity().getResources().getStringArray(R.array.report_list);
 
-            dialogI = InformationDialog.newInstance(this,10);
-
+            dialogI = InformationDialog.newInstance(10);
+            dialogI.setTargetFragment(this,0);
             List<ListFragment> mList = new ArrayList<>();
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
             mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));

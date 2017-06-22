@@ -9,7 +9,7 @@ import android.widget.QuickContactBadge;
 import java.lang.reflect.Field;
 
 /**
- * A rounded version of {@link android.widget.QuickContactBadge]
+ * A rounded version of {@link android.widget.QuickContactBadge}
  * @author kishu27 (http://linkd.in/1laN852)
  *
  */

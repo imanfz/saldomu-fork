@@ -184,7 +184,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
         btn_check_contact.setOnClickListener(checkContactListener);
 
-        dialogI = InformationDialog.newInstance(this,9);
+        dialogI = InformationDialog.newInstance(9);
+        dialogI.setTargetFragment(this,0);
 
         mMFM = new ArrayList<>();
         mAdapter = new MyFriendAdapter(getActivity(),R.layout.list_myfriends_item,mMFM);
