@@ -812,5 +812,6 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
+    <string name="nama_tujuan">Nama tujuan</string>
     <string name="pulsaagent_spinner_choose_text">Pilih Operator</string>
 </resources>
