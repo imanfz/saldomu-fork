@@ -389,7 +389,7 @@ public class FragPayFriends extends Fragment {
                                 break;
                             }
 
-                            finalNumber = NoHPFormat.editNoHP(chip.getEntry().getDestination());
+                            finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
                             listName.add(chip.getEntry().getDisplayName());
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, finalName));
                         }

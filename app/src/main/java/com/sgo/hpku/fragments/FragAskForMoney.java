@@ -307,7 +307,7 @@ public class FragAskForMoney extends Fragment {
                                 recipientValidation = false;
                                 break;
                             }
-                            finalNumber = NoHPFormat.editNoHP(finalNumber);
+                            finalNumber = NoHPFormat.formatTo62(finalNumber);
                             Timber.v("final number:" + finalNumber);
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, chip.getEntry().getDisplayName()));
                         }
