@@ -99,7 +99,7 @@
 
             <TextView android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/no_rekening_tujuan"
+                android:text="@string/no_tujuan"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="@dimen/text_size_medium_material"
                 android:textStyle="bold"

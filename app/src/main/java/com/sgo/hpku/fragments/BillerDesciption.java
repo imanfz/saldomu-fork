@@ -359,8 +359,6 @@ public class BillerDesciption extends Fragment {
                                                     mListBankBiller.get(i).getProduct_h2h());
                 }
             }
-            item = adapterView.getItemAtPosition(i);
-            payment_name = item.toString();
         }
 
         @Override
