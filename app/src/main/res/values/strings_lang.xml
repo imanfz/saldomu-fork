@@ -713,7 +713,7 @@
     <string name="rekening_bank_member">Rekening Member</string>
     <string name="no_rekening_sumber">No Rekening Sumber</string>
     <string name="nama_rekening_sumber">Nama Rekening Sumber</string>
-    <string name="no_rekening_tujuan">Nomor Tujuan</string>
+    <string name="no_tujuan">Nomor Tujuan</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
     <string name="nama_rekening_tujuan">Nama rekening Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
@@ -810,6 +810,8 @@
     <string name="city_empty_message">Kota tujuan harus diisi!</string>
     <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
+    <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
+    <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
     <string name="nama_tujuan">Nama tujuan</string>
     <string name="pulsaagent_spinner_choose_text">Pilih Operator</string>
 </resources>

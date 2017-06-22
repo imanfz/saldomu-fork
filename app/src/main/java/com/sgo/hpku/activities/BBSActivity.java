@@ -93,7 +93,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             });
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbs_content, newFragment,tag);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
         }
     }
