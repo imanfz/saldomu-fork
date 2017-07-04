@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.sgo.hpku.R;
-import com.sgo.hpku.activities.BBSRegAccountActivity;
 import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MyApiClient;
