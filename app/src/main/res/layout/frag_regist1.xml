@@ -136,7 +136,7 @@
             android:layout_marginLeft="32dp"
             android:clickable="true"
             android:text="@string/termsncondition_checkbox_2"
-            android:textColor="@color/grey_350" />
+            android:textColor="@color/white" />
 
 
         <com.balysv.materialripple.MaterialRippleLayout

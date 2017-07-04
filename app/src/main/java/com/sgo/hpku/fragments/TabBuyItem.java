@@ -135,6 +135,9 @@ public final class TabBuyItem extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        Bundle bundle = getArguments();
+        biller_type = bundle.getString(DefineValue.BILLER_TYPE,"");
     }
 
     @Override

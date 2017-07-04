@@ -1,5 +1,6 @@
 package com.sgo.hpku.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
@@ -35,13 +36,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
  Created by Administrator on 7/4/2014.
  */
-public class Regist2 extends Fragment {
+public class Regist2 extends Fragment implements EasyPermissions.PermissionCallbacks{
 
+    private static final int RC_PHONE_STATE = 100;
     private SecurePreferences sp;
     private Button btnResend;
     private Button btnSubmit;
@@ -104,7 +111,7 @@ public class Regist2 extends Fragment {
         btnResend.setOnClickListener(resendListener);
         btnSubmit.setOnClickListener(submitListener);
         btnCancel.setOnClickListener(cancelListener);
-
+        permissionPhoneState();
     }
 
 
@@ -586,6 +593,50 @@ public class Regist2 extends Fragment {
         edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
         edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
         edit.apply();
+    }
+
+    @AfterPermissionGranted(RC_PHONE_STATE)
+    private void permissionPhoneState() {
+        String[] perms = {Manifest.permission.READ_PHONE_STATE};
+        if (EasyPermissions.hasPermissions(getActivity(), perms)) {
+            // Already have permission, do the thing
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.cancel_permission_read_contacts),
+                    RC_PHONE_STATE, perms);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == RC_PHONE_STATE) {
+            if (EasyPermissions.hasPermissions(getActivity(), permissions)) {
+            }
+            else {
+                // Forward results to EasyPermissions
+                EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+            }
+        }
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(requestCode == RC_PHONE_STATE) {
+            if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                getActivity().finish();
+            }
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        getActivity().finish();
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        }
     }
 
     private void switchFragment(Fragment i, String name, Boolean isBackstack){
