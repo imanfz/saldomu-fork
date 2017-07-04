@@ -11,7 +11,6 @@ import io.realm.annotations.Required;
 public class    Account_Collection_Model extends RealmObject{
 
     @PrimaryKey
-    @Required
     private String comm_id;
     @Required
     private String comm_code;
