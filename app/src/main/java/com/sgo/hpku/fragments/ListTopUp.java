@@ -88,8 +88,8 @@ public class ListTopUp extends ListFragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
-        dialogI = InformationDialog.newInstance(this,0);
-
+        dialogI = InformationDialog.newInstance(0);
+        dialogI.setTargetFragment(this,0);
         listBankIB = null;
         listBankSMS = null;
 

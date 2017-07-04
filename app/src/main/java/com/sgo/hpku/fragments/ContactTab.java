@@ -36,7 +36,8 @@ public class ContactTab extends Fragment {
             ContactTabAdapter adapternya;
             TabPageIndicator tabs;
 
-            dialogI = InformationDialog.newInstance(this,12);
+            dialogI = InformationDialog.newInstance(12);
+            dialogI.setTargetFragment(this,0);
 
             ViewPager pager;
             String[] titles = getActivity().getResources().getStringArray(R.array.contact_tab_list);
