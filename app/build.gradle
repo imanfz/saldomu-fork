@@ -66,6 +66,8 @@ android {
             resValue "string", "dbname", "hpku.db"
             resValue "string", "realmname", "hpkurealm.realm"
             resValue "integer", "realscheme", "0"
+            resValue "string", "realmBillerName", "hpkubiller.realm"
+            resValue "integer", "realBillerscheme", "0"
             resValue "string", "realmBBSName", "hpkubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
@@ -155,6 +157,7 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.4.2'
     compile 'com.uphyca:stetho_realm:2.0.1'
     compile 'com.faber.circlestepview:library:1.0.0@aar'
+    compile 'pub.devrel:easypermissions:0.3.0'
     compile project(':PinMaster')
     compile project(':PinnedSectionList')
     compile project(':VPI')
