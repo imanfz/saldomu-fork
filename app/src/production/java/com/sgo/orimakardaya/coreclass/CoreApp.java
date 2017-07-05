@@ -8,9 +8,11 @@ import android.content.pm.PackageManager;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
+
+import com.facebook.stetho.Stetho;
+
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.sgo.hpku.Beans.BalanceModel;
 import com.sgo.hpku.Beans.commentModel;
 import com.sgo.hpku.Beans.communityModel;
 import com.sgo.hpku.Beans.friendModel;
@@ -20,6 +22,7 @@ import com.sgo.hpku.Beans.listTimeLineModel;
 import com.sgo.hpku.Beans.myFriendModel;
 import com.sgo.hpku.BuildConfig;
 import com.sgo.hpku.R;
+import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -64,36 +67,20 @@ public class CoreApp extends Application {
 
 
         set_instance(this);
+
+        Stetho.initialize(
+                Stetho.newInitializerBuilder(this)
+                        .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
+                        .enableWebKitInspector(RealmInspectorModulesProvider.builder(this).build())
+                        .build());
+
+
         Iconify.with(new FontAwesomeModule());
         CustomSecurePref.initialize(this);
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
-        int checkExistence;
 
-        if(BuildConfig.FLAVOR.equals("development"))
-            checkExistence = CoreApp.this.getResources().getIdentifier("akardayadev", "raw", CoreApp.this.getPackageName());
-        else
-            checkExistence = CoreApp.this.getResources().getIdentifier("akardaya", "raw", CoreApp.this.getPackageName());
-
-
-        if ( checkExistence != 0 ) {
-            Timber.d("test ada raw");
-            copyBundledRealmFile(CoreApp.this.getResources().openRawResource(checkExistence), getString(R.string.realmname));
-        }
-        else {
-            Timber.d("test gak ada raw");
-            deleteBundledRealmFile(getString(R.string.realmname));
-        }
-
-        RealmConfiguration config = new RealmConfiguration.Builder(CoreApp.this)
-                .name(getString(R.string.realmname))
-                .schemaVersion(getResources().getInteger(R.integer.realscheme))
-                .migration(new CustomRealMigration())
-                .build();
-
-        Realm.setDefaultConfiguration(config);
-
-
+        RealmManager.init(this);
 
         PackageInfo pInfo;
         try {
@@ -127,8 +114,7 @@ public class CoreApp extends Application {
                 listTimeLineModel.class,
                 listHistoryModel.class,
                 likeModel.class,
-                commentModel.class,
-                BalanceModel.class
+                commentModel.class
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));

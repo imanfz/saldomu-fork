@@ -363,8 +363,8 @@ public class MyApiClient {
     public static Boolean FLAG_SIG = true;
     public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
-    public static String COMM_ID_PULSA_PROD = "DAPMAKARDA1443547914WO0NU"; //prod pulsa agent
-    public static String COMM_ID_PROD = "EMONEYMAKA1429005701H921A";  //prod
+    public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
+    public static String COMM_ID_PROD = "EMOHAH1499252941PKN91";  //prod
     public static String COMM_CODE = "EMOMSCADM";  //dev
     public static String INCOMINGSMS_INFOBIP = "+628111946677";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
@@ -388,7 +388,7 @@ public class MyApiClient {
         return tokens.nextToken();
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.AppIDHpku+WebServiceName+noID;
+        String msgnya = uuidnya+date+BuildConfig.AppID+WebServiceName+noID;
 
         String hash = null;
         Mac sha256_HMAC;
@@ -414,7 +414,7 @@ public class MyApiClient {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.AppIDHpku+webServiceName+ commID + user_id;
+        String msgnya = uuidnya+dtime+BuildConfig.AppID+webServiceName+ commID + user_id;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
