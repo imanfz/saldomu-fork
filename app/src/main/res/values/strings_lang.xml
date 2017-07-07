@@ -198,13 +198,13 @@
     <string name="menu_item_share">Bagikan</string>
     <string name="menu_item_bbs_register_location">Register Member Shop</string>
     <string name="menu_item_bbs_search_toko">Search Toko</string>
-    <string name="menu_item_search_agent">Search Agent</string>
+    <string name="menu_item_search_agent">Cari Agen</string>
     <string name="menu_item_title_kelola">Kelola</string>
     <string name="menu_item_title_list_toko">Manage Member</string>
     <string name="menu_item_title_list_approval">List Approval</string>
     <string name="menu_item_title_trx_agent">List Approval Agent</string>
-    <string name="menu_item_title_map_agent">Map Agent</string>
-    <string name="menu_item_title_map_member">Map Member</string>
+    <string name="menu_item_title_map_agent">Peta Agen</string>
+    <string name="menu_item_title_map_member">Peta Member</string>
 
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank</string>
@@ -936,4 +936,16 @@
     <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="nama_tujuan">Nama tujuan</string>
+    <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
+
+    <string name="rationale_location">This app needs access to your location.</string>
+
+    <string name="menu_item_search_agent_cta">Agen Setor Tunai</string>
+    <string name="menu_item_search_agent_atc">Agen Tarik Tunai</string>
+    <string name="menu_item_search_agent_bbs">Agen</string>
+
+    <string name="setting_permission_location">Setting Lokasi</string>
+    <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>
+    <string name="bbs_trx_detail_agent"><![CDATA[<b>Detail Transaksi</b><br />Untuk Agen]]></string>
+    <string name="bbs_trx_detail_member"><![CDATA[<b>Detail Transaksi</b><br />Untuk Member]]></string>
 </resources>

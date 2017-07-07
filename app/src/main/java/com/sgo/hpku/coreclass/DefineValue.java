@@ -317,8 +317,8 @@ public class DefineValue {
     public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
     public static int AGENT_DISPLACEMENT                            = 1; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 1000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 1000; //58 seconds
     public static int MEMBER_DISPLACEMENT                           = 1; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";
@@ -388,5 +388,11 @@ public class DefineValue {
     public static String BENEF_LATITUDE         = "BenefLatitude";
     public static String BENEF_LONGITUDE        = "BenefLongitude";
     public static String TX_STATUS_OP           = "OP";
+    public static String TX_STATUS_RJ           = "RJ";
+    public static int IDX_CATEGORY_SEARCH_AGENT = 1111;
+    public static String MSG_NOTIF              = "MsgNotif";
+
+    public static String DEFAULT_RADIUS         = "10";
+
 }
 

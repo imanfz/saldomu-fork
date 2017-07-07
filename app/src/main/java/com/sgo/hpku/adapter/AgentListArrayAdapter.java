@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsSearchAgentActivity;
 import com.sgo.hpku.activities.MainAgentActivity;
+import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.SearchAgentActivity;
 import com.sgo.hpku.coreclass.AgentConstant;
 import com.sgo.hpku.fragments.AgentListFragment;
@@ -270,8 +271,10 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
 
             int position = listView.getPositionForView(parentRow2);
 
-            if ( this.context instanceof BbsSearchAgentActivity ) {
-                bbsSearchAgentActivity.onIconMapClick(position);
+            if ( this.context instanceof MainPage ) {
+                //bbsSearchAgentActivity.onIconMapClick(position);
+            } else if ( this.context instanceof BbsSearchAgentActivity ) {
+                //bbsSearchAgentActivity.onIconMapClick(position);
                 //((BbsSearchAgentActivity) this.context).dataUpdated();
                 //AgentListFragment agentListFragment
             }

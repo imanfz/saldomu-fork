@@ -81,11 +81,14 @@ public class NavigationDrawMenu extends ListFragment{
     private static final int MLISTAPPROVAL=18;
 
     public static final int MBBS= 19;
-    private static final int MCATEGORYBBS=20;
+    public static final int MCATEGORYBBS=20;
     private static final int MLISTTRXAGENT = 21;
 
     private static final int MMAPVIEWBYAGENT = 22;  //temporary
     private static final int MMAPVIEWBYMEMBER = 23; //temporary
+
+    public static final int MBBSCTA         = 24;
+    public static final int MBBSATC         = 25;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
@@ -282,17 +285,17 @@ public class NavigationDrawMenu extends ListFragment{
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_friends_icon_color,0,getString(R.string.menu_item_title_my_friends),MMYFRIENDS));        //8
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_groups_icon_color,0,getString(R.string.menu_item_title_my_groups),false));          //9
 
-        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_kelola), MKELOLA));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_white, R.drawable.ic_cashout_icon_color, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
-        models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_kelola), MKELOLA));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
 
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
-            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MCATEGORYBBS));
-            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_title_map_member),MMAPVIEWBYMEMBER));
+            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_search_agent),MCATEGORYBBS));
+            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_title_map_member),MMAPVIEWBYMEMBER));
         } else {
-            models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_trx_agent),MLISTTRXAGENT));
-            //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_title_map_agent),MMAPVIEWBYAGENT));
+            models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp,R.drawable.ic_list_black_36dp,getString(R.string.menu_item_title_trx_agent),MLISTTRXAGENT));
+            models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_title_map_agent),MMAPVIEWBYAGENT));
         }
         //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
         //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));

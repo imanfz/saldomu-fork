@@ -363,8 +363,8 @@ public class MyApiClient {
     public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
     public static String LINK_GOOGLE_MAP_API_ROUTE = "http://maps.googleapis.com/maps/api/directions/json";
     public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
-    public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Membershop/Retrieve";
-    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Transaction/Updatetransaction";
+    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Transaction/Updateagent";
     public static String LINK_UPDATE_LOCATION_MEMBER = headaodaddressfinal + "Transaction/Updatemember";
     public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
     public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";

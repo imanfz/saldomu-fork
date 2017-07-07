@@ -24,13 +24,13 @@ public class GridHome extends BaseAdapter {
 
     private Context mContext;
     private final ArrayList<String> text;
-    private final int[] Imageid;
+    private final int[] icons;
     TextView textView;
     ImageView imageView;
 
-    public GridHome(Context c, ArrayList<String> text, int[] Imageid ) {
+    public GridHome(Context c, ArrayList<String> text, int[] icons ) {
         mContext = c;
-        this.Imageid = Imageid;
+        this.icons = icons;
         this.text = text;
     }
 
@@ -63,7 +63,7 @@ public class GridHome extends BaseAdapter {
             grid = (View) convertView;
         }
         textView.setText(text.get(position));
-        imageView.setImageResource(Imageid[position]);
+        imageView.setImageResource(icons[position]);
         return grid;
     }
 

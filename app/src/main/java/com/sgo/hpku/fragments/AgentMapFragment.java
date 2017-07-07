@@ -41,11 +41,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsSearchAgentActivity;
 import com.sgo.hpku.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.hpku.coreclass.AgentConstant;
 import com.sgo.hpku.coreclass.CustomAutoCompleteTextView;
+import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MainResultReceiver;
 import com.sgo.hpku.dialogs.AgentDetailFragmentDialog;
@@ -105,6 +107,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private LocationRequest mLocationRequest;
     SupportMapFragment mapFrag;
     private String mobility;
+    SecurePreferences sp;
 
     public AgentMapFragment(Double currentLatitude, Double currentLongitude, String mobility) {
         //this.shopDetails = shopDetails;
@@ -156,6 +159,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
+            sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
         }
 
         return rootView;
@@ -423,6 +427,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
         //disable map gesture untuk sementara sampai camera position selesai
         globalMap.getUiSettings().setAllGesturesEnabled(true);
+        globalMap.getUiSettings().setMapToolbarEnabled(false);
         globalMap.setIndoorEnabled(false);
     }
 
@@ -725,6 +730,12 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
             if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
             {
+
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.apply();
+
                 Address singleAddress = multiAddress.get(0);
                 ArrayList<String> addressArray = new ArrayList<String>();
 

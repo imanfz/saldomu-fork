@@ -197,4 +197,24 @@
         <item>@string/cash_in</item>
         <item>@string/cash_out</item>
     </string-array>
+    <string-array name="list_menu_frag_new_home_not_agent">
+        <item>@string/menu_item_search_agent_cta</item>
+        <item>@string/menu_item_search_agent_atc</item>
+    </string-array>
+
+    <integer-array name="list_menu_icon_frag_new_home">
+        <item>@drawable/ic_tambahsaldo</item>
+        <item>@drawable/ic_bayarteman1</item>
+        <item>@drawable/ic_mintauang</item>
+        <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_laporan</item>
+    </integer-array>
+    <integer-array name="list_menu_icon_frag_new_home_agent">
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item>
+    </integer-array>
+    <integer-array name="list_menu_icon_frag_new_home_not_agent">
+        <item>@drawable/ic_location_on_black</item>
+        <item>@drawable/ic_location_on_black</item>
+    </integer-array>
 </resources>

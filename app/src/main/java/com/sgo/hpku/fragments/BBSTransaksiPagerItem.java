@@ -25,6 +25,7 @@ public class BBSTransaksiPagerItem extends Fragment {
 
     private View v, layout;
     private String title;
+    private String defaultAmount;
 
     @Nullable
     @Override
@@ -43,11 +44,13 @@ public class BBSTransaksiPagerItem extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
+            defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
         }
 
         Fragment newFrag = new BBSTransaksiAmount();
         Bundle args = new Bundle();
         args.putString(DefineValue.TRANSACTION, title);
+        args.putString(DefineValue.AMOUNT, defaultAmount);
         newFrag.setArguments(args);
         getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiAmount.TAG).commit();
     }

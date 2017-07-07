@@ -4,10 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,6 +36,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -44,19 +51,25 @@ import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.HashMessage;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.dialogs.DefinedDialog;
+import com.sgo.hpku.fragments.NavigationDrawMenu;
 import com.sgo.hpku.models.ShopDetail;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
+import android.speech.tts.TextToSpeech;
 
 import timber.log.Timber;
 
 public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, TextToSpeech.OnInitListener {
 
     private SecurePreferences sp;
     private String title;
@@ -65,12 +78,18 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
     private LocationRequest mLocationRequest;
-    ProgressDialog progdialog;
+    ProgressDialog progdialog, progdialog2;
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
     TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
     Boolean isFirstLoad = true;
+    List<Polyline> lines;
+    Polyline line;
+    String encodedPoints = "";
+    String htmlDirections   = "";
+    TextToSpeech textToSpeech;
+    Boolean isTTSActive = true;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,11 +105,21 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             createLocationRequest();
         }
 
+        try {
+            textToSpeech = new TextToSpeech(BbsMapViewByAgentActivity.this, BbsMapViewByAgentActivity.this);
+            textToSpeech.setLanguage(Locale.getDefault());
+        } catch ( Exception e) {
+            e.printStackTrace();
+            isTTSActive = false;
+        }
+
+        lines                   = new ArrayList<>();
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
         tvShop                  = (TextView) findViewById(R.id.tvShop);
 
+        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
         shopDetail              = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
         shopDetail.setKeyName(sp.getString(DefineValue.KEY_NAME, ""));
@@ -107,11 +136,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         mapFrag.getMapAsync(this);
         mapFrag.getView().setVisibility(View.GONE);
 
-        txId                    = sp.getString(DefineValue.TX_ID, "");
-        memberId                = sp.getString(DefineValue.MEMBER_ID, "");
-        shopId                  = sp.getString(DefineValue.SHOP_ID, "");
+        txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
+        memberId                = sp.getString(DefineValue.BBS_MEMBER_ID, "");
+        shopId                  = sp.getString(DefineValue.BBS_SHOP_ID, "");
         agentLatitude           = sp.getDouble(DefineValue.AGENT_LATITUDE, -6.2271133);
         agentLongitude          = sp.getDouble(DefineValue.AGENT_LONGITUDE, 106.6578917);
+
         benefLatitude           = sp.getDouble(DefineValue.BENEF_LATITUDE, -6.222227);
         benefLongitude          = sp.getDouble(DefineValue.BENEF_LONGITUDE, 106.651973);
 
@@ -122,6 +152,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         title                   = getString(R.string.menu_item_title_map_agent);
         initializeToolbar(title);
+
+        TextView t = (TextView) findViewById(R.id.name);
+        t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
     }
 
     @Override
@@ -156,7 +189,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             globalMap.clear();
 
             //new BbsMapNagivationActivity.GoogleMapRouteDirectionTask(targetLatitude, targetLongitude, currentLatitude, currentLongitude).execute();
+            new BbsMapViewByAgentActivity.GoogleMapRouteDirectionTask(benefLatitude, benefLongitude, agentLatitude, agentLongitude).execute();
 
+            globalMap.getUiSettings().setMapToolbarEnabled(false);
             LatLng latLng = new LatLng(agentLatitude, agentLongitude);
 
             globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -177,7 +212,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
             globalMap.addMarker(markerTargetOptions);
 
-            if ( isFirstLoad ) {
+            ///if ( isFirstLoad ) {
                 //isFirstLoad = false;
 
                 //add camera position and configuration
@@ -200,7 +235,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     public void onCancel() {
                     }
                 });
-            }
+            //}
 
         }
     }
@@ -310,6 +345,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     public void onDestroy() {
         super.onDestroy();
         googleApiClient.disconnect();
+        textToSpeech.shutdown();
     }
 
     //for resize icon
@@ -334,7 +370,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -344,28 +380,39 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.LONGITUDE, agentLongitude);
 
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + memberId + shopId ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + txId + memberId + shopId ));
 
         params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationAgent(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progdialog.dismiss();
+                progdialog.dismiss();
 
                 try {
 
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
-                        memberLatitude      = response.getDouble(WebParams.KEY_LATITUDE);
-                        memberLongitude     = response.getDouble(WebParams.KEY_LONGITUDE);
+
+                        //if CTA only
+//                        Bundle bundle = new Bundle();
+//                        bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+//                        bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+//                        bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(shopDetail.getAmount()) ) );
+//
+//                        Intent intent = new Intent(getApplicationContext(),BBSActivity.class);
+//                        intent.putExtras(bundle);
+//                        startActivityForResult(intent, 0);
+
+                        benefLatitude      = response.getDouble(WebParams.KEY_LATITUDE);
+                        benefLongitude     = response.getDouble(WebParams.KEY_LONGITUDE);
 
                         shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
                         shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
                         shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                        shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                        //shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
                         shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
                         shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
@@ -422,5 +469,222 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         } catch ( SecurityException se) {
             se.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        //listener ketika button back di action bar diklik
+        if(id == android.R.id.home)
+        {
+            //kembali ke activity sebelumnya
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onInit(int Text2SpeechCurrentStatus) {
+
+        if ( isTTSActive && Text2SpeechCurrentStatus == TextToSpeech.SUCCESS) {
+
+            textToSpeech.setLanguage(Locale.getDefault());
+            TextToSpeechFunction();
+        }
+    }
+
+    private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
+
+        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
+        private Double dataCurrentLatitude;
+        private Double dataCurrentLongitude;
+        private Double targetLatitude;
+        private Double targetLongitude;
+
+        public GoogleMapRouteDirectionTask(Double targetLatitude, Double targetLongitude, Double currentLatitude, Double currentLongitude)
+        {
+            this.targetLatitude = targetLatitude;
+            this.targetLongitude = targetLongitude;
+            dataCurrentLatitude = currentLatitude;
+            dataCurrentLongitude = currentLongitude;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+            if ( isTTSActive && !htmlDirections.equals("") ) {
+                //tvDirection.setText(Html.fromHtml(htmlDirections));
+                TextToSpeechFunction();
+            }
+            setPolyline();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            String nextParams = "origin="+dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString();
+            nextParams += "&sensor=false";
+            nextParams += "&units=metric";
+            nextParams += "&mode="+DefineValue.GMAP_MODE;
+            nextParams += "&language="+ Locale.getDefault().getLanguage();
+
+            RequestParams rqParams = new RequestParams();
+            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+            rqParams.put("sensor", "false");
+            rqParams.put("units", "metric");
+            rqParams.put("mode", DefineValue.GMAP_MODE);
+            rqParams.put("language", Locale.getDefault().getLanguage() );
+
+
+            String tempParams = nextParams;
+            tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
+
+            getGoogleMapRoute(tempParams, 0);
+            return null;
+        }
+
+    }
+
+    public void getGoogleMapRoute(String tempParams, final int idx) {
+        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Timber.w("Error Koneksi login:" + response.toString());
+                try {
+
+                    JSONArray array = response.getJSONArray("routes");
+                    JSONObject routes = array.getJSONObject(0);
+                    JSONArray legs = routes.getJSONArray("legs");
+                    JSONObject steps = legs.getJSONObject(0);
+                    JSONObject distance = steps.getJSONObject("distance");
+                    String parsedDistance = distance.getString("text");
+
+                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                    String points = overviewPolyline.getString("points");
+
+                    encodedPoints = points;
+
+                    JSONArray directions = steps.getJSONArray("steps");
+
+                    if ( directions.length() > 0 ) {
+                        JSONObject toDirection = directions.getJSONObject(0);
+                        htmlDirections = toDirection.getString("html_instructions");
+
+                        JSONArray toDistanceArray = toDirection.getJSONArray("distance");
+                        JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
+                        String toDistanceString = toDistanceObject.getString("text");
+
+                        htmlDirections += " ( " + toDistanceString + " ) ";
+                        //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
+                    }
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+
+                Timber.w("Error Koneksi login:" + throwable.toString());
+
+            }
+
+        });
+
+
+
+    }
+
+    public void setPolyline() {
+        List<LatLng> list = new ArrayList<>();
+
+        if ( !encodedPoints.equals("") && globalMap != null) {
+
+            if ( lines.size() > 0 ) {
+                Polyline dataLine = lines.get(0);
+                dataLine.remove();
+
+                lines.clear();
+            }
+
+
+            list = decodePoly(encodedPoints);
+            line = globalMap.addPolyline(new PolylineOptions()
+                    .addAll(list)
+                    .width(3)
+                    .color(Color.RED)
+                    .geodesic(true)
+            );
+            lines.add(line);
+
+
+        }
+    }
+
+    private List<LatLng> decodePoly(String encoded) {
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng( (((double) lat / 1E5)),
+                    (((double) lng / 1E5) ));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
+    public void TextToSpeechFunction()
+    {
+        if ( !htmlDirections.equals("") ) {
+            textToSpeech.speak(android.text.Html.fromHtml(htmlDirections).toString(), TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
+    private void switchMenu(int idx_menu,Bundle data){
+        if (getApplicationContext() == null)
+            return;
+
+        MainPage fca = (MainPage) getApplicationContext();
+        fca.switchMenu(idx_menu, data);
     }
 }

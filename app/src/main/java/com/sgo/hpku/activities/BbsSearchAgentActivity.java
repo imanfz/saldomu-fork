@@ -1,5 +1,6 @@
 package com.sgo.hpku.activities;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,12 +23,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +66,7 @@ import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.entityRealm.AgentDetail;
 import com.sgo.hpku.entityRealm.AgentServiceDetail;
+import com.sgo.hpku.fragments.FragListCategoryBbs;
 import com.sgo.hpku.models.ShopDetail;
 import com.sgo.hpku.services.UpdateLocationService;
 
@@ -122,6 +128,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     SecurePreferences sp;
     private String completeAddress, districtName, provinceName, countryName, txId;
     private int timeDelayed = 30000;
+    EditText etJumlah;
+    Button btnProses;
 
     // Init
     private Handler handler = new Handler();
@@ -142,6 +150,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         realm = Realm.getDefaultInstance();
 
         locationIntent = new Intent(this, UpdateLocationService.class);
+        etJumlah                = (EditText) findViewById(R.id.etJumlah);
+        etJumlah.addTextChangedListener(jumlahChangeListener);
+
+        btnProses               = (Button) findViewById(R.id.btnProses);
+
         //startService(locationIntent);
 
 
@@ -150,13 +163,58 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
+
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
+//        txId                = "";
+
+        //mobility            = "Y";
         txId                = "";
 
+
+
+        btnProses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Boolean hasError    = false;
+
+                if(etJumlah.getText().toString().length()==0){
+                    etJumlah.requestFocus();
+                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
+                    hasError = true;
+                }
+                else if(Long.parseLong(etJumlah.getText().toString()) < 1){
+                    etJumlah.requestFocus();
+                    etJumlah.setError(getString(R.string.payfriends_amount_zero));
+                    hasError = true;
+                }
+
+                if ( !hasError ) {
+                    amount = etJumlah.getText().toString();
+
+                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                    SecurePreferences.Editor mEditor = prefs.edit();
+                    mEditor.putString(DefineValue.BBS_TX_ID, "");
+                    mEditor.putString(DefineValue.AMOUNT, amount);
+                    mEditor.apply();
+
+                    searchToko(currentLatitude, currentLongitude);
+
+                    etJumlah.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+
+                }
+
+            }
+        });
+
         gcmId               = "GCM-ID";
+
+
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
 
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
@@ -270,6 +328,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         currentLongitude = lastLocation.getLongitude();
         viewPager.getAdapter().notifyDataSetChanged();
         getCompleteLocationAddress();
+
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
+            searchToko(currentLatitude, currentLongitude);
+        }
 
         googleApiClient.disconnect();
 
@@ -706,135 +768,139 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void searchToko(Double latitude, Double longitude) {
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
+        txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
-        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-        SecurePreferences.Editor mEditor = prefs.edit();
-        mEditor.putDouble(DefineValue.LAST_LATITUDE, latitude);
-        mEditor.putDouble(DefineValue.LAST_LONGITUDE, longitude);
-        mEditor.apply();
+        if ( txId.equals("") ) {
+            RequestParams params = new RequestParams();
+            UUID rcUUID = UUID.randomUUID();
+            String dtime = DateTimeFormat.getCurrentDateTime();
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params.put(WebParams.CATEGORY_ID, categoryId );
-        params.put(WebParams.LATITUDE, latitude );
-        params.put(WebParams.LONGITUDE, longitude );
-        params.put(WebParams.RADIUS, "10");
-        params.put(WebParams.BBS_MOBILITY, mobility);
+            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+            SecurePreferences.Editor mEditor = prefs.edit();
+            mEditor.putDouble(DefineValue.LAST_LATITUDE, latitude);
+            mEditor.putDouble(DefineValue.LAST_LONGITUDE, longitude);
+            mEditor.apply();
 
-        if ( mobility.equals(DefineValue.STRING_YES) ) {
-            params.put(WebParams.KEY_VALUE, gcmId);
-            params.put(WebParams.KEY_CCY, DefineValue.IDR);
-            params.put(WebParams.KEY_CODE, sp.getString(DefineValue.USERID_PHONE, ""));
-            params.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
-            params.put(WebParams.KEY_ADDRESS, completeAddress);
-//            params.put(WebParams.KEY_DISTRICT, districtName);
-//            params.put(WebParams.KEY_PROVINCE, provinceName);
-//            params.put(WebParams.KEY_COUNTRY, countryName);
-            params.put(WebParams.KEY_AMOUNT, amount);
-            params.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+            params.put(WebParams.RC_UUID, rcUUID);
+            params.put(WebParams.RC_DATETIME, dtime);
+            params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.CATEGORY_ID, categoryId);
+            params.put(WebParams.LATITUDE, latitude);
+            params.put(WebParams.LONGITUDE, longitude);
+            params.put(WebParams.RADIUS, "10");
+            params.put(WebParams.BBS_MOBILITY, mobility);
 
-            //Start
-            handler.postDelayed(runnable, timeDelayed);
-        }
+            if (mobility.equals(DefineValue.STRING_YES)) {
+                params.put(WebParams.KEY_VALUE, gcmId);
+                params.put(WebParams.KEY_CCY, DefineValue.IDR);
+                params.put(WebParams.KEY_CODE, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
+                params.put(WebParams.KEY_ADDRESS, completeAddress);
+                //            params.put(WebParams.KEY_DISTRICT, districtName);
+                //            params.put(WebParams.KEY_PROVINCE, provinceName);
+                //            params.put(WebParams.KEY_COUNTRY, countryName);
+                params.put(WebParams.KEY_AMOUNT, amount);
+                params.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
-        currentLatitude = latitude;
-        currentLongitude = longitude;
+                //Start
+                handler.postDelayed(runnable, timeDelayed);
+            }
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + categoryId
-                + latitude + longitude ));
+            currentLatitude = latitude;
+            currentLongitude = longitude;
 
-        params.put(WebParams.SIGNATURE, signature);
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + categoryId
+                    + latitude + longitude));
 
-        MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                try {
+            params.put(WebParams.SIGNATURE, signature);
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+            MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    //llHeaderProgress.setVisibility(View.GONE);
+                    //pbHeaderProgress.setVisibility(View.GONE);
+                    try {
 
-
-                        txId            = response.getString(DefineValue.TX_ID2);
-                        JSONArray shops = response.getJSONArray("shop");
-
-                        shopDetails.clear();
-
-                        if ( shops.length() > 0 ) {
-
-                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                            SecurePreferences.Editor mEditor = prefs.edit();
-                            mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
-                            mEditor.putString(DefineValue.CATEGORY_NAME, categoryName );
-                            mEditor.putString(DefineValue.AMOUNT, amount );
-                            mEditor.apply();
-
-                            for (int j = 0; j < shops.length(); j++) {
-                                JSONObject object = shops.getJSONObject(j);
-                                ShopDetail shopDetail = new ShopDetail();
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
 
 
-                                shopDetail.setMemberId(object.getString("member_id"));
-                                shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
-                                shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                shopDetail.setMemberName(object.getString("member_name"));
-                                shopDetail.setShopAddress(object.getString("shop_address"));
+                            txId = response.getString(DefineValue.TX_ID2);
 
-                                shopDetails.add(shopDetail);
+                            JSONArray shops = response.getJSONArray("shop");
+
+                            shopDetails.clear();
+
+                            if (shops.length() > 0) {
+
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
+                                mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
+                                mEditor.putString(DefineValue.AMOUNT, amount);
+                                mEditor.apply();
+
+                                for (int j = 0; j < shops.length(); j++) {
+                                    JSONObject object = shops.getJSONObject(j);
+                                    ShopDetail shopDetail = new ShopDetail();
+
+
+                                    shopDetail.setMemberId(object.getString("member_id"));
+                                    shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
+                                    shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
+                                    shopDetail.setMemberName(object.getString("member_name"));
+                                    shopDetail.setShopAddress(object.getString("shop_address"));
+
+                                    shopDetails.add(shopDetail);
+                                }
                             }
+
+                            //tabPageAdapter.notifyDataSetChanged();
+
+
+                        } else {
+                            shopDetails.clear();
+                            Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                         }
 
-                        //tabPageAdapter.notifyDataSetChanged();
+                        viewPager.getAdapter().notifyDataSetChanged();
+                        new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
-
-
-
-                    } else {
-                        shopDetails.clear();
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    viewPager.getAdapter().notifyDataSetChanged();
-                    new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
 
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
+                private void ifFailure(Throwable throwable) {
+                    //llHeaderProgress.setVisibility(View.GONE);
+                    //pbHeaderProgress.setVisibility(View.GONE);
 
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                Timber.w("Error Koneksi:" + throwable.toString());
+                    Timber.w("Error Koneksi:" + throwable.toString());
 
-            }
+                }
 
-        });
+            });
+        }
 
     }
 
@@ -1077,6 +1143,31 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 mEditor.apply();
 
                                 startActivity(new Intent(getApplicationContext(), BbsMapViewByMemberActivity.class));
+
+                            } else if ( txStatus.equals(DefineValue.TX_STATUS_RJ) ) {
+
+                                handler.removeCallbacks(runnable);
+
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                mEditor.putString(DefineValue.AMOUNT, amount);
+                                mEditor.apply();
+
+                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                i.putExtra(DefineValue.AMOUNT, amount);
+                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                startActivity(i);
+
+//                                Intent intent = new Intent();
+//                                intent.putExtra(DefineValue.MSG_NOTIF, getString(R.string.msg_notif_batal_agen));
+//                                setResult(DefineValue.IDX_CATEGORY_SEARCH_AGENT,intent);
+//                                finish();//finishing activity
+
+                                //startActivity(new Intent(getApplicationContext(), Bb.class));
                             }
                         }
                     } catch (JSONException e) {
@@ -1112,5 +1203,35 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             });
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
+
+    private TextWatcher jumlahChangeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(s.toString().equals("0"))etJumlah.setText("");
+            if(s.length() > 0 && s.charAt(0) == '0'){
+                int i = 0;
+                for (; i < s.length(); i++){
+                    if(s.charAt(i) != '0')break;
+                }
+                etJumlah.setText(s.toString().substring(i));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
 }

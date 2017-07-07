@@ -17,6 +17,7 @@ import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsSearchAgentActivity;
 import com.sgo.hpku.activities.BbsSearchByLocationActivity;
 import com.sgo.hpku.activities.MainAgentActivity;
+import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.adapter.AgentListArrayAdapter;
 import com.sgo.hpku.coreclass.AgentConstant;
 import com.sgo.hpku.coreclass.DefineValue;
@@ -43,6 +44,10 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private AgentListArrayAdapter agentListArrayAdapter;
     private String mobility;
+
+    public AgentListFragment() {
+
+    }
 
     public AgentListFragment(String mobility) {
         this.mobility = mobility;

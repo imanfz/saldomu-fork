@@ -68,7 +68,7 @@ public class BBSTransaksiAmount extends Fragment {
     private TextView tvTitle;
     private EditText etAmount;
     private String transaksi, comm_code, member_code, benef_product_type,
-            api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc;
+            api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc, defaultAmount;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -114,6 +114,7 @@ public class BBSTransaksiAmount extends Fragment {
         if(bundle!= null) {
             listDataComm = new ArrayList<>();
             transaksi = bundle.getString(DefineValue.TRANSACTION);
+            defaultAmount = bundle.getString(DefineValue.AMOUNT, "");
 
             CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
             mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
@@ -129,6 +130,10 @@ public class BBSTransaksiAmount extends Fragment {
             ViewStub stub = (ViewStub) v.findViewById(R.id.transaksi_stub);
             tvTitle.setText(transaksi);
             emptyLayout.setVisibility(View.GONE);
+
+            if ( !defaultAmount.equals("") ) {
+                etAmount.setText(defaultAmount);
+            }
 
             BBSCommModel comm;
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {

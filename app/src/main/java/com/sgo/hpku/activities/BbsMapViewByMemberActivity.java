@@ -8,6 +8,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -66,7 +68,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
     private LocationRequest mLocationRequest;
-    ProgressDialog progdialog;
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
@@ -74,7 +75,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     Boolean isFirstLoad = true;
     String gcmId;
     Button btnDone, btnCancel;
-    ProgressDialog progdialog2;
+    ProgressDialog progdialog, progdialog2;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +91,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             createLocationRequest();
         }
 
+        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
         gcmId                   = "";
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
@@ -131,6 +133,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         title                   = getString(R.string.menu_item_title_map_member);
         initializeToolbar(title);
+
+        TextView t = (TextView) findViewById(R.id.name);
+        t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_member)));
     }
 
     @Override
@@ -165,6 +170,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             globalMap.clear();
 
             //new BbsMapNagivationActivity.GoogleMapRouteDirectionTask(targetLatitude, targetLongitude, currentLatitude, currentLongitude).execute();
+            globalMap.getUiSettings().setMapToolbarEnabled(false);
 
             LatLng latLng = new LatLng(agentLatitude, agentLongitude);
 
@@ -345,7 +351,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -358,14 +364,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.LONGITUDE, memberLongitude);
 
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
 
         params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progdialog.dismiss();
+                progdialog.dismiss();
 
                 try {
 
@@ -565,5 +571,20 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        //listener ketika button back di action bar diklik
+        if(id == android.R.id.home)
+        {
+            //kembali ke activity sebelumnya
+            onBackPressed();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

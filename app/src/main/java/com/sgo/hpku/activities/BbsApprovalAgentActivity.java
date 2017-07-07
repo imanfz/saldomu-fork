@@ -84,7 +84,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             createLocationRequest();
         }
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         title                   = getString(R.string.menu_item_title_trx_agent);
@@ -104,7 +104,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         tvShop                  = (TextView) findViewById(R.id.tvShop);
         spPilihan               = (Spinner) findViewById(R.id.spPilihan);
 
-        tvShop.setVisibility(View.GONE);
+        //tvShop.setVisibility(View.GONE);
         spPilihan.setVisibility(View.GONE);
 
         rlApproval              = (RelativeLayout) findViewById(R.id.rlApproval);
@@ -148,7 +148,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         */
 
 
-        if ( shopDetails.size() > 1 ) {
+        /*if ( shopDetails.size() > 1 ) {
             String[] arrayItems = new String[shopDetails.size()];
             for(int x = 0; x < shopDetails.size(); x++) {
                 arrayItems[x] = shopDetails.get(x).getMemberName();
@@ -157,7 +157,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             SpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayItems);
             spPilihan.setAdapter(SpinnerAdapter);
 
-        }
+        }*/
+
+        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+
         RequestParams params    = new RequestParams();
 
         UUID rcUUID             = UUID.randomUUID();
@@ -165,25 +168,29 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + customerId ));
 
         params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.getListTransactionAgent(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progdialog.dismiss();
+
 
                 try {
 
                     String code = response.getString(WebParams.ERROR_CODE);
+
                     if (code.equals(WebParams.SUCCESS_CODE)) {
+                        progdialog.dismiss();
+                        rlApproval.setVisibility(View.VISIBLE);
+
                         shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
                         shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
                         shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
@@ -191,10 +198,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
                         shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
                         shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
                         shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
+                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
                         shopDetail.setCommId(response.getString(WebParams.COMM_ID));
 
                         shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
@@ -205,6 +212,11 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
 
                         shopDetails.add(shopDetail);
+
+                        tvCategoryName.setText(shopDetail.getCategoryName());
+                        tvMemberName.setText(shopDetail.getMemberName());
+                        tvShop.setText(shopDetail.getShopName());
+                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
 
                         /*
                         RequestParams params2    = new RequestParams();
@@ -357,6 +369,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         rlApproval.setVisibility(View.VISIBLE);
 
+        /*
         tvCategoryName.setText(shopDetail.getCategoryName());
         tvMemberName.setText(shopDetail.getKeyName());
         tvAmount.setText(shopDetail.getCcyId()+" "+ CurrencyFormat.format(shopDetail.getAmount()));
@@ -370,6 +383,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             tvShop.setVisibility(View.GONE);
             spPilihan.setVisibility(View.VISIBLE);
         }
+        */
 
         btnApprove.setOnClickListener(
             new View.OnClickListener() {
@@ -453,10 +467,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         params3.put(WebParams.RC_UUID, rcUUID);
         params3.put(WebParams.RC_DATETIME, dtime);
-        params3.put(WebParams.APP_ID, BuildConfig.AppID);
+        params3.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
         params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params3.put(WebParams.TX_ID, txId);
+        params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
         params3.put(WebParams.MEMBER_ID, memberId);
         params3.put(WebParams.SHOP_ID, shopId);
         params3.put(WebParams.TX_STATUS, flagTxStatus);
@@ -467,7 +481,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             params3.put(WebParams.LONGITUDE, currentLongitude);
         }
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + memberId + shopId + flagTxStatus ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus ));
 
         params3.put(WebParams.SIGNATURE, signature);
 
@@ -481,23 +495,27 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                        SecurePreferences.Editor mEditor = prefs.edit();
-                        mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
-                        mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
-                        mEditor.putString(DefineValue.BBS_TX_ID, txId);
-                        mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
-                        mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
-                        mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
-                        mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
-                        mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
-                        mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                        mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
-                        mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
-                        mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
-                        mEditor.apply();
+                        if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
+                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                            SecurePreferences.Editor mEditor = prefs.edit();
+                            mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                            mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                            mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
+                            mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
+                            mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
+                            mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
+                            mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
+                            mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
+                            mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                            mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
+                            mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
+                            mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
+                            mEditor.apply();
 
-                        startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
+                            startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
+                        } else {
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
                     } else {
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();

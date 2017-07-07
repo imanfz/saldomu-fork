@@ -181,6 +181,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
 
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
+            globalMap.getUiSettings().setMapToolbarEnabled(false);
             globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
             MarkerOptions markerOptions = new MarkerOptions()

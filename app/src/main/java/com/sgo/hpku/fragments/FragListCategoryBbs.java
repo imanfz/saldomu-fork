@@ -1,11 +1,14 @@
 package com.sgo.hpku.fragments;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -50,15 +53,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
  * Created by thinkpad on 1/25/2017.
  */
 
-public class FragListCategoryBbs extends ListFragment {
+public class FragListCategoryBbs extends ListFragment implements EasyPermissions.PermissionCallbacks {
 
     private View v;
     BbsSearchCategoryAdapter bbsSearchCategoryAdapter;
@@ -70,12 +75,22 @@ public class FragListCategoryBbs extends ListFragment {
     Switch swMobilityAgent;
     LinearLayout llJumlah;
     EditText etJumlah;
-
+    SecurePreferences sp;
+    private static final int RC_LOCATION_PERM = 500;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SecurePreferences sp    = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp    = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Have permission, do the thing!
+            //Toast.makeText(getContext(), "TODO: Camera things", Toast.LENGTH_LONG).show();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
 
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.show();
@@ -220,7 +235,9 @@ public class FragListCategoryBbs extends ListFragment {
                 }
 
                 if ( !hasError ) {
+                    /*
                     Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
+
                     i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
                     i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
 
@@ -232,11 +249,67 @@ public class FragListCategoryBbs extends ListFragment {
                         i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                     }
                     switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    */
+
+                    Intent i=new Intent(getActivity(),BbsSearchAgentActivity.class);
+                    i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(position).getCategoryId());
+                    i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(position).getCategoryName());
+
+                    if (!swMobilityAgent.isChecked()) {
+                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                        i.putExtra(DefineValue.AMOUNT, "");
+                    } else {
+                        i.putExtra(DefineValue.AMOUNT, etJumlah.getText().toString());
+                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                    }
+
+                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                    SecurePreferences.Editor mEditor = prefs.edit();
+                    mEditor.putString(DefineValue.BBS_TX_ID, "");
+                    mEditor.apply();
+
+                    startActivityForResult(i, DefineValue.IDX_CATEGORY_SEARCH_AGENT);// Activity is started with requestCode 2
                 }
             }
 
         });
 
+    }
+
+    // Call Back method  to get the Message form other Activity
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==DefineValue.IDX_CATEGORY_SEARCH_AGENT)
+        {
+
+            try {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    if (extras.containsKey(DefineValue.MSG_NOTIF)) {
+                        String message = data.getStringExtra(DefineValue.MSG_NOTIF);
+
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+                        builder1.setTitle(getString(R.string.transaction));
+                        builder1.setMessage(message);
+                        builder1.setCancelable(true);
+                        builder1.setNeutralButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    }
+                }
+            }catch( Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -279,4 +352,14 @@ public class FragListCategoryBbs extends ListFragment {
 
         }
     };
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
 }
