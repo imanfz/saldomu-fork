@@ -327,6 +327,7 @@ public class DefineValue {
 
     public static String IS_AGENT = "isAgent";
 
+    public static String IS_BBS = "isBBS";
     //BBS
     public static String BBS_COMM_ATC = "ATC";
     public static String IS_JOIN_AGENT = "isJoinAgent";

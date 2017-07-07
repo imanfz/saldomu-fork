@@ -119,7 +119,8 @@ public class FragPayFriends extends Fragment {
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
-        dialogI = InformationDialog.newInstance(this,5);
+        dialogI = InformationDialog.newInstance(5);
+        dialogI.setTargetFragment(this,0);
 
         imgProfile = (ImageView) v.findViewById(R.id.img_profile);
         imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
@@ -389,7 +390,7 @@ public class FragPayFriends extends Fragment {
                                 break;
                             }
 
-                            finalNumber = NoHPFormat.editNoHP(chip.getEntry().getDestination());
+                            finalNumber = NoHPFormat.formatTo62(chip.getEntry().getDestination());
                             listName.add(chip.getEntry().getDisplayName());
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, finalName));
                         }

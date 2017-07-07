@@ -184,7 +184,8 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
         btn_check_contact.setOnClickListener(checkContactListener);
 
-        dialogI = InformationDialog.newInstance(this,9);
+        dialogI = InformationDialog.newInstance(9);
+        dialogI.setTargetFragment(this,0);
 
         mMFM = new ArrayList<>();
         mAdapter = new MyFriendAdapter(getActivity(),R.layout.list_myfriends_item,mMFM);
@@ -397,7 +398,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
                                 if(pCur != null) {
                                     while (pCur.moveToNext()) {
-                                        _phoneTemp = NoHPFormat.editNoHP(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                                        _phoneTemp = NoHPFormat.formatTo62(pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                                         switch (idx) {
                                             case 0:
                                                 _phone1 = _phoneTemp;

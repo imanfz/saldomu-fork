@@ -52,7 +52,7 @@ public class TopUpAtmActivity extends BaseActivity {
         TopupATMAdapter mAdapter = new TopupATMAdapter(getApplicationContext(), mList, maxTopupValue);
         lvAtm.setAdapter(mAdapter);
 
-        dialogI = InformationDialog.newInstance(this,1);
+        dialogI = InformationDialog.newInstance(1);
     }
 
     private void InitializeToolbar() {

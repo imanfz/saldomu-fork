@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,6 +16,7 @@ import android.widget.LinearLayout;
 import com.sgo.hpku.R;
 import com.sgo.hpku.adapter.BBSTransaksiPagerAdapter;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.dialogs.InformationDialog;
 import com.sgo.hpku.fragments.BBSTransaksiPagerItem;
 
 /**
@@ -29,6 +33,14 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     private LinearLayout pager_indicator;
     private BBSTransaksiPagerAdapter mAdapter;
     private String defaultAmount;
+    private InformationDialog dialogI;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dialogI = InformationDialog.newInstanceBBS(0);
+        dialogI.setTargetFragment(this,0);
+    }
 
     @Nullable
     @Override
@@ -97,6 +109,21 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.information, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_information){
+            if(!dialogI.isAdded())
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

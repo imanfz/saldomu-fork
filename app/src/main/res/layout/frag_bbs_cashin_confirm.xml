@@ -183,8 +183,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 android:orientation="horizontal"
                 android:gravity="center">
 
@@ -218,8 +218,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="6dp"
-                android:layout_marginLeft="26dp"
-                android:layout_marginRight="26dp">
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp">
 
                 <TableRow
                     android:layout_width="wrap_content"
@@ -228,20 +228,20 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_text_no_destination"
                         android:layout_weight="1"
-                        android:text="@string/no_rekening_tujuan"
+                        android:text="@string/no_tujuan"
                         android:textColor="@color/colorSecondaryDark"/>
 
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_benef_no"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+                    android:paddingTop="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -251,14 +251,14 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_benef_name"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
                 <TableRow
                     android:id="@+id/benef_city_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+                    android:paddingTop="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -268,14 +268,14 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_benef_city"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+                    android:paddingTop="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -285,14 +285,14 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_no_hp"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+                    android:paddingTop="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -302,14 +302,14 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_fee"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp">
+                    android:paddingTop="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -319,15 +319,15 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_total"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp">
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp">
 
                     <TextView
                         android:layout_weight="1"
@@ -337,7 +337,7 @@
                     <TextView
                         android:id="@+id/bbscashin_confirm_value_remark"
                         android:layout_weight="1"
-                        android:textSize="@dimen/text_size_medium_material"
+                        android:textSize="@dimen/sheet_item_textsize"
                         android:textColor="@color/colorSecondaryDark"/>
                 </TableRow>
 
@@ -349,8 +349,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="6dp"
-                android:layout_marginLeft="26dp"
-                android:layout_marginRight="26dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 >
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
