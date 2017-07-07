@@ -45,9 +45,9 @@ android {
             resValue "string", "dbname", "DevHPKu.db"
             resValue "string", "realmname", "com.sgo.hpkudev.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkurealmdev.realm"
+            resValue "string", "realmBillerName", "hpkurealm.realm"
             resValue "integer", "realBillerscheme", "0"
-            resValue "string", "realmBBSName", "hpkubbsdev.realm"
+            resValue "string", "realmBBSName", "hpkubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
@@ -56,27 +56,26 @@ android {
 //            buildConfigField 'String', "HeadAddress", '"http://192.168.88.22:59088/hpku/"'
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"AKD\""
-            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
+            buildConfigField 'String', "AppID", "\"HPKU\""
         }
         production {
             applicationId "com.sgo.hpku"
             resValue "string", "appname", "HPKu"
             resValue "string", "dbname", "hpku.db"
-            resValue "string", "realmname", "hpkurealm.realm"
+            resValue "string", "realmname", "com.sgo.hpku.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkubiller.realm"
+            resValue "string", "realmBillerName", "hpkurealm.realm"
             resValue "integer", "realBillerscheme", "0"
             resValue "string", "realmBBSName", "hpkubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
-//            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
-            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/akardaya2/\""
+//            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/hpku/\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/hpku/\""
             signingConfig signingConfigs.prodKey
-            versionCode = 21
-            versionName "2.20"
-            buildConfigField 'String', "AppID", "\"AKD\""
+            versionCode = 1
+            versionName "1.0"
+            buildConfigField 'String', "AppID", "\"HPKU\""
         }
     }
 

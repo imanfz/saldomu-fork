@@ -34,41 +34,41 @@
 -keepattributes InnerClasses
 -keepattributes *Annotation*
 
--keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
--keep public class com.sgo.orimakardaya.Beans.** { *; }
-#-keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
-#-keep public class com.sgo.orimakardaya.Beans.** { *; }
--keep class com.sgo.orimakardaya.activities.CreateGroupActivity$TempObjectData { *; }
+-keep public class com.sgo.hpku.Beans.** extends com.activeandroid.Model { *; }
+-keep public class com.sgo.hpku.Beans.** { *; }
+#-keep public class com.sgo.hpku.Beans.** extends com.activeandroid.Model { *; }
+#-keep public class com.sgo.hpku.Beans.** { *; }
+-keep class com.sgo.hpku.activities.CreateGroupActivity$TempObjectData { *; }
 
--keep class com.sgo.orimakardaya.coreclass.BalanceHandler { *; }
--keep class com.sgo.orimakardaya.coreclass.CollapseExpandAnimation { *; }
--keep class com.sgo.orimakardaya.coreclass.Contents { *; }
--keep class com.sgo.orimakardaya.coreclass.CoreApp { *; }
--keep class com.sgo.orimakardaya.coreclass.CurrencyFormat { *; }
--keep class com.sgo.orimakardaya.coreclass.HideKeyboard { *; }
--keep class com.sgo.orimakardaya.coreclass.InetHandler { *; }
--keep class com.sgo.orimakardaya.coreclass.LifeCycleHandler { *; }
--keep class com.sgo.orimakardaya.securities.Md5 { *; }
--keep class com.sgo.orimakardaya.coreclass.MyApiClient { *; }
--keep class com.sgo.orimakardaya.coreclass.MyPicasso { *; }
--keep class com.sgo.orimakardaya.coreclass.NotificationActionView { *; }
--keep class com.sgo.orimakardaya.coreclass.PeriodTime { *; }
--keep class com.sgo.orimakardaya.coreclass.RoundedImageView { *; }
--keep class com.sgo.orimakardaya.coreclass.QRCodeEncoder { *; }
--keep class com.sgo.orimakardaya.coreclass.WebParams { *; }
+-keep class com.sgo.hpku.coreclass.BalanceHandler { *; }
+-keep class com.sgo.hpku.coreclass.CollapseExpandAnimation { *; }
+-keep class com.sgo.hpku.coreclass.Contents { *; }
+-keep class com.sgo.hpku.coreclass.CoreApp { *; }
+-keep class com.sgo.hpku.coreclass.CurrencyFormat { *; }
+-keep class com.sgo.hpku.coreclass.HideKeyboard { *; }
+-keep class com.sgo.hpku.coreclass.InetHandler { *; }
+-keep class com.sgo.hpku.coreclass.LifeCycleHandler { *; }
+-keep class com.sgo.hpku.securities.Md5 { *; }
+-keep class com.sgo.hpku.coreclass.MyApiClient { *; }
+-keep class com.sgo.hpku.coreclass.MyPicasso { *; }
+-keep class com.sgo.hpku.coreclass.NotificationActionView { *; }
+-keep class com.sgo.hpku.coreclass.PeriodTime { *; }
+-keep class com.sgo.hpku.coreclass.RoundedImageView { *; }
+-keep class com.sgo.hpku.coreclass.QRCodeEncoder { *; }
+-keep class com.sgo.hpku.coreclass.WebParams { *; }
 
--keep class com.sgo.orimakardaya.dialogs.DefinedDialog { *; }
--keep class com.sgo.orimakardaya.dialogs.ReportBillerDialog { *; }
--keep class com.sgo.orimakardaya.dialogs.AlertDialogFrag { *; }
+-keep class com.sgo.hpku.dialogs.DefinedDialog { *; }
+-keep class com.sgo.hpku.dialogs.ReportBillerDialog { *; }
+-keep class com.sgo.hpku.dialogs.AlertDialogFrag { *; }
 
--keep class com.sgo.orimakardaya.fragments.ListCollectionPayment$TempObjectData { *; }
+-keep class com.sgo.hpku.fragments.ListCollectionPayment$TempObjectData { *; }
 
--keep class com.sgo.orimakardaya.fragments.FragAskForMoney$TempObjectData { *; }
--keep class com.sgo.orimakardaya.fragments.FragPayFriends$TempObjectData { *; }
--keep class com.sgo.orimakardaya.fragments.FragPayFriendsConfirm$TempTxID { *; }
--keep class com.sgo.orimakardaya.fragments.ListBillerMerchant$ListObject{ *; }
+-keep class com.sgo.hpku.fragments.FragAskForMoney$TempObjectData { *; }
+-keep class com.sgo.hpku.fragments.FragPayFriends$TempObjectData { *; }
+-keep class com.sgo.hpku.fragments.FragPayFriendsConfirm$TempTxID { *; }
+-keep class com.sgo.hpku.fragments.ListBillerMerchant$ListObject{ *; }
 
--keep class com.sgo.orimakardaya.services.BalanceService { *; }
+-keep class com.sgo.hpku.services.BalanceService { *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
