@@ -12,7 +12,7 @@
     <dimen name="edittext_spacingZero">0dp</dimen>
     <dimen name="edittext_spacingright">10dp</dimen>
     <dimen name="edittext_spacingleft">16dp</dimen>
-    
+
     <dimen name="chart_size">250dp</dimen>
     <dimen name="stroke_size">18dp</dimen>
 
@@ -71,7 +71,8 @@
     <dimen name="edit_text_inset_top_material">10dp</dimen>
 
     <dimen name="floating_window_z">16dp</dimen>
-    <dimen name="list_item_padding_horizontal_material">@dimen/action_bar_content_inset_material</dimen>
+    <dimen name="list_item_padding_horizontal_material">@dimen/action_bar_content_inset_material
+    </dimen>
 
     <dimen name="panel_menu_list_width">296dp</dimen>
     <dimen name="search_view_preferred_width">320dip</dimen>
@@ -96,6 +97,7 @@
     <dimen name="text_size_display_4_material">112sp</dimen>
     <dimen name="text_size_headline_material">24sp</dimen>
     <dimen name="text_size_large_material">22sp</dimen>
+    <dimen name="text_size_large_material_20">20sp</dimen>
     <dimen name="text_size_medium_material">18sp</dimen>
     <dimen name="text_size_menu_material">16sp</dimen>
     <dimen name="text_size_small_material">14sp</dimen>
@@ -104,11 +106,11 @@
     <dimen name="text_size_title_material">20sp</dimen>
     <dimen name="text_size_title_material_toolbar">20dp</dimen>
 
-    <item format="float" name="disabled_alpha_dark_material" type="dimen">0.30</item>
-    <item format="float" name="disabled_alpha_material_light_material" type="dimen">0.26</item>
-    <item format="float" name="highlight_alpha_colored_material" type="dimen">0.26</item>
-    <item format="float" name="highlight_alpha_dark_material" type="dimen">0.20</item>
-    <item format="float" name="highlight_alpha_light_material" type="dimen">0.12</item>
+    <item name="disabled_alpha_dark_material" format="float" type="dimen">0.30</item>
+    <item name="disabled_alpha_material_light_material" format="float" type="dimen">0.26</item>
+    <item name="highlight_alpha_colored_material" format="float" type="dimen">0.26</item>
+    <item name="highlight_alpha_dark_material" format="float" type="dimen">0.20</item>
+    <item name="highlight_alpha_light_material" format="float" type="dimen">0.12</item>
 
     <dimen name="notification_large_icon_height_material">64dp</dimen>
     <dimen name="notification_large_icon_width_material">64dp</dimen>
@@ -138,4 +140,9 @@
     <dimen name="button_margin">1sp</dimen>
     <dimen name="button_padding">8sp</dimen>
     <dimen name="max_logo_width">96sp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_5dp">5dp</dimen>
+
+    <dimen name="list_row_padding">14.0dip</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

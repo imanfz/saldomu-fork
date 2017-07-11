@@ -66,7 +66,9 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HeadAddress;
+    public static String headaddressfinal = BuildConfig.HeadAddress+"hpku/";
+
+    public static String headaodaddressfinal    = BuildConfig.HeadAddress+"agentlocation/";
 
     //Link webservices Signature
 
@@ -353,10 +355,24 @@ public class MyApiClient {
 
 
 
-    //-----------------------------------------------------------------------------------------------------------------
-
-
-
+    public static String LINK_SEARCH_AGENT = "http://116.90.162.173:59088/aod/SearchAgent/Retrieve";
+    public static String LINK_CATEGORY_LIST = headaodaddressfinal + "Category/Retrieve";
+    public static String LINK_MEMBER_SHOP_LIST = headaodaddressfinal + "Membershop/Retrieve";
+    public static String LINK_MEMBER_SHOP_DETAIL = headaodaddressfinal + "Membershop/Detailmember";
+    public static String LINK_UPDATE_MEMBER_LOCATION = headaodaddressfinal + "Manage/UpdateMemberLocation";
+    public static String LINK_REGISTER_CATEGORY_SHOP = headaodaddressfinal + "Category/Registercategoryshop";
+    public static String LINK_SETUP_OPENING_HOUR = headaodaddressfinal + "Manage/Insertopenhour";
+    public static String LINK_SEARCH_TOKO = headaodaddressfinal + "Agent/Retrieve";
+    public static String LINK_REGISTER_OPEN_CLOSE_TOKO = headaodaddressfinal + "Membershop/Registeropenclosed";
+    public static String LINK_UPDATE_CLOSE_SHOP_TODAY = headaodaddressfinal + "Manage/UpdateClosedShopToday";
+    public static String LINK_GOOGLE_MAP_API_ROUTE = "http://maps.googleapis.com/maps/api/directions/json";
+    public static String LINK_TRANSACTION_AGENT = headaodaddressfinal + "Transaction/Retrieve";
+    public static String LINK_UPDATE_APPROVAL_TRX_AGENT = headaodaddressfinal + "Transaction/Updatetransaction";
+    public static String LINK_UPDATE_LOCATION_AGENT = headaodaddressfinal + "Transaction/Updateagent";
+    public static String LINK_UPDATE_LOCATION_MEMBER = headaodaddressfinal + "Transaction/Updatemember";
+    public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
+    public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
+    public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -1115,4 +1131,111 @@ public class MyApiClient {
     private void setmContext(Context mContext) {
         this.mContext = mContext;
     }
+
+    public static void updateMemberLocation(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update member location:"+LINK_UPDATE_MEMBER_LOCATION);
+        post(mContext,LINK_UPDATE_MEMBER_LOCATION, params, responseHandler);
+    }
+
+    public static void registerCategoryShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address register category shop:"+LINK_REGISTER_CATEGORY_SHOP);
+        post(mContext,LINK_REGISTER_CATEGORY_SHOP, params, responseHandler);
+    }
+
+    public static void setupOpeningHour(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address register category shop:"+LINK_SETUP_OPENING_HOUR);
+        post(mContext,LINK_SETUP_OPENING_HOUR, params, responseHandler);
+    }
+
+    public static void searchToko(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address search toko:"+LINK_SEARCH_TOKO);
+        post(mContext,LINK_SEARCH_TOKO, params, responseHandler);
+    }
+
+    public static void getCategoryList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get category list:"+LINK_CATEGORY_LIST);
+        post(mContext,LINK_CATEGORY_LIST, params, responseHandler);
+    }
+
+    public static void getMemberShopList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get member shop list:"+LINK_MEMBER_SHOP_LIST);
+        post(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
+    }
+
+    public static void getMemberShopDetail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get member shop detail:"+LINK_MEMBER_SHOP_DETAIL);
+        post(mContext,LINK_MEMBER_SHOP_DETAIL, params, responseHandler);
+    }
+
+    public static void searchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent search agent:"+LINK_SEARCH_AGENT);
+        post(mContext,LINK_SEARCH_AGENT, params, responseHandler);
+    }
+
+    public static void registerOpenCloseShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent register open close shop:"+LINK_REGISTER_OPEN_CLOSE_TOKO);
+        post(mContext,LINK_REGISTER_OPEN_CLOSE_TOKO, params, responseHandler);
+    }
+
+    public static void updateCloseShopToday(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent update close shop today:"+LINK_UPDATE_CLOSE_SHOP_TODAY);
+        post(mContext,LINK_UPDATE_CLOSE_SHOP_TODAY, params, responseHandler);
+    }
+
+    public static void getListTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get trx agent list:"+LINK_TRANSACTION_AGENT);
+        post(mContext,LINK_TRANSACTION_AGENT, params, responseHandler);
+    }
+
+    public static void updateTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update approval trx agent:"+LINK_UPDATE_APPROVAL_TRX_AGENT);
+        post(mContext,LINK_UPDATE_APPROVAL_TRX_AGENT, params, responseHandler);
+    }
+
+    public static void getGoogleMapRoute(Context mContext, String queryString, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent google maps route:"+LINK_GOOGLE_MAP_API_ROUTE);
+
+        RequestParams params = new RequestParams();
+        postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
+    }
+
+    public static void updateLocationAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location agent:"+LINK_UPDATE_LOCATION_AGENT);
+        post(mContext,LINK_UPDATE_LOCATION_AGENT, params, responseHandler);
+    }
+
+    public static void updateLocationMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location member:"+LINK_UPDATE_LOCATION_MEMBER);
+        post(mContext,LINK_UPDATE_LOCATION_MEMBER, params, responseHandler);
+    }
+
+    public static void checkTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address check transaction member:"+LINK_CHECK_TRANSACTION_MEMBER);
+        post(mContext,LINK_CHECK_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void confirmTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address confirm transaction member:"+LINK_CONFIRM_TRANSACTION_MEMBER);
+        post(mContext,LINK_CONFIRM_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void cancelTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address cancel transaction member:"+LINK_CANCEL_TRANSACTION_MEMBER);
+        post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
+    }
 }
+

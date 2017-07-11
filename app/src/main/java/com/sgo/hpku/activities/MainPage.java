@@ -57,6 +57,7 @@ import com.sgo.hpku.fragments.RightSideDrawMenu;
 import com.sgo.hpku.loader.UtilsLoader;
 import com.sgo.hpku.services.AppInfoService;
 import com.sgo.hpku.services.BalanceService;
+import com.sgo.hpku.services.UpdateLocationService;
 import com.sgo.hpku.services.UpdateBBSCity;
 import com.sgo.hpku.services.UserProfileService;
 
@@ -145,7 +146,10 @@ public class MainPage extends BaseActivity{
             InitializeNavDrawer();
             setupFab();
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+
+            startService(new Intent(this, UpdateLocationService.class));
         }
+
 
     }
 
@@ -687,7 +691,9 @@ public class MainPage extends BaseActivity{
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("logout:"+response.toString());
+                            stopService(new Intent(MainPage.this, UpdateLocationService.class));
                             Logout();
+
                         } else {
                             progdialog.dismiss();
                             Timber.d("isi error logout:"+response.toString());

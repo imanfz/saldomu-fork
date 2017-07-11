@@ -67,8 +67,9 @@ public class BBSTransaksiAmount extends Fragment {
     private ProgressDialog progdialog;
     private TextView tvTitle;
     private EditText etAmount;
-    private String transaksi, comm_code, member_code, benef_product_type="",
-            api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc;
+    private String transaksi, comm_code, member_code, benef_product_type,
+            api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc, defaultAmount;
+
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -113,6 +114,7 @@ public class BBSTransaksiAmount extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
+            defaultAmount = bundle.getString(DefineValue.AMOUNT, "");
 
         } else {
             getFragmentManager().popBackStack();

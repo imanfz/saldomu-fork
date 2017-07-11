@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80FFFFFF"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        >
+
+        <Switch
+            android:id="@+id/swMobilityAgent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="20dp"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:textColor="@color/colorPrimaryDark"
+            android:textOff="@string/no"
+            android:textOn="@string/yes"
+            android:text="@string/bbs_agent_mobility" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/llJumlah"
+        >
+
+            <TextView
+                android:id="@+id/text_jumlahSGOplus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                android:text="@string/sgoplus_text_amount"
+                android:textColor="@color/colorPrimaryDark"
+                android:paddingTop="10dp"
+                />
+            <EditText
+                android:id="@+id/etJumlah"
+                android:layout_below="@+id/text_jumlahSGOplus"
+                android:enabled="true"
+                android:maxLength="10"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llGridBbsCategory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorSecondaryWhiteFixed">
+
+
+
+        <GridView
+            android:layout_weight="2"
+            android:numColumns="auto_fit"
+            android:gravity="center"
+            android:columnWidth="100dp"
+            android:stretchMode="columnWidth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gridBbsCategory"
+            android:padding="2dp"
+            android:background="@color/colorSecondaryWhiteFixed"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            />
+
+
+
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:dividerHeight="1dp"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+</LinearLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- toolbar -->
+    <include android:id="@+id/main_toolbar" layout="@layout/toolbar_main"/>
+
+    <!-- LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/llJumlah"
+        >
+
+        <TextView
+            android:id="@+id/text_jumlahSGOplus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            android:text="@string/sgoplus_text_amount"
+            android:textColor="@color/colorPrimaryDark"
+            android:paddingTop="10dp"
+            />
+        <EditText
+            android:id="@+id/etJumlah"
+            android:layout_below="@+id/text_jumlahSGOplus"
+            android:enabled="true"
+            android:maxLength="10"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/btnProses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/submit" />
+    </LinearLayout -->
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/sliding_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:background="@android:color/white" />
+
+    <RelativeLayout android:orientation="horizontal"
+        android:layout_width="fill_parent" android:layout_height="60dip"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <EditText
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:id="@+id/etJumlah"
+                android:hint="@string/jumlah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryDark"
+                android:maxLength="10"
+                android:inputType="number"
+                android:textSize="@dimen/abc_text_size_medium_material"
+                />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:id="@+id/btnProses"
+                android:text="@string/submit"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:paddingRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/agentProfilePic"
+            android:scaleType="fitXY" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:id="@+id/agentRate"
+            android:src="@drawable/rate" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:id="@+id/available"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#008000"
+            android:text="@string/availability_agent_profile_bbs_label" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/agentName"
+            style="@style/NameAgentProfileBbs" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp" >
+
+            <ImageView
+                android:scaleType="fitXY"
+                style="@style/LastOnlineIconAgentProfileBbs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/last_online_agent_profile_bbs_label"
+                style="@style/LastOnlineLabelAgentProfileBbs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/agentLastOnline"
+                style="@style/LastOnlineAgentProfileBbs" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="75dp" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:scaleType="fitXY"
+                    style="@style/AddressIconAgentProfileBbs" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/agentAddress"
+                    style="@style/AddressAgentProfileBbs" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/agent_service_list"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <!--<ImageView-->
+                    <!--android:scaleType="fitXY"-->
+                    <!--style="@style/CashInIconAgentProfileBbs" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginLeft="4dp"-->
+                    <!--android:layout_marginStart="4dp"-->
+                    <!--android:text="@string/cash_in_agent_profile_bbs_label"-->
+                    <!--style="@style/CashInCashOutLabelAgentProfileBbs" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingLeft="4dp"-->
+                    <!--android:paddingStart="4dp"-->
+                    <!--android:paddingRight="4dp"-->
+                    <!--android:text="@string/colon_agent_profile_bbs_label"-->
+                    <!--style="@style/CashInCashOutLabelAgentProfileBbs"/>-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingLeft="1dp"-->
+                    <!--android:paddingStart="1dp"-->
+                    <!--android:paddingRight="3dp"-->
+                    <!--android:text="YES"-->
+                    <!--style="@style/CashInCashOutAgentProfileBbs" />-->
+
+
+                <!--<ImageView-->
+                    <!--android:scaleType="fitXY"-->
+                    <!--style="@style/CashOutIconAgentProfileBbs" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginStart="4dp"-->
+                    <!--android:layout_marginLeft="4dp"-->
+                    <!--android:text="@string/cash_out_agent_profile_bbs_label"-->
+                    <!--style="@style/CashInCashOutLabelAgentProfileBbs" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingLeft="4dp"-->
+                    <!--android:paddingStart="4dp"-->
+                    <!--android:paddingRight="4dp"-->
+                    <!--android:text="@string/colon_agent_profile_bbs_label"-->
+                    <!--style="@style/CashInCashOutLabelAgentProfileBbs" />-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingLeft="1dp"-->
+                    <!--android:paddingStart="1dp"-->
+                    <!--android:paddingRight="3dp"-->
+                    <!--android:text="NO"-->
+                    <!--style="@style/CashInCashOutAgentProfileBbs" />-->
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/agentMapBtn"
+            android:scaleType="fitXY"
+            android:src="@drawable/location"
+            android:layout_below="@+id/agentName"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance_agent_profile_bbs_label"
+                style="@style/DistanceLabelAgentProfileBbs"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/agentDistance"
+                style="@style/DistanceAgentProfileBbs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance_measurement_agent_profile_bbs_label"
+                style="@style/DistanceAgentProfileBbs"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+
+
+
+</LinearLayout>

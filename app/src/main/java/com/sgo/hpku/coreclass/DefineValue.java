@@ -1,4 +1,6 @@
-package com.sgo.hpku.coreclass;/*
+package com.sgo.hpku.coreclass;
+
+/*
   Created by Administrator on 11/6/2015.
  */
 
@@ -276,6 +278,7 @@ public class DefineValue {
     public static String WAITING_CLAIM = "WC";
     public static String USER_IS_NEW = "userIsNew";
 
+    public static String INDEX = "index";
     public static String BILLER_TYPE_BPJS = "bpjs";
     public static String BILLER_TYPE_PLN_TKN = "tkn";
     public static String BILLER_TYPE_NON_TAG = "non";
@@ -284,10 +287,47 @@ public class DefineValue {
     public static String IS_SHOW_DESCRIPTION = "isDescription";
     public static String IS_PLN = "isPLN";
 
-    public static String IS_AGENT = "isAgent";
-    public static String IS_BBS = "isBBS";
-    public static String INDEX = "index";
+    public static String SHOP_ID = "shop_id";
+    public static String CLOSED_TYPE_NONE   = "NONE";
+    public static String CLOSED_TYPE_DATE   = "DATE";
+    public static String CLOSED_TYPE_DAY    = "DAY";
 
+    public static String LAST_CURRENT_LATITUDE      = "lastCurrentLatitude";
+    public static String LAST_CURRENT_LONGITUDE     = "lastCurrentLongitude";
+
+    public static String SHOP_MERCHANT  = "M";
+    public static String SHOP_AGENT     = "A";
+
+    public static String SHOP_OPEN      = "O";
+    public static String SHOP_CLOSE     = "C";
+
+    public static String CATEGORY_ID    = "category_id";
+    public static String CATEGORY_NAME  = "category_name";
+    public static String CATEGORY_CODE  = "category_code";
+
+    //GOOGLE MAP DEFINE PARAMETERS
+    public static float ZOOM_CAMERA_POSITION                = 14.0f; //16.0f
+    public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
+    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
+    public static int DISPLACEMENT                          = 1;
+    public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
+
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 1; //30meter
+
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 1000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 1000; //58 seconds
+    public static int MEMBER_DISPLACEMENT                           = 1; //30meter
+
+    public static String DEFAULT_LANGUAGE_CODE              = "id";
+    public static String GMAP_MODE                          = "driving";
+	public static String RECEIVER_ID						= "GOMOBILE";
+
+    public static String IS_AGENT = "isAgent";
+
+    public static String IS_BBS = "isBBS";
     //BBS
     public static String BBS_COMM_ATC = "ATC";
     public static String IS_JOIN_AGENT = "isJoinAgent";
@@ -317,4 +357,43 @@ public class DefineValue {
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+
+    public static String BBS_SENDER_ID							= "GOAPK";
+    public static String BBS_RECEIVER_ID						= "GOMOBILE";
+    public static String BBS_AGENT_MOBILITY                     = "mobility";
+
+    public static String TX_ID2             = "tx_id";
+    public static String KEY_CODE           = "key_code";
+    public static String KEY_NAME           = "key_name";
+    public static String KEY_ADDRESS        = "key_address";
+    public static String KEY_DISTRICT       = "key_district";
+    public static String KEY_PROVINCE       = "key_province";
+    public static String KEY_COUNTRY        = "key_country";
+    public static String KEY_CCY            = "key_ccy";
+    public static String KEY_AMOUNT         = "key_amount";
+    public static String KEY_LATITUDE       = "key_latitude";
+    public static String KEY_LONGITUDE      = "key_longitude";
+
+    public static String STRING_ACCEPT      = "S";
+    public static String STRING_CANCEL      = "F";
+
+    public static String BBS_TX_ID          = "BbsTxId";
+    public static String BBS_MEMBER_ID      = "BbsMemberId";
+    public static String BBS_SHOP_ID        = "BbsShopId";
+    public static String LAST_LATITUDE      = "LastLatitude";
+    public static String LAST_LONGITUDE     = "LastLongitude";
+    public static String AGENT_LATITUDE         = "AgentLatitude";
+    public static String AGENT_LONGITUDE        = "AgentLongitude";
+    public static String MEMBER_LATITUDE        = "MemberLatitude";
+    public static String MEMBER_LONGITUDE       = "MemberLongitude";
+    public static String BENEF_LATITUDE         = "BenefLatitude";
+    public static String BENEF_LONGITUDE        = "BenefLongitude";
+    public static String TX_STATUS_OP           = "OP";
+    public static String TX_STATUS_RJ           = "RJ";
+    public static int IDX_CATEGORY_SEARCH_AGENT = 1111;
+    public static String MSG_NOTIF              = "MsgNotif";
+
+    public static String DEFAULT_RADIUS         = "10";
+
 }
+

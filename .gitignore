@@ -12,3 +12,5 @@ VPI/build/generated
 VPI/build
 *.apk
 SecurePref/build
+library/
+maven_push.gradle

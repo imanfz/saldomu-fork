@@ -18,11 +18,13 @@ public class BBSTransaksiPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
     private FragmentManager fm;
+    private String defaultAmount;
 
-    public BBSTransaksiPagerAdapter(Context mContext, FragmentManager fm) {
+    public BBSTransaksiPagerAdapter(Context mContext, FragmentManager fm, String defaultAmount) {
         super(fm);
         this.mContext = mContext;
         this.fm = fm;
+        this.defaultAmount = defaultAmount;
     }
 
     @Override
@@ -41,7 +43,12 @@ public class BBSTransaksiPagerAdapter extends FragmentPagerAdapter {
             args.putString(DefineValue.TRANSACTION, mContext.getString(R.string.cash_out));
 
         }
+        args.putString(DefineValue.AMOUNT, this.defaultAmount);
         mFrag.setArguments(args);
         return mFrag;
+    }
+
+    public String getDefaultAmount() {
+        return this.defaultAmount;
     }
 }

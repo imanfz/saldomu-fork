@@ -10,6 +10,8 @@ import com.sgo.hpku.Beans.bank_biller_model;
 import com.sgo.hpku.R;
 //import com.sgo.hpku.entityRealm.Account_Collection_Model;
 import com.sgo.hpku.coreclass.AppRealMigration;
+import com.sgo.hpku.entityRealm.AgentDetail;
+import com.sgo.hpku.entityRealm.AgentServiceDetail;
 import com.sgo.hpku.entityRealm.BBSBankModel;
 import com.sgo.hpku.entityRealm.BBSCommModel;
 //import com.sgo.hpku.entityRealm.Biller_Data_Model;
@@ -17,6 +19,7 @@ import com.sgo.hpku.entityRealm.BBSCommModel;
 //import com.sgo.hpku.entityRealm.Denom_Data_Model;
 //import com.sgo.hpku.entityRealm.List_Account_Nabung;
 import com.sgo.hpku.entityRealm.List_BBS_City;
+import com.sgo.hpku.entityRealm.MerchantCommunityList;
 //import com.sgo.hpku.entityRealm.List_Bank_Nabung;
 //import com.sgo.hpku.entityRealm.Target_Saving_Model;
 //import com.sgo.hpku.entityRealm.bank_biller_model;
@@ -45,7 +48,7 @@ public class RealmManager {
     private static class BillerModule {
     }
 
-    @RealmModule(classes = { List_BBS_City.class})
+    @RealmModule(classes = { List_BBS_City.class, AgentDetail.class, AgentServiceDetail.class, MerchantCommunityList.class})
     private static class AppModule {
     }
 

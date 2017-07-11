@@ -69,10 +69,10 @@ public class DateTimeFormat {
     }
 
     public static String getCurrentDateMinus(int minus){
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
-      Calendar calendar=Calendar.getInstance();
-      calendar.add(Calendar.DAY_OF_YEAR, -minus);
-      return df.format(calendar.getTime());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, -minus);
+        return df.format(calendar.getTime());
     }
 
     public static String getCurrentDatePlus(int plus){
@@ -111,6 +111,11 @@ public class DateTimeFormat {
 
     public static String convertDatetoString(Date _date){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        return dateFormat.format(_date);
+    }
+
+    public static String convertDatetoString(Date _date, String format){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format, new Locale("id","ID"));
         return dateFormat.format(_date);
     }
 

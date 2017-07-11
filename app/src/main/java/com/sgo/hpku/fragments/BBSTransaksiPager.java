@@ -32,6 +32,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     private ImageView[] dots;
     private LinearLayout pager_indicator;
     private BBSTransaksiPagerAdapter mAdapter;
+    private String defaultAmount;
     private InformationDialog dialogI;
 
     @Override
@@ -53,9 +54,15 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+        defaultAmount   = "";
+        if(bundle != null) {
+            defaultAmount = bundle.getString(DefineValue.AMOUNT, "");
+        }
+
         pager_indicator = (LinearLayout) v.findViewById(R.id.viewPagerCountDots);
         mViewPager = (ViewPager) v.findViewById(R.id.bbs_transaksi_pager);
-        mAdapter = new BBSTransaksiPagerAdapter(getActivity(), getChildFragmentManager());
+        mAdapter = new BBSTransaksiPagerAdapter(getActivity(), getChildFragmentManager(), defaultAmount);
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
 
@@ -69,6 +76,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
         if(bundle != null){
             String type = bundle.getString(DefineValue.TYPE,"");
             if(type != null && !type.isEmpty()){
+
                 if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
                     mViewPager.setCurrentItem(0);
                 else

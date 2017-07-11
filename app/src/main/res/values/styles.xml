@@ -15,7 +15,7 @@
         <item name="android:typeface">sans</item>
     </style>
 
-    <style name="CustomTitlePageIndicator" >
+    <style name="CustomTitlePageIndicator">
         <item name="android:background">@color/colorSecondaryWhite</item>
         <item name="footerColor">@color/colorPrimary</item>
         <item name="footerLineHeight">0dp</item>
@@ -56,7 +56,7 @@
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
-    <style name="Reg_Button_Ripple" parent="" >
+    <style name="Reg_Button_Ripple" parent="">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
@@ -128,4 +128,111 @@
         <item name="android:singleLine">true</item>
     </style>
 
+    <!-- agent_profile_bbs -->
+    <!-- name -->
+    <style name="NameAgentProfileBbs">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- distance -->
+    <style name="DistanceLabelAgentProfileBbs">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#1E90FF</item>
+    </style>
+
+    <style name="DistanceAgentProfileBbs">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#FF4500</item>
+    </style>
+
+    <!-- last online -->
+    <style name="LastOnlineIconAgentProfileBbs">
+        <item name="android:src">@drawable/clock</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="LastOnlineLabelAgentProfileBbs">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#808080</item>
+    </style>
+
+    <style name="LastOnlineAgentProfileBbs">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#808080</item>
+    </style>
+
+    <!-- address -->
+    <style name="AddressIconAgentProfileBbs">
+        <item name="android:src">@drawable/address</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="AddressAgentProfileBbs">
+        <item name="android:textSize">13sp</item>
+    </style>
+
+    <!-- cash in / cash out -->
+    <style name="CashInIconAgentProfileBbs">
+        <item name="android:src">@drawable/cash_in</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="CashOutIconAgentProfileBbs">
+        <item name="android:src">@drawable/cash_out</item>
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="CashInCashOutLabelAgentProfileBbs">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CashInCashOutAgentProfileBbs">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#DC143C</item>
+    </style>
+
+    <!-- Phone Call -->
+    <style name="PhoneCallIconAgentProfileBbs">
+        <item name="android:src">@drawable/call</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <!-- SMS -->
+    <style name="SmsIconAgentProfileBbs">
+        <item name="android:src">@drawable/sms</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <!-- Email -->
+    <style name="EmailIconAgentProfileBbs">
+        <item name="android:src">@drawable/email</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+    <!-- END agent_profile_bbs -->
+
+    <!-- Email -->
+    <style name="DirectionIconAgentProfileBbs">
+        <item name="android:src">@drawable/ic_directions_car_black</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+
+    <style name="Theme.MyTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.MyTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!-- END agent_profile_bbs -->
 </resources>
