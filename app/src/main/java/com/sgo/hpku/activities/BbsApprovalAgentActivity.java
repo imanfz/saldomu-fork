@@ -398,11 +398,13 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         itemId = 0;
                     }
 
-                    shopId          = shopDetails.get(itemId).getShopId();
-                    memberId        = shopDetails.get(itemId).getMemberId();
-                    gcmId           = "";
+                    if ( shopDetails.size() > 0 ) {
+                        shopId = shopDetails.get(itemId).getShopId();
+                        memberId = shopDetails.get(itemId).getMemberId();
+                        gcmId = "";
 
-                    updateTrxAgent();
+                        updateTrxAgent();
+                    }
                 }
             }
         );
@@ -420,10 +422,11 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         itemId = 0;
                     }
 
-
-                    shopId          = shopDetails.get(itemId).getShopId();
-                    memberId        = shopDetails.get(itemId).getMemberId();
-                    updateTrxAgent();
+                    if ( shopDetails.size() > 0 ) {
+                        shopId = shopDetails.get(itemId).getShopId();
+                        memberId = shopDetails.get(itemId).getMemberId();
+                        updateTrxAgent();
+                    }
                 }
             }
         );

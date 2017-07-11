@@ -1,8 +1,10 @@
 package com.sgo.hpku.activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -33,6 +35,7 @@ import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.CustomAutoCompleteTextView;
 import com.sgo.hpku.coreclass.DateTimeFormat;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.GlobalSetting;
 import com.sgo.hpku.coreclass.HashMessage;
 import com.sgo.hpku.coreclass.InetHandler;
 import com.sgo.hpku.coreclass.MyApiClient;
@@ -60,10 +63,12 @@ import java.util.Locale;
 import java.util.UUID;
 
 import io.realm.Realm;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class BbsMemberLocationActivity extends BaseActivity implements OnMapReadyCallback,
-        AdapterView.OnItemClickListener, TextView.OnEditorActionListener {
+        AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks {
 
     String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId;
     Realm myRealm;
@@ -82,13 +87,46 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        memberId            = getIntent().getStringExtra("memberId");
+        shopId              = getIntent().getStringExtra("shopId");
+
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    GlobalSetting.RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(this) )
+        {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+
+
+        }
+
         myRealm = Realm.getDefaultInstance();
 
         setActionBarIcon(R.drawable.ic_arrow_left);
 
 
-        memberId            = getIntent().getStringExtra("memberId");
-        shopId              = getIntent().getStringExtra("shopId");
+
 
         memberDetail        = myRealm.where(MerchantCommunityList.class).equalTo("memberId", memberId).equalTo("shopId", shopId).findFirst();
 
@@ -136,7 +174,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
-                    params.put(WebParams.APP_ID, BuildConfig.AppID);
+                    params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, memberDetail.getShopId());
@@ -148,7 +186,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.LONGITUDE, selectedLong);
 
                     String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + memberDetail.getShopId().toUpperCase()
-                            + BuildConfig.AppID + selectedLat + selectedLong));
+                            + BuildConfig.AppIDHpku + selectedLat + selectedLong));
 
                     params.put(WebParams.SIGNATURE, signature);
 
@@ -385,5 +423,37 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         return false;
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Intent i = new Intent(this, BbsMemberLocationActivity.class);
+        i.putExtra("memberId", memberId);
+        i.putExtra("shopId", shopId);
+        startActivity(i);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+            alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 }

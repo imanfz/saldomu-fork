@@ -1,9 +1,12 @@
 package com.sgo.hpku.activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -83,12 +86,15 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class BbsSearchAgentActivity extends BaseActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener
+        LocationListener,
+        EasyPermissions.PermissionCallbacks
 {
 
     private int lastLocationResult   = AgentConstant.FALSE;
@@ -130,6 +136,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private int timeDelayed = 30000;
     EditText etJumlah;
     Button btnProses;
+    private static final int RC_LOCATION_PERM = 500;
 
     // Init
     private Handler handler = new Handler();
@@ -146,6 +153,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            runningApp();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
 
         realm = Realm.getDefaultInstance();
 
@@ -217,6 +232,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
 
+
+
+
+    }
+
+    public void runningApp() {
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
         tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -228,8 +249,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         tabLayout.setupWithViewPager(viewPager);
 
         process();
-
-
     }
 
     @Override
@@ -975,6 +994,48 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
         viewPager.setCurrentItem(0);
         viewPager.getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        //runningApp();
+        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+        i.putExtra(DefineValue.AMOUNT, "");
+        startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+
+        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+        // This will display a dialog directing them to enable the permission in app settings.
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this).build().show();
+        } else {
+            AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+            alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+            alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {

@@ -66,7 +66,8 @@ android {
             versionCode = 1
             versionName "1.0"
             buildConfigField 'String', "AppID", "\"AKD\""
-            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
+            //buildConfigField 'String', "AppIDHpku", "\"HPKU\""
+            buildConfigField 'String', "AppIDHpku", "\"AKD\""
         }
         production {
             applicationId "com.sgo.hpku"
@@ -81,11 +82,12 @@ android {
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
-            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/akardaya2/\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/\""
             signingConfig signingConfigs.prodKey
             versionCode = 21
             versionName "2.20"
             buildConfigField 'String', "AppID", "\"AKD\""
+            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
         }
     }
 

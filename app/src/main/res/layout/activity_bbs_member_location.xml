@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:onClick="onMapSearch"
-            android:text="Search" />
+            android:text="@string/bbs_agent_search" />
 
     </LinearLayout>
 

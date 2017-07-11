@@ -784,7 +784,7 @@
     <string name="err_empty_closed_dates">Silakan pilih tanggal tutup toko</string>
     <string name="err_empty_closed_days">Silakan pilih hari tutup toko</string>
     <string name="setup_merchant_category">Setup Merchant Category</string>
-    <string name="update_merchant_location">Setting Lokasi</string>
+    <string name="update_merchant_location">Atur Lokasi</string>
     <string name="district">Kota/Kabupaten</string>
     <string name="province">Propinsi</string>
     <string name="err_empty_merchant_address">Silakan isi dengan alamat</string>
@@ -952,5 +952,8 @@
     <string name="bbs_trx_detail_member"><![CDATA[<b>Detail Transaksi</b><br />Untuk Member]]></string>
 
     <string name="pulsaagent_spinner_choose_text">Pilih Operator</string>
-
+    <string name="alertbox_title_warning">Peringatan</string>
+    <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
+    <string name="bbs_agent_search">Cari</string>
+    <string name="alertbox_gps_warning">GPS belum aktif, apakah Anda mau mengaktifkan GPS Anda?</string>
 </resources>

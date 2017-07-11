@@ -400,7 +400,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         if(isAgent) {
             totalIdx    += taAgent.length();
         } else {
-            totalIdx    += taNotAgent.length();
+            totalIdx    += shopCategories.size();
         }
 
         int[] data        = new int[totalIdx];

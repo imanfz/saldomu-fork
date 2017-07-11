@@ -209,18 +209,21 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
-        ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
 
-        String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
+        if ( pos > 0 ) {
+            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
 
-        Bundle bundle = new Bundle();
-        bundle.putInt("position", pos);
-        bundle.putString("closedType", arrClosedType[pos]);
-        bundle.putStringArrayList("selectedDate", this.selectedDate);
-        bundle.putStringArrayList("selectedDays", this.selectedDays);
+            String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 
-        closedTypePickerFragment.setArguments(bundle);
-        closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG  );
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", pos);
+            bundle.putString("closedType", arrClosedType[pos]);
+            bundle.putStringArrayList("selectedDate", this.selectedDate);
+            bundle.putStringArrayList("selectedDays", this.selectedDays);
+
+            closedTypePickerFragment.setArguments(bundle);
+            closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+        }
     }
 
     @Override
@@ -288,7 +291,17 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                 }
 
                 if ( !hasError && tbTutupToko.isChecked() ) {
-                    if ( selectedPos == 0 ) {
+
+                    if ( selectedDays.size() == 0 && selectedDate.size() == 0 ) {
+                        if ( selectedPos == 1 ) {
+                            hasError = true;
+                            errorMessage = getString(R.string.err_empty_closed_days);
+                        } else if ( selectedPos == 2 ) {
+                            hasError = true;
+                            errorMessage = getString(R.string.err_empty_closed_dates);
+                        }
+                    }
+                    /*if ( selectedPos == 0 ) {
                         if ( selectedDays.size() == 0 ) {
                             hasError = true;
                             errorMessage = getString(R.string.err_empty_closed_days);
@@ -298,7 +311,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                             hasError = true;
                             errorMessage = getString(R.string.err_empty_closed_dates);
                         }
-                    }
+                    }*/
                 }
 
                 if ( hasError == false ) {
@@ -314,8 +327,8 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                         params.put(WebParams.RC_UUID, rcUUID);
                         params.put(WebParams.RC_DATETIME, dtime);
                         params.put(WebParams.APP_ID, BuildConfig.AppID);
-                        params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID);
-                        params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID);
+                        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                         params.put(WebParams.SHOP_ID, shopId);
                         params.put(WebParams.MEMBER_ID, memberId);
 
@@ -389,7 +402,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                             params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
                         }
 
-                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
 
                         params.put(WebParams.SIGNATURE, signature);
 
