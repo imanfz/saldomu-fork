@@ -96,11 +96,11 @@ public class FragMerchantCategory extends Fragment {
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
-        params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID );
-        params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID );
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         //params.put(WebParams.SHOP_ID, shopId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + BuildConfig.AppIDHpku));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku));
 
         params.put(WebParams.SIGNATURE, signature);
 
