@@ -84,10 +84,9 @@ android {
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/\""
             signingConfig signingConfigs.prodKey
-            versionCode = 21
-            versionName "2.20"
-            buildConfigField 'String', "AppID", "\"AKD\""
-            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
+            versionCode = 1
+            versionName "1.0"
+            buildConfigField 'String', "AppID", "\"HPKU\""
         }
     }
 
