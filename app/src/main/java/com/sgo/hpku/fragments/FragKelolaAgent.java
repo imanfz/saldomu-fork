@@ -1,22 +1,17 @@
 package com.sgo.hpku.fragments;
 
-
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.sgo.hpku.R;
-import com.sgo.hpku.activities.BbsMemberLocationActivity;
-import com.sgo.hpku.activities.BbsMerchantSetupHourActivity;
 import com.sgo.hpku.adapter.BbsMemberListAdapter;
 import com.sgo.hpku.adapter.KelolaAgentAdapter;
 import com.sgo.hpku.coreclass.CustomSecurePref;
@@ -53,6 +48,11 @@ public class FragKelolaAgent extends Fragment {
         // Required empty public constructor
         this.shopDetails = shopDetails;
     }
+
+    public FragKelolaAgent() {
+
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
