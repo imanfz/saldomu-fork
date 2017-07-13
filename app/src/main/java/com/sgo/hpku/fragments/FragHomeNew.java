@@ -151,12 +151,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
+            params.put(WebParams.APP_ID, BuildConfig.AppID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, "");
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppIDHpku));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID));
 
             params.put(WebParams.SIGNATURE, signature);
 
@@ -182,13 +183,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 shopCategories.add(shopCategory);
                             }
 
-                            //gridBbsCategoryAdapter.notifyDataSetChanged();
-                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
+
 
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                         }
+
+                        //gridBbsCategoryAdapter.notifyDataSetChanged();
+                        GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                        GridHome.setAdapter(adapter);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -216,6 +219,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                     Timber.w("Error Koneksi login:" + throwable.toString());
 
+                    //gridBbsCategoryAdapter.notifyDataSetChanged();
+                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                    GridHome.setAdapter(adapter);
                 }
 
             });
