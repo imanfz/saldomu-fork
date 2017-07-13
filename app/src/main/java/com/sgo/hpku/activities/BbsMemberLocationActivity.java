@@ -70,7 +70,7 @@ import timber.log.Timber;
 public class BbsMemberLocationActivity extends BaseActivity implements OnMapReadyCallback,
         AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks {
 
-    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId;
+    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, memberType;
     Realm myRealm;
     TextView tvDetailMemberName, tvCommName, tvAddress, tvDistrict, tvProvince;
     private GoogleMap mMap;
@@ -89,6 +89,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         memberId            = getIntent().getStringExtra("memberId");
         shopId              = getIntent().getStringExtra("shopId");
+        shopName            = getIntent().getStringExtra("shopName");
+        memberType          = getIntent().getStringExtra("memberType");
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
@@ -132,7 +134,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
 
-        setActionBarTitle(getString(R.string.update_merchant_location) + " - " + memberDetail.getMemberName());
+        setActionBarTitle(getString(R.string.update_merchant_location) + " - " + shopName);
 
         tvDetailMemberName  = (TextView) findViewById(R.id.tvDetailMemberName);
         tvCommName          = (TextView) findViewById(R.id.tvCommName);
@@ -201,15 +203,26 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         WebParams.ERROR_CODE);
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     myRealm.beginTransaction();
+
+                                    String tempSetupOpenHour = response.getString("setup_open_hour");
+                                    if (tempSetupOpenHour.equals("")) {
+                                        tempSetupOpenHour = DefineValue.STRING_NO;
+                                    }
                                     memberDetail.setSetupOpenHour(response.getString("setup_open_hour"));
                                     myRealm.copyToRealmOrUpdate(memberDetail);
                                     myRealm.commitTransaction();
 
-                                    Intent intent=new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
-                                    intent.putExtra("memberId", memberDetail.getMemberId());
-                                    intent.putExtra("shopId", memberDetail.getShopId());
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    getApplicationContext().startActivity(intent);
+
+                                    if (memberDetail.getMemberType().equals(DefineValue.SHOP_MERCHANT)) {
+                                        Intent intent = new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
+                                        intent.putExtra("memberId", memberDetail.getMemberId());
+                                        intent.putExtra("shopId", memberDetail.getShopId());
+                                        intent.putExtra("setupOpenHour", tempSetupOpenHour);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        getApplicationContext().startActivity(intent);
+                                    } else {
+                                        startActivity(new Intent(getApplicationContext(), MainPage.class));
+                                    }
 
                                 } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
                                     String message = response.getString(WebParams.ERROR_MESSAGE);

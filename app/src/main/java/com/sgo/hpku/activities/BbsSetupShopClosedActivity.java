@@ -1,5 +1,6 @@
 package com.sgo.hpku.activities;
 
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -325,6 +326,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
             bundle.putInt("iEndMinute", iEndMinute );
             openHourPickerFragment.setArguments(bundle);
 
+            openHourPickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
             openHourPickerFragment.show(getFragmentManager(), OpenHourPickerFragment.TAG  );
         }
     };

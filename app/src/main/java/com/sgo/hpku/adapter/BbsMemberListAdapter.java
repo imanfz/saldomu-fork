@@ -41,6 +41,7 @@ public class BbsMemberListAdapter extends BaseAdapter {
     private ArrayList<ShopDetail> shopDetails;
     private Context context;
     private LayoutInflater inflater;
+    private String memberType;
 
     public BbsMemberListAdapter(Context context, ArrayList<ShopDetail> shopDetails)
     {
@@ -117,6 +118,8 @@ public class BbsMemberListAdapter extends BaseAdapter {
                 Intent intent = new Intent(context.getApplicationContext(), BbsMemberLocationActivity.class);
                 intent.putExtra("memberId", tempDetail.getMemberId());
                 intent.putExtra("shopId", tempDetail.getShopId());
+                intent.putExtra("shopName", tempDetail.getShopName());
+                intent.putExtra("memberType", tempDetail.getMemberType());
                 context.startActivity(intent);
 
             }

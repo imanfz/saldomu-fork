@@ -81,6 +81,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent(BbsMerchantCommunityList.this, com.sgo.hpku.activities.BbsMemberLocationActivity.class);
                 intent.putExtra("memberId", merchantCommunityListModel.get(position).getMemberId());
+                intent.putExtra("shopId", merchantCommunityListModel.get(position).getShopId());
                 startActivity(intent);
             }
         });
