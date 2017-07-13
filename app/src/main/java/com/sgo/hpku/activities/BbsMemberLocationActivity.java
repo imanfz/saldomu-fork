@@ -176,7 +176,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
-                    params.put(WebParams.APP_ID, BuildConfig.AppIDHpku);
+                    params.put(WebParams.APP_ID, BuildConfig.AppID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, memberDetail.getShopId());
@@ -188,7 +188,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.LONGITUDE, selectedLong);
 
                     String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + memberDetail.getShopId().toUpperCase()
-                            + BuildConfig.AppIDHpku + selectedLat + selectedLong));
+                            + BuildConfig.AppID + selectedLat + selectedLong));
 
                     params.put(WebParams.SIGNATURE, signature);
 
