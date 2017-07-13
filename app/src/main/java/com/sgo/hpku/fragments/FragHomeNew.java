@@ -182,13 +182,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 shopCategories.add(shopCategory);
                             }
 
-                            //gridBbsCategoryAdapter.notifyDataSetChanged();
-                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
+
 
                         } else {
                             Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                         }
+
+                        //gridBbsCategoryAdapter.notifyDataSetChanged();
+                        GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                        GridHome.setAdapter(adapter);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -216,6 +218,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                     Timber.w("Error Koneksi login:" + throwable.toString());
 
+                    //gridBbsCategoryAdapter.notifyDataSetChanged();
+                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                    GridHome.setAdapter(adapter);
                 }
 
             });
