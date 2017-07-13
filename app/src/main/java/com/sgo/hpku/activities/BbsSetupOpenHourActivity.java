@@ -172,6 +172,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                 bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute() );
 
                 timePickerFragment.setArguments(bundle);
+                timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
                 timePickerFragment.show(getFragmentManager(),TimePickerFragment.TAG  );
 
 

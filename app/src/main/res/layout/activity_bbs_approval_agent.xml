@@ -19,6 +19,7 @@
         android:padding="8dp"
         android:scrollbars="vertical"
         android:layout_below="@+id/main_toolbar"
+        android:visibility="invisible"
         >
         <LinearLayout
             android:id="@+id/llCategoryName"

@@ -161,6 +161,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                 bundle.putInt("iEndMinute", setupOpenHour.getSetupOpenHours().get(position).getiEndMinute() );
 
                 timePickerFragment.setArguments(bundle);
+                timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
                 timePickerFragment.show(getFragmentManager(),TimePickerFragment.TAG  );
 
 
@@ -222,6 +223,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
             bundle.putStringArrayList("selectedDays", this.selectedDays);
 
             closedTypePickerFragment.setArguments(bundle);
+            closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
             closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
         }
     }
@@ -314,10 +316,9 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                     }*/
                 }
 
-                if ( hasError == false ) {
+                if ( !hasError ) {
                     try{
                         progdialog = DefinedDialog.CreateProgressDialog(BbsMerchantSetupHourActivity.this, "");
-                        progdialog.show();
 
                         RequestParams params = new RequestParams();
 

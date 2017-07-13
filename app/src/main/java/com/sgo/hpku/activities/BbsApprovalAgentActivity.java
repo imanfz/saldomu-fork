@@ -1,6 +1,7 @@
 package com.sgo.hpku.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -108,9 +110,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         spPilihan.setVisibility(View.GONE);
 
         rlApproval              = (RelativeLayout) findViewById(R.id.rlApproval);
-
-
-
         rlApproval.setVisibility(View.GONE);
 
         shopDetail              = new ShopDetail();
@@ -160,7 +159,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         }*/
 
         progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
-
         RequestParams params    = new RequestParams();
 
         UUID rcUUID             = UUID.randomUUID();
@@ -334,7 +332,22 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                     } else {
                         progdialog.dismiss();
                         code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                        rlApproval.setVisibility(View.GONE);
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(BbsApprovalAgentActivity.this).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        startActivity(new Intent(BbsApprovalAgentActivity.this, MainPage.class));
+
+                                    }
+                                });
+                        alertDialog.show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
