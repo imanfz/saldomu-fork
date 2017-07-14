@@ -36,7 +36,7 @@
         android:name=".coreclass.CoreApp"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_logo_ad"
+        android:icon="@mipmap/ic_launcher_pin_only"
         android:label="@string/appname"
         android:largeHeap="true"
         android:launchMode="singleTask"
