@@ -19,6 +19,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -62,6 +63,7 @@ import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DateTimeFormat;
 import com.sgo.hpku.coreclass.DefineValue;
+import com.sgo.hpku.coreclass.GlobalSetting;
 import com.sgo.hpku.coreclass.HashMessage;
 import com.sgo.hpku.coreclass.MainAgentIntentService;
 import com.sgo.hpku.coreclass.MainResultReceiver;
@@ -160,6 +162,29 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             // Ask for one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
                     RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(this) )
+        {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+
+
         }
 
         realm = Realm.getDefaultInstance();
