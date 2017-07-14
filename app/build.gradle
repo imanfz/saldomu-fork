@@ -71,7 +71,7 @@ android {
         }
         production {
             applicationId "com.sgo.hpku"
-            resValue "string", "appname", "HPKu"
+            resValue "string", "appname", "Saldomu"
             resValue "string", "dbname", "hpku.db"
             resValue "string", "realmname", "com.sgo.hpku.realm"
             resValue "integer", "realscheme", "0"
@@ -106,7 +106,7 @@ android {
         if (variant.baseName.contains("development")) {
             fileName = "Dev HPKu"
         } else {
-            fileName = "HPKu"
+            fileName = "Saldomu"
         }
         variant.outputs.each { output ->
             def apk = output.outputFile;

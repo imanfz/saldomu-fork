@@ -251,7 +251,7 @@ public class BBSTransaksiAmount extends Fragment {
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             if (listbankSource.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
-                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.hpku));
+                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.appname));
                             else
                                 etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
                         }
