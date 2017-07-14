@@ -490,7 +490,7 @@
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="about_apps">Tentang Aplikasi</string>
-    <string name="about_apps_desc"><b>HPKu</b> - socialbanking adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
+    <string name="about_apps_desc"><b>Saldomu</b> - socialbanking adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
 
@@ -703,7 +703,7 @@
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
-    <string name="foldername_struk">Struk PIN HPKu</string>
+    <string name="foldername_struk">Struk PIN Saldomu</string>
 
     <string name="period_month">period_month</string>
     <string name="msisdn">msisdn</string>
@@ -930,7 +930,6 @@
     <string name="agent_shop">Agent Shop ID</string>
     <string name="user_id">Nomor Handphone member</string>
     <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
-    <string name="hpku">HpKu</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
     <string name="city_empty_message">Kota tujuan harus diisi!</string>
     <string name="eg_no_hp">(contoh: 08xxxxxxxx)</string>
