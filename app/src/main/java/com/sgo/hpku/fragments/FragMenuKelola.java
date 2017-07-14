@@ -119,7 +119,7 @@ public class FragMenuKelola extends Fragment {
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        String flagApprove      = DefineValue.STRING_YES;
+        String flagApprove      = DefineValue.STRING_NO;
         RequestParams params    = new RequestParams();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
