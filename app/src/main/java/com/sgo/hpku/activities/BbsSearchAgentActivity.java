@@ -156,6 +156,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        intentData          = getIntent();
+        sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
+        mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
+        categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+        amount              = intentData.getStringExtra(DefineValue.AMOUNT);
+
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             runningApp();
         } else {
@@ -201,13 +209,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         /*LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter("UpdateLocationIntent"));*/
 
-        intentData          = getIntent();
-        sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
-        mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
-        categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
-        amount              = intentData.getStringExtra(DefineValue.AMOUNT);
 //        txId                = "";
 
         //mobility            = "Y";
