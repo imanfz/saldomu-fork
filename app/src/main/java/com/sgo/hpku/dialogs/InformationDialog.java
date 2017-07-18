@@ -4,12 +4,14 @@ package com.sgo.hpku.dialogs;/*
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.sgo.hpku.R;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.InetHandler;
 import com.sgo.hpku.coreclass.MyApiClient;
 
@@ -45,33 +48,40 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
                                  "#Cash-InViaSMSBanking","#Cash-Out","#Pay-Friends","#AskForMoney",
                                  "#GetFreeIDR","#Shopping","#MyFriends","#Report","#Setting",
                                  "#ContactUS","#Logout"};
+    private String[] mBBSName = { "hapeku-setortunai-guide.html"};
 
     private String urlAddress = MyApiClient.URL_FAQ;
 
 
     private Activity mContext;
-    private Boolean isActivty = false, isDisconnected;
+    private Boolean isDisconnected,isBBS = false;
     private View v;
     private int type;
     private ProgressBar progbar;
     private boolean shown = false;
 
-    public static InformationDialog newInstance(Activity _context, int idx) {
+    public static InformationDialog newInstance( int idx) {
         InformationDialog f = new InformationDialog();
-        f.mContext = _context;
-        f.type = idx;
-        f.isActivty = true;
+        Bundle d = new Bundle();
+        d.putInt(DefineValue.TYPE,idx);
+        f.setArguments(d);
         return f;
     }
 
-    public static InformationDialog newInstance(Fragment _context,int idx) {
+    public static InformationDialog newInstanceBBS(int idx) {
         InformationDialog f = new InformationDialog();
-        f.setTargetFragment(_context,0);
-        f.type = idx;
-        f.isActivty = false;
+        Bundle d = new Bundle();
+        d.putInt(DefineValue.TYPE,idx);
+        d.putBoolean(DefineValue.IS_BBS,true);
+        f.setArguments(d);
         return f;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = getActivity();
+    }
 
     public InformationDialog() {
         // Empty constructor required for DialogFragment
@@ -101,20 +111,30 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle mBun = getArguments();
+        this.type = mBun.getInt(DefineValue.TYPE,0);
+        this.isBBS = mBun.getBoolean(DefineValue.IS_BBS,false);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        Bundle mBun = getArguments();
-//        this.type = mBun.getInt(DefineValue.TYPE,0);
-
         String colName;
-        colName = mColName[type];
-
-
-
+        if(isBBS){
+            colName = mBBSName[type];
+            urlAddress = MyApiClient.URL_HELP_DEV + colName;
+        }
+        else {
+            colName = mColName[type];
+            urlAddress = urlAddress + colName;
+        }
         progbar.setIndeterminate(true);
         Timber.e(urlAddress);
-        loadUrl(urlAddress + colName);
+
+        loadUrl(urlAddress);
     }
 
     private void loadUrl(String url) {

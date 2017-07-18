@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.sgo.hpku.R;
-import com.sgo.hpku.activities.BBSRegAccountActivity;
 import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.MyApiClient;
@@ -93,7 +92,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             });
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.bbs_content, newFragment,tag);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
         }
     }

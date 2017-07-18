@@ -496,10 +496,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
             } else if (type.equals(DefineValue.BBS_CASHIN) || type.equals(DefineValue.BBS_CASHOUT) || type.equals(DefineValue.BBS_MEMBER_OTP)) {
-                View inflated = stub.inflate();
+                View inflated;
                 if (type.equals(DefineValue.BBS_CASHIN)) {
 //                    report_layout = view.findViewById(R.id.report_bbs_cashin);
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashin);
+                    inflated = stub.inflate();
                     TextView tvNoDestination = (TextView) inflated.findViewById(R.id.tvNoDestination);
 
                     String benef_type = args.getString(DefineValue.TYPE_BENEF, "");
@@ -507,9 +508,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         tvNoDestination.setText(R.string.number_destination);
                     else
                         tvNoDestination.setText(R.string.number_hp_destination);
-                } else
+                } else {
 //                    inflated = view.findViewById(R.id.report_bbs_cashout);
-                stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashout);
+                    stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashout);
+                    inflated = stub.inflate();
+                }
                 inflated.setVisibility(View.VISIBLE);
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 

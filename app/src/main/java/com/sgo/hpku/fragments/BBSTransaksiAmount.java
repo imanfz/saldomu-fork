@@ -67,7 +67,7 @@ public class BBSTransaksiAmount extends Fragment {
     private ProgressDialog progdialog;
     private TextView tvTitle;
     private EditText etAmount;
-    private String transaksi, comm_code, member_code, benef_product_type,
+    private String transaksi, comm_code, member_code, benef_product_type="",
             api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc;
     private Activity act;
     private Button btnProses, btnBack;
@@ -89,6 +89,35 @@ public class BBSTransaksiAmount extends Fragment {
     private ArrayList<List_BBS_City> list_bbs_cities;
     private ArrayList<String> list_name_bbs_cities;
     private Integer CityAutocompletePos = -1;
+    private boolean isBack = false;
+
+    public boolean isBack() {
+        return isBack;
+    }
+
+    public void setBack(boolean back) {
+        isBack = back;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        act = getActivity();
+        realm = Realm.getDefaultInstance();
+        realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            transaksi = bundle.getString(DefineValue.TRANSACTION);
+
+        } else {
+            getFragmentManager().popBackStack();
+        }
+    }
 
     @Nullable
     @Override
@@ -101,109 +130,90 @@ public class BBSTransaksiAmount extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
+        mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+        mCircleStepView.setCurrentCircleIndex(0, false);
 
-        act = getActivity();
-        realm = Realm.getDefaultInstance();
-        realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
+        tvTitle = (TextView) v.findViewById(R.id.tv_title);
+        inputForm = v.findViewById(R.id.bbs_amount_form);
+        emptyLayout = v.findViewById(R.id.empty_layout);
+        emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
+        etAmount = (EditText) v.findViewById(R.id.jumlah_transfer_edit);
+        btnProses = (Button) v.findViewById(R.id.proses_btn);
+        btnBack = (Button) v.findViewById(R.id.back_btn);
+        ViewStub stub = (ViewStub) v.findViewById(R.id.transaksi_stub);
+        tvTitle.setText(transaksi);
+        emptyLayout.setVisibility(View.GONE);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        if(!isBack) listDataComm = new ArrayList<>();
+        BBSCommModel comm;
+        if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            stub.setLayoutResource(R.layout.bbs_cashin_amount);
+            View cashin_layout = stub.inflate();
 
-        Bundle bundle = getArguments();
-        if(bundle!= null) {
-            listDataComm = new ArrayList<>();
-            transaksi = bundle.getString(DefineValue.TRANSACTION);
+            nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
+            actv_rekening_member = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_member_value);
+            etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
+            tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
+            etNameAcct = (EditText) cashin_layout.findViewById(R.id.name_value);
+            cityLayout = cashin_layout.findViewById(R.id.bbscashin_city_layout);
+            spBenefCity = (AutoCompleteTextView) cashin_layout.findViewById(R.id.bbscashin_value_city_benef);
+            spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
+            frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
+            frameAnimation.setRepeatCount(Animation.INFINITE);
 
-            CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-            mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
-            mCircleStepView.setCurrentCircleIndex(0, false);
+            // Keys used in Hashmap
+            String[] from = {"flag", "txt"};
 
-            tvTitle = (TextView) v.findViewById(R.id.tv_title);
-            inputForm = v.findViewById(R.id.bbs_amount_form);
-            emptyLayout = v.findViewById(R.id.empty_layout);
-            emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
-            etAmount = (EditText) v.findViewById(R.id.jumlah_transfer_edit);
-            btnProses = (Button) v.findViewById(R.id.proses_btn);
-            btnBack = (Button) v.findViewById(R.id.back_btn);
-            ViewStub stub = (ViewStub) v.findViewById(R.id.transaksi_stub);
-            tvTitle.setText(transaksi);
-            emptyLayout.setVisibility(View.GONE);
+            // Ids of views in listview_layout
+            int[] to = {R.id.flag, R.id.txt};
 
-            BBSCommModel comm;
-            if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                stub.setLayoutResource(R.layout.bbs_cashin_amount);
-                View cashin_layout = stub.inflate();
+            if(!isBack) aListMember = new ArrayList<>();
+            // Instantiating an adapter to store each items
+            // R.layout.listview_layout defines the layout of each item
+            adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
-                nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
-                actv_rekening_member = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_member_value);
-                etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
-                tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
-                etNameAcct = (EditText) cashin_layout.findViewById(R.id.name_value);
-                cityLayout = cashin_layout.findViewById(R.id.bbscashin_city_layout);
-                spBenefCity = (AutoCompleteTextView) cashin_layout.findViewById(R.id.bbscashin_value_city_benef);
-                spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
-                frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
-                frameAnimation.setRepeatCount(Animation.INFINITE);
+            comm = realmBBS.where(BBSCommModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, CTA).findFirst();
+            listbankBenef = realmBBS.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, CTA)
+                    .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
+            setBBSCity();
+            setMember(listbankBenef);
+        } else {
+            stub.setLayoutResource(R.layout.bbs_cashout_amount);
+            View cashout_layout = stub.inflate();
 
-                // Keys used in Hashmap
-                String[] from = {"flag", "txt"};
+            actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
+            etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
 
-                // Ids of views in listview_layout
-                int[] to = {R.id.flag, R.id.txt};
+            // Keys used in Hashmap
+            String[] from = {"flag", "txt"};
 
-                aListMember = new ArrayList<>();
-                // Instantiating an adapter to store each items
-                // R.layout.listview_layout defines the layout of each item
-                adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
+            // Ids of views in listview_layout
+            int[] to = {R.id.flag, R.id.txt};
 
-                comm = realmBBS.where(BBSCommModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, CTA).findFirst();
-                listbankBenef = realmBBS.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, CTA)
-                        .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
-                setBBSCity();
-                setMember(listbankBenef);
-            } else {
-                stub.setLayoutResource(R.layout.bbs_cashout_amount);
-                View cashout_layout = stub.inflate();
+            if(!isBack) aListMember = new ArrayList<>();
+            // Instantiating an adapter to store each items
+            // R.layout.listview_layout defines the layout of each item
+            adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
-                actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
-                etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
+            comm = realmBBS.where(BBSCommModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, ATC).findFirst();
+            if(isBack) setMember(listbankSource);
+        }
 
-                // Keys used in Hashmap
-                String[] from = {"flag", "txt"};
+        actv_rekening_member.addTextChangedListener(textWatcher);
+        btnBack.setOnClickListener(backListener);
+        btnProses.setOnClickListener(prosesListener);
 
-                // Ids of views in listview_layout
-                int[] to = {R.id.flag, R.id.txt};
-
-                aListMember = new ArrayList<>();
-                // Instantiating an adapter to store each items
-                // R.layout.listview_layout defines the layout of each item
-                adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
-
-                comm = realmBBS.where(BBSCommModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, ATC).findFirst();
-
-//                listbankSource = realmBBS.where(BBSBankModel.class)
-//                        .equalTo(WebParams.SCHEME_CODE, ATC)
-//                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
-//                setMember(listbankSource);
-            }
-
+        if(!isBack) {
             comm_id = comm.getComm_id();
             comm_code = comm.getComm_code();
             callback_url = comm.getCallback_url();
             api_key = comm.getApi_key();
 
-            actv_rekening_member.addTextChangedListener(textWatcher);
-            btnBack.setOnClickListener(backListener);
-            btnProses.setOnClickListener(prosesListener);
-
             retrieveComm();
-        }
-        else {
-            getFragmentManager().popBackStack();
         }
     }
 
@@ -267,49 +277,53 @@ public class BBSTransaksiAmount extends Fragment {
         @Override
         public void onClick(View view) {
             if(inputValidation()) {
-                Fragment newFrag = new BBSTransaksiInformasi();
-                Bundle args = new Bundle();
-                args.putString(DefineValue.TRANSACTION, transaksi);
-                args.putString(DefineValue.AMOUNT, etAmount.getText().toString());
-                args.putString(DefineValue.COMMUNITY_ID, comm_id);
-                args.putString(DefineValue.COMMUNITY_CODE, comm_code);
-                args.putString(DefineValue.MEMBER_CODE, member_code);
-                args.putString(DefineValue.CALLBACK_URL, callback_url);
-                args.putString(DefineValue.API_KEY, api_key);
-
-                int position = 0;
+                int position =-1;
                 String nameAcct = actv_rekening_member.getText().toString();
                 for(int i = 0 ; i < aListMember.size() ; i++) {
                     if(nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
                         position = i;
                 }
 
-                if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                    args.putString(DefineValue.BENEF_PRODUCT_CODE, listbankBenef.get(position).getProduct_code());
-                    args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
-                    args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
-                    args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
-                    args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
-                    if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
-                        String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
-                        String city_name = spBenefCity.getText().toString();
-                        args.putString(DefineValue.ACCT_CITY_CODE, city_id);
-                        args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                if(position != -1) {
+                    Fragment newFrag = new BBSTransaksiInformasi();
+                    Bundle args = new Bundle();
+                    args.putString(DefineValue.TRANSACTION, transaksi);
+                    args.putString(DefineValue.AMOUNT, etAmount.getText().toString());
+                    args.putString(DefineValue.COMMUNITY_ID, comm_id);
+                    args.putString(DefineValue.COMMUNITY_CODE, comm_code);
+                    args.putString(DefineValue.MEMBER_CODE, member_code);
+                    args.putString(DefineValue.CALLBACK_URL, callback_url);
+                    args.putString(DefineValue.API_KEY, api_key);
+
+                    if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                        args.putString(DefineValue.BENEF_PRODUCT_CODE, listbankBenef.get(position).getProduct_code());
+                        args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
+                        args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
+                        args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
+                        args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
+                        if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
+                            String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
+                            String city_name = spBenefCity.getText().toString();
+                            args.putString(DefineValue.ACCT_CITY_CODE, city_id);
+                            args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                        }
+                    } else {
+                        args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
+                        args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
+                        args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());
+                        args.putString(DefineValue.SOURCE_PRODUCT_H2H, listbankSource.get(position).getProduct_h2h());
+                        args.putString(DefineValue.SOURCE_ACCT_NO, etNoAcct.getText().toString());
+                        args.putString(DefineValue.BBS_COMM_ATC, comm_benef_atc);
                     }
+                    newFrag.setArguments(args);
+
+                    getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
+                            .addToBackStack(TAG).commit();
+                    ToggleKeyboard.hide_keyboard(act);
                 }
                 else {
-                    args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
-                    args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
-                    args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());
-                    args.putString(DefineValue.SOURCE_PRODUCT_H2H, listbankSource.get(position).getProduct_h2h());
-                    args.putString(DefineValue.SOURCE_ACCT_NO, etNoAcct.getText().toString());
-                    args.putString(DefineValue.BBS_COMM_ATC, comm_benef_atc);
+                    Toast.makeText(act, getString(R.string.no_match_member_acct_message), Toast.LENGTH_LONG).show();
                 }
-                newFrag.setArguments(args);
-
-                getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiInformasi.TAG)
-                        .addToBackStack(TAG).commit();
-                ToggleKeyboard.hide_keyboard(act);
             }
         }
     };
@@ -588,13 +602,10 @@ public class BBSTransaksiAmount extends Fragment {
         for(int i = 0 ; i < _data.length() ; i++) {
             BBSBankModel bbsBankModel =  new BBSBankModel();
             try {
-//                bbsBankModel.setComm_id(_data.getJSONObject(i).getString(WebParams.COMM_ID));
-//                bbsBankModel.setComm_type(_data.getJSONObject(i).getString(WebParams.COMM_TYPE));
                 bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
                 bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
                 bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
                 bbsBankModel.setProduct_h2h(_data.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
-//                bbsBankModel.setScheme_code(_data.getJSONObject(i).getString(WebParams.SCHEME_CODE));
                 bbsBankModel.setBank_gateway(_data.getJSONObject(i).getString(WebParams.BANK_GATEWAY));
                 listbankSource.add(bbsBankModel);
             } catch (JSONException e) {

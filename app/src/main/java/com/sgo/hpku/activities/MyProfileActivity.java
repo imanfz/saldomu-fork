@@ -795,6 +795,8 @@ public class MyProfileActivity extends BaseActivity {
             e.printStackTrace();
         }
 
+        Timber.d("params upload profile picture: " + params.toString());
+
         MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

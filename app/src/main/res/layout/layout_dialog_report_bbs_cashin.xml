@@ -143,7 +143,7 @@
     <TableRow>
         <TextView
             android:id="@+id/tvNoDestination"
-            android:text="@string/no_rekening_tujuan"
+            android:text="@string/no_tujuan"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

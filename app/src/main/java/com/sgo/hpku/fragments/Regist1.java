@@ -155,7 +155,7 @@ public class Regist1 extends Fragment{
             if(view == btnLanjut){
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
-                        sentData(NoHPFormat.editNoHP(noHPValue.getText().toString()));
+                        sentData(NoHPFormat.formatTo62(noHPValue.getText().toString()));
                     }
                 }else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
             }

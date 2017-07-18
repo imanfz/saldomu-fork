@@ -126,7 +126,8 @@ public class SgoPlus_input extends Fragment {
 
         if(topupType.equals(DefineValue.SMS_BANKING)){
             isSMSBanking = true;
-            dialogI = InformationDialog.newInstance(this,3);
+            dialogI = InformationDialog.newInstance(3);
+            dialogI.setTargetFragment(this,0);
             reqPermissionClass = new ReqPermissionClass(getActivity());
             reqPermissionClass.setTargetFragment(this);
             initializeSmsClass();
@@ -160,8 +161,10 @@ public class SgoPlus_input extends Fragment {
                 }
             });
         }
-        else
-            dialogI = InformationDialog.newInstance(this,2);
+        else {
+            dialogI = InformationDialog.newInstance(2);
+            dialogI.setTargetFragment(this,0);
+        }
 
         InitializeSpinner();
 

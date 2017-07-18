@@ -52,7 +52,9 @@ public final class TabBuyItem extends ListFragment {
 
     public static TabBuyItem newInstance(String biller_type) {
         TabBuyItem mFrag = new TabBuyItem();
-        mFrag.biller_type = biller_type;
+        Bundle bundle = new Bundle();
+        bundle.putString(DefineValue.BILLER_TYPE,biller_type);
+        mFrag.setArguments(bundle);
         return mFrag;
     }
 
@@ -133,6 +135,9 @@ public final class TabBuyItem extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        Bundle bundle = getArguments();
+        biller_type = bundle.getString(DefineValue.BILLER_TYPE,"");
     }
 
     @Override

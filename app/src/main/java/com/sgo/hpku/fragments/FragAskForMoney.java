@@ -195,7 +195,8 @@ public class FragAskForMoney extends Fragment {
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
 
-        dialogI = InformationDialog.newInstance(this,6);
+        dialogI = InformationDialog.newInstance(6);
+        dialogI.setTargetFragment(this,0);
     }
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
@@ -307,7 +308,7 @@ public class FragAskForMoney extends Fragment {
                                 recipientValidation = false;
                                 break;
                             }
-                            finalNumber = NoHPFormat.editNoHP(finalNumber);
+                            finalNumber = NoHPFormat.formatTo62(finalNumber);
                             Timber.v("final number:" + finalNumber);
                             mTempObjectDataList.add(new TempObjectData(finalNumber, DefineValue.IDR, amount, chip.getEntry().getDisplayName()));
                         }

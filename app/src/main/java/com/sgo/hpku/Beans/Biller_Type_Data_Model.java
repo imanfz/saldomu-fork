@@ -13,7 +13,6 @@ public class Biller_Type_Data_Model extends RealmObject {
 
 
     @PrimaryKey
-    @Required
     private String biller_type_id;
     @Required
     private String biller_type;
@@ -28,10 +27,6 @@ public class Biller_Type_Data_Model extends RealmObject {
 
     public String getBiller_type() {
         return biller_type;
-    }
-
-    public void setBiller_type(String biller_type) {
-        this.biller_type = biller_type;
     }
 
     public String getBiller_type_id() {

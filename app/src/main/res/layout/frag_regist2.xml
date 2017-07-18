@@ -38,7 +38,7 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/regist1_text_nohp"
-                      android:textColor="@color/colorSecondary"
+                      android:textColor="@color/black"
                       android:textSize="@dimen/abc_text_size_medium_material"
                       android:textStyle="bold"
                     />
@@ -61,7 +61,7 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/regist1_edithint_nama"
-                      android:textColor="@color/colorSecondary"
+                      android:textColor="@color/black"
                       android:textSize="@dimen/abc_text_size_medium_material"
                       android:textStyle="bold"
                     />
@@ -82,7 +82,7 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/regist1_edithint_email"
-                      android:textColor="@color/colorSecondary"
+                      android:textColor="@color/black"
                       android:textSize="@dimen/abc_text_size_medium_material"
                       android:textStyle="bold"
                     />
@@ -105,7 +105,7 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:text="@string/reg2_activation_code"
-                      android:textColor="@color/colorSecondary"
+                      android:textColor="@color/black"
                       android:textSize="@dimen/abc_text_size_medium_material"
                       android:textStyle="bold"
                     />
@@ -115,9 +115,9 @@
                     android:maxLength="@integer/token_lenght_4"
                     android:layout_gravity="center_vertical"
                     android:hint="@string/regist2_edithint_otp"
-                    android:textColorHint="@color/semi_white_transparant"
+                    android:textColorHint="@color/white"
                     android:inputType="number"
-                    android:textColor="@color/grey_1000w"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
                     android:textSize="@dimen/abc_text_size_medium_material"
                 android:layout_width="match_parent"
