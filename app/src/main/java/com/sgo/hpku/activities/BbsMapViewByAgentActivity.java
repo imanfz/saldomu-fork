@@ -147,7 +147,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         tvCategoryName.setText(shopDetail.getCategoryName());
         tvMemberName.setText(shopDetail.getKeyName());
-        tvShop.setText(shopDetail.getShopId());
+        //tvShop.setText(shopDetail.getShopId());
         tvAmount.setText(shopDetail.getCcyId()+" "+ CurrencyFormat.format(shopDetail.getAmount()));
 
         title                   = getString(R.string.menu_item_title_map_agent);
@@ -394,18 +394,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        //if CTA only
-//                        Bundle bundle = new Bundle();
-//                        bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-//                        bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-//                        bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(shopDetail.getAmount()) ) );
-//
-//                        Intent intent = new Intent(getApplicationContext(),BBSActivity.class);
-//                        intent.putExtras(bundle);
-//                        startActivityForResult(intent, 0);
-
-                        benefLatitude      = response.getDouble(WebParams.KEY_LATITUDE);
-                        benefLongitude     = response.getDouble(WebParams.KEY_LONGITUDE);
+                        benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
+                        benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
 
                         shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
                         shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
@@ -413,13 +403,35 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
                         //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
                         //shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                        shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
+                        //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
+                        //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
                         tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
-                        setMapCamera();
+                        if ( response.has(DefineValue.KEY_TX_STATUS) ) {
+                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
+                                Bundle bundle = new Bundle();
+                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                                if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
+                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
+                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                }
+                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
 
+                                Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                intent.putExtras(bundle);
+                                startActivityForResult(intent, 0);
+                            }
+                            else
+                            {
+                                setMapCamera();
+                            }
+                        }
+                        else
+                        {
+                            setMapCamera();
+                        }
                     } else {
                         //progdialog.dismiss();
                         code = response.getString(WebParams.ERROR_MESSAGE);
@@ -574,12 +586,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         JSONObject toDirection = directions.getJSONObject(0);
                         htmlDirections = toDirection.getString("html_instructions");
 
-                        JSONArray toDistanceArray = toDirection.getJSONArray("distance");
+                        /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
                         JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
                         String toDistanceString = toDistanceObject.getString("text");
 
                         htmlDirections += " ( " + toDistanceString + " ) ";
                         //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
+                        */
                     }
 
 

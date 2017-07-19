@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -69,6 +70,7 @@ import com.sgo.hpku.coreclass.MainAgentIntentService;
 import com.sgo.hpku.coreclass.MainResultReceiver;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
+import com.sgo.hpku.dialogs.DefinedDialog;
 import com.sgo.hpku.entityRealm.AgentDetail;
 import com.sgo.hpku.entityRealm.AgentServiceDetail;
 import com.sgo.hpku.fragments.FragListCategoryBbs;
@@ -139,6 +141,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     EditText etJumlah;
     Button btnProses;
     private static final int RC_LOCATION_PERM = 500;
+    Boolean clicked = false;
+    ProgressDialog progdialog;
 
     // Init
     private Handler handler = new Handler();
@@ -814,9 +818,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void searchToko(Double latitude, Double longitude) {
 
+        sp   = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
-        if ( txId.equals("") ) {
+        if ( txId.equals("") && !amount.equals("") && !clicked ) {
+
+
+            progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
@@ -874,7 +883,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-
+                            clicked                 = true;
                             txId = response.getString(DefineValue.TX_ID2);
 
                             JSONArray shops = response.getJSONArray("shop");
@@ -910,9 +919,24 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         } else {
                             shopDetails.clear();
-                            Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-                        }
+                            //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
+                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                            alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                            alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+
+                                        }
+                                    });
+                            alertDialog.show();
+
+
+
+                        }
+                        progdialog.dismiss();
                         viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
@@ -943,6 +967,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     Timber.w("Error Koneksi:" + throwable.toString());
+                    progdialog.dismiss();
 
                 }
 
@@ -1232,7 +1257,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 mEditor.putString(DefineValue.AMOUNT, amount);
                                 mEditor.apply();
 
-                                startActivity(new Intent(getApplicationContext(), BbsMapViewByMemberActivity.class));
+                                Intent i = new Intent(getApplicationContext(), BbsMapViewByMemberActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                                finish();
 
                             } else if ( txStatus.equals(DefineValue.TX_STATUS_RJ) ) {
 
@@ -1246,11 +1274,13 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 mEditor.apply();
 
                                 Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
                                 i.putExtra(DefineValue.AMOUNT, amount);
                                 i.putExtra(DefineValue.CATEGORY_ID, categoryId);
                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                                 startActivity(i);
+                                finish();
 
 //                                Intent intent = new Intent();
 //                                intent.putExtra(DefineValue.MSG_NOTIF, getString(R.string.msg_notif_batal_agen));

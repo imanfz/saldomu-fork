@@ -59,13 +59,16 @@ public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCom
         //Toast.makeText(getContext(), "on key pre ime" + getText(), Toast.LENGTH_LONG).show();
         if(keyCode == KeyEvent.KEYCODE_BACK)
         {
-            int checkedRadioBtnId = locationRadioGroup.getCheckedRadioButtonId();
-            if(checkedRadioBtnId == searchLocationRadioBtn.getId())
-            {
-                //logic to enable and disable button request
-                int length = getText().toString().trim().length();
-                if (length > 0) btn.setEnabled(true);
-                else btn.setEnabled(false);
+            try {
+                int checkedRadioBtnId = locationRadioGroup.getCheckedRadioButtonId();
+                if (checkedRadioBtnId == searchLocationRadioBtn.getId()) {
+                    //logic to enable and disable button request
+                    int length = getText().toString().trim().length();
+                    if (length > 0) btn.setEnabled(true);
+                    else btn.setEnabled(false);
+                }
+            } catch ( Exception e ) {
+                e.printStackTrace();
             }
         }
 

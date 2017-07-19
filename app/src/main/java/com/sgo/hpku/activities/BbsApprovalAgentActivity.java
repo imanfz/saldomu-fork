@@ -343,7 +343,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        startActivity(new Intent(BbsApprovalAgentActivity.this, MainPage.class));
+                                        Intent i = new Intent(BbsApprovalAgentActivity.this, MainPage.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
 
                                     }
                                 });
@@ -528,9 +530,15 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                             mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
                             mEditor.apply();
 
-                            startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
+                            Intent i = new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                            finish();
                         } else {
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            Intent i = new Intent(getApplicationContext(), MainPage.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                            finish();
                         }
                     } else {
                         code = response.getString(WebParams.ERROR_MESSAGE);

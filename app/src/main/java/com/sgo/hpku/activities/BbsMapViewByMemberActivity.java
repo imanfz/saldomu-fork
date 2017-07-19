@@ -382,7 +382,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         agentLongitude     = response.getDouble(WebParams.SHOP_LONGITUDE);
 
                         tvMemberName.setText(response.getString(WebParams.MEMBER_NAME));
-                        tvShop.setText(response.getString(WebParams.SHOP_NAME));
+                        //tvShop.setText(response.getString(WebParams.SHOP_NAME));
                         tvCategoryName.setText(categoryName);
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount) );
 
