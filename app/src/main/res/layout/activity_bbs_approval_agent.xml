@@ -21,98 +21,77 @@
         android:layout_below="@+id/main_toolbar"
         android:visibility="invisible"
         >
-        <LinearLayout
-            android:id="@+id/llCategoryName"
-            android:layout_width="match_parent"
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/category"
-                android:layout_weight="1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tvCategoryName"
-                android:layout_weight="1"
-                />
-        </LinearLayout>
+            android:id="@+id/tlInfo"
+            android:layout_marginBottom="20dp"
+            >
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/category"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvCategoryName"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/member_name"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvMemberName"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/amount"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:id="@+id/tvAmount"
+                    ></TextView>
+
+            </TableRow>
+        </TableLayout>
 
         <LinearLayout
-            android:layout_below="@+id/llCategoryName"
-            android:id="@+id/llMemberName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/member_name"
-                android:layout_weight="1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tvMemberName"
-                android:layout_weight="1"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@+id/llMemberName"
-            android:id="@+id/llAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/amount"
-                android:layout_weight="1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tvAmount"
-                android:layout_weight="1"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@+id/llAmount"
-            android:id="@+id/llAgentShop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/agent_shop"
-                android:layout_weight="1"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tvShop"
-                android:layout_weight="1"
-                />
-            <Spinner
-                android:id="@+id/spPilihan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_below="@+id/llAgentShop"
+            android:layout_below="@+id/tlInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
