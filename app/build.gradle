@@ -56,7 +56,8 @@ android {
 //            buildConfigField 'String', "HeadAddress", '"http://192.168.88.22:59088/hpku/"'
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"HPKU\""
+            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
+            buildConfigField 'String', "AppID", "\"AKD\""
         }
         production {
             applicationId "com.sgo.hpku"
