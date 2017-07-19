@@ -388,7 +388,7 @@ public class MyApiClient {
         return tokens.nextToken();
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.AppID+WebServiceName+noID;
+        String msgnya = uuidnya+date+BuildConfig.AppIDHpku+WebServiceName+noID;
 
         String hash = null;
         Mac sha256_HMAC;
@@ -414,7 +414,7 @@ public class MyApiClient {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.AppID+webServiceName+ commID + user_id;
+        String msgnya = uuidnya+dtime+BuildConfig.AppIDHpku+webServiceName+ commID + user_id;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);

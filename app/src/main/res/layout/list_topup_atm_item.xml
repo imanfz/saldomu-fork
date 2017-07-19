@@ -136,6 +136,7 @@
                         android:layout_marginLeft="4dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:layout_gravity="center"
+                        android:textIsSelectable="true"
                         />
             </LinearLayout>
 
@@ -394,6 +395,7 @@
                         android:layout_marginLeft="4dp"
                         android:textColor="@color/colorPrimaryDark"
                         android:layout_gravity="center"
+                        android:textIsSelectable="true"
                         />
             </LinearLayout>
 
