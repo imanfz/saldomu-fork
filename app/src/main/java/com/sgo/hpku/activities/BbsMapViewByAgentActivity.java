@@ -97,7 +97,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         sp      = CustomSecurePref.getInstance().getmSecurePrefs();
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             //is member
-            startActivity(new Intent(this, MainPage.class));
+            Intent i = new Intent(this, MainPage.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
         }
 
         if ( checkPlayServices() ) {
@@ -117,7 +120,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
-        tvShop                  = (TextView) findViewById(R.id.tvShop);
+        //tvShop                  = (TextView) findViewById(R.id.tvShop);
 
         progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
         shopDetail              = new ShopDetail();
@@ -420,8 +423,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
 
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.putExtras(bundle);
-                                startActivityForResult(intent, 0);
+                                startActivity(intent);
+                                finish();
                             }
                             else
                             {
@@ -437,7 +442,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        startActivity(intent);
+                        finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

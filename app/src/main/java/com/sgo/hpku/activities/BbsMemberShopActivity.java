@@ -1,8 +1,10 @@
 package com.sgo.hpku.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -53,7 +55,7 @@ public class BbsMemberShopActivity extends BaseActivity {
 
 
         shopDetails             = new ArrayList<>();
-        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+
         sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
         lvReport                = (ListView) findViewById(R.id.list);
         flagApprove             = getIntent().getStringExtra("flagApprove");
@@ -72,10 +74,12 @@ public class BbsMemberShopActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent(BbsMemberShopActivity.this,BbsMemberShopDetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("memberId", shopDetails.get(position).getMemberId());
                 intent.putExtra("shopId", shopDetails.get(position).getShopId());
                 intent.putExtra("flagApprove", flagApprove);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -98,6 +102,7 @@ public class BbsMemberShopActivity extends BaseActivity {
 
         params.put(WebParams.SIGNATURE, signature);
 
+        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         MyApiClient.getMemberShopList(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -140,8 +145,22 @@ public class BbsMemberShopActivity extends BaseActivity {
                     } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
 
                     } else {
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(BbsMemberShopActivity.this).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                        alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        Intent i = new Intent(BbsMemberShopActivity.this, MainPage.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                });
+                        alertDialog.show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
