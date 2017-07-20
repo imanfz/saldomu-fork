@@ -122,7 +122,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         shopDetail              = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
         shopDetail.setKeyName(sp.getString(DefineValue.KEY_NAME, ""));
@@ -421,7 +421,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                     bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                                 }
 
-                                bundle.putString(DefineValue.AMOUNT, response.getString(DefineValue.AMOUNT));
+                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
                                 bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
 
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
