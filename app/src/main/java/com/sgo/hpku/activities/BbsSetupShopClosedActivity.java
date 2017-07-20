@@ -2,8 +2,10 @@ package com.sgo.hpku.activities;
 
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,6 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,7 +61,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
     ProgressDialog progdialog;
     ToggleButton tbOpenClosed;
     Button btnShopDate, btnProses, btnOpenHour;
-    TextView tvDate, tvStartHour, tvEndHour;
+    TextView tvDate, tvStartHour, tvEndHour, tvOpen24Hours;
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<Date> listDates = new ArrayList<>();
     SecurePreferences sp;
@@ -101,6 +104,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                     llShopRemark.setVisibility(View.VISIBLE);
                     tvSetupShopDate.setVisibility(View.VISIBLE);
                     selectedType = arg2;
+
                 }
             }
 
@@ -116,6 +120,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
         llSetupShopDate     = (LinearLayout) findViewById(R.id.llSetupShopDate);
         llShopRemark        = (LinearLayout) findViewById(R.id.llShopRemark);
         tvSetupShopDate     = (LinearLayout) findViewById(R.id.tvSetupShopDate);
+        tvOpen24Hours       = (TextView) findViewById(R.id.tvOpen24Hours);
 
         llSetupShopDate.setVisibility(View.GONE);
         tvSetupShopDate.setVisibility(View.GONE);
@@ -187,16 +192,31 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
 
                                                 Intent intent=new Intent(getApplicationContext(),BbsMemberShopActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 intent.putExtra("memberId", memberId);
                                                 intent.putExtra("shopId", shopId);
                                                 intent.putExtra("flagApprove", flagApprove);
                                                 startActivity(intent);
+                                                finish();
 
                                             } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
 
                                             } else {
-                                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                                Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                                //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                                                AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
+                                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+                                                alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+
+                                                            }
+                                                        });
+                                                alertDialog.show();
+
                                             }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -239,7 +259,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                     }*/
                                 params.put(WebParams.SHOP_DATE, shopDate);
 
-                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
+                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
 
                                 params.put(WebParams.SIGNATURE, signature);
 
@@ -258,10 +278,28 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                                 //                                    startActivity(intent);
 
                                                 Intent intent=new Intent(getApplicationContext(),BbsMemberShopActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 intent.putExtra("memberId", memberId);
                                                 intent.putExtra("shopId", shopId);
                                                 intent.putExtra("flagApprove", flagApprove);
                                                 startActivity(intent);
+                                                finish();
+                                            } else {
+                                                //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                                                AlertDialog alertDialog = new AlertDialog.Builder(BbsSetupShopClosedActivity.this).create();
+                                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+                                                alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                        new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.dismiss();
+
+                                                            }
+                                                        });
+                                                alertDialog.show();
+
                                             }
 
                                         } catch (JSONException e) {

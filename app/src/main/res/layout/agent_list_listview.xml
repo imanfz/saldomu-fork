@@ -19,7 +19,7 @@
             android:id="@+id/agentProfilePic"
             android:scaleType="fitXY" />
 
-        <ImageView
+        <!-- ImageView
             android:layout_width="100dp"
             android:layout_height="30dp"
             android:scaleType="fitXY"
@@ -36,7 +36,7 @@
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:background="#008000"
-            android:text="@string/availability_agent_profile_bbs_label" />
+            android:text="@string/availability_agent_profile_bbs_label" / -->
 
     </LinearLayout>
 

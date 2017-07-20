@@ -79,7 +79,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
         lvCommunityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(BbsMerchantCommunityList.this, com.sgo.hpku.activities.BbsMemberLocationActivity.class);
+                Intent intent=new Intent(BbsMerchantCommunityList.this, BbsMemberLocationActivity.class);
                 intent.putExtra("memberId", merchantCommunityListModel.get(position).getMemberId());
                 intent.putExtra("shopId", merchantCommunityListModel.get(position).getShopId());
                 startActivity(intent);
@@ -147,6 +147,11 @@ public class BbsMerchantCommunityList extends BaseActivity {
 
                         bbsMerchantCommunityListAdapter.notifyDataSetChanged();
 
+                    } else {
+                        Intent i = new Intent(BbsMerchantCommunityList.this, MainPage.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(i);
+                        finish();
                     }
 
                 } catch (JSONException e) {

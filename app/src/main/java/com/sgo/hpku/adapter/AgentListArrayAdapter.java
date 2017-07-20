@@ -75,9 +75,9 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         TextView agentLastOnline;
         TextView agentAddress;
         ImageView agentProfilePic;
-        ImageView agentRate;
+        //ImageView agentRate;
         TextView agentDistance;
-        TextView agentAvailable;
+        //TextView agentAvailable;
         ImageView agentMapBtn;
     }
 
@@ -123,9 +123,9 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
         viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
         viewHolder.agentProfilePic = (ImageView)rootView.findViewById(R.id.agentProfilePic);
-        viewHolder.agentRate = (ImageView)rootView.findViewById(R.id.agentRate);
+        //viewHolder.agentRate = (ImageView)rootView.findViewById(R.id.agentRate);
         viewHolder.agentDistance   = (TextView)rootView.findViewById(R.id.agentDistance);
-        viewHolder.agentAvailable   = (TextView)rootView.findViewById(R.id.available);
+        //viewHolder.agentAvailable   = (TextView)rootView.findViewById(R.id.available);
 
         viewHolder.agentMapBtn = (ImageView)rootView.findViewById(R.id.agentMapBtn);
         viewHolder.agentMapBtn.setOnClickListener(this);
@@ -185,15 +185,17 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         viewHolder.agentDistance.setText(agentDistance);
 
         if(agentAvailable.equalsIgnoreCase("Y")) {
-            viewHolder.agentAvailable.setText("Available");
+
+            /*viewHolder.agentAvailable.setText("Available");
             viewHolder.agentAvailable.setTextColor(Color.WHITE);
-            viewHolder.agentAvailable.setBackgroundColor(Color.GREEN);
+            viewHolder.agentAvailable.setBackgroundColor(Color.GREEN);*/
         }
         else
         {
-            viewHolder.agentAvailable.setText("Not Available");
+
+            /*viewHolder.agentAvailable.setText("Not Available");
             viewHolder.agentAvailable.setTextColor(Color.WHITE);
-            viewHolder.agentAvailable.setBackgroundColor(Color.RED);
+            viewHolder.agentAvailable.setBackgroundColor(Color.RED);*/
         }
 
             /*ImageLoader imageLoader = ImageLoader.getInstance();
@@ -201,12 +203,13 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             ImageLoader.getInstance().init(config);
             imageLoader.displayImage(agentProfilePic, viewHolder.agentProfilePic);*/
 
-        int profile = context.getResources().getIdentifier(agentProfilePic, "drawable", context.getPackageName());
-        viewHolder.agentProfilePic.setImageResource(profile);
-
+        //int profile = context.getResources().getIdentifier(agentProfilePic, "drawable", context.getPackageName());
+        int profile = context.getResources().getIdentifier("R.drawable.user_unknown_menu", "drawable", context.getPackageName());
+        viewHolder.agentProfilePic.setImageResource(R.drawable.user_unknown_menu);
+/*
         int rate = context.getResources().getIdentifier(agentRate, "drawable", context.getPackageName());
         viewHolder.agentRate.setImageResource(rate);
-
+*/
 
         viewHolder.agentMapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +218,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             }
         });
 
-        List<String> items = Arrays.asList(agentServiceList.split("\\s*,\\s*"));
+        /*List<String> items = Arrays.asList(agentServiceList.split("\\s*,\\s*"));
 
         for(int y = 0; y < items.size(); y++)
         {
@@ -227,7 +230,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             services.setTypeface(null, Typeface.BOLD);
             services.setPadding(4, 0, 4, 0);
             viewHolder.agentServiceList.addView(services);
-        }
+        }*/
 
 
         //apply semua modifikasi ke layout
