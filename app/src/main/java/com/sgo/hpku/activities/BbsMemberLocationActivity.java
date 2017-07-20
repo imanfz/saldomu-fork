@@ -113,7 +113,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                             dialog.cancel();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
                         }
                     });
             final AlertDialog alert = builder.create();
@@ -221,7 +224,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         getApplicationContext().startActivity(intent);
                                     } else {
-                                        startActivity(new Intent(getApplicationContext(), MainPage.class));
+                                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);
+                                        finish();
                                     }
 
                                 } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
@@ -442,9 +448,11 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
         Intent i = new Intent(this, BbsMemberLocationActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.putExtra("memberId", memberId);
         i.putExtra("shopId", shopId);
         startActivity(i);
+        finish();
     }
 
     @Override
@@ -463,7 +471,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
                         }
                     });
             alertDialog.show();

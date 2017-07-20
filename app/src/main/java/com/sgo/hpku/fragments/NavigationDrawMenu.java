@@ -293,8 +293,8 @@ public class NavigationDrawMenu extends ListFragment{
 
             models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_kelola), MKELOLA));
             models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_approval), MLISTAPPROVAL));
-            models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
-            models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
+            //models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp, R.drawable.ic_list_black_36dp, getString(R.string.menu_item_title_list_toko), MLISTTOKO));
+            //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_bbs_register_location),MREGISTERLOCATION));
 
             models.add(new navdrawmainmenuModel(R.drawable.ic_list_black_36dp,R.drawable.ic_list_black_36dp,getString(R.string.menu_item_title_trx_agent),MLISTTRXAGENT));
             //models.add(new navdrawmainmenuModel(R.drawable.ic_location_on_dark_blue,R.drawable.ic_location_on_dark_blue,getString(R.string.menu_item_title_map_agent),MMAPVIEWBYAGENT));
@@ -393,7 +393,10 @@ public class NavigationDrawMenu extends ListFragment{
                 alertbox.show();
                 break;
             case MREGISTERLOCATION:
-                startActivity(new Intent(getActivity(), BbsMerchantCommunityList.class));
+                Intent i = new Intent(getActivity(), BbsMerchantCommunityList.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                getActivity().finish();
                 //startActivity(new Intent(getActivity(), BbsMerchantSetupHourActivity.class));
                 break;
             /*case MREGISTERTOKO:

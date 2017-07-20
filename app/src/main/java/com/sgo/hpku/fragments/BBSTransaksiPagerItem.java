@@ -44,7 +44,10 @@ public class BBSTransaksiPagerItem extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
-            defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
+            Bundle bundle1 = bundle.getBundle(DefineValue.DATA);
+            if(bundle1 != null) {
+                defaultAmount = bundle1.getString(DefineValue.AMOUNT, "");
+            }
         }
 
         Fragment newFrag = new BBSTransaksiAmount();

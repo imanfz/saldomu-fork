@@ -1,6 +1,8 @@
 package com.sgo.hpku.fragments;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -12,7 +14,11 @@ import android.widget.TextView;
 
 import com.sgo.hpku.R;
 import com.sgo.hpku.coreclass.AgentConstant;
+import com.sgo.hpku.coreclass.MyApiClient;
+import com.sgo.hpku.coreclass.MyPicasso;
+import com.sgo.hpku.coreclass.RoundImageTransformation;
 import com.sgo.hpku.models.ShopDetail;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,8 +104,23 @@ public class ProfileAgentFragment extends Fragment
         ImageLoader.getInstance().init(config);
         imageLoader.displayImage(agentProfilePicSession, agentProfilePic);*/
 
-        int profile = getActivity().getResources().getIdentifier(agentProfilePicSession, "drawable", getActivity().getPackageName());
-        agentProfilePic.setImageResource(profile);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+        Picasso mPic;
+        if(MyApiClient.PROD_FLAG_ADDRESS)
+            mPic = MyPicasso.getImageLoader(getActivity());
+        else
+            mPic= Picasso.with(getActivity());
+
+        mPic.load(R.drawable.user_unknown_menu)
+                .error(roundedImage)
+                .fit().centerInside()
+                .placeholder(R.drawable.progress_animation)
+                .transform(new RoundImageTransformation()).into(agentProfilePic);
+
+        //int profile = getActivity().getResources().getIdentifier(agentProfilePicSession, "drawable", getActivity().getPackageName());
+        //agentProfilePic.setImageResource(profile);
     }
 
     private void getAgentLocationSharedPreferences()

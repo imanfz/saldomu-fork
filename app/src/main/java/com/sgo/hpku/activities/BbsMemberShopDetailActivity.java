@@ -51,7 +51,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
     String[] arrayItems = new String[3];
 
     String[] actualValues = new String[3];
-    String selectedValue    = "";
+    String selectedValue    = "", memberType = "";
     ImageView ivLocation, ivCategory, ivCloseShop;
     String flagApprove, setupOpenHour;
 
@@ -66,7 +66,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
         ivCategory      = (ImageView) findViewById(R.id.ivCategory);
         ivCloseShop     = (ImageView) findViewById(R.id.ivCloseShop);
 
-        progdialog      = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+        progdialog      = DefinedDialog.CreateProgressDialog(this, "");
         memberId        = getIntent().getStringExtra("memberId");
         shopId          = getIntent().getStringExtra("shopId");
         flagApprove     = getIntent().getStringExtra("flagApprove");
@@ -211,6 +211,7 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
                         tvShopName.setText(response.getString("shop_name"));
                         setupOpenHour = response.getString("setup_open_hour");
 
+                        memberType  = response.getString("member_type");
                         int defaultPosition = 0;
 
                         if ( response.getString("shop_closed").equals(DefineValue.STRING_YES) ) {
@@ -220,16 +221,24 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
                         }
 
                         if ( flagApprove.equals(DefineValue.STRING_NO)  ) {
-                            if ( response.getString("shop_latitude").equals("") && response.getString("shop_longitude").equals("") ) {
+                            if (response.getString("shop_latitude").equals("") && response.getString("shop_longitude").equals("")) {
                                 ivLocation.setVisibility(View.VISIBLE);
                             } else {
                                 ivLocation.setVisibility(View.GONE);
                             }
 
-                            ivCategory.setVisibility(View.VISIBLE);
+                            if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                ivCategory.setVisibility(View.VISIBLE);
+                            } else {
+                                ivCategory.setVisibility(View.GONE);
+                            }
                             ivCloseShop.setVisibility(View.VISIBLE);
                         } else {
-                            ivCategory.setVisibility(View.GONE);
+                            if (memberType.equals(DefineValue.SHOP_MERCHANT) ) {
+                                ivCategory.setVisibility(View.VISIBLE);
+                            } else {
+                                ivCategory.setVisibility(View.GONE);
+                            }
                             ivLocation.setVisibility(View.GONE);
                             ivCloseShop.setVisibility(View.VISIBLE);
                         }
@@ -275,30 +284,36 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
         ivLocation.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BbsMemberLocationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("memberId", memberId);
                 intent.putExtra("shopId", shopId);
                 startActivity(intent);
+                finish();
             }
         });
 
         ivCategory.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("memberId", memberId);
                 intent.putExtra("shopId", shopId);
                 intent.putExtra("flagApprove", flagApprove);
                 intent.putExtra("setupOpenHour", setupOpenHour);
                 startActivity(intent);
+                finish();
             }
         });
 
         ivCloseShop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), BbsSetupShopClosedActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("memberId", memberId);
                 intent.putExtra("shopId", shopId);
                 intent.putExtra("flagApprove", flagApprove);
                 startActivity(intent);
+                finish();
             }
         });
     }

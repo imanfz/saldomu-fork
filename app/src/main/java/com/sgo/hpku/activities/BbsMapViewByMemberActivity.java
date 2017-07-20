@@ -83,7 +83,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         sp      = CustomSecurePref.getInstance().getmSecurePrefs();
         if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             //is agent
-            startActivity(new Intent(this, MainPage.class));
+            Intent intent = new Intent(this, MainPage.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         }
 
         if ( checkPlayServices() ) {
@@ -96,7 +99,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
-        tvShop                  = (TextView) findViewById(R.id.tvShop);
+        //tvShop                  = (TextView) findViewById(R.id.tvShop);
         btnDone                 = (Button) findViewById(R.id.btnDone);
         btnCancel               = (Button) findViewById(R.id.btnCancel);
 
@@ -105,8 +108,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         mapFrag.getView().setVisibility(View.GONE);
 
         txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
-        categoryName            = sp.getString(DefineValue.CATEGORY_NAME, "TARIK TUNAI");
-        amount                  = sp.getString(DefineValue.AMOUNT, "10000");
+        categoryName            = sp.getString(DefineValue.CATEGORY_NAME, "");
+        amount                  = sp.getString(DefineValue.AMOUNT, "");
 
         //temporary only
         agentLatitude           = -6.222699;
@@ -382,7 +385,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         agentLongitude     = response.getDouble(WebParams.SHOP_LONGITUDE);
 
                         tvMemberName.setText(response.getString(WebParams.MEMBER_NAME));
-                        tvShop.setText(response.getString(WebParams.SHOP_NAME));
+                        //tvShop.setText(response.getString(WebParams.SHOP_NAME));
                         tvCategoryName.setText(categoryName);
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount) );
 
@@ -468,8 +471,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
-
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                     }
@@ -537,8 +542,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     progdialog2.dismiss();
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        startActivity(new Intent(getApplicationContext(), MainPage.class));
-
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                     }
