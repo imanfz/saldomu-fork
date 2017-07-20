@@ -62,7 +62,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
 
         pager_indicator = (LinearLayout) v.findViewById(R.id.viewPagerCountDots);
         mViewPager = (ViewPager) v.findViewById(R.id.bbs_transaksi_pager);
-        mAdapter = new BBSTransaksiPagerAdapter(getActivity(), getChildFragmentManager(), defaultAmount);
+        mAdapter = new BBSTransaksiPagerAdapter(getActivity(), getChildFragmentManager(), bundle);
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
 

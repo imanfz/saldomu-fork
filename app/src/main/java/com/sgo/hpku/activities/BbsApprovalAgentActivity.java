@@ -161,7 +161,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         }*/
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         RequestParams params    = new RequestParams();
 
         UUID rcUUID             = UUID.randomUUID();
@@ -215,7 +215,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         shopDetails.add(shopDetail);
 
                         tvCategoryName.setText(shopDetail.getCategoryName());
-                        tvMemberName.setText(shopDetail.getMemberName());
+                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
                         //tvShop.setText(shopDetail.getShopName());
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
 
@@ -385,7 +385,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         });
 
 
-        rlApproval.setVisibility(View.VISIBLE);
+        //rlApproval.setVisibility(View.VISIBLE);
 
         /*
         tvCategoryName.setText(shopDetail.getCategoryName());
