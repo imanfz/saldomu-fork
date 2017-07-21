@@ -41,12 +41,13 @@ public class BBSTransaksiPagerAdapter extends FragmentPagerAdapter {
         }
         else {
             args.putString(DefineValue.TRANSACTION, mContext.getString(R.string.cash_out));
-
         }
-        args.putBundle(DefineValue.DATA, this.bundle);
+        if(bundle!=null) {
+            args.putString(DefineValue.TYPE, bundle.getString(DefineValue.TYPE));
+            args.putString(DefineValue.AMOUNT, bundle.getString(DefineValue.AMOUNT));
+            args.putString(DefineValue.KEY_CODE, bundle.getString(DefineValue.KEY_CODE));
+        }
         mFrag.setArguments(args);
         return mFrag;
     }
-
-
 }

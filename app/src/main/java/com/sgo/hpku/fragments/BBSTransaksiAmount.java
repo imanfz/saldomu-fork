@@ -67,9 +67,8 @@ public class BBSTransaksiAmount extends Fragment {
     private ProgressDialog progdialog;
     private TextView tvTitle;
     private EditText etAmount;
-    private String transaksi, comm_code, member_code, benef_product_type,
-            api_key, callback_url, comm_id, userID, accessKey, comm_benef_atc, defaultAmount;
-
+    private String transaksi, comm_code, member_code, benef_product_type, api_key,
+            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -114,7 +113,9 @@ public class BBSTransaksiAmount extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
-            defaultAmount = bundle.getString(DefineValue.AMOUNT, "");
+            type = bundle.getString(DefineValue.TYPE,"");
+            defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
+            noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
 
         } else {
             getFragmentManager().popBackStack();
@@ -150,6 +151,10 @@ public class BBSTransaksiAmount extends Fragment {
         if(!isBack) listDataComm = new ArrayList<>();
         BBSCommModel comm;
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)){
+                if(!defaultAmount.equals(""))
+                    etAmount.setText(defaultAmount);
+            }
             stub.setLayoutResource(R.layout.bbs_cashin_amount);
             View cashin_layout = stub.inflate();
 
@@ -183,6 +188,10 @@ public class BBSTransaksiAmount extends Fragment {
             setBBSCity();
             setMember(listbankBenef);
         } else {
+            if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
+                if(!defaultAmount.equals(""))
+                    etAmount.setText(defaultAmount);
+            }
             stub.setLayoutResource(R.layout.bbs_cashout_amount);
             View cashout_layout = stub.inflate();
 
@@ -308,6 +317,10 @@ public class BBSTransaksiAmount extends Fragment {
                             String city_name = spBenefCity.getText().toString();
                             args.putString(DefineValue.ACCT_CITY_CODE, city_id);
                             args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                        }
+                        if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
+                            if (!noHpPengirim.equals(""))
+                                args.putString(DefineValue.KEY_CODE, noHpPengirim);
                         }
                     } else {
                         args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
