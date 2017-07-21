@@ -1,5 +1,6 @@
 package com.sgo.hpku.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -12,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
+import com.sgo.hpku.activities.TutorialActivity;
 import com.sgo.hpku.adapter.ReportTabAdapter;
+import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -72,7 +75,29 @@ public class ReportTab extends Fragment {
             pager.setCurrentItem(0);
 
             setCurrentAdapternya(adapternya);
+            validasiTutorial();
         }
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_REPORT))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_REPORT,false);
+            if(is_first_time) {
+                showTutorial();
+            }
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_report);
+        startActivity(intent);
     }
 
     private View getCurrentView() {
@@ -96,8 +121,7 @@ public class ReportTab extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                showTutorial();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

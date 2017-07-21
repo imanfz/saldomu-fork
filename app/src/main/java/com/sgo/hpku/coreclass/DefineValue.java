@@ -319,5 +319,9 @@ public class DefineValue {
     public static String BENEF_PRODUCT_NAME = "benefProductName";
     public static String TUTORIAL_PAY_FRIEND = "tutorialPayFriend";
     public static String TUTORIAL_ASK_MONEY = "tutorialAskMoney";
+    public static String TUTORIAL_TOP_UP= "tutorialAskMoney";
+    public static String TUTORIAL_BELANJA = "tutorialBelanja";
+    public static String TUTORIAL_REPORT = "tutorialReport";
+    public static String TUTORIAL_BBS = "tutorialBBS";
 
 }

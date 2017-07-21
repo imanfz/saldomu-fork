@@ -13,6 +13,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BBSActivity;
 import com.sgo.hpku.activities.MainPage;
+import com.sgo.hpku.activities.TutorialActivity;
 import com.sgo.hpku.adapter.EasyAdapter;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
@@ -27,6 +28,7 @@ public class ListBBS extends ListFragment {
     private boolean isJoin = false;
     String[] _data;
     Boolean isAgent;
+    SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +66,28 @@ public class ListBBS extends ListFragment {
                 switchActivity(i,MainPage.ACTIVITY_RESULT);
             }
         }
+        validasiTutorial();
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_BBS))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_BBS,false);
+            if(is_first_time) {
+                showTutorial();
+            }
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_bbs);
+        startActivity(intent);
     }
 
     @Override

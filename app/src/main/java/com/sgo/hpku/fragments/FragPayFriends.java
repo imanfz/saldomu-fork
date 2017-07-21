@@ -258,7 +258,9 @@ public class FragPayFriends extends Fragment {
         else {
             showTutorial();
         }
+
     }
+
     private void showTutorial()
     {
         Intent intent = new Intent(getActivity(), TutorialActivity.class);

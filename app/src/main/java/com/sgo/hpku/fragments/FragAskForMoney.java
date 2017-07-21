@@ -85,8 +85,7 @@ public class FragAskForMoney extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                showTutorial();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

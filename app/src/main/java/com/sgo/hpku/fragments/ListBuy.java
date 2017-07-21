@@ -1,6 +1,7 @@
 package com.sgo.hpku.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.Beans.Account_Collection_Model;
 import com.sgo.hpku.Beans.Biller_Type_Data_Model;
 import com.sgo.hpku.R;
+import com.sgo.hpku.activities.TutorialActivity;
 import com.sgo.hpku.adapter.BuyFragmentTabAdapter;
+import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.dialogs.InformationDialog;
@@ -42,6 +46,7 @@ public class ListBuy extends Fragment {
     private ListBuyRF mWorkFragment;
     private RealmChangeListener realmListener;
     private ArrayList<String> Title_tab;
+    private SecurePreferences sp;
 //    String userID,accessKey;
 
     private InformationDialog dialogI;
@@ -66,8 +71,7 @@ public class ListBuy extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                showTutorial();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -76,6 +80,7 @@ public class ListBuy extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         super.onActivityCreated(savedInstanceState);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
@@ -121,7 +126,30 @@ public class ListBuy extends Fragment {
 //            }};
 //        realm.addChangeListener(realmListener);
 
+        validasiTutorial();
         initializeData();
+
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_BELANJA))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_BELANJA,false);
+            if(is_first_time) {
+                showTutorial();
+            }
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_belanja);
+        startActivity(intent);
     }
 
     private void initializeData(){
