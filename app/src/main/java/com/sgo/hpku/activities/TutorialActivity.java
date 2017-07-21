@@ -154,29 +154,30 @@ public class TutorialActivity extends AppIntro {
     private void show(){
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor=sp.edit();
+
         if (intType==tutorial_payFriend)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_PAY_FRIEND,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_PAY_FRIEND,false);
         }
         else if (intType==tutorial_askMoney)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_ASK_MONEY,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_ASK_MONEY,false);
         }
         else if (intType==tutorial_belanja)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_BELANJA,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_BELANJA,false);
         }
         else if (intType==tutorial_report)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_REPORT,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_REPORT,false);
         }
         else if (intType==tutorial_topUp)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_TOP_UP,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_TOP_UP,false);
         }
         else if (intType==tutorial_bbs)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_BBS,true);
+            mEditor.putBoolean(DefineValue.TUTORIAL_BBS,false);
         }
         mEditor.apply();
         finish();
