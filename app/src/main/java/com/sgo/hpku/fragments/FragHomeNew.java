@@ -55,6 +55,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    Boolean is_first_time=true;
     private LevelClass levelClass;
     private SecurePreferences sp;
     int[] imageId = {
@@ -252,6 +253,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT,"0");
         tv_saldo.setText(CurrencyFormat.format(balance));
     }
+
 
     @Override
     protected int getInflateFragmentLayout() {

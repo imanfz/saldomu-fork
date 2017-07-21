@@ -31,6 +31,7 @@ import com.sgo.hpku.R;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.hpku.activities.TopUpActivity;
+import com.sgo.hpku.activities.TutorialActivity;
 import com.sgo.hpku.coreclass.*;
 import com.sgo.hpku.dialogs.AlertDialogFrag;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
@@ -101,8 +102,7 @@ public class FragPayFriends extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                    showTutorial();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -243,8 +243,28 @@ public class FragPayFriends extends Fragment {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
+        validasiTutorial();
     }
 
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_PAY_FRIEND))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_PAY_FRIEND,false);
+            if(is_first_time) {
+                showTutorial();
+            }
+        }
+        else {
+            showTutorial();
+        }
+    }
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_payFriend);
+        startActivity(intent);
+    }
     private void setNumberRecipients(){
 
         if (phoneRetv.getSortedRecipients().length == 0) {

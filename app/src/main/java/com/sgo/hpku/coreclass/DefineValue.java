@@ -317,4 +317,7 @@ public class DefineValue {
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+    public static String TUTORIAL_PAY_FRIEND = "tutorialPayFriend";
+    public static String TUTORIAL_ASK_MONEY = "tutorialAskMoney";
+
 }

@@ -3,6 +3,7 @@ package com.sgo.hpku.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.R;
+import com.sgo.hpku.activities.TutorialActivity;
 import com.sgo.hpku.coreclass.*;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
@@ -197,6 +199,27 @@ public class FragAskForMoney extends Fragment {
 
         dialogI = InformationDialog.newInstance(6);
         dialogI.setTargetFragment(this,0);
+        validasiTutorial();
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_ASK_MONEY))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_ASK_MONEY,false);
+            if(is_first_time) {
+                showTutorial();
+            }
+        }
+        else {
+            showTutorial();
+        }
+    }
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_payFriend);
+        startActivity(intent);
     }
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
