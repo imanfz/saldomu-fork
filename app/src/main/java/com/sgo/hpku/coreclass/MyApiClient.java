@@ -361,7 +361,7 @@ public class MyApiClient {
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
     public static Boolean FLAG_SIG = true;
-    public static String COMM_ID_DEV = "EMONEYMAKA1458297012HV4Q3"; //dev
+    public static String COMM_ID_DEV = "EMOSALDOMU1500439694RS6DD"; //dev
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "EMOHAH1499252941PKN91";  //prod
