@@ -1,19 +1,11 @@
-import android.content.Context;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 
-import com.sgo.hpku.coreclass.NoHPFormat;
-import com.sgo.hpku.coreclass.PrefixOperatorValidator;
-
-import org.hamcrest.text.IsEqualIgnoringCase;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.Assert.assertThat;
 
 /**
