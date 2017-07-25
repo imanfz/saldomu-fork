@@ -395,8 +395,10 @@ public class MainPage extends BaseActivity{
     }
 
     private void initializeNavDrawer(){
-        if(mNavDrawer != null && isActive)
+        if(mNavDrawer != null && isActive) {
             mNavDrawer.initializeNavDrawer();
+            mNavDrawer.getBalance(true);
+        }
     }
 
 //    private void TurnOnGCM(){
@@ -932,8 +934,6 @@ public class MainPage extends BaseActivity{
 
 //        if(mBH !=null)
 //            mBH.getDataBalance();
-        if(mNavDrawer != null)
-            mNavDrawer.getBalance(true);
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
