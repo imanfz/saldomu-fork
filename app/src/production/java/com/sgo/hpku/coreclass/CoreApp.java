@@ -1,4 +1,4 @@
-package com.sgo.hpku.coreclass;
+package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
@@ -13,15 +13,15 @@ import com.facebook.stetho.Stetho;
 
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.sgo.hpku.Beans.commentModel;
-import com.sgo.hpku.Beans.communityModel;
-import com.sgo.hpku.Beans.friendModel;
-import com.sgo.hpku.Beans.likeModel;
-import com.sgo.hpku.Beans.listHistoryModel;
-import com.sgo.hpku.Beans.listTimeLineModel;
-import com.sgo.hpku.Beans.myFriendModel;
-import com.sgo.hpku.BuildConfig;
-import com.sgo.hpku.R;
+import com.sgo.saldomu.Beans.commentModel;
+import com.sgo.saldomu.Beans.communityModel;
+import com.sgo.saldomu.Beans.friendModel;
+import com.sgo.saldomu.Beans.likeModel;
+import com.sgo.saldomu.Beans.listHistoryModel;
+import com.sgo.saldomu.Beans.listTimeLineModel;
+import com.sgo.saldomu.Beans.myFriendModel;
+import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.R;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;

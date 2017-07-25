@@ -182,7 +182,7 @@
                     android:layout_marginBottom="40dp"
                     >
 
-                <com.sgo.hpku.coreclass.RoundedQuickContactBadge
+                <com.sgo.saldomu.coreclass.RoundedQuickContactBadge
                         android:id="@+id/friends_pic_content"
                     android:layout_height="@dimen/friends_pic_content"
                         android:layout_width="@dimen/friends_pic_content"
