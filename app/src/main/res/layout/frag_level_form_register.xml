@@ -135,7 +135,7 @@
                                   android:textSize="@dimen/abc_text_size_medium_material"
                                   android:textStyle="bold"
                                 />
-                        <com.sgo.hpku.coreclass.CustomEditText
+                        <com.sgo.saldomu.coreclass.CustomEditText
                                 android:id="@+id/level_value_name"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                                 android:layout_gravity="right"
                                 android:gravity="right"/>
                     </LinearLayout>
-                    <com.sgo.hpku.coreclass.CustomEditText
+                    <com.sgo.saldomu.coreclass.CustomEditText
                             android:id="@+id/level_value_social_id"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
@@ -218,7 +218,7 @@
                               android:textSize="@dimen/abc_text_size_medium_material"
                               android:textStyle="bold"
                             />
-                    <com.sgo.hpku.coreclass.CustomEditText
+                    <com.sgo.saldomu.coreclass.CustomEditText
                             android:id="@+id/level_value_address"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
@@ -242,7 +242,7 @@
                               android:textSize="@dimen/abc_text_size_medium_material"
                               android:textStyle="bold"
                             />
-                    <com.sgo.hpku.coreclass.CustomEditText
+                    <com.sgo.saldomu.coreclass.CustomEditText
                             android:id="@+id/level_value_pob"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
