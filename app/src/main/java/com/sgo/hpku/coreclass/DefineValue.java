@@ -396,6 +396,7 @@ public class DefineValue {
     public static String MSG_NOTIF              = "MsgNotif";
 
     public static String DEFAULT_RADIUS         = "10";
+    public static String STRING_BOTH = "B";
 
 }
 

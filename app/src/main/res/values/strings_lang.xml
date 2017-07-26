@@ -199,10 +199,10 @@
     <string name="menu_item_bbs_register_location">Registrasi Toko Member</string>
     <string name="menu_item_bbs_search_toko">Search Toko</string>
     <string name="menu_item_search_agent">Cari Agen</string>
-    <string name="menu_item_title_kelola">Kelola</string>
+    <string name="menu_item_title_kelola">Pengaturan</string>
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
-    <string name="menu_item_title_trx_agent">Daftar Persetujuan Agen</string>
+    <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
 
@@ -796,27 +796,29 @@
     <string name="category">Kategori</string>
     <string name="no_telp">No Telp</string>
     <string name="setup_agent_open_hour">Waktu Beroperasi</string>
-    <string name="setup_location">Lokasi</string>
+    <string name="setup_location">Setting Lokasi</string>
     <string name="setup_tutup_manual">Tutup Manual</string>
     <string name="setup_shop_status">Atur Waktu Toko</string>
     <string name="shop_open">Buka</string>
     <string name="shop_close">Tutup</string>
     <string name="title_setup_shop_status">Atur Tanggal Buka/Tutup Toko</string>
-    <string name="setup_shop_date">Atur Tanggal Toko</string>
+    <string name="setup_shop_date">Pilih Tanggal</string>
     <string name="setup_open_shop_date">Atur Tanggal Buka Toko</string>
-    <string name="set_shop_date">Atur Tanggal Toko</string>
-    <string name="set_shop_hour">Atur Jam Toko</string>
+    <string name="set_shop_date">Pilih Tanggal</string>
+    <string name="set_shop_opening_date">Atur Tanggal Buka Toko</string>
+    <string name="set_shop_closing_date">Atur Tanggal Tutup Toko</string>
+    <string name="set_shop_hour">Pilih Jam</string>
     <string name="choose_date">Pilih Tanggal</string>
     <string name="shop_date">Tanggal</string>
     <string name="err_empty_shop_date">Silakan pilih tanggal toko</string>
-    <string name="setting_setup_shop_hour">Atur Jam Buka</string>
+    <string name="setting_setup_shop_hour">Atur Jam Toko Buka</string>
     <string name="err_empty_shop_hour">Silakan isi jam toko</string>
     <string name="type_your_keyword">Type your keyword here</string>
     <string name="search_agent">Cari Agen</string>
     <string name="cari_alamat">Cari Berdasarkan Alamat</string>
     <string name="shop_list">Manage Member</string>
     <string name="list_approval">List Approval</string>
-    <string name="closed_shop_today">Tutup toko hari ini?</string>
+    <string name="closed_shop_today">Online?</string>
     <string name="setting_tutup_toko">Setting Tutup Toko?</string>
     <string name="setting_shop_remark">Keterangan</string>
     <string name="map_navigation">Map Route Direction Navigation</string>
@@ -958,4 +960,7 @@
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Cari</string>
     <string name="alertbox_gps_warning">GPS belum aktif, apakah Anda mau mengaktifkan GPS Anda?</string>
+    <string name="bbs_setting">Pengaturan</string>
+    <string name="setup_tutup_sekarang">Tutup Sekarang</string>
+    <string name="proses_update_success">Proses update berhasil</string>
 </resources>

@@ -42,7 +42,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvOpen24Hours"
+                        android:id="@+id/tvOpen24Hours2"
                         android:text="@string/setup_shop_status"
                         android:layout_weight="1"
                         />

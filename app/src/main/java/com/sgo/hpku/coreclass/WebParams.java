@@ -351,6 +351,7 @@ public class WebParams {
     public static String LONGITUDE      = "longitude";
     public static String RADIUS         = "radius";
     public static String CATEGORY       = "category";
+    public static String ZIP_CODE       = "zipcode";
     public static String FLAG_ALL_DAY   = "flag_all_day";
     public static String FLAG_CLOSED_TYPE   = "flag_closed_type";
     public static String OPEN_START_HOUR_SUN    = "open_start_hour_sun";

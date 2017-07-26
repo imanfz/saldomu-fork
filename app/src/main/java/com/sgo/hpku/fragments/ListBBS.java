@@ -75,10 +75,17 @@ public class ListBBS extends ListFragment {
                 posIdx = BBSActivity.LISTACCBBS;
             else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
                 posIdx = BBSActivity.TRANSACTION;
-            else if(_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+            else if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
                 posIdx = BBSActivity.CONFIRMCASHOUT;
-        else
-            posIdx = -1;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
+                posIdx = BBSActivity.BBSKELOLA;
+            //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
+                //posIdx = BBSActivity.BBSAPPROVALAGENT;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+                posIdx = BBSActivity.BBSTRXAGENT;
+            else {
+                posIdx = -1;
+            }
         } else
             posIdx = BBSActivity.CONFIRMCASHOUT;
 

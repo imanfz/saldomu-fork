@@ -1,32 +1,30 @@
-package com.sgo.hpku.fragments;
-
+package com.sgo.hpku.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.hpku.Beans.Denom_Data_Model;
 import com.sgo.hpku.BuildConfig;
 import com.sgo.hpku.R;
-import com.sgo.hpku.adapter.CustomTabPagerAdapter;
+import com.sgo.hpku.adapter.EasyAdapter;
+import com.sgo.hpku.adapter.ListSettingAdapter;
+import com.sgo.hpku.coreclass.BaseActivity;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DateTimeFormat;
 import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.HashMessage;
 import com.sgo.hpku.coreclass.MyApiClient;
-import com.sgo.hpku.coreclass.RealmManager;
 import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.DefinedDialog;
-import com.sgo.hpku.entityRealm.MerchantCommunityList;
 import com.sgo.hpku.models.ShopDetail;
 
 import org.apache.http.Header;
@@ -37,90 +35,36 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import io.realm.Realm;
 import timber.log.Timber;
 
-import static io.realm.Realm.getDefaultInstance;
+public class BbsListSettingKelolaActivity extends BaseActivity {
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragMenuKelola#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FragMenuKelola extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    public final static String TAG = "com.sgo.hpku.fragments.Frag_menu_kelola";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private String[] menuItems;
+    String[] _data;
+    private ListSettingAdapter listSettingAdapter;
+    ArrayList<String> menu;
+    ListView lvList;
+    String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove;
+    ProgressDialog progdialog, progdialog2;
+    String flagApprove;
     SecurePreferences sp;
-    ProgressDialog progdialog;
-    private Realm myRealm;
-    CustomTabPagerAdapter tabPageAdapter;
     ArrayList<ShopDetail> shopDetails = new ArrayList<>();
-    ViewPager viewPager;
-
-    public FragMenuKelola() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragMenuKelola.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragMenuKelola newInstance(String param1, String param2) {
-        FragMenuKelola fragment = new FragMenuKelola();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        InitializeToolbar();
 
-        myRealm                 = Realm.getDefaultInstance();
+        menu                    = new ArrayList<>();
+        _data                   = getResources().getStringArray(R.array.list_bbs_setting_kelola);
+        lvList                  = (ListView) findViewById(R.id.list);
         sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
 
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.frag_menu_kelola, container, false);
 
-        menuItems = getResources().getStringArray(R.array.list_menu_kelola);
+        flagApprove             = DefineValue.STRING_BOTH;
 
-        tabPageAdapter = new CustomTabPagerAdapter(getChildFragmentManager(), getContext(), menuItems, shopDetails);
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = (ViewPager) v.findViewById(R.id.viewpager);
-        viewPager.setAdapter(tabPageAdapter);
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
-
-        String flagApprove      = DefineValue.STRING_YES;
         RequestParams params    = new RequestParams();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
@@ -138,7 +82,7 @@ public class FragMenuKelola extends Fragment {
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(getContext(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(BbsListSettingKelolaActivity.this, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();
@@ -149,27 +93,9 @@ public class FragMenuKelola extends Fragment {
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         JSONArray members = response.getJSONArray("member");
 
-                        //myRealm.beginTransaction();
                         for (int i = 0; i < members.length(); i++) {
                             JSONObject object = members.getJSONObject(i);
 
-                            /*myRealm.where(MerchantCommunityList.class).equalTo("memberId", object.getString("member_id"))
-                                    .findAll().deleteFirstFromRealm();
-
-                            MerchantCommunityList agentDetailModel = myRealm.createObject(MerchantCommunityList.class, object.getString("member_id") );
-                            agentDetailModel.setMemberName( object.getString("member_name") );
-                            agentDetailModel.setMemberCode(object.getString("member_code"));
-                            agentDetailModel.setMemberType(object.getString("member_type"));
-                            agentDetailModel.setCommName(object.getString("comm_name"));
-                            agentDetailModel.setCommCode(object.getString("comm_code"));
-                            agentDetailModel.setShopId(object.getString("shop_id"));
-                            agentDetailModel.setShopName(object.getString("shop_name"));
-                            agentDetailModel.setAddress1(object.getString("address1"));
-                            agentDetailModel.setDistrict(object.getString("district"));
-                            agentDetailModel.setProvince(object.getString("province"));
-                            agentDetailModel.setCountry(object.getString("country"));
-                            agentDetailModel.setMemberCust(sp.getString(DefineValue.USERID_PHONE, ""));
-*/
                             ShopDetail shopDetail = new ShopDetail();
                             shopDetail.setMemberId(object.getString("member_id"));
                             shopDetail.setMemberCode(object.getString("member_code"));
@@ -183,7 +109,10 @@ public class FragMenuKelola extends Fragment {
                             shopDetail.setShopDistrict(object.getString("district"));
                             shopDetail.setShopProvince(object.getString("province"));
                             shopDetail.setShopCountry(object.getString("country"));
+                            shopDetail.setStepApprove(object.getString("step_approve"));
 
+                            agentName = object.getString("member_name");
+                            stepApprove = object.getString("step_approve");
                             JSONArray categories = object.getJSONArray("category");
 
                             for (int j = 0; j < categories.length(); j++) {
@@ -192,12 +121,40 @@ public class FragMenuKelola extends Fragment {
                             }
 
                             shopDetails.add(shopDetail);
-
+                            category = TextUtils.join(", ", shopDetail.getCategories());
 
                         }
-                        //myRealm.commitTransaction();
 
-                        viewPager.getAdapter().notifyDataSetChanged();
+
+                        for(int i =0; i <= (_data.length-1); i++) {
+                            String temp = _data[i];
+
+                            if ( i == 0 ) {
+                                temp += " : " + agentName;
+                            } else if ( i == 1 ) {
+                                temp += " : " + category;
+                            }
+
+                            if ( i == 2 ) {
+                                if (stepApprove.equals(DefineValue.STRING_NO)) {
+                                    menu.add(temp);
+                                }
+                            } else if ( i == 3 ) {
+                                if (stepApprove.equals(DefineValue.STRING_YES)) {
+                                    menu.add(temp);
+                                }
+                            } else {
+                                menu.add(temp);
+                            }
+                        }
+
+                        listSettingAdapter = new ListSettingAdapter(BbsListSettingKelolaActivity.this, menu, flagApprove, shopDetails);
+                        lvList.setAdapter(listSettingAdapter);
+
+                    } else {
+
+
+
                     }
 
                 } catch (JSONException e) {
@@ -221,7 +178,7 @@ public class FragMenuKelola extends Fragment {
                 //if (MyApiClient.PROD_FAILURE_FLAG)
                 //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 //else
-                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(BbsListSettingKelolaActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog.dismiss();
                 Timber.w("Error Koneksi login:" + throwable.toString());
@@ -230,8 +187,42 @@ public class FragMenuKelola extends Fragment {
 
         });
 
-        // Inflate the layout for this fragment
-        return v;
+
+        memberId        = getIntent().getStringExtra("memberId");
+        shopId          = getIntent().getStringExtra("shopId");
+        shopName        = getIntent().getStringExtra("shopName");
+        memberType      = getIntent().getStringExtra("memberType");
+        category        = getIntent().getStringExtra("category");
+        agentName       = getIntent().getStringExtra("memberName");
+        commName        = getIntent().getStringExtra("commName");
+        province        = getIntent().getStringExtra("province");
+        district        = getIntent().getStringExtra("district");
+        address         = getIntent().getStringExtra("address");
+
+
     }
 
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_bbs_list_setting_kelola;
+    }
+
+    public void InitializeToolbar(){
+        setActionBarIcon(R.drawable.ic_arrow_left);
+        setActionBarTitle(getString(R.string.menu_item_title_setting));
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

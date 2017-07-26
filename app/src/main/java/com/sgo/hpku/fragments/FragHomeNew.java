@@ -179,7 +179,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 JSONObject object = categories.getJSONObject(i);
                                 ShopCategory shopCategory = new ShopCategory();
                                 shopCategory.setCategoryId(object.getString("category_id"));
-                                shopCategory.setCategoryName(object.getString("category_name"));
+                                String tempCategory = object.getString("category_name").toLowerCase();
+
+                                String[] strArray = tempCategory.split(" ");
+                                StringBuilder builder = new StringBuilder();
+                                for (String s : strArray) {
+                                    String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                    builder.append(cap + " ");
+                                }
+
+                                shopCategory.setCategoryName(builder.toString());
                                 shopCategories.add(shopCategory);
                             }
 
