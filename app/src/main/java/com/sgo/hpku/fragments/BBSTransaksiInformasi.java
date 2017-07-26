@@ -190,6 +190,9 @@ public class BBSTransaksiInformasi extends Fragment {
                 actv_rekening_agent = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
+
+                if(bundle.containsKey(DefineValue.KEY_CODE))
+                    etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
                 String[] from = {"flag", "txt"};
 
                 // Ids of views in listview_layout
