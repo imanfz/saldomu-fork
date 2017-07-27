@@ -1,4 +1,4 @@
-package com.sgo.hpku.adapter;
+package com.sgo.saldomu.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.sgo.hpku.R;
-import com.sgo.hpku.activities.BbsListSettingKelolaActivity;
-import com.sgo.hpku.activities.BbsMemberLocationActivity;
-import com.sgo.hpku.activities.BbsMerchantSetupHourActivity;
-import com.sgo.hpku.activities.BbsRegisterOpenClosedShopActivity;
+import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsListSettingKelolaActivity;
+import com.sgo.saldomu.activities.BbsMemberLocationActivity;
+import com.sgo.saldomu.activities.BbsMerchantSetupHourActivity;
+import com.sgo.saldomu.activities.BbsRegisterOpenClosedShopActivity;
 
 import java.util.ArrayList;
 
