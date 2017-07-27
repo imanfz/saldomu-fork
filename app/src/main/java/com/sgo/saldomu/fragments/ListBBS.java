@@ -13,7 +13,6 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -66,29 +65,8 @@ public class ListBBS extends ListFragment {
                 switchActivity(i,MainPage.ACTIVITY_RESULT);
             }
         }
-        validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_BBS))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_BBS,false);
-            if(is_first_time) {
-                showTutorial();
-            }
-        }
-        else {
-            showTutorial();
-        }
-    }
-
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_bbs);
-        startActivity(intent);
-    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {

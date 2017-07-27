@@ -35,6 +35,7 @@ import com.sgo.saldomu.Beans.AccountBBS;
 import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.ListAccountBBSAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -75,6 +76,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     private AlertDialog alertDialogDelete;
     private ActionListener actionListener;
     private TextView tvCommName;
+    SecurePreferences sp;
 
     public interface ActionListener{
         void OnAddAccountListener();
@@ -84,7 +86,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -213,6 +215,27 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
         }
 
         retrieveComm();
+        validasiTutorial();
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_REGISTER_AGEN))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_REGISTER_AGEN,false);
+            if(is_first_time)
+                showTutorial();
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_registerAgen);
+        startActivity(intent);
     }
 
     private void ToUpdateFragment(int positionAcct){

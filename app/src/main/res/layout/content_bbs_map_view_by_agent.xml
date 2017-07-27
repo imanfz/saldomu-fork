@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.sgo.hpku.activities.BbsMapViewByAgentActivity"
+    tools:context="com.sgo.saldomu.activities.BbsMapViewByAgentActivity"
     tools:showIn="@layout/bbs_map_view_by_agent_activity">
 
 </android.support.constraint.ConstraintLayout>

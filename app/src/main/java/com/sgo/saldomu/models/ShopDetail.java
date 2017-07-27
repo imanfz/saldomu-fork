@@ -1,7 +1,5 @@
 package com.sgo.saldomu.models;
-
 import java.util.ArrayList;
-
 /**
  * Created by Lenovo on 05/04/2017.
  */

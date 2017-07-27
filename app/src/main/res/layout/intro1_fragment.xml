@@ -15,11 +15,12 @@
         android:textColor="#ffffff"/>
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/page1"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        android:src="@drawable/page1" />
 
 
 </LinearLayout>

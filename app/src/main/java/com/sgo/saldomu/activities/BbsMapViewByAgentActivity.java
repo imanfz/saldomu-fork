@@ -52,8 +52,6 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
-
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;

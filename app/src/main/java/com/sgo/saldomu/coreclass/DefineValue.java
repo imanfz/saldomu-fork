@@ -4,7 +4,6 @@ package com.sgo.saldomu.coreclass;
   Created by Administrator on 11/6/2015.
  */
 
-
 import com.sgo.saldomu.BuildConfig;
 
 public class DefineValue {
@@ -404,6 +403,15 @@ public class DefineValue {
     public static String TUTORIAL_BELANJA = "tutorialBelanja";
     public static String TUTORIAL_REPORT = "tutorialReport";
     public static String TUTORIAL_BBS = "tutorialBBS";
+
+    public static String TUTORIAL_CASHIN             = "tutorialCashIn";
+    public static String TUTORIAL_IMAGE            = "tutorialImage";
+    public static String TUTORIAL_TAMBAH_REKENING        = "tutorialDaftarRekening";
+    public static String TUTORIAL_CASHOUT              = "tutorialCashOut";
+    public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
+    public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
+    public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
+
 
 }
 

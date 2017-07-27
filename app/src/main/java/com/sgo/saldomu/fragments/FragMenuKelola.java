@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.CustomTabPagerAdapter;
@@ -23,7 +22,6 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
@@ -39,8 +37,6 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import timber.log.Timber;
-
-import static io.realm.Realm.getDefaultInstance;
 
 /**
  * A simple {@link Fragment} subclass.

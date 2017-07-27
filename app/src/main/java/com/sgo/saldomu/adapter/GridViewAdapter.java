@@ -5,14 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 import com.sgo.saldomu.models.OpenHourDays;
-import com.sgo.saldomu.models.SetupOpenHour;
 
 import java.util.ArrayList;
 

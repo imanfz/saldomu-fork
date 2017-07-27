@@ -1,11 +1,9 @@
 package com.sgo.saldomu.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.SearchAgentActivity;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 

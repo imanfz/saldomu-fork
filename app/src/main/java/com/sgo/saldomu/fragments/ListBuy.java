@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
@@ -71,7 +72,8 @@ public class ListBuy extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                showTutorial();
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -126,31 +128,11 @@ public class ListBuy extends Fragment {
 //            }};
 //        realm.addChangeListener(realmListener);
 
-        validasiTutorial();
         initializeData();
 
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_BELANJA))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_BELANJA,false);
-            if(is_first_time) {
-                showTutorial();
-            }
-        }
-        else {
-            showTutorial();
-        }
-    }
 
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_belanja);
-        startActivity(intent);
-    }
 
     private void initializeData(){
 

@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -90,7 +92,7 @@ public class BBSTransaksiAmount extends Fragment {
     private ArrayList<String> list_name_bbs_cities;
     private Integer CityAutocompletePos = -1;
     private boolean isBack = false;
-
+    SecurePreferences sp;
     public boolean isBack() {
         return isBack;
     }
@@ -106,7 +108,7 @@ public class BBSTransaksiAmount extends Fragment {
         realm = Realm.getDefaultInstance();
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
@@ -226,6 +228,63 @@ public class BBSTransaksiAmount extends Fragment {
 
             retrieveComm();
         }
+
+        if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
+        {
+            validasiTutorialCashIn();
+        }
+        else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+        {
+            validasiTutorialCashOut();
+        }
+    }
+
+    private void validasiTutorialCashIn()
+    {
+        if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
+        {
+            if(sp.contains(DefineValue.TUTORIAL_CASHIN))
+            {
+                Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_CASHIN,false);
+                if(is_first_time) {
+                    showTutorialCashIn();
+                }
+            }
+            else {
+                showTutorialCashIn();
+            }
+        }
+    }
+
+
+    private void validasiTutorialCashOut()
+    {
+        if(transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+        {
+            if (sp.contains(DefineValue.TUTORIAL_CASHOUT))
+            {
+                Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_CASHOUT,false);
+                if(is_first_time)
+                    showTutorialCashOut();
+            }
+        }
+        else {
+            showTutorialCashOut();
+        }
+    }
+
+    private void showTutorialCashIn()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_in);
+        startActivity(intent);
+    }
+
+    private void showTutorialCashOut()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_cash_out);
+        startActivity(intent);
     }
 
     TextWatcher textWatcher = new TextWatcher() {

@@ -24,21 +24,16 @@ import android.widget.Toast;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsMapNagivationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.activities.BookBbsActivity;
 import com.sgo.saldomu.activities.MainAgentActivity;
-import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.SearchAgentActivity;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.fragments.AgentMapFragment;
 import com.sgo.saldomu.fragments.ProfileAgentFragment;
-import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
 
 //import static com.sgo.indonesiakoe.activities.SearchAgentActivity.service_name_arr;
 
