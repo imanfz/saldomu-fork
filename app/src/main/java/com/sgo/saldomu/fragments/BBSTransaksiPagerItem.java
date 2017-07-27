@@ -19,7 +19,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
  */
 
 public class BBSTransaksiPagerItem extends Fragment {
-    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiPagerItem";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiPagerItem";
 
     private View v, layout;
     private String title;

@@ -1,11 +1,9 @@
-package com.sgo.hpku.coreclass;
+package com.sgo.saldomu.coreclass;
 
 /*
-=======
-package com.sgo.saldomu.coreclass;/*
->>>>>>> dev_july:app/src/main/java/com/sgo/saldomu/coreclass/DefineValue.java
   Created by Administrator on 11/6/2015.
  */
+
 
 import com.sgo.saldomu.BuildConfig;
 
