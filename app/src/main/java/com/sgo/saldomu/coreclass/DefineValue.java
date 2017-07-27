@@ -398,10 +398,12 @@ public class DefineValue {
     public static String DEFAULT_RADIUS         = "10";
 
     public static String TUTORIAL_CASHIN             = "tutorialCashIn";
+    public static String TUTORIAL_IMAGE            = "tutorialImage";
     public static String TUTORIAL_TAMBAH_REKENING        = "tutorialDaftarRekening";
     public static String TUTORIAL_CASHOUT              = "tutorialCashOut";
     public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
+    public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
 
 
 }

@@ -1,7 +1,9 @@
 package com.sgo.saldomu.fragments;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.BbsMemberListAdapter;
 import com.sgo.saldomu.adapter.KelolaAgentAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -161,4 +164,30 @@ public class FragKelolaAgent extends Fragment {
         return v;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        validasiTutorial();
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_KELOLA_AGENT))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KELOLA_AGENT,false);
+            if(is_first_time)
+                showTutorial();
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_kelola_agent);
+        startActivity(intent);
+    }
 }
