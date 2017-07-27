@@ -30,6 +30,7 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -136,6 +137,27 @@ public class Cashoutbbs_describ_member extends Fragment {
 //                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 //            }
 //        });
+        validasiTutorial();
+    }
+
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS,false);
+            if(is_first_time)
+                showTutorial();
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_konfirmasi_cashout_bbs);
+        startActivity(intent);
     }
 
     Button.OnClickListener btnOkListener = new Button.OnClickListener() {

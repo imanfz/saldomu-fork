@@ -54,8 +54,8 @@ import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
-import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UpdateLocationService;
+import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 
 import org.apache.http.Header;

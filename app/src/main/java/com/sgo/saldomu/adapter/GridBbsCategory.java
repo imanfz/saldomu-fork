@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.models.ShopCategory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

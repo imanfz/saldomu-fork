@@ -85,7 +85,8 @@ public class FragAskForMoney extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                showTutorial();
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -198,28 +199,9 @@ public class FragAskForMoney extends Fragment {
 
         dialogI = InformationDialog.newInstance(6);
         dialogI.setTargetFragment(this,0);
-        validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_ASK_MONEY))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_ASK_MONEY,false);
-            if(is_first_time) {
-                showTutorial();
-            }
-        }
-        else {
-            showTutorial();
-        }
-    }
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_payFriend);
-        startActivity(intent);
-    }
+
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override

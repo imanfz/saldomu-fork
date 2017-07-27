@@ -64,7 +64,6 @@ import com.sgo.saldomu.entityRealm.AgentServiceDetail;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 
-
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;

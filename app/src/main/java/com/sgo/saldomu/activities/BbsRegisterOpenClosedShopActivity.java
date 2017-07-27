@@ -1,12 +1,10 @@
 package com.sgo.saldomu.activities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -30,22 +28,13 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.OpenCloseDatePickerFragment;
 import com.sgo.saldomu.fragments.OpenHourPickerFragment;
-import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.ocpsoft.prettytime.PrettyTime;
-import org.w3c.dom.Text;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
 
 import timber.log.Timber;

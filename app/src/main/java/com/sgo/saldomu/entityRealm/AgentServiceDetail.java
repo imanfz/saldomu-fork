@@ -2,7 +2,6 @@ package com.sgo.saldomu.entityRealm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
 
 /**
  * Created by Lenovo on 27/02/2017.

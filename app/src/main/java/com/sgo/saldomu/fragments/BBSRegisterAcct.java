@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,6 +25,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -68,7 +70,7 @@ public class BBSRegisterAcct extends Fragment {
     private ArrayList<List_BBS_City> list_bbs_cities;
     public Boolean isUpdate = false;
     private TextView tvEgNo;
-
+    SecurePreferences sp;
     public interface ActionListener{
         void OnSuccessReqAcct(Bundle data);
         void OnEmptyCommunity();
@@ -78,7 +80,7 @@ public class BBSRegisterAcct extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         listDataComm = new ArrayList<>();
@@ -215,7 +217,27 @@ public class BBSRegisterAcct extends Fragment {
                 }
             });
         }
+        validasiTutorial();
+    }
 
+    private void validasiTutorial()
+    {
+        if(sp.contains(DefineValue.TUTORIAL_TAMBAH_REKENING))
+        {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_TAMBAH_REKENING,false);
+            if(is_first_time)
+                showTutorial();
+        }
+        else {
+            showTutorial();
+        }
+    }
+
+    private void showTutorial()
+    {
+        Intent intent = new Intent(getActivity(), TutorialActivity.class);
+        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_tambahRekening);
+        startActivity(intent);
     }
 
     Button.OnClickListener saveListener = new Button.OnClickListener() {

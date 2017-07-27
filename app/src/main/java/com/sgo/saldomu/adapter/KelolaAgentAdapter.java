@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.models.OpenHourDays;
 
 import java.util.ArrayList;
 

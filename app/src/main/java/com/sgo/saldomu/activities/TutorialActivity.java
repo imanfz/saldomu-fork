@@ -11,20 +11,19 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.fragments.IntroPage;
-
-/**
+import com.sgo.saldomu.fragments.Tutorial_page;
+/*
  * Created by Lenovo Thinkpad on 7/20/2017.
  */
 
 public class TutorialActivity extends AppIntro {
     private int intType;
-    public static final int tutorial_payFriend=1;
-    public static final int tutorial_askMoney=2;
-    public static final int tutorial_topUp=3;
-    public static final int tutorial_belanja=4;
-    public static final int tutorial_report=5;
-    public static final int tutorial_bbs=6;
-
+    public static final int tutorial_cash_in=1;
+    public static final int tutorial_cash_out=2;
+    public static final int tutorial_registerAgen=3;
+    public static final int tutorial_tambahRekening=4;
+    public static final int tutorial_konfirmasi_cashout_bbs = 5;
+    public static final int tutorial_kelola_agent= 6;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -39,14 +38,13 @@ public class TutorialActivity extends AppIntro {
         {
             this.finish();
         }
-        else if (intType==tutorial_payFriend)
-        {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+        else if (intType==tutorial_cash_in) {
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs1));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs2));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs3));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs4));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs5));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs6));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
@@ -54,14 +52,15 @@ public class TutorialActivity extends AppIntro {
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
         }
-        else if (intType==tutorial_askMoney)
+        else if (intType==tutorial_cash_out)
         {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs1));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs2));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs3));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs4));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs5));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs6));
+            addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs7));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
@@ -69,14 +68,9 @@ public class TutorialActivity extends AppIntro {
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
         }
-        else if (intType==tutorial_topUp)
+        else if (intType==tutorial_registerAgen)
         {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+            addSlide(Tutorial_page.newInstance(R.drawable.accountcashout1));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
@@ -84,14 +78,11 @@ public class TutorialActivity extends AppIntro {
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
         }
-        else if (intType==tutorial_belanja)
+        else if (intType==tutorial_tambahRekening)
         {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+            addSlide(Tutorial_page.newInstance(R.drawable.accountcashout2));
+            addSlide(Tutorial_page.newInstance(R.drawable.accountcashout3));
+            addSlide(Tutorial_page.newInstance(R.drawable.accountcashout4));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
@@ -99,28 +90,23 @@ public class TutorialActivity extends AppIntro {
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
         }
-        else if (intType==tutorial_report)
+        else if (intType==tutorial_konfirmasi_cashout_bbs)
         {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs1));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs2));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs3));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
             Button donebtn = (Button)doneButton;
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
-        }else if (intType==tutorial_bbs)
+        }
+        else if (intType==tutorial_kelola_agent)
         {
-            addSlide(IntroPage.newInstance(R.layout.intro1_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro2_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro3_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro4_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro5_fragment));
-            addSlide(IntroPage.newInstance(R.layout.intro6_fragment));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs1));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs2));
+            addSlide(Tutorial_page.newInstance(R.drawable.confirmationbbs3));
 
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
@@ -153,29 +139,29 @@ public class TutorialActivity extends AppIntro {
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor=sp.edit();
 
-        if (intType==tutorial_payFriend)
+
+        if (intType==tutorial_cash_in)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_PAY_FRIEND,false);
+            mEditor.putBoolean(DefineValue.TUTORIAL_CASHIN,false);
         }
-        else if (intType==tutorial_askMoney)
+        else if (intType==tutorial_cash_out)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_ASK_MONEY,false);
+            mEditor.putBoolean(DefineValue.TUTORIAL_CASHOUT,false);
         }
-        else if (intType==tutorial_belanja)
+        else if (intType==tutorial_registerAgen)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_BELANJA,false);
+            mEditor.putBoolean(DefineValue.TUTORIAL_REGISTER_AGEN,false);
         }
-        else if (intType==tutorial_report)
+        else if (intType==tutorial_tambahRekening)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_REPORT,false);
+            mEditor.putBoolean(DefineValue.TUTORIAL_TAMBAH_REKENING,false);
         }
-        else if (intType==tutorial_topUp)
+        else if (intType==tutorial_konfirmasi_cashout_bbs)
         {
-            mEditor.putBoolean(DefineValue.TUTORIAL_TOP_UP,false);
+            mEditor.putBoolean(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS ,false);
         }
-        else if (intType==tutorial_bbs)
-        {
-            mEditor.putBoolean(DefineValue.TUTORIAL_BBS,false);
+        else if (intType==tutorial_kelola_agent) {
+            mEditor.putBoolean(DefineValue.TUTORIAL_KELOLA_AGENT, false);
         }
         mEditor.apply();
         finish();

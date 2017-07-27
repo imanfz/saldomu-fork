@@ -21,7 +21,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.activities.TopUpAtmActivity;
-import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -116,29 +115,9 @@ public class ListTopUp extends ListFragment {
                 getBankList();
             }
         });
-        validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_TOP_UP))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_TOP_UP,false);
-            if(is_first_time) {
-                showTutorial();
-            }
-        }
-        else {
-            showTutorial();
-        }
-    }
 
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_payFriend);
-        startActivity(intent);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -444,7 +423,8 @@ public class ListTopUp extends ListFragment {
                     getActivity().finish();
                 return true;
             case R.id.action_information:
-                showTutorial();
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
         }
         return super.onOptionsItemSelected(item);
