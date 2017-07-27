@@ -8,7 +8,7 @@
         android:gravity="center"
         android:text="@string/from"/>
 
-    <com.sgo.hpku.widgets.CustomAutoCompleteTextView
+    <com.sgo.saldomu.widgets.CustomAutoCompleteTextView
         android:id="@+id/rekening_member_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -43,7 +43,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="left"
                     android:layout="@layout/frag_navigation_draw_menu_main"
-                    class="com.sgo.hpku.fragments.NavigationDrawMenu"
+                    class="com.sgo.saldomu.fragments.NavigationDrawMenu"
                     tools:layout="@layout/frag_navigation_draw_menu_main"/>
             <View android:layout_width="20dp"
                   android:id="@+id/view_shadow"
@@ -73,7 +73,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="right|center"
                     android:layout="@layout/frag_navigation_draw_menu_main"
-                    class="com.sgo.hpku.fragments.RightSideDrawMenu"
+                    class="com.sgo.saldomu.fragments.RightSideDrawMenu"
                     tools:layout="@layout/frag_navigation_draw_menu_main"/>
 
         </FrameLayout>

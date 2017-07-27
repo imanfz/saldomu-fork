@@ -225,7 +225,6 @@
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.BbsMerchantCommunityList"
             android:configChanges="orientation"
@@ -266,22 +265,28 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.BbsApprovalAgentActivity">
-
-        </activity>
+        <activity android:name=".activities.BbsApprovalAgentActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".activities.BbsMapViewByAgentActivity"
             android:label="@string/title_activity_bbs_map_view_by_agent"
-            android:theme="@style/Theme.MyTheme"></activity>
+            android:theme="@style/Theme.MyTheme"/>
         <activity
             android:name=".activities.BbsMapViewByMemberActivity"
             android:label="@string/title_activity_bbs_map_view_by_member"
-            android:theme="@style/Theme.MyTheme"></activity>
-
+            android:theme="@style/Theme.MyTheme"/>
+        <activity android:name="com.sgo.saldomu.activities.TutorialActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
         <service android:name=".services.BalanceService" />
         <service android:name=".services.AppInfoService" />
         <service android:name=".services.UserProfileService" />
         <service android:name=".services.UpdateLocationService" />
+        <service android:name="com.sgo.saldomu.services.UpdateBBSCity" />
     </application>
 
 </manifest>

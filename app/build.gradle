@@ -30,7 +30,7 @@ android {
     buildToolsVersion "25.0.3"
 
     defaultConfig {
-        applicationId "com.sgo.hpku"
+        applicationId "com.sgo.saldomu"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -48,14 +48,14 @@ android {
     }
     productFlavors {
         development {
-            applicationId "com.sgo.hpkudev"
-            resValue "string", "appname", "DEV HPKu"
-            resValue "string", "dbname", "DevHPKu.db"
-            resValue "string", "realmname", "com.sgo.hpkudev.realm"
+            applicationId "com.sgo.saldomudev"
+            resValue "string", "appname", "DEV Saldomu"
+            resValue "string", "dbname", "DevSaldomu.db"
+            resValue "string", "realmname", "com.saldomudev.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkurealm.realm"
+            resValue "string", "realmBillerName", "saldomurealm.realm"
             resValue "integer", "realBillerscheme", "0"
-            resValue "string", "realmBBSName", "hpkubbs.realm"
+            resValue "string", "realmBBSName", "saldomubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
@@ -65,19 +65,17 @@ android {
 
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"AKD\""
-            //buildConfigField 'String', "AppIDHpku", "\"HPKU\""
-            buildConfigField 'String', "AppIDHpku", "\"AKD\""
+            buildConfigField 'String', "AppID", "\"SDOM\""
         }
         production {
-            applicationId "com.sgo.hpku"
+            applicationId "com.sgo.saldomu"
             resValue "string", "appname", "Saldomu"
-            resValue "string", "dbname", "hpku.db"
-            resValue "string", "realmname", "com.sgo.hpku.realm"
+            resValue "string", "dbname", "saldomu.db"
+            resValue "string", "realmname", "com.sgo.saldomu.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkurealm.realm"
+            resValue "string", "realmBillerName", "saldomurealm.realm"
             resValue "integer", "realBillerscheme", "0"
-            resValue "string", "realmBBSName", "hpkubbs.realm"
+            resValue "string", "realmBBSName", "saldomubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
@@ -86,7 +84,7 @@ android {
             signingConfig signingConfigs.prodKey
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"HPKU\""
+            buildConfigField 'String', "AppID", "\"SDOM\""
         }
     }
 
@@ -104,7 +102,7 @@ android {
     applicationVariants.all { variant ->
         def fileName
         if (variant.baseName.contains("development")) {
-            fileName = "Dev HPKu"
+            fileName = "Dev Saldomu"
         } else {
             fileName = "Saldomu"
         }
