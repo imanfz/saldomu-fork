@@ -23,7 +23,7 @@
         android:id="@+id/llSearch"
         android:orientation="horizontal">
 
-        <com.sgo.hpku.coreclass.CustomAutoCompleteTextView
+        <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:hint="@string/search_location_hint_request_bbs_activity_label" >
 
             <requestFocus />
-        </com.sgo.hpku.coreclass.CustomAutoCompleteTextView>
+        </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
 
 
         <Button

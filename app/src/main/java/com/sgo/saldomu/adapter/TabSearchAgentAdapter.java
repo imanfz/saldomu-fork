@@ -5,13 +5,8 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.sgo.saldomu.fragments.AgentHistoryFragment;
 import com.sgo.saldomu.fragments.AgentListFragment;
-import com.sgo.saldomu.fragments.AgentListFrameFragment;
 import com.sgo.saldomu.fragments.AgentMapFragment;
-import com.sgo.saldomu.fragments.FragKelolaAgent;
-import com.sgo.saldomu.fragments.FragKelolaMerchant;
 import com.sgo.saldomu.models.ShopDetail;
 
 import java.util.ArrayList;

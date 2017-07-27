@@ -75,30 +75,9 @@ public class ReportTab extends Fragment {
             pager.setCurrentItem(0);
 
             setCurrentAdapternya(adapternya);
-            validasiTutorial();
         }
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_REPORT))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_REPORT,false);
-            if(is_first_time) {
-                showTutorial();
-            }
-        }
-        else {
-            showTutorial();
-        }
-    }
-
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_report);
-        startActivity(intent);
-    }
 
     private View getCurrentView() {
         return currentView;
@@ -121,7 +100,8 @@ public class ReportTab extends Fragment {
         switch(item.getItemId())
         {
             case R.id.action_information:
-                showTutorial();
+                if(!dialogI.isAdded())
+                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

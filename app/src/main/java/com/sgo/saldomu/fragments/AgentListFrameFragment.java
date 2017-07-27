@@ -2,13 +2,11 @@ package com.sgo.saldomu.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.models.ShopDetail;
 
