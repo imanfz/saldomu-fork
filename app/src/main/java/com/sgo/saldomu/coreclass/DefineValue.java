@@ -314,13 +314,13 @@ public class DefineValue {
     public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
-    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
-    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
-    public static int AGENT_DISPLACEMENT                            = 1; //30meter
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 20; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 1000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 1000; //58 seconds
-    public static int MEMBER_DISPLACEMENT                           = 1; //30meter
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 15000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 15000; //58 seconds
+    public static int MEMBER_DISPLACEMENT                           = 20; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";
     public static String GMAP_MODE                          = "driving";
@@ -397,6 +397,7 @@ public class DefineValue {
     public static String MSG_NOTIF              = "MsgNotif";
 
     public static String DEFAULT_RADIUS         = "10";
+    public static String STRING_BOTH = "B";
     public static String TUTORIAL_PAY_FRIEND = "tutorialPayFriend";
     public static String TUTORIAL_ASK_MONEY = "tutorialAskMoney";
     public static String TUTORIAL_TOP_UP= "tutorialAskMoney";

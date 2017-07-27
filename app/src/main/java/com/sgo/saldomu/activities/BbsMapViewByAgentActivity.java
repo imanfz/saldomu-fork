@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -52,6 +53,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
 
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,7 +68,7 @@ import timber.log.Timber;
 
 public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, TextToSpeech.OnInitListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private SecurePreferences sp;
     private String title;
@@ -85,8 +87,19 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Polyline line;
     String encodedPoints = "";
     String htmlDirections   = "";
-    TextToSpeech textToSpeech;
+    //TextToSpeech textToSpeech;
     Boolean isTTSActive = true;
+    private int timeDelayed = 30000;
+
+    // Init
+    private Handler handler = new Handler();
+    private Runnable runnable2 = new Runnable() {
+        @Override
+        public void run() {
+            updateLocationAgent();
+            handler.postDelayed(this, timeDelayed);
+        }
+    };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,13 +118,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             createLocationRequest();
         }
 
-        try {
+        /*try {
             textToSpeech = new TextToSpeech(BbsMapViewByAgentActivity.this, BbsMapViewByAgentActivity.this);
             textToSpeech.setLanguage(Locale.getDefault());
         } catch ( Exception e) {
             e.printStackTrace();
             isTTSActive = false;
-        }
+        }*/
 
         lines                   = new ArrayList<>();
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
@@ -119,7 +132,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
 
-        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
+
         shopDetail              = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
         shopDetail.setKeyName(sp.getString(DefineValue.KEY_NAME, ""));
@@ -246,7 +259,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         agentLatitude   = lastLocation.getLatitude();
         agentLongitude  = lastLocation.getLongitude();
 
+        handler.removeCallbacks(runnable2);
         updateLocationAgent();
+        handler.postDelayed(runnable2, timeDelayed);
     }
 
     @Override
@@ -345,7 +360,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     public void onDestroy() {
         super.onDestroy();
         googleApiClient.disconnect();
-        textToSpeech.shutdown();
+        //textToSpeech.shutdown();
+        handler.removeCallbacks(runnable2);
     }
 
     //for resize icon
@@ -378,10 +394,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.MEMBER_ID, memberId);
         params.put(WebParams.LATITUDE, agentLatitude);
         params.put(WebParams.LONGITUDE, agentLongitude);
-
-
+        //
+        progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.message_notif_agent_approval));
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + memberId + shopId ));
 
+        handler.removeCallbacks(runnable2);
         params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationAgent(getApplication(), params, new JsonHttpResponseHandler() {
@@ -410,6 +427,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                         if ( response.has(DefineValue.KEY_TX_STATUS) ) {
                             if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
+
+                                handler.removeCallbacks(runnable2);
+
                                 Bundle bundle = new Bundle();
                                 bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                                 if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
@@ -421,23 +441,31 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
                                 bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
 
+                                //handler.removeCallbacks(runnable);
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                                 finish();
+                            } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                startActivity(intent);
+                                finish();
                             }
                             else
                             {
+
                                 setMapCamera();
+                                handler.postDelayed(runnable2, timeDelayed);
                             }
                         }
                         else
                         {
                             setMapCamera();
+                            handler.postDelayed(runnable2, timeDelayed);
                         }
                     } else {
-                        //progdialog.dismiss();
+                        progdialog.dismiss();
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
@@ -469,6 +497,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog.dismiss();
+
                 Timber.w("Error Koneksi login:" + throwable.toString());
 
             }
@@ -504,7 +533,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     public void onInit(int Text2SpeechCurrentStatus) {
 
         if ( isTTSActive && Text2SpeechCurrentStatus == TextToSpeech.SUCCESS) {
@@ -512,7 +541,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             textToSpeech.setLanguage(Locale.getDefault());
             TextToSpeechFunction();
         }
-    }
+    }*/
 
     private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
 
@@ -534,10 +563,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
 
-            if ( isTTSActive && !htmlDirections.equals("") ) {
+            /*if ( isTTSActive && !htmlDirections.equals("") ) {
                 //tvDirection.setText(Html.fromHtml(htmlDirections));
                 TextToSpeechFunction();
-            }
+            }*/
             setPolyline();
         }
 
@@ -694,9 +723,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
     public void TextToSpeechFunction()
     {
-        if ( !htmlDirections.equals("") ) {
+        /*if ( !htmlDirections.equals("") ) {
             textToSpeech.speak(android.text.Html.fromHtml(htmlDirections).toString(), TextToSpeech.QUEUE_FLUSH, null);
-        }
+        }*/
     }
 
     private void switchMenu(int idx_menu,Bundle data){

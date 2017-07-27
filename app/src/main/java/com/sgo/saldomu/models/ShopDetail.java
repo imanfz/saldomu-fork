@@ -1,5 +1,7 @@
 package com.sgo.saldomu.models;
 
+import java.util.ArrayList;
+
 /**
  * Created by Lenovo on 05/04/2017.
  */
@@ -25,6 +27,7 @@ public class ShopDetail {
     private String calculatedDistance;
     private String encodedPoints;
     private String isPolyline;
+    private String stepApprove;
 
     private String shopFirstAddress;
     private String shopSecondAddress;
@@ -46,6 +49,7 @@ public class ShopDetail {
     private String keyProvince;
     private String keyCountry;
     private String ccyId;
+    private ArrayList<String> categories = new ArrayList<>();
 
     public String getMemberId() {
         return memberId;
@@ -351,5 +355,21 @@ public class ShopDetail {
 
     public void setCcyId(String ccyId) {
         this.ccyId = ccyId;
+    }
+
+    public void setCategories(String categoryName) {
+        this.categories.add(categoryName);
+    }
+
+    public ArrayList<String> getCategories() {
+        return this.categories;
+    }
+
+    public String getStepApprove() {
+        return this.stepApprove;
+    }
+
+    public void setStepApprove(String stepApprove) {
+        this.stepApprove = stepApprove;
     }
 }

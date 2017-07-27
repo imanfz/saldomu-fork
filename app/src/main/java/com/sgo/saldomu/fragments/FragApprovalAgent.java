@@ -1,15 +1,19 @@
-package com.sgo.saldomu.activities;
+package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -28,7 +32,11 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
+import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
+import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -38,7 +46,6 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
-
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -50,9 +57,26 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link FragApprovalAgent.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ * Use the {@link FragApprovalAgent#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class FragApprovalAgent extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+    public final static String TAG = "com.sgo.saldomu.fragments.Frag_Approval_Agent";
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
 
     private SecurePreferences sp;
     ProgressDialog progdialog, progdialog2;
@@ -70,39 +94,75 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     private Location lastLocation;
     private LocationRequest mLocationRequest;
 
+    private OnFragmentInteractionListener mListener;
+
+    public FragApprovalAgent() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment FragApprovalAgent.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static FragApprovalAgent newInstance(String param1, String param2) {
+        FragApprovalAgent fragment = new FragApprovalAgent();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
 
         if ( checkPlayServices() ) {
             buildGoogleApiClient();
             createLocationRequest();
         }
 
+        try {
+            googleApiClient.connect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         title                   = getString(R.string.menu_item_title_trx_agent);
-        initializeToolbar();
 
         gcmId                   = "";
         flagTxStatus            = "";
         txId                    = "";
         flagApprove             = DefineValue.STRING_NO;
         customerId              = sp.getString(DefineValue.USERID_PHONE, "");
+    }
 
-        btnApprove              = (Button) findViewById(R.id.btnApprove);
-        btnReject               = (Button) findViewById(R.id.btnReject);
-        tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
-        tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
-        tvAmount                = (TextView) findViewById(R.id.tvAmount);
-        //tvShop                  = (TextView) findViewById(R.id.tvShop);
-        //spPilihan               = (Spinner) findViewById(R.id.spPilihan);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.frag_approval_agent, container, false);
 
-        //tvShop.setVisibility(View.GONE);
-        //spPilihan.setVisibility(View.GONE);
 
-        rlApproval              = (RelativeLayout) findViewById(R.id.rlApproval);
+        btnApprove              = (Button) v.findViewById(R.id.btnApprove);
+        btnReject               = (Button) v.findViewById(R.id.btnReject);
+        tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
+        tvMemberName            = (TextView) v.findViewById(R.id.tvMemberName);
+        tvAmount                = (TextView) v.findViewById(R.id.tvAmount);
+        rlApproval              = (RelativeLayout) v.findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
 
         shopDetail              = new ShopDetail();
@@ -112,49 +172,14 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             //is member
-            Intent i = new Intent(this, MainPage.class);
+            Intent i = new Intent(getContext(), MainPage.class);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
-            finish();
         }
 
-        /*
-        shopDetail.setKeyCode("62828282");
-        shopDetail.setKeyName("Ariawan Agus");
-        shopDetail.setCategoryName("Tarik Tunai");
-        shopDetail.setKeyProvince("Banten");
-        shopDetail.setKeyCountry("Indonesia");
-        shopDetail.setKeyDistrict("Alam Sutera");
-        shopDetail.setKeyAddress("Jln. Haji Ali, Alam Sutera");
-        shopDetail.setAmount("10000");
-        shopDetail.setCcyId("IDR");
-
-        ShopDetail shopDetail2   = new ShopDetail();
-        shopDetail2.setMemberCode("KODE-ABC1");
-        shopDetail2.setMemberName("NAMA-ABC1");
-        shopDetail2.setShopId("KODE-ABC1");
-        shopDetails.add(shopDetail2);
-
-        ShopDetail shopDetail3   = new ShopDetail();
-        shopDetail3.setMemberCode("KODE-ABC2");
-        shopDetail3.setMemberName("NAMA-ABC2");
-        shopDetail3.setShopId("KODE-ABC2");
-        shopDetails.add(shopDetail3);
-        */
 
 
-        /*if ( shopDetails.size() > 1 ) {
-            String[] arrayItems = new String[shopDetails.size()];
-            for(int x = 0; x < shopDetails.size(); x++) {
-                arrayItems[x] = shopDetails.get(x).getMemberName();
-            }
-
-            SpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayItems);
-            spPilihan.setAdapter(SpinnerAdapter);
-
-        }*/
-
-        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
+        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
         RequestParams params    = new RequestParams();
 
         UUID rcUUID             = UUID.randomUUID();
@@ -172,7 +197,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getListTransactionAgent(getApplication(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
@@ -212,118 +237,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         //tvShop.setText(shopDetail.getShopName());
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
 
-                        /*
-                        RequestParams params2    = new RequestParams();
 
-                        UUID rcUUID2             = UUID.randomUUID();
-                        String  dtime2           = DateTimeFormat.getCurrentDateTime();
-
-                        params2.put(WebParams.RC_UUID, rcUUID2);
-                        params2.put(WebParams.RC_DATETIME, dtime2);
-                        params2.put(WebParams.APP_ID, BuildConfig.AppID);
-                        params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                        params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                        params2.put(WebParams.CUSTOMER_ID, customerId);
-                        params2.put(WebParams.FLAG_APPROVE, flagApprove);
-
-                        String signature2 = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + customerId + BuildConfig.AppID + flagApprove));
-
-                        params2.put(WebParams.SIGNATURE, signature2);
-
-                        MyApiClient.getMemberShopList(getApplication(), params2, new JsonHttpResponseHandler() {
-                            @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                progdialog.dismiss();
-
-                                try {
-
-                                    String code = response.getString(WebParams.ERROR_CODE);
-                                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                        rlApproval.setVisibility(View.VISIBLE);
-
-                                        JSONArray members = response.getJSONArray("member");
-                                        for (int i = 0; i < members.length(); i++) {
-                                            JSONObject object       = members.getJSONObject(i);
-
-                                            ShopDetail shopDetail2   = new ShopDetail();
-                                            shopDetail2.setMemberId(object.getString("member_id"));
-                                            shopDetail2.setShopId(object.getString("shop_id"));
-                                            shopDetail2.setMemberCode(object.getString("member_code"));
-                                            shopDetail2.setMemberName(object.getString("member_name"));
-                                            shopDetail2.setMemberType(object.getString("member_type"));
-                                            shopDetail2.setCommName(object.getString("comm_name"));
-                                            shopDetail2.setCommCode(object.getString("comm_code"));
-                                            shopDetail2.setShopAddress(object.getString("address1"));
-                                            shopDetail2.setShopDistrict(object.getString("district"));
-                                            shopDetail2.setShopProvince(object.getString("province"));
-                                            shopDetail2.setShopCountry(object.getString("country"));
-
-                                            shopDetails.add(shopDetail2);
-                                        }
-
-                                        if ( shopDetails.size() > 1 ) {
-                                            String[] arrayItems = new String[shopDetails.size()];
-
-                                            for(int x = 0; x < shopDetails.size(); x++) {
-                                                arrayItems[x] = shopDetails.get(x).getMemberName();
-                                            }
-
-                                            SpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, arrayItems);
-                                            spPilihan.setAdapter(SpinnerAdapter);
-
-                                            spPilihan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                                                @Override
-                                                public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
-
-                                                }
-
-                                                @Override
-                                                public void onNothingSelected(AdapterView<?> arg0) {
-
-                                                }
-                                            });
-
-                                        }
-
-                                    } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
-
-                                    } else {
-                                        code = response.getString(WebParams.ERROR_MESSAGE);
-                                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                super.onFailure(statusCode, headers, responseString, throwable);
-                                ifFailure(throwable);
-                            }
-
-                            @Override
-                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                super.onFailure(statusCode, headers, throwable, errorResponse);
-                                ifFailure(throwable);
-                            }
-
-                            private void ifFailure(Throwable throwable) {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                                progdialog.dismiss();
-                                Timber.w("Error Koneksi login:" + throwable.toString());
-
-                            }
-
-                        });
-                        */
 
                     } else {
                         progdialog.dismiss();
@@ -332,14 +246,14 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                         rlApproval.setVisibility(View.GONE);
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(BbsApprovalAgentActivity.this).create();
+                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
                         alertDialog.setMessage(getString(R.string.alertbox_message_information));
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        Intent i = new Intent(BbsApprovalAgentActivity.this, MainPage.class);
+                                        Intent i = new Intent(getContext(), MainPage.class);
                                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(i);
 
@@ -366,9 +280,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
             private void ifFailure(Throwable throwable) {
                 if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog.dismiss();
                 Timber.w("Error Koneksi login:" + throwable.toString());
@@ -397,76 +311,99 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         */
 
         btnApprove.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
-                    flagTxStatus = DefineValue.STRING_ACCEPT;
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+                        flagTxStatus = DefineValue.STRING_ACCEPT;
 
-                    if ( shopDetails.size() > 1 ) {
-                        itemId  = spPilihan.getSelectedItemPosition();
+                        if ( shopDetails.size() > 1 ) {
+                            itemId  = spPilihan.getSelectedItemPosition();
 
-                    } else {
-                        itemId = 0;
-                    }
+                        } else {
+                            itemId = 0;
+                        }
 
-                    if ( shopDetails.size() > 0 ) {
-                        shopId = shopDetails.get(itemId).getShopId();
-                        memberId = shopDetails.get(itemId).getMemberId();
-                        gcmId = "";
+                        if ( shopDetails.size() > 0 ) {
+                            shopId = shopDetails.get(itemId).getShopId();
+                            memberId = shopDetails.get(itemId).getMemberId();
+                            gcmId = "";
 
-                        updateTrxAgent();
+                            updateTrxAgent();
+                        }
                     }
                 }
-            }
         );
 
         btnReject.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
-                    flagTxStatus = DefineValue.STRING_CANCEL;
+                new View.OnClickListener() {
+                    public void onClick(View v) {
 
-                    if ( shopDetails.size() > 1 ) {
-                        itemId  = spPilihan.getSelectedItemPosition();
+                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                    } else {
-                        itemId = 0;
-                    }
 
-                    if ( shopDetails.size() > 0 ) {
-                        shopId = shopDetails.get(itemId).getShopId();
-                        memberId = shopDetails.get(itemId).getMemberId();
-                        updateTrxAgent();
+                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
+
+
+
+                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+                                        flagTxStatus = DefineValue.STRING_CANCEL;
+
+                                        if ( shopDetails.size() > 1 ) {
+                                            itemId  = spPilihan.getSelectedItemPosition();
+
+                                        } else {
+                                            itemId = 0;
+                                        }
+
+                                        if ( shopDetails.size() > 0 ) {
+                                            shopId = shopDetails.get(itemId).getShopId();
+                                            memberId = shopDetails.get(itemId).getMemberId();
+                                            updateTrxAgent();
+                                        }
+
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+
+
+                                    }
+                                });
+                        alertDialog.show();
+
+
                     }
                 }
-            }
         );
 
-
-
+        return v;
     }
 
     @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_bbs_approval_agent;
-    }
+    public void onStop() {
+        super.onStop();
+        try {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //listener ketika button back di action bar diklik
-        if (id == android.R.id.home) {
-            //kembali ke activity sebelumnya
-            onBackPressed();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
-
-        return super.onOptionsItemSelected(item);
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
-    private void initializeToolbar() {
-        setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(title);
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     private void updateTrxAgent() {
@@ -499,7 +436,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         params3.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.updateTransactionAgent(getApplication(), params3, new JsonHttpResponseHandler() {
+        MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog2.dismiss();
@@ -526,23 +463,40 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                             mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
                             mEditor.apply();
 
-                            Intent i = new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class);
+                            Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
-                            finish();
+                            getActivity().finish();
                         } else {
-                            Intent i = new Intent(getApplicationContext(), MainPage.class);
+                            /*Bundle bundle = new Bundle();
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+
+                            Intent intent = new Intent(getContext(), BBSActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtras(bundle);
+                            startActivity(intent);*/
+
+                            Intent i = new Intent(getContext(), MainPage.class);
                             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
-                            finish();
+                            getActivity().finish();
                         }
                     } else {
                         code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
 
-                        Intent i = new Intent(getApplicationContext(), MainPage.class);
+                        /*Bundle bundle = new Bundle();
+                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+
+                        Intent intent = new Intent(getContext(), BBSActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtras(bundle);
+                        startActivity(intent);*/
+
+                        Intent i = new Intent(getContext(), MainPage.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
-                        finish();
+                        getActivity().finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -563,9 +517,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
             private void ifFailure(Throwable throwable) {
                 if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog2.dismiss();
                 Timber.w("Error Koneksi login:" + throwable.toString());
@@ -626,16 +580,15 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private boolean checkPlayServices()
     {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        int result = googleAPI.isGooglePlayServicesAvailable(getContext());
         if (result != ConnectionResult.SUCCESS) {
             if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(this, result, DefineValue.REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+                googleAPI.getErrorDialog(getActivity(), result, DefineValue.REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
             }
 
             return false;
@@ -654,34 +607,25 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
     protected synchronized void buildGoogleApiClient()
     {
-        googleApiClient = new GoogleApiClient.Builder(this)
+        googleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        try {
-            googleApiClient.connect();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        try {
-
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-        if (googleApiClient != null && googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
-        }
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

@@ -24,9 +24,9 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
+
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -34,7 +34,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import timber.log.Timber;
