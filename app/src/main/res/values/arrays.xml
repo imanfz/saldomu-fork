@@ -180,6 +180,9 @@
     <string-array name="list_bbs_agent">
         <item>@string/title_bbs_list_account_bbs</item>
         <item>@string/transaction</item>
+        <item>@string/menu_item_title_kelola</item>
+        <!-- item>@string/menu_item_title_list_approval</item -->
+        <item>@string/menu_item_title_trx_agent</item>
     </string-array>
 
     <string-array name="list_bbs_member">
@@ -217,4 +220,12 @@
         <item>@drawable/ic_location_on_black</item>
         <item>@drawable/ic_location_on_black</item>
     </integer-array>
+    <string-array name="list_bbs_setting_kelola">
+        <item>@string/agent_name</item>
+        <item>@string/category</item>
+        <!-- item>@string/setup_agent_open_hour</item -->
+        <item>@string/setup_location</item>
+        <item>@string/setup_tutup_manual</item>
+        <!-- item>@string/setup_tutup_manual</item -->
+    </string-array>
 </resources>

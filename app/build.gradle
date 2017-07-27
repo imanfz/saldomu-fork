@@ -30,7 +30,7 @@ android {
     buildToolsVersion "25.0.3"
 
     defaultConfig {
-        applicationId "com.sgo.hpku"
+        applicationId "com.sgo.saldomu"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -48,14 +48,14 @@ android {
     }
     productFlavors {
         development {
-            applicationId "com.sgo.hpkudev"
-            resValue "string", "appname", "DEV HPKu"
-            resValue "string", "dbname", "DevHPKu.db"
-            resValue "string", "realmname", "com.sgo.hpkudev.realm"
+            applicationId "com.sgo.saldomudev"
+            resValue "string", "appname", "DEV Saldomu"
+            resValue "string", "dbname", "DevSaldomu.db"
+            resValue "string", "realmname", "com.saldomudev.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkurealm.realm"
+            resValue "string", "realmBillerName", "saldomurealm.realm"
             resValue "integer", "realBillerscheme", "0"
-            resValue "string", "realmBBSName", "hpkubbs.realm"
+            resValue "string", "realmBBSName", "saldomubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "false"
@@ -65,19 +65,17 @@ android {
 
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"AKD\""
-            //buildConfigField 'String', "AppIDHpku", "\"HPKU\""
-            buildConfigField 'String', "AppIDHpku", "\"AKD\""
+            buildConfigField 'String', "AppID", "\"SDOM\""
         }
         production {
-            applicationId "com.sgo.hpku"
+            applicationId "com.sgo.saldomu"
             resValue "string", "appname", "Saldomu"
-            resValue "string", "dbname", "hpku.db"
-            resValue "string", "realmname", "com.sgo.hpku.realm"
+            resValue "string", "dbname", "saldomu.db"
+            resValue "string", "realmname", "com.sgo.saldomu.realm"
             resValue "integer", "realscheme", "0"
-            resValue "string", "realmBillerName", "hpkurealm.realm"
+            resValue "string", "realmBillerName", "saldomurealm.realm"
             resValue "integer", "realBillerscheme", "0"
-            resValue "string", "realmBBSName", "hpkubbs.realm"
+            resValue "string", "realmBBSName", "saldomubbs.realm"
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "1"
             buildConfigField 'boolean', "isProdDomain", "true"
@@ -86,7 +84,7 @@ android {
             signingConfig signingConfigs.prodKey
             versionCode = 1
             versionName "1.0"
-            buildConfigField 'String', "AppID", "\"HPKU\""
+            buildConfigField 'String', "AppID", "\"SDOM\""
         }
     }
 
@@ -104,7 +102,7 @@ android {
     applicationVariants.all { variant ->
         def fileName
         if (variant.baseName.contains("development")) {
-            fileName = "Dev HPKu"
+            fileName = "Dev Saldomu"
         } else {
             fileName = "Saldomu"
         }
@@ -128,14 +126,13 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support:support-annotations:25.3.1'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+
+
+
+    compile project(':PinMaster')
+    compile project(':PinnedSectionList')
+    compile project(':VPI')
+    compile project(':SecurePref')
 
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.balysv:material-ripple:1.0.2'
@@ -167,7 +164,6 @@ dependencies {
     compile 'com.facebook.stetho:stetho:1.4.2'
     compile 'com.uphyca:stetho_realm:2.0.1'
     compile 'com.faber.circlestepview:library:1.0.0@aar'
-
     compile 'com.google.firebase:firebase-core:10.2.0'
     compile 'pub.devrel:easypermissions:0.4.2'
     compile 'com.google.firebase:firebase-crash:10.2.0'
@@ -178,11 +174,13 @@ dependencies {
     compile 'com.squareup:android-times-square:1.6.5@aar'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
-
-    compile project(':PinMaster')
-    compile project(':PinnedSectionList')
-    compile project(':VPI')
-    compile project(':SecurePref')
-
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support:support-annotations:25.3.1'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
 }
 //apply plugin: 'com.google.gms.google-services'
