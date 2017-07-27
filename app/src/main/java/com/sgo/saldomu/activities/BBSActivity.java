@@ -21,6 +21,10 @@ import com.sgo.saldomu.fragments.BBSTransaksiInformasi;
 import com.sgo.saldomu.fragments.BBSTransaksiPager;
 import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
+import com.sgo.saldomu.fragments.FragApprovalAgent;
+import com.sgo.saldomu.fragments.FragListSettingKelola;
+import com.sgo.saldomu.fragments.FragMenuKelola;
+import com.sgo.saldomu.fragments.FragSetttingKelola;
 import com.sgo.saldomu.fragments.ListAccountBBS;
 
 import timber.log.Timber;
@@ -36,6 +40,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int LISTACCBBS = 1;
     public static final int TRANSACTION = 2;
     public static final int CONFIRMCASHOUT = 4;
+
+    public static final int BBSKELOLA           = 5;
+    public static final int BBSAPPROVALAGENT    = 6;
+    public static final int BBSTRXAGENT         = 7;
 
 
     FragmentManager fragmentManager;
@@ -78,7 +86,33 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     newFragment = new Cashoutbbs_describ_member();
                     tag = Cashoutbbs_describ_member.TAG;
                     break;
+                case BBSKELOLA:
+                    newFragment = new FragSetttingKelola();
+                    tag = FragSetttingKelola.TAG;
+
+                    //newFragment = new FragMenuKelola();
+                    //tag = FragMenuKelola.TAG;
+                    //Intent intentApproval = new Intent(getApplicationContext(), BbsListSettingKelolaActivity.class);
+                    //intentApproval.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //intentApproval.putExtra("flagApprove", DefineValue.STRING_NO);
+                    //startActivity(intentApproval);
+                    break;
+                case BBSAPPROVALAGENT:
+                    //Intent intentApproval2 = new Intent(getApplicationContext(), BbsListSettingKelolaActivity.class);
+                    //intentApproval2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //intentApproval2.putExtra("flagApprove", DefineValue.STRING_NO);
+                    //startActivity(intentApproval2);
+                    break;
+                case BBSTRXAGENT:
+                    newFragment = new FragApprovalAgent();
+                    tag = FragApprovalAgent.TAG;
+                    //Intent intentTrxAgent = new Intent(getApplicationContext(), BbsApprovalAgentActivity.class);
+                    //intentTrxAgent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //startActivity(intentTrxAgent);
+                    break;
+
             }
+
 
             fab = (FloatingActionButton) findViewById(R.id.fab_add_account);
             mContent = newFragment;
@@ -91,16 +125,22 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 }
             });
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.bbs_content, newFragment,tag);
+            fragmentTransaction.add(R.id.bbs_content, newFragment, tag);
             fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
+
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        Intent intent    = getIntent();
+        int index = intent.getIntExtra(DefineValue.INDEX,0);
+
         InitializeTitle();
+
     }
 
     private void InitializeTitle(){
@@ -115,6 +155,12 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.cash_out));
         else if(fragment instanceof BBSTransaksiPager)
             setActionBarTitle(getString(R.string.transaction));
+        else if(fragment instanceof FragMenuKelola)
+            setActionBarTitle(getString(R.string.menu_item_title_kelola));
+        else if(fragment instanceof FragSetttingKelola)
+            setActionBarTitle(getString(R.string.menu_item_title_kelola));
+        else if(fragment instanceof FragApprovalAgent)
+            setActionBarTitle(getString(R.string.menu_item_title_trx_agent));
     }
 
     @Override
@@ -237,11 +283,18 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
 
     @Override
     public void onBackPressed() {
-        if(fragmentManager.getBackStackEntryCount()>1)
-            fragmentManager.popBackStack();
-        else
-            super.onBackPressed();
 
+        Intent intent    = getIntent();
+        int index = intent.getIntExtra(DefineValue.INDEX,0);
+
+        if ( index == BBSAPPROVALAGENT || index == BBSTRXAGENT || index == BBSKELOLA) {
+            super.onBackPressed();
+        } else {
+            if (fragmentManager.getBackStackEntryCount() > 1)
+                fragmentManager.popBackStack();
+            else
+                super.onBackPressed();
+        }
     }
 
     @Override

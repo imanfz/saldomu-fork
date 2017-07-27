@@ -9,32 +9,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,19 +37,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.adapter.TabSearchAgentAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
@@ -73,9 +61,9 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.entityRealm.AgentServiceDetail;
-import com.sgo.saldomu.fragments.FragListCategoryBbs;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
+
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -142,7 +130,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     Button btnProses;
     private static final int RC_LOCATION_PERM = 500;
     Boolean clicked = false;
-    ProgressDialog progdialog;
+    ProgressDialog progdialog, progdialog2;
 
     // Init
     private Handler handler = new Handler();
@@ -167,6 +155,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
+
+
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             runningApp();
@@ -204,6 +194,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         locationIntent = new Intent(this, UpdateLocationService.class);
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
         etJumlah.addTextChangedListener(jumlahChangeListener);
+
+        if ( !amount.equals("") ) {
+            etJumlah.setText(amount);
+        }
 
         btnProses               = (Button) findViewById(R.id.btnProses);
 
@@ -515,6 +509,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 provinceName    = singleAddress.getAdminArea();
                 countryName     = singleAddress.getCountryName();
 
+                if ( completeAddress.equals("") ) {
+                    completeAddress += districtName + ", ";
+                    completeAddress += provinceName;
+                }
+
                 searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
 
                 //set true for allow next process
@@ -824,7 +823,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( txId.equals("") && !amount.equals("") && !clicked ) {
 
 
-            progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+            progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
@@ -916,6 +915,29 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                             //tabPageAdapter.notifyDataSetChanged();
 
+                            if (mobility.equals(DefineValue.STRING_YES)) {
+                                //popup
+                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+
+                                alertDialog.setMessage(getString(R.string.message_notif_waiting_agent_approval));
+
+
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+
+
+                                            }
+                                        });
+                                alertDialog.show();
+
+                            } else {
+
+                            }
 
                         } else {
                             shopDetails.clear();
@@ -923,11 +945,29 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                             android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                             alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                            alertDialog.setMessage(getString(R.string.alertbox_message_information));
+
+                            if (mobility.equals(DefineValue.STRING_YES)) {
+                                String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
+                                alertDialog.setMessage(tempMessage + " " + categoryName);
+                            } else {
+                                alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
+                            }
+
                             alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
+
+                                            if ( mobility.equals(DefineValue.STRING_YES) ) {
+                                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                i.putExtra(DefineValue.AMOUNT, amount);
+                                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                startActivity(i);
+                                                finish();
+                                            }
 
                                         }
                                     });
@@ -1218,6 +1258,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void checkTransactionMember() {
         if ( !txId.equals("") ) {
+            progdialog2         = DefinedDialog.CreateProgressDialog(this, getString(R.string.waiting_approval_trx_agent));
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
@@ -1241,7 +1282,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-
+                        progdialog2.dismiss();
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -1310,7 +1351,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 private void ifFailure(Throwable throwable) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
-
+                    progdialog2.dismiss();
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
