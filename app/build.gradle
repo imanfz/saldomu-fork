@@ -57,7 +57,7 @@ android {
             versionCode = 1
             versionName "1.0"
 //            buildConfigField 'String', "AppIDHpku", "\"HPKU\""
-            buildConfigField 'String', "AppID", "SDOM\""
+            buildConfigField 'String', "AppID", "\"SDOM\""
         }
         production {
             applicationId "com.sgo.saldomu"
