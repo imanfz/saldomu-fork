@@ -918,6 +918,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             if (mobility.equals(DefineValue.STRING_YES)) {
                                 //popup
                                 android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setCancelable(false);
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
@@ -944,6 +946,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
                             android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                            alertDialog.setCanceledOnTouchOutside(false);
+                            alertDialog.setCancelable(false);
                             alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
                             if (mobility.equals(DefineValue.STRING_YES)) {
@@ -1118,6 +1122,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             new AppSettingsDialog.Builder(this).build().show();
         } else {
             AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
             alertDialog.setTitle(getString(R.string.alertbox_title_warning));
             alertDialog.setMessage(getString(R.string.alertbox_message_warning));
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",

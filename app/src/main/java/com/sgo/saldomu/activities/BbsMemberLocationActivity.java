@@ -632,6 +632,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             new AppSettingsDialog.Builder(this).build().show();
         } else {
             AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
             alertDialog.setTitle(getString(R.string.alertbox_title_warning));
             alertDialog.setMessage(getString(R.string.alertbox_message_warning));
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
