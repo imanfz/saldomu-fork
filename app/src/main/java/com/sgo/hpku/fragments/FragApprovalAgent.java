@@ -35,6 +35,7 @@ import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BBSActivity;
 import com.sgo.hpku.activities.BbsApprovalAgentActivity;
 import com.sgo.hpku.activities.BbsMapViewByAgentActivity;
+import com.sgo.hpku.activities.BbsMapViewByMemberActivity;
 import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.coreclass.CurrencyFormat;
 import com.sgo.hpku.coreclass.CustomSecurePref;
@@ -336,21 +337,49 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         btnReject.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
-                        flagTxStatus = DefineValue.STRING_CANCEL;
 
-                        if ( shopDetails.size() > 1 ) {
-                            itemId  = spPilihan.getSelectedItemPosition();
+                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                        } else {
-                            itemId = 0;
-                        }
 
-                        if ( shopDetails.size() > 0 ) {
-                            shopId = shopDetails.get(itemId).getShopId();
-                            memberId = shopDetails.get(itemId).getMemberId();
-                            updateTrxAgent();
-                        }
+                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
+
+
+
+                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+                                        flagTxStatus = DefineValue.STRING_CANCEL;
+
+                                        if ( shopDetails.size() > 1 ) {
+                                            itemId  = spPilihan.getSelectedItemPosition();
+
+                                        } else {
+                                            itemId = 0;
+                                        }
+
+                                        if ( shopDetails.size() > 0 ) {
+                                            shopId = shopDetails.get(itemId).getShopId();
+                                            memberId = shopDetails.get(itemId).getMemberId();
+                                            updateTrxAgent();
+                                        }
+
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+
+
+                                    }
+                                });
+                        alertDialog.show();
+
+
                     }
                 }
         );

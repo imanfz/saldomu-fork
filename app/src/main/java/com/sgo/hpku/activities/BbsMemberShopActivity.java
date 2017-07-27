@@ -24,7 +24,6 @@ import com.sgo.hpku.coreclass.DefineValue;
 import com.sgo.hpku.coreclass.HashMessage;
 import com.sgo.hpku.coreclass.MyApiClient;
 import com.sgo.hpku.coreclass.WebParams;
-import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
 import com.sgo.hpku.models.ShopDetail;
 
@@ -34,7 +33,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import timber.log.Timber;

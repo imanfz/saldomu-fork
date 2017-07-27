@@ -6,26 +6,27 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.gson.Gson;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -44,14 +45,6 @@ import com.sgo.hpku.coreclass.WebParams;
 import com.sgo.hpku.dialogs.AlertDialogLogout;
 import com.sgo.hpku.dialogs.DefinedDialog;
 import com.sgo.hpku.entityRealm.MerchantCommunityList;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.sgo.hpku.models.OpenHourDays;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -84,6 +77,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     SecurePreferences sp;
     MerchantCommunityList memberDetail;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
+    List<Address> addressList = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,6 +131,29 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         setActionBarIcon(R.drawable.ic_arrow_left);
 
+        memberDefaultAddress    = districtName + ", "+ provinceName;
+
+        defaultLat      = -6.121435;
+        defaultLong     = 106.774124;
+
+        if (memberDefaultAddress != null || !memberDefaultAddress.equals("")) {
+            Geocoder geocoder = new Geocoder(this);
+            try {
+                addressList = geocoder.getFromLocationName(memberDefaultAddress, 1);
+                Address address = addressList.get(0);
+                selectedLat        = address.getLatitude();
+                selectedLong       = address.getLongitude();
+
+
+                setAdministrativeName();
+            } catch (IOException e) {
+                e.printStackTrace();
+
+
+            }
+
+
+        }
 
 
 
@@ -158,10 +175,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         tvDistrict.setText(districtName);
         tvAddress.setText(address);
 
-        memberDefaultAddress    = districtName + ", "+ provinceName;
 
-        defaultLat      = -6.121435;
-        defaultLong     = 106.774124;
 
         btnSubmit       = (Button) findViewById(R.id.btnSubmit);
 
@@ -385,7 +399,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     public void setAdministrativeName() {
         Geocoder geocoder = new Geocoder(this, new Locale("id"));
 
-        List<Address> addressList = null;
+
 
         try {
             addressList = geocoder.getFromLocation(
@@ -448,16 +462,28 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     selectedLat     = latitude;
                     selectedLong    = longitude;
 
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
                     setAdministrativeName();
+                } else {
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+
+                LatLng latLng = new LatLng(latitude, longitude);
+                mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
             }
 
-            LatLng latLng = new LatLng(latitude, longitude);
-            mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.err_empty_merchant_address), Toast.LENGTH_LONG).show();
         }
@@ -470,26 +496,68 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         List<Address> addressList = null;
         Double latitude = defaultLat, longitude = defaultLong;
 
-        if (memberDefaultAddress != null || !memberDefaultAddress.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(memberDefaultAddress, 1);
-                Address address = addressList.get(0);
-                latitude        = address.getLatitude();
-                longitude       = address.getLongitude();
-                selectedLat     = latitude;
-                selectedLong    = longitude;
+        LatLng latLng;
+        CameraPosition cameraPosition;
+        if (selectedLat != null || selectedLong != null ) {
 
-                setAdministrativeName();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                latLng = new LatLng(selectedLat, selectedLong);
+                mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-            LatLng latLng = new LatLng(latitude, longitude);
+
+            cameraPosition = new CameraPosition.Builder()
+                    .target(latLng) // Center Set
+                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                    .build(); // Creates a CameraPosition from the builder
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    //jika animate camera position sudah selesai, maka on receiver baru boleh dijalankan.
+                    //jika receiver dijalankan sebelum camera position selesai, maka map tidak akan ter-rendering sempurna
+                    //receiverStatus = true;
+
+                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+
+        } else {
+            latLng = new LatLng(defaultLat, defaultLong);
             mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+
+            cameraPosition = new CameraPosition.Builder()
+                    .target(latLng) // Center Set
+                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                    .build(); // Creates a CameraPosition from the builder
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+                    //jika animate camera position sudah selesai, maka on receiver baru boleh dijalankan.
+                    //jika receiver dijalankan sebelum camera position selesai, maka map tidak akan ter-rendering sempurna
+                    //receiverStatus = true;
+
+                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
         }
+
+
+
+
 
         // Setting onclick event listener for the map
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

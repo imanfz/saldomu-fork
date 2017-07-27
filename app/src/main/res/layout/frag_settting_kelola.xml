@@ -114,7 +114,7 @@
             android:layout_below="@+id/tvAddress"
             android:height="30dp"
             android:gravity="left"
-            android:text="@string/setup_tutup_sekarang"
+            android:text="@string/set_online"
             android:textSize="@dimen/abc_text_size_small_material" />
 
         <Switch

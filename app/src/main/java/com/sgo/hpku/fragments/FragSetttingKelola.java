@@ -2,10 +2,13 @@ package com.sgo.hpku.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +30,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.hpku.BuildConfig;
 import com.sgo.hpku.R;
 import com.sgo.hpku.activities.BbsMemberLocationActivity;
+import com.sgo.hpku.activities.MainPage;
 import com.sgo.hpku.coreclass.CustomSecurePref;
 import com.sgo.hpku.coreclass.DateTimeFormat;
 import com.sgo.hpku.coreclass.DefineValue;
@@ -74,7 +78,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     ListView lvList;
     String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove, shopClosed;
     ProgressDialog progdialog, progdialog2;
-    String flagApprove;
+    String flagApprove, shopStatus;
     SecurePreferences sp;
     ArrayList<ShopDetail> shopDetails = new ArrayList<>();
 
@@ -126,6 +130,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         llSettingLokasi         = (RelativeLayout) v.findViewById(R.id.llSettingLokasi);
         llMemberDetail          = (RelativeLayout) v.findViewById(R.id.llMemberDetail);
         llSettingLokasi.setVisibility(View.GONE);
+        llMemberDetail.setVisibility(View.GONE);
+
         btnSettingLokasi        = (Button) v.findViewById(R.id.btnSettingLokasi);
         btnSettingLokasi.setVisibility(View.GONE);
         tvDetailMemberName      = (TextView) v.findViewById(R.id.tvDetailMemberName);
@@ -164,11 +170,11 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                 if ( !swTutupToko.isPressed() ) return;
 
                 RequestParams params = new RequestParams();
-                String shopStatus      = DefineValue.SHOP_CLOSE;
+                shopStatus      = DefineValue.SHOP_OPEN;
 
                 if (!isChecked) {
                     //buka
-                    shopStatus          = DefineValue.SHOP_OPEN;
+                    shopStatus          = DefineValue.SHOP_CLOSE;
 
                 }
 
@@ -202,8 +208,11 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                             String code = response.getString(WebParams.ERROR_CODE);
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                                Toast.makeText(getContext(), getString(R.string.proses_update_success), Toast.LENGTH_SHORT).show();
+                                if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                                    Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                }
                             } else {
                                 Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                             }
@@ -271,6 +280,9 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                        llMemberDetail.setVisibility(View.VISIBLE);
+
                         JSONArray members = response.getJSONArray("member");
 
                         for (int i = 0; i < members.length(); i++) {
@@ -336,9 +348,9 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
 
                             if ( shopClosed.equals(DefineValue.STRING_YES) ) {
-                                swTutupToko.setChecked(true);
-                            } else {
                                 swTutupToko.setChecked(false);
+                            } else {
+                                swTutupToko.setChecked(true);
                             }
                             swTutupToko.setVisibility(View.VISIBLE);
                         }
@@ -371,7 +383,29 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     } else {
 
                         //redirect back to fragment - BBSActivity;
+                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
+
+                        alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
+
+
+
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    getActivity().finish();
+                                    /*FragmentManager fm = getFragmentManager();
+                                    if (fm.getBackStackEntryCount() > 0) {
+                                        fm.popBackStack();
+                                    } else {
+
+                                    }*/
+                                }
+                            });
+
+                        alertDialog.show();
 
                     }
 
@@ -450,4 +484,5 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

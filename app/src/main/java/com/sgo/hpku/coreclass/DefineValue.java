@@ -313,13 +313,13 @@ public class DefineValue {
     public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
-    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
-    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
-    public static int AGENT_DISPLACEMENT                            = 1; //30meter
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 20; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 1000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 1000; //58 seconds
-    public static int MEMBER_DISPLACEMENT                           = 1; //30meter
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 15000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 15000; //58 seconds
+    public static int MEMBER_DISPLACEMENT                           = 20; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";
     public static String GMAP_MODE                          = "driving";

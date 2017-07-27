@@ -99,7 +99,7 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Username : 4454545454545"
+                android:text=""
                 android:layout_weight="1"
                 android:textSize="14sp"
                 android:id="@+id/tvMemberName"
