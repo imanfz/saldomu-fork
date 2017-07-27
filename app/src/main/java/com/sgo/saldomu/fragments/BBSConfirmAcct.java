@@ -34,7 +34,7 @@ import timber.log.Timber;
 
 
 public class BBSConfirmAcct extends Fragment {
-    public final static String TAG = "com.sgo.hpku.fragments.BBSConfirmAcct";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSConfirmAcct";
     private final static String TYPE_ACCT = "ACCT";
     private String userID,accessKey;
     private EditText etPassword;

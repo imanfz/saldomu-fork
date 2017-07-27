@@ -1,19 +1,18 @@
-        package com.sgo.saldomu.activities;
+package com.sgo.saldomu.activities;
 
-        import android.os.Bundle;
-        import android.os.PersistableBundle;
-        import android.support.annotation.Nullable;
-        import android.widget.Button;
+import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
+import android.widget.Button;
 
-        import com.github.paolorotolo.appintro.AppIntro;
-        import com.securepreferences.SecurePreferences;
-        import com.sgo.saldomu.R;
-        import com.sgo.saldomu.coreclass.CustomSecurePref;
-        import com.sgo.saldomu.coreclass.DefineValue;
-        import com.sgo.saldomu.fragments.IntroPage;
-        import com.sgo.saldomu.fragments.Tutorial_page;
-
-        /**
+import com.github.paolorotolo.appintro.AppIntro;
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.fragments.IntroPage;
+import com.sgo.saldomu.fragments.Tutorial_page;
+/*
  * Created by Lenovo Thinkpad on 7/20/2017.
  */
 
@@ -39,8 +38,7 @@ public class TutorialActivity extends AppIntro {
         {
             this.finish();
         }
-        else if (intType==tutorial_cash_in)
-        {
+        else if (intType==tutorial_cash_in) {
             addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs1));
             addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs2));
             addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs3));
@@ -48,13 +46,13 @@ public class TutorialActivity extends AppIntro {
             addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs5));
             addSlide(Tutorial_page.newInstance(R.drawable.cashinbbs6));
 
-
             setFlowAnimation();
             Button skipbtn = (Button)skipButton;
             Button donebtn = (Button)doneButton;
             skipbtn.setText(getString(R.string.start_now));
             donebtn.setText(getString(R.string.done));
-        }else if (intType==tutorial_cash_out)
+        }
+        else if (intType==tutorial_cash_out)
         {
             addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs1));
             addSlide(Tutorial_page.newInstance(R.drawable.cashoutbbs2));
@@ -141,6 +139,7 @@ public class TutorialActivity extends AppIntro {
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor=sp.edit();
 
+
         if (intType==tutorial_cash_in)
         {
             mEditor.putBoolean(DefineValue.TUTORIAL_CASHIN,false);
@@ -161,9 +160,8 @@ public class TutorialActivity extends AppIntro {
         {
             mEditor.putBoolean(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS ,false);
         }
-        else if (intType==tutorial_kelola_agent)
-        {
-            mEditor.putBoolean(DefineValue.TUTORIAL_KELOLA_AGENT ,false);
+        else if (intType==tutorial_kelola_agent) {
+            mEditor.putBoolean(DefineValue.TUTORIAL_KELOLA_AGENT, false);
         }
         mEditor.apply();
         finish();

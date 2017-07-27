@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -198,6 +200,8 @@ public class FragAskForMoney extends Fragment {
         dialogI = InformationDialog.newInstance(6);
         dialogI.setTargetFragment(this,0);
     }
+
+
 
     private TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override

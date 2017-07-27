@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -117,7 +119,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         btnDone.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+                        progdialog2              = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
 
                         confirmTransactionMember();
                     }
@@ -127,8 +129,39 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         btnCancel.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
-                        cancelTransactionMember();
+
+                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
+
+                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
+
+
+
+                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //dialog.dismiss();
+
+                                        progdialog2              = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
+                                        cancelTransactionMember();
+
+
+
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+
+
+
+                                    }
+                                });
+                        alertDialog.show();
+
+
                     }
                 }
         );

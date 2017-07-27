@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.BuyFragmentTabAdapter;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.dialogs.InformationDialog;
@@ -42,6 +47,7 @@ public class ListBuy extends Fragment {
     private ListBuyRF mWorkFragment;
     private RealmChangeListener realmListener;
     private ArrayList<String> Title_tab;
+    private SecurePreferences sp;
 //    String userID,accessKey;
 
     private InformationDialog dialogI;
@@ -76,6 +82,7 @@ public class ListBuy extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         super.onActivityCreated(savedInstanceState);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
@@ -122,7 +129,10 @@ public class ListBuy extends Fragment {
 //        realm.addChangeListener(realmListener);
 
         initializeData();
+
     }
+
+
 
     private void initializeData(){
 

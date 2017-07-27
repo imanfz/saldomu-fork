@@ -20,7 +20,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
  */
 
 public class BBSTransaksiStatus extends Fragment {
-    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiStatus";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiStatus";
     private View v;
     private String transaksi;
 

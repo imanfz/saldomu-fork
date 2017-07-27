@@ -45,14 +45,14 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
     ProgressDialog progdialog;
     ToggleButton tbOpenClosed;
     Button btnShopDate, btnProses, btnOpenHour;
-    TextView tvDate, tvStartHour, tvEndHour;
+    TextView tvDate, tvStartHour, tvEndHour, tvOpen24Hours;
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<Date> listDates = new ArrayList<>();
     SecurePreferences sp;
     String shopId, memberId, shopStatus, shopRemark, shopStartOpenHour, shopEndOpenHour;
     int iStartHour = 0, iStartMinute = 0, iEndHour = 0, iEndMinute = 0;
     LinearLayout llSetupHourForm, llSetupHourFormEnd, llHourForm;
-    Boolean isClosed = false;
+    Boolean isClosed = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,8 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
         llSetupHourForm = (LinearLayout) findViewById(R.id.llSetupHourForm);
         llSetupHourFormEnd  = (LinearLayout) findViewById(R.id.llSetupHourFormEnd);
         llHourForm      = (LinearLayout) findViewById(R.id.llHourForm);
+        tvOpen24Hours      = (TextView) findViewById(R.id.tvOpen24Hours);
+        tvOpen24Hours.setText(getString(R.string.set_shop_closing_date));
 
         llSetupHourForm.setVisibility(View.GONE);
         llSetupHourFormEnd.setVisibility(View.GONE);
@@ -100,11 +102,13 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
                     llSetupHourFormEnd.setVisibility(View.VISIBLE);
                     llHourForm.setVisibility(View.VISIBLE);
                     isClosed = false;
+                    tvOpen24Hours.setText(getString(R.string.set_shop_opening_date));
                 } else {
                     llSetupHourForm.setVisibility(View.GONE);
                     llSetupHourFormEnd.setVisibility(View.GONE);
                     llHourForm.setVisibility(View.GONE);
                     isClosed = true;
+                    tvOpen24Hours.setText(getString(R.string.set_shop_closing_date));
                 }
             }
         });
@@ -169,6 +173,8 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
                                             //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
                                             //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
                                             //                                    startActivity(intent);
+                                        } else {
+                                            Toast.makeText(getApplication(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                         }
 
                                     } catch (JSONException e) {

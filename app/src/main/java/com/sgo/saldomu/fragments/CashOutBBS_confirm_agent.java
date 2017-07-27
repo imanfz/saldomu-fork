@@ -45,7 +45,7 @@ import timber.log.Timber;
 
 public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
-    public final static String TAG = "com.sgo.hpku.fragments.CashOutBBS_confirm_agent";
+    public final static String TAG = "com.sgo.saldomu.fragments.CashOutBBS_confirm_agent";
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private View v, layout_OTP;

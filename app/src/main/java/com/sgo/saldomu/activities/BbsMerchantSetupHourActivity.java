@@ -59,7 +59,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
     Spinner spClosedType;
     TextView tvSelectedInfo;
     ArrayList<String> selectedDate, selectedDays;
-    int selectedPos = 0;
+    int selectedPos = 0, selectedClosedTypePos = 0;
     Button btnProses;
     ProgressDialog progdialog;
 
@@ -91,7 +91,49 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         tvSelectedInfo      = (TextView) findViewById(R.id.tvSelectedInfo);
 
         spClosedType        = (Spinner) findViewById(R.id.spClosedType);
-        spClosedType.setOnItemSelectedListener(this);
+        //spClosedType.setOnItemSelectedListener(this);
+        spClosedType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                if ( pos > 0 ) {
+                    selectedClosedTypePos = pos;
+                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+
+                    String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", pos);
+                    bundle.putString("closedType", arrClosedType[pos]);
+                    bundle.putStringArrayList("selectedDate", selectedDate);
+                    bundle.putStringArrayList("selectedDays", selectedDays);
+
+                    closedTypePickerFragment.setArguments(bundle);
+                    closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+                    closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                if ( selectedClosedTypePos > 0 ) {
+
+                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+
+                    String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", selectedClosedTypePos);
+                    bundle.putString("closedType", arrClosedType[selectedClosedTypePos]);
+                    bundle.putStringArrayList("selectedDate", selectedDate);
+                    bundle.putStringArrayList("selectedDays", selectedDays);
+
+                    closedTypePickerFragment.setArguments(bundle);
+                    closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+                    closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+                }
+            }
+        });
+        //spClosedType.setOnItemClickListener(this);
 
         llSetupHours.setVisibility(View.GONE);
         llSetupClosedType.setVisibility(View.GONE);
@@ -201,8 +243,8 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
                                int pos, long id) {
         // An item was selected. You can retrieve the selected item using
         // parent.getItemAtPosition(pos)
-
         if ( pos > 0 ) {
+            selectedClosedTypePos = pos;
             ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
 
             String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
@@ -221,14 +263,31 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
+        parent.getLastVisiblePosition();
         // Another interface callback
+        if ( selectedClosedTypePos > 0 ) {
+
+            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+
+            String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", selectedClosedTypePos);
+            bundle.putString("closedType", arrClosedType[selectedClosedTypePos]);
+            bundle.putStringArrayList("selectedDate", this.selectedDate);
+            bundle.putStringArrayList("selectedDays", this.selectedDays);
+
+            closedTypePickerFragment.setArguments(bundle);
+            closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+            closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+        }
     }
 
     @Override
     public void onOkClosedTypePickerClick(int position, ArrayList<String> selectedDays, ArrayList<String> selectedDate) {
         this.selectedDays = selectedDays;
         this.selectedDate = selectedDate;
-        if ( position == 0 ) {
+        if ( position == 1 ) {
 
             selectedPos = position;
 
@@ -241,7 +300,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
             tvSelectedInfo.setText("Hari : "+ android.text.TextUtils.join(", ", tempData));
 
 
-        } else {
+        } else if ( position == 2 ) {
             selectedPos = position;
 
             ArrayList<String> tempData = new ArrayList<>();
@@ -371,7 +430,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                             Gson gson = new Gson();
 
-                            if ( selectedPos == 0 ) {
+                            if ( selectedPos == 1 ) {
 
                                 ArrayList<String> tempData = new ArrayList<>();
                                 for(int x = 0; x < selectedDays.size(); x++) {
@@ -379,15 +438,19 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                                     tempData.add(setupOpenHour.getSetupOpenHours().get(idx).getKodeHari());
                                 }
-                                params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
+
+                                if ( tempData.size() > 0 )
+                                    params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
                                 params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DAY);
-                            } else {
+                            } else if ( selectedPos == 2 ) {
                                 ArrayList<String> tempData = new ArrayList<>();
                                 for(int x = 0; x < selectedDate.size(); x++) {
                                     String idx = String.valueOf(Integer.valueOf(selectedDate.get(x)) + 1);
                                     tempData.add(idx);
                                 }
-                                params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
+
+                                if ( tempData.size() > 0 )
+                                    params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
                                 params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DATE);
                             }
                         } else {
@@ -469,5 +532,6 @@ Log.d("TEST", params.toString());
             else DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.inethandler_dialog_message));
         }
     };
+
 
 }

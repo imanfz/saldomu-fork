@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.BbsMemberListAdapter;
+import com.sgo.saldomu.adapter.GridViewIconAdapter;
 import com.sgo.saldomu.adapter.KelolaAgentAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -32,8 +33,9 @@ import static io.realm.Realm.getDefaultInstance;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragKelolaAgent extends Fragment {
+public class FragKelolaAgent extends Fragment implements View.OnClickListener {
 
+    public final static String TAG = "com.sgo.saldomu.fragments.FragKelolaAgent";
     GridView gridview;
     KelolaAgentAdapter customAdapter;
     ArrayList<String> menuItems     = new ArrayList<>();
@@ -45,15 +47,13 @@ public class FragKelolaAgent extends Fragment {
     ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     ArrayList<ShopDetail> tempDetails = new ArrayList<>();
     private BbsMemberListAdapter bbsMemberListAdapter;
+    private GridViewIconAdapter gridViewIconAdapter;
     ListView lvListMember;
+    GridView gvIconSetting;
 
     public FragKelolaAgent(ArrayList<ShopDetail> shopDetails) {
         // Required empty public constructor
         this.shopDetails = shopDetails;
-    }
-
-    public FragKelolaAgent() {
-
     }
 
 
@@ -62,13 +62,6 @@ public class FragKelolaAgent extends Fragment {
         super.onCreate(savedInstanceState);
         sp          = CustomSecurePref.getInstance().getmSecurePrefs();
         myRealm     = getDefaultInstance();
-
-/*        dataResult = myRealm.where(MerchantCommunityList.class)
-                .equalTo("memberCust", sp.getString(DefineValue.USERID_PHONE, ""))
-                .equalTo("memberType", DefineValue.SHOP_AGENT)
-                .findAll();
-*/
-
 
     }
 
@@ -88,10 +81,14 @@ public class FragKelolaAgent extends Fragment {
 
         }
 
-        bbsMemberListAdapter = new BbsMemberListAdapter(getActivity(), tempDetails);
+        //bbsMemberListAdapter = new BbsMemberListAdapter(getActivity(), tempDetails);
+        gridViewIconAdapter     = new GridViewIconAdapter(getActivity(), tempDetails, getChildFragmentManager());
 
-        lvListMember    = (ListView) v.findViewById(R.id.list);
-        lvListMember.setAdapter(bbsMemberListAdapter);
+        gvIconSetting   = (GridView) v.findViewById(R.id.gvIconSetting);
+        gvIconSetting.setAdapter(gridViewIconAdapter);
+
+        //lvListMember    = (ListView) v.findViewById(R.id.list);
+        //lvListMember.setAdapter(bbsMemberListAdapter);
 
         /*ivLocation      = (ImageView) v.findViewById(R.id.ivLocation);
         ivTutupManual   = (ImageView) v.findViewById(R.id.ivTutupManual);
@@ -189,5 +186,10 @@ public class FragKelolaAgent extends Fragment {
         Intent intent = new Intent(getActivity(), TutorialActivity.class);
         intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_kelola_agent);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

@@ -45,7 +45,7 @@ import timber.log.Timber;
 
 public class BBSJoinAgentInput extends Fragment {
 
-    public final static String TAG = "com.sgo.hpku.fragments.BBSJoinAgentInput";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSJoinAgentInput";
 
     private View v;
     private ArrayList<BBSComm> listDataComm;

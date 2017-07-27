@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -12,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.ReportTabAdapter;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
 
@@ -74,6 +77,7 @@ public class ReportTab extends Fragment {
             setCurrentAdapternya(adapternya);
         }
     }
+
 
     private View getCurrentView() {
         return currentView;

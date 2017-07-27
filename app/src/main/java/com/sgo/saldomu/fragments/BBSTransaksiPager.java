@@ -24,7 +24,7 @@ import com.sgo.saldomu.dialogs.InformationDialog;
 
 public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChangeListener{
 
-    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiPager";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiPager";
     private View v;
     private ViewPager mViewPager;
     private int dotsCount;

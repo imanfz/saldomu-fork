@@ -63,7 +63,7 @@ import timber.log.Timber;
  */
 
 public class BBSTransaksiAmount extends Fragment {
-    public final static String TAG = "com.sgo.hpku.fragments.BBSTransaksiAmount";
+    public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiAmount";
 
     private View v, inputForm, emptyLayout, cityLayout, nameLayout, emptyCashoutBenefLayout;
     private ProgressDialog progdialog;

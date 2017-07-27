@@ -47,6 +47,11 @@
                         android:text="@string/closed_shop_today"
                         android:layout_weight="1" />
 
+                    <Switch
+                        android:id="@+id/swPilihan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
                     <Spinner
                         android:id="@+id/spPilihan"
                         android:layout_width="wrap_content"

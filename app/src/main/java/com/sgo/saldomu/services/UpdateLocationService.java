@@ -22,7 +22,14 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Lenovo on 05/04/2017.

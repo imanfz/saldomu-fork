@@ -27,11 +27,12 @@ public class ListBBS extends ListFragment {
     private boolean isJoin = false;
     String[] _data;
     Boolean isAgent;
+    SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent)
             _data = getResources().getStringArray(R.array.list_bbs_agent);
@@ -66,6 +67,7 @@ public class ListBBS extends ListFragment {
         }
     }
 
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
@@ -75,10 +77,17 @@ public class ListBBS extends ListFragment {
                 posIdx = BBSActivity.LISTACCBBS;
             else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
                 posIdx = BBSActivity.TRANSACTION;
-            else if(_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+            else if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
                 posIdx = BBSActivity.CONFIRMCASHOUT;
-        else
-            posIdx = -1;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
+                posIdx = BBSActivity.BBSKELOLA;
+            //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
+                //posIdx = BBSActivity.BBSAPPROVALAGENT;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
+                posIdx = BBSActivity.BBSTRXAGENT;
+            else {
+                posIdx = -1;
+            }
         } else
             posIdx = BBSActivity.CONFIRMCASHOUT;
 

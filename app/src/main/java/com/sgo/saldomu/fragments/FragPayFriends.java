@@ -31,6 +31,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
+import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -102,7 +103,7 @@ public class FragPayFriends extends Fragment {
         {
             case R.id.action_information:
                 if(!dialogI.isAdded())
-                    dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
+                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

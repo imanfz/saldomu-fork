@@ -54,7 +54,7 @@ import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
 
 public class Cashoutbbs_describ_member extends Fragment {
-    public final static String TAG = "com.sgo.hpku.fragments.Cashoutbbs_describ_member";
+    public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
 //    layout_button_transaction;
     SecurePreferences sp;

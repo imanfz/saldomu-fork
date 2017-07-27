@@ -71,6 +71,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    Boolean is_first_time=true;
     private LevelClass levelClass;
     private SecurePreferences sp;
     ProgressDialog progdialog;
@@ -174,7 +175,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 JSONObject object = categories.getJSONObject(i);
                                 ShopCategory shopCategory = new ShopCategory();
                                 shopCategory.setCategoryId(object.getString("category_id"));
-                                shopCategory.setCategoryName(object.getString("category_name"));
+                                String tempCategory = object.getString("category_name").toLowerCase();
+
+                                String[] strArray = tempCategory.split(" ");
+                                StringBuilder builder = new StringBuilder();
+                                for (String s : strArray) {
+                                    String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                    builder.append(cap + " ");
+                                }
+
+                                shopCategory.setCategoryName(builder.toString());
                                 shopCategories.add(shopCategory);
                             }
 
@@ -442,6 +452,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT,"0");
         tv_saldo.setText(CurrencyFormat.format(balance));
     }
+
 
     @Override
     protected int getInflateFragmentLayout() {

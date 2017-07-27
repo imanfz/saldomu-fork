@@ -78,9 +78,9 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical|right"
+                android:gravity="center_vertical|center"
                 android:id="@+id/btnProses"
-                android:text="@string/submit"
+                android:text="@string/search"
                 />
         </LinearLayout>
     </RelativeLayout>
