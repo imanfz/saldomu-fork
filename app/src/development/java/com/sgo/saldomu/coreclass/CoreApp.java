@@ -80,7 +80,7 @@ public class CoreApp extends Application {
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
 
-        RealmManager.init(this);
+        RealmManager.init(this, R.raw.saldomudevrealm, R.raw.saldomudevbbs);
 
         PackageInfo pInfo;
         try {

@@ -38,7 +38,8 @@ android {
 
         // Enabling multidex support.
         multiDexEnabled true
-
+        buildConfigField 'String', "flavorDev", "\"development\""
+        buildConfigField 'String ', "flavorProd", "\"production\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
