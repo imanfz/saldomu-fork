@@ -49,10 +49,10 @@ public class RealmManager {
 
     public static void init(Context mContext){
         File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
-        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevrealm),file);
+        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomurealm),file);
 
         file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));
-        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevbbs),file);
+        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomubbs),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()

@@ -876,6 +876,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
+                    progdialog.dismiss();
                     try {
 
                         String code = response.getString(WebParams.ERROR_CODE);
@@ -979,7 +980,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
 
                         }
-                        progdialog.dismiss();
+
                         viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
