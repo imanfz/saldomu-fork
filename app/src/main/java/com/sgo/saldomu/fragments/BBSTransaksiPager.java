@@ -31,13 +31,10 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     private ImageView[] dots;
     private LinearLayout pager_indicator;
     private BBSTransaksiPagerAdapter mAdapter;
-    private InformationDialog dialogI;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dialogI = InformationDialog.newInstanceBBS(0);
-        dialogI.setTargetFragment(this,0);
     }
 
     @Nullable
@@ -101,21 +98,6 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.information, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_information){
-            if(!dialogI.isAdded())
-                dialogI.show(getActivity().getSupportFragmentManager(), InformationDialog.TAG);
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
