@@ -40,11 +40,17 @@ public class ClosedTypePickerFragment extends DialogFragment {
         public void onCancelClosedTypePickerClick(int position);
     }
 
-    //add a custom constructor so that you have an initialised NoticeDialogListener
-    public ClosedTypePickerFragment(ClosedTypePickerFragment.ClosedTypePickerListener cpl){
-        super();
-        this.cpl = cpl;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            cpl = (ClosedTypePickerFragment.ClosedTypePickerListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement OpenCloseDatePickerListener interface");
+        }
     }
+
     ClosedTypePickerFragment.ClosedTypePickerListener mListener;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener

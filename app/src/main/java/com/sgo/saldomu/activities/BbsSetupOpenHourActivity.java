@@ -150,7 +150,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                TimePickerFragment timePickerFragment = new TimePickerFragment(BbsSetupOpenHourActivity.this);
+                TimePickerFragment timePickerFragment = new TimePickerFragment();
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
@@ -214,7 +214,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
         // parent.getItemAtPosition(pos)
 
         if ( pos > 0 ) {
-            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsSetupOpenHourActivity.this);
+            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
             String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 

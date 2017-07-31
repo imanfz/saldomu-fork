@@ -43,9 +43,7 @@ public class FragKelolaMerchant extends Fragment {
     private BbsMemberListAdapter bbsMemberListAdapter;
     ListView lvListMember;
 
-    public FragKelolaMerchant(ArrayList<ShopDetail> shopDetails) {
-        // Required empty public constructor
-        this.shopDetails = shopDetails;
+    public FragKelolaMerchant() {
     }
 
 
@@ -54,6 +52,11 @@ public class FragKelolaMerchant extends Fragment {
         super.onCreate(savedInstanceState);
         sp          = CustomSecurePref.getInstance().getmSecurePrefs();
         myRealm     = getDefaultInstance();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            this.shopDetails = (ArrayList<ShopDetail>) args.getSerializable("shopDetails");
+        }
 
         /*dataResult = myRealm.where(MerchantCommunityList.class)
                 .equalTo("memberCust", sp.getString(DefineValue.USERID_PHONE, ""))

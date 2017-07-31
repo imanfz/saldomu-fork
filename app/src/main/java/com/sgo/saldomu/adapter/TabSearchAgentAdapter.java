@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -47,10 +48,22 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
         switch(position)
         {
             case 0:
-                fragment = new AgentMapFragment(currentLatitude, currentLongitude, mobility);
+                Bundle args = new Bundle();
+                if ( currentLatitude != null )
+                    args.putDouble("currentLatitude", currentLatitude);
+
+                if ( currentLongitude != null )
+                    args.putDouble("currentLongitude", currentLongitude);
+
+                args.putString("mobility", mobility);
+                fragment = new AgentMapFragment();
+                fragment.setArguments(args);
                 break;
             case 1:
-                fragment = new AgentListFragment(mobility);
+                Bundle args2 = new Bundle();
+                args2.putString("mobility", mobility);
+                fragment = new AgentListFragment();
+                fragment.setArguments(args2);
                 break;
             default:
                 fragment = null;

@@ -20,10 +20,10 @@ android {
 
     signingConfigs {
         prodKey {
-            keyAlias 'akardayaprod'
-            keyPassword 'akardayapin095'
-            storePassword 'pinakardaya590'
-            storeFile file('akardaya-key.jks')
+            keyAlias 'saldomuprod'
+            keyPassword 'saldomukey590'
+            storePassword 'saldomustore590'
+            storeFile file('saldomu-key.jks')
         }
     }
     compileSdkVersion 25
@@ -38,7 +38,8 @@ android {
 
         // Enabling multidex support.
         multiDexEnabled true
-
+        buildConfigField 'String', "flavorDev", "\"development\""
+        buildConfigField 'String ', "flavorProd", "\"production\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
