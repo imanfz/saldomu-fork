@@ -390,8 +390,9 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                         //redirect back to fragment - BBSActivity;
                         android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
+                        alertDialog.setCancelable(false);
 
                         alertDialog.setMessage(getString(R.string.message_notif_not_registered_agent));
 

@@ -25,9 +25,8 @@ public class TimePickerFragment extends DialogFragment {
     }
 
     //add a custom constructor so that you have an initialised NoticeDialogListener
-    public TimePickerFragment(TimePickerListener tpl){
+    public TimePickerFragment(){
         super();
-        this.tpl = tpl;
     }
     TimePickerListener mListener;
 
@@ -45,6 +44,17 @@ public class TimePickerFragment extends DialogFragment {
     Button btnYes, btnNo;
     String startTime = "", endTime = "", NamaHari = "";
     int iStartHour = 0, iStartMinute = 0, iEndHour = 0, iEndMinute = 0;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            tpl = (TimePickerFragment.TimePickerListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement OpenCloseDatePickerListener interface");
+        }
+    }
 
     /** The system calls this to get the DialogFragment's layout, regardless
      of whether it's being displayed as a dialog or an embedded fragment. */

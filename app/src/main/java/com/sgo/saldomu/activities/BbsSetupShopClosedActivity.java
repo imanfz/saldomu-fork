@@ -336,7 +336,11 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
     Button.OnClickListener btnShopDateListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment(BbsSetupShopClosedActivity.this, selectedDates, listDates);
+            OpenCloseDatePickerFragment openCloseDatePickerFragment = new OpenCloseDatePickerFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("selectDates", selectedDates);
+            args.putSerializable("listDates", listDates);
+            openCloseDatePickerFragment.setArguments(args);
             openCloseDatePickerFragment.show(getFragmentManager(), OpenCloseDatePickerFragment.TAG  );
         }
     };
@@ -344,7 +348,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
     Button.OnClickListener btnOpenHourListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            OpenHourPickerFragment openHourPickerFragment = new OpenHourPickerFragment(BbsSetupShopClosedActivity.this);
+            OpenHourPickerFragment openHourPickerFragment = new OpenHourPickerFragment();
 
             Bundle bundle = new Bundle();
             bundle.putString("startHour", shopStartOpenHour);

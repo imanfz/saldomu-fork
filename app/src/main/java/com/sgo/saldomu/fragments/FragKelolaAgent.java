@@ -51,9 +51,8 @@ public class FragKelolaAgent extends Fragment implements View.OnClickListener {
     ListView lvListMember;
     GridView gvIconSetting;
 
-    public FragKelolaAgent(ArrayList<ShopDetail> shopDetails) {
-        // Required empty public constructor
-        this.shopDetails = shopDetails;
+    public FragKelolaAgent() {
+
     }
 
 
@@ -63,6 +62,10 @@ public class FragKelolaAgent extends Fragment implements View.OnClickListener {
         sp          = CustomSecurePref.getInstance().getmSecurePrefs();
         myRealm     = getDefaultInstance();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            this.shopDetails = (ArrayList<ShopDetail>) args.getSerializable("shopDetails");
+        }
     }
 
 

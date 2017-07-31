@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter;
 
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 
@@ -38,10 +39,15 @@ public class CustomTabPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         Fragment fragment;
         if ( position == 0 ) {
-            fragment = new FragKelolaMerchant(this.shopDetails);
+            Bundle args = new Bundle();
+            args.putSerializable("shopDetails", this.shopDetails);
+            fragment = new FragKelolaMerchant();
+            fragment.setArguments(args);
         } else {
-            fragment = new FragKelolaAgent(this.shopDetails);
-
+            Bundle args2 = new Bundle();
+            args2.putSerializable("shopDetails", this.shopDetails);
+            fragment = new FragKelolaAgent();
+            fragment.setArguments(args2);
         }
         return fragment;
         //return FragCustomTab.newInstance(position + 1);

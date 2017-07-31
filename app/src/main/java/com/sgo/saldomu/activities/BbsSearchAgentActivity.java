@@ -155,6 +155,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
 
+        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+            currentLatitude = Double.valueOf(intentData.getStringExtra(DefineValue.LAST_CURRENT_LATITUDE));
+            currentLongitude = Double.valueOf(intentData.getStringExtra(DefineValue.LAST_CURRENT_LONGITUDE));
+        }
+
+
 
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -494,6 +500,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
             {
+
+
                 Address singleAddress = multiAddress.get(0);
                 ArrayList<String> addressArray = new ArrayList<String>();
 
@@ -584,6 +592,63 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 errorDesc = "Connection Failed";
             }
         });*/
+
+    }
+
+    private void getCompleteLocationAddress2()
+    {
+
+        try
+        {
+            Geocoder geocoder = new Geocoder(this, new Locale("id"));
+
+            List<Address> multiAddress = geocoder.getFromLocation(this.currentLatitude,this.currentLongitude,1);
+
+            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
+            {
+
+                Address singleAddress = multiAddress.get(0);
+                ArrayList<String> addressArray = new ArrayList<String>();
+
+                completeAddress = "";
+                for (int i = 0; i < singleAddress.getMaxAddressLineIndex(); i++) {
+                    addressArray.add(singleAddress.getAddressLine(i));
+                    completeAddress += singleAddress.getAddressLine(i) + " ";
+                }
+
+
+                districtName    = singleAddress.getSubAdminArea();
+                provinceName    = singleAddress.getAdminArea();
+                countryName     = singleAddress.getCountryName();
+
+                if ( completeAddress.equals("") ) {
+                    completeAddress += districtName + ", ";
+                    completeAddress += provinceName;
+                }
+
+
+                //set true for allow next process
+                pickupLocationResult = AgentConstant.TRUE;
+            }
+            else
+            {
+                errorDesc = "The current location is not valid";
+            }
+        }
+        catch(IOException ioException)
+        {
+            // Catch network or other I/O problems.
+            //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
+            Log.d("ERROR :", ioException.getMessage());
+            errorDesc = "Catch : Network or other I/O problems - No geocoder available";
+        }
+        catch(IllegalArgumentException illegalArgumentException)
+        {
+            // Catch invalid latitude or longitude values.
+            //errorMessage = "Catch : Invalid latitude or longitude values";
+            errorDesc = "Catch : Invalid latitude or longitude values";
+        }
+
 
     }
 
@@ -876,6 +941,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
+                    Timber.d("Response:" + response.toString());
+                    progdialog.dismiss();
                     try {
 
                         String code = response.getString(WebParams.ERROR_CODE);
@@ -917,6 +984,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             if (mobility.equals(DefineValue.STRING_YES)) {
                                 //popup
                                 android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setCancelable(false);
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
@@ -942,40 +1011,60 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             shopDetails.clear();
                             //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
-                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+
 
                             if (mobility.equals(DefineValue.STRING_YES)) {
+                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setCancelable(false);
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
                                 alertDialog.setMessage(tempMessage + " " + categoryName);
-                            } else {
-                                alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
-                            }
 
-                            alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
 
-                                            if ( mobility.equals(DefineValue.STRING_YES) ) {
                                                 Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
                                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                i.putExtra(DefineValue.AMOUNT, amount);
                                                 i.putExtra(DefineValue.CATEGORY_ID, categoryId);
                                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+
+                                                if ( mobility.equals(DefineValue.STRING_YES) ) {
+
+                                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                    i.putExtra(DefineValue.AMOUNT, amount);
+
+
+                                                } else {
+                                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                                    i.putExtra(DefineValue.AMOUNT, "");
+
+                                                }
+
                                                 startActivity(i);
                                                 finish();
-                                            }
 
-                                        }
-                                    });
-                            alertDialog.show();
+                                            }
+                                        });
+                                alertDialog.show();
+                            } else {
+                                //alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
+
+                                Intent i = new Intent(getApplicationContext(), MainPage.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                                finish();
+
+                            }
+
+
 
 
 
                         }
-                        progdialog.dismiss();
+
                         viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
@@ -1068,9 +1157,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         return tempCoordinate;
     }
 
-    public void setCoordinate(Double lastLatitude, Double lastLongitude) {
+    public void setCoordinate(Double lastLatitude, Double lastLongitude, String newAddress) {
         this.currentLatitude = lastLatitude;
         this.currentLongitude   = lastLongitude;
+        this.completeAddress    = newAddress;
+        //getCompleteLocationAddress2();
         searchToko(lastLatitude, lastLongitude);
     }
 
@@ -1117,6 +1208,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             new AppSettingsDialog.Builder(this).build().show();
         } else {
             AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCancelable(false);
             alertDialog.setTitle(getString(R.string.alertbox_title_warning));
             alertDialog.setMessage(getString(R.string.alertbox_message_warning));
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
@@ -1319,6 +1412,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 i.putExtra(DefineValue.AMOUNT, amount);
                                 i.putExtra(DefineValue.CATEGORY_ID, categoryId);
                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
                                 startActivity(i);
                                 finish();
 
