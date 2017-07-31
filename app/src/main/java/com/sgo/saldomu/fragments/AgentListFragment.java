@@ -44,8 +44,18 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
 
     }
 
-    public AgentListFragment(String mobility) {
-        this.mobility = mobility;
+    /**
+     * During creation, if arguments have been supplied to the fragment
+     * then parse those out.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            this.mobility = args.getString("mobility");
+        }
     }
 
     @Override

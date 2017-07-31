@@ -10,6 +10,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -237,6 +239,31 @@ public class BBSTransaksiAmount extends Fragment {
         {
             validasiTutorialCashOut();
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_information:
+                if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
+                {
+                    showTutorialCashIn();
+                }
+                else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+                {
+                    showTutorialCashOut();
+                }
+                return true;
+            case android.R.id.home:
+                getActivity().finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void validasiTutorialCashIn()
@@ -792,16 +819,6 @@ public class BBSTransaksiAmount extends Fragment {
 
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getActivity().finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 //    private void switchFragment(Fragment i, String name, Boolean isBackstack){

@@ -47,12 +47,13 @@ public class RealmManager {
     private static class BBSModule {
     }
 
-    public static void init(Context mContext){
+    public static void init(Context mContext, int rawBiller, int rawBBS){
         File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
-        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.hpkurealm),file);
+
+        copyBundledRealmFile(mContext.getResources().openRawResource(rawBiller),file);
 
         file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));
-        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.hpkubbs),file);
+        copyBundledRealmFile(mContext.getResources().openRawResource(rawBBS),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()

@@ -97,7 +97,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 if ( pos > 0 ) {
                     selectedClosedTypePos = pos;
-                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
                     String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 
@@ -117,7 +117,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
             public void onNothingSelected(AdapterView<?> parent) {
                 if ( selectedClosedTypePos > 0 ) {
 
-                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+                    ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
                     String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 
@@ -181,7 +181,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                TimePickerFragment timePickerFragment = new TimePickerFragment(BbsMerchantSetupHourActivity.this);
+                TimePickerFragment timePickerFragment = new TimePickerFragment();
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", position);
@@ -245,7 +245,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         // parent.getItemAtPosition(pos)
         if ( pos > 0 ) {
             selectedClosedTypePos = pos;
-            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
             String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 
@@ -267,7 +267,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
         // Another interface callback
         if ( selectedClosedTypePos > 0 ) {
 
-            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment(BbsMerchantSetupHourActivity.this);
+            ClosedTypePickerFragment closedTypePickerFragment = new ClosedTypePickerFragment();
 
             String[] arrClosedType = getApplicationContext().getResources().getStringArray(R.array.list_closed_type);
 

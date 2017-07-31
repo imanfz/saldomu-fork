@@ -25,9 +25,8 @@ public class OpenHourPickerFragment extends DialogFragment {
     }
 
     //add a custom constructor so that you have an initialised NoticeDialogListener
-    public OpenHourPickerFragment(OpenHourPickerListener tpl){
-        super();
-        this.tpl = tpl;
+    public OpenHourPickerFragment(){
+
     }
     OpenHourPickerListener mListener;
 
@@ -177,6 +176,16 @@ public class OpenHourPickerFragment extends DialogFragment {
         );
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        try {
+            tpl = (OpenHourPickerFragment.OpenHourPickerListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement OpenCloseDatePickerListener interface");
+        }
+    }
 
     /** The system calls this only when creating the layout in a dialog. */
     @Override

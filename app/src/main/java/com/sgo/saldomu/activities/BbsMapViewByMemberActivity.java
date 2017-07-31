@@ -131,6 +131,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     public void onClick(View v) {
 
                         android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsMapViewByMemberActivity.this).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setCancelable(false);
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 

@@ -51,9 +51,8 @@ public class FragKelolaAgent extends Fragment implements View.OnClickListener {
     ListView lvListMember;
     GridView gvIconSetting;
 
-    public FragKelolaAgent(ArrayList<ShopDetail> shopDetails) {
-        // Required empty public constructor
-        this.shopDetails = shopDetails;
+    public FragKelolaAgent() {
+
     }
 
 
@@ -63,6 +62,10 @@ public class FragKelolaAgent extends Fragment implements View.OnClickListener {
         sp          = CustomSecurePref.getInstance().getmSecurePrefs();
         myRealm     = getDefaultInstance();
 
+        Bundle args = getArguments();
+        if (args != null) {
+            this.shopDetails = (ArrayList<ShopDetail>) args.getSerializable("shopDetails");
+        }
     }
 
 
@@ -165,28 +168,8 @@ public class FragKelolaAgent extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_KELOLA_AGENT))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KELOLA_AGENT,false);
-            if(is_first_time)
-                showTutorial();
-        }
-        else {
-            showTutorial();
-        }
-    }
-
-    private void showTutorial()
-    {
-        Intent intent = new Intent(getActivity(), TutorialActivity.class);
-        intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_kelola_agent);
-        startActivity(intent);
-    }
 
     @Override
     public void onClick(View v) {

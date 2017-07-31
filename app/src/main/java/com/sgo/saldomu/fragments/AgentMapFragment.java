@@ -109,19 +109,26 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private String mobility;
     SecurePreferences sp;
 
-    public AgentMapFragment(Double currentLatitude, Double currentLongitude, String mobility) {
-        //this.shopDetails = shopDetails;
-        this.currentLatitude = currentLatitude;
-        this.currentLongitude = currentLongitude;
-        lastCoordinateMarker = null;
-        lines = new ArrayList<>();
-        this.mobility = mobility;
-        //setAgentMarker();
-    }
 
     public AgentMapFragment() {
         lastCoordinateMarker = null;
         lines = new ArrayList<>();
+    }
+
+    /**
+     * During creation, if arguments have been supplied to the fragment
+     * then parse those out.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            this.mobility = args.getString("mobility");
+            this.currentLatitude = args.getDouble("currentLatitude");
+            this.currentLongitude = args.getDouble("currentLongitude");
+        }
     }
 
     //set option for single agent or multiple agent
@@ -750,9 +757,11 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 currentLongitude = singleAddress.getLongitude();
 
                 mainBbsActivity = (BbsSearchAgentActivity) getActivity();
-                mainBbsActivity.setCoordinate(currentLatitude, currentLongitude);
+                mainBbsActivity.setCoordinate(currentLatitude, currentLongitude, searchLocationString);
 
                 globalMap.clear();
+
+                recreateAllMarker();
 
                 searchLocationEditText.clearFocus();
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);

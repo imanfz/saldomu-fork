@@ -247,6 +247,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         rlApproval.setVisibility(View.GONE);
 
                         AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
                         alertDialog.setMessage(getString(R.string.alertbox_message_information));
                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),

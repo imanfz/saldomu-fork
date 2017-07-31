@@ -82,7 +82,7 @@ public class CoreApp extends Application {
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
 
-        RealmManager.init(this);
+        RealmManager.init(this, R.raw.saldomurealm, R.raw.saldomubbs);
 
         PackageInfo pInfo;
         try {
@@ -98,6 +98,7 @@ public class CoreApp extends Application {
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_PROD;
             MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_PROD;
+
         }
         else {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_DEV;
