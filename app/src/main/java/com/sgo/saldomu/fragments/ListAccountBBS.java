@@ -83,6 +83,8 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
         void OnUpdateAccountListener(Bundle data);
     }
 
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -267,6 +269,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.information, menu);
         inflater.inflate(R.menu.delete_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -275,6 +278,9 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId())
         {
+            case R.id.action_information:
+                showTutorial();
+                return true;
             case R.id.menu_item_delete:
                 listAccountBBSAdapter.toggleButtonDelete();
                 return true;
