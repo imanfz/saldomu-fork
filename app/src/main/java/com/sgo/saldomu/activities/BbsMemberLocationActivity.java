@@ -192,7 +192,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.err_empty_coordinate_message));
                 }
                 else {
-                    progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+                    progdialog              = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
                     RequestParams params    = new RequestParams();
                     UUID rcUUID             = UUID.randomUUID();
