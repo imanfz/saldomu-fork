@@ -170,92 +170,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
             }
         );
 
-        swTutupToko.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if ( !swTutupToko.isPressed() ) return;
-
-                RequestParams params = new RequestParams();
-                shopStatus      = DefineValue.SHOP_OPEN;
-
-                if (!isChecked) {
-                    //buka
-                    shopStatus          = DefineValue.SHOP_CLOSE;
-
-                }
-
-                progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
-
-                UUID rcUUID = UUID.randomUUID();
-                String dtime = DateTimeFormat.getCurrentDateTime();
-
-
-
-                params.put(WebParams.RC_UUID, rcUUID);
-                params.put(WebParams.RC_DATETIME, dtime);
-                params.put(WebParams.APP_ID, BuildConfig.AppID);
-                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                params.put(WebParams.SHOP_ID, shopId);
-                params.put(WebParams.MEMBER_ID, memberId);
-                params.put(WebParams.SHOP_STATUS, shopStatus);
-
-
-                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
-
-                params.put(WebParams.SIGNATURE, signature);
-
-                MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        progdialog2.dismiss();
-
-                        try {
-
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                    Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        ifFailure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        ifFailure(throwable);
-                    }
-
-                    private void ifFailure(Throwable throwable) {
-                        //if (MyApiClient.PROD_FAILURE_FLAG)
-                        //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        //else
-                        Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                        progdialog2.dismiss();
-                        Timber.w("Error Koneksi login:" + throwable.toString());
-
-                    }
-
-                });
-
-
-            }
-        });
+        swTutupToko.setOnCheckedChangeListener (null);
 
         flagApprove             = DefineValue.STRING_BOTH;
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
@@ -358,6 +274,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             } else {
                                 swTutupToko.setChecked(true);
                             }
+
+                            swTutupToko.setOnCheckedChangeListener(new mySwitchChangeClicker());
                             swTutupToko.setVisibility(View.VISIBLE);
                         }
 
@@ -531,6 +449,90 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    class mySwitchChangeClicker implements Switch.OnCheckedChangeListener {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            RequestParams params = new RequestParams();
+            shopStatus      = DefineValue.SHOP_OPEN;
+
+            if (!isChecked) {
+                //buka
+                shopStatus          = DefineValue.SHOP_CLOSE;
+
+            }
+
+            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+            UUID rcUUID = UUID.randomUUID();
+            String dtime = DateTimeFormat.getCurrentDateTime();
+
+
+
+            params.put(WebParams.RC_UUID, rcUUID);
+            params.put(WebParams.RC_DATETIME, dtime);
+            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.SHOP_ID, shopId);
+            params.put(WebParams.MEMBER_ID, memberId);
+            params.put(WebParams.SHOP_STATUS, shopStatus);
+
+
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
+
+            params.put(WebParams.SIGNATURE, signature);
+
+            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    progdialog2.dismiss();
+
+                    try {
+
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                private void ifFailure(Throwable throwable) {
+                    //if (MyApiClient.PROD_FAILURE_FLAG)
+                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    //else
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    progdialog2.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
+                }
+
+            });
+        }
     }
 
 }
