@@ -1,32 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:padding="@dimen/dialog_padding"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/start_hour"
-        android:gravity="center" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etStartHour"
-        android:hint="@string/pick_time" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="2">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/end_hour"
-        android:gravity="center" />
+            <TextView
+                android:padding="5dip"
+                android:text="@string/start_hour"
+                android:paddingRight="@dimen/padding_giant"
+                android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/etEndHour"
-        android:hint="@string/pick_time" />
+            <TextView
+                android:id="@+id/etStartHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_giant"
+                android:layout_weight="1"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:hint="@string/pick_time" />
+
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="2">
+
+            <TextView
+                android:padding="5dip"
+                android:text="@string/end_hour"
+                android:paddingRight="@dimen/padding_giant"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/etEndHour"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/padding_giant"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:hint="@string/pick_time" />
+
+
+        </TableRow>
+    </TableLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

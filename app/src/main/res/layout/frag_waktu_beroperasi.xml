@@ -1,0 +1,303 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sgo.saldomu.fragments.FragWaktuBeroperasi">
+
+    <LinearLayout
+        android:id="@+id/llWaktuBeroperasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow
+              >
+                <TextView
+                    android:padding="5dip"
+                    android:textStyle="bold"
+                    android:text="@string/label_jam_buka" />
+            </TableRow>
+        </TableLayout>
+        <TableLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow>
+
+                <CheckBox
+                    android:id="@+id/chkBuka24Jam"
+                     />
+
+                <TextView
+                    android:text="@string/buka_24_jam" />
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/tlLabelPilihHari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow
+                >
+                <TextView
+                    android:padding="5dip"
+                    android:textStyle="bold"
+                    android:text="@string/label_buka_setiap_hari" />
+            </TableRow>
+
+
+        </TableLayout>
+        <TableLayout
+            android:id="@+id/tlLabelPilihSetiapHari"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox android:id="@+id/chkSetiapHari" />
+
+                <TextView
+                    android:gravity="left"
+                    android:text="@string/label_setiap_hari" />
+            </TableRow>
+        </TableLayout>
+        <TableLayout
+            android:id="@+id/tlLabelPilihJam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkSenin" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:text="@string/senin" />
+
+                <TextView
+                    android:id="@+id/etStartSenin"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:tag="etStartSenin"
+                     />
+
+                <TextView
+                    android:id="@+id/etEndSenin"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:tag="etEndSenin"
+                   />
+            </TableRow>
+
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkSelasa" />
+
+                <TextView
+                    android:text="@string/selasa"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartSelasa"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndSelasa" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkRabu" />
+
+                <TextView
+                    android:text="@string/rabu"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartRabu"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndRabu" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkKamis" />
+
+                <TextView
+                    android:text="@string/kamis"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartKamis"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndKamis" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkJumat" />
+
+                <TextView
+                    android:text="@string/jumat"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartJumat"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndJumat" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkSabtu" />
+
+                <TextView
+                    android:text="@string/sabtu"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartSabtu"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndSabtu" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <CheckBox android:id="@+id/chkMinggu" />
+
+                <TextView
+                    android:text="@string/minggu"
+                    android:paddingRight="@dimen/padding_giant"
+                    />
+
+                <TextView
+                    android:id="@+id/etStartMinggu"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:layout_width="wrap_content" />
+
+                <TextView android:id="@+id/etEndMinggu" />
+            </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/tlTutupSetiapTanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow
+                >
+                <TextView
+                    android:padding="5dip"
+                    android:textStyle="bold"
+                    android:text="@string/label_tutup_setiap_tanggal_header" />
+            </TableRow>
+
+            <TableRow
+                >
+            <TextView
+                android:id="@+id/tvSettingTutupToko"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:height="30dp"
+                android:padding="5dip"
+                android:gravity="left"
+                android:text="@string/label_setting_tutup_setiap_tanggal"
+                 />
+
+            <Switch
+                android:id="@+id/swTutupToko"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/tvSettingTutupToko"
+                android:gravity="right"
+                android:textOff="@string/no"
+                android:textOn="@string/yes" />
+            </TableRow>
+            <TableRow
+                android:id="@+id/trSelectedDate">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:height="30dp"
+                    android:padding="5dip"
+                    android:paddingRight="@dimen/padding_giant"
+                    android:gravity="left"
+                    android:text="@string/label_tanggal_tutup"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSelectedDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+            </TableRow>
+
+        </TableLayout>
+
+
+                <Button
+                    android:id="@+id/btnTanggal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/set_shop_date" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:layout_weight="0.5"
+        android:text="@string/save" />
+</RelativeLayout>

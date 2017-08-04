@@ -164,7 +164,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
 
                 timePickerFragment.setArguments(bundle);
                 timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                timePickerFragment.show(getFragmentManager(),TimePickerFragment.TAG  );
+                timePickerFragment.show(getSupportFragmentManager(),TimePickerFragment.TAG  );
 
 
             }
@@ -203,7 +203,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
     }
 
     @Override
-    public void onCancelTimePickerClick() {
+    public void onCancelTimePickerClick(int selectedPosition) {
 
     }
 
@@ -225,7 +225,7 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
             bundle.putStringArrayList("selectedDays", this.selectedDays);
 
             closedTypePickerFragment.setArguments(bundle);
-            closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+            closedTypePickerFragment.show(getSupportFragmentManager(), ClosedTypePickerFragment.TAG);
         }
     }
 

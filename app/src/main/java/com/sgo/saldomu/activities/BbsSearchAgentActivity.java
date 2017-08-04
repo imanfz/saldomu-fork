@@ -1181,12 +1181,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         //runningApp();
-        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
-        i.putExtra(DefineValue.AMOUNT, "");
-        startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+//        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+//        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+//        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+//        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+//        i.putExtra(DefineValue.AMOUNT, "");
+//        startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+
+        if(checkPlayServices())
+        {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        googleApiClient.connect();
     }
 
     @Override

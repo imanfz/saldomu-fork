@@ -25,6 +25,7 @@ import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMenuKelola;
 import com.sgo.saldomu.fragments.FragSetttingKelola;
+import com.sgo.saldomu.fragments.FragWaktuBeroperasi;
 import com.sgo.saldomu.fragments.ListAccountBBS;
 
 import timber.log.Timber;
@@ -44,6 +45,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSKELOLA           = 5;
     public static final int BBSAPPROVALAGENT    = 6;
     public static final int BBSTRXAGENT         = 7;
+    public static final int BBSWAKTUBEROPERASI  = 8;
 
 
     FragmentManager fragmentManager;
@@ -106,9 +108,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case BBSTRXAGENT:
                     newFragment = new FragApprovalAgent();
                     tag = FragApprovalAgent.TAG;
-                    //Intent intentTrxAgent = new Intent(getApplicationContext(), BbsApprovalAgentActivity.class);
-                    //intentTrxAgent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    //startActivity(intentTrxAgent);
+                    break;
+                case BBSWAKTUBEROPERASI:
+                    newFragment = new FragWaktuBeroperasi();
+                    tag = FragWaktuBeroperasi.TAG;
                     break;
 
             }
@@ -161,6 +164,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
         else if(fragment instanceof FragApprovalAgent)
             setActionBarTitle(getString(R.string.menu_item_title_trx_agent));
+        else if( fragment instanceof FragWaktuBeroperasi )
+            setActionBarTitle(getString(R.string.menu_item_title_waktu_beroperasi));
     }
 
     @Override
@@ -287,7 +292,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         Intent intent    = getIntent();
         int index = intent.getIntExtra(DefineValue.INDEX,0);
 
-        if ( index == BBSAPPROVALAGENT || index == BBSTRXAGENT || index == BBSKELOLA) {
+        if ( index == BBSAPPROVALAGENT ) {
             super.onBackPressed();
         } else {
             if (fragmentManager.getBackStackEntryCount() > 1)

@@ -3,10 +3,12 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +23,14 @@ public class TimePickerFragment extends DialogFragment {
 
     public interface TimePickerListener {
         public void onOkTimePickerClick(int position, String startTime, String endTime, int iStartHour, int iStartMinute, int iEndHour, int iEndMinute);
-        public void onCancelTimePickerClick();
+        public void onCancelTimePickerClick(int position);
     }
 
     //add a custom constructor so that you have an initialised NoticeDialogListener
     public TimePickerFragment(){
         super();
     }
-    TimePickerListener mListener;
+    //TimePickerListener mListener;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
@@ -50,9 +52,9 @@ public class TimePickerFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         try {
-            tpl = (TimePickerFragment.TimePickerListener) getActivity();
+            tpl = (TimePickerFragment.TimePickerListener) getTargetFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException("Calling fragment must implement OpenCloseDatePickerListener interface");
+            throw new ClassCastException("Calling fragment must implement TimePickerListener interface");
         }
     }
 
@@ -172,8 +174,37 @@ public class TimePickerFragment extends DialogFragment {
         btnYes.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        tpl.onOkTimePickerClick(position, startTime, endTime, iStartHour, iStartMinute, iEndHour, iEndMinute);
-                        getDialog().dismiss();
+
+                        int iStartTime  = iStartHour + iStartMinute;
+                        int iEndTime    = iEndHour + iEndMinute;
+
+                        if ( iStartTime >= iEndTime ) {
+                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                            alertDialog.setCanceledOnTouchOutside(false);
+                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                            alertDialog.setCancelable(false);
+
+                            alertDialog.setMessage(getString(R.string.err_start_time_must_lower_than_end_time));
+
+
+
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                            alertDialog.show();
+                        } else {
+                            try {
+                                tpl.onOkTimePickerClick(position, startTime, endTime, iStartHour, iStartMinute, iEndHour, iEndMinute);
+                                getDialog().dismiss();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
         );
@@ -181,7 +212,7 @@ public class TimePickerFragment extends DialogFragment {
         btnNo.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        tpl.onCancelTimePickerClick();
+                        tpl.onCancelTimePickerClick(position);
                         getDialog().dismiss();
                     }
                 }
@@ -192,6 +223,9 @@ public class TimePickerFragment extends DialogFragment {
     /** The system calls this only when creating the layout in a dialog. */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+
+
         // The only reason you might override this method when using onCreateView() is
         // to modify any dialog characteristics. For example, the dialog includes a
         // title by default, but your custom layout might not need it. So here you can

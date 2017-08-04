@@ -182,7 +182,9 @@
         <item>@string/transaction</item>
         <item>@string/menu_item_title_kelola</item>
         <!-- item>@string/menu_item_title_list_approval</item -->
+        <item>@string/menu_item_title_waktu_beroperasi</item>
         <item>@string/menu_item_title_trx_agent</item>
+
     </string-array>
 
     <string-array name="list_bbs_member">

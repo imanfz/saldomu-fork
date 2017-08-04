@@ -205,7 +205,7 @@
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
-
+    <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank</string>
     <string name="topup_token_fee">Biaya Admin</string>
@@ -975,4 +975,20 @@
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
     <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
+    <string name="buka_24_jam">Buka 24 Jam</string>
+    <string name="label_jam_buka">Jam Buka</string>
+    <string name="label_buka_setiap_hari">Buka Setiap Hari</string>
+    <string name="label_setiap_hari">Setiap Hari</string>
+    <string name="senin">Senin</string>
+    <string name="selasa">Selasa</string>
+    <string name="rabu">Rabu</string>
+    <string name="kamis">Kamis</string>
+    <string name="jumat">Jumat</string>
+    <string name="sabtu">Sabtu</string>
+    <string name="minggu">Minggu</string>
+    <string name="err_start_time_must_lower_than_end_time">Silakan masukkan waktu buka lebih kecil daripada waktu tutup</string>
+    <string name="err_select_day_first">Silakan centang hari yang mau Anda set</string>
+    <string name="label_tutup_setiap_tanggal_header">Tutup Setiap Tanggal</string>
+    <string name="label_setting_tutup_setiap_tanggal">Setting Tanggal Tutup</string>
+    <string name="label_tanggal_tutup">Tanggal Tutup</string>
 </resources>

@@ -109,7 +109,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                     closedTypePickerFragment.setArguments(bundle);
                     closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                    closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+                    closedTypePickerFragment.show(getSupportFragmentManager(), ClosedTypePickerFragment.TAG);
                 }
             }
 
@@ -129,7 +129,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                     closedTypePickerFragment.setArguments(bundle);
                     closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                    closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+                    closedTypePickerFragment.show(getSupportFragmentManager(), ClosedTypePickerFragment.TAG);
                 }
             }
         });
@@ -195,7 +195,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
                 timePickerFragment.setArguments(bundle);
                 timePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-                timePickerFragment.show(getFragmentManager(),TimePickerFragment.TAG  );
+                timePickerFragment.show(getSupportFragmentManager(),TimePickerFragment.TAG  );
 
 
             }
@@ -234,7 +234,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
     }
 
     @Override
-    public void onCancelTimePickerClick() {
+    public void onCancelTimePickerClick(int selectedPosition) {
 
     }
 
@@ -257,7 +257,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
             closedTypePickerFragment.setArguments(bundle);
             closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-            closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+            closedTypePickerFragment.show(getSupportFragmentManager(), ClosedTypePickerFragment.TAG);
         }
     }
 
@@ -279,7 +279,7 @@ public class BbsMerchantSetupHourActivity extends BaseActivity implements TimePi
 
             closedTypePickerFragment.setArguments(bundle);
             closedTypePickerFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-            closedTypePickerFragment.show(getFragmentManager(), ClosedTypePickerFragment.TAG);
+            closedTypePickerFragment.show(getSupportFragmentManager(), ClosedTypePickerFragment.TAG);
         }
     }
 

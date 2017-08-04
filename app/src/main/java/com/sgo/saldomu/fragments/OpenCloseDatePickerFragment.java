@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.squareup.timessquare.CalendarPickerView;
 
 import java.text.ParseException;
@@ -66,7 +65,7 @@ public class OpenCloseDatePickerFragment extends DialogFragment {
         }
 
         try {
-            dpl = (OpenCloseDatePickerFragment.OpenCloseDatePickerListener) getActivity();
+            dpl = (OpenCloseDatePickerFragment.OpenCloseDatePickerListener) getTargetFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException("Calling fragment must implement OpenCloseDatePickerListener interface");
         }
