@@ -49,7 +49,6 @@ public class RealmManager {
 
     public static void init(Context mContext, int rawBiller, int rawBBS){
         File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
-
         copyBundledRealmFile(mContext.getResources().openRawResource(rawBiller),file);
 
         file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));

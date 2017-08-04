@@ -1,5 +1,7 @@
 package com.sgo.saldomu.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +45,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -55,7 +60,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,7 +75,7 @@ import timber.log.Timber;
  */
 public class FragApprovalAgent extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, EasyPermissions.PermissionCallbacks{
     public final static String TAG = "com.sgo.saldomu.fragments.Frag_Approval_Agent";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -126,17 +134,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        if ( checkPlayServices() ) {
-            buildGoogleApiClient();
-            createLocationRequest();
-        }
-
-        try {
-            googleApiClient.connect();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -314,7 +311,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         btnApprove.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
-                        progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+
                         flagTxStatus = DefineValue.STRING_ACCEPT;
 
                         if ( shopDetails.size() > 1 ) {
@@ -397,7 +394,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
             e.printStackTrace();
         }
         if (googleApiClient != null && googleApiClient.isConnected()) {
-            googleApiClient.disconnect();
+            //googleApiClient.disconnect();
         }
     }
 
@@ -412,63 +409,85 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         //startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
 
+        if ( currentLatitude == null || currentLongitude == null ) {
+            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+            alertDialog.setCancelable(false);
 
-        RequestParams params3    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+            alertDialog.setMessage(getString(R.string.message_notif_latitude_not_found));
 
-        params3.put(WebParams.RC_UUID, rcUUID);
-        params3.put(WebParams.RC_DATETIME, dtime);
-        params3.put(WebParams.APP_ID, BuildConfig.AppID);
-        params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-        params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
-        params3.put(WebParams.MEMBER_ID, memberId);
-        params3.put(WebParams.SHOP_ID, shopId);
-        params3.put(WebParams.TX_STATUS, flagTxStatus);
 
-        if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
-            params3.put(WebParams.KEY_VALUE, gcmId);
-            params3.put(WebParams.LATITUDE, currentLatitude);
-            params3.put(WebParams.LONGITUDE, currentLongitude);
-        }
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus ));
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
 
-        params3.put(WebParams.SIGNATURE, signature);
+                           dialog.dismiss();
+                        }
+                    });
 
-        MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog2.dismiss();
+            alertDialog.show();
 
-                try {
+        } else {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+            progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+            RequestParams params3 = new RequestParams();
+            UUID rcUUID = UUID.randomUUID();
+            String dtime = DateTimeFormat.getCurrentDateTime();
 
-                        if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
-                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                            SecurePreferences.Editor mEditor = prefs.edit();
-                            mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
-                            mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
-                            mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
-                            mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
-                            mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
-                            mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
-                            mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
-                            mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
-                            mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                            mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
-                            mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
-                            mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
-                            mEditor.apply();
+            params3.put(WebParams.RC_UUID, rcUUID);
+            params3.put(WebParams.RC_DATETIME, dtime);
+            params3.put(WebParams.APP_ID, BuildConfig.AppID);
+            params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
+            params3.put(WebParams.MEMBER_ID, memberId);
+            params3.put(WebParams.SHOP_ID, shopId);
+            params3.put(WebParams.TX_STATUS, flagTxStatus);
 
-                            Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                            getActivity().finish();
-                        } else {
+            if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
+                params3.put(WebParams.KEY_VALUE, gcmId);
+                params3.put(WebParams.LATITUDE, currentLatitude);
+                params3.put(WebParams.LONGITUDE, currentLongitude);
+            }
+
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
+
+            params3.put(WebParams.SIGNATURE, signature);
+
+            MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    progdialog2.dismiss();
+
+                    try {
+
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                                mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                mEditor.putString(DefineValue.BBS_TX_ID, shopDetails.get(itemId).getTxId());
+                                mEditor.putDouble(DefineValue.AGENT_LATITUDE, currentLatitude);
+                                mEditor.putDouble(DefineValue.AGENT_LONGITUDE, currentLongitude);
+                                mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
+                                mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
+                                mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
+                                mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
+                                mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
+                                mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
+                                mEditor.apply();
+
+                                Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                                getActivity().finish();
+                            } else {
                             /*Bundle bundle = new Bundle();
                             bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
 
@@ -477,14 +496,14 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                             intent.putExtras(bundle);
                             startActivity(intent);*/
 
-                            Intent i = new Intent(getContext(), MainPage.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                            getActivity().finish();
-                        }
-                    } else {
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
+                                Intent i = new Intent(getContext(), MainPage.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                                getActivity().finish();
+                            }
+                        } else {
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
 
                         /*Bundle bundle = new Bundle();
                         bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
@@ -494,41 +513,42 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         intent.putExtras(bundle);
                         startActivity(intent);*/
 
-                        Intent i = new Intent(getContext(), MainPage.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(i);
-                        getActivity().finish();
+                            Intent i = new Intent(getContext(), MainPage.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                            getActivity().finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                private void ifFailure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                progdialog2.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
+                    progdialog2.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
 
-            }
+                }
 
-        });
+            });
 
+        }
     }
 
     @Override
@@ -536,21 +556,24 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         Timber.d("onConnected Started");
         //startLocationUpdate();
 
-        try {
-            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if ( googleApiClient != null ) {
+            try {
+                lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
-            if ( lastLocation == null ){
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
-            } else {
+                if (lastLocation == null) {
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+                } else {
 
-                currentLatitude     = lastLocation.getLatitude();
-                currentLongitude    = lastLocation.getLongitude();
+                    currentLatitude = lastLocation.getLatitude();
+                    currentLongitude = lastLocation.getLongitude();
 
-                Timber.d("Location Found" + lastLocation.toString());
-                googleApiClient.disconnect();
+                    Timber.d("Location Found" + lastLocation.toString());
+                    //googleApiClient.disconnect();
+                }
+            } catch (SecurityException se) {
+                se.printStackTrace();
+                //Timber.d(se.printStackTrace());
             }
-        } catch (SecurityException se) {
-            se.printStackTrace();
         }
         if (bundle!=null) {
             Timber.d(bundle.toString());
@@ -573,7 +596,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         currentLatitude = lastLocation.getLatitude();
         currentLongitude = lastLocation.getLongitude();
 
-        googleApiClient.disconnect();
+        //googleApiClient.disconnect();
 
         try {
             LocationServices.FusedLocationApi.removeLocationUpdates(
@@ -615,6 +638,30 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 .build();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Fragment frg = null;
+        frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        startActivity(new Intent(getActivity(), MainPage.class));
+        getActivity().finish();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -628,5 +675,104 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
+        {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getActivity(), MainPage.class));
+                            getActivity().finish();
+                        }
+                    });
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
+        }
+
+
+        if ( checkPlayServices() ) {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        try {
+            googleApiClient.connect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
+        {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getActivity(), MainPage.class));
+                            getActivity().finish();
+                        }
+                    });
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+            /*if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+            }
+
+            try {
+                googleApiClient.connect();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }*/
+
+
+            Fragment currentFragment = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.detach(currentFragment);
+            fragmentTransaction.attach(currentFragment);
+            fragmentTransaction.commit();
+
+        }
     }
 }
