@@ -639,7 +639,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-        if ( shopDetails.size() > 0 && mobility.equals(DefineValue.STRING_NO) ) {
+        /*if ( shopDetails.size() > 0 && mobility.equals(DefineValue.STRING_NO) ) {
             for (Integer index : hashMarker.keySet()) {
                 if (marker.equals(hashMarker.get(index))) {
                     this.shopDetails.get(index).setIsPolyline("1");
@@ -660,7 +660,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             }
 
             setPolyline();
-        }
+        }*/
 
         return false;
 

@@ -979,4 +979,5 @@
     <string name="rationale_send_sms">Aplikasi membutuhkan akses untuk mengirimkan SMS Verifikasi.</string>
     <string name="rationale_camera_and_storage">Aplikasi membutuhkan akses untuk menggunakan kamera dan menyimpannya ke perangkat.</string>
     <string name="rationale_check_phone_number">Aplikasi membutuhkan akses untuk mengecek nomor telepon perangkat.</string>
+    <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
 </resources>

@@ -1,6 +1,10 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -47,6 +51,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -62,7 +67,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
@@ -80,7 +88,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     ShopDetail shopDetail;
     private GoogleMap globalMap;
     TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
-    Boolean isFirstLoad = true;
+    Boolean isFirstLoad = true, isRunning = false;
     List<Polyline> lines;
     Polyline line;
     String encodedPoints = "";
@@ -94,6 +102,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     private Runnable runnable2 = new Runnable() {
         @Override
         public void run() {
+            isRunning = true;
             updateLocationAgent();
             handler.postDelayed(this, timeDelayed);
         }
@@ -257,14 +266,48 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         agentLatitude   = lastLocation.getLatitude();
         agentLongitude  = lastLocation.getLongitude();
 
-        handler.removeCallbacks(runnable2);
-        updateLocationAgent();
-        handler.postDelayed(runnable2, timeDelayed);
+        if ( !isRunning ) {
+            handler.removeCallbacks(runnable2);
+            updateLocationAgent();
+            handler.postDelayed(runnable2, timeDelayed);
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(this) )
+        {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
+        }
+
         try {
             googleApiClient.connect();
 
@@ -276,9 +319,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     @Override
     protected void onStop() {
         super.onStop();
-        try {
 
-        } catch (RuntimeException e) {
+        try {
+            handler.removeCallbacks(runnable2);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (googleApiClient != null && googleApiClient.isConnected()) {
@@ -359,7 +403,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         super.onDestroy();
         googleApiClient.disconnect();
         //textToSpeech.shutdown();
-        handler.removeCallbacks(runnable2);
+        try {
+            handler.removeCallbacks(runnable2);
+        } catch( Exception e ) {
+            e.printStackTrace();
+        }
     }
 
     //for resize icon
@@ -405,7 +453,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 progdialog.dismiss();
 
                 try {
-
+                    isRunning = false;
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -495,7 +543,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog.dismiss();
-
+                isRunning = false;
                 Timber.w("Error Koneksi login:" + throwable.toString());
 
             }
@@ -733,4 +781,48 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         MainPage fca = (MainPage) getApplicationContext();
         fca.switchMenu(idx_menu, data);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+
+            if ( !GlobalSetting.isLocationEnabled(this) )
+            {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.alertbox_gps_warning))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(ilocation, 1);
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                                startActivity(new Intent(getApplicationContext(), MainPage.class));
+                                finish();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Intent i = new Intent(this, BbsMapViewByAgentActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                finish();
+            }
+        }
+    }
+
 }

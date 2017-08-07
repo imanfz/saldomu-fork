@@ -30,6 +30,7 @@
                 android:inputType="text"
                 android:padding="@dimen/margin_10dp"
                 android:textSize="15sp"
+                android:selectAllOnFocus="true"
                 android:hint="@string/search_location_hint_request_bbs_activity_label" >
 
             </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
