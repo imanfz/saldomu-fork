@@ -3,7 +3,6 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -18,7 +17,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.*;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
 import org.json.JSONArray;
@@ -29,20 +27,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class ReportBillerDialog extends DialogFragment implements View.OnClickListener {
 
     public static final String TAG = "reportBiller Dialog";
+    private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE = 102;
 
     private OnDialogOkCallback callback;
-    private Activity mContext;
-    private Boolean isActivty = false;
+    private Boolean isActivity = false;
     private String trx_id;
     private ViewToBitmap viewToBitmap;
+    private LinearLayout contentInvoice;
     private ImageView saveimage;
     private ImageView shareimage;
-    private ReqPermissionClass reqPermissionClass;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
 
@@ -50,10 +49,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         void onOkButton();
     }
 
-    public static ReportBillerDialog newInstance(Activity _context) {
+    public static ReportBillerDialog newInstance() {
         ReportBillerDialog f = new ReportBillerDialog();
-        f.mContext = _context;
-        f.isActivty = true;
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(DefineValue.IS_ACTIVE,true);
+        f.setArguments(bundle);
         return f;
     }
 
@@ -66,14 +66,19 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.isActivity = getArguments().getBoolean(DefineValue.IS_ACTIVE,false);
+
         try {
-            if (isActivty)
+            if (isActivity)
                 callback = (OnDialogOkCallback) getActivity();
             else
                 callback = (OnDialogOkCallback) getTargetFragment();
         } catch (ClassCastException e) {
             throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
         }
+
+        if (viewToBitmap == null)
+            viewToBitmap = new ViewToBitmap(getContext());
     }
 
     @Override
@@ -553,17 +558,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         Button btn_ok = (Button) view.findViewById(R.id.dialog_reportbiller_btn_ok);
 
-        if (viewToBitmap == null)
-            viewToBitmap = new ViewToBitmap(getContext());
-        reqPermissionClass = new ReqPermissionClass(getActivity());
-        reqPermissionClass.setTargetFragment(this);
-
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
         btn_ok.setOnClickListener(this);
 
-        final LinearLayout content = (LinearLayout) view.findViewById(R.id.rlid);
+        contentInvoice = (LinearLayout) view.findViewById(R.id.rlid);
         saveimage = (ImageView) view.findViewById(R.id.img_download);
         shareimage = (ImageView) view.findViewById(R.id.img_share);
 
@@ -577,16 +577,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         saveimage.setEnabled(true);
                     }
                 }, 3000);
-
-                String[] separated = trx_id.split("\n");
-                String filename = separated[0];
-                if (reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE + recCodeSaveImage)) {
-                    if (viewToBitmap.Convert(content, filename))
-                        Toast.makeText(getContext(), getContext().getString(R.string.success_saved_gallery), Toast.LENGTH_LONG).show();
-                    else
-                        Toast.makeText(getContext(), getContext().getString(R.string.failed_save_gallery), Toast.LENGTH_LONG).show();
-                }
+               reqPermissionSaveorShareImage(false);
             }
         });
 
@@ -600,29 +591,38 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         shareimage.setEnabled(true);
                     }
                 }, 4000);
-
-                String[] separated = trx_id.split("\n");
-                String filename = separated[0];
-                if (reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE + recCodeShareImage))
-                    viewToBitmap.shareIntentApp(content, filename);
-
+                reqPermissionSaveorShareImage(true);
             }
         });
 
         return view;
     }
 
+    private void reqPermissionSaveorShareImage(Boolean isShareImage){
+        String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+            String[] separated = trx_id.split("\n");
+            String filename = separated[0];
+
+            if(isShareImage){
+                viewToBitmap.shareIntentApp(contentInvoice, filename);
+            }
+            else {
+                if (viewToBitmap.Convert(contentInvoice, filename))
+                    Toast.makeText(getContext(), getContext().getString(R.string.success_saved_gallery), Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(getContext(), getContext().getString(R.string.failed_save_gallery), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_save_image_permission),
+                    RC_REQUEST_WRITE_EXTERNAL_STORAGE, perms);
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults,
-                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE + recCodeSaveImage)) {
-            saveimage.performClick();
-        } else if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults,
-                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE + recCodeShareImage)) {
-            shareimage.performClick();
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
 

@@ -31,7 +31,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -41,13 +40,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
  Created by Administrator on 7/4/2014.
  */
-public class Regist1 extends Fragment{
+public class Regist1 extends Fragment implements EasyPermissions.PermissionCallbacks{
 
+    final int RC_READ_SMS = 10;
     private String namaValid = "";
     private String emailValid = "";
     private String noHPValid = "";
@@ -63,16 +66,11 @@ public class Regist1 extends Fragment{
 
     private Fragment mFragment;
     private ProgressDialog progdialog;
-    private ReqPermissionClass reqPermissionClass;
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        reqPermissionClass = new ReqPermissionClass(getActivity());
-        reqPermissionClass.setTargetFragment(this);
-
         progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.dismiss();
     }
@@ -110,8 +108,7 @@ public class Regist1 extends Fragment{
             }
         });
 
-        if(reqPermissionClass.checkPermission(Manifest.permission.READ_SMS,
-                ReqPermissionClass.PERMISSIONS_READ_SMS)) {
+        if(EasyPermissions.hasPermissions(getContext(),Manifest.permission.READ_PHONE_STATE)) {
             if (isSimExists()) {
 
                 TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -119,6 +116,10 @@ public class Regist1 extends Fragment{
 
                 noHPValue.setText(Nomor1);
             }
+        }
+        else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_check_phone_number),
+                    RC_READ_SMS, Manifest.permission.READ_PHONE_STATE);
         }
 
         noHPValue.requestFocus();
@@ -138,7 +139,12 @@ public class Regist1 extends Fragment{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_READ_SMS)){
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (requestCode == RC_READ_SMS){
             if (isSimExists()) {
                 TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
                 String Nomor1 = tm.getLine1Number();
@@ -146,6 +152,11 @@ public class Regist1 extends Fragment{
                 noHPValue.setText(Nomor1);
             }
         }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
     }
 
     private Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){

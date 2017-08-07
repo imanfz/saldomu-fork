@@ -220,6 +220,11 @@ public class SMSDialog extends Dialog {
         };
     }
 
+    public void setListener(DialogButtonListener dialogButtonListener){
+        this.deListener = dialogButtonListener;
+
+    }
+
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();

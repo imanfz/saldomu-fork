@@ -1313,15 +1313,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             }
 
             private void ifFailure(Throwable throwable) {
-
                 Timber.w("Error Koneksi login:" + throwable.toString());
-
             }
-
         });
-
-
-
     }
 
     @Override

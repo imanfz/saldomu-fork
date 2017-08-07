@@ -40,7 +40,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -60,16 +59,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
  * Created by thinkpad on 4/21/2017.
  */
 
-public class BBSTransaksiInformasi extends Fragment {
+public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.PermissionCallbacks {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
-
+    private static final int RC_READ_PHONE_STATE = 122;
+    private static final int RC_SEND_SMS = 123;
     private View v;
     private ProgressDialog progdialog;
     private Activity act;
@@ -87,7 +88,6 @@ public class BBSTransaksiInformasi extends Fragment {
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
-    private ReqPermissionClass reqPermissionClass;
     private Boolean isSMSBanking = false, isSimExist = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
@@ -302,21 +302,18 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
-                if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
-                    isSMSBanking = true;
-                } else
-                    isSMSBanking = false;
+                isSMSBanking = source_product_code.equalsIgnoreCase(MANDIRISMS);
 
                 if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                     if (isSMSBanking) {
-                        if (reqPermissionClass == null) {
-                            reqPermissionClass = new ReqPermissionClass(getActivity());
-                            reqPermissionClass.setTargetFragment(BBSTransaksiInformasi.this);
-                        }
-                        if (reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE, ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
+                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
                             initializeSmsClass();
                             if (isSimExist)
                                 SubmitAction();
+                        } else {
+                            // Ask for one permission
+                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
+                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
                         }
                     } else {
                         SubmitAction();
@@ -338,7 +335,9 @@ public class BBSTransaksiInformasi extends Fragment {
         btnNext.setEnabled(false);
         if (inputValidation()) {
             sentInsertC2A();
-        } else btnNext.setEnabled(true);
+        }
+        else
+            btnNext.setEnabled(true);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {
@@ -427,12 +426,19 @@ public class BBSTransaksiInformasi extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
                             if(isSMSBanking) {
-                                smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
+                                if(smsDialog == null){
+                                    smsDialog = new SMSDialog(getActivity(), null);
+                                }
+
+                                smsDialog.setListener(new SMSDialog.DialogButtonListener() {
                                     @Override
                                     public void onClickOkButton(View v, boolean isLongClick) {
-                                        if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+                                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
                                             smsDialog.sentSms();
                                             RegSimCardReceiver(true);
+                                        } else {
+                                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_send_sms),
+                                                    RC_SEND_SMS, Manifest.permission.SEND_SMS);
                                         }
                                     }
 
@@ -464,6 +470,7 @@ public class BBSTransaksiInformasi extends Fragment {
                                         }
                                     }
                                 });
+
 
                                 if(isSimExist)
                                     smsDialog.show();
@@ -938,23 +945,30 @@ public class BBSTransaksiInformasi extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
-            smsDialog.sentSms();
-        }
-        else if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(requestCode == RC_READ_PHONE_STATE){
             initializeSmsClass();
             if(isSimExist)
                 SubmitAction();
         }
-        else {
-            Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-            if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
-                if(progdialog.isShowing())
-                    progdialog.dismiss();
-                if (smsDialog != null) {
-                    smsDialog.dismiss();
-                    smsDialog.reset();
-                }
+        else if(requestCode == RC_SEND_SMS ){
+            smsDialog.sentSms();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+        if(requestCode == RC_SEND_SMS ){
+            if(progdialog.isShowing())
+                progdialog.dismiss();
+            if (smsDialog != null) {
+                smsDialog.dismiss();
+                smsDialog.reset();
             }
         }
     }

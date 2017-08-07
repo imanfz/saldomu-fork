@@ -974,4 +974,9 @@
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
+    <string name="rationale_save_image_permission">Aplikasi membutuhkan akses untuk menyimpan file gambar.</string>
+    <string name="rationale_phone_state">Aplikasi membutuhkan akses untuk mengecek status perangkat.</string>
+    <string name="rationale_send_sms">Aplikasi membutuhkan akses untuk mengirimkan SMS Verifikasi.</string>
+    <string name="rationale_camera_and_storage">Aplikasi membutuhkan akses untuk menggunakan kamera dan menyimpannya ke perangkat.</string>
+    <string name="rationale_check_phone_number">Aplikasi membutuhkan akses untuk mengecek nomor telepon perangkat.</string>
 </resources>
