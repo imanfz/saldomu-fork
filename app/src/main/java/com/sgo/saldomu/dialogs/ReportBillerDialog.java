@@ -16,7 +16,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.*;
+
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.CashIn_model;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
@@ -45,6 +49,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ReqPermissionClass reqPermissionClass;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+    SecurePreferences sp;
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -65,7 +70,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         try {
             if (isActivty)
                 callback = (OnDialogOkCallback) getActivity();
@@ -515,6 +520,33 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 }
                 inflated.setVisibility(View.VISIBLE);
                 Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
+                if (isSuccess)
+                {
+                    if (type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
+                    {
+                        String a = sp.getString("cashin_model_temp", "");
+                        CashIn_model cashIn_model = new CashIn_model();
+                        try {
+                            JSONObject obj = new JSONObject(a);
+                            cashIn_model.setAmount(obj.getString("amount"));
+                            cashIn_model.setBenef_product_code(obj.getString("benef_product_code"));
+                            cashIn_model.setBenef_product_type ("benef_product_type");
+                            cashIn_model.setBenef_product_value_code(obj.getString("benef_product_value_code"));
+                            cashIn_model.setSource_product_code(obj.getString("source_product_code"));
+                            cashIn_model.setMember_shop_phone(obj.getString("member_shop_phone"));
+                            cashIn_model.setPesan(obj.getString("pesan"));
+                            cashIn_model.setStatus(isSuccess.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        JSONObject jsonObject = cashIn_model.convertModelToJSON();
+                        String b = jsonObject.toString();
+
+                        SecurePreferences.Editor editor = sp.edit();
+                        editor.putString("cashin_model_temp", jsonObject.toString());
+                        editor.apply();
+                    }
+                }
 
                 tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
                 if (!isSuccess) {

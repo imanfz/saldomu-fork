@@ -33,6 +33,7 @@ import com.faber.circlestepview.CircleStepView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.CashIn_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -93,7 +94,9 @@ public class BBSTransaksiInformasi extends Fragment {
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
-    no_benef, name_benef, no_source, city_name, comm_benef_atc;
+    no_benef, name_benef, no_source, city_name, comm_benef_atc, member_shop_phone, pesan, benef_product_value_code;
+
+    SecurePreferences sp;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -135,8 +138,7 @@ public class BBSTransaksiInformasi extends Fragment {
 
         act = getActivity();
         realm = Realm.getInstance(RealmManager.BBSConfiguration);
-
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -153,6 +155,10 @@ public class BBSTransaksiInformasi extends Fragment {
                 benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
                 benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
+                benef_product_value_code = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE);
+                source_product_code=bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
+                member_shop_phone = bundle.getString(DefineValue.KEY_CODE);
+                pesan = bundle.getString(DefineValue.MESSAGE);
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -193,6 +199,8 @@ public class BBSTransaksiInformasi extends Fragment {
 
                 if(bundle.containsKey(DefineValue.KEY_CODE))
                     etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
+                    actv_rekening_agent.setText(source_product_code);
+                    etRemark.setText(pesan);
                 String[] from = {"flag", "txt"};
 
                 // Ids of views in listview_layout
@@ -302,6 +310,28 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
+
+                String asd = sp.getString("cashin_model_temp", "");
+                CashIn_model cashIn_model = new CashIn_model();
+                try {
+                    JSONObject obj = new JSONObject(asd);
+                    cashIn_model.setAmount(obj.getString("amount"));
+                    cashIn_model.setBenef_product_code(obj.getString("benef_product_code"));
+                    cashIn_model.setBenef_product_value_code(obj.getString("benef_product_value_code"));
+//                    cashIn_model.setBenef_product_value_city("benef_product_value_city");
+                    cashIn_model.setSource_product_code(actv_rekening_agent.getText().toString());
+                    cashIn_model.setMember_shop_phone(etNoHp.getText().toString());
+                    cashIn_model.setPesan(etRemark.getText().toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JSONObject jsonObject = cashIn_model.convertModelToJSON();
+                String a = jsonObject.toString();
+
+                SecurePreferences.Editor editor = sp.edit();
+                editor.putString("cashin_model_temp", jsonObject.toString());
+                editor.apply();
+
                 if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
                     isSMSBanking = true;
                 } else

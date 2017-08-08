@@ -357,6 +357,7 @@ public class DefineValue {
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+    public static String BENEF_PRODUCT_VALUE_CODE = "benefProductValueCode";
 
     public static String BBS_SENDER_ID							= "GOAPK";
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
