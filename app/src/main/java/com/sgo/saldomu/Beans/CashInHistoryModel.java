@@ -12,75 +12,39 @@ import io.realm.RealmObject;
  * Created by Lenovo Thinkpad on 8/2/2017.
  */
 
-public class CashIn_model {
+public class CashInHistoryModel {
     private String amount;
     private String benef_product_code;
+    private String benef_product_name;
     private String benef_product_type;
     private String benef_product_value_code;
     private String benef_product_value_city; //kota jakarta
     private String source_product_code; //rekening agent
+    private String source_product_name;
+    private String source_product_type;
+    private String source_product_h2h;
     private String member_shop_phone; //nomor hp pengirim
     private String pesan;
-    private String status;
 
-    public  CashIn_model ()
+    public CashInHistoryModel()
     {
 
     }
 
-    public CashIn_model(String amount, String benef_product_code, String benef_product_type, String benef_product_value_code, String benef_product_value_city, String member_shop_phone, String source_product_code, String pesan, Boolean staus)
+    public CashInHistoryModel(String amount, String benef_product_code, String benef_product_name, String benef_product_type, String benef_product_value_code, String benef_product_value_city, String member_shop_phone, String source_product_code, String source_product_name, String source_product_type, String source_product_h2h, String pesan)
     {
         this.setAmount(amount);
         this.setBenef_product_code(benef_product_code);
+        this.setBenef_product_name(benef_product_name);
         this.setBenef_product_type(benef_product_type);
         this.setBenef_product_value_code(benef_product_value_code);
         this.setBenef_product_value_city(benef_product_value_city);
         this.setMember_shop_phone(member_shop_phone);
         this.setSource_product_code(source_product_code);
+        this.setSource_product_name(source_product_name);
+        this.setSource_product_type(source_product_type);
+        this.setSource_product_h2h(source_product_h2h);
         this.setPesan(pesan);
-        this.setStatus(status);
-    }
-
-    public JSONObject convertModelToJSON() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            if (amount != null) {
-                jsonObject.put("amount", amount);
-            }
-            if (benef_product_code != null) {
-                jsonObject.put("benef_product_code", benef_product_code);
-            }
-            if (benef_product_type != null) {
-                jsonObject.put("benef_product_type", benef_product_type);
-            }
-            if (benef_product_value_code!=null)
-            {
-                jsonObject.put("benef_product_value_code", benef_product_value_code);
-            }
-            if (benef_product_value_city!=null)
-            {
-                jsonObject.put("benef_product_value_city", benef_product_value_city);
-            }
-            if (source_product_code !=null)
-            {
-                jsonObject.put("source_product_code", source_product_code);
-            }
-            if (member_shop_phone!=null)
-            {
-                jsonObject.put("member_shop_phone", member_shop_phone);
-            }
-            if (pesan !=null)
-            {
-                jsonObject.put("pesan", pesan);
-            }
-            if (status !=null)
-            {
-                jsonObject.put("status", status);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jsonObject;
     }
 
     public void setAmount(String amount) {
@@ -133,11 +97,27 @@ public class CashIn_model {
 
     public String getMember_shop_phone() {return member_shop_phone;}
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setBenef_product_name(String benef_product_name) {
+        this.benef_product_name = benef_product_name;
     }
 
-    public String getStatus() {return status;}
+    public String getBenef_product_name(){return benef_product_name;}
 
+    public void setSource_product_name(String source_product_name) {
+        this.source_product_name = source_product_name;
+    }
 
+    public String geSource_product_name(){return source_product_name;}
+
+    public void setSource_product_h2h(String source_product_h2h) {
+        this.source_product_h2h = source_product_h2h;
+    }
+
+    public String geSource_product_h2h(){return source_product_h2h;}
+
+    public void setSource_product_type(String source_product_type) {
+        this.source_product_type = source_product_type;
+    }
+
+    public String geSource_product_type(){return source_product_type;}
 }

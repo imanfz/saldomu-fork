@@ -30,10 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.CashIn_model;
+import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -157,6 +158,9 @@ public class BBSTransaksiInformasi extends Fragment {
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
                 benef_product_value_code = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE);
                 source_product_code=bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
+                source_product_name=bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
+                source_product_type=bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
+                source_product_h2h=bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
                 member_shop_phone = bundle.getString(DefineValue.KEY_CODE);
                 pesan = bundle.getString(DefineValue.MESSAGE);
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
@@ -199,7 +203,7 @@ public class BBSTransaksiInformasi extends Fragment {
 
                 if(bundle.containsKey(DefineValue.KEY_CODE))
                     etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
-                    actv_rekening_agent.setText(source_product_code);
+                    actv_rekening_agent.setText(source_product_name);
                     etRemark.setText(pesan);
                 String[] from = {"flag", "txt"};
 
@@ -310,27 +314,6 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
-
-                String asd = sp.getString("cashin_model_temp", "");
-                CashIn_model cashIn_model = new CashIn_model();
-                try {
-                    JSONObject obj = new JSONObject(asd);
-                    cashIn_model.setAmount(obj.getString("amount"));
-                    cashIn_model.setBenef_product_code(obj.getString("benef_product_code"));
-                    cashIn_model.setBenef_product_value_code(obj.getString("benef_product_value_code"));
-//                    cashIn_model.setBenef_product_value_city("benef_product_value_city");
-                    cashIn_model.setSource_product_code(actv_rekening_agent.getText().toString());
-                    cashIn_model.setMember_shop_phone(etNoHp.getText().toString());
-                    cashIn_model.setPesan(etRemark.getText().toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                JSONObject jsonObject = cashIn_model.convertModelToJSON();
-                String a = jsonObject.toString();
-
-                SecurePreferences.Editor editor = sp.edit();
-                editor.putString("cashin_model_temp", jsonObject.toString());
-                editor.apply();
 
                 if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
                     isSMSBanking = true;
@@ -818,6 +801,8 @@ public class BBSTransaksiInformasi extends Fragment {
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         btnNext.setEnabled(true);
 
+        cashInHistory();
+
         Fragment mFrag = new BBSCashInConfirm();
         mFrag.setArguments(mArgs);
 
@@ -825,6 +810,45 @@ public class BBSTransaksiInformasi extends Fragment {
                 .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
+    }
+
+    private void cashInHistory ()
+    {
+
+        CashInHistoryModel cashInHistoryModel = new CashInHistoryModel();
+
+        if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
+            cashInHistoryModel.setAmount(amount);
+            cashInHistoryModel.setBenef_product_code(benef_product_code);
+            cashInHistoryModel.setBenef_product_name(benef_product_name);
+            cashInHistoryModel.setBenef_product_type(benef_product_type);
+            cashInHistoryModel.setBenef_product_value_code(no_benef);
+            cashInHistoryModel.setSource_product_code(source_product_code);
+            cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
+            cashInHistoryModel.setSource_product_type(source_product_type);
+            cashInHistoryModel.setSource_product_h2h(source_product_h2h);
+            cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
+            cashInHistoryModel.setPesan(etRemark.getText().toString());
+        } else {
+            cashInHistoryModel.setAmount(amount);
+            cashInHistoryModel.setBenef_product_code(benef_product_code);
+            cashInHistoryModel.setBenef_product_name(benef_product_name);
+            cashInHistoryModel.setBenef_product_type(benef_product_type);
+            cashInHistoryModel.setBenef_product_value_code(no_benef);
+            cashInHistoryModel.setSource_product_code(source_product_code);
+            cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
+            cashInHistoryModel.setSource_product_type(source_product_type);
+            cashInHistoryModel.setSource_product_h2h(source_product_h2h);
+            cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
+            cashInHistoryModel.setPesan(etRemark.getText().toString());
+        }
+
+        Gson gson = new Gson();
+        String jsonObject = gson.toJson(cashInHistoryModel, CashInHistoryModel.class);
+
+        SecurePreferences.Editor editor = sp.edit();
+        editor.putString("cashin_history_temp", jsonObject);
+        editor.apply();
     }
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,

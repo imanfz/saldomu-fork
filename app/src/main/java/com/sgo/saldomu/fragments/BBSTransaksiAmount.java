@@ -28,11 +28,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSComm;
-import com.sgo.saldomu.Beans.CashIn_model;
+import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -61,8 +62,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-import static android.R.attr.id;
-
 /**
  * Created by thinkpad on 4/20/2017.
  */
@@ -76,7 +75,7 @@ public class BBSTransaksiAmount extends Fragment {
     private EditText etAmount;
     private String transaksi, comm_code, member_code, benef_product_type, api_key,
             callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim, amount, benef_product_code,
-            benef_product_value_code, source_product_code, member_shop_phone, pesan ;
+            benef_product_value_code, source_product_code, source_product_name,source_product_type, source_product_h2h, member_shop_phone, pesan, benef_product_name ;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -126,32 +125,28 @@ public class BBSTransaksiAmount extends Fragment {
             type = bundle.getString(DefineValue.TYPE,"");
             defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
-            String asd = sp.getString("cashin_model_temp", "");
+
 
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
             {
-                if (!asd.equalsIgnoreCase(""))
-                {
-                    try {
-                        JSONObject jsonObject1 = new JSONObject(asd);
-                        String status = jsonObject1.getString("status");
-                        if (status.equalsIgnoreCase("true"))
-                        {
-                            amount = jsonObject1.getString("amount");
-                            benef_product_code = jsonObject1.getString("benef_product_code");
-                            benef_product_type=jsonObject1.getString("benef_product_type");
-                            benef_product_value_code = jsonObject1.getString("benef_product_value_code");
-                            source_product_code = jsonObject1.getString("source_product_code");
-                            member_shop_phone = jsonObject1.getString("member_shop_phone");
-                            pesan = jsonObject1.getString("pesan");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                String asd = sp.getString("cashin_history_temp", "");
+                Gson gson = new Gson();
+                CashInHistoryModel cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
 
+                if (!asd.equalsIgnoreCase("")) {
+                    amount = cashInHistoryModel.getAmount();
+                    benef_product_code = cashInHistoryModel.getBenef_product_code();
+                    benef_product_name = cashInHistoryModel.getBenef_product_name();
+                    benef_product_type= cashInHistoryModel.getBenef_product_type();
+                    benef_product_value_code = cashInHistoryModel.getBenef_product_value_code();
+                    source_product_code = cashInHistoryModel.getSource_product_code();
+                    source_product_name = cashInHistoryModel.geSource_product_name();
+                    source_product_type = cashInHistoryModel.geSource_product_type();
+                    source_product_h2h = cashInHistoryModel.geSource_product_h2h();
+                    member_shop_phone = cashInHistoryModel.getMember_shop_phone();
+                    pesan = cashInHistoryModel.getPesan();
                 }
             }
-
         } else {
             getFragmentManager().popBackStack();
         }
@@ -209,7 +204,7 @@ public class BBSTransaksiAmount extends Fragment {
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
-            actv_rekening_member.setText(benef_product_code);
+            actv_rekening_member.setText(benef_product_name);
             etNoAcct.setText(benef_product_value_code);
 
             // Keys used in Hashmap
@@ -409,7 +404,7 @@ public class BBSTransaksiAmount extends Fragment {
         }
     };
 
-    Button.OnClickListener prosesListener = new Button.OnClickListener() {
+    public Button.OnClickListener prosesListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(inputValidation()) {
@@ -438,6 +433,9 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
                         args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
                         args.putString(DefineValue.SOURCE_PRODUCT_CODE, source_product_code);
+                        args.putString(DefineValue.SOURCE_PRODUCT_NAME, source_product_name);
+                        args.putString(DefineValue.SOURCE_PRODUCT_H2H, source_product_h2h);
+                        args.putString(DefineValue.SOURCE_PRODUCT_TYPE, source_product_type);
                         args.putString(DefineValue.KEY_CODE, member_shop_phone);
                         args.putString(DefineValue.MESSAGE, pesan);
                         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -460,26 +458,7 @@ public class BBSTransaksiAmount extends Fragment {
                     }
                     newFrag.setArguments(args);
 
-                    CashIn_model cashIn_model = new CashIn_model();
-                    if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                        cashIn_model.setAmount(etAmount.getText().toString());
-                        cashIn_model.setBenef_product_code(actv_rekening_member.getText().toString());
-                        cashIn_model.setBenef_product_type(benef_product_type);
-                        cashIn_model.setBenef_product_value_code(etNoAcct.getText().toString());
-                        cashIn_model.setStatus("false");
 
-                    } else {
-                        cashIn_model.setAmount(etAmount.getText().toString());
-                        cashIn_model.setBenef_product_code(actv_rekening_member.getText().toString());
-                        cashIn_model.setBenef_product_value_code(etNoAcct.getText().toString());
-                        cashIn_model.setStatus("false");
-                    }
-                    JSONObject jsonObject = cashIn_model.convertModelToJSON();
-                    String asd = jsonObject.toString();
-
-                    SecurePreferences.Editor editor = sp.edit();
-                    editor.putString("cashin_model_temp", jsonObject.toString());
-                    editor.apply();
 
                     getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
                             .addToBackStack(TAG).commit();
