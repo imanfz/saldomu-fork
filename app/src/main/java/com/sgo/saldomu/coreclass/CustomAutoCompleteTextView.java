@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,6 +52,8 @@ public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCom
         super.onFocusChanged(focused, direction, previouslyFocusedRect);
         if (listener != null)
             listener.onStateChanged(this, true);
+
+
     }
 
     @Override

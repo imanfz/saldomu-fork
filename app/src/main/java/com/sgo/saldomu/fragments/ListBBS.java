@@ -87,6 +87,8 @@ public class ListBBS extends ListFragment {
                 posIdx = BBSActivity.BBSTRXAGENT;
             else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
                 posIdx = BBSActivity.BBSWAKTUBEROPERASI;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
+                posIdx = BBSActivity.BBSTUTUPMANUAL;
             else {
                 posIdx = -1;
             }

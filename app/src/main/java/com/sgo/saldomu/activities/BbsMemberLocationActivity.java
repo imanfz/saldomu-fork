@@ -72,7 +72,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     MapView mapView;
     Double selectedLat, selectedLong;
     Double defaultLat, defaultLong;
-    Button btnSubmit;
+    Button btnSubmit, btnLokasiGPS;
     ProgressDialog progdialog;
     SecurePreferences sp;
     MerchantCommunityList memberDetail;
@@ -178,6 +178,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
         btnSubmit       = (Button) findViewById(R.id.btnSubmit);
+        btnLokasiGPS    = (Button) findViewById(R.id.btnLokasiGPS);
 
         btnSubmit.setOnClickListener(btnSubmitListener);
 

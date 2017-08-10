@@ -40,9 +40,9 @@
 
     <fragment
         android:id="@+id/agentMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        android:layout_height="match_parent" />
 
     <!-- button search location -->
     <LinearLayout

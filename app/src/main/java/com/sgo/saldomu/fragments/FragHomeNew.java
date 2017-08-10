@@ -352,6 +352,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                     bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                     switchMenu(NavigationDrawMenu.MBBS, bundle);
+                } else if ( menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+                    switchMenu(NavigationDrawMenu.MBBS, bundle);
                 }
                 else
                 {

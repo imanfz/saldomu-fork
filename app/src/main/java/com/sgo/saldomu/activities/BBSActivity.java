@@ -25,6 +25,7 @@ import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMenuKelola;
 import com.sgo.saldomu.fragments.FragSetttingKelola;
+import com.sgo.saldomu.fragments.FragTutupManual;
 import com.sgo.saldomu.fragments.FragWaktuBeroperasi;
 import com.sgo.saldomu.fragments.ListAccountBBS;
 
@@ -46,6 +47,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSAPPROVALAGENT    = 6;
     public static final int BBSTRXAGENT         = 7;
     public static final int BBSWAKTUBEROPERASI  = 8;
+    public static final int BBSTUTUPMANUAL      = 9;
 
 
     FragmentManager fragmentManager;
@@ -113,7 +115,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     newFragment = new FragWaktuBeroperasi();
                     tag = FragWaktuBeroperasi.TAG;
                     break;
-
+                case BBSTUTUPMANUAL:
+                    newFragment = new FragTutupManual();
+                    tag = FragTutupManual.TAG;
+                    break;
             }
 
 
@@ -166,6 +171,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.menu_item_title_trx_agent));
         else if( fragment instanceof FragWaktuBeroperasi )
             setActionBarTitle(getString(R.string.menu_item_title_waktu_beroperasi));
+        else if( fragment instanceof FragTutupManual )
+            setActionBarTitle(getString(R.string.menu_item_title_tutup_manual));
     }
 
     @Override

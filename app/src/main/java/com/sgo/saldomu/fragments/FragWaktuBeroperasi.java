@@ -3,11 +3,13 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,17 +26,21 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.BbsSetupOpenHourActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.OpenHourDays;
 import com.sgo.saldomu.models.ShopDetail;
@@ -174,16 +180,9 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
                         llWaktuBeroperasi.setVisibility(View.VISIBLE);
+                        btnSubmit.setVisibility(View.VISIBLE);
 
                         JSONArray members = response.getJSONArray("member");
-
-                        /*for (int i = 0; i < members.length(); i++) {
-                            JSONObject object = members.getJSONObject(i);
-
-                            ShopDetail shopDetail = new ShopDetail();
-                            shopDetail.setMemberId(object.getString("member_id"));
-                            shopDetail.setShopId(object.getString("shop_id"));
-                        }*/
 
                         if ( members.length() > 0 ) {
                             memberId = members.getJSONObject(0).getString("member_id");
@@ -191,9 +190,6 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                         } else {
                             backToPreviousFragment();
                         }
-
-
-
 
                     } else {
                         backToPreviousFragment();
@@ -308,6 +304,244 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Boolean hasError        = false;
+                Boolean isDayFound      = false;
+                String errorMessage     = "";
+
+                if ( !chkBuka24Jam.isChecked() ) {
+                    for (int pos = 0; pos < setupOpenHours.size(); pos++) {
+                        int intStartText    = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                        int intEndText      = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                        int chkHari         = getId("chk"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
+
+                        CheckBox checkBox   = (CheckBox) viewLayout.findViewById(chkHari);
+                        TextView txtStart   = (TextView) viewLayout.findViewById(intStartText);
+                        TextView txtEnd     = (TextView) viewLayout.findViewById(intEndText);
+
+                        if ( checkBox.isChecked() ) {
+                            if ( !txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00") ) {
+                                isDayFound  = true;
+                            } else {
+                                hasError    = true;
+                                isDayFound  = true;
+                                errorMessage    = getString(R.string.err_select_time_of_day);
+                            }
+                        }
+
+                    }
+                } else {
+                    isDayFound = true;
+                }
+
+                if ( !isDayFound ) {
+                    hasError = true;
+                    errorMessage    = getString(R.string.err_select_at_least_one_day);
+                }
+
+                if ( !hasError && swTutupToko.isChecked() ) {
+                    if ( optDates.size() == 0 ) {
+                        hasError = true;
+                        errorMessage    = getString(R.string.err_select_at_least_one_date);
+                    }
+                }
+
+                if ( !hasError ) {
+                    //call web service
+                    //to do
+                    try{
+                        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+                        progdialog2.show();
+
+                        RequestParams params = new RequestParams();
+
+                        UUID rcUUID             = UUID.randomUUID();
+                        String  dtime           = DateTimeFormat.getCurrentDateTime();
+
+                        params.put(WebParams.RC_UUID, rcUUID);
+                        params.put(WebParams.RC_DATETIME, dtime);
+                        params.put(WebParams.APP_ID, BuildConfig.AppID);
+                        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                        params.put(WebParams.SHOP_ID, shopId);
+                        params.put(WebParams.MEMBER_ID, memberId);
+
+                        if ( chkBuka24Jam.isChecked() ) {
+                            params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
+                        } else {
+                            params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_NO);
+
+                            for(int pos = 0; pos < setupOpenHours.size(); pos++ ) {
+
+                                int intStartText    = getId("etStart" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                                int intEndText      = getId("etEnd" + setupOpenHours.get(pos).getNamaHari(), R.id.class);
+                                int chkHari         = getId("chk"+setupOpenHours.get(pos).getNamaHari(), R.id.class);
+
+                                CheckBox checkBox   = (CheckBox) viewLayout.findViewById(chkHari);
+                                TextView txtStart   = (TextView) viewLayout.findViewById(intStartText);
+                                TextView txtEnd     = (TextView) viewLayout.findViewById(intEndText);
+
+                                if ( checkBox.isChecked() ) {
+                                    if ( !txtStart.getText().equals("00:00") && !txtEnd.getText().equals("00:00") ) {
+                                        switch(pos) {
+                                            case 0:
+                                                params.put(WebParams.OPEN_START_HOUR_MON, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_MON, txtEnd.getText() );
+                                                break;
+                                            case 1:
+                                                params.put(WebParams.OPEN_START_HOUR_TUE, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_TUE, txtEnd.getText() );
+                                                break;
+                                            case 2:
+                                                params.put(WebParams.OPEN_START_HOUR_WED, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_WED, txtEnd.getText() );
+                                                break;
+                                            case 3:
+                                                params.put(WebParams.OPEN_START_HOUR_THU, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_THU, txtEnd.getText() );
+                                                break;
+                                            case 4:
+                                                params.put(WebParams.OPEN_START_HOUR_FRI, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_FRI, txtEnd.getText() );
+                                                break;
+                                            case 5:
+                                                params.put(WebParams.OPEN_START_HOUR_SAT, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_SAT, txtEnd.getText() );
+                                                break;
+                                            case 6:
+                                                params.put(WebParams.OPEN_START_HOUR_SUN, txtStart.getText() );
+                                                params.put(WebParams.OPEN_END_HOUR_SUN, txtEnd.getText() );
+                                                break;
+                                        }
+                                    }
+                                }
+
+
+                            }
+                        }
+
+                        Gson gson = new Gson();
+                        ArrayList<String> tempData = new ArrayList<>();
+                        if ( swTutupToko.isChecked() ) {
+
+
+
+
+                            for(int x = 0; x < optDates.size(); x++) {
+                                String idx = String.valueOf(optDates.get(x));
+                                tempData.add(idx);
+                            }
+                            params.put(WebParams.CLOSED_VALUE, gson.toJson(tempData));
+                            params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DATE);
+
+                        } else {
+                            params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                        }
+
+                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+
+                        params.put(WebParams.SIGNATURE, signature);
+
+                        Log.d("TEST", params.toString());
+
+                        MyApiClient.setupOpeningHour(getContext(), params, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                progdialog2.dismiss();
+                                Timber.d("isi response sent insert open hour:" + response.toString());
+
+                                try {
+                                    String code = response.getString(WebParams.ERROR_CODE);
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                                        alertDialog.setCanceledOnTouchOutside(false);
+                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                        alertDialog.setCancelable(false);
+
+                                        alertDialog.setMessage(getString(R.string.message_notif_update_24_hours_success));
+
+
+
+                                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+
+                                                    getActivity().finish();
+
+                                                }
+                                            });
+
+                                        alertDialog.show();
+
+                                    }
+                                    else if(code.equals(WebParams.LOGOUT_CODE)){
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        //test.showDialoginActivity(getApplication(),message);
+                                    }
+                                    else {
+                                        code = response.getString(WebParams.ERROR_MESSAGE);
+                                        Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                super.onFailure(statusCode, headers, responseString, throwable);
+                                failure(throwable);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                failure(throwable);
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                failure(throwable);
+                            }
+
+                            private void failure(Throwable throwable){
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                                if (progdialog2.isShowing())
+                                    progdialog2.dismiss();
+
+                                Timber.w("Error Koneksi sent request setup open hour:"+throwable.toString());
+                            }
+                        });
+                    }catch (Exception e){
+                        Timber.d("httpclient:"+e.getMessage());
+                    }
+
+                } else {
+                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(getContext()).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                    alertDialog.setCancelable(false);
+
+                    alertDialog.setMessage(errorMessage);
+
+
+
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    dialog.dismiss();
+
+                                }
+                            });
+
+                    alertDialog.show();
+                }
 
             }
         });

@@ -26,11 +26,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -130,6 +132,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private static final int RC_LOCATION_PERM = 500;
     Boolean clicked = false;
     ProgressDialog progdialog, progdialog2;
+    LinearLayout llAmount;
 
     // Init
     private Handler handler = new Handler();
@@ -168,8 +171,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         realm = Realm.getDefaultInstance();
 
         locationIntent = new Intent(this, UpdateLocationService.class);
+
+        llAmount                = (LinearLayout) findViewById(R.id.llAmount);
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
         etJumlah.addTextChangedListener(jumlahChangeListener);
+        llAmount.requestFocus();
 
         if ( !amount.equals("") ) {
             etJumlah.setText(amount);
@@ -240,7 +246,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     public void runningApp() {
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
-        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility);
+        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
@@ -514,6 +520,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 //set true for allow next process
                 pickupLocationResult = AgentConstant.TRUE;
+
+                viewPager.getAdapter().notifyDataSetChanged();
             }
             else
             {
@@ -618,6 +626,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 //set true for allow next process
                 pickupLocationResult = AgentConstant.TRUE;
+
+
             }
             else
             {
@@ -1570,5 +1580,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 
 }

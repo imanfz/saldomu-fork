@@ -106,7 +106,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private Location currentLocation;
     private LocationRequest mLocationRequest;
     SupportMapFragment mapFrag;
-    private String mobility;
+    private String mobility, completeAddress;
     SecurePreferences sp;
 
 
@@ -128,6 +128,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             this.mobility = args.getString("mobility");
             this.currentLatitude = args.getDouble("currentLatitude");
             this.currentLongitude = args.getDouble("currentLongitude");
+            this.completeAddress = args.getString("completeAddress");
         }
     }
 
@@ -163,11 +164,16 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             searchLocationEditText.setOnItemClickListener(this);
             searchLocationEditText.setOnEditorActionListener(this);
             searchLocationEditText.clearFocus();
+            searchLocationEditText.setText(this.completeAddress);
+            searchLocationEditText.setSelectAllOnFocus(true);
+
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
             sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
         }
+
+        searchLocationEditText.setText(this.completeAddress);
 
         return rootView;
     }

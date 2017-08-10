@@ -306,7 +306,7 @@ public class DefineValue {
     public static String CATEGORY_CODE  = "category_code";
 
     //GOOGLE MAP DEFINE PARAMETERS
-    public static float ZOOM_CAMERA_POSITION                = 14.0f; //16.0f
+    public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
     public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
     public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds

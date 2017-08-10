@@ -206,6 +206,7 @@
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
+    <string name="menu_item_title_tutup_manual">Tutup Manual</string>
     <string name="topup_token_bank_name">Nama Bank</string>
     <string name="topup_token_bank_product">Produk Bank</string>
     <string name="topup_token_fee">Biaya Admin</string>
@@ -988,7 +989,18 @@
     <string name="minggu">Minggu</string>
     <string name="err_start_time_must_lower_than_end_time">Silakan masukkan waktu buka lebih kecil daripada waktu tutup</string>
     <string name="err_select_day_first">Silakan centang hari yang mau Anda set</string>
+    <string name="err_select_time_of_day">Anda belum memiilih jam buka/tutup untuk hari yang sudah dipilih</string>
+    <string name="err_select_at_least_one_day">Silakan pilih minimal satu hari dari waktu beroperasi</string>
+    <string name="err_select_at_least_one_date">Silakan pilih minimal satu tanggal dari tutup toko</string>
     <string name="label_tutup_setiap_tanggal_header">Tutup Setiap Tanggal</string>
     <string name="label_setting_tutup_setiap_tanggal">Setting Tanggal Tutup</string>
     <string name="label_tanggal_tutup">Tanggal Tutup</string>
+    <string name="notif_waiting_trx_agent_has_been_sent">Silakan menunggu. Email notif sudah dikirim ke Agen.</string>
+    <string name="message_notif_update_24_hours_success">Informasi Atur waktu beroperasi berhasil disimpan</string>
+    <string name="bbs_gps_location">Lokasi GPS</string>
+    <string name="label_tutup_terjadwal">Tutup Terjadwal</string>
+    <string name="label_mulai_dari">Mulai dari</string>
+    <string name="label_sampai_dengan">Sampai dengan</string>
+    <string name="message_notif_update_tutup_manual_success">Setting informasi atur waktu tutup manual disimpan</string>
+    <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
 </resources>

@@ -1,0 +1,153 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sgo.saldomu.fragments.FragTutupManual">
+
+    <LinearLayout
+        android:id="@+id/llTutupManual"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- LinearLayout
+            android:id="@+id/llSettingTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_small">
+
+            <TextView
+                android:id="@+id/tvTutupSekarangLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/setup_tutup_sekarang"
+                android:textSize="@dimen/abc_text_size_small_material" />
+
+            <Switch
+                android:id="@+id/swTutupToko"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/tvTutupSekarangLabel"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:textOff="@string/no"
+                android:textOn="@string/yes" />
+        </LinearLayout -->
+
+        <LinearLayout
+            android:id="@+id/llTanggal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:layout_below="@+id/llSettingTanggal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_tutup_terjadwal"
+                android:paddingBottom="@dimen/padding_small"
+                android:textSize="@dimen/abc_text_size_small_material" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llMulaiDari"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:layout_below="@+id/llTanggal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <TextView
+                android:id="@+id/tvMulaiDari"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_mulai_dari"
+                android:paddingRight="85dp"
+                android:layout_gravity="left"
+                android:paddingBottom="@dimen/padding_small"
+                android:textSize="@dimen/abc_text_size_small_material" />
+            <EditText
+                android:id="@+id/etFromDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/tvMulaiDari"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                />
+
+            <ImageView
+                android:id="@+id/ivStartDate"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:tag="startDate"
+                android:src="@drawable/ic_date_range_black" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/llSampaiDengan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:layout_below="@+id/llMulaiDari"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+
+
+
+            <TextView
+                android:id="@+id/tvSampaiDengan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_sampai_dengan"
+                android:paddingRight="50dp"
+                android:layout_gravity="left"
+                android:paddingBottom="@dimen/padding_small"
+                android:textSize="@dimen/abc_text_size_small_material" />
+            <EditText
+                android:id="@+id/etToDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@+id/tvSampaiDengan"
+                android:layout_weight="1"
+                android:layout_gravity="right"
+                 />
+            <ImageView
+                android:id="@+id/ivEndDate"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:tag="endDate"
+                android:src="@drawable/ic_date_range_black"
+                />
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:layout_weight="0.5"
+        android:text="@string/save" />
+
+</RelativeLayout>

@@ -10,7 +10,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="59dp"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:id="@+id/linearLayout">
 
 
     </LinearLayout>
@@ -18,10 +19,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_below="@+id/llMemberDetail"
         android:id="@+id/llSearch"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_below="@+id/llMemberDetail"
+        android:layout_alignLeft="@+id/linearLayout"
+        android:layout_alignStart="@+id/linearLayout">
 
         <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
             android:id="@+id/editText"
@@ -29,24 +31,29 @@
             android:layout_height="wrap_content"
             android:textColor="#808080"
             android:inputType="text"
-            android:layout_weight="4"
+            android:layout_weight="3"
             android:padding="@dimen/margin_10dp"
             android:textSize="15sp"
             android:selectAllOnFocus="true"
             android:hint="@string/search_location_hint_request_bbs_activity_label" >
 
-            <requestFocus />
         </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
 
 
-        <Button
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:onClick="onMapSearch"
-            android:text="@string/bbs_agent_search" />
 
+        <!-- Button
+        android:id="@+id/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:onClick="onMapSearch"
+        android:text="@string/bbs_agent_search" / -->
+
+        <Button
+            android:id="@+id/btnLokasiGPS"
+            android:layout_width="142dp"
+            android:layout_height="wrap_content"
+            android:text="@string/bbs_gps_location" />
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
