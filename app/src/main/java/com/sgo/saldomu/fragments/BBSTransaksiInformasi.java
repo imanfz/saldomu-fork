@@ -96,7 +96,7 @@ public class BBSTransaksiInformasi extends Fragment {
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
     no_benef, name_benef, no_source, city_name, comm_benef_atc, member_shop_phone, pesan, benef_product_value_code;
-
+    CashInHistoryModel cashInHistoryModel;
     SecurePreferences sp;
 
     public interface ActionListener{
@@ -143,6 +143,12 @@ public class BBSTransaksiInformasi extends Fragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
+        String asd = sp.getString("cashin_history_temp", "");
+        Gson gson = new Gson();
+        cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
+
+        source_product_code = cashInHistoryModel.getSource_product_code();
+
         Bundle bundle = getArguments();
         if(bundle!= null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
@@ -157,12 +163,12 @@ public class BBSTransaksiInformasi extends Fragment {
                 benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
                 benef_product_value_code = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE);
-                source_product_code=bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
-                source_product_name=bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
-                source_product_type=bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
-                source_product_h2h=bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
-                member_shop_phone = bundle.getString(DefineValue.KEY_CODE);
-                pesan = bundle.getString(DefineValue.MESSAGE);
+                source_product_code=(cashInHistoryModel.getSource_product_code());
+                source_product_name=(cashInHistoryModel.getSource_product_name());
+                source_product_type=(cashInHistoryModel.geSource_product_type());
+                source_product_h2h=(cashInHistoryModel.geSource_product_h2h());
+                member_shop_phone =(cashInHistoryModel.getMember_shop_phone());
+                pesan = bundle.getString(cashInHistoryModel.getPesan());
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -202,9 +208,14 @@ public class BBSTransaksiInformasi extends Fragment {
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
                 if(bundle.containsKey(DefineValue.KEY_CODE))
+                {
                     etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
-                    actv_rekening_agent.setText(source_product_name);
-                    etRemark.setText(pesan);
+                }
+                else{
+                    etNoHp.setText(member_shop_phone);
+                }
+                    actv_rekening_agent.setText(cashInHistoryModel.getSource_product_name());
+                    etRemark.setText(cashInHistoryModel.getPesan());
                 String[] from = {"flag", "txt"};
 
                 // Ids of views in listview_layout
@@ -314,7 +325,6 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
-
                 if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
                     isSMSBanking = true;
                 } else
@@ -801,20 +811,6 @@ public class BBSTransaksiInformasi extends Fragment {
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         btnNext.setEnabled(true);
 
-        cashInHistory();
-
-        Fragment mFrag = new BBSCashInConfirm();
-        mFrag.setArguments(mArgs);
-
-        getFragmentManager().beginTransaction().addToBackStack(TAG)
-                .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
-        ToggleKeyboard.hide_keyboard(act);
-//        switchFragment(mFrag, getString(R.string.cash_in), true);
-    }
-
-    private void cashInHistory ()
-    {
-
         CashInHistoryModel cashInHistoryModel = new CashInHistoryModel();
 
         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
@@ -835,6 +831,7 @@ public class BBSTransaksiInformasi extends Fragment {
             cashInHistoryModel.setBenef_product_name(benef_product_name);
             cashInHistoryModel.setBenef_product_type(benef_product_type);
             cashInHistoryModel.setBenef_product_value_code(no_benef);
+            cashInHistoryModel.setBenef_product_value_city(city_name);
             cashInHistoryModel.setSource_product_code(source_product_code);
             cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
             cashInHistoryModel.setSource_product_type(source_product_type);
@@ -849,6 +846,14 @@ public class BBSTransaksiInformasi extends Fragment {
         SecurePreferences.Editor editor = sp.edit();
         editor.putString("cashin_history_temp", jsonObject);
         editor.apply();
+
+        Fragment mFrag = new BBSCashInConfirm();
+        mFrag.setArguments(mArgs);
+
+        getFragmentManager().beginTransaction().addToBackStack(TAG)
+                .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
+        ToggleKeyboard.hide_keyboard(act);
+//        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,

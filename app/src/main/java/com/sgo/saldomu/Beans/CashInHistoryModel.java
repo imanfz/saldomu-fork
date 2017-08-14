@@ -107,7 +107,7 @@ public class CashInHistoryModel {
         this.source_product_name = source_product_name;
     }
 
-    public String geSource_product_name(){return source_product_name;}
+    public String getSource_product_name(){return source_product_name;}
 
     public void setSource_product_h2h(String source_product_h2h) {
         this.source_product_h2h = source_product_h2h;

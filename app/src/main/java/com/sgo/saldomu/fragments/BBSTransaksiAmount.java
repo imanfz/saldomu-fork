@@ -74,8 +74,7 @@ public class BBSTransaksiAmount extends Fragment {
     private TextView tvTitle;
     private EditText etAmount;
     private String transaksi, comm_code, member_code, benef_product_type, api_key,
-            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim, amount, benef_product_code,
-            benef_product_value_code, source_product_code, source_product_name,source_product_type, source_product_h2h, member_shop_phone, pesan, benef_product_name ;
+            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim, benef_product_code;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -98,6 +97,7 @@ public class BBSTransaksiAmount extends Fragment {
     private Integer CityAutocompletePos = -1;
     private boolean isBack = false;
     SecurePreferences sp;
+    CashInHistoryModel cashInHistoryModel;
 
     public boolean isBack() {
         return isBack;
@@ -131,25 +131,17 @@ public class BBSTransaksiAmount extends Fragment {
             {
                 String asd = sp.getString("cashin_history_temp", "");
                 Gson gson = new Gson();
-                CashInHistoryModel cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
+                cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
 
                 if (!asd.equalsIgnoreCase("")) {
-                    amount = cashInHistoryModel.getAmount();
                     benef_product_code = cashInHistoryModel.getBenef_product_code();
-                    benef_product_name = cashInHistoryModel.getBenef_product_name();
                     benef_product_type= cashInHistoryModel.getBenef_product_type();
-                    benef_product_value_code = cashInHistoryModel.getBenef_product_value_code();
-                    source_product_code = cashInHistoryModel.getSource_product_code();
-                    source_product_name = cashInHistoryModel.geSource_product_name();
-                    source_product_type = cashInHistoryModel.geSource_product_type();
-                    source_product_h2h = cashInHistoryModel.geSource_product_h2h();
-                    member_shop_phone = cashInHistoryModel.getMember_shop_phone();
-                    pesan = cashInHistoryModel.getPesan();
                 }
             }
         } else {
             getFragmentManager().popBackStack();
         }
+
     }
 
     @Nullable
@@ -187,7 +179,7 @@ public class BBSTransaksiAmount extends Fragment {
                     etAmount.setText(defaultAmount);
                 }
             }
-            etAmount.setText(amount);
+            etAmount.setText(cashInHistoryModel.getAmount());
 
 
             stub.setLayoutResource(R.layout.bbs_cashin_amount);
@@ -204,8 +196,8 @@ public class BBSTransaksiAmount extends Fragment {
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
-            actv_rekening_member.setText(benef_product_name);
-            etNoAcct.setText(benef_product_value_code);
+            actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
+            etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -431,13 +423,7 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
                         args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
                         args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
-                        args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
-                        args.putString(DefineValue.SOURCE_PRODUCT_CODE, source_product_code);
-                        args.putString(DefineValue.SOURCE_PRODUCT_NAME, source_product_name);
-                        args.putString(DefineValue.SOURCE_PRODUCT_H2H, source_product_h2h);
-                        args.putString(DefineValue.SOURCE_PRODUCT_TYPE, source_product_type);
-                        args.putString(DefineValue.KEY_CODE, member_shop_phone);
-                        args.putString(DefineValue.MESSAGE, pesan);
+                        args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());;
                         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                             String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
                             String city_name = spBenefCity.getText().toString();
