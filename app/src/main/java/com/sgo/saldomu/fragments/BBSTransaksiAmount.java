@@ -34,6 +34,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
+import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -74,7 +75,8 @@ public class BBSTransaksiAmount extends Fragment {
     private TextView tvTitle;
     private EditText etAmount;
     private String transaksi, comm_code, member_code, benef_product_type, api_key,
-            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim, benef_product_code;
+            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim, benef_product_code, source_product_code,
+            source_product_type;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -98,6 +100,7 @@ public class BBSTransaksiAmount extends Fragment {
     private boolean isBack = false;
     SecurePreferences sp;
     CashInHistoryModel cashInHistoryModel;
+    CashOutHistoryModel cashOutHistoryModel;
 
     public boolean isBack() {
         return isBack;
@@ -129,13 +132,23 @@ public class BBSTransaksiAmount extends Fragment {
 
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
             {
-                String asd = sp.getString("cashin_history_temp", "");
+                String cashIn = sp.getString("cashin_history_temp", "");
                 Gson gson = new Gson();
-                cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
+                cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
 
-                if (!asd.equalsIgnoreCase("")) {
+                if (!cashIn.equalsIgnoreCase("")) {
                     benef_product_code = cashInHistoryModel.getBenef_product_code();
                     benef_product_type= cashInHistoryModel.getBenef_product_type();
+                }
+            }
+            if (transaksi.equalsIgnoreCase("Tarik Tunai")){
+                String cashOut = sp.getString("cashout_history_temp", "");
+                Gson gson1 = new Gson();
+                cashInHistoryModel = gson1.fromJson(cashOut, CashInHistoryModel.class);
+
+                if (!cashOut.equalsIgnoreCase("")) {
+                    source_product_code = cashOutHistoryModel.getSource_product_code();
+                    source_product_type= cashInHistoryModel.geSource_product_type();
                 }
             }
         } else {
@@ -219,14 +232,21 @@ public class BBSTransaksiAmount extends Fragment {
             setMember(listbankBenef);
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
-                if(!defaultAmount.equals(""))
+                if(!defaultAmount.equals("")) {
                     etAmount.setText(defaultAmount);
-            }
+                }
+                etAmount.setText(cashOutHistoryModel.getAmount());
+        }
+
+
             stub.setLayoutResource(R.layout.bbs_cashout_amount);
             View cashout_layout = stub.inflate();
 
             actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
+
+//            actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
+//            etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};

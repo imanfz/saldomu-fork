@@ -143,9 +143,9 @@ public class BBSTransaksiInformasi extends Fragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        String asd = sp.getString("cashin_history_temp", "");
+        String cashIn = sp.getString("cashin_history_temp", "");
         Gson gson = new Gson();
-        cashInHistoryModel = gson.fromJson(asd, CashInHistoryModel.class);
+        cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
 
         source_product_code = cashInHistoryModel.getSource_product_code();
 
@@ -810,7 +810,19 @@ public class BBSTransaksiInformasi extends Fragment {
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         btnNext.setEnabled(true);
+        cashInHistory();
 
+        Fragment mFrag = new BBSCashInConfirm();
+        mFrag.setArguments(mArgs);
+
+        getFragmentManager().beginTransaction().addToBackStack(TAG)
+                .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
+        ToggleKeyboard.hide_keyboard(act);
+//        switchFragment(mFrag, getString(R.string.cash_in), true);
+    }
+
+    private void cashInHistory ()
+    {
         CashInHistoryModel cashInHistoryModel = new CashInHistoryModel();
 
         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
@@ -846,15 +858,8 @@ public class BBSTransaksiInformasi extends Fragment {
         SecurePreferences.Editor editor = sp.edit();
         editor.putString("cashin_history_temp", jsonObject);
         editor.apply();
-
-        Fragment mFrag = new BBSCashInConfirm();
-        mFrag.setArguments(mArgs);
-
-        getFragmentManager().beginTransaction().addToBackStack(TAG)
-                .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
-        ToggleKeyboard.hide_keyboard(act);
-//        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
+
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,
                                         String _amount, String _bank_name) {
