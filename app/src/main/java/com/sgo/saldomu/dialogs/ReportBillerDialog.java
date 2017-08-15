@@ -16,11 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.*;
-
-import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
@@ -49,7 +45,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ReqPermissionClass reqPermissionClass;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
-    SecurePreferences sp;
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -70,7 +65,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         try {
             if (isActivty)
                 callback = (OnDialogOkCallback) getActivity();
