@@ -198,8 +198,8 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
             mainBbsActivity.viewPager.setCurrentItem(0);
 
             closeAgentDetailFragmentDialog();
-            createAgentMapFragment();
-            updateActionBarTittle();
+            //createAgentMapFragment();
+            //updateActionBarTittle();
         }
         else
         {
@@ -242,10 +242,10 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
             //((ActionBarActivity)getActivity())
             //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(agentInfoSingle.getString("name"));
             //get object activity
-            MainAgentActivity mainBbsActivity = (MainAgentActivity) getActivity();
-            mainBbsActivity.initializeToolbar(agentInfoSingle.getString("name"));
+            BbsSearchAgentActivity mainBbsActivity = (BbsSearchAgentActivity) getActivity();
+            mainBbsActivity.initializeToolbar(this.shopDetail.getMemberName());
         }
-        catch (JSONException ex)
+        catch (Exception ex)
         {
             ex.printStackTrace();
         }

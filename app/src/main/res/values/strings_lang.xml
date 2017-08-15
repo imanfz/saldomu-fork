@@ -974,4 +974,5 @@
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
+    <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
 </resources>

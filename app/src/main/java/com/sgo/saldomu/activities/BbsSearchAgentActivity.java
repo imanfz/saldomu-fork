@@ -156,43 +156,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
 
         if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
-            currentLatitude = Double.valueOf(intentData.getStringExtra(DefineValue.LAST_CURRENT_LATITUDE));
-            currentLongitude = Double.valueOf(intentData.getStringExtra(DefineValue.LAST_CURRENT_LONGITUDE));
+            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
         }
 
 
 
 
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            runningApp();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
 
-        if ( !GlobalSetting.isLocationEnabled(this) )
-        {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
-                        }
-                    });
-            final AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-
-
-        }
 
         realm = Realm.getDefaultInstance();
 
@@ -339,8 +310,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
 
-                currentLatitude = lastLocation.getLatitude();
-                currentLongitude = lastLocation.getLongitude();
+                if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
+
+                } else {
+                    currentLatitude = lastLocation.getLatitude();
+                    currentLongitude = lastLocation.getLongitude();
+                }
 
                 Timber.d("Location Found" + lastLocation.toString());
                 viewPager.getAdapter().notifyDataSetChanged();
@@ -373,8 +348,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     public void onLocationChanged(Location location) {
         lastLocation = location;
 //        googleApiClient.disconnect();
-        currentLatitude = lastLocation.getLatitude();
-        currentLongitude = lastLocation.getLongitude();
+
+        if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
+
+        } else {
+            currentLatitude = lastLocation.getLatitude();
+            currentLongitude = lastLocation.getLongitude();
+        }
+
         viewPager.getAdapter().notifyDataSetChanged();
         getCompleteLocationAddress();
 
@@ -496,7 +477,15 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         {
             Geocoder geocoder = new Geocoder(this, new Locale("id"));
 
-            List<Address> multiAddress = geocoder.getFromLocation(lastLocation.getLatitude(),lastLocation.getLongitude(),1);
+            List<Address> multiAddress = null;
+
+            if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
+                multiAddress = geocoder.getFromLocation(currentLatitude, currentLongitude, 1);
+            } else {
+                multiAddress = geocoder.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
+                currentLatitude = lastLocation.getLatitude();
+                currentLongitude = lastLocation.getLongitude();
+            }
 
             if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
             {
@@ -521,7 +510,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     completeAddress += provinceName;
                 }
 
-                searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
+                searchToko(currentLatitude, currentLongitude);
 
                 //set true for allow next process
                 pickupLocationResult = AgentConstant.TRUE;
@@ -1030,6 +1019,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 i.putExtra(DefineValue.CATEGORY_ID, categoryId);
                                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
 
                                                 if ( mobility.equals(DefineValue.STRING_YES) ) {
 
@@ -1327,6 +1318,41 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            runningApp();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(this) )
+        {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+
+
+        }
+
         try {
             googleApiClient.connect();
 
@@ -1347,6 +1373,54 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             googleApiClient.disconnect();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+
+            if ( !GlobalSetting.isLocationEnabled(this) )
+            {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.alertbox_gps_warning))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(ilocation, 1);
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                                startActivity(new Intent(getApplicationContext(), MainPage.class));
+                                finish();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Intent i = new Intent(this, BbsSearchAgentActivity.class);
+                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+                i.putExtra(DefineValue.AMOUNT, amount);
+                startActivity(i);
+                finish();
+            }
+        }
+    }
+
+
 
     private void checkTransactionMember() {
         if ( !txId.equals("") ) {

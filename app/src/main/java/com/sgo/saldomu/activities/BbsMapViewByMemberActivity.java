@@ -1,5 +1,7 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -45,6 +48,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -56,7 +60,10 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
@@ -73,10 +80,23 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     ShopDetail shopDetail;
     private GoogleMap globalMap;
     TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
-    Boolean isFirstLoad = true;
+    Boolean isFirstLoad = true, isRunning = false;
     String gcmId;
     Button btnDone, btnCancel;
     ProgressDialog progdialog, progdialog2;
+
+    private int timeDelayed = 30000;
+
+    // Init
+    private Handler handler = new Handler();
+    private Runnable runnable2 = new Runnable() {
+        @Override
+        public void run() {
+            isRunning = true;
+            updateLocationMember();
+            handler.postDelayed(this, timeDelayed);
+        }
+    };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +115,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             createLocationRequest();
         }
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+
         gcmId                   = "";
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
@@ -261,12 +281,48 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         memberLatitude      = lastLocation.getLatitude();
         memberLongitude     = lastLocation.getLongitude();
 
-        updateLocationMember();
+        if ( !isRunning ) {
+            handler.removeCallbacks(runnable2);
+            updateLocationMember();
+            handler.postDelayed(runnable2, timeDelayed);
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+
+        if ( !GlobalSetting.isLocationEnabled(this) )
+        {
+            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_gps_warning))
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivityForResult(ilocation, 1);
+
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.cancel();
+                            startActivity(new Intent(getApplicationContext(), MainPage.class));
+                        }
+                    });
+            final android.app.AlertDialog alert = builder.create();
+            alert.show();
+        }
+
         try {
             googleApiClient.connect();
 
@@ -278,9 +334,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     @Override
     protected void onStop() {
         super.onStop();
-        try {
 
-        } catch (RuntimeException e) {
+        try {
+            handler.removeCallbacks(runnable2);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (googleApiClient != null && googleApiClient.isConnected()) {
@@ -359,6 +416,11 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     @Override
     public void onDestroy() {
         super.onDestroy();
+        try {
+            handler.removeCallbacks(runnable2);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
         googleApiClient.disconnect();
     }
 
@@ -379,7 +441,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 //
 //        setMapCamera();
 
+        if ( sp.getString(DefineValue.USERID_PHONE, "").equals("") )
+            return;
 
+        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         RequestParams params    = new RequestParams();
 
 
@@ -400,7 +465,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.LATITUDE, memberLatitude);
         params.put(WebParams.LONGITUDE, memberLongitude);
 
-
+        handler.removeCallbacks(runnable2);
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                 DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
 
@@ -412,9 +477,11 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 progdialog.dismiss();
 
                 try {
-
+                    isRunning = false;
                     String code = response.getString(WebParams.ERROR_CODE);
+                    handler.postDelayed(runnable2, timeDelayed);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
+
                         agentLatitude      = response.getDouble(WebParams.SHOP_LATITUDE);
                         agentLongitude     = response.getDouble(WebParams.SHOP_LONGITUDE);
 
@@ -455,6 +522,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 else
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
+                isRunning = false;
                 progdialog.dismiss();
                 Timber.w("Error Koneksi login:" + throwable.toString());
 
@@ -504,6 +572,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     progdialog2.dismiss();
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                        handler.removeCallbacks(runnable2);
 
                         Intent intent = new Intent(getApplicationContext(), MainPage.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -630,5 +700,48 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+
+            if ( !GlobalSetting.isLocationEnabled(this) )
+            {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.alertbox_gps_warning))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(ilocation, 1);
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                                startActivity(new Intent(getApplicationContext(), MainPage.class));
+                                finish();
+                            }
+                        });
+                final android.app.AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Intent i = new Intent(this, BbsMapViewByMemberActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+                finish();
+            }
+        }
     }
 }
