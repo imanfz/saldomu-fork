@@ -79,6 +79,7 @@ import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -130,6 +131,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     EditText etJumlah;
     Button btnProses;
     private static final int RC_LOCATION_PERM = 500;
+    private final int RC_PHONE_CALL = 503;
+    private final int RC_SEND_SMS = 504;
+    private static final int RC_LOCATION_PHONE_SMS = 505;
+
     Boolean clicked = false;
     ProgressDialog progdialog, progdialog2;
     LinearLayout llAmount;
@@ -967,7 +972,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     JSONObject object = shops.getJSONObject(j);
                                     ShopDetail shopDetail = new ShopDetail();
 
-
+                                    shopDetail.setMemberCust(object.getString("member_cust"));
                                     shopDetail.setMemberId(object.getString("member_id"));
                                     shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
                                     shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
@@ -1191,45 +1196,79 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         //runningApp();
-//        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-//        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-//        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-//        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
-//        i.putExtra(DefineValue.AMOUNT, "");
-//        startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_LOCATION_PHONE_SMS:
+                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+                i.putExtra(DefineValue.AMOUNT, "");
+                startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+                //startActivity(i);
+                finish();
+                break;
 
-        if(checkPlayServices())
-        {
-            buildGoogleApiClient();
-            createLocationRequest();
         }
 
-        googleApiClient.connect();
+
+//        if(checkPlayServices())
+//        {
+//            buildGoogleApiClient();
+//            createLocationRequest();
+//        }
+//
+//        googleApiClient.connect();
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
-
-        // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
-        // This will display a dialog directing them to enable the permission in app settings.
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
-        } else {
-            AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            alertDialog.setCancelable(false);
-            alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-            alertDialog.setMessage(getString(R.string.alertbox_message_warning));
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
-                        }
-                    });
-            alertDialog.show();
+        switch (requestCode) {
+            case RC_LOCATION_PERM:
+                // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+                // This will display a dialog directing them to enable the permission in app settings.
+                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                    new AppSettingsDialog.Builder(this).build().show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+            case RC_LOCATION_PHONE_SMS:
+                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                    new AppSettingsDialog.Builder(this).build().show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.alertbox_message_phone_permission_warning));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+            case RC_SEND_SMS:
+                break;
         }
+
     }
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {
@@ -1333,17 +1372,33 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     }
 
+    @AfterPermissionGranted(RC_LOCATION_PHONE_SMS)
+    private void methodRequiresTwoPermission() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+            // ...
+            runningApp();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location_phone_sms),
+                    RC_LOCATION_PHONE_SMS, perms);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        methodRequiresTwoPermission();
+
+        /*if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             runningApp();
         } else {
             // Ask for one permission
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
                     RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
+        }*/
 
         if ( !GlobalSetting.isLocationEnabled(this) )
         {

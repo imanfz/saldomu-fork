@@ -239,7 +239,7 @@
             </TableRow>
 
             <TableRow
-                >
+                android:id="@+id/trSettingDate">
             <TextView
                 android:id="@+id/tvSettingTutupToko"
                 android:layout_width="fill_parent"

@@ -9,6 +9,7 @@ public class ShopDetail {
     private String memberCode;
     private String memberName;
     private String memberType;
+    private String memberCust;
     private String commId;
     private String commCode;
     private String commName;
@@ -79,6 +80,14 @@ public class ShopDetail {
 
     public void setMemberType(String memberType) {
         this.memberType = memberType;
+    }
+
+    public String getMemberCust() {
+        return memberCust;
+    }
+
+    public void setMemberCust(String memberCust) {
+        this.memberCust = memberCust;
     }
 
     public String getCommId() {

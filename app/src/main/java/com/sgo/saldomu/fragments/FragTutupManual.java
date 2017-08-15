@@ -74,7 +74,6 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
     private final String DATETO = "tagTo";
     private View viewLayout;
     LinearLayout llTanggal, llMulaiDari, llSampaiDengan, llTutupManual;
-    Switch swTutupToko;
     EditText etFromDate, etToDate;
     ImageView ivStartDate, ivEndDate;
     int startDay, startMonth, startYear, endDay, endMonth, endYear;
@@ -83,7 +82,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
     private DatePickerDialog dateToPickerDialog;
 
     private SimpleDateFormat dateFormatter;
-    Calendar calendar, cTanggalAwal;
+    Calendar calendar, cTanggalAwal, cNextTomorrow;
     Button btnSubmit;
     ProgressDialog progdialog, progdialog2;
     SecurePreferences sp;
@@ -152,13 +151,20 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         etFromDate.setEnabled(false);
         etToDate.setEnabled(false);
 
-        startYear       = calendar.get(Calendar.YEAR);
-        startMonth      = calendar.get(Calendar.MONTH);
-        startDay        = calendar.get(Calendar.DAY_OF_MONTH);
+        Calendar cTomorrow = Calendar.getInstance();
+        cTomorrow.add(Calendar.DAY_OF_MONTH, 1);
 
-        endYear         = calendar.get(Calendar.YEAR);
-        endMonth        = calendar.get(Calendar.MONTH);
-        endDay          = calendar.get(Calendar.DAY_OF_MONTH);
+        startDay        = cTomorrow.get(Calendar.DAY_OF_MONTH);
+        startMonth      = cTomorrow.get(Calendar.MONTH);
+        startYear       = cTomorrow.get(Calendar.YEAR);
+
+        cNextTomorrow = Calendar.getInstance();
+        cNextTomorrow.add(Calendar.DAY_OF_MONTH, 2);
+
+        endYear         = cNextTomorrow.get(Calendar.YEAR);
+        endMonth        = cNextTomorrow.get(Calendar.MONTH);
+        endDay          = cNextTomorrow.get(Calendar.DAY_OF_MONTH);
+
         cTanggalAwal = Calendar.getInstance();
         cTanggalAwal.set(startYear, startMonth, startDay);
 
@@ -193,20 +199,15 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
                         llTutupManual.setVisibility(View.VISIBLE);
                         btnSubmit.setVisibility(View.VISIBLE);
+                        llTanggal.setVisibility(View.VISIBLE);
+                        llMulaiDari.setVisibility(View.VISIBLE);
+                        llSampaiDengan.setVisibility(View.VISIBLE);
 
                         JSONArray members = response.getJSONArray("member");
 
                         if ( members.length() > 0 ) {
                             memberId = members.getJSONObject(0).getString("member_id");
                             shopId = members.getJSONObject(0).getString("shop_id");
-
-                            swTutupToko.setOnCheckedChangeListener(null);
-                            if ( members.getJSONObject(0).getString("shop_closed").equals(DefineValue.STRING_NO) ) {
-                                swTutupToko.setChecked(false);
-                            } else {
-                                swTutupToko.setChecked(true);
-                            }
-                            swTutupToko.setOnCheckedChangeListener(new mySwitchTutupTokoChangeClicker());
 
 
                         } else {
@@ -306,7 +307,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                 Calendar cAkhir = Calendar.getInstance();
                 cAkhir.set(endYear, endMonth, endDay);//Year,Mounth -1,Day
 
-                if ( cAkhir.getTimeInMillis() != cAwal.getTimeInMillis() ) {
+                if ( !endDateText.equals("") ) {
                     dpd.setMaxDate(cAkhir);
                 }
 
@@ -327,6 +328,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                         endDay
                 );
                 Calendar cAwal = Calendar.getInstance();
+
                 cAwal.set(startYear, startMonth, startDay+1);//Year,Mounth -1,Day
                 //dpd.setMinDate(cAwal);
 
@@ -427,23 +429,6 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
     }
 
-    class mySwitchTutupTokoChangeClicker implements Switch.OnCheckedChangeListener {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-            if (!isChecked) {
-                llTanggal.setVisibility(View.VISIBLE);
-                llMulaiDari.setVisibility(View.VISIBLE);
-                llSampaiDengan.setVisibility(View.VISIBLE);
-            } else {
-                llTanggal.setVisibility(View.GONE);
-                llMulaiDari.setVisibility(View.GONE);
-                llSampaiDengan.setVisibility(View.GONE);
-            }
-
-        }
-    }
 
     private void backToPreviousFragment() {
         //redirect back to fragment - BBSActivity;
@@ -474,130 +459,82 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         try{
             progdialog2             = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-            String shopStatus       = DefineValue.SHOP_OPEN;
 
-            RequestParams params    = new RequestParams();
+
+            RequestParams params2    = new RequestParams();
 
             UUID rcUUID             = UUID.randomUUID();
             String  dtime           = DateTimeFormat.getCurrentDateTime();
+            String shopStatus       = DefineValue.SHOP_CLOSE;
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, shopId);
-            params.put(WebParams.MEMBER_ID, memberId);
+            params2.put(WebParams.RC_UUID, rcUUID);
+            params2.put(WebParams.RC_DATETIME, dtime);
+            params2.put(WebParams.APP_ID, BuildConfig.AppID);
+            params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params2.put(WebParams.SHOP_ID, shopId);
+            params2.put(WebParams.MEMBER_ID, memberId);
+
+            String idxStartMonth   = String.valueOf(startMonth+1);
+            String idxStartDay     = String.valueOf(startDay);
+            String idxEndMonth     = String.valueOf(endMonth+1);
+            String idxEndDay       = String.valueOf(endDay);
+
+            if ( idxStartMonth.length() == 1) idxStartMonth = "0"+idxStartMonth;
+            if ( idxStartDay.length() == 1) idxStartDay = "0"+idxStartDay;
+            if ( idxEndMonth.length() == 1) idxEndMonth = "0"+idxEndMonth;
+            if ( idxEndDay.length() == 1) idxStartMonth = "0"+idxEndDay;
 
 
-            params.put(WebParams.SHOP_STATUS, shopStatus);
+            params2.put(WebParams.SHOP_START_DATE, String.valueOf(startYear)+"-"+idxStartMonth+"-"+idxStartDay);
+            params2.put(WebParams.SHOP_END_DATE, String.valueOf(endYear)+"-"+idxEndMonth+"-"+idxEndDay);
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+            params2.put(WebParams.SHOP_STATUS, shopStatus);
+            params2.put(WebParams.SHOP_REMARK, "");
 
-            params.put(WebParams.SIGNATURE, signature);
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
 
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+            params2.put(WebParams.SIGNATURE, signature);
+
+            MyApiClient.registerOpenCloseShop(getContext(), params2, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                    Timber.d("isi response sent update close shop today:" + response.toString());
+                    progdialog2.dismiss();
 
                     try {
+
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            RequestParams params2    = new RequestParams();
+                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                            UUID rcUUID             = UUID.randomUUID();
-                            String  dtime           = DateTimeFormat.getCurrentDateTime();
-                            String shopStatus       = DefineValue.SHOP_CLOSE;
-
-                            params2.put(WebParams.RC_UUID, rcUUID);
-                            params2.put(WebParams.RC_DATETIME, dtime);
-                            params2.put(WebParams.APP_ID, BuildConfig.AppID);
-                            params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                            params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                            params2.put(WebParams.SHOP_ID, shopId);
-                            params2.put(WebParams.MEMBER_ID, memberId);
-
-                            params2.put(WebParams.SHOP_STATUS, shopStatus);
-                            params2.put(WebParams.SHOP_REMARK, "");
-
-                            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
-
-                            params2.put(WebParams.SIGNATURE, signature);
-
-                            MyApiClient.registerOpenCloseShop(getContext(), params2, new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                    progdialog2.dismiss();
-
-                                    try {
-
-                                        String code = response.getString(WebParams.ERROR_CODE);
-                                        if (code.equals(WebParams.SUCCESS_CODE)) {
-
-
-                                        } else {
-                                            //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
-                                            alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
-                                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                                    new DialogInterface.OnClickListener() {
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            dialog.dismiss();
-                                                        }
-                                                    });
-                                            alertDialog.show();
-
+                            alertDialog.setMessage(getString(R.string.message_notif_update_tutup_manual_success));
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getActivity().finish();
                                         }
+                                    });
+                            alertDialog.show();
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                        } else {
+                            //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                    super.onFailure(statusCode, headers, responseString, throwable);
-                                    ifFailure(throwable);
-                                }
+                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                                    ifFailure(throwable);
-                                }
-
-                                private void ifFailure(Throwable throwable) {
-                                    //if (MyApiClient.PROD_FAILURE_FLAG)
-                                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    //else
-                                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                                    if (progdialog2.isShowing())
-                                        progdialog2.dismiss();
-
-                                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                                }
-
-                            });
-
+                            alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            alertDialog.show();
 
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            //test.showDialoginActivity(getApplication(),message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getContext(), code, Toast.LENGTH_LONG).show();
-                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -606,32 +543,32 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
+                    ifFailure(throwable);
                 }
 
                 @Override
                 public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
+                    ifFailure(throwable);
                 }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                private void ifFailure(Throwable throwable) {
+                    //if (MyApiClient.PROD_FAILURE_FLAG)
+                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    //else
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
                     if (progdialog2.isShowing())
                         progdialog2.dismiss();
 
-                    Timber.w("Error Koneksi sent request setup open hour:"+throwable.toString());
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
                 }
+
             });
+
+
+
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

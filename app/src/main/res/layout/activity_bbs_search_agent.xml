@@ -49,6 +49,39 @@
         android:layout_height="wrap_content"
         app:tabMode="fixed" />
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/llAmount"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/etJumlah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                android:hint="@string/jumlah"
+                android:inputType="number"
+                android:maxLength="10"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/abc_text_size_medium_material" />
+
+            <Button
+                android:id="@+id/btnProses"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|center"
+                android:text="@string/search" />
+        </LinearLayout>
+    </LinearLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -56,36 +89,6 @@
         android:layout_weight="1"
         android:background="@android:color/white" />
 
-    <RelativeLayout android:orientation="horizontal"
-        android:layout_width="fill_parent" android:layout_height="60dip"
-        >
 
-        <LinearLayout
-            android:id="@+id/llAmount"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <EditText
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:id="@+id/etJumlah"
-                android:hint="@string/jumlah"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryDark"
-                android:maxLength="10"
-                android:inputType="number"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical|center"
-                android:id="@+id/btnProses"
-                android:text="@string/search"
-                />
-        </LinearLayout>
-    </RelativeLayout>
 
 </LinearLayout>

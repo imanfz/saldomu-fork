@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,8 +31,6 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BbsMerchantCommunityList;
-import com.sgo.saldomu.activities.BbsSetupOpenHourActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -43,18 +40,15 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.OpenHourDays;
-import com.sgo.saldomu.models.ShopDetail;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -79,7 +73,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
     private View viewLayout;
     CheckBox chkBuka24Jam, chkSetiapHari;
     TableLayout tlLabelPilihHari, tlLabelPilihJam, tlLabelPilihSetiapHari, tlTutupSetiapTanggal;
-    TableRow trSelectedDate;
+    TableRow trSelectedDate, trSettingDate;
     ArrayList<OpenHourDays> setupOpenHours = new ArrayList<OpenHourDays>();
     ArrayList<String> selectedDates = new ArrayList<>();
     ArrayList<String> optDates = new ArrayList<>();
@@ -146,9 +140,13 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
         tvSelectedDate          = (TextView) viewLayout.findViewById(R.id.tvSelectedDate);
         trSelectedDate          = (TableRow) viewLayout.findViewById(R.id.trSelectedDate);
+        trSettingDate           = (TableRow) viewLayout.findViewById(R.id.trSettingDate);
         llWaktuBeroperasi       = (LinearLayout) viewLayout.findViewById(R.id.llWaktuBeroperasi);
         llWaktuBeroperasi.setVisibility(View.GONE);
         btnSubmit.setVisibility(View.GONE);
+        btnTanggal.setVisibility(View.GONE);
+
+        tlTutupSetiapTanggal.setVisibility(View.GONE);
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 

@@ -62,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
@@ -108,6 +110,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     SupportMapFragment mapFrag;
     private String mobility, completeAddress;
     SecurePreferences sp;
+    private final int RC_PHONE_CALL = 503;
 
 
     public AgentMapFragment() {
@@ -325,7 +328,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void process() {
         hashMarker = new HashMap<>();
 
-        pickupTextView = (TextView) rootView.findViewById(R.id.pickupTextView);
+        //pickupTextView = (TextView) rootView.findViewById(R.id.pickupTextView);
         //pickupTextView.setText(pickup);
 
         thisClass = this;
@@ -340,14 +343,14 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
         //displayMap();
 
         //set button current location
-        currentLocationBtn = (ImageView) rootView.findViewById(R.id.currentLocationBtn);
-        currentLocationBtn.setOnClickListener(this);
+        //currentLocationBtn = (ImageView) rootView.findViewById(R.id.currentLocationBtn);
+        //currentLocationBtn.setOnClickListener(this);
 
         //set button search location
-        searchLocationBtn = (ImageView) rootView.findViewById(R.id.searchLocationBtn);
-        searchLocationBtn.setOnClickListener(this);
-        searchLocationContainer = (LinearLayout) rootView.findViewById(R.id.searchLocationContainer);
-        if (!searchLocationChecked) searchLocationContainer.setVisibility(View.GONE);
+        //searchLocationBtn = (ImageView) rootView.findViewById(R.id.searchLocationBtn);
+        //searchLocationBtn.setOnClickListener(this);
+        //searchLocationContainer = (LinearLayout) rootView.findViewById(R.id.searchLocationContainer);
+        //if (!searchLocationChecked) searchLocationContainer.setVisibility(View.GONE);
     }
 
     //implements View.OnClickListener
@@ -645,7 +648,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-        /*if ( shopDetails.size() > 0 && mobility.equals(DefineValue.STRING_NO) ) {
+        if ( shopDetails.size() > 0 && mobility.equals(DefineValue.STRING_NO) ) {
             for (Integer index : hashMarker.keySet()) {
                 if (marker.equals(hashMarker.get(index))) {
                     this.shopDetails.get(index).setIsPolyline("1");
@@ -661,12 +664,13 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                     agentDetailBbsFragmentDialog.setAgentInfoSingle(shopDetail, index);
                     agentDetailBbsFragmentDialog.setCurrentLatitude(currentLatitude);
                     agentDetailBbsFragmentDialog.setCurrentLongitude(currentLongitude);
+                    agentDetailBbsFragmentDialog.setCancelable(false);
                     agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
                 }
             }
 
             setPolyline();
-        }*/
+        }
 
         return false;
 
@@ -801,4 +805,9 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
 }

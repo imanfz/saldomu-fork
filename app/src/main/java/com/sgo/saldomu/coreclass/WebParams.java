@@ -374,6 +374,8 @@ public class WebParams {
     public static String SHOP_START_OPEN_HOUR   = "shop_start_open_hour";
     public static String SHOP_END_OPEN_HOUR     = "shop_end_open_hour";
     public static String SHOP_DATE              = "shop_date";
+    public static String SHOP_START_DATE        = "shop_start_date";
+    public static String SHOP_END_DATE          = "shop_end_date";
 
     public static String TX_AMOUNT = "tx_amount";
     public static String SCHEME_CODE= "scheme_code";

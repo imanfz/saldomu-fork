@@ -944,6 +944,8 @@
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
 
     <string name="rationale_location">This app needs access to your location.</string>
+    <string name="rationale_phone_call">This app needs access to your phone call.</string>
+    <string name="rationale_location_phone_sms">This app needs access to your location, phone call and send sms.</string>
 
     <string name="menu_item_search_agent_cta">Agen Setor Tunai</string>
     <string name="menu_item_search_agent_atc">Agen Tarik Tunai</string>
@@ -958,6 +960,8 @@
     <string name="alertbox_title_warning">Peringatan</string>
     <string name="alertbox_title_information">Informasi</string>
     <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
+    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call untuk menggunakan aplikasi</string>
+    <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Cari</string>
     <string name="alertbox_gps_warning">GPS belum aktif, apakah Anda mau mengaktifkan GPS Anda?</string>
@@ -1001,6 +1005,6 @@
     <string name="label_tutup_terjadwal">Tutup Terjadwal</string>
     <string name="label_mulai_dari">Mulai dari</string>
     <string name="label_sampai_dengan">Sampai dengan</string>
-    <string name="message_notif_update_tutup_manual_success">Setting informasi atur waktu tutup manual disimpan</string>
+    <string name="message_notif_update_tutup_manual_success">Pengaturan informasi waktu tutup manual berhasil disimpan</string>
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
 </resources>
