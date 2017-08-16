@@ -33,7 +33,7 @@
         android:required="false" />
 
     <application
-        android:name="com.sgo.saldomu.coreclass.CoreApp"
+        android:name=".coreclass.CoreApp"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_pin_only"
@@ -51,7 +51,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.sgo.saldomu.activities.Registration"
+            android:name=".activities.Registration"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
@@ -60,7 +60,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sgo.saldomu.activities.MainPage"
+            android:name=".activities.MainPage"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:exported="true"
             android:screenOrientation="portrait"
@@ -72,183 +72,185 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sgo.saldomu.activities.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.sgo.saldomu.activities.ListATM"
+            android:name=".activities.ListATM"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.SgoPlusWeb"
+            android:name=".activities.SgoPlusWeb"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.MyProfileActivity"
+            android:name=".activities.MyProfileActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.ChangePassword"
+            android:name=".activities.ChangePassword"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.EvoucherHPActivity"
+            android:name=".activities.EvoucherHPActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.BillerActivity"
+            android:name=".activities.BillerActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity"
+            android:name=".activities.PayFriendsConfirmTokenActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.TopUpActivity"
+            android:name=".activities.TopUpActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.NotificationActivity"
+            android:name=".activities.NotificationActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.FriendsViewDetailActivity"
+            android:name=".activities.FriendsViewDetailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.CreatePIN"
+            android:name=".activities.CreatePIN"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.CreateGroupActivity"
+            android:name=".activities.CreateGroupActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.TimelineDetailActivity"
+            android:name=".activities.TimelineDetailActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.HistoryDetailActivity"
+            android:name=".activities.HistoryDetailActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.GroupDetailActivity"
+            android:name=".activities.GroupDetailActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.SocialPromoActivity"
+            android:name=".activities.SocialPromoActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.AddByQRCodeActivity"
+            android:name=".activities.AddByQRCodeActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.InsertPIN"
+            android:name=".activities.InsertPIN"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.TopUpAtmActivity"
+            android:name=".activities.TopUpAtmActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.CollectionActivity"
+            android:name=".activities.CollectionActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.AboutAppsActivity"
+            android:name=".activities.AboutAppsActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.RegisterSMSBankingActivity"
+            android:name=".activities.RegisterSMSBankingActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.PulsaAgentActivity"
+            android:name=".activities.PulsaAgentActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.PulsaAgentWeb"
+            android:name=".activities.PulsaAgentWeb"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.PasswordRegisterActivity"
+            android:name=".activities.PasswordRegisterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.LevelFormRegisterActivity"
+            android:name=".activities.LevelFormRegisterActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.CashoutActivity"
+            android:name=".activities.CashoutActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.Introduction"
+            android:name=".activities.Introduction"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.ChangePIN"
+            android:name=".activities.ChangePIN"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.ListContactActivity"
+            android:name=".activities.ListContactActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsMerchantCommunityList"
+            android:name=".activities.BbsMerchantCommunityList"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsMemberLocationActivity"
+            android:name=".activities.BbsMemberLocationActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsMerchantCategoryActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.sgo.saldomu.activities.BbsMerchantSetupHourActivity"
+            android:name=".activities.BbsMerchantCategoryActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsSearchTokoActivity"
+            android:name=".activities.BbsMerchantSetupHourActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BbsSearchTokoActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
-        <activity android:name=".activities.BbsSearchAgentActivity" android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.BbsSearchAgentActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.BbsSearchByLocationActivity" />
         <activity android:name=".activities.BbsMemberShopActivity" />
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
@@ -261,31 +263,44 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="com.sgo.saldomu.activities.BBSRegAccountActivity"
+            android:name=".activities.BBSRegAccountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.BbsApprovalAgentActivity"/>
+        <activity android:name=".activities.BbsApprovalAgentActivity" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsMapViewByAgentActivity"
+            android:name=".activities.BbsMapViewByAgentActivity"
             android:label="@string/title_activity_bbs_map_view_by_agent"
-            android:theme="@style/Theme.MyTheme"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyTheme" />
         <activity
-            android:name="com.sgo.saldomu.activities.BbsMapViewByMemberActivity"
+            android:name=".activities.BbsMapViewByMemberActivity"
             android:label="@string/title_activity_bbs_map_view_by_member"
-            android:theme="@style/Theme.MyTheme"
-            android:screenOrientation="portrait" />
-        <activity android:name="com.sgo.saldomu.activities.TutorialActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MyTheme" />
+        <activity
+            android:name=".activities.TutorialActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <service android:name=".services.BalanceService" />
         <service android:name=".services.AppInfoService" />
         <service android:name=".services.UserProfileService" />
         <service android:name=".services.UpdateLocationService" />
-        <service android:name="com.sgo.saldomu.services.UpdateBBSCity" />
+        <service android:name=".services.UpdateBBSCity" />
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".activities.ErrorActivity"></activity>
     </application>
 
 </manifest>
