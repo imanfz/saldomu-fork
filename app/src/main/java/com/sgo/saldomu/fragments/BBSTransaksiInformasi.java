@@ -39,7 +39,6 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -59,7 +58,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -83,7 +81,6 @@ public class BBSTransaksiInformasi extends Fragment {
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
     private EditText etNoHp, etRemark;
-    private Realm realm;
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
@@ -93,7 +90,7 @@ public class BBSTransaksiInformasi extends Fragment {
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
-    no_benef, name_benef, no_source, city_name, comm_benef_atc;
+    no_benef, name_benef, no_source, city_name, comm_benef_atc,comm_source_cta;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -134,7 +131,6 @@ public class BBSTransaksiInformasi extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        realm = Realm.getInstance(RealmManager.BBSConfiguration);
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
@@ -155,6 +151,12 @@ public class BBSTransaksiInformasi extends Fragment {
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
+                comm_source_cta = bundle.getString(DefineValue.BBS_COMM_CTA);
+                try {
+                    setBankDataSourceCTA(new JSONArray(comm_source_cta));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                     city_id = bundle.getString(DefineValue.ACCT_CITY_CODE);
                     city_name = bundle.getString(DefineValue.ACCT_CITY_NAME);
@@ -203,9 +205,6 @@ public class BBSTransaksiInformasi extends Fragment {
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
 
-                listbankSource = realm.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, CTA)
-                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
                 setAgent(listbankSource);
             } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
@@ -383,6 +382,22 @@ public class BBSTransaksiInformasi extends Fragment {
                 bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
                 bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
                 listbankBenef.add(bbsBankModel);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setBankDataSourceCTA(JSONArray _data){
+        listbankSource = new ArrayList<>();
+        for(int i = 0 ; i < _data.length() ; i++) {
+            BBSBankModel bbsBankModel =  new BBSBankModel();
+            try {
+                bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
+                bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
+                bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
+                bbsBankModel.setProduct_h2h(_data.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
+                listbankSource.add(bbsBankModel);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

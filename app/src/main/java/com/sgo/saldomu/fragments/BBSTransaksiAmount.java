@@ -21,9 +21,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,7 +74,7 @@ public class BBSTransaksiAmount extends Fragment {
     private TextView tvTitle;
     private EditText etAmount;
     private String transaksi, comm_code, member_code, benef_product_type, api_key,
-            callback_url, comm_id, userID, accessKey, comm_benef_atc, type, defaultAmount, noHpPengirim;
+            callback_url, comm_id, userID, accessKey, comm_benef_atc, comm_source_cta, type, defaultAmount, noHpPengirim;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -186,11 +188,8 @@ public class BBSTransaksiAmount extends Fragment {
 
             comm = realmBBS.where(BBSCommModel.class)
                     .equalTo(WebParams.SCHEME_CODE, CTA).findFirst();
-            listbankBenef = realmBBS.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE, CTA)
-                    .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
             setBBSCity();
-            setMember(listbankBenef);
+            if(isBack) setMember(listbankBenef);
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
                 if(!defaultAmount.equals(""))
@@ -398,6 +397,7 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
                         args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
                         args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
+                        args.putString(DefineValue.BBS_COMM_CTA, comm_source_cta);
                         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                             String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
                             String city_name = spBenefCity.getText().toString();
@@ -697,6 +697,107 @@ public class BBSTransaksiAmount extends Fragment {
         }
     }
 
+    private void getBankListCTA(String _comm_code) {
+        try {
+
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_BANK_A2C,
+                    userID, accessKey);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.SCHEME_CODE, CTA);
+            params.put(WebParams.COMM_CODE, _comm_code);
+
+            Log.d("params bbs list c2A", params.toString());
+            MyApiClient.getGlobalBBSBankC2A(getActivity(),params, new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    progdialog.dismiss();
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            Timber.d("isi response get bbs list:"+response.toString());
+
+                            comm_source_cta = response.getString(WebParams.COMM_SOURCE);   //rekening agen
+                            if(!comm_source_cta.equals("")) {
+                                emptyCashoutBenefLayout.setVisibility(View.GONE);
+                                String comm_benef = response.getString(WebParams.COMM_BENEF); //rekening member
+                                if(!comm_benef.equals("")) {
+                                    inputForm.setVisibility(View.VISIBLE);
+                                    emptyLayout.setVisibility(View.GONE);
+                                    JSONArray arr = new JSONArray(comm_benef);
+                                    setBankDataSourceCTA(arr);
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
+                                    emptyLayout.setVisibility(View.VISIBLE);
+                                    inputForm.setVisibility(View.GONE);
+                                }
+                            }
+                            else {
+                                inputForm.setVisibility(View.GONE);
+                                emptyLayout.setVisibility(View.GONE);
+                                emptyCashoutBenefLayout.setVisibility(View.VISIBLE);
+                            }
+
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:" + response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(), message);
+                        }else {
+                            Timber.d("isi error get bbs list:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            emptyLayout.setVisibility(View.VISIBLE);
+                            inputForm.setVisibility(View.GONE);
+                            emptyCashoutBenefLayout.setVisibility(View.GONE);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(act, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(act, throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    Timber.w("Error Koneksi get bbs list:"+throwable.toString());
+                    progdialog.dismiss();
+                    emptyLayout.setVisibility(View.VISIBLE);
+                    inputForm.setVisibility(View.GONE);
+                    emptyCashoutBenefLayout.setVisibility(View.GONE);
+                }
+
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+            progdialog.dismiss();
+            emptyLayout.setVisibility(View.VISIBLE);
+            inputForm.setVisibility(View.GONE);
+            emptyCashoutBenefLayout.setVisibility(View.GONE);
+        }
+    }
+
 
     private void setBankDataSource(JSONArray _data){
         listbankSource = new ArrayList<>();
@@ -716,6 +817,23 @@ public class BBSTransaksiAmount extends Fragment {
         setMember(listbankSource);
     }
 
+    private void setBankDataSourceCTA(JSONArray _data){
+        listbankBenef = new ArrayList<>();
+        for(int i = 0 ; i < _data.length() ; i++) {
+            BBSBankModel bbsBankModel =  new BBSBankModel();
+            try {
+                bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
+                bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
+                bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
+                bbsBankModel.setBank_gateway(_data.getJSONObject(i).getString(WebParams.BANK_GATEWAY));
+                listbankBenef.add(bbsBankModel);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        setMember(listbankBenef);
+    }
+
 
     private void getMemberCode(){
         boolean commIdFound = false;
@@ -728,8 +846,7 @@ public class BBSTransaksiAmount extends Fragment {
         }
         if(commIdFound) {
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                inputForm.setVisibility(View.VISIBLE);
-                emptyLayout.setVisibility(View.GONE);
+                getBankListCTA(comm_code);
             }
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
                 getBankList(comm_code, member_code);
