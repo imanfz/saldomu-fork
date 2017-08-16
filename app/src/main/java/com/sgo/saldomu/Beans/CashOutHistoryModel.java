@@ -9,7 +9,7 @@ public class CashOutHistoryModel {
     private String benef_product_code;
     private String benef_product_name;
     private String benef_product_type;
-    private String benef_product_value_code;
+//    private String benef_product_value_code;
     private String source_product_code; //rekening agent
     private String source_product_name;
     private String source_product_type;
@@ -28,7 +28,7 @@ public class CashOutHistoryModel {
         this.setBenef_product_code(benef_product_code);
         this.setBenef_product_name(benef_product_name);
         this.setBenef_product_type(benef_product_type);
-        this.setBenef_product_value_code(benef_product_value_code);
+//        this.setBenef_product_value_code(benef_product_value_code);
         this.setMember_shop_phone(member_shop_phone);
         this.setSource_product_code(source_product_code);
         this.setSource_product_name(source_product_name);
@@ -51,11 +51,11 @@ public class CashOutHistoryModel {
 
     public String getBenef_product_code() {return benef_product_code;    }
 
-    public void setBenef_product_value_code(String benef_product_value_code) {
-        this.benef_product_value_code = benef_product_value_code;
-    }
-
-    public String getBenef_product_value_code() {return benef_product_value_code;    }
+//    public void setBenef_product_value_code(String benef_product_value_code) {
+//        this.benef_product_value_code = benef_product_value_code;
+//    }
+//
+//    public String getBenef_product_value_code() {return benef_product_value_code;    }
 
     public void setBenef_product_type(String benef_product_type) {
         this.benef_product_type = benef_product_type;
@@ -68,12 +68,6 @@ public class CashOutHistoryModel {
     }
 
     public String getSource_product_code() {return source_product_code;}
-
-    public void setPesan(String pesan) {
-        this.pesan = pesan;
-    }
-
-    public String getPesan() {return pesan;}
 
     public void setMember_shop_phone(String member_shop_phone) {
         this.member_shop_phone = member_shop_phone;
@@ -104,4 +98,10 @@ public class CashOutHistoryModel {
     }
 
     public String getSource_product_type(){return source_product_type;}
+
+    public void setPesan(String pesan) {
+        this.pesan = pesan;
+    }
+
+    public String getPesan() {return pesan;    }
 }
