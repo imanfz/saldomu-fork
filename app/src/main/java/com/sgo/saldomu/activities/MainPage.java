@@ -52,6 +52,7 @@ import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateLocationService;
@@ -461,6 +462,7 @@ public class MainPage extends BaseActivity{
                                     progdialog.dismiss();
                                 checkField();
 
+                                callAgentShopService();
                                 callBBSCityService();
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
@@ -661,6 +663,13 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
+
+        mEditor.putString(DefineValue.IS_AGENT_APPROVE, "");
+        mEditor.putString(DefineValue.AGENT_NAME, "");
+        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, "");
+        mEditor.putString(DefineValue.BBS_MEMBER_ID, "");
+        mEditor.putString(DefineValue.BBS_SHOP_ID, "");
+
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
         openFirstScreen(FIRST_SCREEN_LOGIN);
@@ -791,6 +800,7 @@ public class MainPage extends BaseActivity{
 //                Timber.d("masuukk result refesh navdraw");
                 mNavDrawer.refreshUINavDrawer();
                 mNavDrawer.refreshDataNavDrawer();
+
             }
             if(resultCode == RESULT_FIRST_TIME){
                     checkField();
@@ -1016,5 +1026,9 @@ public class MainPage extends BaseActivity{
             }
         });
 
+    }
+
+    private void callAgentShopService() {
+        AgentShopService.getAgentShop(MainPage.this);
     }
 }

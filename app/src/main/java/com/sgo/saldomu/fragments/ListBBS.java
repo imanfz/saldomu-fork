@@ -92,9 +92,16 @@ public class ListBBS extends ListFragment {
             else {
                 posIdx = -1;
             }
-        } else
-            posIdx = BBSActivity.CONFIRMCASHOUT;
+        } else {
+            if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
+                posIdx = BBSActivity.CONFIRMCASHOUT;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.title_rating_by_member)))
+                posIdx = BBSActivity.BBSRATINGBYMEMBER;
+            else {
+                posIdx = -1;
+            }
 
+        }
         if(posIdx !=-1){
             Intent i = new Intent(getActivity(), BBSActivity.class);
             i.putExtra(DefineValue.INDEX, posIdx);

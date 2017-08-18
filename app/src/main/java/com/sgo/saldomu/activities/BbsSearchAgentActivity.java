@@ -21,6 +21,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -63,6 +65,9 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.entityRealm.AgentServiceDetail;
+import com.sgo.saldomu.fragments.AgentListFragment;
+import com.sgo.saldomu.fragments.AgentListFrameFragment;
+import com.sgo.saldomu.fragments.AgentMapFragment;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 
@@ -149,6 +154,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
     };
 
+    //FragmentManager fragment;
+
 
 
     @Override
@@ -157,6 +164,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
+        //fragment            = getSupportFragmentManager();
 
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
@@ -1638,8 +1646,29 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onBackPressed() {
+
         super.onBackPressed();
+        /*if(fragment !=null) {
+            if ( fragment instanceof AgentMapFragment) {
+
+            } else if ( fragment instanceof AgentListFragment) {
+
+            } else {
+                setBackPressed();
+            }
+        }
+        else {
+            setBackPressed();
+        }*/
+
     }
+
+    /*public void setBackPressed() {
+        if (fragment.getBackStackEntryCount() > 1)
+            fragment.popBackStack();
+        else
+            super.onBackPressed();
+    }*/
 
 
 }

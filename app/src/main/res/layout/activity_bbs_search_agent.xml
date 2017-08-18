@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical|center"
-                android:text="@string/search" />
+                android:text="@string/proses" />
         </LinearLayout>
     </LinearLayout>
 

@@ -187,7 +187,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(getContext(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();

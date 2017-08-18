@@ -9,10 +9,30 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="59dp"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:id="@+id/linearLayout">
 
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="59dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:id="@+id/linearLayoutBtn"
+        android:layout_below="@+id/llMemberDetail">
+
+        <Button
+            android:id="@+id/btnLokasiGPS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/bbs_gps_location" />
 
     </LinearLayout>
 
@@ -21,9 +41,9 @@
         android:layout_height="wrap_content"
         android:id="@+id/llSearch"
         android:orientation="horizontal"
-        android:layout_below="@+id/llMemberDetail"
-        android:layout_alignLeft="@+id/linearLayout"
-        android:layout_alignStart="@+id/linearLayout">
+        android:layout_below="@+id/linearLayoutBtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
             android:id="@+id/editText"
@@ -49,11 +69,7 @@
         android:onClick="onMapSearch"
         android:text="@string/bbs_agent_search" / -->
 
-        <Button
-            android:id="@+id/btnLokasiGPS"
-            android:layout_width="142dp"
-            android:layout_height="wrap_content"
-            android:text="@string/bbs_gps_location" />
+
     </LinearLayout>
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

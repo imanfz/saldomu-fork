@@ -104,7 +104,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         //agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
         callBtn     = (ImageView) rootView.findViewById(R.id.callBtn);
         smsBtn      = (ImageView) rootView.findViewById(R.id.smsBtn);
-        emailBtn    = (ImageView) rootView.findViewById(R.id.emailBtn);
+        //emailBtn    = (ImageView) rootView.findViewById(R.id.emailBtn);
         //bookBtn     = (Button) rootView.findViewById(R.id.bookBtn);
         navigationBtn   = (ImageView) rootView.findViewById(R.id.navigationBtn);
 
@@ -112,7 +112,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         //agentMapBtn.setOnClickListener(this);
         callBtn.setOnClickListener(this);
         smsBtn.setOnClickListener(this);
-        emailBtn.setOnClickListener(this);
+        //emailBtn.setOnClickListener(this);
         //bookBtn.setOnClickListener(this);
         navigationBtn.setOnClickListener(this);
         //}
@@ -158,11 +158,11 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         {
             showSms();
         }
-        else if(view.getId() == emailBtn.getId())
+        /*else if(view.getId() == emailBtn.getId())
         {
             showEmail();
         }
-/*        else if(view.getId() == bookBtn.getId())
+        else if(view.getId() == bookBtn.getId())
         {
             //Intent intent = new Intent(getActivity(), BookBbsActivity.class);
             //SearchAgentActivity.business_name_arr.get(agentPosition).

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.services.AgentShopService;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -164,7 +166,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     intent.putExtra("district", district);
                     intent.putExtra("address", address);
                     intent.putExtra("category", category);
-                    getContext().startActivity(intent);
+                    getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
+                    //getActivity().finish();
 
                 }
             }
@@ -193,7 +196,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(getContext(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();
@@ -494,11 +497,23 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+
+
                             if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                                 Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
                             } else {
                                 Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
                             }
+
+                            mEditor.apply();
+
+                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                            //Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                            //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
                         } else {
                             Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }

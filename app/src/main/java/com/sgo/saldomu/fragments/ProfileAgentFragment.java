@@ -113,12 +113,19 @@ public class ProfileAgentFragment extends Fragment
         else
             mPic= Picasso.with(getActivity());
 
-        mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation()).into(agentProfilePic);
-
+        if ( this.shopDetail.getUrlSmallProfilePicture() != null && !this.shopDetail.getUrlSmallProfilePicture().isEmpty() ) {
+            mPic.load(this.shopDetail.getUrlSmallProfilePicture())
+                    .error(roundedImage)
+                    .fit().centerInside()
+                    .placeholder(R.drawable.progress_animation)
+                    .transform(new RoundImageTransformation()).into(agentProfilePic);
+        } else {
+            mPic.load(R.drawable.user_unknown_menu)
+                    .error(roundedImage)
+                    .fit().centerInside()
+                    .placeholder(R.drawable.progress_animation)
+                    .transform(new RoundImageTransformation()).into(agentProfilePic);
+        }
         //int profile = getActivity().getResources().getIdentifier(agentProfilePicSession, "drawable", getActivity().getPackageName());
         //agentProfilePic.setImageResource(profile);
     }

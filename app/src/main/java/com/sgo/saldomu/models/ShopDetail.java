@@ -49,6 +49,8 @@ public class ShopDetail {
     private String keyCountry;
     private String ccyId;
     private ArrayList<String> categories = new ArrayList<>();
+    private String urlSmallProfilePicture = "https://mobile-dev.espay.id/static/img/profpic/96X96/small_img_pp_1483676979.jpeg?9090718914";
+    private String lastLogin;
 
     public String getMemberId() {
         return memberId;
@@ -378,5 +380,21 @@ public class ShopDetail {
 
     public void setStepApprove(String stepApprove) {
         this.stepApprove = stepApprove;
+    }
+
+    public String getUrlSmallProfilePicture() {
+        return urlSmallProfilePicture;
+    }
+
+    public void setUrlSmallProfilePicture(String urlSmallProfilePicture) {
+        this.urlSmallProfilePicture = urlSmallProfilePicture;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

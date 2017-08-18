@@ -23,6 +23,7 @@ import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragListSettingKelola;
+import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
 import com.sgo.saldomu.fragments.FragSetttingKelola;
 import com.sgo.saldomu.fragments.FragTutupManual;
@@ -48,6 +49,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSTRXAGENT         = 7;
     public static final int BBSWAKTUBEROPERASI  = 8;
     public static final int BBSTUTUPMANUAL      = 9;
+    public static final int BBSRATINGBYMEMBER   = 10;
 
 
     FragmentManager fragmentManager;
@@ -119,6 +121,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     newFragment = new FragTutupManual();
                     tag = FragTutupManual.TAG;
                     break;
+                case BBSRATINGBYMEMBER:
+                    newFragment = new FragMemberRating();
+                    tag = FragMemberRating.TAG;
+                    break;
             }
 
 
@@ -173,6 +179,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.menu_item_title_waktu_beroperasi));
         else if( fragment instanceof FragTutupManual )
             setActionBarTitle(getString(R.string.menu_item_title_tutup_manual));
+        else if( fragment instanceof FragMemberRating )
+            setActionBarTitle(getString(R.string.title_rating_by_member));
     }
 
     @Override
@@ -227,6 +235,9 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     }
                 }
 
+            } else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
+                this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+                finish();
             }
 
         }
@@ -299,14 +310,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         Intent intent    = getIntent();
         int index = intent.getIntExtra(DefineValue.INDEX,0);
 
-        if ( index == BBSAPPROVALAGENT ) {
+        if (fragmentManager.getBackStackEntryCount() > 1)
+            fragmentManager.popBackStack();
+        else
             super.onBackPressed();
-        } else {
-            if (fragmentManager.getBackStackEntryCount() > 1)
-                fragmentManager.popBackStack();
-            else
-                super.onBackPressed();
-        }
+
     }
 
     @Override

@@ -379,6 +379,7 @@ public class DefineValue {
     public static String STRING_ACCEPT          = "S";
     public static String STRING_CANCEL          = "F";
 
+    public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
     public static String BBS_SHOP_ID        = "BbsShopId";
@@ -412,6 +413,7 @@ public class DefineValue {
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
 
-
+    public static String AGENT_NAME             = "agentName";
+    public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
 }
 

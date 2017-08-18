@@ -727,7 +727,7 @@
     <!-- END progress_dialog_bbs -->
 	<string name="maintenance">Pemeliharaan</string>
     <!-- agent_profile_bbs -->
-    <string name="distance_agent_profile_bbs_label">Distance : \u0020</string>
+    <string name="distance_agent_profile_bbs_label">Jarak : \u0020</string>
     <string name="distance_measurement_agent_profile_bbs_label">\u0020</string>
     <string name="last_online_agent_profile_bbs_label">Last Online : \u0020</string>
     <string name="cash_in_agent_profile_bbs_label">Nabung</string>
@@ -1007,4 +1007,5 @@
     <string name="label_sampai_dengan">Sampai dengan</string>
     <string name="message_notif_update_tutup_manual_success">Pengaturan informasi waktu tutup manual berhasil disimpan</string>
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
+    <string name="title_rating_by_member">Dummy Rating by Member</string>
 </resources>

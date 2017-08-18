@@ -190,6 +190,7 @@
 
     <string-array name="list_bbs_member">
         <item>@string/title_cash_out_member</item>
+        <!-- item>@string/title_rating_by_member</item -->
     </string-array>
 
     <string-array name="list_menu_frag_new_home">

@@ -266,7 +266,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/border">
@@ -280,7 +280,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -294,7 +294,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!-- LinearLayout
             android:orientation="horizontal"
             android:layout_width="60dp"
             android:layout_height="40dp"
@@ -308,11 +308,11 @@
                 android:id="@+id/emailBtn"
                 style="@style/EmailIconAgentProfileBbs" />
 
-            </LinearLayout>
+            </LinearLayout -->
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"

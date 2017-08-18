@@ -98,7 +98,7 @@ public class BbsMerchantCommunityList extends BaseActivity {
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(getApplication(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(getApplication(), params, false, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();
