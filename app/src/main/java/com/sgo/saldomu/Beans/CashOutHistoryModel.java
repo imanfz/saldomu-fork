@@ -9,7 +9,6 @@ public class CashOutHistoryModel {
     private String benef_product_code;
     private String benef_product_name;
     private String benef_product_type;
-//    private String benef_product_value_code;
     private String source_product_code; //rekening agent
     private String source_product_name;
     private String source_product_type;
@@ -22,13 +21,12 @@ public class CashOutHistoryModel {
 
     }
 
-    public CashOutHistoryModel(String amount, String benef_product_code, String benef_product_name, String benef_product_type, String benef_product_value_code, String member_shop_phone, String source_product_code, String source_product_name, String source_product_type, String source_product_h2h, String pesan)
+    public CashOutHistoryModel(String amount, String benef_product_code, String benef_product_name, String benef_product_type, String member_shop_phone, String source_product_code, String source_product_name, String source_product_type, String source_product_h2h, String pesan)
     {
         this.setAmount(amount);
         this.setBenef_product_code(benef_product_code);
         this.setBenef_product_name(benef_product_name);
         this.setBenef_product_type(benef_product_type);
-//        this.setBenef_product_value_code(benef_product_value_code);
         this.setMember_shop_phone(member_shop_phone);
         this.setSource_product_code(source_product_code);
         this.setSource_product_name(source_product_name);
@@ -50,12 +48,6 @@ public class CashOutHistoryModel {
     }
 
     public String getBenef_product_code() {return benef_product_code;    }
-
-//    public void setBenef_product_value_code(String benef_product_value_code) {
-//        this.benef_product_value_code = benef_product_value_code;
-//    }
-//
-//    public String getBenef_product_value_code() {return benef_product_value_code;    }
 
     public void setBenef_product_type(String benef_product_type) {
         this.benef_product_type = benef_product_type;

@@ -227,7 +227,10 @@ public class BBSTransaksiInformasi extends Fragment {
                     etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
                 }
                 else{
-                    etNoHp.setText(cashInHistoryModel.getMember_shop_phone());
+                    if (cashInHistoryModel!=null)
+                    {
+                        etNoHp.setText(cashInHistoryModel.getMember_shop_phone());
+                    }
                 }
                 if (cashInHistoryModel!=null)
                 {
@@ -849,34 +852,27 @@ public class BBSTransaksiInformasi extends Fragment {
 
     private void cashInHistory ()
     {
-        CashInHistoryModel cashInHistoryModel = new CashInHistoryModel();
-
-        if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-            cashInHistoryModel.setAmount(amount);
-            cashInHistoryModel.setBenef_product_code(benef_product_code);
-            cashInHistoryModel.setBenef_product_name(benef_product_name);
-            cashInHistoryModel.setBenef_product_type(benef_product_type);
-            cashInHistoryModel.setBenef_product_value_code(no_benef);
-            cashInHistoryModel.setSource_product_code(source_product_code);
-            cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
-            cashInHistoryModel.setSource_product_type(source_product_type);
-            cashInHistoryModel.setSource_product_h2h(source_product_h2h);
-            cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
-            cashInHistoryModel.setPesan(etRemark.getText().toString());
-        } else {
-            cashInHistoryModel.setAmount(amount);
-            cashInHistoryModel.setBenef_product_code(benef_product_code);
-            cashInHistoryModel.setBenef_product_name(benef_product_name);
-            cashInHistoryModel.setBenef_product_type(benef_product_type);
-            cashInHistoryModel.setBenef_product_value_code(no_benef);
-            cashInHistoryModel.setBenef_product_value_city(city_name);
-            cashInHistoryModel.setSource_product_code(source_product_code);
-            cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
-            cashInHistoryModel.setSource_product_type(source_product_type);
-            cashInHistoryModel.setSource_product_h2h(source_product_h2h);
-            cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
-            cashInHistoryModel.setPesan(etRemark.getText().toString());
+        if (cashInHistoryModel==null)
+        {
+            cashInHistoryModel = new CashInHistoryModel();
         }
+
+        cashInHistoryModel.setAmount(amount);
+        cashInHistoryModel.setBenef_product_code(benef_product_code);
+        cashInHistoryModel.setBenef_product_name(benef_product_name);
+        cashInHistoryModel.setBenef_product_type(benef_product_type);
+        cashInHistoryModel.setBenef_product_value_code(no_benef);
+        cashInHistoryModel.setSource_product_code(source_product_code);
+        cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
+        cashInHistoryModel.setSource_product_type(source_product_type);
+        cashInHistoryModel.setSource_product_h2h(source_product_h2h);
+        cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
+        cashInHistoryModel.setPesan(etRemark.getText().toString());
+
+       if (!benef_product_type.equalsIgnoreCase(DefineValue.EMO))
+       {
+            cashInHistoryModel.setBenef_product_value_city(city_name);
+       }
 
         Gson gson = new Gson();
         String jsonObject = gson.toJson(cashInHistoryModel, CashInHistoryModel.class);
@@ -922,13 +918,16 @@ public class BBSTransaksiInformasi extends Fragment {
 
     private void cashOutHistory ()
     {
-        CashOutHistoryModel cashOutHistoryModel = new CashOutHistoryModel();
+
+        if (cashOutHistoryModel==null)
+        {
+            cashOutHistoryModel = new CashOutHistoryModel();
+        }
 
         cashOutHistoryModel.setAmount(amount);
         cashOutHistoryModel.setBenef_product_code(benef_product_code);
         cashOutHistoryModel.setBenef_product_name(actv_rekening_agent.getText().toString());
         cashOutHistoryModel.setBenef_product_type(benef_product_type);
-//        cashOutHistoryModel.setBenef_product_value_code(benef_product_value_code);
         cashOutHistoryModel.setSource_product_code(source_product_code);
         cashOutHistoryModel.setSource_product_name(source_product_name);
         cashOutHistoryModel.setSource_product_type(source_product_type);
