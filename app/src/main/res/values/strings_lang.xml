@@ -850,6 +850,7 @@
     <string name="cash_in">Setor Tunai</string>
     <string name="cash_out">Tarik Tunai</string>
     <string name="title_cash_out_member">Konfirmasi Tarik Tunai</string>
+    <string name="title_bbs_my_orders">My Orders</string>
     <string name="agent_name">Nama Agen</string>
     <string name="agent_name_hint">Masukkan nama agent yang diinginkan</string>
     <string name="auto_generate">Auto-generate</string>
@@ -1001,7 +1002,7 @@
     <string name="label_tanggal_tutup">Tanggal Tutup</string>
     <string name="notif_waiting_trx_agent_has_been_sent">Silakan menunggu. Email notif sudah dikirim ke Agen.</string>
     <string name="message_notif_update_24_hours_success">Informasi Atur waktu beroperasi berhasil disimpan</string>
-    <string name="bbs_gps_location">Lokasi GPS</string>
+    <string name="bbs_gps_location">Lokasi Anda Sekarang</string>
     <string name="label_tutup_terjadwal">Tutup Terjadwal</string>
     <string name="label_mulai_dari">Mulai dari</string>
     <string name="label_sampai_dengan">Sampai dengan</string>

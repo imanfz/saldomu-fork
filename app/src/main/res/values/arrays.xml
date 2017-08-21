@@ -190,6 +190,7 @@
 
     <string-array name="list_bbs_member">
         <item>@string/title_cash_out_member</item>
+        <!-- item>@string/title_bbs_my_orders</item -->
         <!-- item>@string/title_rating_by_member</item -->
     </string-array>
 
@@ -233,5 +234,11 @@
         <item>@string/setup_location</item>
         <item>@string/setup_tutup_manual</item>
         <!-- item>@string/setup_tutup_manual</item -->
+    </string-array>
+
+    <string-array name="bbs_order_status">
+        <item>In Progress</item>
+        <item>On Progress</item>
+        <item>Completed</item>
     </string-array>
 </resources>

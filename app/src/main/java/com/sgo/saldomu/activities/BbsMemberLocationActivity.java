@@ -158,7 +158,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         setActionBarIcon(R.drawable.ic_arrow_left);
 
-        memberDefaultAddress    = districtName + ", "+ provinceName;
+        memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
 
         defaultLat      = -6.121435;
         defaultLong     = 106.774124;

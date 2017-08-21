@@ -97,6 +97,8 @@ public class ListBBS extends ListFragment {
                 posIdx = BBSActivity.CONFIRMCASHOUT;
             else if (_data[position].equalsIgnoreCase(getString(R.string.title_rating_by_member)))
                 posIdx = BBSActivity.BBSRATINGBYMEMBER;
+            else if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
+                posIdx = BBSActivity.BBSMYORDERS;
             else {
                 posIdx = -1;
             }

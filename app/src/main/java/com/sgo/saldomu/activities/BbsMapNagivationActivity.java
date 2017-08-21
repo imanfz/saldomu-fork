@@ -1,13 +1,19 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
 import android.text.Html;
@@ -15,6 +21,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,11 +57,18 @@ import java.util.List;
 import java.util.Locale;
 import android.speech.tts.TextToSpeech;
 
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class BbsMapNagivationActivity extends BaseActivity implements OnMapReadyCallback,
-        GoogleMap.OnMarkerClickListener, TextToSpeech.OnInitListener {
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener,
+        GoogleMap.OnMarkerClickListener, TextToSpeech.OnInitListener, EasyPermissions.PermissionCallbacks {
 
+    private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+    private static final int RC_LOCATION_PERM = 500;
     Double targetLatitude, targetLongitude, currentLatitude, currentLongitude;
     Intent updateLocationIntent;
     SupportMapFragment mapFrag;
@@ -61,6 +80,9 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
     String encodedPoints = "";
     String htmlDirections   = "";
     TextToSpeech textToSpeech;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest mLocationRequest;
+    private Location lastLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +111,12 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter("UpdateLocationIntent"));
 
+        if(checkPlayServices())
+        {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
         /*mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -112,6 +140,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         super.onDestroy();
         stopService(updateLocationIntent);
         textToSpeech.shutdown();
+        googleApiClient.disconnect();
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -255,6 +284,49 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
             TextToSpeechFunction();
         }
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Timber.d("onConnected Started");
+
+        try {
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+            if ( lastLocation == null ){
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+            } else {
+
+
+                currentLatitude = lastLocation.getLatitude();
+                currentLongitude = lastLocation.getLongitude();
+                setMapCamera();
+
+                Timber.d("Location Found" + lastLocation.toString());
+
+            }
+        } catch (SecurityException se) {
+            se.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        lastLocation = location;
+        currentLatitude = lastLocation.getLatitude();
+        currentLongitude = lastLocation.getLongitude();
+        setMapCamera();
+    }
+
 
     private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
 
@@ -439,4 +511,107 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
             textToSpeech.speak(android.text.Html.fromHtml(htmlDirections).toString(), TextToSpeech.QUEUE_FLUSH, null);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        switch(requestCode) {
+            case RC_LOCATION_PERM:
+                if(checkPlayServices())
+                {
+                    buildGoogleApiClient();
+                    createLocationRequest();
+                }
+
+                googleApiClient.connect();
+                break;
+        }
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(DefineValue.INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setFastestInterval(DefineValue.FASTEST_INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
+    }
+
+    protected synchronized void buildGoogleApiClient()
+    {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        switch (requestCode) {
+            case RC_LOCATION_PERM:
+                // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+                // This will display a dialog directing them to enable the permission in app settings.
+                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                    new AppSettingsDialog.Builder(this).build().show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsMapNagivationActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            // Already have permission, do the thing
+
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), RC_LOCATION_PERM, perms);
+        }
+    }
+
+    private boolean checkPlayServices()
+    {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+
+
 }

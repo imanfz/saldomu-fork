@@ -22,6 +22,7 @@ import com.sgo.saldomu.fragments.BBSTransaksiPager;
 import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
+import com.sgo.saldomu.fragments.FragBbsMyOrders;
 import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
@@ -50,6 +51,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSWAKTUBEROPERASI  = 8;
     public static final int BBSTUTUPMANUAL      = 9;
     public static final int BBSRATINGBYMEMBER   = 10;
+    public static final int BBSMYORDERS         = 11;
 
 
     FragmentManager fragmentManager;
@@ -125,6 +127,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                     newFragment = new FragMemberRating();
                     tag = FragMemberRating.TAG;
                     break;
+                case BBSMYORDERS:
+                    newFragment = new FragBbsMyOrders();
+                    tag = FragBbsMyOrders.TAG;
+                    break;
             }
 
 
@@ -181,6 +187,8 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.menu_item_title_tutup_manual));
         else if( fragment instanceof FragMemberRating )
             setActionBarTitle(getString(R.string.title_rating_by_member));
+        else if( fragment instanceof FragBbsMyOrders )
+            setActionBarTitle(getString(R.string.title_bbs_my_orders));
     }
 
     @Override
