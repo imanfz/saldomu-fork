@@ -137,8 +137,8 @@ public class Login extends Fragment implements View.OnClickListener {
             params.put(WebParams.USER_ID,userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, AES.aes_encrypt(passLoginValue.getText().toString(), userIDfinale));
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.MAC_ADDR, new DeviceUtils(getActivity()).getWifiMcAddress());
-            params.put(WebParams.DEV_MODEL, new DeviceUtils(getActivity()).getDeviceModelID());
+            params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
+            params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
 
             Timber.d("isi params login:" + params.toString());
 

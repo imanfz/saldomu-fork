@@ -147,6 +147,20 @@ public class MainPage extends BaseActivity{
                 startService(new Intent(this, UpdateLocationService.class));
             }
         }
+        else {
+            switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
+        }
+    }
+
+    void switchErrorActivity(int type){
+        Intent i = new Intent(this, ErrorActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        i.putExtra(DefineValue.TYPE,type);
+        startActivity(i);
     }
 
     @Override

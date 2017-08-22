@@ -45,11 +45,9 @@ public class FabInstance {
         Fab fab = (Fab) mContext.findViewById(R.id.fab);
         View sheetView = mContext.findViewById(R.id.fab_sheet);
         View overlay = mContext.findViewById(R.id.overlay);
-        View layoutFab = mContext.findViewById(R.id.layout_fab);
         int sheetColor = getColor(mContext, R.color.white);
         int fabColor = getColor(mContext, R.color.colorPrimaryDark);
         final int[] statusBarColor = new int[1];
-        layoutFab.setVisibility(View.VISIBLE);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
 

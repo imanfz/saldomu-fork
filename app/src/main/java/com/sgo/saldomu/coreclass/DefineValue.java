@@ -412,6 +412,8 @@ public class DefineValue {
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
 
+    public static String FCM_SERVER_UUID = "fcmServerUuid";
+
 
 }
 

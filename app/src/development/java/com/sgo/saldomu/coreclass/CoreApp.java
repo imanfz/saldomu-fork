@@ -121,19 +121,6 @@ public class CoreApp extends Application {
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
-
-
-        if(!GooglePlayUtils.isGooglePlayServicesAvailable(this)){
-            Intent i = new Intent(this, ErrorActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            i.putExtra(DefineValue.TYPE,ErrorActivity.GOOGLE_SERVICE_TYPE);
-            this.startActivity(i);
-        }
-
     }
 
     private void deleteBundledRealmFile(String outFileName) {

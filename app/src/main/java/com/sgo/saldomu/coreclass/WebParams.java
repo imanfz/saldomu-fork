@@ -274,7 +274,9 @@ public class WebParams {
     public static String RECIPIENT_NAME = "recipient_name";
 
 	public static String RC_UUID = "rc_uuid";
+	public static String RQ_UUID = "rq_uuid";
     public static String RC_DTIME = "rc_dtime";
+    public static String RQ_DTIME = "rq_datetime";
     public static String SIGNATURE = "signature";
 
     public static String ACCESS_KEY = "access_key";
@@ -427,7 +429,19 @@ public class WebParams {
     public static String SHOP_PHONE     = "shop_phone";
     public static String MEMBER_TYPE    = "member_type";
     public static String PERIOD_MONTH = "period_month";
-    public static String BBS_CITY= "bbs_city";
+    public static String BBS_CITY   = "bbs_city";
     public static String COMM_SOURCE= "comm_source";
-    public static String COMM_BENEF= "comm_benef";
+    public static String COMM_BENEF = "comm_benef";
+    public static String GCM_ID     = "gcm_id";
+    public static String DEVICE_NAME= "device_name";
+    public static String DEVICE_OS  = "device_os";
+    public static String DEVICE_API = "device_api";
+    public static String LAST_LAT   = "last_lat";
+    public static String LAST_LONG  = "last_long";
+    public static String DEVICE_MEMORY= "device_memory";
+    public static String DEVICE_ID  = "device_id";
+    public static String PIN_CODE   = "pin_code";
+    public static String TIMEZONE   = "timezone";
+    public static String APP_TYPE   = "app_type";
+    public static String UID   = "uid";
 }
