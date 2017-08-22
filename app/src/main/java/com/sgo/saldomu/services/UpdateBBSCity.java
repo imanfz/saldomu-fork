@@ -39,7 +39,12 @@ public class UpdateBBSCity extends IntentService {
     protected void onHandleIntent(Intent intent) {
         realm = Realm.getDefaultInstance();
 
-        getListBBSCity();
+        long count = realm.where(List_BBS_City.class).count();
+        if(count < 2)
+            getListBBSCity();
+        else
+            Timber.d("table bbs city masih terisi");
+
     }
 
     private void EndRealm(){

@@ -1,6 +1,7 @@
 package com.sgo.saldomu.entityRealm;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -8,6 +9,12 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class BBSCommModel extends RealmObject {
+    @Ignore
+    public final static String COMM_ID = "comm_id";
+    @Ignore
+    public final static String SCHEME_CODE = "scheme_code";
+    @Ignore
+    public final static String LAST_UPDATE = "last_update";
 
     @PrimaryKey
     private String comm_id;
@@ -16,6 +23,8 @@ public class BBSCommModel extends RealmObject {
     private String api_key;
     private String callback_url;
     private String scheme_code;
+    private String member_id;
+    private String member_code;
     private String last_update;
 
     public String getComm_id() {
@@ -72,5 +81,21 @@ public class BBSCommModel extends RealmObject {
 
     public void setLast_update(String last_update) {
         this.last_update = last_update;
+    }
+
+    public String getMember_id() {
+        return member_id;
+    }
+
+    public void setMember_id(String member_id) {
+        this.member_id = member_id;
+    }
+
+    public String getMember_code() {
+        return member_code;
+    }
+
+    public void setMember_code(String member_code) {
+        this.member_code = member_code;
     }
 }

@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
@@ -34,6 +33,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 
 import org.apache.http.Header;
@@ -55,7 +55,7 @@ public class BBSRegisterAcct extends Fragment {
     private final static String TYPE_ACCT = "ACCT";
 
     private View v;
-    private ArrayList<BBSComm> listDataComm;
+    private BBSCommModel dataComm;
     private ArrayList<BBSCommBenef> listDataBank;
     private ArrayList<String> list_name_bbs_cities;
     AutoCompleteTextView city_textview_autocomplete;
@@ -104,7 +104,6 @@ public class BBSRegisterAcct extends Fragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        listDataComm = new ArrayList<>();
         listDataBank = new ArrayList<>();
         progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
         progdialog.dismiss();
@@ -113,12 +112,10 @@ public class BBSRegisterAcct extends Fragment {
             isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
 
         if(isUpdate){
-            BBSComm bbsComm = new BBSComm();
-            bbsComm.setCommCode(bundle.getString(DefineValue.COMMUNITY_CODE));
-            bbsComm.setCommId(bundle.getString(DefineValue.COMMUNITY_ID));
-            bbsComm.setCommName(bundle.getString(DefineValue.COMMUNITY_NAME));
-            bbsComm.setMemberCode(bundle.getString(DefineValue.MEMBER_CODE));
-            listDataComm.add(bbsComm);
+            dataComm.setComm_code(bundle.getString(DefineValue.COMMUNITY_CODE));
+            dataComm.setComm_id(bundle.getString(DefineValue.COMMUNITY_ID));
+            dataComm.setComm_name(bundle.getString(DefineValue.COMMUNITY_NAME));
+            dataComm.setMember_code(bundle.getString(DefineValue.MEMBER_CODE));
 
             BBSCommBenef bbsCommBenef = new BBSCommBenef();
             bbsCommBenef.setProduct_type(bundle.getString(DefineValue.PRODUCT_TYPE));
@@ -222,15 +219,13 @@ public class BBSRegisterAcct extends Fragment {
             spSourceAcct.setEnabled(false);
             spComm.setEnabled(false);
 
-            adapterDataComm.add(listDataComm.get(0).getCommName());
             adapterDataBank.add(listDataBank.get(0).getProduct_name());
-            CommunityUIRefresh();
         }
         else {
             spComm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    retreiveBank(listDataComm.get(position).getCommCode());
+//                    retreiveBank(listDataComm.get(position).getCommCode());
                 }
                 @Override
                 public void onNothingSelected(AdapterView<?> parent) {
@@ -238,6 +233,7 @@ public class BBSRegisterAcct extends Fragment {
                 }
             });
         }
+        CommunityUIRefresh();
         validasiTutorial();
     }
 
@@ -269,8 +265,8 @@ public class BBSRegisterAcct extends Fragment {
                 String city_id = "" ;
                 if(benefAcctType.equalsIgnoreCase(TYPE_ACCT))
                     city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
-                sentReqAcct(listDataComm.get(spComm.getSelectedItemPosition()).getCommCode(),
-                        listDataComm.get(spComm.getSelectedItemPosition()).getMemberCode(),
+                sentReqAcct(dataComm.getComm_code(),
+                        dataComm.getMember_code(),
                         benefAcctType,
                         listDataBank.get(spSourceAcct.getSelectedItemPosition()).getProduct_code(),
                         etNoBenefAcct.getText().toString(),
@@ -302,12 +298,6 @@ public class BBSRegisterAcct extends Fragment {
         actionListener = null;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(!isUpdate)
-            retrieveComm();
-    }
 
     public boolean inputValidation(){
         if(etNoBenefAcct.getText().toString().length()==0){
@@ -346,23 +336,19 @@ public class BBSRegisterAcct extends Fragment {
     }
 
     private void CommunityUIRefresh(){
-        if(listDataComm.size() < 1) {
+        if(dataComm == null) {
             Toast.makeText(getActivity(), R.string.joinagentbbs_toast_empty_comm, Toast.LENGTH_LONG).show();
             actionListener.OnEmptyCommunity();
         }
-
-        if(listDataComm.size() == 1) {
+        else {
             TextView tvCommName = (TextView) v.findViewById(R.id.tv_comm_value);
-            tvCommName.setText(listDataComm.get(0).getCommName());
+            tvCommName.setText(dataComm.getComm_name());
             tvCommName.setVisibility(View.VISIBLE);
             spComm.setVisibility(View.INVISIBLE);
             if(isUpdate)
                 BankUIRefresh();
             else
-                retreiveBank(listDataComm.get(0).getCommCode());
-        }
-        else {
-            spComm.setVisibility(View.VISIBLE);
+                retreiveBank(dataComm.getComm_code());
         }
     }
 
@@ -375,88 +361,6 @@ public class BBSRegisterAcct extends Fragment {
         }
         else {
             spSourceAcct.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void retrieveComm(){
-        if(progBarComm.getVisibility() == View.GONE) {
-            try {
-                RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_COMM,
-                        userID, accessKey);
-                params.put(WebParams.CUSTOMER_ID, userID);
-                params.put(WebParams.SCHEME_CODE, DefineValue.ATC);
-                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-                params.put(WebParams.USER_ID, userID);
-                Timber.d("isi params retreiveComm:" + params.toString());
-
-                spComm.setVisibility(View.GONE);
-                progBarComm.setVisibility(View.VISIBLE);
-                MyApiClient.getGlobalBBSComm(getActivity(), TAG, params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            Timber.d("Isi response retreiveComm: " + response.toString());
-                            listDataComm.clear();
-                            adapterDataComm.clear();
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                JSONArray comm = response.optJSONArray(WebParams.COMMUNITY);
-                                if (comm != null && comm.length() > 0) {
-                                    BBSComm bbsComm;
-                                    for (int i = 0; i < comm.length(); i++) {
-                                        bbsComm = new BBSComm(comm.getJSONObject(i).optString(WebParams.COMM_ID),
-                                                comm.getJSONObject(i).optString(WebParams.COMM_CODE),
-                                                comm.getJSONObject(i).optString(WebParams.COMM_NAME),
-                                                comm.getJSONObject(i).optString(WebParams.API_KEY),
-                                                comm.getJSONObject(i).optString(WebParams.MEMBER_CODE),
-                                                comm.getJSONObject(i).optString(WebParams.CALLBACK_URL));
-                                        listDataComm.add(bbsComm);
-                                        adapterDataComm.add(bbsComm.getCommName());
-                                    }
-                                }
-                            } else {
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
-                            }
-                            adapterDataComm.notifyDataSetChanged();
-                            CommunityUIRefresh();
-                            progBarComm.setVisibility(View.GONE);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    private void failure(Throwable throwable) {
-                        if (MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                        Timber.w("Error Koneksi retreiveComm:" + throwable.toString());
-                        progBarComm.setVisibility(View.GONE);
-                        actionListener.OnEmptyCommunity();
-                    }
-                });
-            } catch (Exception e) {
-                Timber.d("httpclient: " + e.getMessage());
-            }
         }
     }
 
@@ -566,9 +470,9 @@ public class BBSRegisterAcct extends Fragment {
 
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Bundle bundle = new Bundle();
-                            bundle.putString(DefineValue.COMMUNITY_NAME,listDataComm.get(spComm.getSelectedItemPosition()).getCommName());
+                            bundle.putString(DefineValue.COMMUNITY_NAME,dataComm.getComm_name());
                             bundle.putString(DefineValue.COMMUNITY_CODE,response.getString(WebParams.COMM_CODE));
-                            bundle.putString(DefineValue.COMMUNITY_ID,listDataComm.get(spComm.getSelectedItemPosition()).getCommId());
+                            bundle.putString(DefineValue.COMMUNITY_ID,dataComm.getComm_id());
                             bundle.putString(DefineValue.MEMBER_CODE,response.getString(WebParams.MEMBER_CODE));
                             bundle.putString(DefineValue.ACCT_TYPE,response.getString(WebParams.BENEF_ACCT_TYPE));
                             bundle.putString(DefineValue.BANK_CODE,response.getString(WebParams.BENEF_BANK_CODE));

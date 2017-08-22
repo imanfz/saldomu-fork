@@ -285,7 +285,9 @@
         <service android:name=".services.AppInfoService" />
         <service android:name=".services.UserProfileService" />
         <service android:name=".services.UpdateLocationService" />
-        <service android:name="com.sgo.saldomu.services.UpdateBBSCity" />
+        <service android:name=".services.UpdateBBSCity" />
+        <service android:name=".services.UpdateBBSData"
+            android:exported="false"/>
     </application>
 
 </manifest>

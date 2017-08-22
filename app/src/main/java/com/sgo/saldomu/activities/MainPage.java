@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,7 @@ import com.sgo.saldomu.Beans.likeModel;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -52,6 +54,7 @@ import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.receivers.LocalResultReceiver;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateLocationService;
@@ -461,7 +464,7 @@ public class MainPage extends BaseActivity{
                                     progdialog.dismiss();
                                 checkField();
 
-                                callBBSCityService();
+                                setupBBSData();
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
 
@@ -524,6 +527,21 @@ public class MainPage extends BaseActivity{
             });
         }catch (Exception e){
             Timber.d("httpclient:" + e.getMessage());
+        }
+    }
+
+    void setupBBSData(){
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        if(isAgent){
+            callBBSCityService();
+            checkAndRunServiceBBS();
+        }
+    }
+
+    void checkAndRunServiceBBS(){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(!bbsDataManager.isDataUpdated()) {
+            bbsDataManager.runServiceUpdateData(this);
         }
     }
 

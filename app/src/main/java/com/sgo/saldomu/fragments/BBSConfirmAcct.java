@@ -21,6 +21,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.securities.Md5;
@@ -30,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 
@@ -41,6 +43,7 @@ public class BBSConfirmAcct extends Fragment {
     private ActionListener actionListener;
     private ProgressDialog progdialog;
     private boolean isUpdate = false;
+    private Realm realm;
 
     public BBSConfirmAcct() {
         // Required empty public constructor
@@ -59,6 +62,7 @@ public class BBSConfirmAcct extends Fragment {
 
         Bundle bundle = getArguments();
         isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
+        realm = RealmManager.getRealmBBS();
 
         progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
         progdialog.dismiss();
@@ -145,6 +149,7 @@ public class BBSConfirmAcct extends Fragment {
     @Override
     public void onDestroy() {
         MyApiClient.CancelRequestWSByTag(TAG,true);
+        RealmManager.closeRealm(realm);
         super.onDestroy();
     }
 
@@ -171,7 +176,7 @@ public class BBSConfirmAcct extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             String name = getArguments().getString(DefineValue.ACCT_NAME);
                             String no = getArguments().getString(DefineValue.ACCT_NO);
-                            String title = "", msg = "";
+                            String title, msg;
                             if (isUpdate) {
                                 title = getString(R.string.bbsconfirmacct_dialog_success_title_update);
                                 msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update,name,no);
@@ -232,5 +237,15 @@ public class BBSConfirmAcct extends Fragment {
         }catch (Exception e){
             Timber.d("httpclient: "+e.getMessage());
         }
+    }
+
+    void insertDataToRealm(){
+        realm.beginTransaction();
+        realm.commitTransaction();
+    }
+
+    void updateDataToRealm(){
+        realm.beginTransaction();
+        realm.commitTransaction();
     }
 }

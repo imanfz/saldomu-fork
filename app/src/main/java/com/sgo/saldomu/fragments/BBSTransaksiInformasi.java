@@ -39,6 +39,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -58,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -90,10 +92,28 @@ public class BBSTransaksiInformasi extends Fragment {
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
-    no_benef, name_benef, no_source, city_name, comm_benef_atc,comm_source_cta;
+    no_benef, name_benef, no_source, city_name;
+    Realm realmBBS;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        userID = sp.getString(DefineValue.USERID_PHONE,"");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
+    }
+
+    @Override
+    public void onDestroy() {
+        if(realmBBS != null)
+            realmBBS.close();
+        super.onDestroy();
     }
 
     @Override
@@ -132,10 +152,6 @@ public class BBSTransaksiInformasi extends Fragment {
 
         act = getActivity();
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-
         Bundle bundle = getArguments();
         if(bundle!= null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
@@ -151,12 +167,7 @@ public class BBSTransaksiInformasi extends Fragment {
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
-                comm_source_cta = bundle.getString(DefineValue.BBS_COMM_CTA);
-                try {
-                    setBankDataSourceCTA(new JSONArray(comm_source_cta));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                setBankDataSourceCTA();
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                     city_id = bundle.getString(DefineValue.ACCT_CITY_CODE);
                     city_name = bundle.getString(DefineValue.ACCT_CITY_NAME);
@@ -168,12 +179,7 @@ public class BBSTransaksiInformasi extends Fragment {
                 source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
                 source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
                 no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
-                comm_benef_atc = bundle.getString(DefineValue.BBS_COMM_ATC);
-                try {
-                    setBankDataBenef(new JSONArray(comm_benef_atc));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                setBankDataBenef();
             }
 
             CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
@@ -220,7 +226,6 @@ public class BBSTransaksiInformasi extends Fragment {
                 // Instantiating an adapter to store each items
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
-
                 setAgent(listbankBenef);
             }
 
@@ -284,12 +289,6 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View view) {
             if(getFragmentManager().getBackStackEntryCount() > 0) {
-                int index = getFragmentManager().getBackStackEntryCount() - 1;
-                FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(index);
-                String tag = backEntry.getName();
-                Fragment prevFrag = getFragmentManager().findFragmentByTag(tag);
-                BBSTransaksiAmount amountfrag = (BBSTransaksiAmount) prevFrag;
-                amountfrag.setBack(true);
                 getFragmentManager().popBackStack();
             }
             else
@@ -373,35 +372,16 @@ public class BBSTransaksiInformasi extends Fragment {
         actv_rekening_agent.setAdapter(adapterAgent);
     }
 
-    private void setBankDataBenef(JSONArray _data){
-        listbankBenef = new ArrayList<>();
-        for(int i = 0 ; i < _data.length() ; i++) {
-            BBSBankModel bbsBankModel =  new BBSBankModel();
-            try {
-                bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
-                bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
-                bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
-                listbankBenef.add(bbsBankModel);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    private void setBankDataBenef(){
+        listbankBenef = realmBBS.where(BBSBankModel.class)
+                .equalTo(WebParams.SCHEME_CODE, ATC)
+                .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
     }
 
-    private void setBankDataSourceCTA(JSONArray _data){
-        listbankSource = new ArrayList<>();
-        for(int i = 0 ; i < _data.length() ; i++) {
-            BBSBankModel bbsBankModel =  new BBSBankModel();
-            try {
-                bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
-                bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
-                bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
-                bbsBankModel.setProduct_h2h(_data.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
-                listbankSource.add(bbsBankModel);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+    private void setBankDataSourceCTA(){
+        listbankSource = realmBBS.where(BBSBankModel.class)
+                .equalTo(WebParams.SCHEME_CODE, CTA)
+                .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
     }
 
     private void sentInsertC2A() {
@@ -1009,14 +989,6 @@ public class BBSTransaksiInformasi extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    private void switchFragment(Fragment i, String name, Boolean isBackstack){
-//        if (getActivity() == null)
-//            return;
-//
-//        BBSActivity fca = (BBSActivity ) getActivity();
-//        fca.switchContent(i,name,isBackstack);
-//    }
 
     @Override
     public void onResume() {

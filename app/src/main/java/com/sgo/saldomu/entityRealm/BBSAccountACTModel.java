@@ -2,24 +2,27 @@ package com.sgo.saldomu.entityRealm;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by yuddistirakiki on 4/21/17.
  */
 
-public class BBSBankModel extends RealmObject {
+public class BBSAccountACTModel extends RealmObject {
 
     @Ignore
     public final static String SCHEME_CODE = "scheme_code";
 
     private String comm_id;
-    private String comm_type;
     private String product_code;
     private String product_name;
     private String product_type;
     private String product_h2h;
     private String scheme_code;
     private String bank_gateway;
+    private String account_no;
+    private String account_name;
+    private String account_city;
     private String last_update;
 
     public String getComm_id() {
@@ -28,14 +31,6 @@ public class BBSBankModel extends RealmObject {
 
     public void setComm_id(String comm_id) {
         this.comm_id = comm_id;
-    }
-
-    public String getComm_type() {
-        return comm_type;
-    }
-
-    public void setComm_type(String comm_type) {
-        this.comm_type = comm_type;
     }
 
     public String getProduct_code() {
