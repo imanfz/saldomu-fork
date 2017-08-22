@@ -30,9 +30,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
+import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.CashInHistoryModel;
+import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -93,7 +96,10 @@ public class BBSTransaksiInformasi extends Fragment {
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
-    no_benef, name_benef, no_source, city_name, comm_benef_atc;
+    no_benef, name_benef, no_source, city_name, comm_benef_atc, member_shop_phone, pesan, benef_product_value_code;
+    CashInHistoryModel cashInHistoryModel;
+    CashOutHistoryModel cashOutHistoryModel;
+    SecurePreferences sp;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -135,8 +141,7 @@ public class BBSTransaksiInformasi extends Fragment {
 
         act = getActivity();
         realm = Realm.getInstance(RealmManager.BBSConfiguration);
-
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -150,9 +155,23 @@ public class BBSTransaksiInformasi extends Fragment {
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                String cashIn = sp.getString("cashin_history_temp", "");
+                Gson gson = new Gson();
+                cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
+
                 benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
                 benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
+                benef_product_value_code = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE);
+                if (cashInHistoryModel!=null)
+                {
+                    source_product_code=(cashInHistoryModel.getSource_product_code());
+                    source_product_name=(cashInHistoryModel.getSource_product_name());
+                    source_product_type=(cashInHistoryModel.getSource_product_type());
+                    source_product_h2h=(cashInHistoryModel.getSource_product_h2h());
+                    member_shop_phone =(cashInHistoryModel.getMember_shop_phone());
+                    pesan = bundle.getString(cashInHistoryModel.getPesan());
+                }
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
@@ -161,12 +180,24 @@ public class BBSTransaksiInformasi extends Fragment {
                 }
             }
             else {
+                String cashOut = sp.getString("cashout_history_temp", "");
+                Gson gson1 = new Gson();
+                cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
+
                 source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
                 source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
                 source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
                 source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
                 no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
                 comm_benef_atc = bundle.getString(DefineValue.BBS_COMM_ATC);
+                if (cashOutHistoryModel!=null)
+                {
+                    benef_product_code = (cashOutHistoryModel.getBenef_product_code());
+                    benef_product_type = (cashOutHistoryModel.getBenef_product_type());
+                    benef_product_name = (cashOutHistoryModel.getBenef_product_name());
+                    member_shop_phone = (cashOutHistoryModel.getMember_shop_phone());
+                    pesan = (cashOutHistoryModel.getPesan());
+                }
                 try {
                     setBankDataBenef(new JSONArray(comm_benef_atc));
                 } catch (JSONException e) {
@@ -192,7 +223,21 @@ public class BBSTransaksiInformasi extends Fragment {
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
                 if(bundle.containsKey(DefineValue.KEY_CODE))
+                {
                     etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
+                }
+                else{
+                    if (cashInHistoryModel!=null)
+                    {
+                        etNoHp.setText(cashInHistoryModel.getMember_shop_phone());
+                    }
+                }
+                if (cashInHistoryModel!=null)
+                {
+                    actv_rekening_agent.setText(cashInHistoryModel.getSource_product_name());
+                    etRemark.setText(cashInHistoryModel.getPesan());
+                }
+
                 String[] from = {"flag", "txt"};
 
                 // Ids of views in listview_layout
@@ -207,12 +252,19 @@ public class BBSTransaksiInformasi extends Fragment {
                         .equalTo(WebParams.SCHEME_CODE, CTA)
                         .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
                 setAgent(listbankSource);
-            } else {
+            }
+            if (transaksi.equalsIgnoreCase("Tarik Tunai")) {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
                 actv_rekening_agent = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
                 String[] from = {"flag", "txt"};
+
+                if(cashOutHistoryModel!=null)
+                {
+                    actv_rekening_agent.setText(cashOutHistoryModel.getBenef_product_name());
+                    etRemark.setText(cashOutHistoryModel.getPesan());
+                }
 
                 // Ids of views in listview_layout
                 int[] to = {R.id.flag, R.id.txt};
@@ -787,6 +839,7 @@ public class BBSTransaksiInformasi extends Fragment {
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         btnNext.setEnabled(true);
+        cashInHistory();
 
         Fragment mFrag = new BBSCashInConfirm();
         mFrag.setArguments(mArgs);
@@ -796,6 +849,39 @@ public class BBSTransaksiInformasi extends Fragment {
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
+
+    private void cashInHistory ()
+    {
+        if (cashInHistoryModel==null)
+        {
+            cashInHistoryModel = new CashInHistoryModel();
+        }
+
+        cashInHistoryModel.setAmount(amount);
+        cashInHistoryModel.setBenef_product_code(benef_product_code);
+        cashInHistoryModel.setBenef_product_name(benef_product_name);
+        cashInHistoryModel.setBenef_product_type(benef_product_type);
+        cashInHistoryModel.setBenef_product_value_code(no_benef);
+        cashInHistoryModel.setSource_product_code(source_product_code);
+        cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
+        cashInHistoryModel.setSource_product_type(source_product_type);
+        cashInHistoryModel.setSource_product_h2h(source_product_h2h);
+        cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
+        cashInHistoryModel.setPesan(etRemark.getText().toString());
+
+       if (!benef_product_type.equalsIgnoreCase(DefineValue.EMO))
+       {
+            cashInHistoryModel.setBenef_product_value_city(city_name);
+       }
+
+        Gson gson = new Gson();
+        String jsonObject = gson.toJson(cashInHistoryModel, CashInHistoryModel.class);
+
+        SecurePreferences.Editor editor = sp.edit();
+        editor.putString("cashin_history_temp", jsonObject);
+        editor.apply();
+    }
+
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,
                                         String _amount, String _bank_name) {
@@ -820,6 +906,7 @@ public class BBSTransaksiInformasi extends Fragment {
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         btnNext.setEnabled(true);
+        cashOutHistory();
 
         Fragment mFrag = new CashOutBBS_confirm_agent();
         mFrag.setArguments(mArgs);
@@ -827,6 +914,33 @@ public class BBSTransaksiInformasi extends Fragment {
                 .replace(R.id.bbsTransaksiFragmentContent , mFrag, CashOutBBS_confirm_agent.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_out), true);
+    }
+
+    private void cashOutHistory ()
+    {
+
+        if (cashOutHistoryModel==null)
+        {
+            cashOutHistoryModel = new CashOutHistoryModel();
+        }
+
+        cashOutHistoryModel.setAmount(amount);
+        cashOutHistoryModel.setBenef_product_code(benef_product_code);
+        cashOutHistoryModel.setBenef_product_name(actv_rekening_agent.getText().toString());
+        cashOutHistoryModel.setBenef_product_type(benef_product_type);
+        cashOutHistoryModel.setSource_product_code(source_product_code);
+        cashOutHistoryModel.setSource_product_name(source_product_name);
+        cashOutHistoryModel.setSource_product_type(source_product_type);
+        cashOutHistoryModel.setSource_product_h2h(source_product_h2h);
+        cashOutHistoryModel.setMember_shop_phone(no_source);
+        cashOutHistoryModel.setPesan(etRemark.getText().toString());
+
+        Gson gson1 = new Gson();
+        String jsonObject = gson1.toJson(cashOutHistoryModel, CashOutHistoryModel.class);
+
+        SecurePreferences.Editor editor = sp.edit();
+        editor.putString("cashout_history_temp", jsonObject);
+        editor.apply();
     }
 
     void showDialogErrorSMS(final String _nama_bank, String error_code, String error_msg) {

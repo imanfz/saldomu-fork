@@ -65,7 +65,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         try {
             if (isActivty)
                 callback = (OnDialogOkCallback) getActivity();
