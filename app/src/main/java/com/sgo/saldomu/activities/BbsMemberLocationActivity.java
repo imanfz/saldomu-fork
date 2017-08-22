@@ -854,8 +854,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     @Override
     public void onLocationChanged(Location location) {
         lastLocation    = location;
-        selectedLat     = lastLocation.getLatitude();
-        selectedLong    = lastLocation.getLongitude();
+        defaultLat      = lastLocation.getLatitude();
+        defaultLong     = lastLocation.getLongitude();
     }
 
     private boolean checkPlayServices()

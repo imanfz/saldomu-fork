@@ -1009,4 +1009,19 @@
     <string name="message_notif_update_tutup_manual_success">Pengaturan informasi waktu tutup manual berhasil disimpan</string>
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
     <string name="title_rating_by_member">Dummy Rating by Member</string>
+
+    <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
+    <string name="label_transfer_ke">Transfer Ke</string>
+    <string name="label_bank_transfer_ke">Ke Rekening Mana?</string>
+    <string name="label_rekening_transfer_ke">Nomor Rekening Tujuan</string>
+    <string name="label_transfer_dari_agent">Anda mau menggunakan rekening apa ?</string>
+    <string name="label_no_hp_sender">Nomor Handphone Nasabah</string>
+    <string name="label_trx_description">Informasi Transaksi</string>
+
+    <string name="label_transfer_dari">Rekening Sumber</string>
+    <string name="label_rekening_transfer_dari">Nomor Rekening Sumber</string>
+
+    <string name="label_transfer_ke_agent">Rekening Agen</string>
+    <string name="label_transfer_dari_member_atc">Dari Rekening Mana ?</string>
+    <string name="label_rekening_pelangggan">Rekening Pelanggan</string>
 </resources>

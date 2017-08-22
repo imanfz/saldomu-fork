@@ -121,15 +121,31 @@
                     android:layout_height="1dp"
                     android:background="@color/colorPrimary"></View>
 
+
+
                 <LinearLayout android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:layout_marginTop="20dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:gravity="center"
                     >
 
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:textColor="@color/colorSecondaryDark"
+                            android:gravity="left"
+                            android:text="@string/label_jumlah_amount"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
                     <TextView android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/rp."
@@ -150,6 +166,8 @@
                         android:paddingLeft="10dp"
                         android:gravity="center"
                         />
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <TextView

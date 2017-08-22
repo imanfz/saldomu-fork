@@ -115,6 +115,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         {
             buildGoogleApiClient();
             createLocationRequest();
+            googleApiClient.connect();
         }
 
         /*mTextToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -316,7 +317,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        googleApiClient.connect();
     }
 
     @Override

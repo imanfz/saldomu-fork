@@ -226,7 +226,12 @@ public class NavigationDrawMenu extends ListFragment{
         } else {
             llAgentDetail.setVisibility(View.GONE);
         }
-        llBalanceDetail.setVisibility(View.GONE);
+
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            llBalanceDetail.setVisibility(View.GONE);
+        } else {
+            llBalanceDetail.setVisibility(View.VISIBLE);
+        }
 
         if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             tvAgentDetailName.setText(sp.getString(DefineValue.AGENT_NAME, ""));
@@ -594,14 +599,22 @@ public class NavigationDrawMenu extends ListFragment{
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
                             if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                                 Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
                             } else {
                                 Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
                             }
+
+                            mEditor.apply();
                         } else {
                             Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
+
+                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -630,13 +643,5 @@ public class NavigationDrawMenu extends ListFragment{
             });
         }
     };
-
-    class mySwitchChangeClicker implements Switch.OnCheckedChangeListener {
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        }
-    }
 
 }

@@ -92,7 +92,7 @@ public class AgentShopService extends IntentService {
 
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
-                                mEditor.putString(DefineValue.AGENT_NAME, object.getString("member_name"));
+                                mEditor.putString(DefineValue.AGENT_NAME, object.getString("shop_name"));
                                 mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, object.getString("shop_closed"));
                                 mEditor.putString(DefineValue.BBS_MEMBER_ID, object.getString("member_id"));
                                 mEditor.putString(DefineValue.BBS_SHOP_ID, object.getString("shop_id"));
