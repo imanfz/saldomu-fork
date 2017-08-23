@@ -130,7 +130,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.create_pin;
+        return R.layout.insert_pin;
     }
 
     private void InitializeToolbar(){

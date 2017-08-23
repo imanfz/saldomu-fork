@@ -547,7 +547,7 @@
     <string name="myprofile_warning_message_firsttime">Apakah Anda yakin memproses data yang Anda isi?</string>
 
     <string name="dialog_title_less_balance">Sisa Saldo Tidak Cukup.</string>
-    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo SCash Anda ?</string>
+    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo Saldomu Anda ?</string>
 
     <string name="regist1_subtext_facebook">Masukan nomor telepon anda untuk melengkapi proses registrasi</string>
     <string name="payfriend_confirm_text_share">Bagikan :</string>
@@ -556,7 +556,7 @@
     <string name="ff_toast_at_empty">Sesi anda telah habis atau anda belum login</string>
 
     <string name="shareoption_title">Pengaturan Pembagian</string>
-    <string name="shareoption_text_facebook" translatable="false">Facebook</string>
+    <string name="shareoption_text_facebook" translatable="false">Facebook</string>f
     <string name="update_facebook_failed_toast">Gagal perbaharui data Facebook</string>
     <string name="askformoney_text_share">Minta Saldo kepada</string>
     <string name="facebook_share_message_reason"> Alasan :</string>
