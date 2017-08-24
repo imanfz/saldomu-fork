@@ -308,9 +308,9 @@ public class DefineValue {
     //GOOGLE MAP DEFINE PARAMETERS
     public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
-    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
-    public static int DISPLACEMENT                          = 1;
+    public static long INTERVAL_LOCATION_REQUEST            = 15000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 10000; //10 seconds
+    public static int DISPLACEMENT                          = 10;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
     public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds

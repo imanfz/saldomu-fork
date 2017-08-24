@@ -445,7 +445,8 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        getActivity().finish();
+                        getActivity().onBackPressed();
+                        //getActivity().finish();
 
                     }
                 });
@@ -513,7 +514,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
                             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
-                                            getActivity().finish();
+                                            getActivity().onBackPressed();
                                         }
                                     });
                             alertDialog.show();

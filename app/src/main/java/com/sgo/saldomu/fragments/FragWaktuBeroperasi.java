@@ -354,6 +354,8 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
                         UUID rcUUID             = UUID.randomUUID();
                         String  dtime           = DateTimeFormat.getCurrentDateTime();
+                        String flagAllDay       = "";
+                        ArrayList<String> tempDays = new ArrayList<>();
 
                         params.put(WebParams.RC_UUID, rcUUID);
                         params.put(WebParams.RC_DATETIME, dtime);
@@ -365,8 +367,10 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
                         if ( chkBuka24Jam.isChecked() ) {
                             params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
+                            flagAllDay              = DefineValue.STRING_YES;
                         } else {
                             params.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_NO);
+                            flagAllDay              = DefineValue.STRING_NO;
 
                             for(int pos = 0; pos < setupOpenHours.size(); pos++ ) {
 
@@ -411,6 +415,8 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                                 break;
                                         }
                                     }
+                                } else {
+                                    tempDays.add(setupOpenHours.get(pos).getKodeHari());
                                 }
 
 
@@ -432,7 +438,18 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                             params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DATE);
 
                         } else {
-                            params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+
+                            if ( flagAllDay.equals(DefineValue.STRING_NO) ) {
+                                if ( tempDays.size() > 0 ) {
+                                    params.put(WebParams.CLOSED_VALUE, gson.toJson(tempDays));
+                                    params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_DAY);
+                                } else {
+                                    params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                                }
+                            } else {
+                                params.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                            }
+
                         }
 
                         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
@@ -464,7 +481,8 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
 
-                                                    getActivity().finish();
+                                                    getActivity().onBackPressed();
+                                                    //getActivity().finish();
 
                                                 }
                                             });
@@ -857,4 +875,5 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
         alertDialog.show();
     }
+
 }

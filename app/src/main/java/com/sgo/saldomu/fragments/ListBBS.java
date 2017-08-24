@@ -370,6 +370,7 @@ public class ListBBS extends Fragment {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
 
                         } else {
+                            setAgentDetailToUI();
                             Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
 

@@ -292,9 +292,9 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
 
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             if ( lastLocation == null ){
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+
             } else {
 
 
@@ -323,9 +323,13 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        currentLatitude = lastLocation.getLatitude();
-        currentLongitude = lastLocation.getLongitude();
-        setMapCamera();
+
+        if ( lastLocation.getLatitude() != currentLatitude || lastLocation.getLongitude() != currentLongitude ) {
+            currentLatitude = lastLocation.getLatitude();
+            currentLongitude = lastLocation.getLongitude();
+            setMapCamera();
+        }
+
     }
 
 

@@ -825,10 +825,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
 
-                selectedLat = lastLocation.getLatitude();
-                selectedLong = lastLocation.getLongitude();
-                defaultLat = selectedLat;
-                defaultLong = selectedLong;
+                defaultLat = lastLocation.getLatitude();
+                defaultLong = lastLocation.getLongitude();
+
                 Timber.d("Location Found" + lastLocation.toString());
                 //googleApiClient.disconnect();
 

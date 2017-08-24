@@ -203,13 +203,13 @@
 
     <string-array name="list_bbs_member">
         <item>@string/title_cash_out_member</item>
-        <item>@string/title_bbs_my_orders</item>
-        <!-- item>@string/title_rating_by_member</item -->
+        <!-- item>@string/title_bbs_my_orders</item>
+        <item>@string/title_rating_by_member</item -->
     </string-array>
     <integer-array name="list_icon_bbs_member">
         <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
-        <!-- item>@drawable/ic_tariktunai</item -->
+        <!-- item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item -->
     </integer-array>
 
 
@@ -260,5 +260,10 @@
         <item>In Progress</item>
         <item>On Progress</item>
         <item>Completed</item>
+    </string-array>
+
+    <string-array name="list_bbs_setting">
+        <item>@string/setup_agent_open_hour</item>
+        <item>@string/setup_tutup_manual</item>
     </string-array>
 </resources>

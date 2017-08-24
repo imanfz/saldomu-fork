@@ -371,8 +371,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
 
         } else {
-            currentLatitude = lastLocation.getLatitude();
-            currentLongitude = lastLocation.getLongitude();
+            //currentLatitude = lastLocation.getLatitude();
+            //currentLongitude = lastLocation.getLongitude();
         }
 
         viewPager.getAdapter().notifyDataSetChanged();
