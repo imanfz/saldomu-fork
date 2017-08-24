@@ -418,6 +418,8 @@ public class DefineValue {
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
 
+    public static String FCM_SERVER_UUID = "fcmServerUuid";
+
 
 }
 

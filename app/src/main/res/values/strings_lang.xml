@@ -983,4 +983,5 @@
     <string name="message_retry">Coba lagi ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
     <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
+    <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
 </resources>

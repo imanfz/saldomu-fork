@@ -3,6 +3,7 @@ package com.sgo.saldomu.coreclass;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
@@ -23,6 +24,8 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ErrorActivity;
+import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -118,7 +121,6 @@ public class CoreApp extends Application {
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
-
     }
 
     private void deleteBundledRealmFile(String outFileName) {

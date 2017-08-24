@@ -11,6 +11,8 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.SHA;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -200,6 +202,7 @@ public class MyApiClient {
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
     public static String LINK_BBS_LIST_COMMUNITY_ALL;
+    public static String LINK_REG_TOKEN_FCM;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -332,6 +335,7 @@ public class MyApiClient {
         LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
         LINK_BBS_LIST_COMMUNITY_ALL   = headaddressfinal + "ListCommunity/Retrieve";
+        LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
@@ -407,23 +411,7 @@ public class MyApiClient {
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
         String msgnya = uuidnya+date+BuildConfig.AppID+WebServiceName+noID;
-
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(apinya.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
+        String hash = SHA.SHA256(apinya,msgnya);
         return hash;
     }
 
@@ -437,42 +425,32 @@ public class MyApiClient {
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(access_key.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+        String hash = SHA.SHA256(access_key,msgnya);
 
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
-
         return params;
     }
 
-    private static byte[] encodeUrlSafe(byte[] data) {
-        byte[] encode = Base64.encodeBase64(data);
-        for (int i = 0; i < encode.length; i++) {
-            if (encode[i] == '+') {
-                encode[i] = '-';
-            } else if (encode[i] == '=') {
-                encode[i] = '_';
-            } else if (encode[i] == '/') {
-                encode[i] = '~';
-            }
-        }
-        return encode;
+    public static RequestParams getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
+
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
+        Timber.d("isi messageSignatureFCM : " + msgnya);
+
+
+        String hash = SHA.SHA1(msgnya);
+        Timber.d("isi sha1 signatureFCM : " + hash);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RQ_UUID, uuidnya);
+        params.put(WebParams.RQ_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+
+        return params;
     }
 
     public static void setCookieStore(PersistentCookieStore cookieStore) {
@@ -1100,6 +1078,14 @@ public class MyApiClient {
     public static void sentBBSListCommunityAllSync(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address BBS list community all sync: %1$s ", LINK_BBS_LIST_COMMUNITY_ALL);
         postSync(mContext, LINK_BBS_LIST_COMMUNITY_ALL, params, responseHandler);
+    }
+
+    public static void sentReqTokenFCM(Context mContext,boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address req token fcm:"+ LINK_REG_TOKEN_FCM);
+        if(isSync)
+            postSync(mContext,LINK_REG_TOKEN_FCM,params,responseHandler);
+        else
+            post(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------
