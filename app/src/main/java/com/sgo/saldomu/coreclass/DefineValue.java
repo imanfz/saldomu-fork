@@ -13,7 +13,6 @@ public class DefineValue {
     public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
 
-
     //Static Value
     public static String DEVELOPMENT = "development" ;
     public static String PRODUCTION = "production" ;
@@ -240,6 +239,7 @@ public class DefineValue {
     public static String ACCT_NAME = "acctName";
     public static String ACCT_TYPE = "acctType";
     public static String ACCT_NO = "acctNo";
+    public static String ACCT_NO_CURRENT = "acctNoCurrent";
     public static String ACCT_CITY_NAME = "acctCityName";
     public static String ACCT_CITY_CODE = "acctCityCode";
 

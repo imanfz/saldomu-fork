@@ -24,6 +24,7 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -333,6 +334,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+                BBSDataManager.resetBBSData();
             }
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);

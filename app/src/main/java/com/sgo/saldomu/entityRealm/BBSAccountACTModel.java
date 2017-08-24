@@ -9,17 +9,17 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class BBSAccountACTModel extends RealmObject {
-
     @Ignore
-    public final static String SCHEME_CODE = "scheme_code";
+    public static final String PRODUCT_CODE = "product_code";
+    @Ignore
+    public static final String ACCOUNT_NO = "account_no";
+
 
     private String comm_id;
     private String product_code;
     private String product_name;
     private String product_type;
-    private String product_h2h;
     private String scheme_code;
-    private String bank_gateway;
     private String account_no;
     private String account_name;
     private String account_city;
@@ -57,14 +57,6 @@ public class BBSAccountACTModel extends RealmObject {
         this.product_type = product_type;
     }
 
-    public String getProduct_h2h() {
-        return product_h2h;
-    }
-
-    public void setProduct_h2h(String product_h2h) {
-        this.product_h2h = product_h2h;
-    }
-
     public String getScheme_code() {
         return scheme_code;
     }
@@ -73,19 +65,35 @@ public class BBSAccountACTModel extends RealmObject {
         this.scheme_code = scheme_code;
     }
 
-    public String getBank_gateway() {
-        return bank_gateway;
-    }
-
-    public void setBank_gateway(String bank_gateway) {
-        this.bank_gateway = bank_gateway;
-    }
-
     public String getLast_update() {
         return last_update;
     }
 
     public void setLast_update(String last_update) {
         this.last_update = last_update;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public String getAccount_no() {
+        return account_no;
+    }
+
+    public void setAccount_no(String account_no) {
+        this.account_no = account_no;
+    }
+
+    public String getAccount_city() {
+        return account_city;
+    }
+
+    public void setAccount_city(String account_city) {
+        this.account_city = account_city;
     }
 }

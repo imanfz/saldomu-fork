@@ -82,8 +82,10 @@ public class RealmManager {
     }
 
     public static void closeRealm(Realm realm){
-        if(realm != null)
+        if(realm != null) {
+            realm.removeAllChangeListeners();
             realm.close();
+        }
     }
 
 

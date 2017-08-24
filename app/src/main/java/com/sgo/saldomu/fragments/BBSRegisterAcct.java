@@ -31,6 +31,7 @@ import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
@@ -111,12 +112,13 @@ public class BBSRegisterAcct extends Fragment {
         if(bundle.containsKey(DefineValue.IS_UPDATE))
             isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
 
-        if(isUpdate){
-            dataComm.setComm_code(bundle.getString(DefineValue.COMMUNITY_CODE));
-            dataComm.setComm_id(bundle.getString(DefineValue.COMMUNITY_ID));
-            dataComm.setComm_name(bundle.getString(DefineValue.COMMUNITY_NAME));
-            dataComm.setMember_code(bundle.getString(DefineValue.MEMBER_CODE));
+        dataComm = new BBSCommModel();
+        dataComm.setComm_code(bundle.getString(DefineValue.COMMUNITY_CODE));
+        dataComm.setComm_id(bundle.getString(DefineValue.COMMUNITY_ID));
+        dataComm.setComm_name(bundle.getString(DefineValue.COMMUNITY_NAME));
+        dataComm.setMember_code(bundle.getString(DefineValue.MEMBER_CODE));
 
+        if(isUpdate){
             BBSCommBenef bbsCommBenef = new BBSCommBenef();
             bbsCommBenef.setProduct_type(bundle.getString(DefineValue.PRODUCT_TYPE));
             bbsCommBenef.setProduct_name(bundle.getString(DefineValue.PRODUCT_NAME));
@@ -481,6 +483,7 @@ public class BBSRegisterAcct extends Fragment {
                             bundle.putString(DefineValue.ACCT_NAME,response.getString(WebParams.BENEF_ACCT_NAME));
                             bundle.putString(DefineValue.ACCT_CITY_NAME,response.optString(WebParams.BENEF_CITY_NAME,""));
                             bundle.putString(DefineValue.ACCT_CITY_CODE,response.optString(WebParams.BENEF_CITY_CODE,""));
+                            bundle.putString(DefineValue.ACCT_NO_CURRENT,getArguments().getString(DefineValue.NO_BENEF));
                             bundle.putString(DefineValue.TX_ID,response.getString(WebParams.TX_ID));
 
                             actionListener.OnSuccessReqAcct(bundle);
@@ -531,6 +534,7 @@ public class BBSRegisterAcct extends Fragment {
     @Override
     public void onDestroy() {
         MyApiClient.CancelRequestWSByTag(TAG,true);
+        RealmManager.closeRealm(realm);
         super.onDestroy();
     }
 }

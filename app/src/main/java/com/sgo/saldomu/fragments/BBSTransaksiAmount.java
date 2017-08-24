@@ -33,13 +33,13 @@ import com.faber.circlestepview.CircleStepView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -199,7 +199,7 @@ public class BBSTransaksiAmount extends Fragment {
             initializeDataBBS(ATC);
 
         }
-
+        actv_rekening_member.setAdapter(adapterMember);
         actv_rekening_member.addTextChangedListener(textWatcher);
         btnBack.setOnClickListener(backListener);
         btnProses.setOnClickListener(prosesListener);
@@ -501,9 +501,7 @@ public class BBSTransaksiAmount extends Fragment {
                 inputForm.setVisibility(View.GONE);
             }
             setMember(listbankSource);
-            long countbankBenefATC = realmBBS.where(BBSBankModel.class)
-                    .equalTo(WebParams.SCHEME_CODE,ATC)
-                    .equalTo(WebParams.COMM_TYPE,BENEF).count();
+            long countbankBenefATC = realmBBS.where(BBSAccountACTModel.class).count();
             if(countbankBenefATC == 0){
                 inputForm.setVisibility(View.GONE);
                 emptyLayout.setVisibility(View.GONE);

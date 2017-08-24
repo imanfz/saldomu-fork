@@ -57,11 +57,6 @@ public class UpdateBBSData extends IntentService {
         super("UpdateBBSData");
     }
 
-    public static void startUpdateBBSData(Context context) {
-        Intent intent = new Intent(context, UpdateBBSData.class);
-        context.startService(intent);
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
 
@@ -119,9 +114,7 @@ public class UpdateBBSData extends IntentService {
 
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.SCHEME_CODE,schemeCode);
-
-            if(schemeCode.equalsIgnoreCase(ATC))
-                params.put(WebParams.CUST_ID,userID);
+            params.put(WebParams.CUST_ID,userID);
 
             Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
 
@@ -227,17 +220,25 @@ public class UpdateBBSData extends IntentService {
                     //insert to bank model benef
                     tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_BENEF);
                     if(tempBankComm != null && tempBankComm.length() > 0){
-                        for(int j = 0; j < tempBankComm.length() ; j++) {
-                            tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
-                            tempBBSBankModel.setComm_type("BENEF");
-                            tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
-                            tempBBSBankModel.setScheme_code(scheme_code);
-                            tempBBSBankModel.setLast_update(curr_date);
+                        if (scheme_code.equalsIgnoreCase(ATC)){
+                            BBSAccountACTModel bbsAccountACTModel;
+                            for(int j = 0; j < tempBankComm.length() ; j++) {
+                                bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class,
+                                        tempBankComm.getJSONObject(j));
 
-                            //masukin listaccount benef untuk atc
-                            if (scheme_code.equalsIgnoreCase(ATC)) {
-                                BBSAccountACTModel tempBBSAccountACT = realm.createObject(BBSAccountACTModel.class);
+                                bbsAccountACTModel.setComm_id(tempBBSCommModel.getComm_id());
+                                bbsAccountACTModel.setScheme_code(scheme_code);
+                                bbsAccountACTModel.setLast_update(curr_date);
+                            }
+                        }
+                        else {
+                            for (int j = 0; j < tempBankComm.length(); j++) {
+                                tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
 
+                                tempBBSBankModel.setComm_type("BENEF");
+                                tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
+                                tempBBSBankModel.setScheme_code(scheme_code);
+                                tempBBSBankModel.setLast_update(curr_date);
                             }
                         }
                     }

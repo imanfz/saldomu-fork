@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import io.realm.Realm;
+import timber.log.Timber;
 
 /**
  * Created by yuddistirakiki on 8/9/17.
@@ -20,12 +21,28 @@ import io.realm.Realm;
 
 public class BBSDataManager {
 
-    Realm realm;
-    SecurePreferences sp;
+    private SecurePreferences sp;
 
     public BBSDataManager(){
-        realm = Realm.getInstance(RealmManager.BBSConfiguration);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    }
+
+    public static BBSDataManager checkAndRunService(Context context){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(!bbsDataManager.isDataUpdated()) {
+            bbsDataManager.runServiceUpdateData(context);
+            Timber.d("Run Service update data BBS");
+        }
+        return bbsDataManager;
+    }
+
+    public static void resetBBSData(){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        bbsDataManager.setIsBBSDataUpdate(false);
+    }
+
+    private void setIsBBSDataUpdate(boolean toggle){
+        sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED,toggle).commit();
     }
 
     public Boolean isDataCTAValid(){
@@ -53,7 +70,8 @@ public class BBSDataManager {
     }
 
     public Boolean isDataUpdated(){
-        return sp.getBoolean(DefineValue.IS_BBS_DATA_UPDATED,false);
+        boolean test = sp.getBoolean(DefineValue.IS_BBS_DATA_UPDATED,false);
+        return test;
     }
 
     public void runServiceUpdateData(Context mContext, LocalResultReceiver localResultReceiver){

@@ -402,7 +402,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void initializeNavDrawer(){
-        if(mNavDrawer != null && isActive) {
+        if(mNavDrawer != null) {
             mNavDrawer.initializeNavDrawer();
             mNavDrawer.getBalance(true);
         }
@@ -539,10 +539,7 @@ public class MainPage extends BaseActivity{
     }
 
     void checkAndRunServiceBBS(){
-        BBSDataManager bbsDataManager = new BBSDataManager();
-        if(!bbsDataManager.isDataUpdated()) {
-            bbsDataManager.runServiceUpdateData(this);
-        }
+        BBSDataManager.checkAndRunService(this);
     }
 
     private void CheckNotification(){
@@ -557,6 +554,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void callBBSCityService(){
+        Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
     }
 
@@ -999,13 +997,8 @@ public class MainPage extends BaseActivity{
         if(progdialog != null && progdialog.isShowing()) {
             progdialog.dismiss();
         }
+        MyApiClient.CancelRequestWS(this,true);
         super.onDestroy();
-        if (isFinishing()) {
-            Timber.i("Main page destroy service");
-//            stop service as activity being destroyed and we won't use it any more
-            Intent intentStopService = new Intent(this, BalanceService.class);
-            stopService(intentStopService);
-        }
     }
 
 

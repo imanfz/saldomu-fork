@@ -77,7 +77,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     Realm realm;
 
     public interface ActionListener{
-        void OnAddAccountListener();
+        void OnAddAccountListener(Bundle data);
         void OnUpdateAccountListener(Bundle data);
     }
 
@@ -224,10 +224,10 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
         data.putString(DefineValue.PRODUCT_TYPE,accountBBS.getProduct_type());
         data.putString(DefineValue.PRODUCT_CODE,accountBBS.getProduct_code());
         data.putString(DefineValue.PRODUCT_NAME,accountBBS.getProduct_name());
-        data.putString(DefineValue.NO_BENEF,accountBBS.getBenef_acct_no());
-        data.putString(DefineValue.NAME_BENEF,accountBBS.getBenef_acct_name());
-        if(!accountBBS.getBenef_acct_city().isEmpty())
-            data.putString(DefineValue.BENEF_CITY,accountBBS.getBenef_acct_city());
+        data.putString(DefineValue.NO_BENEF,accountBBS.getAccount_no());
+        data.putString(DefineValue.NAME_BENEF,accountBBS.getAccount_name());
+        if(!accountBBS.getAccount_city().isEmpty())
+            data.putString(DefineValue.BENEF_CITY,accountBBS.getAccount_city());
 
         actionListener.OnUpdateAccountListener(data);
     }
@@ -261,7 +261,13 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     }
 
     private void changeFragmentAdd(){
-        actionListener.OnAddAccountListener();
+        Bundle data = new Bundle();
+        data.putBoolean(DefineValue.IS_UPDATE,false);
+        data.putString(DefineValue.COMMUNITY_NAME,dataComm.getComm_name());
+        data.putString(DefineValue.COMMUNITY_CODE,dataComm.getComm_code());
+        data.putString(DefineValue.COMMUNITY_ID,dataComm.getComm_id());
+        data.putString(DefineValue.MEMBER_CODE,dataComm.getMember_code());
+        actionListener.OnAddAccountListener(data);
     }
 
     @Override
@@ -276,6 +282,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         MyApiClient.CancelRequestWSByTag(TAG,true);
+        RealmManager.closeRealm(realm);
         super.onDestroy();
     }
 
@@ -323,7 +330,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
             params.put(WebParams.MEMBER_CODE, dataComm.getMember_code());
             params.put(WebParams.PRODUCT_CODE, listDataAccount.get(position).getProduct_code());
             params.put(WebParams.PRODUCT_TYPE, listDataAccount.get(position).getProduct_type());
-            params.put(WebParams.BENEF_ACCT_NO, listDataAccount.get(position).getBenef_acct_no());
+            params.put(WebParams.BENEF_ACCT_NO, listDataAccount.get(position).getAccount_no());
             params.put(WebParams.TOKEN_ID, Md5.hashMd5(tokenId));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
@@ -336,7 +343,9 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.d("Isi response deleteAccountList: "+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            realm.beginTransaction();
                             listAccountBBSAdapter.deleteItem(position);
+                            realm.commitTransaction();
                         } else {
                             code = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
@@ -401,8 +410,8 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
 
             alertDialogBuilder.setTitle(getString(R.string.dialog_title_delete_bbs_acct));
             alertDialogBuilder.setMessage(getString(R.string.dialog_msg_delete_bbs_acct,
-                    listDataAccount.get(position).getBenef_acct_name(),
-                    listDataAccount.get(position).getBenef_acct_no(),
+                    listDataAccount.get(position).getAccount_name(),
+                    listDataAccount.get(position).getAccount_no(),
                     listDataAccount.get(position).getProduct_name()));
             alertDialogBuilder.setView(linearLayout);
             alertDialogBuilder.setPositiveButton(getString(R.string.yes), null);

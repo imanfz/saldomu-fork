@@ -19,11 +19,14 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
+import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.securities.Md5;
 
 import org.apache.http.Header;
@@ -44,6 +47,8 @@ public class BBSConfirmAcct extends Fragment {
     private ProgressDialog progdialog;
     private boolean isUpdate = false;
     private Realm realm;
+    private BBSCommModel bbsCommModel;
+    private BBSAccountACTModel bbsAccountACTModel;
 
     public BBSConfirmAcct() {
         // Required empty public constructor
@@ -63,6 +68,22 @@ public class BBSConfirmAcct extends Fragment {
         Bundle bundle = getArguments();
         isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
         realm = RealmManager.getRealmBBS();
+
+        bbsCommModel = new BBSCommModel();
+        bbsCommModel.setComm_id(bundle.getString(DefineValue.COMMUNITY_ID));
+        bbsCommModel.setComm_code(bundle.getString(DefineValue.COMMUNITY_CODE));
+        bbsCommModel.setComm_name(bundle.getString(DefineValue.COMMUNITY_NAME));
+        bbsCommModel.setMember_code(bundle.getString(DefineValue.MEMBER_CODE));
+
+        bbsAccountACTModel = new BBSAccountACTModel();
+        bbsAccountACTModel.setProduct_code(bundle.getString(DefineValue.BANK_CODE));
+        bbsAccountACTModel.setProduct_name(bundle.getString(DefineValue.BANK_NAME));
+        bbsAccountACTModel.setProduct_type(bundle.getString(DefineValue.ACCT_TYPE));
+        bbsAccountACTModel.setAccount_no(bundle.getString(DefineValue.ACCT_NO));
+        bbsAccountACTModel.setAccount_name(bundle.getString(DefineValue.ACCT_NAME));
+        bbsAccountACTModel.setAccount_city(bundle.getString(DefineValue.ACCT_CITY_NAME));
+        bbsAccountACTModel.setScheme_code(DefineValue.ATC);
+        bbsAccountACTModel.setComm_id(bbsCommModel.getComm_id());
 
         progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
         progdialog.dismiss();
@@ -180,10 +201,12 @@ public class BBSConfirmAcct extends Fragment {
                             if (isUpdate) {
                                 title = getString(R.string.bbsconfirmacct_dialog_success_title_update);
                                 msg = getString(R.string.bbsconfirmacct_dialog_success_msg_update,name,no);
+                                updateDataToRealm();
                             }
                             else {
                                 title = getString(R.string.bbsconfirmacct_dialog_success_title);
                                 msg = getString(R.string.bbsconfirmacct_dialog_success_msg,name,no);
+                                insertDataToRealm();
                             }
 
                             Dialog dialog = DefinedDialog.MessageDialog(getContext(),
@@ -240,12 +263,28 @@ public class BBSConfirmAcct extends Fragment {
     }
 
     void insertDataToRealm(){
+        String date = DateTimeFormat.getCurrentDate();
+        bbsAccountACTModel.setLast_update(date);
         realm.beginTransaction();
+        realm.copyToRealm(bbsAccountACTModel);
         realm.commitTransaction();
     }
 
     void updateDataToRealm(){
-        realm.beginTransaction();
-        realm.commitTransaction();
+        BBSAccountACTModel tempBBSAccount = realm.where(BBSAccountACTModel.class)
+                .equalTo(BBSAccountACTModel.PRODUCT_CODE,bbsAccountACTModel.getProduct_code())
+                .equalTo(BBSAccountACTModel.ACCOUNT_NO,getArguments().getString(DefineValue.ACCT_NO_CURRENT))
+                .findFirst();
+        if(tempBBSAccount != null){
+            String date = DateTimeFormat.getCurrentDate();
+            realm.beginTransaction();
+            tempBBSAccount.setAccount_city(bbsAccountACTModel.getAccount_city());
+            tempBBSAccount.setAccount_name(bbsAccountACTModel.getAccount_name());
+            tempBBSAccount.setAccount_no(bbsAccountACTModel.getAccount_no());
+            tempBBSAccount.setLast_update(date);
+            realm.commitTransaction();
+        }
+
     }
+
 }

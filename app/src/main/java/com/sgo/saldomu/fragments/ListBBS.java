@@ -57,6 +57,11 @@ public class ListBBS extends ListFragment{
         progDialog.dismiss();
         if(isAgent) {
             _data = getResources().getStringArray(R.array.list_bbs_agent);
+            boolean isUpdatingData = sp.getBoolean(DefineValue.IS_UPDATING_BBS_DATA,false);
+            if(isUpdatingData)
+                progDialog.show();
+            else
+                checkAndRunServiceBBS();
         }
         else
             _data = getResources().getStringArray(R.array.list_bbs_member);
@@ -81,12 +86,6 @@ public class ListBBS extends ListFragment{
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
-        boolean isUpdatingData = sp.getBoolean(DefineValue.IS_UPDATING_BBS_DATA,false);
-        if(isUpdatingData)
-            progDialog.show();
-        else
-            checkAndRunServiceBBS();
-
         Bundle bundle = getArguments();
         if(bundle != null){
             int posIdx = bundle.getInt(DefineValue.INDEX,-1);
@@ -99,9 +98,9 @@ public class ListBBS extends ListFragment{
     }
 
     void checkAndRunServiceBBS(){
-        progDialog.show();
         BBSDataManager bbsDataManager = new BBSDataManager();
         if(!bbsDataManager.isDataUpdated()) {
+            progDialog.show();
             bbsDataManager.runServiceUpdateData(getContext());
             Timber.d("Run Service update data BBS");
         }

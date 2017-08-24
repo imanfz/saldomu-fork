@@ -82,9 +82,9 @@ public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> 
         if(adata != null) {
 
             holder.txtProductName.setText(adata.get(position).getProduct_name());
-            holder.txtAccountId.setText(adata.get(position).getBenef_acct_no());
-            holder.txtAccountName.setText(adata.get(position).getBenef_acct_name());
-            String city = adata.get(position).getBenef_acct_city();
+            holder.txtAccountId.setText(adata.get(position).getAccount_no());
+            holder.txtAccountName.setText(adata.get(position).getAccount_name());
+            String city = adata.get(position).getAccount_city();
             if (city.isEmpty())
                 holder.layoutCity.setVisibility(View.GONE);
             else {

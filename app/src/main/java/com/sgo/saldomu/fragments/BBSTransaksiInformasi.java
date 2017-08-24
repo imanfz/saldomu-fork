@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,9 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
 
@@ -60,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /**
@@ -74,10 +77,12 @@ public class BBSTransaksiInformasi extends Fragment {
     private ProgressDialog progdialog;
     private Activity act;
     private TextView tvTitle;
-    private CustomAutoCompleteTextView actv_rekening_agent;
+    private CustomAutoCompleteTextView actv_rekening_cta;
+    private Spinner sp_rekening_act;
     private List<HashMap<String,String>> aListAgent;
     private SimpleAdapter adapterAgent;
-    private List<BBSBankModel> listbankSource, listbankBenef;
+    private List<BBSBankModel> listbankSource;
+    private List<BBSAccountACTModel> listbankBenef;
     private String CTA = "CTA";
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
@@ -107,12 +112,19 @@ public class BBSTransaksiInformasi extends Fragment {
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
+        realmBBS.addChangeListener(new RealmChangeListener<Realm>() {
+            @Override
+            public void onChange(Realm element) {
+                setBankDataBenef();
+                if(adapterAgent != null)
+                    adapterAgent.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
-        if(realmBBS != null)
-            realmBBS.close();
+        RealmManager.closeRealm(realmBBS);
         super.onDestroy();
     }
 
@@ -195,7 +207,7 @@ public class BBSTransaksiInformasi extends Fragment {
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
                 View cashin_layout = stub.inflate();
-                actv_rekening_agent = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
+                actv_rekening_cta = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
@@ -210,12 +222,13 @@ public class BBSTransaksiInformasi extends Fragment {
                 // Instantiating an adapter to store each items
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
-
                 setAgent(listbankSource);
+                actv_rekening_cta.setAdapter(adapterAgent);
+                actv_rekening_cta.addTextChangedListener(textWatcher);
             } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
-                actv_rekening_agent = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_agen_value);
+                sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
                 String[] from = {"flag", "txt"};
 
@@ -226,10 +239,11 @@ public class BBSTransaksiInformasi extends Fragment {
                 // Instantiating an adapter to store each items
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
-                setAgent(listbankBenef);
+                setAgentATC(listbankBenef);
+                sp_rekening_act.setAdapter(adapterAgent);
+                sp_rekening_act.setOnItemSelectedListener(spAgentListener);
             }
 
-            actv_rekening_agent.addTextChangedListener(textWatcher);
             btnBack.setOnClickListener(backListener);
             btnNext.setOnClickListener(nextListener);
         }
@@ -246,33 +260,19 @@ public class BBSTransaksiInformasi extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                source_product_code="";
-                source_product_name="";
-                source_product_type="";
-                source_product_h2h="";
-            }
-            else {
-                benef_product_code="";
-                benef_product_type="";
-                benef_product_name="";
-            }
+            source_product_code="";
+            source_product_name="";
+            source_product_type="";
+            source_product_h2h="";
             int position;
-            String nameAcct = actv_rekening_agent.getText().toString();
+            String nameAcct = actv_rekening_cta.getText().toString();
             for(int i = 0 ; i < aListAgent.size() ; i++) {
                 if(nameAcct.equalsIgnoreCase(aListAgent.get(i).get("txt"))) {
                     position = i;
-                    if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                        source_product_code = listbankSource.get(position).getProduct_code();
-                        source_product_type = listbankSource.get(position).getProduct_type();
-                        source_product_h2h = listbankSource.get(position).getProduct_h2h();
-                        source_product_name = listbankSource.get(position).getProduct_name();
-                    }
-                    else {
-                        benef_product_code = listbankBenef.get(position).getProduct_code();
-                        benef_product_type = listbankBenef.get(position).getProduct_type();
-                        benef_product_name = listbankBenef.get(position).getProduct_name();
-                    }
+                    source_product_code = listbankSource.get(position).getProduct_code();
+                    source_product_type = listbankSource.get(position).getProduct_type();
+                    source_product_h2h = listbankSource.get(position).getProduct_h2h();
+                    source_product_name = listbankSource.get(position).getProduct_name();
                     break;
                 }
             }
@@ -281,6 +281,20 @@ public class BBSTransaksiInformasi extends Fragment {
 
         @Override
         public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    Spinner.OnItemSelectedListener spAgentListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            benef_product_code = listbankBenef.get(position).getProduct_code();
+            benef_product_type = listbankBenef.get(position).getProduct_type();
+            benef_product_name = listbankBenef.get(position).getProduct_name();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
 
         }
     };
@@ -368,14 +382,45 @@ public class BBSTransaksiInformasi extends Fragment {
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListAgent.add(hm);
         }
-
-        actv_rekening_agent.setAdapter(adapterAgent);
+        adapterAgent.notifyDataSetChanged();
     }
 
+    private void setAgentATC(List<BBSAccountACTModel> bankAgen) {
+        aListAgent.clear();
+
+        for(int i=0;i<bankAgen.size();i++){
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("txt", bankAgen.get(i).getProduct_name());
+
+            if(bankAgen.get(i).getProduct_name().toLowerCase().contains("mandiri"))
+                hm.put("flag", Integer.toString(R.drawable.logo_mandiri_bank_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bri"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bri_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("permata"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_permata_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("uob"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_uob_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("maspion"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_maspion_rev1_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bii"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bii_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("jatim"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_jatim_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bca"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("nobu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else
+                hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
+            aListAgent.add(hm);
+        }
+        adapterAgent.notifyDataSetChanged();
+    }
+
+
+
     private void setBankDataBenef(){
-        listbankBenef = realmBBS.where(BBSBankModel.class)
-                .equalTo(WebParams.SCHEME_CODE, ATC)
-                .equalTo(WebParams.COMM_TYPE, BENEF).findAll();
+        listbankBenef = realmBBS.where(BBSAccountACTModel.class).findAll();
     }
 
     private void setBankDataSourceCTA(){
@@ -955,12 +1000,12 @@ public class BBSTransaksiInformasi extends Fragment {
     }
 
     private boolean inputValidation() {
-        if(actv_rekening_agent.getText().toString().length()==0){
-            actv_rekening_agent.requestFocus();
-            actv_rekening_agent.setError(getString(R.string.rekening_agent_error_message));
-            return false;
-        }
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            if(actv_rekening_cta.getText().toString().length()==0){
+                actv_rekening_cta.requestFocus();
+                actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
+                return false;
+            }
             if (etNoHp.getText().toString().length() == 0) {
                 etNoHp.requestFocus();
                 etNoHp.setError(getString(R.string.no_hp_pengirim_validation));

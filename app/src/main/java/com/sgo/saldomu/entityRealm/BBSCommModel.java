@@ -27,6 +27,19 @@ public class BBSCommModel extends RealmObject {
     private String member_code;
     private String last_update;
 
+    public BBSCommModel(){}
+
+
+    public BBSCommModel(String commId, String commCode, String commName, String apiKey,
+                        String memberCode, String callbackUrl){
+        this.setComm_id(commId);
+        this.setComm_code(commCode);
+        this.setComm_name(commName);
+        this.setApi_key(apiKey);
+        this.setMember_code(memberCode);
+        this.setCallback_url(callbackUrl);
+    }
+
     public String getComm_id() {
         return comm_id;
     }
