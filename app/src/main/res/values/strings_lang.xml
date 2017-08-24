@@ -556,7 +556,7 @@
     <string name="ff_toast_at_empty">Sesi anda telah habis atau anda belum login</string>
 
     <string name="shareoption_title">Pengaturan Pembagian</string>
-    <string name="shareoption_text_facebook" translatable="false">Facebook</string>f
+    <string name="shareoption_text_facebook" translatable="false">Facebook</string>
     <string name="update_facebook_failed_toast">Gagal perbaharui data Facebook</string>
     <string name="askformoney_text_share">Minta Saldo kepada</string>
     <string name="facebook_share_message_reason"> Alasan :</string>
