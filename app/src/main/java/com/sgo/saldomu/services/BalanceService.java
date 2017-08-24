@@ -23,7 +23,7 @@ import timber.log.Timber;
  */
 public class BalanceService extends Service {
 
-    public static final String INTENT_ACTION_BALANCE = "com.sgo.orimakardaya.INTENT_ACTION_BALANCE";
+    public static final String INTENT_ACTION_BALANCE = "com.sgo.saldomu.INTENT_ACTION_BALANCE";
 
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;

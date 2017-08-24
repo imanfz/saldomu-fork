@@ -528,7 +528,7 @@
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
-    <string name="login_failed_attempt_1">Anda punya %1$s kesempatan sebelum diblokir.</string>
+    <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
     <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
@@ -980,4 +980,7 @@
     <string name="rationale_camera_and_storage">Aplikasi membutuhkan akses untuk menggunakan kamera dan menyimpannya ke perangkat.</string>
     <string name="rationale_check_phone_number">Aplikasi membutuhkan akses untuk mengecek nomor telepon perangkat.</string>
     <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
+    <string name="message_retry">Coba lagi ?</string>
+    <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
+    <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
 </resources>

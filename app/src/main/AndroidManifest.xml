@@ -281,11 +281,23 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             />
-        <service android:name=".services.BalanceService" />
-        <service android:name=".services.AppInfoService" />
-        <service android:name=".services.UserProfileService" />
-        <service android:name=".services.UpdateLocationService" />
-        <service android:name="com.sgo.saldomu.services.UpdateBBSCity" />
+        <service android:name=".services.BalanceService"
+            android:exported="false"
+            />
+        <service android:name=".services.AppInfoService"
+            android:exported="false"
+            />
+        <service android:name=".services.UserProfileService"
+            android:exported="false"
+            />
+        <service android:name=".services.UpdateLocationService"
+            android:exported="false"
+            />
+        <service android:name=".services.UpdateBBSCity"
+            android:exported="false"
+            />
+        <service android:name=".services.UpdateBBSData"
+            android:exported="false"/>
     </application>
 
 </manifest>

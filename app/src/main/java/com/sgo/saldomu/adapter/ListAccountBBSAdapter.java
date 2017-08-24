@@ -10,14 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.sgo.saldomu.Beans.AccountBBS;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
+import com.sgo.saldomu.entityRealm.BBSBankModel;
 
 import java.util.ArrayList;
 
-public class ListAccountBBSAdapter extends ArrayAdapter<AccountBBS> {
+import io.realm.OrderedRealmCollection;
+import io.realm.RealmBaseAdapter;
+import io.realm.RealmResults;
+
+public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> implements ListAdapter{
 
     public interface OnDeleteListener{
         void onCLick(int position, View view);
@@ -25,12 +31,13 @@ public class ListAccountBBSAdapter extends ArrayAdapter<AccountBBS> {
 
     Context context;
     int layoutResourceId;
-    private ArrayList<AccountBBS> adata;
+    private OrderedRealmCollection<BBSAccountACTModel> adata;
     private Boolean showDelete = false;
     private OnDeleteListener onDeleteListener;
 
-    public ListAccountBBSAdapter(Context context, int layoutResourceId, ArrayList<AccountBBS> data) {
-        super(context, layoutResourceId, data);
+    public ListAccountBBSAdapter(Context context, int layoutResourceId,
+                                 OrderedRealmCollection<BBSAccountACTModel> data) {
+        super(data);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.adata = data;
@@ -71,23 +78,26 @@ public class ListAccountBBSAdapter extends ArrayAdapter<AccountBBS> {
             holder = (ListHolder)row.getTag();
         }
 
-        holder.txtProductName.setText(adata.get(position).getProduct_name());
-        holder.txtAccountId.setText(adata.get(position).getBenef_acct_no());
-        holder.txtAccountName.setText(adata.get(position).getBenef_acct_name());
-        String city = adata.get(position).getBenef_acct_city();
-        if(city.isEmpty())
-            holder.layoutCity.setVisibility(View.GONE);
-        else {
-            holder.layoutCity.setVisibility(View.VISIBLE);
-            holder.txtAccountCity.setText(city);
+        if(adata != null) {
+
+            holder.txtProductName.setText(adata.get(position).getProduct_name());
+            holder.txtAccountId.setText(adata.get(position).getAccount_no());
+            holder.txtAccountName.setText(adata.get(position).getAccount_name());
+            String city = adata.get(position).getAccount_city();
+            if (city.isEmpty())
+                holder.layoutCity.setVisibility(View.GONE);
+            else {
+                holder.layoutCity.setVisibility(View.VISIBLE);
+                holder.txtAccountCity.setText(city);
+            }
+
+
+            if (showDelete)
+                holder.btn_delete.setVisibility(View.VISIBLE);
+            else
+                holder.btn_delete.setVisibility(View.GONE);
+
         }
-
-
-        if(showDelete)
-            holder.btn_delete.setVisibility(View.VISIBLE);
-        else
-            holder.btn_delete.setVisibility(View.GONE);
-
         return row;
     }
 
@@ -103,11 +113,16 @@ public class ListAccountBBSAdapter extends ArrayAdapter<AccountBBS> {
         }
     }
 
+    public void deleteItem(int position){
+        adata.deleteFromRealm(position);
+        notifyDataSetChanged();
+    }
+
     public void setButtonDeleteHide(){
         showDelete = false;
     }
 
-    class ListHolder
+    private class ListHolder
     {
         TextView txtProductName,txtAccountId, txtAccountName, txtAccountCity;
         Button btn_delete;
