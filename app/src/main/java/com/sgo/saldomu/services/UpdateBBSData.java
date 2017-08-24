@@ -195,7 +195,9 @@ public class UpdateBBSData extends IntentService {
                 atcState = true;
                 setDateDataATC(curr_date);
             }
-            for(int i = 0 ; i < communityData.length() ; i++) {
+
+            int i = 0;
+//            for(int i = 0 ; i < communityData.length() ; i++) {
                 try {
                     //insert to comm model
                     tempBBSCommModel = realm.createObjectFromJson(BBSCommModel.class, communityData.getJSONObject(i));
@@ -243,7 +245,7 @@ public class UpdateBBSData extends IntentService {
                     e.printStackTrace();
                     realm.cancelTransaction();
                 }
-            }
+//            }
         }
 
         if(realm.isInTransaction())
