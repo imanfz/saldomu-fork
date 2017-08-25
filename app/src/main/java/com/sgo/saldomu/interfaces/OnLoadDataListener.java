@@ -1,8 +1,10 @@
 package com.sgo.saldomu.interfaces;
 
+import android.os.Bundle;
+
 public interface OnLoadDataListener {
 	void onSuccess(Object deData);
-	void onFail(String message);
-	void onFailure();
+	void onFail(Bundle message);
+	void onFailure(String message);
 
 }

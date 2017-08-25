@@ -212,12 +212,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                     }
 
                     @Override
-                    public void onFail(String message) {
+                    public void onFail(Bundle message) {
 
                     }
 
                     @Override
-                    public void onFailure() {
+                    public void onFailure(String message) {
 
                     }
                 });

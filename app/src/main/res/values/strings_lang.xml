@@ -975,4 +975,10 @@
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
     <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
+    
+    <string name="title_cashout_bank">Tarik Dana - Bank</string>
+    <string name="cashout_validation_bank">Bank dibutuhkan!</string>
+    <string name="title_cashout_agen">Tarik Dana - Agent</string>
+    <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
+    <string name="title_cashout_tunai">Tarik Dana - Tunai</string>
 </resources>

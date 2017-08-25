@@ -199,6 +199,9 @@ public class MyApiClient {
     public static String LINK_GLOBAL_BBS_INSERT_A2C;
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
+    public static String LINK_INQUIRY_TOKEN_ATC;
+    public static String LINK_INQUIRY_DATA_ATC;
+    public static String LINK_CANCEL_ATC;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -498,6 +501,22 @@ public class MyApiClient {
     public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
         getInstance().syncHttpClient.get(mContext, url, responseHandler);
     }
+
+    public static void sentInquiryDataATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent inquiry data ATC:"+LINK_INQUIRY_DATA_ATC);
+        post(mContext,LINK_INQUIRY_DATA_ATC, params, responseHandler);
+    }
+
+    public static void sentInquiryTokenATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent inquiry token ATC:"+LINK_INQUIRY_TOKEN_ATC);
+        post(mContext,LINK_INQUIRY_TOKEN_ATC, params, responseHandler);
+    }
+
+    public static void sentCancelATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent cancel ATC:"+LINK_CANCEL_ATC);
+        post(mContext,LINK_CANCEL_ATC, params, responseHandler);
+    }
+
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared

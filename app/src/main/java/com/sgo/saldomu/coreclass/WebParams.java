@@ -430,4 +430,9 @@ public class WebParams {
     public static String BBS_CITY= "bbs_city";
     public static String COMM_SOURCE= "comm_source";
     public static String COMM_BENEF= "comm_benef";
+
+    public static String IS_TABUNG = "is_tabung";
+    public static String CASHOUT_TYPE = "cashout_type";
+    public static String AGENT_MEMBER_NAME = "agent_member_name";
+    public static String SHORT_URL = "short_url";
 }

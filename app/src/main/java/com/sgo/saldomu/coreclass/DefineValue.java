@@ -93,7 +93,7 @@ public class DefineValue {
     public static String CALLBACK_URL = "callBackUrl";
     public static String CALLBACK_URL_TOPUP = "callBackUrlTopup";
     public static String STRING_YES = "Y";
-    public static String STRING_NO = "N";
+
     public static String INTERNET_BANKING = "internetBanking";
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
@@ -413,6 +413,11 @@ public class DefineValue {
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
 
+    public static int CASHOUT_LKD = 2;
+    public static String STRING_NO = "N";
+    public static String ERROR = "error" ;
+    public static String ERROR_CODE = "errorCode" ;
+    public static String SHORT_URL_APP = "shortUrlApp";
 
 }
 
