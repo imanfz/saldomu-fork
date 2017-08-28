@@ -168,7 +168,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 //        tv_payment_name.setText(payment_name);
         if(payment_name.equalsIgnoreCase("UNIK"))
         {
-            tv_payment_name.setText("Saldomu");
+            tv_payment_name.setText(getString(R.string.appname));
         }
         else
         {
