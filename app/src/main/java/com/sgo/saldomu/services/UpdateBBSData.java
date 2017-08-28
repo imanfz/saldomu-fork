@@ -1,11 +1,10 @@
 package com.sgo.saldomu.services;
 
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -19,7 +18,6 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.receivers.LocalResultReceiver;
 
 import org.apache.http.Header;
@@ -45,7 +43,7 @@ public class UpdateBBSData extends IntentService {
 
     private Realm realm;
     SecurePreferences sp;
-    private LocalResultReceiver localResultReceiver;
+    private ResultReceiver localResultReceiver;
     String userID;
     String accessKey;
     String curr_date;
@@ -68,15 +66,21 @@ public class UpdateBBSData extends IntentService {
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         setUpdatingData(true);
-        getBBSdata(CTA);
-        getBBSdata(ATC);
+
+        if(!userID.isEmpty() && !accessKey.isEmpty()) {
+            getBBSdata(CTA);
+            getBBSdata(ATC);
+        }
+        else
+            Timber.d("user id atau access key kosong semua");
+
         if(!ctaState && !atcState){
             sentFailed(null);
-            setIsUpdatedData(false);
+            setIsDataUpdated(false);
         }
         else {
             sentSuccess(null);
-            setIsUpdatedData(true);
+            setIsDataUpdated(true);
         }
         EndRealm();
         setUpdatingData(false);
@@ -86,7 +90,7 @@ public class UpdateBBSData extends IntentService {
         sp.edit().putBoolean(DefineValue.IS_UPDATING_BBS_DATA,value).commit();
     }
 
-    void setIsUpdatedData(Boolean value){
+    void setIsDataUpdated(Boolean value){
         sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED,value).commit();
     }
 
@@ -259,6 +263,7 @@ public class UpdateBBSData extends IntentService {
         Intent i = new Intent(INTENT_ACTION_BBS_DATA);
         i.putExtra(DefineValue.IS_SUCCESS,false);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        Timber.d("Sent Failed");
     }
     void sentSuccess(Bundle bundle){
         if(localResultReceiver != null)
@@ -267,5 +272,6 @@ public class UpdateBBSData extends IntentService {
         Intent i = new Intent(INTENT_ACTION_BBS_DATA);
         i.putExtra(DefineValue.IS_SUCCESS,true);
         LocalBroadcastManager.getInstance(this).sendBroadcast(i);
+        Timber.d("Sent Success");
     }
 }
