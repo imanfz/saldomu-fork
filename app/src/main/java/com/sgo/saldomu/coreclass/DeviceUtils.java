@@ -104,25 +104,24 @@ public class DeviceUtils {
         ActivityManager actManager = (ActivityManager) CoreApp.getAppContext().getSystemService(ACTIVITY_SERVICE);
         ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
         actManager.getMemoryInfo(memInfo);
-        double totalMemory = (double)memInfo.totalMem;
+        long bytes = memInfo.totalMem;
         String lastValue;
 
-        double mb = totalMemory / 1024.0;
-        double gb = totalMemory / 1048576.0;
-        double tb = totalMemory / 1073741824.0;
-
-        DecimalFormat twoDecimalForm = new DecimalFormat("#.##");
-        if (tb > 1) {
-            lastValue = twoDecimalForm.format(tb).concat(" TB");
-        } else if (gb > 1) {
-            lastValue = twoDecimalForm.format(gb).concat(" GB");
-        } else if (mb > 1) {
-            lastValue = twoDecimalForm.format(mb).concat(" MB");
-        } else {
-            lastValue = twoDecimalForm.format(totalMemory).concat(" KB");
-        }
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp-1) + "";
+        lastValue =  String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 
         return lastValue;
+    }
+
+    public  String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     public static String getPinCode() {
