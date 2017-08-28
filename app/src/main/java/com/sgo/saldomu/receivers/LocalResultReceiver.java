@@ -23,6 +23,12 @@ public class LocalResultReceiver extends ResultReceiver {
         super(handler);
     }
 
+    public static LocalResultReceiver getSimpleInstance(LocalResultInterface listener){
+        LocalResultReceiver localResultReceiver = new LocalResultReceiver(new Handler());
+        localResultReceiver.setReceiver(listener);
+        return localResultReceiver;
+    }
+
     public interface LocalResultInterface{
         void onReceiveResult(int resultCode, Bundle resultData);
     }

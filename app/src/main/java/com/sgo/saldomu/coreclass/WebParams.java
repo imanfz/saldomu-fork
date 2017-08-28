@@ -444,4 +444,5 @@ public class WebParams {
     public static String TIMEZONE   = "timezone";
     public static String APP_TYPE   = "app_type";
     public static String UID   = "uid";
+    public static String SYNC_CODE   = "sync_code";
 }

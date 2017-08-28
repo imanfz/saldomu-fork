@@ -1,11 +1,16 @@
 package com.sgo.saldomu.fcm;
 
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.support.v7.app.NotificationCompat;
 
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.services.jobs.JobUpdateBBSData;
 
 import java.util.Map;
 
@@ -16,6 +21,8 @@ import timber.log.Timber;
  */
 
 public class FirebaseAppMessaging extends FirebaseMessagingService {
+
+    public final static int SYNC_BBS_DATA = 70;
 
     NotificationManager mNotificationManager;
 
@@ -28,6 +35,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Timber.d("Message data payload: " + remoteMessage.getData());
+            if(remoteMessage.getData().containsKey(WebParams.SYNC_CODE)){
+                switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))){
+                    case SYNC_BBS_DATA :
+                        scheduleJob();
+                        break;
+                }
+            }
 
         }
 
@@ -44,6 +58,10 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
     public void onDeletedMessages() {
         super.onDeletedMessages();
         Timber.d("onDeleteMessage");
+    }
+
+    private void scheduleJob() {
+        JobScheduleManager.getInstance(this).scheduleUpdateDataBBS();
     }
 
     private void sendNotification(Map<String, String> data) {

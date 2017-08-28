@@ -312,6 +312,22 @@
         <service android:name=".services.UpdateBBSData"
             android:exported="false"/>
 
+        // Job Dispatcher Service
+        <service
+            android:exported="false"
+            android:name=".services.jobs.JobUpdateBBSData">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+        <service
+            android:exported="false"
+            android:name=".services.jobs.JobRegisterFCM">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
+
         <service android:name=".fcm.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />

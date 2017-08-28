@@ -31,47 +31,20 @@ public class FireBaseInstanceIDService extends FirebaseInstanceIdService {
         Timber.d("Refreshed token: ");
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Timber.d("Refreshed token: " + refreshedToken);
-        sentTokenToServer(refreshedToken);
+        sentTokenToServer();
     }
 
-    void sentTokenToServer(String token){
-        String deviceID = DeviceUtils.getAndroidID();
-        RequestParams requestParams = MyApiClient.getSignatureWithParamsFCM(token,
-                deviceID, BuildConfig.AppID);
-        requestParams.put(WebParams.GCM_ID, token);
-        requestParams.put(WebParams.DEVICE_NAME, DeviceUtils.getDeviceName());
-        requestParams.put(WebParams.DEVICE_OS, DeviceUtils.getDeviceOS());
-        requestParams.put(WebParams.DEVICE_API, DeviceUtils.getDeviceAPILevel());
-        requestParams.put(WebParams.DEVICE_MEMORY, DeviceUtils.getDeviceMemory());
-        requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
-        requestParams.put(WebParams.TIMEZONE, DeviceUtils.getDeviceTimeZone());
-        requestParams.put(WebParams.DEV_MODEL, DeviceUtils.getDeviceModel());
-        requestParams.put(WebParams.APP_TYPE, getString(R.string.appname));
-        requestParams.put(WebParams.APP_ID, BuildConfig.AppID);
-        Timber.d("isi params reg token fcm to server : "+requestParams );
-        MyApiClient.sentReqTokenFCM(this,true,requestParams, new SmartResponseHandler() {
+    void sentTokenToServer() {
+        FCMWebServiceLoader.getInstance(this, new FCMWebServiceLoader.LoaderListener() {
             @Override
-            public void onSuccessResponse(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    Timber.d("isi response reg token fcm to server : "+response.toString() );
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        JSONObject jsonObject = response.getJSONObject(WebParams.DATA);
-                        if(jsonObject != null) {
-                            CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
-                                    jsonObject.optString(WebParams.UID,""));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onSuccessLoader() {
+                FCMManager.subscribeAll();
             }
 
             @Override
-            public void onFailedResponse(Throwable throwable) {
-                Timber.d("isi failed reg token fcm to server : "+throwable.toString());
-            }
-        });
+            public void onFailedLoader() {
 
+            }
+        }).sentTokenToServer(true);
     }
 }

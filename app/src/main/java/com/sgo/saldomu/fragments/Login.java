@@ -30,10 +30,12 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.securities.AES;
 
 import org.apache.http.Header;
@@ -335,6 +337,7 @@ public class Login extends Fragment implements View.OnClickListener {
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
                 BBSDataManager.resetBBSData();
+                FCMWebServiceLoader.getInstance(getActivity().getApplicationContext()).sentTokenAtLogin(false,userId,response.getString(WebParams.EMAIL));
             }
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);
