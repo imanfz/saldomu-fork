@@ -75,7 +75,13 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         else holder.tv_remark.setVisibility(View.GONE);
         holder.tv_tx_status.setText(itemnya.getTx_status());
         holder.tv_product_name.setText(itemnya.getProduct_name());
-
+        if(itemnya.getProduct_name().equalsIgnoreCase("UNIK"))
+        {
+            holder.tv_product_name.setText("Saldomu");
+        }
+        else {
+            holder.tv_product_name.setText(itemnya.getProduct_name());
+        }
         return row;
     }
 

@@ -50,33 +50,23 @@ import timber.log.Timber;
  * Created by thinkpad on 3/18/2015.
  */
 public class FragCashOut extends Fragment {
+    public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashout";
 
-    private View v;
-    private SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-    private LinearLayout layout_acc_name;
-    private Spinner sp_privacy;
-    private Spinner sp_bank;
-    private EditText etAccNo;
-    private EditText etNominal;
-    private EditText etAccName;
-    private TextView txtBalance;
-    private Button btnProcess;
-    private ProgressDialog progdialog;
+    View v;
+    SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+    LinearLayout layout_acc_name;
+    Spinner sp_privacy, sp_bank;
+    EditText etAccNo, etNominal, etAccName;
+    TextView txtBalance;
+    Button btnProcess;
+    ProgressDialog progdialog;
 
-    private int privacy;
-    private int start = 0;
-    private String userID;
-    private String accessKey;
-    private String memberId;
-    private String balance;
-    private String bankCashout;
-    private String bankCode;
-    private String bankName;
-    private String bankGateway;
-    private ArrayList<String> arrBankName;
-    private ArrayList<String> arrBankCode;
-    private ArrayList<String> arrBankGateway;
-    private boolean isBankGateway = false;
+    int privacy, start = 0;
+    String userID, accessKey, memberId, balance, bankCashout, bankCode="", bankName, bankGateway;
+    ArrayList<String> arrBankName;
+    ArrayList<String> arrBankCode;
+    ArrayList<String> arrBankGateway;
+    boolean isBankGateway = false;
 
 
     @Override
@@ -166,7 +156,7 @@ public class FragCashOut extends Fragment {
         btnProcess.setOnClickListener(btnProcessListener);
     }
 
-    private Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
+    Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -183,7 +173,7 @@ public class FragCashOut extends Fragment {
         }
     };
 
-    private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
+    Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             privacy = i+1;
@@ -196,7 +186,7 @@ public class FragCashOut extends Fragment {
     };
 
 
-    private Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
+    Spinner.OnItemSelectedListener spinnerNamaBankListener = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(final AdapterView<?> adapterView, View view, int i, long l) {
 
@@ -224,7 +214,7 @@ public class FragCashOut extends Fragment {
         }
     };
 
-    private void reqCashout(final String _acctNo, final String _amount, final String _accName){
+    public void reqCashout(final String _acctNo, final String _amount, final String _accName){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -238,13 +228,9 @@ public class FragCashOut extends Fragment {
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.BANK_CODE, bankCode);
             params.put(WebParams.ACCT_NO, _acctNo);
-//            params.put(WebParams.PRIVACY, privacy);
-            if(isBankGateway) {
-                if (bankGateway.equalsIgnoreCase("N")) {
-                    params.put(WebParams.ACCT_NAME, _accName);
-                }
-            }
+            params.put(WebParams.IS_TABUNG, DefineValue.STRING_NO);
 
+//            params.put(WebParams.PRIVACY, privacy);
             if(isBankGateway) {
                 if (bankGateway.equalsIgnoreCase("N")) {
                     params.put(WebParams.ACCT_NAME, _accName);
@@ -275,17 +261,6 @@ public class FragCashOut extends Fragment {
                             String fee = response.getString(WebParams.FEE);
                             String total = response.getString(WebParams.TOTAL);
 
-//                            Intent i = new Intent(getActivity(), CashoutActivity.class);
-//                            i.putExtra(DefineValue.TX_ID, tx_id);
-//                            i.putExtra(DefineValue.BANK_NAME, bankName);
-//                            i.putExtra(DefineValue.ACCOUNT_NUMBER, _acctNo);
-//                            i.putExtra(DefineValue.CCY_ID, ccyId);
-//                            i.putExtra(DefineValue.NOMINAL, _amount);
-//                            i.putExtra(DefineValue.ACCT_NAME, acct_name);
-//                            i.putExtra(DefineValue.FEE, fee);
-//                            i.putExtra(DefineValue.TOTAL_AMOUNT, total);
-//                            switchActivity(i);
-
                             Fragment i = new FragCashoutConfirm();
                             Bundle args = new Bundle();
                             args.putString(DefineValue.TX_ID, tx_id);
@@ -297,7 +272,7 @@ public class FragCashOut extends Fragment {
                             args.putString(DefineValue.FEE, fee);
                             args.putString(DefineValue.TOTAL_AMOUNT, total);
                             i.setArguments(args);
-                            switchContent(i);
+                            switchContent(i,FragCashoutConfirm.TAG);
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
@@ -358,7 +333,10 @@ public class FragCashOut extends Fragment {
         }
     }
 
-    private void initializeBankCashout(){
+    public void initializeBankCashout(){
+
+        CashoutActivity fca = (CashoutActivity) getActivity();
+        fca.setTitleToolbar(getString(R.string.title_cashout_bank));
 
         arrBankName = new ArrayList<>();
         arrBankCode = new ArrayList<>();
@@ -380,13 +358,18 @@ public class FragCashOut extends Fragment {
 
     }
 
-    private boolean inputValidation(){
-        if(etAccNo.getText().toString().length()==0){
+    public boolean inputValidation(){
+        if(bankCode.isEmpty()){
+            sp_bank.requestFocus();
+            Toast.makeText(getActivity(),getString(R.string.cashout_validation_bank),Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(etAccNo.getText().toString().length()==0){
             etAccNo.requestFocus();
             etAccNo.setError(getString(R.string.cashout_accno_validation));
             return false;
         }
-        if(isBankGateway) {
+        else if(isBankGateway) {
             if (bankGateway.equalsIgnoreCase("N")) {
                 if (etAccName.getText().toString().length() == 0) {
                     etAccName.requestFocus();
@@ -395,7 +378,7 @@ public class FragCashOut extends Fragment {
                 }
             }
         }
-        if(etNominal.getText().toString().length() == 0){
+        else if(etNominal.getText().toString().length() == 0){
             etNominal.requestFocus();
             etNominal.setError(getString(R.string.cashout_nominal_validation));
             return false;
@@ -415,11 +398,11 @@ public class FragCashOut extends Fragment {
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    private void switchContent(Fragment mFrag){
+    private void switchContent(Fragment mFrag, String tag){
         if (getActivity() == null)
             return;
 
         CashoutActivity fca = (CashoutActivity) getActivity();
-        fca.switchContent(mFrag, getString(R.string.menu_item_title_cash_out), true);
+        fca.switchContent(mFrag, getString(R.string.menu_item_title_cash_out), true, tag);
     }
 }

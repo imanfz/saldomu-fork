@@ -165,7 +165,15 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         tv_id_cust.setText(cust_id);
         tv_amount_value.setText(ccy_id+". "+ CurrencyFormat.format(amount));
 
-        tv_payment_name.setText(payment_name);
+//        tv_payment_name.setText(payment_name);
+        if(payment_name.equalsIgnoreCase("UNIK"))
+        {
+            tv_payment_name.setText(getString(R.string.appname));
+        }
+        else
+        {
+            tv_payment_name.setText(payment_name);
+        }
         tv_fee_value.setText(ccy_id+". "+CurrencyFormat.format(fee));
         tv_total_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(total_amount));
 
@@ -204,12 +212,12 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                     }
 
                     @Override
-                    public void onFail(String message) {
+                    public void onFail(Bundle message) {
 
                     }
 
                     @Override
-                    public void onFailure() {
+                    public void onFailure(String message) {
 
                     }
                 });

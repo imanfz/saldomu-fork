@@ -63,12 +63,12 @@ public class BalanceService extends Service {
                 }
 
                 @Override
-                public void onFail(String message) {
+                public void onFail(Bundle message) {
 
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String message) {
 
                 }
             });

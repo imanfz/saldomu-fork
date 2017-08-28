@@ -37,7 +37,7 @@ public class LevelFormRegisterActivity extends BaseActivity {
 
     }
 
-    private void InitializeToolbar(){
+    public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.level_title));
     }
@@ -84,6 +84,5 @@ public class LevelFormRegisterActivity extends BaseActivity {
         Timber.d("isi request code:"+String.valueOf(requestCode));
         Timber.d("isi result Code:"+String.valueOf(resultCode));
         super.onActivityResult(requestCode, resultCode, data);
-
     }
 }
