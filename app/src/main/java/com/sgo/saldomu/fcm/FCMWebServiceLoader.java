@@ -56,6 +56,13 @@ public class FCMWebServiceLoader {
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
         requestParams.put(WebParams.GCM_ID, token);
         requestParams.put(WebParams.APP_ID, BuildConfig.AppID);
+        requestParams.put(WebParams.DEVICE_NAME, DeviceUtils.getDeviceName());
+        requestParams.put(WebParams.DEVICE_OS, DeviceUtils.getDeviceOS());
+        requestParams.put(WebParams.DEVICE_API, DeviceUtils.getDeviceAPILevel());
+        requestParams.put(WebParams.DEVICE_MEMORY, DeviceUtils.getDeviceMemory());
+        requestParams.put(WebParams.TIMEZONE, DeviceUtils.getDeviceTimeZone());
+        requestParams.put(WebParams.DEV_MODEL, DeviceUtils.getDeviceModel());
+        requestParams.put(WebParams.APP_TYPE, mContext.getString(R.string.appname));
         return requestParams;
     }
 
@@ -70,13 +77,6 @@ public class FCMWebServiceLoader {
     //Register fcm permulaan buka aplikasi
     public void sentTokenToServer(Boolean isSync){
         RequestParams requestParams = setupSignatureParams();
-        requestParams.put(WebParams.DEVICE_NAME, DeviceUtils.getDeviceName());
-        requestParams.put(WebParams.DEVICE_OS, DeviceUtils.getDeviceOS());
-        requestParams.put(WebParams.DEVICE_API, DeviceUtils.getDeviceAPILevel());
-        requestParams.put(WebParams.DEVICE_MEMORY, DeviceUtils.getDeviceMemory());
-        requestParams.put(WebParams.TIMEZONE, DeviceUtils.getDeviceTimeZone());
-        requestParams.put(WebParams.DEV_MODEL, DeviceUtils.getDeviceModel());
-        requestParams.put(WebParams.APP_TYPE, mContext.getString(R.string.appname));
         sentTokenToServer(isSync,requestParams);
     }
 

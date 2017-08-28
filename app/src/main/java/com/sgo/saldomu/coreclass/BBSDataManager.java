@@ -69,8 +69,7 @@ public class BBSDataManager {
     }
 
     public Boolean isDataUpdated(){
-        boolean test = sp.getBoolean(DefineValue.IS_BBS_DATA_UPDATED,false);
-        return test;
+        return sp.getBoolean(DefineValue.IS_BBS_DATA_UPDATED,false);
     }
 
     public void runServiceUpdateData(Context mContext, LocalResultReceiver localResultReceiver){

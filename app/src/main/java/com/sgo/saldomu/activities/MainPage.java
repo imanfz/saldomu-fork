@@ -11,7 +11,6 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,6 +41,7 @@ import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
@@ -49,17 +49,17 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.receivers.LocalResultReceiver;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
-import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.services.UpdateBBSCity;
+import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.services.UserProfileService;
 
 import org.apache.http.Header;
@@ -146,7 +146,6 @@ public class MainPage extends BaseActivity{
                 InitializeNavDrawer();
                 setupFab();
                 AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-
                 startService(new Intent(this, UpdateLocationService.class));
             }
         }
@@ -389,22 +388,10 @@ public class MainPage extends BaseActivity{
             }
         };
         mDrawerToggle.syncState();
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
         mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
-//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                Timber.wtf("masuh receiver", "massuukkkk");
-//                boolean sentToken = sp.getBoolean(DefineValue.SENT_TOKEN_TO_SERVER, false);
-//                if (sentToken) {
-//                      Toast.makeText(MainPage.this,"Dapet tokennya",Toast.LENGTH_LONG).show();
-//                } else {
-//                      Toast.makeText(MainPage.this,"gak dapet tokennya",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        };
     }
 
 
