@@ -81,10 +81,12 @@ android {
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "0"
             buildConfigField 'boolean', "isProdDomain", "true"
+
             buildConfigField 'String', "commCodeBBSATC", "\"SALDOMU\""
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
+
             signingConfig signingConfigs.prodKey
             versionCode = 1
             versionName "1.0"
