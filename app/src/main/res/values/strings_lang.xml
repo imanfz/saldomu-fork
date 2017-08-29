@@ -528,7 +528,7 @@
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
-    <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
+    <string name="login_failed_attempt_1">Anda punya %1$s kesempatan sebelum diblokir.</string>
     <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
