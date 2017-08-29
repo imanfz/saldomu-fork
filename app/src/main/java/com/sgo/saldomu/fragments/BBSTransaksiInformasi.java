@@ -370,28 +370,26 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 isSMSBanking = source_product_code.equalsIgnoreCase(MANDIRISMS);
 
                 if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-//                    if (isSMSBanking) {
-//                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-//                            initializeSmsClass();
-//                            if (isSimExist)
-//                                SubmitAction();
-//                        } else {
-//                            // Ask for one permission
-//                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
-//                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
-//                        }
-//                    } else {
-//                        SubmitAction();
-//                    }
-                    cashInHistory();
+                    if (isSMSBanking) {
+                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                            initializeSmsClass();
+                            if (isSimExist)
+                                SubmitAction();
+                        } else {
+                            // Ask for one permission
+                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
+                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+                        }
+                    } else {
+                        SubmitAction();
+                    }
                 }
                 else {
-//                    btnNext.setEnabled(false);
-//                    if (inputValidation()) {
-//                        sentInsertA2C();
-//                    }
-//                    else btnNext.setEnabled(true);
-                    cashOutHistory();
+                    btnNext.setEnabled(false);
+                    if (inputValidation()) {
+                        sentInsertA2C();
+                    }
+                    else btnNext.setEnabled(true);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));

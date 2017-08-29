@@ -121,7 +121,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         //showReportBillerDialog(MyApiClient.getCurrentDateTime(), paymentId, sp.getString(CoreApp.USERID_PHONE, "")
         //        , bankName,productCode,fee,amount);
         loadUrl(sp.getString(DefineValue.USER_NAME,""),SGO_PLUS_URL, paymentId,userID,totalAmount,
-                fee,amount,reportType,comm_id,transType,shareType);
+                fee,amount,reportType,comm_id,transType, commCode, shareType);
         setResult(MainPage.RESULT_NORMAL);
     }
 
@@ -144,7 +144,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     @SuppressWarnings("deprecation")
     private void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
                          final String fee, final String amount, final String reportType, final String commId,
-                         final String transType, final String shareType) {
+                         final String transType, final String commCode, final String shareType) {
         webview = (WebView) findViewById(R.id.webview);
         assert webview != null;
         WebSettings webSettings = webview.getSettings();
@@ -183,10 +183,17 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 if(URLUtil.isValidUrl(url)) {
                     if (url.contains("isclose=1")) {
                         setResult(MainPage.RESULT_BALANCE);
+                        if(reportType.equalsIgnoreCase(DefineValue.BBS_CASHIN) || reportType.equalsIgnoreCase(DefineValue.BBS_MEMBER_OTP)
+                                || reportType.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
+                            getTrxStatusBBS(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
+                                    fee, amount, reportType, commId, transType, shareType, commCode);
+                        } else {
                             getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
                                     fee, amount, reportType, commId, transType, shareType);
+                        }
                         Timber.wtf("masuk is close");
                     }
+
                     else if (url.contains("isback=1")){
                         setResult(MainPage.RESULT_BALANCE);
                         onOkButton();
@@ -243,7 +250,93 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         webview.loadUrl(url);
     }
 
+    public void getTrxStatusBBS(final String userName, final String date, final String txId, final String userId,
+                             final String totalAmount, final String fee, final String amount, final String reportType,
+                             final String comm_id,final String transtype, final String shareType, String commCode){
+        try{
+            out = DefinedDialog.CreateProgressDialog(this, null);
+            out.show();
 
+            RequestParams params =  MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
+                    userID,accessKey);
+            params.put(WebParams.TX_ID, txId);
+            params.put(WebParams.COMM_ID, comm_id);
+            params.put(WebParams.COMM_CODE, commCode);
+            params.put(WebParams.USER_ID, userId);
+
+            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
+
+            MyApiClient.sentGetTRXStatusBBS(this,params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        out.dismiss();
+                        Timber.d("isi response sent get Trx Status bbs:"+ response.toString());
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                            String txstatus = response.getString(WebParams.TX_STATUS);
+
+                            showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
+                                    txId, userId,totalAmount,fee,amount,
+                                    txstatus,response.getString(WebParams.TX_REMARK),
+                                    reportType,response);
+                        }else if(code.equals(WebParams.LOGOUT_CODE)){
+                            Timber.d("isi response autologout:"+ response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(SgoPlusWeb.this,message);
+                        }
+                        else {
+                            String msg = response.getString(WebParams.ERROR_MESSAGE);
+                            if(code.equals("0003")){
+                                showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
+                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response);
+                            }
+                            else
+                                showDialog(msg);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(SgoPlusWeb.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(SgoPlusWeb.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(out.isShowing()) {
+                        out.dismiss();
+                        showDialog(getString(R.string.network_connection_failure_toast));
+                    }
+                    Timber.w("Error Koneksi get trx status bbs:"+ throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+ e.getMessage());
+        }
+    }
     private void getTrxStatus(final String userName, final String date, final String txId, final String userId,
                               final String totalAmount, final String fee, final String amount, final String reportType,
                               final String comm_id, final String transtype, final String shareType){
@@ -369,8 +462,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
                                         JSONObject response) {
-        Bundle args = new Bundle();
+
         ReportBillerDialog dialog = ReportBillerDialog.newInstance();
+        Bundle args = dialog.getArguments();
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.TX_ID,txId);
@@ -431,10 +525,29 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             args.putString(DefineValue.BANK_PRODUCT, bankProduct);
             args.putString(DefineValue.REMARK,mIntent.getStringExtra(DefineValue.REMARK));
         }
-        else if(reportType.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
-            Intent data = new Intent();
-            data.putExtra(DefineValue.TX_STATUS, txStatus);
-            setResult(MainPage.RESULT_BBS_STATUS, data);
+        else if(reportType.equals(DefineValue.BBS_CASHIN) || reportType.equalsIgnoreCase(DefineValue.BBS_MEMBER_OTP)) {
+            try {
+                args.putString(DefineValue.MEMBER_NAME, response.getString(WebParams.MEMBER_NAME));
+                args.putString(DefineValue.SOURCE_ACCT, response.getString(WebParams.SOURCE_BANK_NAME));
+                args.putString(DefineValue.SOURCE_ACCT_NO, response.getString(WebParams.SOURCE_ACCT_NO));
+                args.putString(DefineValue.SOURCE_ACCT_NAME, response.getString(WebParams.SOURCE_ACCT_NAME));
+                args.putString(DefineValue.BANK_BENEF, response.getString(WebParams.BENEF_BANK_NAME));
+                args.putString(DefineValue.NO_BENEF, response.getString(WebParams.BENEF_ACCT_NO));
+                args.putString(DefineValue.NAME_BENEF, response.getString(WebParams.BENEF_ACCT_NAME));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            args.putString(DefineValue.BANK_PRODUCT, bankProduct);
+            if(reportType.equals(DefineValue.BBS_CASHIN)) {
+                Intent data = new Intent();
+                data.putExtra(DefineValue.TX_STATUS, txStatus);
+                setResult(MainPage.RESULT_BBS_STATUS, data);
+            }
+            else if(reportType.equals(DefineValue.BBS_MEMBER_OTP)) {
+                Intent intent = new Intent();
+                intent.putExtra(DefineValue.BBS_MEMBER_OTP, response.optString(WebParams.OTP_MEMBER,""));
+                setResult(MainPage.RESULT_BBS_MEMBER_OTP, intent);
+            }
         }
 
         dialog.setArguments(args);
