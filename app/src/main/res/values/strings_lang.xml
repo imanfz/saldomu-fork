@@ -730,6 +730,7 @@
     <string name="distance_agent_profile_bbs_label">Jarak : \u0020</string>
     <string name="distance_measurement_agent_profile_bbs_label">\u0020</string>
     <string name="last_online_agent_profile_bbs_label">Last Online : \u0020</string>
+    <string name="last_trx_agent_label">Aktif Terakhir : </string>
     <string name="cash_in_agent_profile_bbs_label">Nabung</string>
     <string name="cash_out_agent_profile_bbs_label">Tarik Tunai</string>
     <string name="colon_agent_profile_bbs_label">:</string>

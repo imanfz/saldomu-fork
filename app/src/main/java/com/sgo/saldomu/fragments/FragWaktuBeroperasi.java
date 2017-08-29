@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
@@ -31,6 +33,8 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -284,7 +288,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                     tlLabelPilihHari.setVisibility(View.VISIBLE);
                     tlLabelPilihSetiapHari.setVisibility(View.VISIBLE);
                     tlLabelPilihJam.setVisibility(View.VISIBLE);
-                    tlTutupSetiapTanggal.setVisibility(View.VISIBLE);
+                    //tlTutupSetiapTanggal.setVisibility(View.VISIBLE);
 
                     if ( swTutupToko.isChecked() ) {
                         btnTanggal.setVisibility(View.VISIBLE);
@@ -481,7 +485,19 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
 
-                                                    getActivity().onBackPressed();
+                                                    FragTutupManual fragTutupManual = new FragTutupManual();
+                                                    FragmentManager fragmentManager = getFragmentManager();
+                                                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                                    fragmentTransaction.replace(R.id.bbs_content, fragTutupManual, null);
+
+                                                    if ( getActivity() != null ) {
+                                                        BBSActivity bbc = (BBSActivity) getActivity();
+
+                                                        TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+                                                        title_detoolbar.setText(getString(R.string.menu_item_title_tutup_manual));
+                                                    }
+                                                    fragmentTransaction.commit();
+                                                    //getActivity().onBackPressed();
                                                     //getActivity().finish();
 
                                                 }

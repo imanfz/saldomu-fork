@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -168,7 +169,25 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             searchLocationEditText.setOnEditorActionListener(this);
             searchLocationEditText.clearFocus();
             searchLocationEditText.setText(this.completeAddress);
+            searchLocationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if ( hasFocus ) {
+                        v.setSelected(true);
+                    } else {
+                        v.setSelected(false);
+                    }
+                }
+            });
+            searchLocationEditText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(true);
+                }
+            });
+
             searchLocationEditText.setSelectAllOnFocus(true);
+
 
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);

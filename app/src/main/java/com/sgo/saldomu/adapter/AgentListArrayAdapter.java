@@ -19,6 +19,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.AgentConstant;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
@@ -28,7 +29,9 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Lenovo Thinkpad on 12/5/2016.
@@ -148,6 +151,19 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             agentName = shopDetail.getMemberName();
             agentAddress = shopDetail.getShopAddress();
             agentDistance = shopDetail.getCalculatedDistance();
+
+            if ( !shopDetail.getLastActivity().equals("") ) {
+                try {
+
+                    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    Date shopLastActivity = dateFormat.parse(shopDetail.getLastActivity());
+                    agentLastOnline      = DateTimeFormat.convertDatetoString(shopLastActivity, "dd MMM yyyy");
+
+                } catch (ParseException e ) {
+                    e.printStackTrace();
+                }
+
+            }
         }
 
         /*try

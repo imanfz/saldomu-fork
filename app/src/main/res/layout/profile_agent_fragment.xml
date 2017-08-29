@@ -63,28 +63,29 @@
 
         </LinearLayout>
 
-        <!-- 1.2.3 -->
+        <!-- 1.2.3 // -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp" >
 
-            <ImageView
+            <!-- ImageView
                 android:scaleType="fitXY"
-                style="@style/LastOnlineIconAgentProfileBbs" />
+                style="@style/LastOnlineIconAgentProfileBbs" / -->
+
+            <!-- TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:text="@string/last_trx_agent_label"
+                style="@style/LastOnlineLabelAgentProfileBbs" / -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:text="@string/last_online_agent_profile_bbs_label"
-                style="@style/LastOnlineLabelAgentProfileBbs" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/agentLastOnline"
                 style="@style/LastOnlineAgentProfileBbs" />
 

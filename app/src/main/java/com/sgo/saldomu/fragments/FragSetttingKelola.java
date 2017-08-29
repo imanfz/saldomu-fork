@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
@@ -275,6 +277,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             shopDetail.setShopProvince(object.getString("province"));
                             shopDetail.setShopCountry(object.getString("country"));
                             shopDetail.setStepApprove(object.getString("step_approve"));
+                            shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
 
                             memberId    = shopDetail.getMemberId();
                             shopId      = shopDetail.getShopId();
@@ -286,7 +289,6 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             province = shopDetail.getShopProvince();
                             district = shopDetail.getShopDistrict();
                             address = shopDetail.getShopFirstAddress();
-
 
                             if ( !object.getString("category").equals("") ) {
                                 JSONArray categories = object.getJSONArray("category");
@@ -308,6 +310,21 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             tvCommName.setText(object.getString("shop_name"));
                             tvAddress.setText(object.getString("address1"));
 
+                            if ( shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
+
+                                FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.bbs_content, fragWaktuBeroperasi, null);
+
+                                if ( getActivity() != null ) {
+                                    BBSActivity bbc = (BBSActivity) getActivity();
+
+                                    TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+                                    title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
+                                }
+                                fragmentTransaction.commit();
+                            }
 
                         }
 

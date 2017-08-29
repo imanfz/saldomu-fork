@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.AgentConstant;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
@@ -22,6 +24,9 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
@@ -66,7 +71,7 @@ public class ProfileAgentFragment extends Fragment
 
         //set default value
         String agentNameSession        = "N/A";
-        String agentLastOnlineSession  = "N/A";
+        String agentLastOnlineSession  = getString(R.string.last_trx_agent_label) + ": N/A";
         String agentAddressSession     = "N/A";
         String agentProfilePicSession  = "N/A";
         String agentDistanceSession    = "N/A";
@@ -74,6 +79,19 @@ public class ProfileAgentFragment extends Fragment
         agentNameSession                = this.shopDetail.getMemberName();
         agentAddressSession             = this.shopDetail.getShopAddress();
         agentDistanceSession            = this.shopDetail.getCalculatedDistance();
+
+        if ( !this.shopDetail.getLastActivity().equals("") ) {
+            try {
+
+                java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                Date shopLastActivity = dateFormat.parse(this.shopDetail.getLastActivity());
+                agentLastOnlineSession      = DateTimeFormat.convertDatetoString(shopLastActivity, "dd MMM yyyy");
+                agentLastOnlineSession      = getString(R.string.last_trx_agent_label) + agentLastOnlineSession;
+            } catch (ParseException e ) {
+                e.printStackTrace();
+            }
+
+        }
         /*try
         {
             //convert json array to json object

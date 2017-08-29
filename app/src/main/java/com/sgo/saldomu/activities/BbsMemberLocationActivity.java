@@ -103,6 +103,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     private GoogleApiClient googleApiClient;
     Location lastLocation;
     private LocationRequest mLocationRequest;
+    String newDistrictName, newProvinceName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,6 +172,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 selectedLat        = address.getLatitude();
                 selectedLong       = address.getLongitude();
 
+                defaultLat          = selectedLat;
+                defaultLong         = selectedLong;
 
                 setAdministrativeName();
             } catch (IOException e) {
@@ -266,7 +269,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, shopId);
                     params.put(WebParams.MEMBER_ID, memberId);
-                    params.put(WebParams.DISTRICT, districtName);
+                    params.put(WebParams.DISTRICT, newDistrictName);
                     params.put(WebParams.PROVINCE, provinceName);
                     params.put(WebParams.COUNTRY, countryName.toUpperCase());
                     params.put(WebParams.LATITUDE, selectedLat);
@@ -322,7 +325,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                                 String code = response.getString(WebParams.ERROR_CODE);
                                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                                     Bundle bundle = new Bundle();
-                                                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSKELOLA);
+                                                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
 
                                                     SecurePreferences.Editor mEditor = sp.edit();
                                                     mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
@@ -333,11 +336,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                                     mEditor.apply();
                                                     setResult(MainPage.RESULT_REFRESH_NAVDRAW );
 
-                                                    //Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-                                                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    //intent.putExtras(bundle);
-                                                    //startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-
+                                                    Intent intent = new Intent(BbsMemberLocationActivity.this, BBSActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    intent.putExtras(bundle);
+                                                    startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
                                                     finish();
                                                 }
                                                 else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -411,13 +413,14 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     //}
 
                                 } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+                                    progdialog.dismiss();
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     //test.showDialoginActivity(getActi,message);
                                 } else {
 
 
-
+                                    progdialog.dismiss();
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                 }
@@ -495,10 +498,13 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             Address addressDetail = addressList.get(0);
 
             ArrayList<String> addressFragments = new ArrayList<String>();
-            districtName    = addressDetail.getSubAdminArea();
+            //districtName    = addressDetail.getSubAdminArea();
             provinceName    = addressDetail.getAdminArea();
             countryName     = addressDetail.getCountryName();
             postalCode      = addressDetail.getPostalCode();
+
+            newDistrictName = addressDetail.getSubAdminArea();
+            newProvinceName = provinceName;
 
         }
     }
@@ -672,6 +678,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         if ( selectedLat != null && selectedLong != null ) {
             LatLng latLng = new LatLng(selectedLat, selectedLong);
 
+                setAdministrativeName();
+
+
+
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.addMarker(new MarkerOptions().position(latLng).title(searchLocationString));
             //add camera position and configuration
@@ -825,9 +835,10 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
 
-                defaultLat = lastLocation.getLatitude();
-                defaultLong = lastLocation.getLongitude();
-
+                if ( defaultLat == null && defaultLong == null ) {
+                    selectedLat = lastLocation.getLatitude();
+                    selectedLong = lastLocation.getLongitude();
+                }
                 Timber.d("Location Found" + lastLocation.toString());
                 //googleApiClient.disconnect();
 

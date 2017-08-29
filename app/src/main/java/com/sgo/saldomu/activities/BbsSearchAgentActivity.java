@@ -986,7 +986,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
                                     shopDetail.setMemberName(object.getString("member_name"));
                                     shopDetail.setShopAddress(object.getString("shop_address"));
-
+                                    shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
+                                    shopDetail.setLastActivity(object.getString("shop_lastactivity"));
                                     shopDetails.add(shopDetail);
                                 }
                             }
