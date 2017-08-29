@@ -913,13 +913,11 @@ public class MainPage extends BaseActivity{
     @Override
     public void onBackPressed() {
         Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
-        if(isForeground) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                showLogoutDialog();
-            }
-            else super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            showLogoutDialog();
         }
-        super.onBackPressed();
+        else super.onBackPressed();
+
     }
 
     @Override
