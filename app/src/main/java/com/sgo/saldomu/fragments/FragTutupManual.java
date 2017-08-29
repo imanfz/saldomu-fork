@@ -476,6 +476,8 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             params2.put(WebParams.SHOP_ID, shopId);
             params2.put(WebParams.MEMBER_ID, memberId);
 
+            params2.put(WebParams.AMOUNT, startMonth);
+
             String idxStartMonth   = String.valueOf(startMonth+1);
             String idxStartDay     = String.valueOf(startDay);
             String idxEndMonth     = String.valueOf(endMonth+1);
@@ -484,7 +486,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             if ( idxStartMonth.length() == 1) idxStartMonth = "0"+idxStartMonth;
             if ( idxStartDay.length() == 1) idxStartDay = "0"+idxStartDay;
             if ( idxEndMonth.length() == 1) idxEndMonth = "0"+idxEndMonth;
-            if ( idxEndDay.length() == 1) idxStartMonth = "0"+idxEndDay;
+            if ( idxEndDay.length() == 1) idxEndDay = "0"+idxEndDay;
 
 
             params2.put(WebParams.SHOP_START_DATE, String.valueOf(startYear)+"-"+idxStartMonth+"-"+idxStartDay);
