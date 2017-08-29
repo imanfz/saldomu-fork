@@ -190,7 +190,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
         }
 
         checkingData();
-        validasiTutorial();
+
     }
 
     private void validasiTutorial()
@@ -304,6 +304,7 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
             tvCommName.setText(dataComm.getComm_name());
             tvCommName.setVisibility(View.VISIBLE);
             spinCommunity.setVisibility(View.GONE);
+            validasiTutorial();
         }
     }
 
