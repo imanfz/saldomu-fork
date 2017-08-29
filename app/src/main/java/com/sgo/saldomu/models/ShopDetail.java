@@ -52,6 +52,7 @@ public class ShopDetail {
     private String urlSmallProfilePicture = "";
     private String lastLogin;
     private String lastActivity;
+    private String isMobility;
 
     public String getMemberId() {
         return memberId;
@@ -405,5 +406,13 @@ public class ShopDetail {
 
     public void setLastActivity(String lastActivity) {
         this.lastActivity = lastActivity;
+    }
+
+    public String getIsMobility() {
+        return isMobility;
+    }
+
+    public void setIsMobility(String isMobility) {
+        this.isMobility = isMobility;
     }
 }

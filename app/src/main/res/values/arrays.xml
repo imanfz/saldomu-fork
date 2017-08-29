@@ -263,7 +263,7 @@
     </string-array>
 
     <string-array name="list_bbs_setting">
-        <!-- item>@string/setup_agent_open_hour</item>
-        <item>@string/setup_tutup_manual</item -->
+        <!-- item>@string/setup_agent_open_hour</item -->
+        <item>@string/setup_tutup_manual</item>
     </string-array>
 </resources>

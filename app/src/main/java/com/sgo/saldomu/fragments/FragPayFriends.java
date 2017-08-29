@@ -496,7 +496,7 @@ public class FragPayFriends extends Fragment {
                             }
                             else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
 
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance);
+                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
 
                                 AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                         message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
