@@ -63,6 +63,7 @@ android {
             buildConfigField 'String', "commCodeBBSATC", "\"EMOMSCADM\""
             //buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile-dev.espay.id/\""
+            buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
 
             versionCode = 1
             versionName "1.0"
@@ -80,9 +81,10 @@ android {
             resValue "integer", "realBBScheme", "0"
             resValue "integer", "dbversion", "0"
             buildConfigField 'boolean', "isProdDomain", "true"
-            buildConfigField 'string', "commCodeBBSATC", "\"https://mobile.espay.id/\""
+            buildConfigField 'String', "commCodeBBSATC", "\"SALDOMU\""
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
-            buildConfigField 'String', "HeadAddress", "\"SALDOMU\""
+            buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/\""
+            buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             signingConfig signingConfigs.prodKey
             versionCode = 1
             versionName "1.0"

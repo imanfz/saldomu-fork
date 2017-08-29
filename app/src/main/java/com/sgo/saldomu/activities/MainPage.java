@@ -49,6 +49,7 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
@@ -134,20 +135,30 @@ public class MainPage extends BaseActivity{
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (!isLogin()) {
-                openFirstScreen(FIRST_SCREEN_INTRO);
-            } else {
-                isForeground = true;
-                agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-                utilsLoader = new UtilsLoader(this, sp);
-                utilsLoader.getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-                startService(new Intent(this, UpdateLocationService.class));
+            if(checkNotification()){
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+                this.finish();
+            }
+            else {
+                if (!isLogin()) {
+                    openFirstScreen(FIRST_SCREEN_INTRO);
+                } else {
+                    isForeground = true;
+                    agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+                    utilsLoader = new UtilsLoader(this, sp);
+                    utilsLoader.getAppVersion();
+                    ActiveAndroid.initialize(this);
+                    progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+                    progdialog.show();
+                    InitializeNavDrawer();
+                    setupFab();
+                    AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+                    startService(new Intent(this, UpdateLocationService.class));
+                }
             }
         }
         else {
@@ -164,6 +175,17 @@ public class MainPage extends BaseActivity{
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         i.putExtra(DefineValue.TYPE,type);
         startActivity(i);
+    }
+
+    boolean checkNotification(){
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Timber.d("masuk check notification " +extras.toString());
+            if (extras.containsKey("type")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
