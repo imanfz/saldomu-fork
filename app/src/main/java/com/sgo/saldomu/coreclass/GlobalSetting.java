@@ -11,7 +11,8 @@ import android.text.TextUtils;
  */
 
 public class GlobalSetting {
-    public static final int RC_LOCATION_PERM = 500;
+    public static final int RC_LOCATION_PERM    = 500;
+    public static final int RC_PHONE_CALL       = 501;
 
     public static boolean isLocationEnabled(Context context) {
         int locationMode = 0;

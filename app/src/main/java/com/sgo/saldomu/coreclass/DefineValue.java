@@ -306,11 +306,11 @@ public class DefineValue {
     public static String CATEGORY_CODE  = "category_code";
 
     //GOOGLE MAP DEFINE PARAMETERS
-    public static float ZOOM_CAMERA_POSITION                = 14.0f; //16.0f
+    public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
-    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
-    public static int DISPLACEMENT                          = 1;
+    public static long INTERVAL_LOCATION_REQUEST            = 15000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 10000; //10 seconds
+    public static int DISPLACEMENT                          = 10;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
     public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
@@ -380,6 +380,7 @@ public class DefineValue {
     public static String STRING_ACCEPT          = "S";
     public static String STRING_CANCEL          = "F";
 
+    public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
     public static String BBS_SHOP_ID        = "BbsShopId";
@@ -418,6 +419,8 @@ public class DefineValue {
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
 
+    public static String AGENT_NAME             = "agentName";
+    public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
     public static String FCM_SERVER_UUID = "fcmServerUuid";
 
     public static int CASHOUT_LKD = 2;

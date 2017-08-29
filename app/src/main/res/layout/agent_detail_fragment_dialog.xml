@@ -34,13 +34,13 @@
         <!-- END Load Content Fragment-->
 
         <!-- 2 -->
-        <LinearLayout
+        <!-- LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp" >
 
-            <!-- 2.1 -->
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -48,7 +48,7 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/location" />
 
-            <!-- 2.2 -->
+
             <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -172,7 +172,7 @@
 
             </TableLayout>
 
-            <!-- 2.3 -->
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="70dp"
@@ -180,7 +180,6 @@
                 android:layout_marginStart="3dp"
                 android:background="#663300" />
 
-            <!-- 2.4 -->
             <TableLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -254,7 +253,7 @@
 
             </TableLayout>
 
-        </LinearLayout>
+        </LinearLayout -->
 
 
         <!-- 3 -->
@@ -267,7 +266,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:background="@drawable/border">
@@ -281,7 +280,7 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -295,7 +294,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <!-- LinearLayout
             android:orientation="horizontal"
             android:layout_width="60dp"
             android:layout_height="40dp"
@@ -309,11 +308,11 @@
                 android:id="@+id/emailBtn"
                 style="@style/EmailIconAgentProfileBbs" />
 
-            </LinearLayout>
+            </LinearLayout -->
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="60dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
@@ -330,7 +329,7 @@
         </LinearLayout>
 
         <!-- 4 -->
-        <Button
+        <!-- Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -338,7 +337,7 @@
             android:paddingRight="120dp"
             android:paddingLeft="120dp"
             android:id="@+id/bookBtn"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp" / -->
 
     </LinearLayout>
 

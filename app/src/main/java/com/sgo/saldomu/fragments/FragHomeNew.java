@@ -342,15 +342,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     i.putExtra(DefineValue.AMOUNT, "");
                     switchActivity(i, MainPage.ACTIVITY_RESULT);*/
                 } else if ( menuItemName.equals(getString(R.string.cash_in)) ) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                    switchMenu(NavigationDrawMenu.MBBS, bundle);
-
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 } else if ( menuItemName.equals(getString(R.string.cash_out)) ) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                } else if ( menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
                     Bundle bundle = new Bundle();
-                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
-                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
                     switchMenu(NavigationDrawMenu.MBBS, bundle);
                 }
                 else

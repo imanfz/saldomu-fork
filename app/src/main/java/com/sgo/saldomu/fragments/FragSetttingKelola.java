@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -33,9 +38,11 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
+import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -44,6 +51,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.services.AgentShopService;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -80,7 +88,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
     String[] _data;
     ArrayList<String> menu;
-    ListView lvList;
+    ListView lvSetting;
     String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove, shopClosed;
     ProgressDialog progdialog, progdialog2;
     String flagApprove, shopStatus;
@@ -92,6 +100,10 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     Button btnSettingLokasi;
     Switch swTutupToko;
     ArrayList<String> selectedDates = new ArrayList<>();
+    EasyAdapter lvSettingAdapter;
+    String[] menuItems;
+    FragmentManager fragmentManager;
+
 
     public FragSetttingKelola() {
         // Required empty public constructor
@@ -133,6 +145,14 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.frag_settting_kelola, container, false);
 
+        menuItems               = getResources().getStringArray(R.array.list_bbs_setting);
+
+        lvSettingAdapter        = new EasyAdapter(getActivity(),R.layout.list_view_item_setting_with_arrow, menuItems);
+
+        lvSetting               = (ListView) v.findViewById(R.id.lvSetting);
+        lvSetting.setOverscrollFooter(new ColorDrawable(Color.TRANSPARENT));
+        lvSetting.setVisibility(View.GONE);
+
         llSettingLokasi         = (RelativeLayout) v.findViewById(R.id.llSettingLokasi);
         llMemberDetail          = (RelativeLayout) v.findViewById(R.id.llMemberDetail);
         llSettingLokasi.setVisibility(View.GONE);
@@ -149,6 +169,38 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         swTutupToko             = (Switch) v.findViewById(R.id.swTutupToko);
 
+        lvSetting.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String tag = "";
+                Fragment newFragment = null;
+                String  menuName = ((TextView) view.findViewById(R.id.txtTitleList)).getText().toString();
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        InitializeTitle();
+                    }
+                });
+                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                if ( menuName.equals(getString(R.string.setup_agent_open_hour)) ) {
+                    newFragment = new FragWaktuBeroperasi();
+                    tag = FragWaktuBeroperasi.TAG;
+                    setActionBarTitle(getString(R.string.setup_agent_open_hour));
+                } else if ( menuName.equals(getString(R.string.setup_tutup_manual)) ) {
+                    newFragment = new FragTutupManual();
+                    tag = FragTutupManual.TAG;
+                    setActionBarTitle(getString(R.string.setup_tutup_manual));
+                }
+
+                fragmentTransaction.replace(R.id.bbs_content, newFragment, tag).addToBackStack(tag);
+                fragmentTransaction.commitAllowingStateLoss();
+
+
+            }
+        });
+
         btnSettingLokasi.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
@@ -164,7 +216,8 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     intent.putExtra("district", district);
                     intent.putExtra("address", address);
                     intent.putExtra("category", category);
-                    getContext().startActivity(intent);
+                    getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
+                    //getActivity().finish();
 
                 }
             }
@@ -193,7 +246,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(getContext(), params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();
@@ -224,6 +277,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             shopDetail.setShopProvince(object.getString("province"));
                             shopDetail.setShopCountry(object.getString("country"));
                             shopDetail.setStepApprove(object.getString("step_approve"));
+                            shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
 
                             memberId    = shopDetail.getMemberId();
                             shopId      = shopDetail.getShopId();
@@ -235,7 +289,6 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             province = shopDetail.getShopProvince();
                             district = shopDetail.getShopDistrict();
                             address = shopDetail.getShopFirstAddress();
-
 
                             if ( !object.getString("category").equals("") ) {
                                 JSONArray categories = object.getJSONArray("category");
@@ -257,6 +310,21 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             tvCommName.setText(object.getString("shop_name"));
                             tvAddress.setText(object.getString("address1"));
 
+                            if ( shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
+
+                                FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
+                                FragmentManager fragmentManager = getFragmentManager();
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.bbs_content, fragWaktuBeroperasi, null);
+
+                                if ( getActivity() != null ) {
+                                    BBSActivity bbc = (BBSActivity) getActivity();
+
+                                    TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+                                    title_detoolbar.setText(getString(R.string.menu_item_title_waktu_beroperasi));
+                                }
+                                fragmentTransaction.commit();
+                            }
 
                         }
 
@@ -264,10 +332,12 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             btnSettingLokasi.setVisibility(View.VISIBLE);
                             tvTutupSekarangLabel.setVisibility(View.GONE);
                             swTutupToko.setVisibility(View.GONE);
+                            lvSetting.setVisibility(View.GONE);
                         } else {
                             btnSettingLokasi.setVisibility(View.GONE);
                             tvTutupSekarangLabel.setVisibility(View.VISIBLE);
-
+                            lvSetting.setVisibility(View.VISIBLE);
+                            lvSetting.setAdapter(lvSettingAdapter);
 
                             if ( shopClosed.equals(DefineValue.STRING_YES) ) {
                                 swTutupToko.setChecked(false);
@@ -378,6 +448,21 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
         // Inflate the layout for this fragment
         return v;
+    }
+
+    protected void setActionBarTitle(String _title) {
+
+        TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+        title_detoolbar.setText(_title);
+    }
+
+    private void InitializeTitle(){
+        Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
+        if(fragment instanceof FragWaktuBeroperasi) {
+            setActionBarTitle(getString(R.string.setup_agent_open_hour));
+        }else if(fragment instanceof FragTutupManual)
+            setActionBarTitle(getString(R.string.setup_tutup_manual));
+
     }
 
 
@@ -494,11 +579,23 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+
+
                             if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                                 Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
                             } else {
                                 Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
                             }
+
+                            mEditor.apply();
+
+                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
                         } else {
                             Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }

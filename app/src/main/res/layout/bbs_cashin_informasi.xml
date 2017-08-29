@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/from"/>
+        android:text="@string/label_transfer_dari_agent"/>
 
     <com.sgo.saldomu.widgets.CustomAutoCompleteTextView
         android:id="@+id/rekening_agen_value"
@@ -19,6 +19,8 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
 
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,6 +31,12 @@
         android:textStyle="italic"
         android:gravity="right"
         android:text="(contoh: BANK BCA)"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/label_no_hp_sender"/>
 
     <LinearLayout android:id="@+id/no_hp_pengirim_layout"
         android:layout_width="match_parent"
@@ -54,6 +62,12 @@
             android:gravity="right"
             android:text="(contoh: 08xxxxxxxx)"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/label_trx_description"/>
 
     <EditText
         android:id="@+id/message_value"

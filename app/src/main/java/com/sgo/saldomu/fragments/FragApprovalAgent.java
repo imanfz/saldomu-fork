@@ -251,9 +251,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        Intent i = new Intent(getContext(), MainPage.class);
-                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(i);
+                                        getActivity().finish();
 
                                     }
                                 });
@@ -705,7 +703,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                             dialog.cancel();
-                            startActivity(new Intent(getActivity(), MainPage.class));
                             getActivity().finish();
                         }
                     });
@@ -747,7 +744,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
                             dialog.cancel();
-                            startActivity(new Intent(getActivity(), MainPage.class));
+
                             getActivity().finish();
                         }
                     });

@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,7 +9,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -19,6 +26,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -35,16 +48,19 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
+import com.sgo.saldomu.services.AgentShopService;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -63,7 +79,10 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class BbsMemberLocationActivity extends BaseActivity implements OnMapReadyCallback,
-        AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks {
+        AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
 
     String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode;
     Realm myRealm;
@@ -72,12 +91,19 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     MapView mapView;
     Double selectedLat, selectedLong;
     Double defaultLat, defaultLong;
-    Button btnSubmit;
+    Button btnSubmit, btnLokasiGPS;
     ProgressDialog progdialog;
     SecurePreferences sp;
     MerchantCommunityList memberDetail;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
     List<Address> addressList = null;
+    CustomAutoCompleteTextView locationSearch;
+    String searchLocationString;
+    private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+    private GoogleApiClient googleApiClient;
+    Location lastLocation;
+    private LocationRequest mLocationRequest;
+    String newDistrictName, newProvinceName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,6 +118,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         provinceName        = getIntent().getStringExtra("province");
         districtName        = getIntent().getStringExtra("district");
         address             = getIntent().getStringExtra("address");
+
+        sp                              = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
@@ -131,7 +159,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         setActionBarIcon(R.drawable.ic_arrow_left);
 
-        memberDefaultAddress    = districtName + ", "+ provinceName;
+        memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
 
         defaultLat      = -6.121435;
         defaultLong     = 106.774124;
@@ -144,6 +172,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 selectedLat        = address.getLatitude();
                 selectedLong       = address.getLongitude();
 
+                defaultLat          = selectedLat;
+                defaultLong         = selectedLong;
 
                 setAdministrativeName();
             } catch (IOException e) {
@@ -160,6 +190,11 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         //memberDetail        = myRealm.where(MerchantCommunityList.class).equalTo("memberId", memberId).equalTo("shopId", shopId).findFirst();
 
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
+
+        locationSearch = (CustomAutoCompleteTextView) findViewById(R.id.editText);
+        locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
+        locationSearch.setOnItemClickListener(this);
+        locationSearch.setOnEditorActionListener(this);
 
         setActionBarTitle(getString(R.string.update_merchant_location) + " - " + shopName);
 
@@ -178,10 +213,39 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
         btnSubmit       = (Button) findViewById(R.id.btnSubmit);
+        btnLokasiGPS    = (Button) findViewById(R.id.btnLokasiGPS);
 
         btnSubmit.setOnClickListener(btnSubmitListener);
+        btnLokasiGPS.setOnClickListener(btnLokasiGPSListener);
+
+        try {
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+                googleApiClient.connect();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
+
+    Button.OnClickListener btnLokasiGPSListener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            try {
+                selectedLat = lastLocation.getLatitude();
+                selectedLong = lastLocation.getLongitude();
+                mMap.clear();
+
+                recreateAllMarker();
+
+                locationSearch.clearFocus();
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     Button.OnClickListener btnSubmitListener = new Button.OnClickListener() {
         @Override
@@ -205,7 +269,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, shopId);
                     params.put(WebParams.MEMBER_ID, memberId);
-                    params.put(WebParams.DISTRICT, districtName);
+                    params.put(WebParams.DISTRICT, newDistrictName);
                     params.put(WebParams.PROVINCE, provinceName);
                     params.put(WebParams.COUNTRY, countryName.toUpperCase());
                     params.put(WebParams.LATITUDE, selectedLat);
@@ -261,12 +325,21 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                                 String code = response.getString(WebParams.ERROR_CODE);
                                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                                     Bundle bundle = new Bundle();
-                                                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSKELOLA);
+                                                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
 
-                                                    Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                                    SecurePreferences.Editor mEditor = sp.edit();
+                                                    mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
+                                                    mEditor.putString(DefineValue.AGENT_NAME, agentName);
+                                                    mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                                    mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                                                    mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                                    mEditor.apply();
+                                                    setResult(MainPage.RESULT_REFRESH_NAVDRAW );
+
+                                                    Intent intent = new Intent(BbsMemberLocationActivity.this, BBSActivity.class);
                                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                     intent.putExtras(bundle);
-                                                    startActivity(intent);
+                                                    startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
                                                     finish();
                                                 }
                                                 else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -340,13 +413,14 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     //}
 
                                 } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
+                                    progdialog.dismiss();
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     //test.showDialoginActivity(getActi,message);
                                 } else {
 
 
-
+                                    progdialog.dismiss();
                                     code = response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
                                 }
@@ -424,17 +498,20 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             Address addressDetail = addressList.get(0);
 
             ArrayList<String> addressFragments = new ArrayList<String>();
-            districtName    = addressDetail.getSubAdminArea();
+            //districtName    = addressDetail.getSubAdminArea();
             provinceName    = addressDetail.getAdminArea();
             countryName     = addressDetail.getCountryName();
             postalCode      = addressDetail.getPostalCode();
+
+            newDistrictName = addressDetail.getSubAdminArea();
+            newProvinceName = provinceName;
 
         }
     }
 
     public void onMapSearch(View view) {
 
-        CustomAutoCompleteTextView locationSearch = (CustomAutoCompleteTextView) findViewById(R.id.editText);
+        locationSearch = (CustomAutoCompleteTextView) findViewById(R.id.editText);
         locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         locationSearch.setOnItemClickListener(this);
         locationSearch.setOnEditorActionListener(this);
@@ -596,14 +673,100 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         return super.onOptionsItemSelected(item);
     }
 
-    private void initializeToolbar() {
-        setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.shop_member_detail));
+    private void setMapCamera()
+    {
+        if ( selectedLat != null && selectedLong != null ) {
+            LatLng latLng = new LatLng(selectedLat, selectedLong);
+
+                setAdministrativeName();
+
+
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.addMarker(new MarkerOptions().position(latLng).title(searchLocationString));
+            //add camera position and configuration
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latLng) // Center Set
+                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                    .build(); // Creates a CameraPosition from the builder
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+
+                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
+                }
+
+                @Override
+                public void onCancel() {
+                }
+            });
+        }
+    }
+
+    private void recreateAllMarker() {
+        if (mMap != null ) {
+
+            setMapCamera();
+
+
+
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        searchLocationString = locationSearch.getText().toString().trim();
+        try
+        {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 
+            List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
+
+            if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
+            {
+
+                Address singleAddress = multiAddress.get(0);
+                ArrayList<String> addressArray = new ArrayList<String>();
+
+                for (int i = 0; i < singleAddress.getMaxAddressLineIndex(); i++) {
+                    addressArray.add(singleAddress.getAddressLine(i));
+                }
+
+                String fullAddress = TextUtils.join(System.getProperty("line.separator"), addressArray);
+
+                //changeMap(singleAddress.getLatitude(), singleAddress.getLongitude());
+                selectedLat = singleAddress.getLatitude();
+                selectedLong = singleAddress.getLongitude();
+
+                mMap.clear();
+
+                recreateAllMarker();
+
+                locationSearch.clearFocus();
+                InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+            }
+            else
+            {
+
+            }
+        }
+        catch(IOException ioException)
+        {
+            // Catch network or other I/O problems.
+            //errorMessage = "Catch : Network or other I/O problems - No geocoder available";
+            Log.d("onIOException ", "Catch : Network or other I/O problems - No geocoder available");
+        }
+        catch(IllegalArgumentException illegalArgumentException)
+        {
+            // Catch invalid latitude or longitude values.
+            //errorMessage = "Catch : Invalid latitude or longitude values";
+            //Log.d("IllegalArgumentException ", "Catch : Invalid latitude or longitude values");
+
+        }
     }
 
     @Override
@@ -612,14 +775,25 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
-        Intent i = new Intent(this, BbsMemberLocationActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.putExtra("memberId", memberId);
-        i.putExtra("shopId", shopId);
-        startActivity(i);
-        finish();
+        try {
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+                googleApiClient.connect();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -647,6 +821,93 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         }
                     });
             alertDialog.show();
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Timber.d("onConnected Started");
+
+        try {
+            lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+            if ( lastLocation == null ){
+                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+            } else {
+
+                if ( defaultLat == null && defaultLong == null ) {
+                    selectedLat = lastLocation.getLatitude();
+                    selectedLong = lastLocation.getLongitude();
+                }
+                Timber.d("Location Found" + lastLocation.toString());
+                //googleApiClient.disconnect();
+
+            }
+        } catch (SecurityException se) {
+            se.printStackTrace();
+        }
+        if (bundle!=null) {
+            Timber.d(bundle.toString());
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        lastLocation    = location;
+        defaultLat      = lastLocation.getLatitude();
+        defaultLong     = lastLocation.getLongitude();
+    }
+
+    private boolean checkPlayServices()
+    {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(this);
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog(this, result, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(DefineValue.INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setFastestInterval(DefineValue.FASTEST_INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
+    }
+
+    protected synchronized void buildGoogleApiClient()
+    {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        try {
+            googleApiClient.disconnect();
+        } catch( Exception e ) {
+            e.printStackTrace();
         }
     }
 }

@@ -26,6 +26,7 @@ import com.sgo.saldomu.activities.BbsMapNagivationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainAgentActivity;
 import com.sgo.saldomu.coreclass.AgentConstant;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.fragments.AgentMapFragment;
 import com.sgo.saldomu.fragments.ProfileAgentFragment;
 import com.sgo.saldomu.models.ShopDetail;
@@ -33,7 +34,10 @@ import com.sgo.saldomu.models.ShopDetail;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 import io.realm.Realm;
+import pub.devrel.easypermissions.EasyPermissions;
 
 //import static com.sgo.indonesiakoe.activities.SearchAgentActivity.service_name_arr;
 
@@ -55,6 +59,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
     private ShopDetail shopDetail = new ShopDetail();
     private Double currentLatitude;
     private Double currentLongitude;
+    final int RC_PHONE_CALL = 503;
 
     View rootView;
     Realm realm;
@@ -96,19 +101,19 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         mainBbsActivity = (BbsSearchAgentActivity) getActivity();
 
         closeBtn    = (ImageView) rootView.findViewById(R.id.closeBtn);
-        agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
+        //agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
         callBtn     = (ImageView) rootView.findViewById(R.id.callBtn);
         smsBtn      = (ImageView) rootView.findViewById(R.id.smsBtn);
-        emailBtn    = (ImageView) rootView.findViewById(R.id.emailBtn);
-        bookBtn     = (Button) rootView.findViewById(R.id.bookBtn);
+        //emailBtn    = (ImageView) rootView.findViewById(R.id.emailBtn);
+        //bookBtn     = (Button) rootView.findViewById(R.id.bookBtn);
         navigationBtn   = (ImageView) rootView.findViewById(R.id.navigationBtn);
 
         closeBtn.setOnClickListener(this);
-        agentMapBtn.setOnClickListener(this);
+        //agentMapBtn.setOnClickListener(this);
         callBtn.setOnClickListener(this);
         smsBtn.setOnClickListener(this);
-        emailBtn.setOnClickListener(this);
-        bookBtn.setOnClickListener(this);
+        //emailBtn.setOnClickListener(this);
+        //bookBtn.setOnClickListener(this);
         navigationBtn.setOnClickListener(this);
         //}
 
@@ -153,7 +158,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         {
             showSms();
         }
-        else if(view.getId() == emailBtn.getId())
+        /*else if(view.getId() == emailBtn.getId())
         {
             showEmail();
         }
@@ -167,7 +172,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         else if(view.getId() == agentMapBtn.getId())
         {
             showSingleAgentMap();
-        }
+        }*/
         else if(view.getId() == closeBtn.getId())
         {
             closeAgentDetailFragmentDialog();
@@ -263,7 +268,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
 
             Intent smsIntent = new Intent(Intent.ACTION_SENDTO);
             smsIntent.setType("vnd.android-dir/mms-sms");
-            smsIntent.setData(Uri.parse("sms:" + "081807128119"));
+            smsIntent.setData(Uri.parse("sms:" + shopDetail.getMemberCust() ));
             startActivity(smsIntent);
         }
         catch(ActivityNotFoundException e)
@@ -287,43 +292,35 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
     private void showPhoneCall()
     {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:081807128119"));
+        callIntent.setData(Uri.parse("tel:"+shopDetail.getMemberCust()));
         startActivity(callIntent);
     }
 
     private void setPhoneCall()
     {
-        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.CALL_PHONE)) {
+            showPhoneCall();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_phone_call),
+                    RC_PHONE_CALL, Manifest.permission.CALL_PHONE);
+        }
+        /*if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
         {
             requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, AgentConstant.TRUE);
         }
         else
         {
             showPhoneCall();
-        }
+        }*/
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }*/
 
-        switch(requestCode)
-        {
-            case AgentConstant.TRUE:
-            {
-                //If request is cancelled, the result arrays are empty.
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    // permission was granted. Do the contacts-related task you need to do.
-                    showPhoneCall();
-                }
-                else
-                {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-            }
-        }
-    }
+
 }

@@ -9,6 +9,7 @@ public class ShopDetail {
     private String memberCode;
     private String memberName;
     private String memberType;
+    private String memberCust;
     private String commId;
     private String commCode;
     private String commName;
@@ -48,6 +49,9 @@ public class ShopDetail {
     private String keyCountry;
     private String ccyId;
     private ArrayList<String> categories = new ArrayList<>();
+    private String urlSmallProfilePicture = "";
+    private String lastLogin;
+    private String lastActivity;
 
     public String getMemberId() {
         return memberId;
@@ -79,6 +83,14 @@ public class ShopDetail {
 
     public void setMemberType(String memberType) {
         this.memberType = memberType;
+    }
+
+    public String getMemberCust() {
+        return memberCust;
+    }
+
+    public void setMemberCust(String memberCust) {
+        this.memberCust = memberCust;
     }
 
     public String getCommId() {
@@ -369,5 +381,29 @@ public class ShopDetail {
 
     public void setStepApprove(String stepApprove) {
         this.stepApprove = stepApprove;
+    }
+
+    public String getUrlSmallProfilePicture() {
+        return urlSmallProfilePicture;
+    }
+
+    public void setUrlSmallProfilePicture(String urlSmallProfilePicture) {
+        this.urlSmallProfilePicture = urlSmallProfilePicture;
+    }
+
+    public String getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(String lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    public String getLastActivity() {
+        return lastActivity;
+    }
+
+    public void setLastActivity(String lastActivity) {
+        this.lastActivity = lastActivity;
     }
 }

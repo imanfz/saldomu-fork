@@ -127,6 +127,18 @@
             android:textOff="@string/no"
             android:textOn="@string/yes" />
 
+        <ListView
+        android:id="@+id/lvSetting"
+            android:layout_below="@+id/tvTutupSekarangLabel"
+        android:layout_width="match_parent"
+            android:divider="@null"
+        android:dividerHeight="0dp"
+        android:layout_height="wrap_content"
+            android:footerDividersEnabled="false"
+            >
+
+        </ListView>
+
 
         <Button
             android:id="@+id/btnSettingLokasi"

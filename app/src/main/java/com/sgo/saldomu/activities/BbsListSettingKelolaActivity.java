@@ -82,7 +82,7 @@ public class BbsListSettingKelolaActivity extends BaseActivity {
 
         params.put(WebParams.SIGNATURE, signature);
 
-        MyApiClient.getMemberShopList(BbsListSettingKelolaActivity.this, params, new JsonHttpResponseHandler() {
+        MyApiClient.getMemberShopList(BbsListSettingKelolaActivity.this, params, false, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progdialog.dismiss();
