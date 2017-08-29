@@ -84,7 +84,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
 
-    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode;
+    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility;
     Realm myRealm;
     TextView tvDetailMemberName, tvCommName, tvAddress, tvDistrict, tvProvince;
     private GoogleMap mMap;
@@ -118,6 +118,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         provinceName        = getIntent().getStringExtra("province");
         districtName        = getIntent().getStringExtra("district");
         address             = getIntent().getStringExtra("address");
+        isMobility          = getIntent().getStringExtra("isMobility");
 
         sp                              = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -293,98 +294,124 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     //myRealm.beginTransaction();
 
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
+                                    mEditor.putString(DefineValue.AGENT_NAME, agentName);
+                                    mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                                    mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                    mEditor.apply();
+                                    setResult(MainPage.RESULT_REFRESH_NAVDRAW);
 
-                                    RequestParams params2 = new RequestParams();
+                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                    LocalBroadcastManager.getInstance(BbsMemberLocationActivity.this).sendBroadcast(i);
 
-                                    UUID rcUUID2             = UUID.randomUUID();
-                                    String  dtime2           = DateTimeFormat.getCurrentDateTime();
+                                    if ( isMobility.equals(DefineValue.STRING_YES) ) {
+                                        RequestParams params2 = new RequestParams();
 
-                                    params2.put(WebParams.RC_UUID, rcUUID2);
-                                    params2.put(WebParams.RC_DATETIME, dtime2);
-                                    params2.put(WebParams.APP_ID, BuildConfig.AppID);
-                                    params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-                                    params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-                                    params2.put(WebParams.SHOP_ID, shopId);
-                                    params2.put(WebParams.MEMBER_ID, memberId);
-                                    params2.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
-                                    params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
+                                        UUID rcUUID2 = UUID.randomUUID();
+                                        String dtime2 = DateTimeFormat.getCurrentDateTime();
 
-
-                                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
-
-                                    params2.put(WebParams.SIGNATURE, signature);
+                                        params2.put(WebParams.RC_UUID, rcUUID2);
+                                        params2.put(WebParams.RC_DATETIME, dtime2);
+                                        params2.put(WebParams.APP_ID, BuildConfig.AppID);
+                                        params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                                        params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                                        params2.put(WebParams.SHOP_ID, shopId);
+                                        params2.put(WebParams.MEMBER_ID, memberId);
+                                        params2.put(WebParams.FLAG_ALL_DAY, DefineValue.STRING_YES);
+                                        params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
 
 
-                                    MyApiClient.setupOpeningHour(BbsMemberLocationActivity.this, params2, new JsonHttpResponseHandler() {
-                                        @Override
-                                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                            progdialog.dismiss();
-                                            Timber.d("isi response sent request cash in:" + response.toString());
+                                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
 
-                                            try {
-                                                String code = response.getString(WebParams.ERROR_CODE);
-                                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                                    Bundle bundle = new Bundle();
-                                                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+                                        params2.put(WebParams.SIGNATURE, signature);
 
-                                                    SecurePreferences.Editor mEditor = sp.edit();
-                                                    mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
-                                                    mEditor.putString(DefineValue.AGENT_NAME, agentName);
-                                                    mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
-                                                    mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
-                                                    mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
-                                                    mEditor.apply();
-                                                    setResult(MainPage.RESULT_REFRESH_NAVDRAW );
 
-                                                    Intent intent = new Intent(BbsMemberLocationActivity.this, BBSActivity.class);
-                                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    intent.putExtras(bundle);
-                                                    startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-                                                    finish();
-                                                }
-                                                else if(code.equals(WebParams.LOGOUT_CODE)){
-                                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                    //test.showDialoginActivity(getApplication(),message);
-                                                }
-                                                else {
-                                                    code = response.getString(WebParams.ERROR_MESSAGE);
-                                                    Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-                                                }
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                            super.onFailure(statusCode, headers, responseString, throwable);
-                                            failure(throwable);
-                                        }
-
-                                        @Override
-                                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                                            failure(throwable);
-                                        }
-
-                                        @Override
-                                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                                            failure(throwable);
-                                        }
-
-                                        private void failure(Throwable throwable){
-                                            if(MyApiClient.PROD_FAILURE_FLAG)
-                                                Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                            else
-                                                Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                                            if (progdialog.isShowing())
+                                        MyApiClient.setupOpeningHour(BbsMemberLocationActivity.this, params2, new JsonHttpResponseHandler() {
+                                            @Override
+                                            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                                                 progdialog.dismiss();
+                                                Timber.d("isi response sent request cash in:" + response.toString());
 
-                                            Timber.w("Error Koneksi sent request setup open hour:"+throwable.toString());
-                                        }
-                                    });
+                                                try {
+                                                    String code = response.getString(WebParams.ERROR_CODE);
+                                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+
+
+
+
+
+                                                        /*Bundle bundle = new Bundle();
+                                                        //bundle.putInt(DefineValue.INDEX, MainPage.LI);
+                                                        Intent intent = new Intent(BbsMemberLocationActivity.this, MainPage.class);
+                                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        intent.putExtras(bundle);
+                                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);*/
+                                                        finish();
+                                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                                        //test.showDialoginActivity(getApplication(),message);
+                                                    } else {
+                                                        code = response.getString(WebParams.ERROR_MESSAGE);
+                                                        Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                                    }
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                                                super.onFailure(statusCode, headers, responseString, throwable);
+                                                failure(throwable);
+                                            }
+
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                                failure(throwable);
+                                            }
+
+                                            @Override
+                                            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                                                super.onFailure(statusCode, headers, throwable, errorResponse);
+                                                failure(throwable);
+                                            }
+
+                                            private void failure(Throwable throwable) {
+                                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                                else
+                                                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                                                if (progdialog.isShowing())
+                                                    progdialog.dismiss();
+
+                                                Timber.w("Error Koneksi sent request setup open hour:" + throwable.toString());
+                                            }
+                                        });
+                                    } else {
+
+                                        //redirect to Waktu Beroperasi
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+;
+                                        mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
+                                        mEditor.putString(DefineValue.AGENT_NAME, agentName);
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                        mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
+                                        mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                        mEditor.apply();
+                                        setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                        Intent intent = new Intent(BbsMemberLocationActivity.this, BBSActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtras(bundle);
+                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                        finish();
+                                    }
 
                                     //String tempSetupOpenHour = response.getString("setup_open_hour");
                                     //if (tempSetupOpenHour.equals("")) {

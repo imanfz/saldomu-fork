@@ -485,7 +485,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
 
-                                                    FragTutupManual fragTutupManual = new FragTutupManual();
+                                                    /*FragTutupManual fragTutupManual = new FragTutupManual();
                                                     FragmentManager fragmentManager = getFragmentManager();
                                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                                                     fragmentTransaction.replace(R.id.bbs_content, fragTutupManual, null);
@@ -496,9 +496,9 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                                         TextView title_detoolbar = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
                                                         title_detoolbar.setText(getString(R.string.menu_item_title_tutup_manual));
                                                     }
-                                                    fragmentTransaction.commit();
+                                                    fragmentTransaction.commit();*/
                                                     //getActivity().onBackPressed();
-                                                    //getActivity().finish();
+                                                    getActivity().finish();
 
                                                 }
                                             });
