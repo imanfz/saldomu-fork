@@ -103,6 +103,10 @@ public class CustomSecurePref {
         this.mSecurePrefs = mSecurePrefs;
     }
 
+    public void insertString(String field, String value){
+        getmSecurePrefs().edit().putString(field,value).apply();
+    }
+
     public void ClearAllCustomData(){
         SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();
 
@@ -167,6 +171,9 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.MAX_TOPUP);
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
         mEdit.remove(DefineValue.TIMELINE_FIRST_TIME);
+
+        mEdit.remove("cashin_history_temp");
+        mEdit.remove("cashout_history_temp");
 
         mEdit.apply();
 

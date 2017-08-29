@@ -27,7 +27,6 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -44,13 +43,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
   Created by Administrator on 11/5/2014.
  */
-public class SgoPlus_input extends Fragment {
-
+public class SgoPlus_input extends Fragment implements EasyPermissions.PermissionCallbacks {
+    final int RC_SEND_SMS = 13;
     private HashMap<String,String> listBankName;
     private HashMap<String,String> listBankProduct;
     private List<listbankModel> listDB;
@@ -77,7 +77,6 @@ public class SgoPlus_input extends Fragment {
     private boolean isSMSBanking = false;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
-    private ReqPermissionClass reqPermissionClass;
     private SentObject sentObject;
 
     private class SentObject{
@@ -128,14 +127,16 @@ public class SgoPlus_input extends Fragment {
             isSMSBanking = true;
             dialogI = InformationDialog.newInstance(3);
             dialogI.setTargetFragment(this,0);
-            reqPermissionClass = new ReqPermissionClass(getActivity());
-            reqPermissionClass.setTargetFragment(this);
             initializeSmsClass();
             smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
                 @Override
                 public void onClickOkButton(View v, boolean isLongClick) {
-                    if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS,ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+                    if (EasyPermissions.hasPermissions(getActivity(),Manifest.permission.SEND_SMS)){
                         smsDialog.sentSms();
+                    }
+                    else {
+                        EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_send_sms),
+                                RC_SEND_SMS, Manifest.permission.SEND_SMS);
                     }
                 }
 
@@ -198,22 +199,30 @@ public class SgoPlus_input extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
-                smsDialog.sentSms();
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(requestCode == RC_SEND_SMS){
+            smsDialog.sentSms();
         }
-        else {
-            if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
-                Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                if(progdialog.isShowing())
-                    progdialog.dismiss();
-                if (smsDialog != null) {
-                    smsDialog.dismiss();
-                    smsDialog.reset();
-                }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if(requestCode == RC_SEND_SMS){
+            Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+            if(progdialog.isShowing())
+                progdialog.dismiss();
+            if (smsDialog != null) {
+                smsDialog.dismiss();
+                smsDialog.reset();
             }
         }
-
     }
+
+
 
     private void InitializeSpinner() {
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
@@ -57,8 +58,8 @@ public class UtilsLoader {
     }
 
     private void setmActivity(Activity mActivity) {
-                    this.mActivity = mActivity;
-                }
+        this.mActivity = mActivity;
+    }
 
     public void getDataBalance(Boolean is_auto,final OnLoadDataListener mListener){
         try{
@@ -104,13 +105,18 @@ public class UtilsLoader {
                                 Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
                                 LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
+                                if(getmActivity().isFinishing()) {
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getmActivity(), message);
+                                }
                             } else {
                                 code = response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                                mListener.onFail(code);
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.ERROR,code);
+                                bundle.putString(DefineValue.ERROR_CODE,response.getString(WebParams.ERROR_CODE));
+                                mListener.onFail(bundle);
                             }
 
                         } catch (JSONException e) {
@@ -139,7 +145,7 @@ public class UtilsLoader {
 
                     private void failure(Throwable throwable) {
                         Timber.w("Error Koneksi get Saldo Loader:" + throwable.toString());
-                        mListener.onFailure();
+                        mListener.onFailure(throwable.toString());
                     }
                 });
             }
@@ -175,7 +181,10 @@ public class UtilsLoader {
                         } else {
                             code = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                            mListener.onFail(code);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(DefineValue.ERROR,code);
+                            bundle.putString(DefineValue.ERROR_CODE,response.getString(WebParams.ERROR_CODE));
+                            mListener.onFail(bundle);
                         }
 
                     } catch (JSONException e) {
@@ -204,7 +213,7 @@ public class UtilsLoader {
 
                 private void failure(Throwable throwable) {
                     Timber.w("Error Koneksi get PIN attempt Loader:" + throwable.toString());
-                    mListener.onFailure();
+                    mListener.onFailure(throwable.toString());
                 }
             });
 
@@ -230,9 +239,11 @@ public class UtilsLoader {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("Isi response get App Version:"+response.toString());
+
                             String arrayApp = response.optString(WebParams.APP_DATA,"");
                             if(!arrayApp.isEmpty() && !arrayApp.equalsIgnoreCase(null)) {
                                 final JSONObject mObject = new JSONObject(arrayApp);
+                                sp.edit().putString(DefineValue.SHORT_URL_APP,mObject.optString(WebParams.SHORT_URL,"")).apply();
                                 if(mObject.getString(WebParams.DISABLE).equals("1")) {
                                     String message = getmActivity().getResources().getString(R.string.maintenance_message);
                                     DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
@@ -292,14 +303,14 @@ public class UtilsLoader {
                         else if (code.equals("0381")) {
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            getmActivity().finish();
-                                            android.os.Process.killProcess(android.os.Process.myPid());
-                                            System.exit(0);
-                                            getmActivity().getParent().finish();
-                                        }
-                                    };
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    getmActivity().finish();
+                                    android.os.Process.killProcess(android.os.Process.myPid());
+                                    System.exit(0);
+                                    getmActivity().getParent().finish();
+                                }
+                            };
                             AlertDialog alertDialog =  DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
                                     message,android.R.drawable.ic_dialog_alert,false,
                                     getmActivity().getString(R.string.ok),okListener);

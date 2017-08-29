@@ -40,6 +40,8 @@ import timber.log.Timber;
 
 public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
 
+    public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgenCode";
+
     private View v;
     private SecurePreferences sp;
     private String userid,accesskey,memberId,tx_id,nameadmin,amount,fee,total,ccy;
@@ -129,7 +131,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
 
     }
 
-    private void getTrxStatus(){
+    public void getTrxStatus(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -156,7 +158,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
                         String message = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             showReportBillerDialog( DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                   response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""));
+                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
 
@@ -211,7 +213,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
         }
     }
 
-    private void showDialogNotInput(String message){
+    void showDialogNotInput(String message){
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

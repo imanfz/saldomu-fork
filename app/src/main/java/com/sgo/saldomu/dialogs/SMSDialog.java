@@ -129,8 +129,6 @@ public class SMSDialog extends Dialog {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 tvMessage.setText(message1);
                 progText.setVisibility(View.GONE);
                 progBar.setVisibility(View.GONE);
@@ -218,6 +216,11 @@ public class SMSDialog extends Dialog {
                 smsClass.Close();
             }
         };
+    }
+
+    public void setListener(DialogButtonListener dialogButtonListener){
+        this.deListener = dialogButtonListener;
+
     }
 
     @Override

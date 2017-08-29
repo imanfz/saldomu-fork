@@ -13,7 +13,6 @@ public class DefineValue {
     public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
 
-
     //Static Value
     public static String DEVELOPMENT = "development" ;
     public static String PRODUCTION = "production" ;
@@ -93,7 +92,7 @@ public class DefineValue {
     public static String CALLBACK_URL = "callBackUrl";
     public static String CALLBACK_URL_TOPUP = "callBackUrlTopup";
     public static String STRING_YES = "Y";
-    public static String STRING_NO = "N";
+
     public static String INTERNET_BANKING = "internetBanking";
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
@@ -240,6 +239,7 @@ public class DefineValue {
     public static String ACCT_NAME = "acctName";
     public static String ACCT_TYPE = "acctType";
     public static String ACCT_NO = "acctNo";
+    public static String ACCT_NO_CURRENT = "acctNoCurrent";
     public static String ACCT_CITY_NAME = "acctCityName";
     public static String ACCT_CITY_CODE = "acctCityCode";
 
@@ -330,6 +330,7 @@ public class DefineValue {
     public static String IS_BBS = "isBBS";
     //BBS
     public static String BBS_COMM_ATC = "ATC";
+    public static String BBS_COMM_CTA = "CTA";
     public static String IS_JOIN_AGENT = "isJoinAgent";
     public static String ATC = "ATC";
     public static String CTA = "CTA";
@@ -412,8 +413,23 @@ public class DefineValue {
     public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
+    public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSData";
+    public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSData";
+    public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
+    public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
+    public static String IS_SUCCESS = "isSuccess";
 
     public static String AGENT_NAME             = "agentName";
     public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
+    public static String FCM_SERVER_UUID = "fcmServerUuid";
+
+    public static int CASHOUT_LKD = 2;
+    public static String STRING_NO = "N";
+    public static String ERROR = "error" ;
+    public static String ERROR_CODE = "errorCode" ;
+    public static String SHORT_URL_APP = "shortUrlApp";
+    public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
+    public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
+
 }
 

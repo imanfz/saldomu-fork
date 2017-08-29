@@ -32,6 +32,7 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -41,13 +42,15 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.UUID;
+
+import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.services.UpdateBBSData;
 
 import timber.log.Timber;
 
@@ -67,6 +70,7 @@ public class ListBBS extends Fragment {
     private Switch swSettingOnline;
     String shopStatus;
     ProgressDialog progdialog2;
+    ProgressDialog progDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,12 +79,22 @@ public class ListBBS extends Fragment {
 
         filter = new IntentFilter();
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+        filter.addAction(UpdateBBSData.INTENT_ACTION_BBS_DATA);
 
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent)
+        progDialog = DefinedDialog.CreateProgressDialog(getContext());
+        progDialog.dismiss();
+        if(isAgent) {
             _data = getResources().getStringArray(R.array.list_bbs_agent);
+            boolean isUpdatingData = sp.getBoolean(DefineValue.IS_UPDATING_BBS_DATA,false);
+            if(isUpdatingData)
+                progDialog.show();
+            else
+                checkAndRunServiceBBS();
+        }
         else
             _data = getResources().getStringArray(R.array.list_bbs_member);
+
     }
 
     @Override
@@ -174,6 +188,15 @@ public class ListBBS extends Fragment {
                 i.putExtras(bundle);
                 switchActivity(i,MainPage.ACTIVITY_RESULT);
             }
+        }
+    }
+
+    void checkAndRunServiceBBS(){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(!bbsDataManager.isDataUpdated()) {
+            progDialog.show();
+            bbsDataManager.runServiceUpdateData(getContext());
+            Timber.d("Run Service update data BBS");
         }
     }
 
@@ -271,23 +294,20 @@ public class ListBBS extends Fragment {
         return data;
     }
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
-                setAgentDetailToUI();
-            }
-        }
-    };
-
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver,filter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
     }
+
+    private void switchMenu(int menuIdx){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchMenu(menuIdx,null);
+    }
+
 
     @Override
     public void onDestroy() {
@@ -401,4 +421,24 @@ public class ListBBS extends Fragment {
             });
         }
     };
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(UpdateBBSData.INTENT_ACTION_BBS_DATA)){
+                if(progDialog.isShowing())
+                    progDialog.dismiss();
+                if(!intent.getBooleanExtra(DefineValue.IS_SUCCESS,false)){
+                    Toast.makeText(getContext(),getString(R.string.error_message),Toast.LENGTH_LONG).show();
+                    switchMenu(NavigationDrawMenu.MHOME);
+                }
+            }
+            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+                setAgentDetailToUI();
+            }
+        }
+    };
+
 }

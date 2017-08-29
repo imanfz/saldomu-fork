@@ -209,12 +209,12 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                         }
 
                         @Override
-                        public void onFail(String message) {
+                        public void onFail(Bundle message) {
 
                         }
 
                         @Override
-                        public void onFailure() {
+                        public void onFailure(String message) {
 
                         }
                     });

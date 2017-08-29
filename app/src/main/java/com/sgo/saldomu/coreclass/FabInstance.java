@@ -48,7 +48,6 @@ public class FabInstance {
         int sheetColor = getColor(mContext, R.color.white);
         int fabColor = getColor(mContext, R.color.colorPrimaryDark);
         final int[] statusBarColor = new int[1];
-
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         materialSheetFab = new MaterialSheetFab<>(fab, sheetView, overlay, sheetColor, fabColor);
 

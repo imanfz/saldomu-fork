@@ -36,6 +36,7 @@
         android:id="@+id/no_tujuan_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:gravity="center"
         android:hint="@string/user_id"
         android:inputType="number"

@@ -41,7 +41,6 @@ import com.sgo.saldomu.coreclass.GeneralizeImage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.MyPicasso;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -64,18 +63,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
   Created by Administrator on 1/18/2015.
  */
-public class MyProfileActivity extends BaseActivity {
+public class MyProfileActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
-
+    final int RC_CAMERA_STORAGE = 14;
     private String[] list_hobby;
 
     private SecurePreferences sp;
@@ -121,7 +122,6 @@ public class MyProfileActivity extends BaseActivity {
     private String[] gender_value= new String[]{"L","P"};
     private Boolean isLevel1;
     private Boolean isRegisteredLevel;
-    private ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,6 @@ public class MyProfileActivity extends BaseActivity {
         isLevel1 = i == 1;
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
 
-        reqPermissionClass = new ReqPermissionClass(this);
         InitializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
@@ -661,10 +660,7 @@ public class MyProfileActivity extends BaseActivity {
                             Timber.wtf("masuk gallery");
                             chooseGallery();
                         } else if (which == 1) {
-                            if (reqPermissionClass.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)) {
-                                chooseCamera();
-                            }
+                            chooseCamera();
                         }
 
                     }
@@ -677,15 +673,18 @@ public class MyProfileActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
-                ReqPermissionClass.PERMISSIONS_REQ_WRITEEXTERNALSTORAGE)||
-                reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,
-                        ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
-                chooseCamera();
-        }
-        else {
-            Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(requestCode == RC_CAMERA_STORAGE)
+            chooseCamera();
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
     }
 
     private void chooseGallery() {
@@ -695,8 +694,13 @@ public class MyProfileActivity extends BaseActivity {
     }
 
     private void chooseCamera() {
-        if (reqPermissionClass.checkPermission(Manifest.permission.CAMERA,ReqPermissionClass.PERMISSIONS_REQ_CAMERA)) {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this,perms)) {
             runCamera();
+        }
+        else {
+            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE,perms);
         }
     }
 

@@ -529,7 +529,7 @@
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
-    <string name="login_failed_attempt_1">Anda punya %1$s kesempatan sebelum diblokir.</string>
+    <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
     <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
@@ -548,7 +548,7 @@
     <string name="myprofile_warning_message_firsttime">Apakah Anda yakin memproses data yang Anda isi?</string>
 
     <string name="dialog_title_less_balance">Sisa Saldo Tidak Cukup.</string>
-    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo SCash Anda ?</string>
+    <string name="dialog_message_less_balance">Apakah Anda ingin mengisi saldo %1$s Anda ?</string>
 
     <string name="regist1_subtext_facebook">Masukan nomor telepon anda untuk melengkapi proses registrasi</string>
     <string name="payfriend_confirm_text_share">Bagikan :</string>
@@ -981,7 +981,13 @@
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
+    <string name="rationale_save_image_permission">Aplikasi membutuhkan akses untuk menyimpan file gambar.</string>
+    <string name="rationale_phone_state">Aplikasi membutuhkan akses untuk mengecek status perangkat.</string>
+    <string name="rationale_send_sms">Aplikasi membutuhkan akses untuk mengirimkan SMS Verifikasi.</string>
+    <string name="rationale_camera_and_storage">Aplikasi membutuhkan akses untuk menggunakan kamera dan menyimpannya ke perangkat.</string>
+    <string name="rationale_check_phone_number">Aplikasi membutuhkan akses untuk mengecek nomor telepon perangkat.</string>
     <string name="message_notif_latitude_not_found">Lokasi Agen belum ditentukan. Silakan dicoba lagi.</string>
+
     <string name="buka_24_jam">Buka 24 Jam</string>
     <string name="label_jam_buka">Jam Buka</string>
     <string name="label_buka_setiap_hari">Buka Setiap Hari</string>
@@ -1025,4 +1031,16 @@
     <string name="label_transfer_ke_agent">Rekening Agen</string>
     <string name="label_transfer_dari_member_atc">Dari Rekening Mana ?</string>
     <string name="label_rekening_pelangggan">Rekening Pelanggan</string>
+
+    <string name="message_retry">Coba lagi ?</string>
+    <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
+    <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
+    <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
+
+    <string name="title_cashout_bank">Tarik Dana - Bank</string>
+    <string name="cashout_validation_bank">Bank dibutuhkan!</string>
+    <string name="title_cashout_agen">Tarik Dana - Agent</string>
+    <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
+    <string name="title_cashout_tunai">Tarik Dana - Tunai</string>
+
 </resources>

@@ -72,7 +72,6 @@ public class LifeCycleHandler implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        MainPage.action_id = "";
         mApp.setCurrentActivity(null);
         if(ActiveAndroid.inTransaction())
             ActiveAndroid.endTransaction();

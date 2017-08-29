@@ -245,7 +245,7 @@ public class BillerDesciption extends Fragment {
 
             for (int i = 0; i < mListBankBiller.size(); i++) {
                 if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-                    paymentData.add(mListBankBiller.get(i).getProduct_name());
+                    paymentData.add(getString(R.string.appname));
                 } else {
                     tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
                 }
@@ -349,6 +349,10 @@ public class BillerDesciption extends Fragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
             payment_name = item.toString();
+            if(payment_name.equals(getString(R.string.appname)))
+            {
+                payment_name="UNIK";
+            }
             for (i = 0; i < mListBankBiller.size() ; i++ ){
                 if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
                     mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
@@ -729,7 +733,7 @@ public class BillerDesciption extends Fragment {
                                     showDialogSMS(mTempBank.getBank_name());
                                     break;
                                 case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
-                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance);
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                     AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
                                             message_dialog, getString(R.string.ok), getString(R.string.cancel), false);

@@ -10,6 +10,7 @@ import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.entityRealm.AgentServiceDetail;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
@@ -43,17 +44,13 @@ public class RealmManager {
     private static class AppModule {
     }
 
-    @RealmModule(classes = { BBSBankModel.class, BBSCommModel.class})
+    @RealmModule(classes = { BBSBankModel.class, BBSCommModel.class, BBSAccountACTModel.class})
     private static class BBSModule {
     }
 
-    public static void init(Context mContext, int rawBiller, int rawBBS){
+    public static void init(Context mContext, int rawBiller){
         File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
-
         copyBundledRealmFile(mContext.getResources().openRawResource(rawBiller),file);
-
-        file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSName));
-        copyBundledRealmFile(mContext.getResources().openRawResource(rawBBS),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -78,6 +75,17 @@ public class RealmManager {
                 .modules(new BBSModule())
                 .migration(new BBSRealMigration())
                 .build();
+    }
+
+    public static Realm getRealmBBS(){
+        return Realm.getInstance(BBSConfiguration);
+    }
+
+    public static void closeRealm(Realm realm){
+        if(realm != null) {
+            realm.removeAllChangeListeners();
+            realm.close();
+        }
     }
 
 

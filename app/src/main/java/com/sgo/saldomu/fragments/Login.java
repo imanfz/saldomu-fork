@@ -24,15 +24,18 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.securities.AES;
 
 import org.apache.http.Header;
@@ -137,8 +140,8 @@ public class Login extends Fragment implements View.OnClickListener {
             params.put(WebParams.USER_ID,userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, AES.aes_encrypt(passLoginValue.getText().toString(), userIDfinale));
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.MAC_ADDR, new DeviceUtils(getActivity()).getWifiMcAddress());
-            params.put(WebParams.DEV_MODEL, new DeviceUtils(getActivity()).getDeviceModelID());
+            params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
+            params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
 
             Timber.d("isi params login:" + params.toString());
 
@@ -333,6 +336,8 @@ public class Login extends Fragment implements View.OnClickListener {
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+                BBSDataManager.resetBBSData();
+                FCMWebServiceLoader.getInstance(getActivity().getApplicationContext()).sentTokenAtLogin(false,userId,response.getString(WebParams.EMAIL));
             }
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);

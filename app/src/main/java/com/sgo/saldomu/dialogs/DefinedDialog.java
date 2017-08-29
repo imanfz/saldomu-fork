@@ -22,6 +22,10 @@ public class DefinedDialog {
         void onClickButton(View v, boolean isLongClick);
     }
 
+    public static ProgressDialog CreateProgressDialog(Context context) {
+        return  CreateProgressDialog(context,"");
+    }
+
     public static ProgressDialog CreateProgressDialog(Context context, String message) {
         ProgressDialog dialog = new ProgressDialog(context);
         try {
