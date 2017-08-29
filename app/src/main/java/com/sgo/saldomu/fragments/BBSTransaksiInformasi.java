@@ -37,6 +37,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -505,7 +506,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
-            params.put(WebParams.USER_COMM_CODE, MyApiClient.COMM_CODE);
+            params.put(WebParams.USER_COMM_CODE, BuildConfig.commCodeBBSATC);
 
             Log.d("params insert c2a", params.toString());
             MyApiClient.sentGlobalBBSInsertC2A(getActivity(),params, new JsonHttpResponseHandler(){

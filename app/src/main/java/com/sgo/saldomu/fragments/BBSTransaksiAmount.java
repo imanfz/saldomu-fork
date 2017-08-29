@@ -110,11 +110,13 @@ public class BBSTransaksiAmount extends Fragment {
                 String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
                 cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
+
             }
             else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out))){
                 String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
+
             }
         } else {
             getFragmentManager().popBackStack();
@@ -180,11 +182,7 @@ public class BBSTransaksiAmount extends Fragment {
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
-            if (cashInHistoryModel!=null)
-            {
-                actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
-                etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
-            }
+
 
 
             // Keys used in Hashmap
@@ -199,6 +197,8 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(CTA);
+
+
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
                 if(!defaultAmount.equals(""))
@@ -225,11 +225,7 @@ public class BBSTransaksiAmount extends Fragment {
             actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
 
-            if (cashOutHistoryModel!=null)
-            {
-                actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
-                etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
-            }
+
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -251,10 +247,20 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
+            if (cashInHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
+                etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
+            }
             validasiTutorialCashIn();
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
+            if (cashOutHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
+                etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
+            }
             validasiTutorialCashOut();
         }
     }
