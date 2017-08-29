@@ -108,6 +108,8 @@
 -dontwarn android.support.**
 -dontwarn okio.**
 -dontwarn org.joda.time.**
+-dontwarn com.google.android.gms.**
+-dontnote com.google.android.gms.**
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
