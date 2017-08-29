@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/to"/>
+        android:text="@string/label_transfer_ke_agent"/>
 
     <Spinner
         android:id="@+id/rekening_agen_value"
@@ -31,6 +31,11 @@
         android:text="(contoh: BANK BCA)"/>
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/label_trx_description"/>
     <EditText
         android:id="@+id/message_value"
         android:layout_width="match_parent"

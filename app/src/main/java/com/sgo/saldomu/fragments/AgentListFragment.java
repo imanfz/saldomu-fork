@@ -137,6 +137,7 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
             FragmentManager fragmentManager = getFragmentManager();
             AgentDetailFragmentDialog agentDetailBbsFragmentDialog = new AgentDetailFragmentDialog();
             agentDetailBbsFragmentDialog.setAgentInfoSingle(this.shopDetails.get(position), position);
+            agentDetailBbsFragmentDialog.setCancelable(false);
             agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
 
         }

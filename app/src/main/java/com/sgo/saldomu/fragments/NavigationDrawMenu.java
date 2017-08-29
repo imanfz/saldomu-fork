@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -20,37 +19,50 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.navdrawmainmenuModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
-import com.sgo.saldomu.activities.LevelFormRegisterActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
-import com.sgo.saldomu.dialogs.AlertDialogFrag;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -93,7 +105,9 @@ public class NavigationDrawMenu extends ListFragment{
     public static final int MTARIKDANA = 26;
 
     private ImageView headerCustImage;
-    private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
+    private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit, tvAgentDetailName;
+    private Switch swSettingOnline;
+    private LinearLayout llBalanceDetail, llAgentDetail;
 
     private Animation frameAnimation;
     private ImageView btn_refresh_balance;
@@ -105,6 +119,8 @@ public class NavigationDrawMenu extends ListFragment{
     ProgressDialog progdialog;
     private LevelClass levelClass;
     private IntentFilter filter;
+    ProgressDialog progdialog2;
+    String shopStatus;
 
     Boolean isLevel1,isRegisteredLevel;
 
@@ -113,6 +129,7 @@ public class NavigationDrawMenu extends ListFragment{
         super.onCreate(savedInstanceState);
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
+        filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
@@ -133,7 +150,12 @@ public class NavigationDrawMenu extends ListFragment{
         ListView mListView = (ListView) v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
 
-        LinearLayout llHeaderProfile = (LinearLayout) v.findViewById(R.id.llHeaderProfile);
+        LinearLayout llHeaderProfile    = (LinearLayout) v.findViewById(R.id.llHeaderProfile);
+        llBalanceDetail    = (LinearLayout) v.findViewById(R.id.llBalanceDetail);
+        llAgentDetail      = (LinearLayout) v.findViewById(R.id.llAgentDetail);
+        llAgentDetail.setVisibility(View.GONE);
+        llBalanceDetail.setVisibility(View.GONE);
+
         headerCustImage = (ImageView) v.findViewById(R.id.header_cust_image);
         headerCurrency = (TextView) v.findViewById(R.id.currency_value);
         headerCustName = (TextView) v.findViewById(R.id.header_cust_name);
@@ -142,6 +164,20 @@ public class NavigationDrawMenu extends ListFragment{
         currencyLimit = (TextView) v.findViewById(R.id.currency_limit_value);
         limitValue = (TextView) v.findViewById(R.id.limit_value);
         periodeLimit = (TextView) v.findViewById(R.id.periode_limit_value);
+        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
+        tvAgentDetailName = (TextView) v.findViewById(R.id.tvAgentDetailName);
+
+        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            llAgentDetail.setVisibility(View.GONE);
+            llBalanceDetail.setVisibility(View.VISIBLE);
+        } else {
+            if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                llAgentDetail.setVisibility(View.VISIBLE);
+            } else {
+                llAgentDetail.setVisibility(View.GONE);
+            }
+            llBalanceDetail.setVisibility(View.GONE);
+        }
 
         refreshUINavDrawer();
 //        refreshDataNavDrawer();
@@ -185,6 +221,32 @@ public class NavigationDrawMenu extends ListFragment{
             periodeLimit.setText(R.string.header_monthly_limit);
         else
             periodeLimit.setText(R.string.header_daily_limit);
+    }
+
+    public void setAgentDetailToUI(){
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) && sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+            llAgentDetail.setVisibility(View.VISIBLE);
+        } else {
+            llAgentDetail.setVisibility(View.GONE);
+        }
+
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            llBalanceDetail.setVisibility(View.GONE);
+        } else {
+            llBalanceDetail.setVisibility(View.VISIBLE);
+        }
+
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            tvAgentDetailName.setText(sp.getString(DefineValue.AGENT_NAME, ""));
+
+            swSettingOnline.setOnCheckedChangeListener(null);
+            if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                swSettingOnline.setChecked(true);
+            } else {
+                swSettingOnline.setChecked(false);
+            }
+            swSettingOnline.setOnCheckedChangeListener(switchListener);
+        }
     }
 
     public void getBalance(Boolean isAuto){
@@ -259,6 +321,8 @@ public class NavigationDrawMenu extends ListFragment{
         setImageProfPic();
         headerCustName.setText(sp.getString(DefineValue.CUST_NAME, getString(R.string.text_strip)));
         headerCustID.setText(sp.getString(DefineValue.CUST_ID, getString(R.string.text_strip)));
+
+        setAgentDetailToUI();
     }
     public void refreshDataNavDrawer(){
         if(levelClass != null)
@@ -497,7 +561,94 @@ public class NavigationDrawMenu extends ListFragment{
 
             if(action.equals(BalanceService.INTENT_ACTION_BALANCE)){
                 setBalanceToUI();
+            } else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+                setAgentDetailToUI();
             }
+        }
+    };
+
+    Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            RequestParams params    = new RequestParams();
+            shopStatus              = DefineValue.SHOP_OPEN;
+
+            if (!isChecked) {
+                //buka
+                shopStatus          = DefineValue.SHOP_CLOSE;
+
+            }
+
+            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+            UUID rcUUID = UUID.randomUUID();
+            String dtime = DateTimeFormat.getCurrentDateTime();
+
+            params.put(WebParams.RC_UUID, rcUUID);
+            params.put(WebParams.RC_DATETIME, dtime);
+            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+            params.put(WebParams.SHOP_STATUS, shopStatus);
+
+
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+
+            params.put(WebParams.SIGNATURE, signature);
+
+            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                    progdialog2.dismiss();
+
+                    try {
+
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                            }
+
+                            mEditor.apply();
+                        } else {
+                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                        }
+
+                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                private void ifFailure(Throwable throwable) {
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    progdialog2.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
+                }
+            });
         }
     };
 

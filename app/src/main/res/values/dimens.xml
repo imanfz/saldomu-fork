@@ -145,4 +145,6 @@
 
     <dimen name="list_row_padding">14.0dip</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="et_hour_minute">55dp</dimen>
+    <dimen name="dialog_padding">20dp</dimen>
 </resources>

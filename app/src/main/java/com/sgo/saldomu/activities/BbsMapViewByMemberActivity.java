@@ -278,8 +278,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     @Override
     public void onLocationChanged(Location location) {
         lastLocation        = location;
-        memberLatitude      = lastLocation.getLatitude();
-        memberLongitude     = lastLocation.getLongitude();
+
+        if ( lastLocation.getLatitude() != memberLatitude )
+            memberLatitude      = lastLocation.getLatitude();
+
+        if ( lastLocation.getLongitude() != memberLongitude )
+            memberLongitude     = lastLocation.getLongitude();
 
         if ( !isRunning ) {
             handler.removeCallbacks(runnable2);
@@ -384,9 +388,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         try {
             lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
 
             if ( lastLocation == null ){
-                LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
+
             } else {
 
                 memberLatitude      = lastLocation.getLatitude();

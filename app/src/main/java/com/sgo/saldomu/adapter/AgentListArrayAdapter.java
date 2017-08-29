@@ -3,6 +3,8 @@ package com.sgo.saldomu.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,19 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.AgentConstant;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.models.ShopDetail;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Lenovo Thinkpad on 12/5/2016.
@@ -36,6 +45,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
     private ImageView agentMapBtn;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private BbsSearchAgentActivity bbsSearchAgentActivity;
+    Picasso mPic;
 
     public AgentListArrayAdapter(Context context, int layoutResourceId, ArrayList<ShopDetail> shopDetails)
     {
@@ -141,6 +151,19 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             agentName = shopDetail.getMemberName();
             agentAddress = shopDetail.getShopAddress();
             agentDistance = shopDetail.getCalculatedDistance();
+
+            if ( !shopDetail.getLastActivity().equals("") ) {
+                try {
+
+                    java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    Date shopLastActivity = dateFormat.parse(shopDetail.getLastActivity());
+                    agentLastOnline      = DateTimeFormat.convertDatetoString(shopLastActivity, "dd MMM yyyy");
+
+                } catch (ParseException e ) {
+                    e.printStackTrace();
+                }
+
+            }
         }
 
         /*try
@@ -192,8 +215,35 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
             imageLoader.displayImage(agentProfilePic, viewHolder.agentProfilePic);*/
 
         //int profile = context.getResources().getIdentifier(agentProfilePic, "drawable", context.getPackageName());
-        int profile = context.getResources().getIdentifier("R.drawable.user_unknown_menu", "drawable", context.getPackageName());
-        viewHolder.agentProfilePic.setImageResource(R.drawable.user_unknown_menu);
+
+        Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_unknown_menu);
+        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+
+        if(MyApiClient.PROD_FLAG_ADDRESS)
+            mPic = MyPicasso.getImageLoader(context);
+        else
+            mPic= Picasso.with(context);
+
+        if ( shopDetails.size() > 0 ) {
+            ShopDetail shopDetail = (ShopDetail) getItem(position);
+            if (shopDetail.getUrlSmallProfilePicture() != null && !shopDetail.getUrlSmallProfilePicture().isEmpty()) {
+                mPic.load(shopDetail.getUrlSmallProfilePicture())
+                        .error(roundedImage)
+                        .fit().centerInside()
+                        .placeholder(R.drawable.progress_animation)
+                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
+            } else {
+                mPic.load(R.drawable.user_unknown_menu)
+                        .error(roundedImage)
+                        .fit().centerInside()
+                        .placeholder(R.drawable.progress_animation)
+                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
+            }
+        }
+
+        //int profile = context.getResources().getIdentifier("R.drawable.user_unknown_menu", "drawable", context.getPackageName());
+        //viewHolder.agentProfilePic.setImageResource(R.drawable.user_unknown_menu);
 /*
         int rate = context.getResources().getIdentifier(agentRate, "drawable", context.getPackageName());
         viewHolder.agentRate.setImageResource(rate);

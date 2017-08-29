@@ -1179,10 +1179,12 @@ public class MyApiClient {
         post(mContext,LINK_CATEGORY_LIST, params, responseHandler);
     }
 
-    public static void getMemberShopList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address get member shop list: %1$s ",LINK_MEMBER_SHOP_LIST);
-        post(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
+    public static void getMemberShopList(Context mContext, RequestParams params, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+        if(isSync)
+            postSync(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
+        else
+            post(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
     }
 
     public static void getMemberShopDetail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
