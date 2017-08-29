@@ -117,7 +117,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     }
 
     private void setTextAttempt(String attempt){
-        String attempt_text = getString(R.string.login_failed_attempt_1,attempt);
+        if(attempt == null || attempt.isEmpty())
+            attempt = "0";
+
+        String attempt_text = getString(R.string.login_failed_attempt_1,Integer.valueOf(attempt));
         tv_attempt.setText(attempt_text);
         if(attempt.equalsIgnoreCase("1"))
             tv_attempt.setVisibility(View.VISIBLE);
