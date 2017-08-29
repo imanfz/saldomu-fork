@@ -31,8 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import timber.log.Timber;
 
 /*
@@ -82,7 +80,7 @@ public class CoreApp extends Application {
         MyApiClient myApiClient = MyApiClient.Initialize(this);
         setsDefSystemLanguage(null);
 
-        RealmManager.init(this, R.raw.saldomurealm, R.raw.saldomubbs);
+        RealmManager.init(this, R.raw.saldomurealm);
 
         PackageInfo pInfo;
         try {
