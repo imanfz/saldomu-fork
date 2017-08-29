@@ -46,7 +46,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListCashOut extends ListFragment implements InformationDialog.OnDialogOkCallback {
+public class ListCashOut extends ListFragment {
 
     SecurePreferences sp;
     View v,nodata_view;
@@ -98,7 +98,7 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
         ListView listView1 = (ListView) v.findViewById(android.R.id.list);
         listView1.setAdapter(adapter);
 
-        dialogI = InformationDialog.newInstance(this, 4);
+        dialogI = InformationDialog.newInstance(4);
 
         if(isAdded())
             getBankCashout();
@@ -447,11 +447,5 @@ public class ListCashOut extends ListFragment implements InformationDialog.OnDia
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onOkButton() {
-
     }
 }

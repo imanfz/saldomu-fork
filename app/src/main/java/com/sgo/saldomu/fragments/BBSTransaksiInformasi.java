@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -23,9 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,13 +44,13 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
 
@@ -63,46 +64,74 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import pub.devrel.easypermissions.EasyPermissions;
+import io.realm.RealmChangeListener;
 import timber.log.Timber;
 
 /**
  * Created by thinkpad on 4/21/2017.
  */
 
-public class BBSTransaksiInformasi extends Fragment {
+public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.PermissionCallbacks {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
-
+    private static final int RC_READ_PHONE_STATE = 122;
+    private static final int RC_SEND_SMS = 123;
     private View v;
     private ProgressDialog progdialog;
     private Activity act;
     private TextView tvTitle;
-    private CustomAutoCompleteTextView actv_rekening_agent;
+    private CustomAutoCompleteTextView actv_rekening_cta;
+    private Spinner sp_rekening_act;
     private List<HashMap<String,String>> aListAgent;
     private SimpleAdapter adapterAgent;
-    private List<BBSBankModel> listbankSource, listbankBenef;
+    private List<BBSBankModel> listbankSource;
+    private List<BBSAccountACTModel> listbankBenef;
     private String CTA = "CTA";
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
     private EditText etNoHp, etRemark;
-    private Realm realm;
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
-    private ReqPermissionClass reqPermissionClass;
     private Boolean isSMSBanking = false, isSimExist = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
-            api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount, transaksi,
-    no_benef, name_benef, no_source, city_name, comm_benef_atc, member_shop_phone, pesan, benef_product_value_code;
+            api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
+            transaksi, no_benef, name_benef,city_name,no_source;
+    Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     SecurePreferences sp;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        userID = sp.getString(DefineValue.USERID_PHONE,"");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
+        realmBBS.addChangeListener(new RealmChangeListener<Realm>() {
+            @Override
+            public void onChange(Realm element) {
+                setBankDataBenef();
+                if(adapterAgent != null)
+                    adapterAgent.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        RealmManager.closeRealm(realmBBS);
+        super.onDestroy();
     }
 
     @Override
@@ -140,10 +169,6 @@ public class BBSTransaksiInformasi extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        realm = Realm.getInstance(RealmManager.BBSConfiguration);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         Bundle bundle = getArguments();
         if(bundle!= null) {
@@ -155,32 +180,30 @@ public class BBSTransaksiInformasi extends Fragment {
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                String cashIn = sp.getString("cashin_history_temp", "");
+                String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
                 cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
 
                 benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
                 benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
-                benef_product_value_code = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_CODE);
                 if (cashInHistoryModel!=null)
                 {
                     source_product_code=(cashInHistoryModel.getSource_product_code());
                     source_product_name=(cashInHistoryModel.getSource_product_name());
                     source_product_type=(cashInHistoryModel.getSource_product_type());
                     source_product_h2h=(cashInHistoryModel.getSource_product_h2h());
-                    member_shop_phone =(cashInHistoryModel.getMember_shop_phone());
-                    pesan = bundle.getString(cashInHistoryModel.getPesan());
                 }
                 no_benef = bundle.getString(DefineValue.NO_BENEF);
                 name_benef = bundle.getString(DefineValue.NAME_BENEF);
+                setBankDataSourceCTA();
                 if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                     city_id = bundle.getString(DefineValue.ACCT_CITY_CODE);
                     city_name = bundle.getString(DefineValue.ACCT_CITY_NAME);
                 }
             }
             else {
-                String cashOut = sp.getString("cashout_history_temp", "");
+                String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
 
@@ -189,19 +212,13 @@ public class BBSTransaksiInformasi extends Fragment {
                 source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
                 source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
                 no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
-                comm_benef_atc = bundle.getString(DefineValue.BBS_COMM_ATC);
+
+                setBankDataBenef();
                 if (cashOutHistoryModel!=null)
                 {
                     benef_product_code = (cashOutHistoryModel.getBenef_product_code());
                     benef_product_type = (cashOutHistoryModel.getBenef_product_type());
                     benef_product_name = (cashOutHistoryModel.getBenef_product_name());
-                    member_shop_phone = (cashOutHistoryModel.getMember_shop_phone());
-                    pesan = (cashOutHistoryModel.getPesan());
-                }
-                try {
-                    setBankDataBenef(new JSONArray(comm_benef_atc));
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
 
@@ -218,7 +235,7 @@ public class BBSTransaksiInformasi extends Fragment {
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
                 View cashin_layout = stub.inflate();
-                actv_rekening_agent = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
+                actv_rekening_cta = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
@@ -234,7 +251,7 @@ public class BBSTransaksiInformasi extends Fragment {
                 }
                 if (cashInHistoryModel!=null)
                 {
-                    actv_rekening_agent.setText(cashInHistoryModel.getSource_product_name());
+                    actv_rekening_cta.setText(cashInHistoryModel.getSource_product_name());
                     etRemark.setText(cashInHistoryModel.getPesan());
                 }
 
@@ -247,25 +264,15 @@ public class BBSTransaksiInformasi extends Fragment {
                 // Instantiating an adapter to store each items
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
-
-                listbankSource = realm.where(BBSBankModel.class)
-                        .equalTo(WebParams.SCHEME_CODE, CTA)
-                        .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
                 setAgent(listbankSource);
-            }
-            if (transaksi.equalsIgnoreCase("Tarik Tunai")) {
+                actv_rekening_cta.setAdapter(adapterAgent);
+                actv_rekening_cta.addTextChangedListener(textWatcher);
+            } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
-                actv_rekening_agent = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_agen_value);
+                sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
                 String[] from = {"flag", "txt"};
-
-                if(cashOutHistoryModel!=null)
-                {
-                    actv_rekening_agent.setText(cashOutHistoryModel.getBenef_product_name());
-                    etRemark.setText(cashOutHistoryModel.getPesan());
-                }
-
                 // Ids of views in listview_layout
                 int[] to = {R.id.flag, R.id.txt};
 
@@ -273,11 +280,23 @@ public class BBSTransaksiInformasi extends Fragment {
                 // Instantiating an adapter to store each items
                 // R.layout.listview_layout defines the layout of each item
                 adapterAgent = new SimpleAdapter(getActivity().getBaseContext(), aListAgent, R.layout.bbs_autocomplete_layout, from, to);
+                setAgentATC(listbankBenef);
+                sp_rekening_act.setAdapter(adapterAgent);
+                sp_rekening_act.setOnItemSelectedListener(spAgentListener);
 
-                setAgent(listbankBenef);
+                if(cashOutHistoryModel!=null)
+                {
+                    for(int i = 0 ; i < aListAgent.size();i++){
+                        if (aListAgent.get(i).get("txt").equalsIgnoreCase(benef_product_name)){
+                            sp_rekening_act.setSelection(i);
+                            break;
+                        }
+                    }
+                    etRemark.setText(cashOutHistoryModel.getPesan());
+                }
+
             }
 
-            actv_rekening_agent.addTextChangedListener(textWatcher);
             btnBack.setOnClickListener(backListener);
             btnNext.setOnClickListener(nextListener);
         }
@@ -294,33 +313,19 @@ public class BBSTransaksiInformasi extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-            if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                source_product_code="";
-                source_product_name="";
-                source_product_type="";
-                source_product_h2h="";
-            }
-            else {
-                benef_product_code="";
-                benef_product_type="";
-                benef_product_name="";
-            }
+            source_product_code="";
+            source_product_name="";
+            source_product_type="";
+            source_product_h2h="";
             int position;
-            String nameAcct = actv_rekening_agent.getText().toString();
+            String nameAcct = actv_rekening_cta.getText().toString();
             for(int i = 0 ; i < aListAgent.size() ; i++) {
                 if(nameAcct.equalsIgnoreCase(aListAgent.get(i).get("txt"))) {
                     position = i;
-                    if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                        source_product_code = listbankSource.get(position).getProduct_code();
-                        source_product_type = listbankSource.get(position).getProduct_type();
-                        source_product_h2h = listbankSource.get(position).getProduct_h2h();
-                        source_product_name = listbankSource.get(position).getProduct_name();
-                    }
-                    else {
-                        benef_product_code = listbankBenef.get(position).getProduct_code();
-                        benef_product_type = listbankBenef.get(position).getProduct_type();
-                        benef_product_name = listbankBenef.get(position).getProduct_name();
-                    }
+                    source_product_code = listbankSource.get(position).getProduct_code();
+                    source_product_type = listbankSource.get(position).getProduct_type();
+                    source_product_h2h = listbankSource.get(position).getProduct_h2h();
+                    source_product_name = listbankSource.get(position).getProduct_name();
                     break;
                 }
             }
@@ -333,16 +338,24 @@ public class BBSTransaksiInformasi extends Fragment {
         }
     };
 
+    Spinner.OnItemSelectedListener spAgentListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            benef_product_code = listbankBenef.get(position).getProduct_code();
+            benef_product_type = listbankBenef.get(position).getProduct_type();
+            benef_product_name = listbankBenef.get(position).getProduct_name();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
     Button.OnClickListener backListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
             if(getFragmentManager().getBackStackEntryCount() > 0) {
-                int index = getFragmentManager().getBackStackEntryCount() - 1;
-                FragmentManager.BackStackEntry backEntry = getFragmentManager().getBackStackEntryAt(index);
-                String tag = backEntry.getName();
-                Fragment prevFrag = getFragmentManager().findFragmentByTag(tag);
-                BBSTransaksiAmount amountfrag = (BBSTransaksiAmount) prevFrag;
-                amountfrag.setBack(true);
                 getFragmentManager().popBackStack();
             }
             else
@@ -354,32 +367,31 @@ public class BBSTransaksiInformasi extends Fragment {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
-                if (source_product_code.equalsIgnoreCase(MANDIRISMS)) {
-                    isSMSBanking = true;
-                } else
-                    isSMSBanking = false;
+                isSMSBanking = source_product_code.equalsIgnoreCase(MANDIRISMS);
 
                 if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-                    if (isSMSBanking) {
-                        if (reqPermissionClass == null) {
-                            reqPermissionClass = new ReqPermissionClass(getActivity());
-                            reqPermissionClass.setTargetFragment(BBSTransaksiInformasi.this);
-                        }
-                        if (reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE, ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
-                            initializeSmsClass();
-                            if (isSimExist)
-                                SubmitAction();
-                        }
-                    } else {
-                        SubmitAction();
-                    }
+//                    if (isSMSBanking) {
+//                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+//                            initializeSmsClass();
+//                            if (isSimExist)
+//                                SubmitAction();
+//                        } else {
+//                            // Ask for one permission
+//                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
+//                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+//                        }
+//                    } else {
+//                        SubmitAction();
+//                    }
+                    cashInHistory();
                 }
                 else {
-                    btnNext.setEnabled(false);
-                    if (inputValidation()) {
-                        sentInsertA2C();
-                    }
-                    else btnNext.setEnabled(true);
+//                    btnNext.setEnabled(false);
+//                    if (inputValidation()) {
+//                        sentInsertA2C();
+//                    }
+//                    else btnNext.setEnabled(true);
+                    cashOutHistory();
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -390,7 +402,9 @@ public class BBSTransaksiInformasi extends Fragment {
         btnNext.setEnabled(false);
         if (inputValidation()) {
             sentInsertC2A();
-        } else btnNext.setEnabled(true);
+        }
+        else
+            btnNext.setEnabled(true);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {
@@ -422,23 +436,51 @@ public class BBSTransaksiInformasi extends Fragment {
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListAgent.add(hm);
         }
-
-        actv_rekening_agent.setAdapter(adapterAgent);
+        adapterAgent.notifyDataSetChanged();
     }
 
-    private void setBankDataBenef(JSONArray _data){
-        listbankBenef = new ArrayList<>();
-        for(int i = 0 ; i < _data.length() ; i++) {
-            BBSBankModel bbsBankModel =  new BBSBankModel();
-            try {
-                bbsBankModel.setProduct_code(_data.getJSONObject(i).getString(WebParams.PRODUCT_CODE));
-                bbsBankModel.setProduct_name(_data.getJSONObject(i).getString(WebParams.PRODUCT_NAME));
-                bbsBankModel.setProduct_type(_data.getJSONObject(i).getString(WebParams.PRODUCT_TYPE));
-                listbankBenef.add(bbsBankModel);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+    private void setAgentATC(List<BBSAccountACTModel> bankAgen) {
+        aListAgent.clear();
+
+        for(int i=0;i<bankAgen.size();i++){
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("txt", bankAgen.get(i).getProduct_name());
+
+            if(bankAgen.get(i).getProduct_name().toLowerCase().contains("mandiri"))
+                hm.put("flag", Integer.toString(R.drawable.logo_mandiri_bank_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bri"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bri_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("permata"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_permata_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("uob"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_uob_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("maspion"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_maspion_rev1_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bii"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bii_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("jatim"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_jatim_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("bca"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("nobu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else
+                hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
+            aListAgent.add(hm);
         }
+        adapterAgent.notifyDataSetChanged();
+    }
+
+
+
+    private void setBankDataBenef(){
+        listbankBenef = realmBBS.where(BBSAccountACTModel.class).findAll();
+    }
+
+    private void setBankDataSourceCTA(){
+        listbankSource = realmBBS.where(BBSBankModel.class)
+                .equalTo(WebParams.SCHEME_CODE, CTA)
+                .equalTo(WebParams.COMM_TYPE, SOURCE).findAll();
     }
 
     private void sentInsertC2A() {
@@ -479,12 +521,19 @@ public class BBSTransaksiInformasi extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
                             if(isSMSBanking) {
-                                smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
+                                if(smsDialog == null){
+                                    smsDialog = new SMSDialog(getActivity(), null);
+                                }
+
+                                smsDialog.setListener(new SMSDialog.DialogButtonListener() {
                                     @Override
                                     public void onClickOkButton(View v, boolean isLongClick) {
-                                        if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+                                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
                                             smsDialog.sentSms();
                                             RegSimCardReceiver(true);
+                                        } else {
+                                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_send_sms),
+                                                    RC_SEND_SMS, Manifest.permission.SEND_SMS);
                                         }
                                     }
 
@@ -516,6 +565,7 @@ public class BBSTransaksiInformasi extends Fragment {
                                         }
                                     }
                                 });
+
 
                                 if(isSimExist)
                                     smsDialog.show();
@@ -863,7 +913,7 @@ public class BBSTransaksiInformasi extends Fragment {
         cashInHistoryModel.setBenef_product_type(benef_product_type);
         cashInHistoryModel.setBenef_product_value_code(no_benef);
         cashInHistoryModel.setSource_product_code(source_product_code);
-        cashInHistoryModel.setSource_product_name(actv_rekening_agent.getText().toString());
+        cashInHistoryModel.setSource_product_name(actv_rekening_cta.getText().toString());
         cashInHistoryModel.setSource_product_type(source_product_type);
         cashInHistoryModel.setSource_product_h2h(source_product_h2h);
         cashInHistoryModel.setMember_shop_phone(etNoHp.getText().toString());
@@ -878,7 +928,7 @@ public class BBSTransaksiInformasi extends Fragment {
         String jsonObject = gson.toJson(cashInHistoryModel, CashInHistoryModel.class);
 
         SecurePreferences.Editor editor = sp.edit();
-        editor.putString("cashin_history_temp", jsonObject);
+        editor.putString(DefineValue.CASH_IN_HISTORY_TEMP, jsonObject);
         editor.apply();
     }
 
@@ -926,7 +976,7 @@ public class BBSTransaksiInformasi extends Fragment {
 
         cashOutHistoryModel.setAmount(amount);
         cashOutHistoryModel.setBenef_product_code(benef_product_code);
-        cashOutHistoryModel.setBenef_product_name(actv_rekening_agent.getText().toString());
+        cashOutHistoryModel.setBenef_product_name(benef_product_name);
         cashOutHistoryModel.setBenef_product_type(benef_product_type);
         cashOutHistoryModel.setSource_product_code(source_product_code);
         cashOutHistoryModel.setSource_product_name(source_product_name);
@@ -939,7 +989,7 @@ public class BBSTransaksiInformasi extends Fragment {
         String jsonObject = gson1.toJson(cashOutHistoryModel, CashOutHistoryModel.class);
 
         SecurePreferences.Editor editor = sp.edit();
-        editor.putString("cashout_history_temp", jsonObject);
+        editor.putString(DefineValue.CASH_OUT_HISTORY_TEMP, jsonObject);
         editor.apply();
     }
 
@@ -1052,34 +1102,41 @@ public class BBSTransaksiInformasi extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
-            smsDialog.sentSms();
-        }
-        else if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(requestCode == RC_READ_PHONE_STATE){
             initializeSmsClass();
             if(isSimExist)
                 SubmitAction();
         }
-        else {
-            Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-            if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
-                if(progdialog.isShowing())
-                    progdialog.dismiss();
-                if (smsDialog != null) {
-                    smsDialog.dismiss();
-                    smsDialog.reset();
-                }
+        else if(requestCode == RC_SEND_SMS ){
+            smsDialog.sentSms();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+        if(requestCode == RC_SEND_SMS ){
+            if(progdialog.isShowing())
+                progdialog.dismiss();
+            if (smsDialog != null) {
+                smsDialog.dismiss();
+                smsDialog.reset();
             }
         }
     }
 
     private boolean inputValidation() {
-        if(actv_rekening_agent.getText().toString().length()==0){
-            actv_rekening_agent.requestFocus();
-            actv_rekening_agent.setError(getString(R.string.rekening_agent_error_message));
-            return false;
-        }
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            if(actv_rekening_cta.getText().toString().length()==0){
+                actv_rekening_cta.requestFocus();
+                actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
+                return false;
+            }
             if (etNoHp.getText().toString().length() == 0) {
                 etNoHp.requestFocus();
                 etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
@@ -1108,14 +1165,6 @@ public class BBSTransaksiInformasi extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-//    private void switchFragment(Fragment i, String name, Boolean isBackstack){
-//        if (getActivity() == null)
-//            return;
-//
-//        BBSActivity fca = (BBSActivity ) getActivity();
-//        fca.switchContent(i,name,isBackstack);
-//    }
 
     @Override
     public void onResume() {

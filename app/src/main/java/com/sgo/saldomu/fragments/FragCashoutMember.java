@@ -186,12 +186,9 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                 }
                 else if(isOTP) {
-                    if (inputValidation())
-                        try {
-                            inquiryTokenATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
+                    if (inputValidation()) {
+                        inquiryTokenATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
+                    }
                 }
                 else {
                     Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();

@@ -77,7 +77,7 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         holder.tv_product_name.setText(itemnya.getProduct_name());
         if(itemnya.getProduct_name().equalsIgnoreCase("UNIK"))
         {
-            holder.tv_product_name.setText("Saldomu");
+            holder.tv_product_name.setText(context.getString(R.string.appname));
         }
         else {
             holder.tv_product_name.setText(itemnya.getProduct_name());

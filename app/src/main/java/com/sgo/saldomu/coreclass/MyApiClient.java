@@ -11,6 +11,8 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.SHA;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.conn.ssl.SSLSocketFactory;
@@ -199,6 +201,10 @@ public class MyApiClient {
     public static String LINK_GLOBAL_BBS_INSERT_A2C;
     public static String LINK_BBS_LIST_MEMBER_A2C;
     public static String LINK_BBS_OTP_MEMBER_A2C;
+
+    public static String LINK_BBS_LIST_COMMUNITY_ALL;
+    public static String LINK_REG_TOKEN_FCM;
+
     public static String LINK_INQUIRY_TOKEN_ATC;
     public static String LINK_INQUIRY_DATA_ATC;
     public static String LINK_CANCEL_ATC;
@@ -333,6 +339,11 @@ public class MyApiClient {
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
         LINK_BBS_LIST_MEMBER_A2C = headaddressfinal + "BBSListMemberATC/Retrieve";
         LINK_BBS_OTP_MEMBER_A2C = headaddressfinal + "BBSOTPMemberATC/Invoke";
+        LINK_BBS_LIST_COMMUNITY_ALL   = headaddressfinal + "ListCommunity/Retrieve";
+        LINK_INQUIRY_TOKEN_ATC  = headaddressfinal + "InquiryTokenATC/Retrieve";
+        LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
+        LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
+        LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
@@ -408,23 +419,7 @@ public class MyApiClient {
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
         String msgnya = uuidnya+date+BuildConfig.AppID+WebServiceName+noID;
-
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(apinya.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-
+        String hash = SHA.SHA256(apinya,msgnya);
         return hash;
     }
 
@@ -438,42 +433,32 @@ public class MyApiClient {
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
-        String hash = null;
-        Mac sha256_HMAC;
-        try {
-            sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(access_key.getBytes(), "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-
-            byte[] hmacData = sha256_HMAC.doFinal(msgnya.getBytes("UTF-8"));
-
-            hash = new String(encodeUrlSafe(hmacData));
-
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
+        String hash = SHA.SHA256(access_key,msgnya);
 
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
-
         return params;
     }
 
-    private static byte[] encodeUrlSafe(byte[] data) {
-        byte[] encode = Base64.encodeBase64(data);
-        for (int i = 0; i < encode.length; i++) {
-            if (encode[i] == '+') {
-                encode[i] = '-';
-            } else if (encode[i] == '=') {
-                encode[i] = '_';
-            } else if (encode[i] == '/') {
-                encode[i] = '~';
-            }
-        }
-        return encode;
+    public static RequestParams getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
+
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
+        Timber.d("isi messageSignatureFCM : " + msgnya);
+
+
+        String hash = SHA.SHA1(msgnya);
+        Timber.d("isi sha1 signatureFCM : " + hash);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RQ_UUID, uuidnya);
+        params.put(WebParams.RQ_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+
+        return params;
     }
 
     public static void setCookieStore(PersistentCookieStore cookieStore) {
@@ -486,12 +471,12 @@ public class MyApiClient {
 
     private static void post(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler);
-        Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
+        Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
     }
 
     public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler).setTag(tag);
-        Timber.d("isis timeoutnya : " + String.valueOf(getClient().getConnectTimeout()));
+        Timber.d("isis timeoutnya : %1$s ", String.valueOf(getClient().getConnectTimeout()));
     }
 
     public static void postSync(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -599,52 +584,52 @@ public class MyApiClient {
     //----------------------------------------------------------------------------------------------------
 
     public static void sentDataRegister(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Register Customer:" + LINK_REGISTRASI);
+        Timber.wtf("address Register Customer: %1$s ",LINK_REGISTRASI);
         post(mContext,LINK_REGISTRASI, params, responseHandler);
     }
 
     public static void sentValidRegister(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Insert Customer:"+LINK_VALID_REGISTRASI);
+        Timber.wtf("address Insert Customer: %1$s ",LINK_VALID_REGISTRASI);
         post(mContext,LINK_VALID_REGISTRASI, params, responseHandler);
     }
 
     public static void sentDataLogin(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Login:" + LINK_LOGIN);
+        Timber.wtf("address Login: %1$s ", LINK_LOGIN);
         post(mContext, LINK_LOGIN, params, responseHandler);
     }
 
     public static void sentDataListMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Member Retrieve:"+LINK_LIST_MEMBER);
+        Timber.wtf("address Member Retrieve: %1$s ",LINK_LIST_MEMBER);
         post(mContext,LINK_LIST_MEMBER, params, responseHandler);
     }
 
     public static void sentDataReqTokenSGOL(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Inquiry Trx:"+LINK_REQ_TOKEN_SGOL);
+        Timber.wtf("address Inquiry Trx: %1$s ",LINK_REQ_TOKEN_SGOL);
         post(mContext,LINK_REQ_TOKEN_SGOL, params, responseHandler);
     }
 
     public static void sentResendTokenSGOL(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address InquiryResendToken:"+LINK_RESEND_TOKEN_SGOL);
+        Timber.wtf("address InquiryResendToken: %1$s ",LINK_RESEND_TOKEN_SGOL);
         post(mContext,LINK_RESEND_TOKEN_SGOL, params, responseHandler);
     }
 
     public static void sentInsertTransTopup(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Insert Trx:"+LINK_INSERT_TRANS_TOPUP);
+        Timber.wtf("address Insert Trx: %1$s ",LINK_INSERT_TRANS_TOPUP);
         post(mContext,LINK_INSERT_TRANS_TOPUP, params, responseHandler);
     }
 
     public static void getSaldo(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Saldo:"+LINK_SALDO);
+        Timber.wtf("address Get Saldo: %1$s ",LINK_SALDO);
         post(mContext,LINK_SALDO, params, responseHandler);
     }
 
     public static void getBankList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Bank list:"+LINK_BANK_LIST);
+        Timber.wtf("address Get Bank list: %1$s ",LINK_BANK_LIST);
         post(mContext,LINK_BANK_LIST, params, responseHandler);
     }
 
     public static void sentReqTokenRegister(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Resend token Register:"+LINK_REQ_TOKEN_REGIST);
+        Timber.wtf("address Resend token Register: %1$s ",LINK_REQ_TOKEN_REGIST);
         post(mContext,LINK_REQ_TOKEN_REGIST, params, responseHandler);
     }
 
@@ -654,374 +639,374 @@ public class MyApiClient {
             if(IS_PROD)linknya = LINK_PROD_TOPUP_RETAIL;
         }
 
-        Timber.wtf("address TOPUP Pulsa:"+linknya);
+        Timber.wtf("address TOPUP Pulsa: %1$s ",linknya);
         post(mContext,linknya, params, responseHandler);
     }
 
     public static void sentUpdateProfile(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Update Profile:"+LINK_UPDATE_PROFILE);
+        Timber.wtf("address Update Profile: %1$s ",LINK_UPDATE_PROFILE);
         post(mContext,LINK_UPDATE_PROFILE, params, responseHandler);
     }
 
     public static void sentValidTopUp(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Validation Topup:"+LINK_VALID_TOPUP);
+        Timber.wtf("address Validation Topup: %1$s ",LINK_VALID_TOPUP);
         post(mContext,LINK_VALID_TOPUP, params, responseHandler);
     }
 
     public static void sentChangePassword(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address CHange Password:"+LINK_CHANGE_PASSWORD);
+        Timber.wtf("address CHange Password: %1$s ",LINK_CHANGE_PASSWORD);
         post(mContext,LINK_CHANGE_PASSWORD, params, responseHandler);
     }
 
     public static void sentForgotPassword(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Forget Password:"+LINK_FORGOT_PASSWORD);
+        Timber.wtf("address Forget Password: %1$s ",LINK_FORGOT_PASSWORD);
         post(mContext,LINK_FORGOT_PASSWORD, params, responseHandler);
     }
 
     public static void sentMemberPulsa(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Member Pulsa:"+LINK_MEMBER_PULSA);
+        Timber.wtf("address Get Member Pulsa: %1$s ",LINK_MEMBER_PULSA);
         post(mContext,LINK_MEMBER_PULSA, params, responseHandler);
     }
 
     public static void sentInsertContact(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address InquiryResendToken:"+LINK_USER_CONTACT_INSERT);
+        Timber.wtf("address InquiryResendToken: %1$s ",LINK_USER_CONTACT_INSERT);
         post(mContext,LINK_USER_CONTACT_INSERT, params, responseHandler);
     }
 
     public static void sentUpdateContact(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Update Contact:"+LINK_USER_CONTACT_UPDATE);
+        Timber.wtf("address Update Contact: %1$s ",LINK_USER_CONTACT_UPDATE);
         post(mContext,LINK_USER_CONTACT_UPDATE, params, responseHandler);
     }
 
     public static void sentListBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address List Biller:"+LINK_LIST_BILLER);
+        Timber.wtf("address List Biller: %1$s ",LINK_LIST_BILLER);
         post(mContext,LINK_LIST_BILLER, params, responseHandler);
     }
 
     public static void sentDenomRetail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Denom Retail:"+LINK_DENOM_RETAIL);
+        Timber.wtf("address Denom Retail: %1$s ",LINK_DENOM_RETAIL);
         post(mContext,LINK_DENOM_RETAIL, params, responseHandler);
     }
 
     public static void sentReqTokenBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Req Token Biller:"+LINK_REQ_TOKEN_BILLER);
+        Timber.wtf("address Req Token Biller: %1$s ",LINK_REQ_TOKEN_BILLER);
         post(mContext,LINK_REQ_TOKEN_BILLER, params, responseHandler);
     }
 
     public static void sentConfirmBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Confirm Biller:"+LINK_CONFIRM_BILLER);
+        Timber.wtf("address Confirm Biller: %1$s ",LINK_CONFIRM_BILLER);
         post(mContext,LINK_CONFIRM_BILLER, params, responseHandler);
     }
 
     public static void sentResendToken(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Resent Token :"+LINK_RESENT_TOKEN_BILLER);
+        Timber.wtf("address Resent Token : %1$s ",LINK_RESENT_TOKEN_BILLER);
         post(mContext,LINK_RESENT_TOKEN_BILLER, params, responseHandler);
     }
 
     public static void sentProfilePicture(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Upload Profile Picture:"+LINK_UPLOAD_PROFILE_PIC);
+        Timber.wtf("address Upload Profile Picture: %1$s ",LINK_UPLOAD_PROFILE_PIC);
         post(mContext,LINK_UPLOAD_PROFILE_PIC, params, responseHandler);
     }
 
     public static void sentReqTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address ReqToken P2P:"+LINK_REQ_TOKEN_P2P);
+        Timber.wtf("address ReqToken P2P: %1$s ",LINK_REQ_TOKEN_P2P);
         post(mContext,LINK_REQ_TOKEN_P2P, params, responseHandler);
     }
 
     public static void sentConfirmTransP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Confirm Trans P2P:"+LINK_CONFIRM_TRANS_P2P);
+        Timber.wtf("address sent Confirm Trans P2P: %1$s ",LINK_CONFIRM_TRANS_P2P);
         post(mContext,LINK_CONFIRM_TRANS_P2P, params, responseHandler);
     }
 
     public static void sentResentTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Resent Token P2P:"+LINK_RESENT_TOKEN_P2P);
+        Timber.wtf("address sent Resent Token P2P: %1$s ",LINK_RESENT_TOKEN_P2P);
         post(mContext,LINK_RESENT_TOKEN_P2P, params, responseHandler);
     }
 
     public static void sentSubmitAskForMoney(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent AskForMoneySubmit:"+LINK_ASKFORMONEY_SUBMIT);
+        Timber.wtf("address sent AskForMoneySubmit: %1$s ",LINK_ASKFORMONEY_SUBMIT);
         post(mContext,LINK_ASKFORMONEY_SUBMIT, params, responseHandler);
     }
 
     public static void sentRetrieveNotif(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Notif Retrieve:"+LINK_NOTIF_RETRIEVE);
+        Timber.wtf("address sent Notif Retrieve: %1$s ",LINK_NOTIF_RETRIEVE);
         post(mContext,LINK_NOTIF_RETRIEVE, params, responseHandler);
     }
 
     public static void sentReadNotif(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Notif Read:"+LINK_NOTIF_READ);
+        Timber.wtf("address sent Notif Read: %1$s ",LINK_NOTIF_READ);
         post(mContext,LINK_NOTIF_READ, params, responseHandler);
     }
 
     public static void sentReqTokenP2PNotif(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Req Token p2p Notif:"+LINK_REQ_TOKEN_P2P_NOTIF);
+        Timber.wtf("address sent Req Token p2p Notif: %1$s ",LINK_REQ_TOKEN_P2P_NOTIF);
         post(mContext,LINK_REQ_TOKEN_P2P_NOTIF, params, responseHandler);
     }
 
     public static void sentConfirmTransP2PNotif(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent confirm trans p2p notif:"+LINK_CONFIRM_TRANS_P2P_NOTIF);
+        Timber.wtf("address sent confirm trans p2p notif: %1$s ",LINK_CONFIRM_TRANS_P2P_NOTIF);
         post(mContext,LINK_CONFIRM_TRANS_P2P_NOTIF, params, responseHandler);
     }
 
     public static void sentGetTRXStatus(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent get trx status:"+LINK_GET_TRX_STATUS);
+        Timber.wtf("address sent get trx status: %1$s ",LINK_GET_TRX_STATUS);
         post(mContext,LINK_GET_TRX_STATUS, params, responseHandler);
     }
 
     public static void sentGetTrxReport(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent transaction report:"+LINK_TRANSACTION_REPORT);
+        Timber.wtf("address sent transaction report: %1$s ",LINK_TRANSACTION_REPORT);
         post(mContext,LINK_TRANSACTION_REPORT, params, responseHandler);
     }
 
     public static void sentPaymentBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent link payment biller:"+LINK_PAYMENT_BILLER);
+        Timber.wtf("address sent link payment biller: %1$s ",LINK_PAYMENT_BILLER);
         post(mContext,LINK_PAYMENT_BILLER, params, responseHandler);
     }
 	
 	public static void getGroupList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent group list:"+LINK_GROUP_LIST);
+        Timber.wtf("address sent group list: %1$s ",LINK_GROUP_LIST);
         post(mContext,LINK_GROUP_LIST, params, responseHandler);
     }
 
     public static void sentAddGroup(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent add grup:"+LINK_ADD_GROUP);
+        Timber.wtf("address sent add grup: %1$s ",LINK_ADD_GROUP);
         post(mContext,LINK_ADD_GROUP, params, responseHandler);
     }
 
     public static void getTimelineList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent timeline list:"+LINK_TIMELINE_LIST);
+        Timber.wtf("address sent timeline list: %1$s ",LINK_TIMELINE_LIST);
         post(mContext,LINK_TIMELINE_LIST, params, responseHandler);
     }
 
     public static void getCommentList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent comment list:"+LINK_COMMENT_LIST);
+        Timber.wtf("address sent comment list: %1$s ",LINK_COMMENT_LIST);
         post(mContext,LINK_COMMENT_LIST, params, responseHandler);
     }
 
     public static void sentAddComment(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent add coment:"+LINK_ADD_COMMENT);
+        Timber.wtf("address sent add coment: %1$s ",LINK_ADD_COMMENT);
         post(mContext,LINK_ADD_COMMENT, params, responseHandler);
     }
 
     public static void sentRemoveComment(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent remove comment:"+LINK_REMOVE_COMMENT);
+        Timber.wtf("address sent remove comment: %1$s ",LINK_REMOVE_COMMENT);
         post(mContext,LINK_REMOVE_COMMENT, params, responseHandler);
     }
 
     public static void getLikeList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent like list:"+LINK_LIKE_LIST);
+        Timber.wtf("address sent like list: %1$s ",LINK_LIKE_LIST);
         post(mContext,LINK_LIKE_LIST, params, responseHandler);
     }
 
     public static void sentAddLike(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent add like:"+LINK_ADD_LIKE);
+        Timber.wtf("address sent add like: %1$s ",LINK_ADD_LIKE);
         post(mContext,LINK_ADD_LIKE, params, responseHandler);
     }
 
     public static void sentRemoveLike(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent remove like:"+LINK_REMOVE_LIKE);
+        Timber.wtf("address sent remove like: %1$s ",LINK_REMOVE_LIKE);
         post(mContext,LINK_REMOVE_LIKE, params, responseHandler);
     }
 
     public static void sentCreatePin(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent create pin:"+LINK_CREATE_PIN);
+        Timber.wtf("address sent create pin: %1$s ",LINK_CREATE_PIN);
         post(mContext,LINK_CREATE_PIN, params, responseHandler);
     }
 
     public static void sentChangePin(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent change pin:"+LINK_CHANGE_PIN);
+        Timber.wtf("address sent change pin: %1$s ",LINK_CHANGE_PIN);
         post(mContext,LINK_CHANGE_PIN, params, responseHandler);
     }
 
     public static void getPromoList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent promo list:"+LINK_PROMO_LIST);
+        Timber.wtf("address sent promo list: %1$s ",LINK_PROMO_LIST);
         post(mContext,LINK_PROMO_LIST, params, responseHandler);
     }
 
     public static void sentInquiryBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Inquiry Biller:"+LINK_INQUIRY_BILLER);
+        Timber.wtf("address sent Inquiry Biller: %1$s ",LINK_INQUIRY_BILLER);
         post(mContext,LINK_INQUIRY_BILLER, params, responseHandler);
     }
 
     public static void sentBankAccountCollection(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Bank Account Collect:"+LINK_BANK_ACCOUNT_COLLECTION);
+        Timber.wtf("address sent Bank Account Collect: %1$s ",LINK_BANK_ACCOUNT_COLLECTION);
         post(mContext,LINK_BANK_ACCOUNT_COLLECTION, params, responseHandler);
     }
 
     public static void sentTopUpAccountCollection(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Top up Account collect:"+LINK_TOP_UP_ACCOUNT_COLLECTION);
+        Timber.wtf("address sent Top up Account collect: %1$s ",LINK_TOP_UP_ACCOUNT_COLLECTION);
         post(mContext,LINK_TOP_UP_ACCOUNT_COLLECTION, params, responseHandler);
     }
 
     public static void sentCommAccountCollection(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent comm account collect:"+LINK_COMM_ACCOUNT_COLLECTION);
+        Timber.wtf("address sent comm account collect: %1$s ",LINK_COMM_ACCOUNT_COLLECTION);
         post(mContext,LINK_COMM_ACCOUNT_COLLECTION, params, responseHandler);
     }
 
     public static void sentListBankBiller(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent list bank biller:"+LINK_LIST_BANK_BILLER);
+        Timber.wtf("address sent list bank biller: %1$s ",LINK_LIST_BANK_BILLER);
         post(mContext,LINK_LIST_BANK_BILLER, params, responseHandler);
     }
 
     public static void sentCommEspay(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent list bank biller:"+LINK_COMM_ESPAY);
+        Timber.wtf("address sent list bank biller: %1$s ",LINK_COMM_ESPAY);
         post(mContext,LINK_COMM_ESPAY, params, responseHandler);
 	}
 		
 	public static void getHelpList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Help List:"+LINK_HELP_LIST);
+        Timber.wtf("address sent Help List: %1$s ",LINK_HELP_LIST);
         post(mContext,LINK_HELP_LIST, params, responseHandler);
     }
 
     public static void getDataSB(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address get Data SB:"+LINK_INQUIRY_MOBILE);
+        Timber.wtf("address get Data SB: %1$s ",LINK_INQUIRY_MOBILE);
         post(mContext,LINK_INQUIRY_MOBILE, params, responseHandler);
     }
 
     public static void sentReqTokenSB(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Req Token SB:"+LINK_REQUEST_TOKEN_SB);
+        Timber.wtf("address sent Req Token SB: %1$s ",LINK_REQUEST_TOKEN_SB);
         post(mContext,LINK_REQUEST_TOKEN_SB, params, responseHandler);
     }
 
     public static void sentConfTokenSB(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent confirm token SB:"+LINK_CONFIRM_TOKEN_SB);
+        Timber.wtf("address sent confirm token SB: %1$s ",LINK_CONFIRM_TOKEN_SB);
         post(mContext,LINK_CONFIRM_TOKEN_SB, params, responseHandler);
     }
 
     public static void sentInsertPassword(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent InsertPassword:"+LINK_INSERT_PASSWORD);
+        Timber.wtf("address sent InsertPassword: %1$s ",LINK_INSERT_PASSWORD);
         post(mContext,LINK_INSERT_PASSWORD, params, responseHandler);
     }
 
     public static void sentReportEspay(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent ReportEspay:"+LINK_REPORT_ESPAY);
+        Timber.wtf("address sent ReportEspay: %1$s ",LINK_REPORT_ESPAY);
         post(mContext,LINK_REPORT_ESPAY, params, responseHandler);
     }
 
     public static void sentInquiryMobileJatim(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Inquiry mobile Jatim:"+LINK_INQUIRY_MOBILE_JATIM);
+        Timber.wtf("address sent Inquiry mobile Jatim: %1$s ",LINK_INQUIRY_MOBILE_JATIM);
         post(mContext,LINK_INQUIRY_MOBILE_JATIM, params, responseHandler);
     }
 
     public static void sentConfirmTokenJatim(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent Confirm token Jatim:"+LINK_CONFIRM_TOKEN_JATIM);
+        Timber.wtf("address sent Confirm token Jatim: %1$s ",LINK_CONFIRM_TOKEN_JATIM);
         post(mContext,LINK_CONFIRM_TOKEN_JATIM, params, responseHandler);
     }
 
     public static void sentListBankSMSRegist(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent list bank sms regist:"+LINK_LIST_BANK_SMS_REGIST);
+        Timber.wtf("address sent list bank sms regist: %1$s ",LINK_LIST_BANK_SMS_REGIST);
         post(mContext,LINK_LIST_BANK_SMS_REGIST, params, responseHandler);
     }
 
     public static void getDenomDAP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address get denom DAP:"+LINK_DENOM_DAP);
+        Timber.wtf("address get denom DAP: %1$s ",LINK_DENOM_DAP);
         post(mContext,LINK_DENOM_DAP, params, responseHandler);
     }
 
     public static void getBankDAP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address get bank DAP:"+LINK_BANK_DAP);
+        Timber.wtf("address get bank DAP: %1$s ",LINK_BANK_DAP);
         post(mContext,LINK_BANK_DAP, params, responseHandler);
     }
 
     public static void sentPaymentDAP( Context mContext,RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent payment DAP:"+ LINK_PAYMENT_DAP);
+        Timber.wtf("address sent payment DAP: %1$s ", LINK_PAYMENT_DAP);
         post(mContext,LINK_PAYMENT_DAP, params, responseHandler);
     }
 	
 	public static void sentLogout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent logout:"+LINK_LOGOUT);
+        Timber.wtf("address sent logout: %1$s ",LINK_LOGOUT);
         post(mContext,LINK_LOGOUT, params, responseHandler);
     }
 
     public static void sentCreatePinPass(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent create pin pass:"+LINK_CREATE_PIN_PASS);
+        Timber.wtf("address sent create pin pass: %1$s ",LINK_CREATE_PIN_PASS);
         post(mContext,LINK_CREATE_PIN_PASS, params, responseHandler);
     }
 
     public static void sentReportAsk(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent report ask:"+LINK_REPORT_MONEY_REQUEST);
+        Timber.wtf("address sent report ask: %1$s ",LINK_REPORT_MONEY_REQUEST);
         post(mContext,LINK_REPORT_MONEY_REQUEST, params, responseHandler);
     }
 
     public static void sentAsk4MoneyReject(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent ask for money reject:"+LINK_ASK4MONEY_REJECT);
+        Timber.wtf("address sent ask for money reject: %1$s ",LINK_ASK4MONEY_REJECT);
         post(mContext,LINK_ASK4MONEY_REJECT, params, responseHandler);
     }
 
     public static void inqCustomer(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent inquiry customer:"+LINK_INQUIRY_CUST);
+        Timber.wtf("address sent inquiry customer: %1$s ",LINK_INQUIRY_CUST);
         post(mContext,LINK_INQUIRY_CUST, params, responseHandler);
     }
 
     public static void sentExecCust(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent exec customer:"+LINK_EXEC_CUST);
+        Timber.wtf("address sent exec customer: %1$s ",LINK_EXEC_CUST);
         post(mContext,LINK_EXEC_CUST, params, responseHandler);
     }
 	
 	public static void sentReqCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent req cashout:"+LINK_REQUEST_CASHOUT);
+        Timber.wtf("address sent req cashout: %1$s ",LINK_REQUEST_CASHOUT);
         post(mContext,LINK_REQUEST_CASHOUT, params, responseHandler);
     }
 
     public static void sentConfCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent confirm cashout:"+LINK_CONFIRM_CASHOUT);
+        Timber.wtf("address sent confirm cashout: %1$s ",LINK_CONFIRM_CASHOUT);
         post(mContext,LINK_CONFIRM_CASHOUT, params, responseHandler);
     }
 
     public static void sentInqWithdraw(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent inq withdraw:"+LINK_INQUIRY_WITHDRAW);
+        Timber.wtf("address sent inq withdraw: %1$s ",LINK_INQUIRY_WITHDRAW);
         post(mContext,LINK_INQUIRY_WITHDRAW, params, responseHandler);
     }
 
     public static void sentReqCodeWithdraw(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent reg code withdraw:"+LINK_REQCODE_WITHDRAW);
+        Timber.wtf("address sent reg code withdraw: %1$s ",LINK_REQCODE_WITHDRAW);
         post(mContext,LINK_REQCODE_WITHDRAW, params, responseHandler);
     }
 
     public static void sentDelTrxWithdraw(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent del trx withdraw:"+LINK_DELTRX_WITHDRAW);
+        Timber.wtf("address sent del trx withdraw: %1$s ",LINK_DELTRX_WITHDRAW);
         post(mContext,LINK_DELTRX_WITHDRAW, params, responseHandler);
     }
 
     public static void sentCreatePass(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent create pass:"+LINK_CREATE_PASS);
+        Timber.wtf("address sent create pass: %1$s ",LINK_CREATE_PASS);
         post(mContext,LINK_CREATE_PASS, params, responseHandler);
     }
 
     public static void sentGetFailedPIN(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent get failed pin:"+LINK_GET_FAILED_PIN);
+        Timber.wtf("address sent get failed pin: %1$s ",LINK_GET_FAILED_PIN);
         post(mContext,LINK_GET_FAILED_PIN, params, responseHandler);
     }
 
     public static void getATMTopUp(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address get ATM top up:"+LINK_ATMTOPUP);
+        Timber.wtf("address get ATM top up: %1$s ",LINK_ATMTOPUP);
         post(mContext,LINK_ATMTOPUP, params, responseHandler);
     }
 
     public static void getBankCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address get bank cashout:"+LINK_BANKCASHOUT);
+        Timber.wtf("address get bank cashout: %1$s ",LINK_BANKCASHOUT);
         post(mContext,LINK_BANKCASHOUT, params, responseHandler);
     }
     public static void sentUserProfile(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent user profile:"+LINK_USER_PROFILE);
+        Timber.wtf("address sent user profile: %1$s ",LINK_USER_PROFILE);
         post(mContext,LINK_USER_PROFILE, params, responseHandler);
     }
 
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent inquiry sms:"+LINK_INQUIRY_SMS);
+        Timber.wtf("address sent inquiry sms: %1$s ",LINK_INQUIRY_SMS);
         post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent claim non member transfer:"+LINK_CLAIM_TRANSFER_NON_MEMBER);
+        Timber.wtf("address sent claim non member transfer: %1$s ",LINK_CLAIM_TRANSFER_NON_MEMBER);
         post(mContext,LINK_CLAIM_TRANSFER_NON_MEMBER, params, responseHandler);
     }
     public static void sentResendTokenLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent resend token LKD:"+LINK_RESEND_TOKEN_LKD);
+        Timber.wtf("address sent resend token LKD: %1$s ",LINK_RESEND_TOKEN_LKD);
         post(mContext,LINK_RESEND_TOKEN_LKD, params, responseHandler);
     }
 
     public static void getGlobalBBSComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs comm:"+ LINK_GLOBAL_BBS_COMM);
+        Timber.wtf("address global bbs comm: %1$s ", LINK_GLOBAL_BBS_COMM);
         if(tag != null)
             postByTag(mContext,tag,LINK_GLOBAL_BBS_COMM,params,responseHandler);
         else
@@ -1029,17 +1014,17 @@ public class MyApiClient {
     }
 
     public static void getGlobalBBSBankC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs bank C2A:"+ LINK_GLOBAL_BBS_BANK_C2A);
+        Timber.wtf("address global bbs bank C2A: %1$s ", LINK_GLOBAL_BBS_BANK_C2A);
         post(mContext, LINK_GLOBAL_BBS_BANK_C2A, params, responseHandler);
     }
 
     public static void sentGlobalBBSInsertC2A(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs insert C2A:"+ LINK_GLOBAL_BBS_INSERT_C2A);
+        Timber.wtf("address global bbs insert C2A: %1$s ", LINK_GLOBAL_BBS_INSERT_C2A);
         post(mContext, LINK_GLOBAL_BBS_INSERT_C2A, params, responseHandler);
     }
 
     public static void sentBBSBankAccountRetreive(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs bank account retreive:"+ LINK_BBS_BANK_ACCOUNT);
+        Timber.wtf("address bbs bank account retreive: %1$s ", LINK_BBS_BANK_ACCOUNT);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_BANK_ACCOUNT, params, responseHandler);
         else
@@ -1047,12 +1032,12 @@ public class MyApiClient {
     }
 
     public static void sentBBSBankAccountDelete(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs bank account delete:"+ LINK_BBS_BANK_ACCOUNT_DELETE);
+        Timber.wtf("address bbs bank account delete: %1$s ", LINK_BBS_BANK_ACCOUNT_DELETE);
         post(mContext, LINK_BBS_BANK_ACCOUNT_DELETE, params, responseHandler);
     }
 
     public static void sentBBSBankRegAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs bank reg account:"+ LINK_BBS_BANK_REG_ACCT);
+        Timber.wtf("address bbs bank reg account: %1$s ", LINK_BBS_BANK_REG_ACCT);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_BANK_REG_ACCT, params, responseHandler);
         else
@@ -1060,21 +1045,21 @@ public class MyApiClient {
     }
 
     public static void sentBBSJoinAgent(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs join agent:"+ LINK_BBS_JOIN_AGENT);
+        Timber.wtf("address bbs join agent: %1$s ", LINK_BBS_JOIN_AGENT);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_JOIN_AGENT, params, responseHandler);
         else
             post(mContext, LINK_BBS_JOIN_AGENT, params, responseHandler);
     }
     public static void sentBBSReqAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs req acct:"+ LINK_BBS_REQ_ACCT);
+        Timber.wtf("address bbs req acct: %1$s ", LINK_BBS_REQ_ACCT);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_REQ_ACCT, params, responseHandler);
         else
             post(mContext, LINK_BBS_REQ_ACCT, params, responseHandler);
     }
     public static void sentBBSConfirmAcct(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs confirm acct:"+ LINK_BBS_CONFIRM_ACCT);
+        Timber.wtf("address bbs confirm acct: %1$s ", LINK_BBS_CONFIRM_ACCT);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_CONFIRM_ACCT, params, responseHandler);
         else
@@ -1082,7 +1067,7 @@ public class MyApiClient {
     }
 
     public static void sentRetreiveGlobalComm(Context mContext,String tag, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address retreive global Comm:"+ LINK_BBS_GLOBAL_COMM);
+        Timber.wtf("address retreive global Comm: %1$s ", LINK_BBS_GLOBAL_COMM);
         if(tag != null)
             postByTag(mContext,tag, LINK_BBS_GLOBAL_COMM, params, responseHandler);
         else
@@ -1090,35 +1075,48 @@ public class MyApiClient {
     }
 
     public static void sentGetTRXStatusBBS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent get trx status bbs:"+LINK_TRX_STATUS_BBS);
+        Timber.wtf("address sent get trx status bbs: %1$s ",LINK_TRX_STATUS_BBS);
         post(mContext,LINK_TRX_STATUS_BBS, params, responseHandler);
     }
 
     public static void getGlobalBBSBankA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent global bbs bank a2c:" + LINK_GLOBAL_BBS_BANK_A2C);
+        Timber.wtf("address sent global bbs bank a2c: %1$s ", LINK_GLOBAL_BBS_BANK_A2C);
         post(mContext, LINK_GLOBAL_BBS_BANK_A2C, params, responseHandler);
     }
 
     public static void sentGlobalBBSInsertA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs insert A2C:"+ LINK_GLOBAL_BBS_INSERT_A2C);
+        Timber.wtf("address global bbs insert A2C: %1$s ", LINK_GLOBAL_BBS_INSERT_A2C);
         post(mContext, LINK_GLOBAL_BBS_INSERT_A2C, params, responseHandler);
     }
 
     public static void sentBBSListMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_LIST_MEMBER_A2C);
+        Timber.wtf("address global bbs insert A2C: %1$s ", LINK_BBS_LIST_MEMBER_A2C);
         post(mContext, LINK_BBS_LIST_MEMBER_A2C, params, responseHandler);
     }
 
     public static void sentBBSOTPMemberA2C(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address global bbs insert A2C:"+ LINK_BBS_OTP_MEMBER_A2C);
+        Timber.wtf("address global bbs insert A2C: %1$s ", LINK_BBS_OTP_MEMBER_A2C);
         post(mContext, LINK_BBS_OTP_MEMBER_A2C, params, responseHandler);
+    }
+
+    public static void sentBBSListCommunityAllSync(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address BBS list community all sync: %1$s ", LINK_BBS_LIST_COMMUNITY_ALL);
+        postSync(mContext, LINK_BBS_LIST_COMMUNITY_ALL, params, responseHandler);
+    }
+
+    public static void sentReqTokenFCM(Context mContext,boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address req token fcm:"+ LINK_REG_TOKEN_FCM);
+        if(isSync)
+            postSync(mContext,LINK_REG_TOKEN_FCM,params,responseHandler);
+        else
+            post(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------
 
 
     public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Biller Type:"+LINK_GET_BILLER_TYPE);
+        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
         get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
     }
 
@@ -1131,12 +1129,12 @@ public class MyApiClient {
     }
 	
 	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address getHelpPIN:"+LINK_HELP_PIN);
+        Timber.wtf("address getHelpPIN: %1$s ",LINK_HELP_PIN);
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
     public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address getBBSCity:"+LINK_BBS_CITY);
+        Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
         if(isSync)
             getSync(mContext,LINK_BBS_CITY,responseHandler);
         else
@@ -1153,75 +1151,75 @@ public class MyApiClient {
 
     public static void updateMemberLocation(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address update member location:"+LINK_UPDATE_MEMBER_LOCATION);
+        Timber.wtf("address update member location: %1$s ",LINK_UPDATE_MEMBER_LOCATION);
         post(mContext,LINK_UPDATE_MEMBER_LOCATION, params, responseHandler);
     }
 
     public static void registerCategoryShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address register category shop:"+LINK_REGISTER_CATEGORY_SHOP);
+        Timber.wtf("address register category shop: %1$s ",LINK_REGISTER_CATEGORY_SHOP);
         post(mContext,LINK_REGISTER_CATEGORY_SHOP, params, responseHandler);
     }
 
     public static void setupOpeningHour(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address register category shop:"+LINK_SETUP_OPENING_HOUR);
+        Timber.wtf("address register category shop: %1$s ",LINK_SETUP_OPENING_HOUR);
         post(mContext,LINK_SETUP_OPENING_HOUR, params, responseHandler);
     }
 
     public static void searchToko(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address search toko:"+LINK_SEARCH_TOKO);
+        Timber.wtf("address search toko: %1$s ",LINK_SEARCH_TOKO);
         post(mContext,LINK_SEARCH_TOKO, params, responseHandler);
     }
 
     public static void getCategoryList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address get category list:"+LINK_CATEGORY_LIST);
+        Timber.wtf("address get category list: %1$s ",LINK_CATEGORY_LIST);
         post(mContext,LINK_CATEGORY_LIST, params, responseHandler);
     }
 
     public static void getMemberShopList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address get member shop list:"+LINK_MEMBER_SHOP_LIST);
+        Timber.wtf("address get member shop list: %1$s ",LINK_MEMBER_SHOP_LIST);
         post(mContext,LINK_MEMBER_SHOP_LIST, params, responseHandler);
     }
 
     public static void getMemberShopDetail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address get member shop detail:"+LINK_MEMBER_SHOP_DETAIL);
+        Timber.wtf("address get member shop detail: %1$s ",LINK_MEMBER_SHOP_DETAIL);
         post(mContext,LINK_MEMBER_SHOP_DETAIL, params, responseHandler);
     }
 
     public static void searchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent search agent:"+LINK_SEARCH_AGENT);
+        Timber.wtf("address sent search agent: %1$s ",LINK_SEARCH_AGENT);
         post(mContext,LINK_SEARCH_AGENT, params, responseHandler);
     }
 
     public static void registerOpenCloseShop(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent register open close shop:"+LINK_REGISTER_OPEN_CLOSE_TOKO);
+        Timber.wtf("address sent register open close shop: %1$s ",LINK_REGISTER_OPEN_CLOSE_TOKO);
         post(mContext,LINK_REGISTER_OPEN_CLOSE_TOKO, params, responseHandler);
     }
 
     public static void updateCloseShopToday(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent update close shop today:"+LINK_UPDATE_CLOSE_SHOP_TODAY);
+        Timber.wtf("address sent update close shop today: %1$s ",LINK_UPDATE_CLOSE_SHOP_TODAY);
         post(mContext,LINK_UPDATE_CLOSE_SHOP_TODAY, params, responseHandler);
     }
 
     public static void getListTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address get trx agent list:"+LINK_TRANSACTION_AGENT);
+        Timber.wtf("address get trx agent list: %1$s ",LINK_TRANSACTION_AGENT);
         post(mContext,LINK_TRANSACTION_AGENT, params, responseHandler);
     }
 
     public static void updateTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address update approval trx agent:"+LINK_UPDATE_APPROVAL_TRX_AGENT);
+        Timber.wtf("address update approval trx agent: %1$s ",LINK_UPDATE_APPROVAL_TRX_AGENT);
         post(mContext,LINK_UPDATE_APPROVAL_TRX_AGENT, params, responseHandler);
     }
 
     public static void getGoogleMapRoute(Context mContext, String queryString, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent google maps route:"+LINK_GOOGLE_MAP_API_ROUTE);
+        Timber.wtf("address sent google maps route: %1$s ",LINK_GOOGLE_MAP_API_ROUTE);
 
         RequestParams params = new RequestParams();
         postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
@@ -1229,31 +1227,31 @@ public class MyApiClient {
 
     public static void updateLocationAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address update location agent:"+LINK_UPDATE_LOCATION_AGENT);
+        Timber.wtf("address update location agent: %1$s ",LINK_UPDATE_LOCATION_AGENT);
         post(mContext,LINK_UPDATE_LOCATION_AGENT, params, responseHandler);
     }
 
     public static void updateLocationMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address update location member:"+LINK_UPDATE_LOCATION_MEMBER);
+        Timber.wtf("address update location member: %1$s ",LINK_UPDATE_LOCATION_MEMBER);
         post(mContext,LINK_UPDATE_LOCATION_MEMBER, params, responseHandler);
     }
 
     public static void checkTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address check transaction member:"+LINK_CHECK_TRANSACTION_MEMBER);
+        Timber.wtf("address check transaction member: %1$s ",LINK_CHECK_TRANSACTION_MEMBER);
         post(mContext,LINK_CHECK_TRANSACTION_MEMBER, params, responseHandler);
     }
 
     public static void confirmTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address confirm transaction member:"+LINK_CONFIRM_TRANSACTION_MEMBER);
+        Timber.wtf("address confirm transaction member: %1$s ",LINK_CONFIRM_TRANSACTION_MEMBER);
         post(mContext,LINK_CONFIRM_TRANSACTION_MEMBER, params, responseHandler);
     }
 
     public static void cancelTransactionMember(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
-        Timber.wtf("address cancel transaction member:"+LINK_CANCEL_TRANSACTION_MEMBER);
+        Timber.wtf("address cancel transaction member: %1$s ",LINK_CANCEL_TRANSACTION_MEMBER);
         post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
     }
 }

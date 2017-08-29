@@ -190,7 +190,7 @@ public class PulsaAgentDescription extends Fragment {
             payment_name = item.toString();
             if (payment_name.equalsIgnoreCase("UNIK"))
             {
-                payment_name="Saldomu";
+                payment_name=getString(R.string.appname);
             }
             if(i>0)
                 mTempBank = mDataPayment.get(i-1);
@@ -388,7 +388,7 @@ public class PulsaAgentDescription extends Fragment {
                                     if(mBob.getProduct_code().equals(DefineValue.SCASH)){
                                         String tempProductName = mBob.getProduct_name();
                                         mDataPayment.add(mBob);
-                                        paymentData.add("Saldomu");
+                                        paymentData.add(getString(R.string.appname));
                                     }
                                     else {
                                         //mDataPayment.add(mBob);

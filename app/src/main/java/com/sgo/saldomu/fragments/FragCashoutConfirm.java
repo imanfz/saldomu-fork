@@ -33,6 +33,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
 
 import org.apache.http.Header;
@@ -40,7 +41,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import TransactionResult.TransactionResult;
 import timber.log.Timber;
 
 /**

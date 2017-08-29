@@ -83,13 +83,16 @@ public class DateTimeFormat {
     }
 
     public static java.util.Date convertStringtoCustomDateTime(String _date){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
-        try {
-            return dateFormat.parse(_date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(_date != null) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID", "INDONESIA"));
+            try {
+                return dateFormat.parse(_date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
+        return Calendar.getInstance().getTime();
     }
 
     public static String getCurrentDateTimePlusHour(int plus){

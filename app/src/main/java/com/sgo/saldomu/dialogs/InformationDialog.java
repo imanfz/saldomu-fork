@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -37,7 +36,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.fragments.ListCashOut;
 
 import timber.log.Timber;
 
@@ -60,21 +58,12 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     private int type;
     private ProgressBar progbar;
     private boolean shown = false;
-    private Boolean isActivty = false;
 
     public static InformationDialog newInstance( int idx) {
         InformationDialog f = new InformationDialog();
         Bundle d = new Bundle();
         d.putInt(DefineValue.TYPE,idx);
         f.setArguments(d);
-        return f;
-    }
-
-    public static InformationDialog newInstance(Fragment _context, int idx) {
-        InformationDialog f = new InformationDialog();
-        f.setTargetFragment(_context,0);
-        f.type = idx;
-        f.isActivty = false;
         return f;
     }
 
@@ -145,10 +134,6 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
         Timber.e(urlAddress);
 
         loadUrl(urlAddress);
-    }
-
-    public interface OnDialogOkCallback {
-        void onOkButton();
     }
 
     private void loadUrl(String url) {

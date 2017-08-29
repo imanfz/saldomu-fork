@@ -95,15 +95,11 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                         valuePin = input;
                         SecurePreferences.Editor mEditor = sp.edit();
                         Intent i = new Intent();
-                        try {
-                            mEditor.putString(DefineValue.PIN_CODE, Md5.hashMd5(input));
-                            if(is_md5)
-                                i.putExtra(DefineValue.PIN_VALUE,Md5.hashMd5(input));
-                            else
-                                i.putExtra(DefineValue.PIN_VALUE,input);
-                        } catch (NoSuchAlgorithmException e) {
-                            e.printStackTrace();
-                        }
+                        mEditor.putString(DefineValue.PIN_CODE, Md5.hashMd5(input));
+                        if(is_md5)
+                            i.putExtra(DefineValue.PIN_VALUE,Md5.hashMd5(input));
+                        else
+                            i.putExtra(DefineValue.PIN_VALUE,input);
                         mEditor.apply();
                         setResult(RESULT_PIN_VALUE,i);
                         finish();

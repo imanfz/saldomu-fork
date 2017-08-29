@@ -219,12 +219,8 @@ public class FragCashOutAgen extends Fragment {
                         btn_proses.setEnabled(false);
                         btn_batal.setEnabled(false);
                         if (isOTP) {
-                            try {
-                                btnResend.setEnabled(false);
-                                sentReqCodeWithdraw(Md5.hashMd5(et_otp.getText().toString()));
-                            } catch (NoSuchAlgorithmException e) {
-                                e.printStackTrace();
-                            }
+                            btnResend.setEnabled(false);
+                            sentReqCodeWithdraw(Md5.hashMd5(et_otp.getText().toString()));
                         } else
                             CallPINinput(-1);
                     }

@@ -304,7 +304,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance();
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.TX_ID,txId);

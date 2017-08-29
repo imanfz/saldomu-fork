@@ -267,10 +267,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     }
 
     @Override
-    public void OnAddAccountListener() {
+    public void OnAddAccountListener(Bundle data) {
         Intent i = new Intent(this, BBSRegAccountActivity.class);
-        i.putExtras(new Bundle());
-        getSupportFragmentManager().findFragmentByTag(ListAccountBBS.TAG).startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+        i.putExtras(data);
+        getSupportFragmentManager().findFragmentByTag(ListAccountBBS.TAG)
+                .startActivityForResult(i, MainPage.ACTIVITY_RESULT);
     }
 
     @Override

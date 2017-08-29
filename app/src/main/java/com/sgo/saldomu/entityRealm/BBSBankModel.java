@@ -1,12 +1,16 @@
 package com.sgo.saldomu.entityRealm;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 
 /**
  * Created by yuddistirakiki on 4/21/17.
  */
 
 public class BBSBankModel extends RealmObject {
+
+    @Ignore
+    public final static String SCHEME_CODE = "scheme_code";
 
     private String comm_id;
     private String comm_type;

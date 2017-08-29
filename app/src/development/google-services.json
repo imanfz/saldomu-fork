@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "948562567739",
-    "firebase_url": "https://akardaya-eb06b.firebaseio.com",
-    "project_id": "akardaya-eb06b",
-    "storage_bucket": "akardaya-eb06b.appspot.com"
+    "project_number": "451695092641",
+    "firebase_url": "https://saldomu-a5645.firebaseio.com",
+    "project_id": "saldomu-a5645",
+    "storage_bucket": "saldomu-a5645.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:948562567739:android:b5301509f0498089",
+        "mobilesdk_app_id": "1:451695092641:android:5907cb76a7a7650c",
         "android_client_info": {
-          "package_name": "com.sgo.devorimakardaya"
+          "package_name": "com.sgo.saldomu"
         }
       },
       "oauth_client": [
         {
-          "client_id": "948562567739-kfr3b26ik264gh7r5cakprcg4dc75h5f.apps.googleusercontent.com",
+          "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB1LfX5I7gMGvZpiohY5a_-sroLISSDZis"
+          "current_key": "AIzaSyCdDMVkLYc5tTtZvTUK-wlpEKqHL1ecAcw"
         }
       ],
       "services": {
@@ -39,20 +39,20 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:948562567739:android:2823452d81b534dd",
+        "mobilesdk_app_id": "1:451695092641:android:25bba19995da5691",
         "android_client_info": {
-          "package_name": "com.sgo.orimakardaya"
+          "package_name": "com.sgo.saldomudev"
         }
       },
       "oauth_client": [
         {
-          "client_id": "948562567739-kfr3b26ik264gh7r5cakprcg4dc75h5f.apps.googleusercontent.com",
+          "client_id": "451695092641-3ch648fd9qjf6f14cpr3bagta8neoj20.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB1LfX5I7gMGvZpiohY5a_-sroLISSDZis"
+          "current_key": "AIzaSyCdDMVkLYc5tTtZvTUK-wlpEKqHL1ecAcw"
         }
       ],
       "services": {

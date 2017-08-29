@@ -22,13 +22,13 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.BBSComm;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.BBSCommModel;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -48,7 +48,7 @@ public class BBSJoinAgentInput extends Fragment {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSJoinAgentInput";
 
     private View v;
-    private ArrayList<BBSComm> listDataComm;
+    private ArrayList<BBSCommModel> listDataComm;
     private ArrayAdapter<String> adapterDataComm;
     private ProgressDialog progdialog;
     private ProgressBar progBarComm;
@@ -142,11 +142,11 @@ public class BBSJoinAgentInput extends Fragment {
         int test = spComm.getSelectedItemPosition();
         String commCode,commName;
         if(test == -1) {
-            commCode = listDataComm.get(0).getCommCode();
-            commName = listDataComm.get(0).getCommName();
+            commCode = listDataComm.get(0).getComm_code();
+            commName = listDataComm.get(0).getComm_name();
         }else {
-            commCode = listDataComm.get(test).getCommCode();
-            commName = listDataComm.get(test).getCommName();
+            commCode = listDataComm.get(test).getComm_code();
+            commName = listDataComm.get(test).getComm_name();
         }
         sentJoinAgent(commName,commCode,
                 etAgentCode.getText().toString(),userID);
@@ -184,7 +184,7 @@ public class BBSJoinAgentInput extends Fragment {
 
         if(listDataComm.size() == 1) {
             TextView tvCommName = (TextView) v.findViewById(R.id.tv_comm_name_value);
-            tvCommName.setText(listDataComm.get(0).getCommName());
+            tvCommName.setText(listDataComm.get(0).getComm_name());
             tvCommName.setVisibility(View.VISIBLE);
             progBarComm.setVisibility(View.GONE);
             spComm.setVisibility(View.INVISIBLE);
@@ -216,16 +216,16 @@ public class BBSJoinAgentInput extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             JSONArray comm = response.optJSONArray(WebParams.COMMUNITY);
                             if(comm != null && comm.length() > 0) {
-                                BBSComm bbsComm;
+                                BBSCommModel bbsComm;
                                 for (int i = 0; i < comm.length(); i++) {
-                                    bbsComm = new BBSComm(comm.getJSONObject(i).optString(WebParams.COMM_ID),
+                                    bbsComm = new BBSCommModel(comm.getJSONObject(i).optString(WebParams.COMM_ID),
                                             comm.getJSONObject(i).optString(WebParams.COMM_CODE),
                                             comm.getJSONObject(i).optString(WebParams.COMM_NAME),
                                             comm.getJSONObject(i).optString(WebParams.API_KEY),
                                             comm.getJSONObject(i).optString(WebParams.MEMBER_CODE),
                                             comm.getJSONObject(i).optString(WebParams.CALLBACK_URL));
                                     listDataComm.add(bbsComm);
-                                    adapterDataComm.add(bbsComm.getCommName());
+                                    adapterDataComm.add(bbsComm.getComm_name());
                                 }
                             }
                         }

@@ -18,7 +18,8 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragCashOut;
 import com.sgo.saldomu.fragments.FragCashOutAgen;
 import com.sgo.saldomu.fragments.FragCashoutMember;
-import TransactionResult.TransactionResult;
+import com.sgo.saldomu.interfaces.TransactionResult;
+
 import timber.log.Timber;
 
 /**

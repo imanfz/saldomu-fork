@@ -105,9 +105,11 @@ public class UtilsLoader {
                                 Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
                                 LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getmActivity(), message);
+                                if(getmActivity().isFinishing()) {
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getmActivity(), message);
+                                }
                             } else {
                                 code = response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();

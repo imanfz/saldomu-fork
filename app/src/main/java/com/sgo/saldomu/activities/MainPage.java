@@ -36,10 +36,12 @@ import com.sgo.saldomu.Beans.likeModel;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
@@ -47,6 +49,8 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMWebServiceLoader;
+import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
@@ -54,8 +58,8 @@ import com.sgo.saldomu.fragments.RightSideDrawMenu;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
-import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.services.UpdateBBSCity;
+import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.services.UserProfileService;
 
 import org.apache.http.Header;
@@ -88,9 +92,8 @@ public class MainPage extends BaseActivity{
 
     private final static int FIRST_SCREEN_LOGIN = 1;
     private final static int FIRST_SCREEN_INTRO = 2;
+    private final static int REQCODE_PLAY_SERVICE = 312;
 
-    public static String action_id = "";
-    private static boolean activityVisible;
     private static int AmountNotif = 0;
 
     private String flagLogin = DefineValue.STRING_NO;
@@ -111,8 +114,7 @@ public class MainPage extends BaseActivity{
     private BalanceService serviceReferenceBalance;
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
-    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent;
-	
+    private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
 
@@ -130,24 +132,37 @@ public class MainPage extends BaseActivity{
         if (savedInstanceState != null)
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
-        if (!isLogin()) {
-            openFirstScreen(FIRST_SCREEN_INTRO);
-        } else {
-            agent = sp.getBoolean(DefineValue.IS_AGENT,false);
-
-            utilsLoader = new UtilsLoader(this,sp);
-            utilsLoader.getAppVersion();
-            ActiveAndroid.initialize(this);
-            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-            progdialog.show();
-            InitializeNavDrawer();
-            setupFab();
-            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-
-            startService(new Intent(this, UpdateLocationService.class));
+        if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
+            if (!isLogin()) {
+                openFirstScreen(FIRST_SCREEN_INTRO);
+            } else {
+                isForeground = true;
+                agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+                utilsLoader = new UtilsLoader(this, sp);
+                utilsLoader.getAppVersion();
+                ActiveAndroid.initialize(this);
+                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+                progdialog.show();
+                InitializeNavDrawer();
+                setupFab();
+                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+                startService(new Intent(this, UpdateLocationService.class));
+            }
         }
+        else {
+            switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
+        }
+    }
 
-
+    void switchErrorActivity(int type){
+        Intent i = new Intent(this, ErrorActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        i.putExtra(DefineValue.TYPE,type);
+        startActivity(i);
     }
 
     @Override
@@ -373,22 +388,10 @@ public class MainPage extends BaseActivity{
             }
         };
         mDrawerToggle.syncState();
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
         mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
-//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                Timber.wtf("masuh receiver", "massuukkkk");
-//                boolean sentToken = sp.getBoolean(DefineValue.SENT_TOKEN_TO_SERVER, false);
-//                if (sentToken) {
-//                      Toast.makeText(MainPage.this,"Dapet tokennya",Toast.LENGTH_LONG).show();
-//                } else {
-//                      Toast.makeText(MainPage.this,"gak dapet tokennya",Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        };
     }
 
 
@@ -399,23 +402,11 @@ public class MainPage extends BaseActivity{
     }
 
     private void initializeNavDrawer(){
-        if(mNavDrawer != null && isActive) {
+        if(mNavDrawer != null) {
             mNavDrawer.initializeNavDrawer();
             mNavDrawer.getBalance(true);
         }
     }
-
-//    private void TurnOnGCM(){
-//
-//        Log.d("masuk gcm manager", "turnon gcm oke");
-//
-//        if (GcmManager.checkPlayServices(this)) {
-//            // Start IntentService to register this application with GCM.
-//            Log.d("masuk gcm manager", "playservice oke");
-//            Intent intent = new Intent(this, RegistrationIntentService.class);
-//            startService(intent);
-//        }
-//    }
 
     private void getDataListMember(){
         try{
@@ -461,7 +452,7 @@ public class MainPage extends BaseActivity{
                                     progdialog.dismiss();
                                 checkField();
 
-                                callBBSCityService();
+                                setupBBSData();
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
 
@@ -527,6 +518,18 @@ public class MainPage extends BaseActivity{
         }
     }
 
+    void setupBBSData(){
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        if(isAgent){
+            callBBSCityService();
+            checkAndRunServiceBBS();
+        }
+    }
+
+    void checkAndRunServiceBBS(){
+        BBSDataManager.checkAndRunService(this);
+    }
+
     private void CheckNotification(){
         Thread mth = new Thread(){
             @Override
@@ -539,6 +542,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void callBBSCityService(){
+        Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
     }
 
@@ -636,7 +640,6 @@ public class MainPage extends BaseActivity{
     public void switchActivity(Intent mIntent, int activity_type) {
         switch (activity_type){
             case ACTIVITY_RESULT:
-                action_id = "";
                 startActivityForResult(mIntent, REQUEST_FINISH);
                 break;
             case 2:
@@ -885,82 +888,68 @@ public class MainPage extends BaseActivity{
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
+        if(mDrawerToggle != null)
+            mDrawerToggle.syncState();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        mDrawerToggle.onConfigurationChanged(newConfig);
+        if(mDrawerToggle != null)
+            mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onBackPressed() {
         Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
-        if(getSupportFragmentManager().getBackStackEntryCount() == 0 ){
-            showLogoutDialog();
+        if(isForeground) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                showLogoutDialog();
+            }
+            else super.onBackPressed();
         }
-        else super.onBackPressed();
-    }
-
-    @Override
-    public void onAttachFragment(Fragment fragment) {
-        Timber.w("on attach main page");
-        if(!action_id.equals("")){
-            Timber.w("cek dan panggil logout handler");
-            //mLh.sentData();
-        }
-        super.onAttachFragment(fragment);
+        super.onBackPressed();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        doBindToService();
-        doBindToAppInfoService();
-        doBindToUserProfileService();
+        if(isForeground) {
+            doBindToService();
+            doBindToAppInfoService();
+            doBindToUserProfileService();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        action_id = "V";
-        activityVisible = true;
-        if(!action_id.equals("")){
-            Timber.d("cek dan panggil logout handler onResume");
-        }
-        if(serviceReferenceBalance !=null) {
-            serviceReferenceBalance.StartCallBalance();
-        }
-        if(serviceAppInfoReference!=null){
-            serviceAppInfoReference.StartCallAppInfo();
-        }
+        if(isForeground) {
+            if (serviceReferenceBalance != null) {
+                serviceReferenceBalance.StartCallBalance();
+            }
+            if (serviceAppInfoReference != null) {
+                serviceAppInfoReference.StartCallAppInfo();
+            }
 
 //        if(mBH !=null)
 //            mBH.getDataBalance();
 
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
-
-    }
-
-    @Override
-    public void onUserInteraction() {
-        if(activityVisible){
-            action_id = "V";
         }
-        super.onUserInteraction();
+
     }
 
     @Override
     protected void onPause() {
-        activityVisible = false;
-        if(serviceReferenceBalance != null)
-            serviceReferenceBalance.StopCallBalance();
-        if(serviceAppInfoReference != null)
-            serviceAppInfoReference.StopCallAppInfo();
+        if(isForeground){
+            if(serviceReferenceBalance != null)
+                serviceReferenceBalance.StopCallBalance();
+            if(serviceAppInfoReference != null)
+                serviceAppInfoReference.StopCallAppInfo();
+        }
         super.onPause();
 
     }
@@ -968,9 +957,11 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        doUnbindService();
-        doUnbindAppInfoService();
-        doUnbindUserProfileService();
+        if(isForeground) {
+            doUnbindService();
+            doUnbindAppInfoService();
+            doUnbindUserProfileService();
+        }
     }
 
     @Override
@@ -981,13 +972,8 @@ public class MainPage extends BaseActivity{
         if(progdialog != null && progdialog.isShowing()) {
             progdialog.dismiss();
         }
+        MyApiClient.CancelRequestWS(this,true);
         super.onDestroy();
-        if (isFinishing()) {
-            Timber.i("Main page destroy service");
-//            stop service as activity being destroyed and we won't use it any more
-            Intent intentStopService = new Intent(this, BalanceService.class);
-            stopService(intentStopService);
-        }
     }
 
 

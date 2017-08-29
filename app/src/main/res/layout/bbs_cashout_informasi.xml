@@ -9,7 +9,7 @@
         android:gravity="center"
         android:text="@string/to"/>
 
-    <com.sgo.saldomu.widgets.CustomAutoCompleteTextView
+    <Spinner
         android:id="@+id/rekening_agen_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

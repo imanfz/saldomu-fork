@@ -103,6 +103,10 @@ public class CustomSecurePref {
         this.mSecurePrefs = mSecurePrefs;
     }
 
+    public void insertString(String field, String value){
+        getmSecurePrefs().edit().putString(field,value).apply();
+    }
+
     public void ClearAllCustomData(){
         SecurePreferences.Editor mEdit = getInstance().getmSecurePrefs().edit();
 
