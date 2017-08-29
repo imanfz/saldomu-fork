@@ -37,20 +37,22 @@ import timber.log.Timber;
 public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public static final int RESULT_PIN_VALUE = 302;
+    public static final int RESULT_CANCEL_ORDER = 303;
 
-    private SecurePreferences sp;
-    private String valuePin;
-    private Boolean IsForgotPassword;
-    private Fragment toShow;
-    private TextView tv_attempt ;
+    SecurePreferences sp;
+    String valuePin;
+    Boolean IsForgotPassword;
+    Fragment toShow;
+    TextView tv_attempt ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         View v = this.findViewById(android.R.id.content);
-        assert v != null;
-        tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
+        if (v != null) {
+            tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
+        }
         Timber.d("masuk UtilsLoader");
         String userId  = sp.getString(DefineValue.USERID_PHONE,"");
         if(userId.isEmpty())
@@ -64,12 +66,12 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
             }
 
             @Override
-            public void onFail(String message) {
+            public void onFail(Bundle message) {
 
             }
 
             @Override
-            public void onFailure() {
+            public void onFailure(String message) {
 
             }
         });
@@ -79,7 +81,6 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, true);
         IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD,false);
         final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT,0);
-
 
         if(attempt != 0){
             setTextAttempt(String.valueOf(attempt));
@@ -126,10 +127,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.create_pin;
+        return R.layout.insert_pin;
     }
 
-    private void InitializeToolbar(){
+    public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.input_pin));
     }
@@ -146,7 +147,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                setResult(MainPage.RESULT_NORMAL);
+                setResult(RESULT_CANCEL_ORDER);
                 finish();
                 return true;
             case R.id.action_forgot_pin:
@@ -166,7 +167,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     }
 
-    private void showDialogForgotPin(){
+    void showDialogForgotPin(){
         // Create custom dialog object
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -184,8 +185,8 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         Title.setText(getResources().getString(R.string.forgotpin));
         Message.setVisibility(View.GONE);
         Message.setText(getString(R.string.forgotpin_message)+" "+
-                        getString(R.string.appname)+" "+
-                        getString(R.string.forgotpin_message2));
+                getString(R.string.appname)+" "+
+                getString(R.string.forgotpin_message2));
 
         progDialog.setIndeterminate(true);
         progDialog.setVisibility(View.VISIBLE);
@@ -201,9 +202,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         dialog.show();
     }
 
-    private void getHelpPin(final ProgressBar progDialog, final TextView Message){
+    public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
-            MyApiClient.getHelpPIN(this,new JsonHttpResponseHandler() {
+            MyApiClient.getHelpPIN(this, new JsonHttpResponseHandler() {
 
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -264,4 +265,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        setResult(RESULT_CANCEL_ORDER);
+        finish();
+    }
 }

@@ -152,12 +152,12 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
                 }
 
                 @Override
-                public void onFail(String message) {
+                public void onFail(Bundle message) {
 
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String message) {
 
                 }
             });

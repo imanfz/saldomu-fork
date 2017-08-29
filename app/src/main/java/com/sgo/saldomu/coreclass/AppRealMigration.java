@@ -21,5 +21,6 @@ public class AppRealMigration implements RealmMigration {
                     .addField("city_name", String.class);
             oldVersion++;
         }
+
     }
 }

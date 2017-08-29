@@ -390,6 +390,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_remark.setText(args.getString(DefineValue.REMARK, ""));
                 tv_bank_name.setText(args.getString(DefineValue.BANK_NAME, ""));
                 tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
+
+                if(args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("UNIK"))
+                {
+                    tv_product_name.setText(getContext().getString(R.string.appname));
+                }else {
+                    tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
+                }
             } else if (type.equals(DefineValue.PULSA_AGENT)) {
 //                View mLayout = view.findViewById(R.id.report_dialog_dap);
                 stub.setLayoutResource(R.layout.layout_dialog_dap);
@@ -423,6 +430,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     String transRemark = args.getString(DefineValue.TRX_REMARK);
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
+                }
+                if(args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("UNIK"))
+                {
+                    tv_payment_options_text.setText(getContext().getString(R.string.appname));
+                }else {
+                    tv_payment_options_text.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
                 }
 
             } else if (type.equals(DefineValue.REQUEST)) {

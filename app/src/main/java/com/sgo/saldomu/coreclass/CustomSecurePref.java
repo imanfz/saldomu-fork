@@ -172,6 +172,9 @@ public class CustomSecurePref {
         mEdit.remove(DefineValue.CONTACT_FIRST_TIME);
         mEdit.remove(DefineValue.TIMELINE_FIRST_TIME);
 
+        mEdit.remove("cashin_history_temp");
+        mEdit.remove("cashout_history_temp");
+
         mEdit.apply();
 
     }

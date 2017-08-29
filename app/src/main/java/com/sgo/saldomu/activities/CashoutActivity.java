@@ -11,17 +11,29 @@ import android.view.Menu;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.BaseActivityOTP;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragCashOut;
 import com.sgo.saldomu.fragments.FragCashOutAgen;
+import com.sgo.saldomu.fragments.FragCashoutMember;
+import com.sgo.saldomu.interfaces.TransactionResult;
 
 import timber.log.Timber;
 
 /**
  * Created by thinkpad on 11/20/2015.
  */
-public class CashoutActivity extends BaseActivity {
+public class CashoutActivity extends BaseActivityOTP implements TransactionResult {
+    FragmentManager fragmentManager;
+
+//    @Override
+//    public void onAttachFragment(Fragment fragment) {
+//        super.onAttachFragment(fragment);
+//        setCurrentFragment(fragment);
+//    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,13 +56,15 @@ public class CashoutActivity extends BaseActivity {
             args.putString(DefineValue.FEE, intent.getStringExtra(DefineValue.FEE));
             args.putString(DefineValue.TOTAL_AMOUNT, intent.getStringExtra(DefineValue.TOTAL_AMOUNT));
 
-            Fragment newFragment;
+            Fragment newFragment = null;
             if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_AGEN)
                 newFragment = new FragCashOutAgen();
-            else
+            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_BANK)
                 newFragment = new FragCashOut();
+            else if(intent.getIntExtra(DefineValue.CASHOUT_TYPE,0) == DefineValue.CASHOUT_LKD)
+                newFragment = new FragCashoutMember();
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.cashout_confirm_content, newFragment,"cashout");
             fragmentTransaction.commit();
@@ -75,25 +89,28 @@ public class CashoutActivity extends BaseActivity {
         return R.layout.activity_cashout_confirm;
     }
 
-    private void InitializeToolbar(){
+    public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_title_cash_out));
     }
 
+    public void setTitleToolbar(String title) {
+        setActionBarTitle(title);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         return true;
     }
 
-    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack) {
+    public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack, String tag) {
         ToggleKeyboard.hide_keyboard(this);
         if(isBackstack){
             Timber.d("backstack");
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.cashout_confirm_content, mFragment, fragName)
-                    .addToBackStack(null)
+                    .replace(R.id.cashout_confirm_content, mFragment, tag)
+                    .addToBackStack(tag)
                     .commitAllowingStateLoss();
         }
         else {
@@ -116,5 +133,23 @@ public class CashoutActivity extends BaseActivity {
             case 2:
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MyApiClient.CancelRequestWS(this, true);
+    }
+
+    @Override
+    public void TransResult(Boolean isSuccess) {
+        if(isSuccess) {
+            setResult(MainPage.RESULT_BALANCE);
+        }
+        else {
+            setResult(MainPage.RESULT_NORMAL);
+        }
+
+        finish();
     }
 }

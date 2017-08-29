@@ -1,14 +1,12 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,38 +19,29 @@ import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.CashInHistoryModel;
+import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
-import com.sgo.saldomu.entityRealm.List_BBS_City;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +49,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import timber.log.Timber;
 
 /**
  * Created by thinkpad on 4/20/2017.
@@ -72,7 +60,7 @@ public class BBSTransaksiAmount extends Fragment {
     private View v, inputForm, emptyLayout, cityLayout, nameLayout, emptyCashoutBenefLayout;
     private TextView tvTitle;
     private EditText etAmount;
-    private String transaksi, benef_product_type, type, defaultAmount, noHpPengirim;
+    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -94,11 +82,15 @@ public class BBSTransaksiAmount extends Fragment {
     private Integer CityAutocompletePos = -1;
     BBSCommModel comm;
     SecurePreferences sp;
+    CashInHistoryModel cashInHistoryModel;
+    CashOutHistoryModel cashOutHistoryModel;
+
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         act = getActivity();
         realm = Realm.getDefaultInstance();
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
@@ -112,6 +104,18 @@ public class BBSTransaksiAmount extends Fragment {
             defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
 
+
+            if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
+            {
+                String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
+                Gson gson = new Gson();
+                cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
+            }
+            else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out))){
+                String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
+                Gson gson1 = new Gson();
+                cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
+            }
         } else {
             getFragmentManager().popBackStack();
         }
@@ -146,8 +150,22 @@ public class BBSTransaksiAmount extends Fragment {
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)){
                 if(!defaultAmount.equals(""))
+                {
                     etAmount.setText(defaultAmount);
+                }
+                else
+                {
+                    if (cashInHistoryModel!=null)
+                    {
+                        etAmount.setText(cashInHistoryModel.getAmount());
+                    }
+                }
             }
+            else if (cashInHistoryModel!=null)
+            {
+                etAmount.setText(cashInHistoryModel.getAmount());
+            }
+
             stub.setLayoutResource(R.layout.bbs_cashin_amount);
             View cashin_layout = stub.inflate();
 
@@ -161,6 +179,13 @@ public class BBSTransaksiAmount extends Fragment {
             spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
+
+            if (cashInHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
+                etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
+            }
+
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -177,13 +202,34 @@ public class BBSTransaksiAmount extends Fragment {
         } else {
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
                 if(!defaultAmount.equals(""))
+                {
                     etAmount.setText(defaultAmount);
+                }
+                else
+                {
+                    if (cashOutHistoryModel!=null)
+                    {
+                        etAmount.setText(cashOutHistoryModel.getAmount());
+                    }
+                }
             }
+            else if (cashOutHistoryModel!=null)
+            {
+                etAmount.setText(cashOutHistoryModel.getAmount());
+            }
+
+
             stub.setLayoutResource(R.layout.bbs_cashout_amount);
             View cashout_layout = stub.inflate();
 
             actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
+
+            if (cashOutHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
+                etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
+            }
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -197,7 +243,6 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(ATC);
-
         }
         actv_rekening_member.setAdapter(adapterMember);
         actv_rekening_member.addTextChangedListener(textWatcher);
@@ -381,7 +426,8 @@ public class BBSTransaksiAmount extends Fragment {
                             if (!noHpPengirim.equals(""))
                                 args.putString(DefineValue.KEY_CODE, noHpPengirim);
                         }
-                    } else {
+                    } else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+                    {
                         args.putString(DefineValue.SOURCE_PRODUCT_CODE, listbankSource.get(position).getProduct_code());
                         args.putString(DefineValue.SOURCE_PRODUCT_TYPE, listbankSource.get(position).getProduct_type());
                         args.putString(DefineValue.SOURCE_PRODUCT_NAME, listbankSource.get(position).getProduct_name());

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.LevelFormRegisterActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
@@ -42,6 +44,7 @@ import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.BalanceService;
@@ -87,6 +90,8 @@ public class NavigationDrawMenu extends ListFragment{
     public static final int MBBSCTA         = 24;
     public static final int MBBSATC         = 25;
 
+    public static final int MTARIKDANA = 26;
+
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit;
 
@@ -100,6 +105,8 @@ public class NavigationDrawMenu extends ListFragment{
     ProgressDialog progdialog;
     private LevelClass levelClass;
     private IntentFilter filter;
+
+    Boolean isLevel1,isRegisteredLevel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -190,13 +197,13 @@ public class NavigationDrawMenu extends ListFragment{
             }
 
             @Override
-            public void onFail(String message) {
+            public void onFail(Bundle message) {
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
             }
 
             @Override
-            public void onFailure() {
+            public void onFailure(String message) {
                 btn_refresh_balance.setEnabled(true);
                 btn_refresh_balance.clearAnimation();
             }
@@ -274,7 +281,8 @@ public class NavigationDrawMenu extends ListFragment{
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,R.drawable.ic_payfriends_icon_color,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,R.drawable.ic_ask_icon_color,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,R.drawable.ic_topup_pulsa,getString(R.string.menu_item_title_pulsa_agent), MDAP));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_buy),MBUY));             //4
+        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_buy),MBUY));//4
+        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),MTARIKDANA));
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
 
 
@@ -350,6 +358,10 @@ public class NavigationDrawMenu extends ListFragment{
             case MMYFRIENDS:
                 newFragment = new ListMyFriends();
                 switchFragment(newFragment, getString(R.string.toolbar_title_myfriends));
+                break;
+            case MTARIKDANA:
+                newFragment = new ListCashOut();
+                switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();

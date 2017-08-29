@@ -49,6 +49,8 @@ import timber.log.Timber;
 
 public class FragCashOutAgen extends Fragment {
 
+    public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgen";
+
     private View v;
     private SecurePreferences sp;
     private String userid,accesskey,memberId,tx_id,nameadmin,amount,fee,total,ccy,authType;
@@ -90,6 +92,9 @@ public class FragCashOutAgen extends Fragment {
             sentInquiryWithdraw();
         }
         else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+
+        CashoutActivity fca = (CashoutActivity) getActivity();
+        fca.setTitleToolbar(getString(R.string.title_cashout_tunai));
     }
 
     private void initializeNoData(){
@@ -99,6 +104,7 @@ public class FragCashOutAgen extends Fragment {
         try {
             JSONArray arrayContact = new JSONArray(contactCenter);
             JSONObject mObject;
+//            String id;
             for(int i=0; i < arrayContact.length() ; i++ ) {
                 mObject = arrayContact.getJSONObject(i);
 //                id = mObject.optString(WebParams.ID, "0");
@@ -194,12 +200,12 @@ public class FragCashOutAgen extends Fragment {
                 }
 
                 @Override
-                public void onFail(String message) {
+                public void onFail(Bundle message) {
 
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String message) {
 
                 }
             });
@@ -239,7 +245,7 @@ public class FragCashOutAgen extends Fragment {
 
     }
 
-    private boolean inputValidation(){
+    public boolean inputValidation(){
         if(isOTP && et_otp.getText().toString().length()==0){
             et_otp.requestFocus();
             et_otp.setError(this.getString(R.string.forgetpass_edittext_validation));
@@ -275,11 +281,11 @@ public class FragCashOutAgen extends Fragment {
         }
     }
 
-    private void changeTextBtnSub() {
+    public void changeTextBtnSub() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(count_resend == 0)
+                if (count_resend == 0)
                     btnResend.setEnabled(false);
                 else
                     btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + count_resend + ")");
@@ -289,16 +295,17 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    private void sentInquiryWithdraw(){
+    public void sentInquiryWithdraw(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_WITHDRAW,
-                   userid , accesskey);
+                    userid , accesskey);
             params.put(WebParams.MEMBER_ID, memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.CASHOUT_TYPE, "COC");
 
             Timber.d("isi params sent inquiry withdraw:" + params.toString());
 
@@ -398,7 +405,7 @@ public class FragCashOutAgen extends Fragment {
         }
     }
 
-    private void sentReqCodeWithdraw(String tokenid){
+    public void sentReqCodeWithdraw(String tokenid){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -408,6 +415,7 @@ public class FragCashOutAgen extends Fragment {
             params.put(WebParams.MEMBER_ID, memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.MEMBER_ID,memberId);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.TOKEN_ID, tokenid );
 
@@ -428,8 +436,8 @@ public class FragCashOutAgen extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Fragment newFrag = FragCashOutAgenCode.
                                     newInstance(response.optString(WebParams.OTP_MEMBER,""),
-                                                dataInq);
-                            switchContent(newFrag);
+                                            dataInq);
+                            switchContent(newFrag, FragCashOutAgenCode.TAG);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:" + response.toString());
@@ -508,7 +516,7 @@ public class FragCashOutAgen extends Fragment {
                 }
             };
 
-            MyApiClient.sentReqCodeWithdraw(getActivity(),params, mHandler);
+            MyApiClient.sentReqCodeWithdraw(getActivity(), params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -516,7 +524,7 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    private void sentResendToken(){
+    public void sentResendToken(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -620,7 +628,7 @@ public class FragCashOutAgen extends Fragment {
                 }
             };
 
-            MyApiClient.sentResendToken(getActivity(),params, mHandler);
+            MyApiClient.sentResendToken(getActivity(), params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -628,7 +636,7 @@ public class FragCashOutAgen extends Fragment {
     }
 
 
-    private void sentDelWithdraw(){
+    public void sentDelWithdraw(){
         try{
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -730,14 +738,14 @@ public class FragCashOutAgen extends Fragment {
                 }
             };
 
-            MyApiClient.sentDelTrxWithdraw(getActivity(),params, mHandler);
+            MyApiClient.sentDelTrxWithdraw(getActivity(), params, mHandler);
 
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }
     }
 
-    private void getHelpList() {
+    public void getHelpList() {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
 //            progdialog.show();
@@ -834,7 +842,7 @@ public class FragCashOutAgen extends Fragment {
         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               sentDelWithdraw();
+                sentDelWithdraw();
             }
         });
         dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
@@ -854,12 +862,12 @@ public class FragCashOutAgen extends Fragment {
         ft.commitAllowingStateLoss();
     }
 
-    private void switchContent(Fragment mFrag){
+    private void switchContent(Fragment mFrag, String tag){
         if (getActivity() == null)
             return;
 
         CashoutActivity fca = (CashoutActivity) getActivity();
-        fca.switchContent(mFrag, getString(R.string.menu_item_title_cash_out), true);
+        fca.switchContent(mFrag, getString(R.string.menu_item_title_cash_out), true, tag);
     }
 
     @Override

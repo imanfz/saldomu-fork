@@ -431,7 +431,6 @@ public class WebParams {
     public static String PERIOD_MONTH = "period_month";
     public static String BBS_CITY   = "bbs_city";
     public static String COMM_SOURCE= "comm_source";
-    public static String COMM_BENEF = "comm_benef";
     public static String GCM_ID     = "gcm_id";
     public static String DEVICE_NAME= "device_name";
     public static String DEVICE_OS  = "device_os";
@@ -445,4 +444,10 @@ public class WebParams {
     public static String APP_TYPE   = "app_type";
     public static String UID   = "uid";
     public static String SYNC_CODE   = "sync_code";
+    public static String COMM_BENEF= "comm_benef";
+
+    public static String IS_TABUNG = "is_tabung";
+    public static String CASHOUT_TYPE = "cashout_type";
+    public static String AGENT_MEMBER_NAME = "agent_member_name";
+    public static String SHORT_URL = "short_url";
 }

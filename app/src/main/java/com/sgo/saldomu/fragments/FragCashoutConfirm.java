@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
 
 import org.apache.http.Header;
@@ -44,35 +46,22 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 11/20/2015.
  */
-public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
-    private View v;
-    private SecurePreferences sp;
-    private LinearLayout layoutOTP;
-    private TextView txtTxId;
-    private TextView txtBankName;
-    private TextView txtAccno;
-    private TextView txtAccName;
-    private TextView txtCurrency;
-    private TextView txtNominal;
-    private TextView txtFee;
-    private TextView txtTotal;
-    private EditText tokenValue;
-    private Button btnProcess;
-    private ProgressDialog progdialog;
-    private String name;
-    private String userID;
-    private String accessKey;
-    private String txId;
-    private String bankName;
-    private String accNo;
-    private String ccyId;
-    private String nominal;
-    private String accName;
-    private String fee;
-    private String total;
-    private boolean isPIN;
-    private boolean isOTP;
-    private int pin_attempt=-1;
+public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback, CashoutActivity.GetSMSOTP {
+
+    public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashoutConfirm";
+
+
+    View v;
+    SecurePreferences sp;
+    LinearLayout layoutOTP;
+    TextView txtTxId, txtBankName, txtAccno, txtAccName, txtCurrency, txtNominal, txtFee, txtTotal;
+    EditText tokenValue;
+    Button btnProcess;
+    ProgressDialog progdialog;
+    String name, userID, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
+    boolean isPIN, isOTP;
+    int pin_attempt=-1;
+    private TransactionResult mListener;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -111,12 +100,12 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                 }
 
                 @Override
-                public void onFail(String message) {
+                public void onFail(Bundle message) {
 
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String message) {
 
                 }
             });
@@ -137,15 +126,15 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
             txtBankName.setText(bankName);
             txtAccno.setText(accNo);
             txtCurrency.setText(ccyId);
-            txtNominal.setText(ccyId + " " + CurrencyFormat.format(nominal));
+            txtNominal.setText(ccyId + ". " + CurrencyFormat.format(nominal));
             txtAccName.setText(accName);
-            txtFee.setText(ccyId + " " + CurrencyFormat.format(fee));
-            txtTotal.setText(ccyId + " " + CurrencyFormat.format(total));
+            txtFee.setText(ccyId + ". " + CurrencyFormat.format(fee));
+            txtTotal.setText(ccyId + ". " + CurrencyFormat.format(total));
 
         }
     }
 
-    private Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
+    Button.OnClickListener btnProcessListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
@@ -173,7 +162,23 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         }
     };
 
-    private void confirmCashout(String _token){
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (getTargetFragment() instanceof TransactionResult) {
+            mListener = (TransactionResult) getTargetFragment();
+        } else {
+            if(context instanceof TransactionResult){
+                mListener = (TransactionResult) context;
+            }
+            else {
+                throw new RuntimeException(context.toString()
+                        + " must implement OnFragmentInteractionListener");
+            }
+        }
+    }
+
+    public void confirmCashout(String _token){
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -203,7 +208,11 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
-                        } else {
+                        }
+                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            showDialogError(code);
+                        }else {
                             Timber.d("isi error confirm cashout:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(isPIN && code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)){
@@ -215,7 +224,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
                             }
                             else {
-                                onOkButton();
+                                mListener.TransResult(false);
                             }
 
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
@@ -283,7 +292,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 
-    private boolean inputValidation(){
+    public boolean inputValidation(){
         if(tokenValue.getText().toString().length()==0){
             tokenValue.requestFocus();
             tokenValue.setError(getString(R.string.cashout_validation_otp));
@@ -310,6 +319,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
     @Override
     public void onResume() {
         super.onResume();
+//        if(isOTP)
         toggleMyBroadcastReceiver(true);
     }
 
@@ -323,55 +333,12 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         if (getActivity() == null)
             return;
 
-        CashoutActivity fca = (CashoutActivity) getActivity();
-        fca.togglerBroadcastReceiver(_on,myReceiver);
+        BaseActivityOTP fca = (BaseActivityOTP) getActivity();
+        fca.togglerBroadcastReceiver(_on);
     }
 
-    private BroadcastReceiver myReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle mBundle = intent.getExtras();
-            SmsMessage[] mSMS;
-            String strMessage = "";
-            String _kode_otp = "";
-            String _member_code = "";
-            String[] kode = context.getResources().getStringArray(R.array.broadcast_kode_compare);
 
-            if(mBundle != null){
-                Object[] pdus = (Object[]) mBundle.get("pdus");
-                assert pdus != null;
-                mSMS = new SmsMessage[pdus.length];
-
-                for (int i = 0; i < mSMS.length ; i++){
-                    mSMS[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
-                    strMessage += mSMS[i].getMessageBody();
-                    strMessage += "\n";
-                }
-
-                String[] words = strMessage.split(" ");
-                for (int i = 0 ; i <words.length;i++)
-                {
-                    if(_kode_otp.equalsIgnoreCase("")){
-                        if(words[i].equalsIgnoreCase(kode[0])){
-                            if(words[i+1].equalsIgnoreCase(kode[1]))
-                                _kode_otp = words[i+2];
-                            _kode_otp =  _kode_otp.replace(".","").replace(" ","");
-                        }
-                    }
-
-                    if(_member_code.equals("")){
-                        if(words[i].equalsIgnoreCase(kode[2]))
-                            _member_code = words[i+1];
-                    }
-                }
-
-                insertTokenEdit(_kode_otp,_member_code);
-                //Toast.makeText(context,strMessage,Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
-    private void insertTokenEdit(String _kode_otp, String _member_kode){
+    public final void insertTokenEdit(String _kode_otp, String _member_kode){
         Timber.d("isi _kode_otp, _member_kode, member kode session:"+_kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
         if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
             tokenValue.setText(_kode_otp);
@@ -411,7 +378,24 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
 
     @Override
     public void onOkButton() {
-        getActivity().setResult(MainPage.RESULT_BALANCE);
-        getActivity().finish();
+//        getActivity().setResult(MainPage.RESULT_BALANCE);
+//        getActivity().finish();
+        mListener.TransResult(true);
+    }
+
+    @Override
+    public void onGetSMSOTP(String kodeOTP, String member_code) {
+        insertTokenEdit(kodeOTP,member_code);
+    }
+
+    private void showDialogError(String message){
+        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.blocked_pin_title),
+                message, new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        mListener.TransResult(false);
+                    }
+                }) ;
+        dialognya.show();
     }
 }
