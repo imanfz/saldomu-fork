@@ -2,7 +2,6 @@ package com.sgo.saldomu.coreclass;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.wifi.WifiInfo;
@@ -11,17 +10,11 @@ import android.os.Build;
 import android.provider.Settings;
 
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.R;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static android.content.Context.ACTIVITY_SERVICE;
 
@@ -31,7 +24,7 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public class DeviceUtils {
 
     public String getWifiMcAddress(){
-        WifiManager wifiManager = (WifiManager) CoreApp.getAppContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) CoreApp.getAppContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wInfo = wifiManager.getConnectionInfo();
         return wInfo.getMacAddress();
     }
