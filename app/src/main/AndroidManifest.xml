@@ -40,7 +40,7 @@
         android:icon="@mipmap/ic_launcher_pin_only"
         android:label="@string/appname"
         android:largeHeap="true"
-        android:launchMode="singleTask"
+        android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
         tools:replace="android:label">

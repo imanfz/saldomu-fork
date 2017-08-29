@@ -1,28 +1,34 @@
 package com.sgo.saldomu.fcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.services.jobs.JobUpdateBBSData;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import timber.log.Timber;
+
+import static com.sgo.saldomu.fcm.FCMManager.OPEN_PLAYSTORE;
+import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
 /**
  * Created by yuddistirakiki on 8/16/17.
  */
 
 public class FirebaseAppMessaging extends FirebaseMessagingService {
-
-    public final static int SYNC_BBS_DATA = 70;
 
     NotificationManager mNotificationManager;
 
@@ -47,7 +53,15 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Timber.d("Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Timber.d("Message Notification Body: title : %1$s, tag : %2$s , body : %3$s, messageType : %4$s, collapseKey: %5$s",
+                    remoteMessage.getNotification().getTitle(),
+                    remoteMessage.getNotification().getTag(),
+                    remoteMessage.getNotification().getBody(),
+                    remoteMessage.getMessageType(),
+                    remoteMessage.getCollapseKey()
+
+                    );
+            sendNotification(remoteMessage.getData(),remoteMessage.getNotification());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -64,7 +78,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         JobScheduleManager.getInstance(this).scheduleUpdateDataBBS();
     }
 
-    private void sendNotification(Map<String, String> data) {
+    private void sendNotification(Map<String, String> data, RemoteMessage.Notification notification) {
+
 
         // handle notification here
         /*
@@ -73,11 +88,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 		 * College custom
 		 */
 //        int num = ++NOTIFICATION_ID;
-//        Bundle msg = new Bundle();
-//        for (String key : data.keySet()) {
-//            Log.e(key, data.get(key));
-//            msg.putString(key, data.get(key));
-//        }
+        Bundle msg = new Bundle();
+        for (String key : data.keySet()) {
+            Timber.e(key, data.get(key));
+            msg.putString(key, data.get(key));
+        }
 //
 //
 //        pref = getSharedPreferences("UPDATE_INSTANCE", MODE_PRIVATE);
@@ -90,25 +105,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //        SharedPreferences sp;
 //        Editor editor;
 //
-//        switch (Integer.parseInt(msg.getString("type"))) {
-//
-//            case 1:
-//                break;
-//            case 2:
-//
-//                backIntent = new Intent(getApplicationContext(),
-//                        DailogeNotice.class);
-//                backIntent.putExtras(msg);
-//
-//                stackBuilder = TaskStackBuilder.create(this);
-//                // Adds the back stack for the Intent (but not the Intent itself)
-//                // stackBuilder.addParentStack(AppUpdate.class);
-//                // Adds the Intent that starts the Activity to the top of the stack
-//                stackBuilder.addNextIntent(backIntent);
-//                pendingIntent = stackBuilder.getPendingIntent(num,
-//                        PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//                break;
+
+        PendingIntent contentIntent = null;
+        FCMManager fcmManager = new FCMManager(this);
+        if(msg.containsKey("type")) {
+            Intent intent = fcmManager.checkingAction(Integer.parseInt(msg.getString("type")));
+            contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 //            case 3:
 //                backIntent = new Intent(getApplicationContext(),
 //                        CustomeWebView.class);
@@ -162,26 +165,32 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //                break;
 //            default:
 //                break;
-//        }
-//        if (!is_noty) {
-//            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-//                    this);
-//
-//            mBuilder.setSmallIcon(R.drawable.ic_stat_fcm)
-//                    .setContentTitle(msg.getString("title"))
-//                    .setStyle(
-//                            new NotificationCompat.BigTextStyle().bigText(msg
-//                                    .getString("msg").toString()))
-//                    .setAutoCancel(true)
-//                    .setContentText(msg.getString("msg"));
-//
-//            if (Integer.parseInt(msg.getString("type")) != 1) {
-//                mBuilder.setContentIntent(pendingIntent);
-//            }
-//
-//            mBuilder.setDefaults(Notification.DEFAULT_ALL);
-//            mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(++NOTIFICATION_ID, mBuilder.build());
-//        }
+        }
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_notif_logo)
+                        .setContentTitle(notification.getBody())
+                        .setContentText(msg.getString("msg",""))
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri);
+
+        if(contentIntent != null)
+            mBuilder.setContentIntent(contentIntent);
+
+        mBuilder.setDefaults(Notification.DEFAULT_ALL);
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(getNotifId(), mBuilder.build());
+    }
+
+    int getNotifId(){
+        long time = new Date().getTime();
+        String tmpStr = String.valueOf(time);
+        String last4Str = tmpStr.substring(tmpStr.length() - 5);
+        return Integer.valueOf(last4Str);
     }
 }
