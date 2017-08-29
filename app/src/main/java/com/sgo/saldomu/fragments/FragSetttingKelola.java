@@ -89,7 +89,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     String[] _data;
     ArrayList<String> menu;
     ListView lvSetting;
-    String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove, shopClosed;
+    String shopId, memberId, shopName, memberType, category, agentName, commName, province, district, address, stepApprove, shopClosed, isMobility;
     ProgressDialog progdialog, progdialog2;
     String flagApprove, shopStatus;
     SecurePreferences sp;
@@ -216,6 +216,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                     intent.putExtra("district", district);
                     intent.putExtra("address", address);
                     intent.putExtra("category", category);
+                    intent.putExtra("isMobility", isMobility);
                     getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
                     //getActivity().finish();
 
@@ -278,6 +279,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             shopDetail.setShopCountry(object.getString("country"));
                             shopDetail.setStepApprove(object.getString("step_approve"));
                             shopDetail.setSetupOpenHour(object.getString("setup_open_hour"));
+                            shopDetail.setIsMobility(object.getString("is_mobility"));
 
                             memberId    = shopDetail.getMemberId();
                             shopId      = shopDetail.getShopId();
@@ -289,6 +291,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             province = shopDetail.getShopProvince();
                             district = shopDetail.getShopDistrict();
                             address = shopDetail.getShopFirstAddress();
+                            isMobility  = object.getString("is_mobility");
 
                             if ( !object.getString("category").equals("") ) {
                                 JSONArray categories = object.getJSONArray("category");
@@ -310,7 +313,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                             tvCommName.setText(object.getString("shop_name"));
                             tvAddress.setText(object.getString("address1"));
 
-                            if ( shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
+                            if ( isMobility.equals(DefineValue.STRING_NO) && shopDetail.getStepApprove().equals(DefineValue.STRING_YES) && shopDetail.getSetupOpenHour().equals(DefineValue.STRING_NO) ) {
 
                                 FragWaktuBeroperasi fragWaktuBeroperasi = new FragWaktuBeroperasi();
                                 FragmentManager fragmentManager = getFragmentManager();

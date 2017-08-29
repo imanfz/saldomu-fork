@@ -79,7 +79,7 @@ public class ListBBS extends Fragment {
 
         filter = new IntentFilter();
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-        filter.addAction(UpdateBBSData.INTENT_ACTION_BBS_DATA);
+        //filter.addAction(UpdateBBSData.INTENT_ACTION_BBS_DATA);
 
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         progDialog = DefinedDialog.CreateProgressDialog(getContext());
@@ -427,7 +427,7 @@ public class ListBBS extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if(action.equals(UpdateBBSData.INTENT_ACTION_BBS_DATA)){
+            /*if(action.equals(UpdateBBSData.INTENT_ACTION_BBS_DATA)){
                 if(progDialog.isShowing())
                     progDialog.dismiss();
                 if(!intent.getBooleanExtra(DefineValue.IS_SUCCESS,false)){
@@ -435,7 +435,8 @@ public class ListBBS extends Fragment {
                     switchMenu(NavigationDrawMenu.MHOME);
                 }
             }
-            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+            else */
+            if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
                 setAgentDetailToUI();
             }
         }
