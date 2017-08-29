@@ -45,7 +45,10 @@ public class ListAccountBBSAdapter extends RealmBaseAdapter<BBSAccountACTModel> 
 
     @Override
     public int getCount() {
-        return this.adata.size();
+        if(this.adata == null)
+            return 0;
+        else
+            return this.adata.size();
     }
 
     @NonNull
