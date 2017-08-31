@@ -89,7 +89,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/tv_pulsa"
@@ -130,7 +130,7 @@
                         android:layout_height="3dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:visibility="visible" />
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <LinearLayout

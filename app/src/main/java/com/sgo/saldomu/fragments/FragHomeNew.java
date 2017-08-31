@@ -241,10 +241,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
             public void onClick(View v) {
                 if(view_pulsa.getVisibility()==View.VISIBLE)
                 {
-                    Bundle bundle;
-                    bundle= new Bundle();
-                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
-                    switchMenu(NavigationDrawMenu.MDAP,bundle);
+                    Intent intent = new Intent(getActivity(), BillerActivity.class);
+                    intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
+                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                    startActivity(intent);
+//                    Bundle bundle;
+//                    bundle= new Bundle();
+//                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
+//                    switchMenu(NavigationDrawMenu.MDAP,bundle);
                 }
                 if(view_bpjs.getVisibility()==View.VISIBLE)
                 {
