@@ -380,6 +380,7 @@ public class DefineValue {
     public static String STRING_ACCEPT          = "S";
     public static String STRING_CANCEL          = "F";
 
+    public static String IS_AGENT_SET_LOCATION  = "IsAgentSetLocation";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";

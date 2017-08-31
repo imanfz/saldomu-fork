@@ -300,6 +300,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
                                     mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
                                     mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
+                                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
                                     mEditor.apply();
                                     setResult(MainPage.RESULT_REFRESH_NAVDRAW);
 
@@ -694,7 +695,28 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         //listener ketika button back di action bar diklik
         if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
-            onBackPressed();
+            if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+                if ( !sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+                    onBackPressed();
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(getString(R.string.alertbox_set_agent_location_warning))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                    dialog.dismiss();
+                                }
+                            })
+                    ;
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            } else {
+                onBackPressed();
+            }
+
+
+
         }
 
         return super.onOptionsItemSelected(item);

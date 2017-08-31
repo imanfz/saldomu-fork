@@ -22,6 +22,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.BBSDataManager;
@@ -60,6 +61,7 @@ public class Login extends Fragment implements View.OnClickListener {
     private Animation frameAnimation;
     private MaterialRippleLayout btnLayout;
     private View v;
+    private SecurePreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,6 +73,8 @@ public class Login extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
         userIDValue.requestFocus();
@@ -166,7 +170,8 @@ public class Login extends Fragment implements View.OnClickListener {
                             if(checkCommunity(response)){
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                                 setLoginProfile(response);
-                                changeActivity();
+
+                                changeActivity(response);
                             }
                         } else {
                             if(code.equals(DefineValue.ERROR_0042)){
@@ -290,10 +295,51 @@ public class Login extends Fragment implements View.OnClickListener {
         fca.switchContent(i, name, isBackstack);
     }
 
-    private void changeActivity() {
-        Intent i = new Intent(getActivity(),MainPage.class);
-        startActivity(i);
-        getActivity().finish();
+    private void changeActivity(JSONObject response) {
+        try {
+            Intent intent = null;
+
+            if ( response.has("shop_id_agent") && !response.getString("shop_id_agent").equals("")) {
+                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
+                if (shopAgentObject.length() > 0) {
+
+                    SecurePreferences.Editor mEditor = sp.edit();
+                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.apply();
+
+                    intent = new Intent(getActivity(), BbsMemberLocationActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("memberId", shopAgentObject.getString("member_id"));
+                    intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
+                    intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
+                    intent.putExtra("memberType", shopAgentObject.getString("member_type"));
+                    intent.putExtra("memberName", shopAgentObject.getString("member_name"));
+                    intent.putExtra("commName", shopAgentObject.getString("comm_name"));
+                    intent.putExtra("province", shopAgentObject.getString("province"));
+                    intent.putExtra("district", shopAgentObject.getString("district"));
+                    intent.putExtra("address", shopAgentObject.getString("address1"));
+                    intent.putExtra("category", "");
+                    intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
+                    //getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+
+                } else {
+                    intent = new Intent(getActivity(), MainPage.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+
+            } else {
+                intent = new Intent(getActivity(), MainPage.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+
+        } catch ( JSONException e ) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -437,5 +483,7 @@ public class Login extends Fragment implements View.OnClickListener {
         }
         return true;
     }
+
+
 
 }

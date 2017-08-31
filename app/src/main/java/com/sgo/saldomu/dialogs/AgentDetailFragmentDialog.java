@@ -291,7 +291,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
 
     private void showPhoneCall()
     {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:"+shopDetail.getMemberCust()));
         startActivity(callIntent);
     }

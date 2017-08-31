@@ -35,7 +35,7 @@ public class MyApiClient {
     private static MyApiClient singleton = null;
     private Context mContext;
     private AsyncHttpClient asyncHttpClient;
-    private AsyncHttpClient syncHttpClient;
+    private SyncHttpClient syncHttpClient;
 
     public MyApiClient(){
 

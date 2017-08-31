@@ -896,6 +896,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         sp   = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
+            clicked = false;
+        }
+
         if ( txId.equals("") && !amount.equals("") && !clicked ) {
 
 
