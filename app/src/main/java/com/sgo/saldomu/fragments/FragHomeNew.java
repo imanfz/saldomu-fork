@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 
@@ -54,6 +55,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -76,6 +78,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private SecurePreferences sp;
     ProgressDialog progdialog;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
+    private String _biller_type_code;
+    private Biller_Type_Data_Model mBillerTypeData;
+    private Realm realm;
 
     int[] imageId = {
             R.drawable.ic_tambahsaldo,

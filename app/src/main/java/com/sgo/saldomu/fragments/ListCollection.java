@@ -14,6 +14,7 @@ import com.sgo.saldomu.activities.CollectionActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.RealmManager;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ private List<Account_Collection_Model> refObj;
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
         refObj = realm.where(Account_Collection_Model.class).findAll();
         String[] _data = new String[refObj.size()];
