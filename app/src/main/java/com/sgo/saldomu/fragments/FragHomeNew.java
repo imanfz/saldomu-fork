@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 
@@ -39,6 +40,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopCategory;
@@ -54,6 +56,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -71,11 +74,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    View BPJS;
+    View PLS;
+    View TKN;
     Boolean is_first_time=true;
     private LevelClass levelClass;
     private SecurePreferences sp;
     ProgressDialog progdialog;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
+    private String _biller_type_code;
+    private Biller_Type_Data_Model mBillerTypeDataPLS;
+    private Biller_Type_Data_Model mBillerTypeDataBPJS;
+    private Biller_Type_Data_Model mBillerTypeDataTKN;
+    private Realm realm;
 
     int[] imageId = {
             R.drawable.ic_tambahsaldo,
@@ -133,6 +144,46 @@ public class FragHomeNew extends BaseFragmentMainPage {
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
+        BPJS = v.findViewById(R.id.BPJS);
+        PLS = v.findViewById(R.id.PLS);
+        TKN = v.findViewById(R.id.TKN);
+
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
+                .findFirst();
+
+        if (mBillerTypeDataPLS!=null)
+        {
+            PLS.setVisibility(View.VISIBLE);
+        }
+        else{
+            PLS.setVisibility(View.GONE);
+        }
+
+        mBillerTypeDataBPJS = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
+                .findFirst();
+
+        if (mBillerTypeDataBPJS!=null)
+        {
+            BPJS.setVisibility(View.VISIBLE);
+        }
+        else{
+            BPJS.setVisibility(View.GONE);
+        }
+
+        mBillerTypeDataTKN = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
+                .findFirst();
+
+        if (mBillerTypeDataTKN!=null)
+        {
+            TKN.setVisibility(View.VISIBLE);
+        }
+        else{
+            TKN.setVisibility(View.GONE);
+        }
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
@@ -241,10 +292,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
             public void onClick(View v) {
                 if(view_pulsa.getVisibility()==View.VISIBLE)
                 {
-                    Bundle bundle;
-                    bundle= new Bundle();
-                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
-                    switchMenu(NavigationDrawMenu.MDAP,bundle);
+                    Intent intent = new Intent(getActivity(), BillerActivity.class);
+                    intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
+                    intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
+                    intent.putExtra(DefineValue.BILLER_NAME, "Voucher Pulsa Handphone");
+                    startActivity(intent);
+//                    Bundle bundle;
+//                    bundle= new Bundle();
+//                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
+//                    switchMenu(NavigationDrawMenu.MDAP,bundle);
                 }
                 if(view_bpjs.getVisibility()==View.VISIBLE)
                 {

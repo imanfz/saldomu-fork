@@ -136,20 +136,26 @@ public class BillerActivity extends BaseActivity {
         mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, _biller_type_code)
                 .findFirst();
-        Timber.d("isi billeractivity isinya "+ mBillerTypeData.getBiller_data_models().size());
 
-        mListBillerData = mBillerTypeData.getBiller_data_models();
 
-        if(mListBillerData != null) {
-            if (mListBillerData.size() != 0) {
-                if (findViewById(R.id.biller_content) != null) {
-                    isEmptyBiller = false;
-                    isOneBiller = mListBillerData.size() <= 1;
-                    initializeListBiller();
-                }
-            } else {
-            Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
-            this.finish();
+        if (mBillerTypeData!=null)
+        {
+            Timber.d("isi billeractivity isinya "+ mBillerTypeData.getBiller_data_models().size());
+            mListBillerData = mBillerTypeData.getBiller_data_models();
+
+            if(mListBillerData != null) {
+                if (mListBillerData.size() != 0) {
+                    if (findViewById(R.id.biller_content) != null) {
+                        isEmptyBiller = false;
+                        isOneBiller = mListBillerData.size() <= 1;
+                        initializeListBiller();
+                    }
+                } else {
+                    Toast.makeText(this,getString(R.string.biller_empty_data),Toast.LENGTH_SHORT).show();
+                    this.finish();
+        }
+
+
 //                if(!isEmptyBiller) {
 //                    progdialog = DefinedDialog.CreateProgressDialog(this, "");
 //                    isOneBiller = false;
