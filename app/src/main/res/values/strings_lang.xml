@@ -112,7 +112,7 @@
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
     <string name="login_edithint_id">No HP Anda yang sudah terdaftar</string>
-    <string name="edittext_hint_id">Masukkan No. BPJS</string>
+    <string name="edittext_hint_id">Masukkan No. HP</string>
     <string name="login_text_pass">Kata Sandi</string>
     <string name="login_edithint_pass">Kata Sandi</string>
     <string name="login_button_login">Masuk</string>

@@ -89,7 +89,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:id="@+id/PLS">
 
                     <TextView
                         android:id="@+id/tv_pulsa"
@@ -113,7 +113,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/BPJS">
 
                     <TextView
                         android:id="@+id/tv_bpjs"
@@ -130,7 +131,7 @@
                         android:layout_height="3dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:visibility="visible" />
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -138,7 +139,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/TKN">
 
                     <TextView
                         android:id="@+id/tv_listrikPLN"
