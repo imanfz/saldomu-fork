@@ -40,6 +40,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopCategory;
@@ -73,6 +74,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_bpjs;
     View view_listrikPLN;
     View v;
+    View BPJS;
     Boolean is_first_time=true;
     private LevelClass levelClass;
     private SecurePreferences sp;
@@ -138,6 +140,20 @@ public class FragHomeNew extends BaseFragmentMainPage {
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
+        BPJS = v.findViewById(R.id.BPJS);
+
+        realm = Realm.getInstance(RealmManager.BillerConfiguration);
+        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
+                .findFirst();
+
+        if (mBillerTypeData!=null)
+        {
+            BPJS.setVisibility(View.VISIBLE);
+        }
+        else{
+            BPJS.setVisibility(View.GONE);
+        }
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
