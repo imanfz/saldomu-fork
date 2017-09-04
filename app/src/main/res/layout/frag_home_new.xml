@@ -75,84 +75,90 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/colorSecondaryWhiteFixed">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/transparant"
                 android:orientation="horizontal"
-                android:padding="8dp"
-                android:background="@color/transparant">
+                android:padding="8dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:layout_margin="5dp">
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
                     <TextView
+                        android:id="@+id/tv_pulsa"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
+                        android:gravity="center"
                         android:text="@string/menu_item_title_pulsa_agent"
-                        android:gravity="center"
-                        android:id="@+id/tv_pulsa"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
+
                     <View
+                        android:id="@+id/view_pulsa"
                         android:layout_width="match_parent"
                         android:layout_height="3dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:visibility="visible"
-                        android:id="@+id/view_pulsa"/>
+                        android:visibility="visible" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:layout_margin="5dp">
+                    android:orientation="vertical">
+
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/newhome_bpjs"
-                        android:gravity="center"
-                        android:layout_weight="1"
                         android:id="@+id/tv_bpjs"
-                        android:textSize="14sp"
-                        />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/newhome_bpjs"
+                        android:textSize="14sp" />
 
                     <View
+                        android:id="@+id/view_bpjs"
                         android:layout_width="match_parent"
                         android:layout_height="3dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:visibility="invisible"
-                        android:id="@+id/view_bpjs"/>
+                        android:visibility="visible" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
-                    android:layout_margin="5dp">
+                    android:orientation="vertical">
+
                     <TextView
+                        android:id="@+id/tv_listrikPLN"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/newhome_listrik_pln"
-                        android:gravity="center"
                         android:layout_weight="1"
-                        android:id="@+id/tv_listrikPLN"
-                        android:textSize="14sp"/>
+                        android:gravity="center"
+                        android:text="@string/newhome_listrik_pln"
+                        android:textSize="14sp" />
 
                     <View
+                        android:id="@+id/view_listrikPLN"
                         android:layout_width="match_parent"
                         android:layout_height="3dp"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:id="@+id/view_listrikPLN"
-                        android:visibility="invisible"/>
+                        android:visibility="invisible" />
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
