@@ -75,13 +75,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View view_listrikPLN;
     View v;
     View BPJS;
+    View PLS;
+    View TKN;
     Boolean is_first_time=true;
     private LevelClass levelClass;
     private SecurePreferences sp;
     ProgressDialog progdialog;
     ArrayList<ShopCategory> shopCategories = new ArrayList<>();
     private String _biller_type_code;
-    private Biller_Type_Data_Model mBillerTypeData;
+    private Biller_Type_Data_Model mBillerTypeDataPLS;
+    private Biller_Type_Data_Model mBillerTypeDataBPJS;
+    private Biller_Type_Data_Model mBillerTypeDataTKN;
     private Realm realm;
 
     int[] imageId = {
@@ -141,18 +145,44 @@ public class FragHomeNew extends BaseFragmentMainPage {
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
         BPJS = v.findViewById(R.id.BPJS);
+        PLS = v.findViewById(R.id.PLS);
+        TKN = v.findViewById(R.id.TKN);
 
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
-        mBillerTypeData = realm.where(Biller_Type_Data_Model.class)
+        mBillerTypeDataPLS = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
+                .findFirst();
+
+        if (mBillerTypeDataPLS!=null)
+        {
+            PLS.setVisibility(View.VISIBLE);
+        }
+        else{
+            PLS.setVisibility(View.GONE);
+        }
+
+        mBillerTypeDataBPJS = realm.where(Biller_Type_Data_Model.class)
                 .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
                 .findFirst();
 
-        if (mBillerTypeData!=null)
+        if (mBillerTypeDataBPJS!=null)
         {
             BPJS.setVisibility(View.VISIBLE);
         }
         else{
             BPJS.setVisibility(View.GONE);
+        }
+
+        mBillerTypeDataTKN = realm.where(Biller_Type_Data_Model.class)
+                .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
+                .findFirst();
+
+        if (mBillerTypeDataTKN!=null)
+        {
+            TKN.setVisibility(View.VISIBLE);
+        }
+        else{
+            TKN.setVisibility(View.GONE);
         }
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
