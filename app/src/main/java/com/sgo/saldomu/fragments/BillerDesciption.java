@@ -569,8 +569,8 @@ public class BillerDesciption extends Fragment {
 
             progdialog.show();
 
-            final String bank_code = mTempBank.getBank_code();
-            final String product_code = mTempBank.getProduct_code();
+            final String bank_code = mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getBank_code();
+            final String product_code = mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_code();
 
             RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_PAYMENT_BILLER,
                     userID,accessKey);
@@ -590,8 +590,8 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.COMM_CODE,biller_comm_code);
             params.put(WebParams.USER_COMM_CODE,sp.getString(DefineValue.COMMUNITY_CODE,""));
 
-            params.put(WebParams.PRODUCT_H2H,mTempBank.getProduct_h2h());
-            params.put(WebParams.PRODUCT_TYPE,mTempBank.getProduct_type());
+            params.put(WebParams.PRODUCT_H2H,mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_h2h());
+            params.put(WebParams.PRODUCT_TYPE,mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_type());
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params sent payment biller:"+params.toString());
@@ -606,7 +606,7 @@ public class BillerDesciption extends Fragment {
 
                             if(!isPLN)
                                 fee = response.getString(WebParams.FEE);
-                            if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
+                            if(mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),
                                         bank_code,product_code,-1);
                                 progdialog.dismiss();
