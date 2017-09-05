@@ -245,7 +245,9 @@ public class BillerDesciption extends Fragment {
 
             for (int i = 0; i < mListBankBiller.size(); i++) {
                 if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-                    paymentData.add(getString(R.string.appname));
+//                    paymentData.add(getString(R.string.appname));
+                    tempDataPaymentName.add(getString(R.string.appname));
+                    mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
                 } else {
                     tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
                 }
@@ -349,10 +351,10 @@ public class BillerDesciption extends Fragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
             payment_name = item.toString();
-            if(payment_name.equals(getString(R.string.appname)))
-            {
-                payment_name="UNIK";
-            }
+//            if(payment_name.equals(getString(R.string.appname)))
+//            {
+//                payment_name.equalsIgnoreCase("S-Cash");
+//            }
             for (i = 0; i < mListBankBiller.size() ; i++ ){
                 if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
                     mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
@@ -569,8 +571,8 @@ public class BillerDesciption extends Fragment {
 
             progdialog.show();
 
-            final String bank_code = mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getBank_code();
-            final String product_code = mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_code();
+            final String bank_code = mTempBank.getBank_code();
+            final String product_code = mTempBank.getProduct_code();
 
             RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_PAYMENT_BILLER,
                     userID,accessKey);
@@ -590,8 +592,8 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.COMM_CODE,biller_comm_code);
             params.put(WebParams.USER_COMM_CODE,sp.getString(DefineValue.COMMUNITY_CODE,""));
 
-            params.put(WebParams.PRODUCT_H2H,mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_h2h());
-            params.put(WebParams.PRODUCT_TYPE,mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_type());
+            params.put(WebParams.PRODUCT_H2H,mTempBank.getProduct_h2h());
+            params.put(WebParams.PRODUCT_TYPE,mTempBank.getProduct_type());
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params sent payment biller:"+params.toString());
@@ -606,7 +608,7 @@ public class BillerDesciption extends Fragment {
 
                             if(!isPLN)
                                 fee = response.getString(WebParams.FEE);
-                            if(mListBankBiller.get(spin_payment_options.getSelectedItemPosition()-1).getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
+                            if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),
                                         bank_code,product_code,-1);
                                 progdialog.dismiss();
