@@ -32,7 +32,7 @@ public class TopUpAtmActivity extends BaseActivity {
         String bankCode = sp.getString(DefineValue.BANK_ATM_CODE, "");
         String bankName = sp.getString(DefineValue.BANK_ATM_NAME, "");
         String noVA = sp.getString(DefineValue.NO_VA, "");
-        String maxTopupValue = sp.getString(DefineValue.MAX_TOPUP, "");
+        String maxTopupValue = sp.getString(DefineValue.BALANCE_MAX_TOPUP, "");
 
         ListView lvAtm = (ListView) findViewById(R.id.lvAtm);
 

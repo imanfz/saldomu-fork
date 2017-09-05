@@ -245,7 +245,9 @@ public class BillerDesciption extends Fragment {
 
             for (int i = 0; i < mListBankBiller.size(); i++) {
                 if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-                    paymentData.add(getString(R.string.appname));
+//                    paymentData.add(getString(R.string.appname));
+                    tempDataPaymentName.add(getString(R.string.appname));
+                    mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
                 } else {
                     tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());
                 }
@@ -349,10 +351,10 @@ public class BillerDesciption extends Fragment {
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             Object item = adapterView.getItemAtPosition(i);
             payment_name = item.toString();
-            if(payment_name.equals(getString(R.string.appname)))
-            {
-                payment_name="UNIK";
-            }
+//            if(payment_name.equals(getString(R.string.appname)))
+//            {
+//                payment_name.equalsIgnoreCase("S-Cash");
+//            }
             for (i = 0; i < mListBankBiller.size() ; i++ ){
                 if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
                     mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
