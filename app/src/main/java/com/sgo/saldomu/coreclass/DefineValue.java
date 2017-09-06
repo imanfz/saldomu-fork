@@ -381,6 +381,7 @@ public class DefineValue {
     public static String STRING_CANCEL          = "F";
 
     public static String IS_AGENT_SET_LOCATION  = "IsAgentSetLocation";
+    public static String SHOP_AGENT_DATA    = "ShopAgentData";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
@@ -431,6 +432,8 @@ public class DefineValue {
     public static String SHORT_URL_APP = "shortUrlApp";
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
+
+    public static String GMAP_STRING_OK = "OK";
 
 }
 

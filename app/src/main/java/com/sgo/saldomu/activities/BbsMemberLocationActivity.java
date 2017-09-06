@@ -32,6 +32,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -40,6 +42,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -47,11 +51,13 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -69,6 +75,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -77,6 +84,10 @@ import io.realm.Realm;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.PlaceDetectionClient;
 
 public class BbsMemberLocationActivity extends BaseActivity implements OnMapReadyCallback,
         AdapterView.OnItemClickListener, TextView.OnEditorActionListener, EasyPermissions.PermissionCallbacks,
@@ -104,6 +115,9 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     Location lastLocation;
     private LocationRequest mLocationRequest;
     String newDistrictName, newProvinceName;
+
+    private GeoDataClient mGeoDataClient;
+    private PlaceDetectionClient mPlaceDetectionClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -157,11 +171,112 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         }
 
         myRealm = Realm.getDefaultInstance();
-
         setActionBarIcon(R.drawable.ic_arrow_left);
-
         memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
+        progdialog                      = DefinedDialog.CreateProgressDialog(this, "");
 
+        MyApiClient.getGoogleAPICoordinateByAddress(this, memberDefaultAddress, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+                    progdialog.dismiss();
+                    String status = response.getString(WebParams.GMAP_API_STATUS);
+
+
+
+                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                        ArrayList gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                        JSONArray objResults       = response.getJSONArray("results");
+                        JSONObject objGeometry      = objResults.getJSONObject(0).getJSONObject("geometry");
+                        JSONObject objLocation      = objGeometry.getJSONObject("location");
+                        selectedLat = Double.valueOf(objLocation.getString("lat"));
+                        selectedLong    = Double.valueOf(objLocation.getString("lng"));
+
+                        defaultLat = selectedLat;
+                        defaultLong = selectedLong;
+
+
+
+                    } else {
+                        try {
+                            defaultLat = lastLocation.getLatitude();
+                            defaultLong = lastLocation.getLongitude();
+                        } catch ( Exception e ) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (mMap == null) {
+
+                        ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                .getMapAsync(BbsMemberLocationActivity.this);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                progdialog.dismiss();
+                Timber.w("Error Koneksi login:" + throwable.toString());
+
+            }
+        });
+        /*
+
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // Construct a PlaceDetectionClient.
+        mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
+
+
+        Task<PlaceLikelihoodBufferResponse> placeResult = mPlaceDetectionClient.getCurrentPlace(memberDefaultAddress);
+        placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
+                PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
+                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+                    Log.i(TAG, String.format("Place '%s' has likelihood: %g",
+                            placeLikelihood.getPlace().getName(),
+                            placeLikelihood.getLikelihood()));
+                    LatLng defaultLatLong = placeLikelihood.getPlace().getLatLng();
+                    //Timber.d("test", "");
+                }
+                likelyPlaces.release();
+            }
+        });
+
+
+        */
+
+
+
+
+
+        /*
         defaultLat      = -6.121435;
         defaultLong     = 106.774124;
 
@@ -184,7 +299,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             }
 
 
-        }
+        }*/
 
 
 
@@ -237,6 +352,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             try {
                 selectedLat = lastLocation.getLatitude();
                 selectedLong = lastLocation.getLongitude();
+                setAdministrativeName();
                 mMap.clear();
 
                 recreateAllMarker();
@@ -254,7 +370,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             if (InetHandler.isNetworkAvailable(getApplicationContext())) {
                 if ( selectedLat == null || countryName == null )
                 {
-                    DefinedDialog.showErrorDialog(getApplicationContext(), getString(R.string.err_empty_coordinate_message));
+                    DefinedDialog.showErrorDialog(BbsMemberLocationActivity.this, getString(R.string.err_empty_coordinate_message));
                 }
                 else {
                     progdialog              = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
@@ -301,6 +417,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
                                     mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
                                     mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
+                                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
                                     mEditor.apply();
                                     setResult(MainPage.RESULT_REFRESH_NAVDRAW);
 
@@ -491,18 +608,85 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     protected void onResume() {
         super.onResume();
 
-        if (mMap == null) {
 
-            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMapAsync(this);
-        }
     }
 
     public void setAdministrativeName() {
-        Geocoder geocoder = new Geocoder(this, new Locale("id"));
+
+        MyApiClient.getGoogleAPIAddressByLatLng(this, selectedLat, selectedLong, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+
+                    String status = response.getString(WebParams.GMAP_API_STATUS);
 
 
 
+                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                        for (HashMap<String, String> hashMapObject : gData) {
+                            for (String key : hashMapObject.keySet()) {
+                                switch(key) {
+                                    case "postal_code":
+                                        postalCode = hashMapObject.get(key);
+                                        break;
+                                    case "province":
+                                        provinceName = hashMapObject.get(key);
+                                        break;
+                                    case "district":
+                                        newDistrictName = hashMapObject.get(key);
+                                        break;
+                                    case "subdistrict":
+                                        break;
+                                    case "country":
+                                        countryName = hashMapObject.get(key);
+                                        break;
+                                }
+
+
+                            }
+                        }
+
+                    }
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+
+                Timber.w("Error Koneksi login:" + throwable.toString());
+
+            }
+        });
+
+        //GoogleAPIUtils.get
+
+
+        /*Geocoder geocoder = new Geocoder(this, new Locale("id"));
         try {
             addressList = geocoder.getFromLocation(
                     selectedLat,
@@ -534,7 +718,8 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             newDistrictName = addressDetail.getSubAdminArea();
             newProvinceName = provinceName;
 
-        }
+        }*/
+
     }
 
     public void onMapSearch(View view) {
@@ -727,7 +912,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         if ( selectedLat != null && selectedLong != null ) {
             LatLng latLng = new LatLng(selectedLat, selectedLong);
 
-                setAdministrativeName();
 
 
 
@@ -738,6 +922,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     .target(latLng) // Center Set
                     .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
                     .build(); // Creates a CameraPosition from the builder
+            setAdministrativeName();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
                 @Override

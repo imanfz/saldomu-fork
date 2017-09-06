@@ -57,6 +57,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     FragmentManager fragmentManager;
     Fragment mContent;
     FloatingActionButton fab;
+    Intent intent    = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 return;
             }
 
-            Intent intent    = getIntent();
+            intent    = getIntent();
 
             Fragment newFragment = null;
             int index = intent.getIntExtra(DefineValue.INDEX,0);
@@ -173,9 +174,16 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.join_agent));
         else if(fragment instanceof Cashoutbbs_describ_member)
             setActionBarTitle(getString(R.string.cash_out));
-        else if(fragment instanceof BBSTransaksiPager)
-            setActionBarTitle(getString(R.string.transaction));
-        else if(fragment instanceof FragMenuKelola)
+        else if(fragment instanceof BBSTransaksiPager) {
+            String trxType = intent.getStringExtra(DefineValue.TYPE);
+            String trxTypeDesc = "";
+            if ( trxType.equals(DefineValue.BBS_CASHIN) ) {
+                trxTypeDesc = getString(R.string.cash_in);
+            } else {
+                trxTypeDesc = getString(R.string.cash_out);
+            }
+            setActionBarTitle(getString(R.string.transaction)+ " " + trxTypeDesc);
+        }else if(fragment instanceof FragMenuKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
         else if(fragment instanceof FragSetttingKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));

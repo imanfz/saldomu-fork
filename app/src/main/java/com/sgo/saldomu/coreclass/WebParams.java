@@ -452,4 +452,6 @@ public class WebParams {
     public static String CASHOUT_TYPE = "cashout_type";
     public static String AGENT_MEMBER_NAME = "agent_member_name";
     public static String SHORT_URL = "short_url";
+
+    public static String GMAP_API_STATUS = "status";
 }

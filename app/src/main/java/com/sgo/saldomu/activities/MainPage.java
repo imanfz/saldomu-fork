@@ -49,6 +49,7 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.sgo.saldomu.fragments.FragMainPage;
@@ -134,20 +135,30 @@ public class MainPage extends BaseActivity{
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if (!isLogin()) {
-                openFirstScreen(FIRST_SCREEN_INTRO);
-            } else {
-                isForeground = true;
-                agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-                utilsLoader = new UtilsLoader(this, sp);
-                utilsLoader.getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-                startService(new Intent(this, UpdateLocationService.class));
+            if(checkNotification()){
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+                this.finish();
+            }
+            else {
+                if (!isLogin()) {
+                    openFirstScreen(FIRST_SCREEN_INTRO);
+                } else {
+                    isForeground = true;
+                    agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+                    utilsLoader = new UtilsLoader(this, sp);
+                    utilsLoader.getAppVersion();
+                    ActiveAndroid.initialize(this);
+                    progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+                    progdialog.show();
+                    InitializeNavDrawer();
+                    setupFab();
+                    AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+                    startService(new Intent(this, UpdateLocationService.class));
+                }
             }
         }
         else {
@@ -164,6 +175,17 @@ public class MainPage extends BaseActivity{
         i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         i.putExtra(DefineValue.TYPE,type);
         startActivity(i);
+    }
+
+    boolean checkNotification(){
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Timber.d("masuk check notification " +extras.toString());
+            if (extras.containsKey("type")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -453,6 +475,28 @@ public class MainPage extends BaseActivity{
                                     progdialog.dismiss();
                                 checkField();
                                 setupBBSData();
+
+                                if ( sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+                                    try{
+                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
+                                        Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("memberId", shopAgentObject.getString("member_id"));
+                                        intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
+                                        intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
+                                        intent.putExtra("memberType", shopAgentObject.getString("member_type"));
+                                        intent.putExtra("memberName", shopAgentObject.getString("member_name"));
+                                        intent.putExtra("commName", shopAgentObject.getString("comm_name"));
+                                        intent.putExtra("province", shopAgentObject.getString("province"));
+                                        intent.putExtra("district", shopAgentObject.getString("district"));
+                                        intent.putExtra("address", shopAgentObject.getString("address1"));
+                                        intent.putExtra("category", "");
+                                        intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
+                                        switchActivity(intent, ACTIVITY_RESULT);
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
 
                             } else
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
@@ -913,13 +957,11 @@ public class MainPage extends BaseActivity{
     @Override
     public void onBackPressed() {
         Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
-        if(isForeground) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                showLogoutDialog();
-            }
-            else super.onBackPressed();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            showLogoutDialog();
         }
-        super.onBackPressed();
+        else super.onBackPressed();
+
     }
 
     @Override

@@ -305,36 +305,16 @@ public class Login extends Fragment implements View.OnClickListener {
 
                     SecurePreferences.Editor mEditor = sp.edit();
                     mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
                     mEditor.apply();
-
-                    intent = new Intent(getActivity(), BbsMemberLocationActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("memberId", shopAgentObject.getString("member_id"));
-                    intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
-                    intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
-                    intent.putExtra("memberType", shopAgentObject.getString("member_type"));
-                    intent.putExtra("memberName", shopAgentObject.getString("member_name"));
-                    intent.putExtra("commName", shopAgentObject.getString("comm_name"));
-                    intent.putExtra("province", shopAgentObject.getString("province"));
-                    intent.putExtra("district", shopAgentObject.getString("district"));
-                    intent.putExtra("address", shopAgentObject.getString("address1"));
-                    intent.putExtra("category", "");
-                    intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
-                    //getActivity().startActivityForResult(intent, MainPage.REQUEST_FINISH, null);
-                    getActivity().startActivity(intent);
-                    getActivity().finish();
-
-                } else {
-                    intent = new Intent(getActivity(), MainPage.class);
-                    startActivity(intent);
-                    getActivity().finish();
                 }
 
-            } else {
-                intent = new Intent(getActivity(), MainPage.class);
-                startActivity(intent);
-                getActivity().finish();
             }
+
+            intent = new Intent(getActivity(), MainPage.class);
+            startActivity(intent);
+            getActivity().finish();
+
 
         } catch ( JSONException e ) {
             e.printStackTrace();

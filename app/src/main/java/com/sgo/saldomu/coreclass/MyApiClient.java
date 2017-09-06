@@ -18,6 +18,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -209,6 +210,8 @@ public class MyApiClient {
     public static String LINK_INQUIRY_DATA_ATC;
     public static String LINK_CANCEL_ATC;
 
+    public static String LINK_GOOGLE_MAPS_API_GEOCODE;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
@@ -344,6 +347,9 @@ public class MyApiClient {
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
+
+        String googleMapsKey = getmContext().getString(R.string.google_maps_key);
+        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
@@ -1255,6 +1261,33 @@ public class MyApiClient {
 
         Timber.wtf("address cancel transaction member: %1$s ",LINK_CANCEL_TRANSACTION_MEMBER);
         post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {
+
+        try {
+            String query = URLEncoder.encode(address, "utf-8");
+            Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE);
+            get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&address="+ query, responseHandler);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public static void getGoogleAPIAddressByLatLng(Context mContext, Double latitude, Double longitude, AsyncHttpResponseHandler responseHandler) {
+
+        try {
+            Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude);
+            get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude, responseHandler);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
     }
 }
 
