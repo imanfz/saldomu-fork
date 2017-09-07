@@ -181,16 +181,19 @@ public class BillerActivity extends BaseActivity {
             mArgs.putString(DefineValue.COMMUNITY_ID,mListBillerData.get(0).getComm_id());
             mArgs.putString(DefineValue.COMMUNITY_NAME,mListBillerData.get(0).getComm_name());
             mArgs.putString(DefineValue.BILLER_ITEM_ID,mListBillerData.get(0).getItem_id());
-            if (IdNumber!=null)
-            {
-                mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
-            }
+
             tag = BillerInput.TAG;
         }
         else {
             mLBM = new ListBillerMerchant();
             tag = ListBillerMerchant.TAG;
         }
+
+        if (IdNumber!=null)
+        {
+            mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
+        }
+
         setToolbarTitle(getString(R.string.biller_ab_title)+ " - " +_biller_merchant_name);
 
         mLBM.setArguments(mArgs);
