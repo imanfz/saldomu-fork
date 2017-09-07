@@ -378,7 +378,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                 SubmitAction();
                         } else {
                             // Ask for one permission
-                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
+                            EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_phone_state),
                                     RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
                         }
                     } else {
@@ -531,7 +531,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                             smsDialog.sentSms();
                                             RegSimCardReceiver(true);
                                         } else {
-                                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_send_sms),
+                                            EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_send_sms),
                                                     RC_SEND_SMS, Manifest.permission.SEND_SMS);
                                         }
                                     }
@@ -1101,7 +1101,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
     @Override

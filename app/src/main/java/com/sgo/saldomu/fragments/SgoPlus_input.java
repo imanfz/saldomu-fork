@@ -135,7 +135,7 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
                         smsDialog.sentSms();
                     }
                     else {
-                        EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_send_sms),
+                        EasyPermissions.requestPermissions(SgoPlus_input.this, getString(R.string.rationale_send_sms),
                                 RC_SEND_SMS, Manifest.permission.SEND_SMS);
                     }
                 }
@@ -188,18 +188,13 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
             }
         });
 
-        try{
-            getActivity().unregisterReceiver(smSclass.simStateReceiver);
-        }
-        catch (Exception ignored){}
-        getActivity().registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
     @Override
