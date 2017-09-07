@@ -203,23 +203,24 @@ public class ListBillerMerchant extends ListFragment {
             }};
         realm.addChangeListener(realmListener);
 
-        PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity().getApplicationContext(),billerIdNumber);
-        String preNumber;
-        if (BillerIdNumber != null){
-            for (int i=0; i<_data.size(); i++)
-            {
-                Timber.d("_data"+_data.get(i));
-                if (_data!=null)
+        if (billerIdNumber!=null && !billerIdNumber.equals(""))
+        {
+            PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(),billerIdNumber);
+                for (int i=0; i<_data.size(); i++)
                 {
-                    if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase()))
+                    Timber.d("_data"+_data.get(i));
+                    if (_data!=null)
                     {
-                        changeToInputBiller(mListBillerData.get(i).getComm_id(),
-                                mListBillerData.get(i).getComm_name(),
-                                mListBillerData.get(i).getItem_id());
+                        if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase()))
+                        {
+                            changeToInputBiller(mListBillerData.get(i).getComm_id(),
+                                    mListBillerData.get(i).getComm_name(),
+                                    mListBillerData.get(i).getItem_id());
+                        }
                     }
                 }
-            }
         }
+
     }
 
     @Override
