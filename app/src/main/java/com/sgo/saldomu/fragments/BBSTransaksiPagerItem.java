@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
@@ -42,6 +44,15 @@ public class BBSTransaksiPagerItem extends Fragment {
         String type = "",defaultAmount="", noHpPengirim="";
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
+
+            /*TextView tvToolbarTitle = (TextView) v.findViewById(R.id.main_toolbar_title);
+
+            if (title.equalsIgnoreCase(getString(R.string.cash_in))) {
+                tvToolbarTitle.setText(getString(R.string.transaction)+ " " + getString(R.string.cash_in));
+            } else {
+                tvToolbarTitle.setText(getString(R.string.transaction)+ " " + getString(R.string.cash_out));
+            }*/
+
             if(bundle.containsKey(DefineValue.TYPE)) {
                 type = bundle.getString(DefineValue.TYPE);
             }

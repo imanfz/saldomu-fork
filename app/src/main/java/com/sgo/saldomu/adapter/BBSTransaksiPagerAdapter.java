@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v7.app.AppCompatActivity;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 

@@ -305,6 +305,7 @@ public class Login extends Fragment implements View.OnClickListener {
 
                     SecurePreferences.Editor mEditor = sp.edit();
                     mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
                     mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
                     mEditor.apply();
                 }

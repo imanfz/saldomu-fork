@@ -1,6 +1,8 @@
 package com.sgo.saldomu.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -176,13 +178,13 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.cash_out));
         else if(fragment instanceof BBSTransaksiPager) {
             String trxType = intent.getStringExtra(DefineValue.TYPE);
-            String trxTypeDesc = "";
+            /*String trxTypeDesc = "";
             if ( trxType.equals(DefineValue.BBS_CASHIN) ) {
                 trxTypeDesc = getString(R.string.cash_in);
             } else {
                 trxTypeDesc = getString(R.string.cash_out);
-            }
-            setActionBarTitle(getString(R.string.transaction)+ " " + trxTypeDesc);
+            }*/
+            setActionBarTitle(getString(R.string.transaction));
         }else if(fragment instanceof FragMenuKelola)
             setActionBarTitle(getString(R.string.menu_item_title_kelola));
         else if(fragment instanceof FragSetttingKelola)
@@ -197,6 +199,19 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             setActionBarTitle(getString(R.string.title_rating_by_member));
         else if( fragment instanceof FragBbsMyOrders )
             setActionBarTitle(getString(R.string.title_bbs_my_orders));
+    }
+
+    public void updateActionBarTitle() {
+        String trxType = intent.getStringExtra(DefineValue.TYPE);
+        String trxTypeDesc = "";
+        if ( trxType.equals(DefineValue.BBS_CASHIN) ) {
+            trxTypeDesc = getString(R.string.cash_in);
+        } else if ( trxType.equals(DefineValue.BBS_CASHOUT) ) {
+            trxTypeDesc = getString(R.string.cash_out);
+        }
+
+        if ( !trxTypeDesc.equals("") )
+        setActionBarTitle(getString(R.string.transaction));
     }
 
     @Override
@@ -327,10 +342,27 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         Intent intent    = getIntent();
         int index = intent.getIntExtra(DefineValue.INDEX,0);
 
-        if (fragmentManager.getBackStackEntryCount() > 1)
-            fragmentManager.popBackStack();
-        else
-            super.onBackPressed();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
+        if ( fragment instanceof FragWaktuBeroperasi ) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_set_working_hour_warning))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.dismiss();
+                        }
+                    })
+            ;
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else {
+
+            if (fragmentManager.getBackStackEntryCount() > 1)
+                fragmentManager.popBackStack();
+            else
+                super.onBackPressed();
+
+        }
 
     }
 

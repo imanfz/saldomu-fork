@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.Gson;
@@ -31,7 +32,9 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.TutorialActivity;
+import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
@@ -110,11 +113,13 @@ public class BBSTransaksiAmount extends Fragment {
                 String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
                 cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
+
             }
             else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out))){
                 String cashOut = sp.getString(DefineValue.CASH_OUT_HISTORY_TEMP, "");
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
+
             }
         } else {
             getFragmentManager().popBackStack();
@@ -126,6 +131,7 @@ public class BBSTransaksiAmount extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         v =  inflater.inflate(R.layout.bbs_transaksi_amount, container, false);
+
         return v;
     }
 
@@ -147,7 +153,13 @@ public class BBSTransaksiAmount extends Fragment {
         tvTitle.setText(transaksi);
         emptyLayout.setVisibility(View.GONE);
 
+
+        TextView tbTitle = (TextView) getActivity().findViewById(R.id.main_toolbar_title);
+
+
         if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            //tbTitle.setText(getString(R.string.transaction)+ " " + getString(R.string.cash_in));
+
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)){
                 if(!defaultAmount.equals(""))
                 {
@@ -180,11 +192,7 @@ public class BBSTransaksiAmount extends Fragment {
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
 
-            if (cashInHistoryModel!=null)
-            {
-                actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
-                etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
-            }
+
 
 
             // Keys used in Hashmap
@@ -199,7 +207,13 @@ public class BBSTransaksiAmount extends Fragment {
             adapterMember = new SimpleAdapter(getActivity().getBaseContext(), aListMember, R.layout.bbs_autocomplete_layout, from, to);
 
             initializeDataBBS(CTA);
+
+
         } else {
+
+            //tbTitle.setText(getString(R.string.transaction)+ " " + getString(R.string.cash_in));
+
+
             if(type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)){
                 if(!defaultAmount.equals(""))
                 {
@@ -225,11 +239,7 @@ public class BBSTransaksiAmount extends Fragment {
             actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
 
-            if (cashOutHistoryModel!=null)
-            {
-                actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
-                etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
-            }
+
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -251,10 +261,20 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
+            if (cashInHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
+                etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
+            }
             validasiTutorialCashIn();
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
+            if (cashOutHistoryModel!=null)
+            {
+                actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
+                etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
+            }
             validasiTutorialCashOut();
         }
     }

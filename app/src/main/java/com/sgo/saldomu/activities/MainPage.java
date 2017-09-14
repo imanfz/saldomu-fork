@@ -158,6 +158,7 @@ public class MainPage extends BaseActivity{
                     setupFab();
                     AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
                     startService(new Intent(this, UpdateLocationService.class));
+
                 }
             }
         }
@@ -476,7 +477,7 @@ public class MainPage extends BaseActivity{
                                 checkField();
                                 setupBBSData();
 
-                                if ( sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+                                if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
                                     try{
                                         JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
                                         Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
@@ -493,6 +494,20 @@ public class MainPage extends BaseActivity{
                                         intent.putExtra("category", "");
                                         intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
                                         switchActivity(intent, ACTIVITY_RESULT);
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
+                                    try{
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+                                        Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtras(bundle);
+                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                        finish();
+
                                     }catch(Exception e){
                                         e.printStackTrace();
                                     }
@@ -716,6 +731,9 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, "");
         mEditor.putString(DefineValue.BBS_MEMBER_ID, "");
         mEditor.putString(DefineValue.BBS_SHOP_ID, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
+        mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
@@ -967,6 +985,9 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onStart() {
         super.onStart();
+
+
+
         if(isForeground) {
             doBindToService();
             doBindToAppInfoService();

@@ -37,6 +37,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -233,6 +234,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
 
             tvTitle.setText(transaksi);
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+                //getActivity().setTitle(getString(R.string.transaction)+ " " + getString(R.string.cash_in));
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
                 View cashin_layout = stub.inflate();
                 actv_rekening_cta = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
@@ -268,6 +270,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 actv_rekening_cta.setAdapter(adapterAgent);
                 actv_rekening_cta.addTextChangedListener(textWatcher);
             } else {
+                //getActivity().setTitle(getString(R.string.transaction)+ " " + getString(R.string.cash_out));
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
                 sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
@@ -370,28 +373,26 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 isSMSBanking = source_product_code.equalsIgnoreCase(MANDIRISMS);
 
                 if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
-//                    if (isSMSBanking) {
-//                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-//                            initializeSmsClass();
-//                            if (isSimExist)
-//                                SubmitAction();
-//                        } else {
-//                            // Ask for one permission
-//                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
-//                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
-//                        }
-//                    } else {
-//                        SubmitAction();
-//                    }
-                    cashInHistory();
+                    if (isSMSBanking) {
+                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                            initializeSmsClass();
+                            if (isSimExist)
+                                SubmitAction();
+                        } else {
+                            // Ask for one permission
+                            EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_phone_state),
+                                    RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+                        }
+                    } else {
+                        SubmitAction();
+                    }
                 }
                 else {
-//                    btnNext.setEnabled(false);
-//                    if (inputValidation()) {
-//                        sentInsertA2C();
-//                    }
-//                    else btnNext.setEnabled(true);
-                    cashOutHistory();
+                    btnNext.setEnabled(false);
+                    if (inputValidation()) {
+                        sentInsertA2C();
+                    }
+                    else btnNext.setEnabled(true);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -507,7 +508,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
-            params.put(WebParams.USER_COMM_CODE, MyApiClient.COMM_CODE);
+            params.put(WebParams.USER_COMM_CODE, BuildConfig.commCodeBBSATC);
 
             Log.d("params insert c2a", params.toString());
             MyApiClient.sentGlobalBBSInsertC2A(getActivity(),params, new JsonHttpResponseHandler(){

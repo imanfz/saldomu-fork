@@ -181,22 +181,46 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
                 try {
-                    progdialog.dismiss();
+                    if ( progdialog.isShowing())
+                        progdialog.dismiss();
+
                     String status = response.getString(WebParams.GMAP_API_STATUS);
 
 
 
                     if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                        ArrayList gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
-                        JSONArray objResults       = response.getJSONArray("results");
-                        JSONObject objGeometry      = objResults.getJSONObject(0).getJSONObject("geometry");
-                        JSONObject objLocation      = objGeometry.getJSONObject("location");
-                        selectedLat = Double.valueOf(objLocation.getString("lat"));
-                        selectedLong    = Double.valueOf(objLocation.getString("lng"));
+                        for (HashMap<String, String> hashMapObject : gData) {
+                            for (String key : hashMapObject.keySet()) {
+                                switch(key) {
+                                    case "latitude":
+                                        selectedLat = Double.valueOf(hashMapObject.get(key));
+                                        defaultLat = selectedLat;
+                                        break;
+                                    case "longitude":
+                                        selectedLong = Double.valueOf(hashMapObject.get(key));
+                                        defaultLong = selectedLong;
+                                        break;
+                                    case "postal_code":
+                                        postalCode = hashMapObject.get(key);
+                                        break;
+                                    case "province":
+                                        provinceName = hashMapObject.get(key);
+                                        break;
+                                    case "district":
+                                        newDistrictName = hashMapObject.get(key);
+                                        break;
+                                    case "subdistrict":
+                                        break;
+                                    case "country":
+                                        countryName = hashMapObject.get(key);
+                                        break;
+                                }
 
-                        defaultLat = selectedLat;
-                        defaultLong = selectedLong;
+
+                            }
+                        }
 
 
 
@@ -271,39 +295,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
         */
-
-
-
-
-
-        /*
-        defaultLat      = -6.121435;
-        defaultLong     = 106.774124;
-
-        if (memberDefaultAddress != null || !memberDefaultAddress.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(memberDefaultAddress, 1);
-                Address address = addressList.get(0);
-                selectedLat        = address.getLatitude();
-                selectedLong       = address.getLongitude();
-
-                defaultLat          = selectedLat;
-                defaultLong         = selectedLong;
-
-                setAdministrativeName();
-            } catch (IOException e) {
-                e.printStackTrace();
-
-
-            }
-
-
-        }*/
-
-
-
-        //memberDetail        = myRealm.where(MerchantCommunityList.class).equalTo("memberId", memberId).equalTo("shopId", shopId).findFirst();
 
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
 
@@ -417,7 +408,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                     mEditor.putString(DefineValue.BBS_MEMBER_ID, memberId);
                                     mEditor.putString(DefineValue.BBS_SHOP_ID, shopId);
                                     mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
-                                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
                                     mEditor.apply();
                                     setResult(MainPage.RESULT_REFRESH_NAVDRAW);
 
@@ -456,17 +446,15 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                                     String code = response.getString(WebParams.ERROR_CODE);
                                                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
+                                                        SecurePreferences.Editor mEditor = sp.edit();
+                                                        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_YES);
+                                                        mEditor.apply();
 
-
-
-
-                                                        /*Bundle bundle = new Bundle();
                                                         //bundle.putInt(DefineValue.INDEX, MainPage.LI);
                                                         Intent intent = new Intent(BbsMemberLocationActivity.this, MainPage.class);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        intent.putExtras(bundle);
-                                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);*/
-                                                        finish();
+                                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+
                                                     } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                                         String message = response.getString(WebParams.ERROR_MESSAGE);
                                                         AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -515,7 +503,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         Bundle bundle = new Bundle();
                                         bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
 
-;
                                         mEditor.putString(DefineValue.IS_AGENT_APPROVE, DefineValue.STRING_YES);
                                         mEditor.putString(DefineValue.AGENT_NAME, agentName);
                                         mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
@@ -530,32 +517,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
                                         finish();
                                     }
-
-                                    //String tempSetupOpenHour = response.getString("setup_open_hour");
-                                    //if (tempSetupOpenHour.equals("")) {
-                                        //tempSetupOpenHour = DefineValue.STRING_NO;
-                                    //}
-                                    //memberDetail.setSetupOpenHour(response.getString("setup_open_hour"));
-                                    //myRealm.copyToRealmOrUpdate(memberDetail);
-                                    //myRealm.commitTransaction();
-
-
-                                    /*if (memberType.equals(DefineValue.SHOP_MERCHANT)) {
-                                        Intent intent = new Intent(getApplicationContext(), BbsMerchantCategoryActivity.class);
-                                        intent.putExtra("memberId", memberId);
-                                        intent.putExtra("shopId", shopId);
-                                        intent.putExtra("setupOpenHour", tempSetupOpenHour);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        getApplicationContext().startActivity(intent);
-                                        finish();
-                                    } else {*/
-                                        /*Intent intent = new Intent(getApplicationContext(), BbsListSettingKelolaActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(intent);
-                                        finish();*/
-
-
-                                    //}
 
                                 } else if ( code.equals(WebParams.LOGOUT_CODE) ) {
                                     progdialog.dismiss();
@@ -793,7 +754,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 latLng = new LatLng(selectedLat, selectedLong);
                 mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                //mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
             cameraPosition = new CameraPosition.Builder()
@@ -880,25 +841,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         //listener ketika button back di action bar diklik
         if (id == android.R.id.home) {
             //kembali ke activity sebelumnya
-            if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
-                if ( !sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
-                    onBackPressed();
-                } else {
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(getString(R.string.alertbox_set_agent_location_warning))
-                            .setCancelable(false)
-                            .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                    dialog.dismiss();
-                                }
-                            })
-                    ;
-                    final AlertDialog alert = builder.create();
-                    alert.show();
-                }
-            } else {
-                onBackPressed();
-            }
+            disabledBackPressed();
 
 
 
@@ -1142,6 +1085,34 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             googleApiClient.disconnect();
         } catch( Exception e ) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        disabledBackPressed();
+    }
+
+    private void disabledBackPressed() {
+        //kembali ke activity sebelumnya
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            if ( !sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+
+            } else {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.alertbox_set_agent_location_warning))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.dismiss();
+                            }
+                        })
+                ;
+                final AlertDialog alert = builder.create();
+                alert.show();
+            }
+        } else {
+
         }
     }
 }

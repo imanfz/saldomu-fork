@@ -381,6 +381,7 @@ public class DefineValue {
     public static String STRING_CANCEL          = "F";
 
     public static String IS_AGENT_SET_LOCATION  = "IsAgentSetLocation";
+    public static String IS_AGENT_SET_OPENHOUR  = "IsAgentSetOpenHour";
     public static String SHOP_AGENT_DATA    = "ShopAgentData";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";

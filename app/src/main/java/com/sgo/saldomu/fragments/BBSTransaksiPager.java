@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.adapter.BBSTransaksiPagerAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.dialogs.InformationDialog;
@@ -64,6 +65,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
         super.onActivityCreated(savedInstanceState);
         Bundle bundle = getArguments();
         if(bundle != null){
+
             String type = bundle.getString(DefineValue.TYPE,"");
             if(type != null && !type.isEmpty()){
                 if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN))
@@ -97,7 +99,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+        //((BBSActivity) getActivity()).updateActionBarTitle();
     }
 
     @Override
