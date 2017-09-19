@@ -255,7 +255,7 @@ public class SMSDialog extends Dialog {
     public void sentSms(){
         if(!isStop) {
             Timber.d("jalanin sentSMSVerify");
-            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_INFOBIP, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
         }
     }
 
