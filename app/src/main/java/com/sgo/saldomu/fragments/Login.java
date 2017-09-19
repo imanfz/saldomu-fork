@@ -410,6 +410,16 @@ public class Login extends Fragment implements View.OnClickListener {
                 }
             }
 
+            if ( response.has("shop_id_agent") && !response.getString("shop_id_agent").equals("")) {
+                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
+                if (shopAgentObject.length() > 0) {
+                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
+                }
+
+            }
+
             arraynya = response.getString(WebParams.SETTINGS);
             if(!arraynya.isEmpty()){
                 JSONArray arrayJson = new JSONArray(arraynya);
