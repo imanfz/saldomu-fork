@@ -53,8 +53,13 @@ public class SMSclass {
             String action = intent.getAction();
             if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
                 if(intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")){
-                   if(getmContext() instanceof Activity)
-                       ((Activity)getmContext()).finish();
+                   if(getmContext() instanceof Activity) {
+                       Timber.d("sim is Absent");
+                       if(!isSimExists()) {
+                           ((Activity) getmContext()).finish();
+                           Toast.makeText(getmContext(), R.string.sim_not_found, Toast.LENGTH_SHORT).show();
+                       }
+                   }
                 }
 
             }
@@ -121,11 +126,13 @@ public class SMSclass {
                 {
                     case Activity.RESULT_OK:
                         listener.success();
+                        Timber.d("Sukses send Message SMS");
                         Toast.makeText(getmContext(), getmContext().getString(R.string.toast_msg_success_smsclass),
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case Activity.RESULT_CANCELED:
                         listener.failed();
+                        Timber.d("Gagal send Message SMS");
                         Toast.makeText(getmContext(), getmContext().getString(R.string.toast_msg_fail_smsclass),
                                 Toast.LENGTH_SHORT).show();
                         break;

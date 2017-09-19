@@ -108,16 +108,16 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             public void sim_state(Boolean isExist, String msg) {
                 if(!isExist){
                     Toast.makeText(TopUpActivity.this,msg,Toast.LENGTH_SHORT).show();
-                    TopUpActivity.this.finish();
+//                    TopUpActivity.this.finish();
                 }
             }
         });
 
-        try{
-            unregisterReceiver(smSclass.simStateReceiver);
-        }
-        catch (Exception ignored){}
-        registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
+//        try{
+//            unregisterReceiver(smSclass.simStateReceiver);
+//        }
+//        catch (Exception ignored){}
+//        registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
     }
 
     @Override

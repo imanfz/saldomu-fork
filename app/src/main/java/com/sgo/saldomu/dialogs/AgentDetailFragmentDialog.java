@@ -302,7 +302,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
             showPhoneCall();
         } else {
             // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_phone_call),
+            EasyPermissions.requestPermissions(mainBbsActivity, getString(R.string.rationale_phone_call),
                     RC_PHONE_CALL, Manifest.permission.CALL_PHONE);
         }
         /*if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)

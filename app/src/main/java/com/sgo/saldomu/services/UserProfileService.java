@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.*;
 import android.os.Process;
 
-import com.sgo.saldomu.coreclass.UserProfileHandler;
+import com.sgo.saldomu.loader.UserProfileHandler;
 
 import timber.log.Timber;
 
