@@ -431,5 +431,7 @@ public class DefineValue {
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
 
+    public static String IS_NEW_BULK = "isNewBulk";
+
 }
 

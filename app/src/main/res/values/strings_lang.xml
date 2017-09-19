@@ -1042,5 +1042,15 @@
     <string name="title_cashout_agen">Tarik Dana - Agent</string>
     <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="title_cashout_tunai">Tarik Dana - Tunai</string>
-
+    <string name="daftar_acc">Daftar</string>
+    <string name="login_edittext_hint_id" translatable="false">No HP Anda yang sudah terdaftar</string>
+    <string name="validasiemail_edit_error_email">Alamat Email dibutuhkan!</string>
+    <string name="validasiemail_edit_error_token">Kode Aktivasi dibutuhkan!</string>
+    <string name="changeemail_toast_success">Ganti Alamat Email Berhasil</string>
+    <string name="validasiemail_toast_success">Verifikasi Alamat Email Berhasil</string>
+    <string name="verifikasi_email">Verifikasi Email</string>
+    <string name="validasi_email_text">Masukkan kode aktivasi yang dikirimkan ke email</string>
+    <string name="ask_change_email_text">Jika email di atas bukanlah email yang benar, apakah Anda akan mengganti alamat email?</string>
+    <string name="ganti_alamat_email">Ganti alamat email</string>
+    <string name="change_email_text">Masukkan alamat email baru</string>
 </resources>

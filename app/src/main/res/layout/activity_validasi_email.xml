@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+    <ScrollView android:layout_below="@id/main_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideOverlay"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@color/grey_1000w"
+            >
+
+            <TextView
+                android:id="@+id/text_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium_material"
+                android:textColor="@color/grey_1000b"
+                android:text="@string/validasi_email_text"/>
+
+            <EditText
+                android:id="@+id/token_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="@integer/token_lenght_4"/>
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_bk_yellow"
+                app:mrl_rippleOverlay="true"
+                app:mrl_rippleColor="@color/grey_1000b"
+                app:mrl_rippleAlpha="0.2"
+                app:mrl_rippleDelayClick="false"
+                app:mrl_rippleHover="true"
+                >
+                <Button
+                    android:id="@+id/btn_token"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:textColor="@color/grey_1000w"
+                    android:background="@drawable/button_transparant"
+                    android:text="@string/proses"/>
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <LinearLayout
+                android:id="@+id/ask_change_email_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/grey_1000b"
+                    android:text="@string/ask_change_email_text"/>
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_yellow"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/grey_1000b"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                    <Button
+                        android:id="@+id/btn_ask_change"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:textColor="@color/grey_1000w"
+                        android:background="@drawable/button_transparant"
+                        android:text="@string/ganti_alamat_email"/>
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/change_email_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/grey_1000b"
+                    android:text="@string/change_email_text"/>
+
+                <EditText
+                    android:id="@+id/email_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"/>
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_bk_yellow"
+                    app:mrl_rippleOverlay="true"
+                    app:mrl_rippleColor="@color/grey_1000b"
+                    app:mrl_rippleAlpha="0.2"
+                    app:mrl_rippleDelayClick="false"
+                    app:mrl_rippleHover="true"
+                    >
+                    <Button
+                        android:id="@+id/btn_change"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:background="@drawable/button_transparant"
+                        android:textColor="@color/grey_1000w"
+                        android:text="@string/save"/>
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+</RelativeLayout>

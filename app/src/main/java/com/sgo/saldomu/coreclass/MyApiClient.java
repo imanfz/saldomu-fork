@@ -208,6 +208,8 @@ public class MyApiClient {
     public static String LINK_INQUIRY_TOKEN_ATC;
     public static String LINK_INQUIRY_DATA_ATC;
     public static String LINK_CANCEL_ATC;
+    public static String LINK_REQ_CHANGE_EMAIL;
+    public static String LINK_CONFIRM_CHANGE_EMAIL;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
@@ -496,6 +498,11 @@ public class MyApiClient {
     public static void sentCancelATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent cancel ATC:"+LINK_CANCEL_ATC);
         post(mContext,LINK_CANCEL_ATC, params, responseHandler);
+    }
+
+    public static void sentReqChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address req change email:"+ LINK_REQ_CHANGE_EMAIL);
+        post(mContext, LINK_REQ_CHANGE_EMAIL, params, responseHandler);
     }
 
     public static AsyncHttpClient getClient()
@@ -1106,6 +1113,11 @@ public class MyApiClient {
             postSync(mContext,LINK_REG_TOKEN_FCM,params,responseHandler);
         else
             post(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
+    }
+
+    public static void sentConfirmChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm change email:"+ LINK_CONFIRM_CHANGE_EMAIL);
+        post(mContext, LINK_CONFIRM_CHANGE_EMAIL, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------

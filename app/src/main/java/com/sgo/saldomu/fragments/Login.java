@@ -401,6 +401,7 @@ public class Login extends Fragment implements View.OnClickListener {
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
                         else
                             mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+                        mEditor.putString(DefineValue.IS_NEW_BULK, arrayJson.getJSONObject(i).getString(WebParams.IS_NEW_BULK));
                         mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT,0)>0);
 
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
