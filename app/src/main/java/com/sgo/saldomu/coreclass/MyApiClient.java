@@ -35,7 +35,7 @@ public class MyApiClient {
     private static MyApiClient singleton = null;
     private Context mContext;
     private AsyncHttpClient asyncHttpClient;
-    private AsyncHttpClient syncHttpClient;
+    private SyncHttpClient syncHttpClient;
 
     public MyApiClient(){
 
@@ -313,13 +313,9 @@ public class MyApiClient {
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.isProdDomain)
-        {
             LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
-        }
         else
-        {
             LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
-        }
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
 
         LINK_RESEND_TOKEN_LKD  = headaddressfinal + "ResendToken/Invoke";
@@ -396,7 +392,7 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
 
-    public static String INCOMINGSMS_INFOBIP = "+628111946677";
+    public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
     public static String APP_ID = BuildConfig.AppID;

@@ -48,7 +48,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         break;
                 }
             }
-
         }
 
         // Check if message contains a notification payload.
