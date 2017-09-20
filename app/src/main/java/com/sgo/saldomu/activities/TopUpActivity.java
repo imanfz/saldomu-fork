@@ -15,27 +15,29 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.ListTopUp;
 import com.sgo.saldomu.fragments.SgoPlus_input;
+import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ReqPermissionClass;
+import com.sgo.saldomu.coreclass.SMSclass;
 
-import java.util.List;
-
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
   Created by Administrator on 4/28/2015.
  */
-public class TopUpActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
+public class TopUpActivity extends BaseActivity {
 
-    final int RC_READ_PHONE_STATE = 11;
-
-    private String transaction_type;
-    private Boolean is_full_activity = false;
-    private boolean isSMSBanking = false;
+    FragmentManager fragmentManager;
+    String transaction_type;
+    Boolean is_full_activity = false;
+    boolean isSMSBanking = false;
     private SMSclass smSclass;
+    private ReqPermissionClass reqPermissionClass;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
 
         Intent i = getIntent();
         transaction_type = i.getStringExtra(DefineValue.TRANSACTION_TYPE);
+        Boolean isTagihan = i.getBooleanExtra(DefineValue.TAGIHAN,false);
         is_full_activity = i.getBooleanExtra(DefineValue.IS_ACTIVITY_FULL,false);
         InitializeToolbar();
 
@@ -51,21 +54,18 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
                 return;
             }
 
-            if(transaction_type != null && !transaction_type.isEmpty()) {
-                if (transaction_type.equals(DefineValue.SMS_BANKING)) {
-                    isSMSBanking = true;
-                    if(EasyPermissions.hasPermissions(this,Manifest.permission.READ_PHONE_STATE)){
-                        initializeSmsClass();
-                    }
-                    else{
-                        EasyPermissions.requestPermissions(this, getString(R.string.rationale_phone_state),
-                                RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
+            if(isTagihan) {
+                if (transaction_type != null && !transaction_type.isEmpty()) {
+                    if (transaction_type.equals(DefineValue.SMS_BANKING)) {
+                        initializeSMSBanking();
                     }
                 }
-
             }
+            else {
 
-
+                if(!is_full_activity && i.getStringExtra(DefineValue.PRODUCT_TYPE).equals(DefineValue.BANKLIST_TYPE_SMS))
+                    initializeSMSBanking();
+            }
 
             Fragment mFrag;
             Bundle mArgs = i.getExtras();
@@ -73,16 +73,26 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             if(is_full_activity){
                 mFrag = new ListTopUp();
                 mArgs.putBoolean(DefineValue.IS_ACTIVITY_FULL,is_full_activity);
+                mArgs.putString("Toolbar", i.getStringExtra("Toolbar"));
+                setToolbarTitle(getString(R.string.topuplist_ab_title));
             }
             else {
                 mFrag = new SgoPlus_input();
             }
             mFrag.setArguments(mArgs);
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.topUpActivityContent, mFrag, "sgoInput");
             fragmentTransaction.commitAllowingStateLoss();
             setResult(MainPage.RESULT_NORMAL);
+        }
+    }
+
+    private void initializeSMSBanking(){
+        isSMSBanking = true;
+        reqPermissionClass = new ReqPermissionClass(this);
+        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
+            initializeSmsClass();
         }
     }
 
@@ -108,47 +118,34 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             public void sim_state(Boolean isExist, String msg) {
                 if(!isExist){
                     Toast.makeText(TopUpActivity.this,msg,Toast.LENGTH_SHORT).show();
-//                    TopUpActivity.this.finish();
+                    TopUpActivity.this.finish();
                 }
             }
         });
 
-//        try{
-//            unregisterReceiver(smSclass.simStateReceiver);
-//        }
-//        catch (Exception ignored){}
-//        registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
+        try{
+            unregisterReceiver(smSclass.simStateReceiver);
+        }
+        catch (Exception e){}
+        registerReceiver(smSclass.simStateReceiver,SMSclass.simStateIntentFilter);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
-    }
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        if(requestCode == RC_READ_PHONE_STATE){
+        if (reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
             initializeSmsClass();
         }
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        if(requestCode == RC_READ_PHONE_STATE){
-            Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-            finish();
+        else {
+            if(requestCode == ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE) {
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     }
 
-    private void InitializeToolbar(){
+    public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        if(transaction_type != null && !transaction_type.isEmpty()) {
-            if (transaction_type.equals(DefineValue.INTERNET_BANKING))
-                setActionBarTitle(getString(R.string.internetBanking_ab_title));
-            else setActionBarTitle(getString(R.string.smsBanking_ab_title));
-        }
-        else setActionBarTitle(getString(R.string.topuplist_ab_title));
     }
 
     @Override
@@ -238,5 +235,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
         MyApiClient.CancelRequestWS(this,true);
     }
 
-
+    public void setToolbarTitle(String _title) {
+        setActionBarTitle(_title);
+    }
 }

@@ -1,0 +1,24 @@
+{"014": [
+      {
+        "bank_name": "BANK BCA",
+        "product_code": "BCASIMTOOLKIT",
+        "product_name": "M-BCA STK - Sim tool kit",
+        "product_type": "ATM",
+        "product_h2h": "Y"
+      },
+      {
+        "bank_name": "BANK BCA",
+        "product_code": "KLIKBCAVA",
+        "product_name": "KLIK BCA",
+        "product_type": "ATM",
+        "product_h2h": "Y"
+      },
+      {
+        "bank_name": "BANK BCA",
+        "product_code": "MBCAMOBILEBCA",
+        "product_name": "M-BCA Mobile BCA",
+        "product_type": "ATM",
+        "product_h2h": "Y"
+      }
+    ]
+}

@@ -11,7 +11,7 @@ import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.listbankModel;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -44,7 +44,7 @@ public class FragRegisterSMSBanking extends Fragment {
     private View v;
     private View layout_dll;
 
-    private listbankModel mLB;
+    private listBankModel mLB;
     private SecurePreferences sp;
     private ArrayList<String> bankName;
     private ProgressDialog progdialog;
@@ -219,7 +219,7 @@ public class FragRegisterSMSBanking extends Fragment {
     private void insertBankList(JSONArray arrayJson){
         try {
 
-            mLB = new listbankModel();
+            mLB = new listBankModel();
             for (int i = 0; i < arrayJson.length(); i++) {
 
                 String temp_bank_name = arrayJson.getJSONObject(i).getString(WebParams.BANK_NAME);
