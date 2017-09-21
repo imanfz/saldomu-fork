@@ -227,6 +227,7 @@
     <string name="myprofile_ab_title">Profil</string>
     <string name="myprofile_text_date_click">Tekan untuk memilih tanggal</string>
     <string name="myprofile_text_name">Nama</string>
+    <string name="myprofile_text_hp">No. HP</string>
     <string name="myprofile_text_bod">Tanggal Lahir</string>
     <string name="myprofile_text_pob">Tempat Lahir</string>
     <string name="myprofile_text_address">Alamat</string>
@@ -1042,5 +1043,7 @@
     <string name="title_cashout_agen">Tarik Dana - Agent</string>
     <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="title_cashout_tunai">Tarik Dana - Tunai</string>
+    <string name="daftar_acc">Daftar</string>
+    <string name="login_edittext_hint_id" translatable="false">No HP Anda yang sudah terdaftar</string>
 
 </resources>
