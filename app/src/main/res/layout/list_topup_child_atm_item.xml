@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/child_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/grey_200"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_child"
+            android:textSize="@dimen/text_size_small_material"
+            android:textColor="@color/black"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginLeft="32dp"
+            android:text="asdasdasd"
+            android:layout_weight="3"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:src="@drawable/child_indicator_small_collapse"
+            android:layout_gravity="end|center_vertical"
+            android:id="@+id/child_indicator"/>
+
+    </LinearLayout>
+    <include android:id="@+id/layout_atm_bca_stk"
+        layout="@layout/list_topup_atm_bca_simtoolkit"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_bca_klikbcava"
+        layout="@layout/list_topup_atm_bca_klikva"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_bca_mbca"
+        layout="@layout/list_topup_atm_bca_mbca"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_mandiri"
+        layout="@layout/list_topup_atm_mandiri_item"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_bri"
+        layout="@layout/list_topup_atm_bri_item"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm"
+        layout="@layout/list_topup_atm_item"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/fee_deskripsi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:text=""
+        />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="4dp"
+        android:background="@color/grey_400"
+        android:id="@+id/divider"
+        android:visibility="visible">
+    </View>
+
+</LinearLayout>

@@ -1046,4 +1046,46 @@
     <string name="daftar_acc">Daftar</string>
     <string name="login_edittext_hint_id" translatable="false">No HP Anda yang sudah terdaftar</string>
 
+    <string name="validasiemail_edit_error_email">Alamat Email dibutuhkan!</string>
+    <string name="validasiemail_edit_error_token">Kode Aktivasi dibutuhkan!</string>
+    <string name="changeemail_toast_success">Ganti Alamat Email Berhasil</string>
+    <string name="validasiemail_toast_success">Verifikasi Alamat Email Berhasil</string>
+    <string name="verifikasi_email">Verifikasi Email</string>
+    <string name="validasi_email_text">Masukkan kode aktivasi yang dikirimkan ke email</string>
+    <string name="ask_change_email_text">Jika email di atas bukanlah email yang benar, apakah Anda akan mengganti alamat email?</string>
+    <string name="ganti_alamat_email">Ganti alamat email</string>
+    <string name="change_email_text">Masukkan alamat email baru</string>
+
+    <string name="ins_atm_bca_simtoolkit_1">Pilih m-BCA</string>
+    <string name="ins_atm_bca_simtoolkit_2">Pilih m-Payment</string>
+    <string name="ins_atm_bca_simtoolkit_3">Pilih Lainnya</string>
+    <string name="ins_atm_bca_simtoolkit_4">Ketik TVA</string>
+    <string name="ins_atm_bca_simtoolkit_5">Masukan PIN</string>
+    <string name="ins_atm_bca_simtoolkit_6">Cek info customer</string>
+    <string name="ins_atm_bca_simtoolkit_7">Akan terkirim SMS notifikasi jika sukses</string>
+    <string name="ins_atm_bca_klikbca_1">Pilih Transfer Dana</string>
+    <string name="ins_atm_bca_klikbca_2">Pilih BCA Virtual Account</string>
+    <string name="ins_atm_bca_klikbca_3">Isi no. Virtual Account dengan</string>
+    <string name="ins_atm_bca_klikbca_4">Masukkan respon Key BCA Appli 1</string>
+    <string name="ins_atm_bca_klikbca_5">Akan muncul notifikasi  transfer sukses</string>
+    <string name="ins_atm_bca_mbca_1">Pilih m-Transfer</string>
+    <string name="ins_atm_bca_mbca_2">Pilih BCA Virtual Account</string>
+    <string name="ins_atm_bca_mbca_3">Klik OK</string>
+    <string name="ins_atm_bca_mbca_4">Akan muncul notifikasi sukses dari aplikasi m-BCA</string>
+
+    <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
+    <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
+    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan UNIK : 88476</string>
+    <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
+    <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
+    <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
+    <string name="listatm_topup_mandiri_7">Pilih YA untuk menyetujui transaksi</string>
+
+    <string name="listatm_topup_bri_1">Pilih Menu Transaksi Lain</string>
+    <string name="listatm_topup_bri_2">Pilih Lainnya > Lainnya > Briva</string>
+    <string name="listatm_topup_bri_3">Masukan Nomor Briva</string>
+    <string name="listatm_topup_bri_4">Pilih YA</string>
+    <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
+
+
 </resources>

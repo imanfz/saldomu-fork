@@ -17,7 +17,7 @@ import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.listbankModel;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CollectionActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -46,7 +46,7 @@ public class CollectionInput extends Fragment {
     private SecurePreferences sp;
     private List<String> listProductName;
     private HashMap<String,String> listBankProduct;
-    private List<listbankModel> listDB;
+    private List<listBankModel> listDB;
 
     private View v;
     private Button btn_subSGO;
@@ -116,7 +116,7 @@ public class CollectionInput extends Fragment {
 
         for(int i = 0; i < mData.length() ; i++){
             try {
-                listbankModel mOb = new listbankModel(mData.getJSONObject(i).getString(WebParams.BANK_CODE),
+                listBankModel mOb = new listBankModel(mData.getJSONObject(i).getString(WebParams.BANK_CODE),
                                                       mData.getJSONObject(i).getString(WebParams.BANK_NAME),
                                                       mData.getJSONObject(i).getString(WebParams.PRODUCT_CODE),
                                                       mData.getJSONObject(i).getString(WebParams.PRODUCT_NAME),
@@ -203,7 +203,7 @@ public class CollectionInput extends Fragment {
             Thread deproses = new Thread() {
                 @Override
                 public void run() {
-                    for (listbankModel mOb : listDB) {
+                    for (listBankModel mOb : listDB) {
                         if(mOb.getBank_name().equals(nama_bank)){
                             listProductName.add(mOb.getProduct_name());
                             listBankProduct.put(mOb.getProduct_name(),mOb.getProduct_code());

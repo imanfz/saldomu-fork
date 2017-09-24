@@ -46,6 +46,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -56,6 +57,7 @@ import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
+import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
@@ -471,13 +473,43 @@ public class MainPage extends BaseActivity{
                                 initializeNavDrawer();
                                 CheckNotification();
 
+                                String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
                                 if (progdialog.isShowing())
                                     progdialog.dismiss();
-                                checkField();
-                                setupBBSData();
+                                if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
+                                {
+                                    UserProfileHandler mBH = new UserProfileHandler(getApplication());
+                                    mBH.sentUserProfile(new OnLoadDataListener() {
+                                        @Override
+                                        public void onSuccess(Object deData) {
+                                            checkField();
+                                        }
 
-                            } else
+                                        @Override
+                                        public void onFail(Bundle message) {
+
+                                        }
+
+                                        @Override
+                                        public void onFailure(String message) {
+
+                                        }
+                                    }, is_new_bulk);
+                                }
+                                else {
+                                    checkField();
+                                }
+
+//                                if (progdialog.isShowing())
+//                                    progdialog.dismiss();
+//                                checkField();
+                                setupBBSData();
+                            } else {
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
+                            }
+
 
                             String member_dap = response.getString(WebParams.MEMBER_DAP);
                             SecurePreferences.Editor mEditor = sp.edit();
@@ -590,12 +622,18 @@ public class MainPage extends BaseActivity{
 
     private void checkField(){
         String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
-        if (bom_value.isEmpty()) {
+        String dob = sp.getString(DefineValue.PROFILE_DOB, "");
+        if (dob.isEmpty() || bom_value.isEmpty()) {
             showMyProfile();
-        } else if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
+        }
+        else if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
             showChangePassword();
-        } else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
+        }
+        else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
+        }
+        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
+            showValidasiEmail();
         }
     }
 
@@ -1006,7 +1044,6 @@ public class MainPage extends BaseActivity{
         super.onDestroy();
     }
 
-
     private void deleteData() {
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
@@ -1032,6 +1069,12 @@ public class MainPage extends BaseActivity{
             }
         });
 
+    }
+
+    private void showValidasiEmail(){
+        Intent i = new Intent(this, ValidasiEmailActivity.class);
+        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
+        switchActivity(i, ACTIVITY_RESULT);
     }
 
     private void callAgentShopService() {

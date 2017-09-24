@@ -12,6 +12,9 @@ public class DefineValue {
     public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     public static final String SEC_PREF_NAME = BuildConfig.APPLICATION_ID+"_pref";
     public static final String INDONESIA = "indonesia";
+    public static final String PRODUCT_BCA_SIMTOOLKIT = "BCASIMTOOLKIT";
+    public static final String PRODUCT_BCA_KLIKBCAVA = "KLIKBCAVA";
+    public static final String PRODUCT_BCA_MOBILEBANK = "MBCAMOBILEBCA";
 
     //Static Value
     public static String DEVELOPMENT = "development" ;
@@ -430,6 +433,19 @@ public class DefineValue {
     public static String SHORT_URL_APP = "shortUrlApp";
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
+
+    public static String IS_NEW_BULK = "isNewBulk";
+    public static String TAGIHAN = "tagihan";
+    public static final String BankJatim = "114";
+    public static final String BankBCA = "014";
+    public static final String BankMandiri = "008";
+    public static final String BankMaspion = "157";
+    public static final String BankPermata = "013";
+    public static final String BankBII = "016";
+    public static final String BankUOB = "058";
+    public static final String BankBRI = "002";
+    public static String BANKLIST_TYPE_ATM = "ATM" ;
+    public static String IS_MERCHANT = "isMerchant";
 
 }
 

@@ -13,7 +13,7 @@ import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.listbankModel;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PulsaAgentActivity;
@@ -57,9 +57,9 @@ public class PulsaAgentDescription extends Fragment {
     private ProgressDialog progdialog;
 
     private List<String> paymentData;
-    private List<listbankModel> mDataPayment;
+    private List<listBankModel> mDataPayment;
     private ArrayAdapter<String> adapterPaymentOptions;
-    private listbankModel mTempBank;
+    private listBankModel mTempBank;
 
     private String cust_id;
     private String member_id;
@@ -371,13 +371,13 @@ public class PulsaAgentDescription extends Fragment {
                                 JSONArray mData = new JSONArray(arrayBank);
                                 mDataPayment = new ArrayList<>();
                                 ArrayList<String> tempDataPaymentName = new ArrayList<>();
-                                ArrayList<listbankModel> tempMDataPayment = new ArrayList<>();
+                                ArrayList<listBankModel> tempMDataPayment = new ArrayList<>();
 
                                 paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
 
                                 for (int i = 0; i < mData.length(); i++) {
                                     JSONObject mJob = mData.getJSONObject(i);
-                                    listbankModel mBob = new listbankModel(mJob.getString(WebParams.BANK_CODE),
+                                    listBankModel mBob = new listBankModel(mJob.getString(WebParams.BANK_CODE),
                                             mJob.getString(WebParams.BANK_NAME),
                                             mJob.getString(WebParams.PRODUCT_CODE),
                                             mJob.getString(WebParams.PRODUCT_NAME),
@@ -656,9 +656,9 @@ public class PulsaAgentDescription extends Fragment {
         dialog.show();
     }
 
-    private class PaymentNameComparator implements Comparator<listbankModel>
+    private class PaymentNameComparator implements Comparator<listBankModel>
     {
-        public int compare(listbankModel left, listbankModel right) {
+        public int compare(listBankModel left, listBankModel right) {
             return left.getProduct_name().compareTo(right.getProduct_name());
         }
     }
