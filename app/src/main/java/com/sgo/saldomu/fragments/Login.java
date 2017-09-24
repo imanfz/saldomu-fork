@@ -58,12 +58,12 @@ public class Login extends Fragment implements View.OnClickListener {
     private ImageView image_spinner;
     private Button btnLogin;
     private Animation frameAnimation;
-    private MaterialRippleLayout btnLayout;
+//    private MaterialRippleLayout btnLayout;
     private View v;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_login, container, false);
+        v = inflater.inflate(R.layout.frag_login_new, container, false);
         return v;
     }
 
@@ -79,7 +79,7 @@ public class Login extends Fragment implements View.OnClickListener {
         btnLogin = (Button) v.findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(this);
 
-        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
+//        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
         btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
         btnforgetPass.setOnClickListener(this);
@@ -130,7 +130,7 @@ public class Login extends Fragment implements View.OnClickListener {
             btnRegister.setEnabled(false);
             passLoginValue.setEnabled(false);
             btnforgetPass.setEnabled(false);
-            btnLayout.setVisibility(View.INVISIBLE);
+//            btnLayout.setVisibility(View.INVISIBLE);
             btnLogin.setVisibility(View.INVISIBLE);
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
@@ -155,7 +155,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     btnRegister.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
-                    btnLayout.setVisibility(View.VISIBLE);
+//                    btnLayout.setVisibility(View.VISIBLE);
                     btnLogin.setVisibility(View.VISIBLE);
 
                     try {
@@ -243,7 +243,7 @@ public class Login extends Fragment implements View.OnClickListener {
                     userIDValue.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
-                    btnLayout.setVisibility(View.VISIBLE);
+//                    btnLayout.setVisibility(View.VISIBLE);
                     btnRegister.setEnabled(true);
                     btnLogin.setVisibility(View.VISIBLE);
                     Timber.w("Error Koneksi login:" + throwable.toString());
