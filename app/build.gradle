@@ -88,8 +88,8 @@ android {
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 2
-            versionName "1.0"
+            versionCode = 3
+            versionName "1.1"
             buildConfigField 'String', "AppID", "\"SDOM\""
         }
     }
