@@ -1087,5 +1087,9 @@
     <string name="listatm_topup_bri_4">Pilih YA</string>
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
+    <string name="validation_pulsa">No. Hp tidak ditemukan</string>
+
+
+
 
 </resources>
