@@ -20,12 +20,11 @@ public class NoHPFormat {
           }
       }
 
-      return "";
+      return noHP;
   }
 
     public static String formatTo08(String noHP){
         String result;
-
         if(!noHP.isEmpty()) {
             if (noHP.length()>5)
             {
@@ -35,11 +34,11 @@ public class NoHPFormat {
                 else if (noHP.charAt(0) == '9') result = noHP;
                 else if (noHP.charAt(0) == '8') result = "0" + noHP;
                 else if (noHP.charAt(0) == '0' && noHP.charAt(1) == '8') result = noHP;
-                else result = "08" + noHP;
+                else result = noHP;
                 return result.replaceAll("[\\s\\-\\.\\^:,]","");
             }
         }
 
-        return "";
+        return noHP;
     }
 }
