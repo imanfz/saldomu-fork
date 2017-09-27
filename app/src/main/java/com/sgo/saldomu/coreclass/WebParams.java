@@ -454,4 +454,9 @@ public class WebParams {
     public static String SHORT_URL = "short_url";
 
     public static String GMAP_API_STATUS = "status";
+
+    public static String IS_NEW_BULK = "is_new_bulk";
+    public static String EMAIL_TOKEN = "email_token";
+    public static String OTHER_ATM = "other_atm";
+
 }

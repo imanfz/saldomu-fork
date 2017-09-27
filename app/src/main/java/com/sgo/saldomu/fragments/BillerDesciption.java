@@ -36,8 +36,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.Beans.bank_biller_model;
-import com.sgo.saldomu.Beans.listbankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -115,7 +115,7 @@ public class BillerDesciption extends Fragment {
     private TableLayout mTableLayout;
     private JSONArray isi_field;
     private JSONArray isi_value;
-    private listbankModel mTempBank;
+    private listBankModel mTempBank;
     private Spinner spin_payment_options;
     private SecurePreferences sp;
     private List<String> paymentData;
@@ -357,7 +357,7 @@ public class BillerDesciption extends Fragment {
 //            }
             for (i = 0; i < mListBankBiller.size() ; i++ ){
                 if(payment_name.equals(mListBankBiller.get(i).getProduct_name())){
-                    mTempBank = new listbankModel(mListBankBiller.get(i).getBank_code(),
+                    mTempBank = new listBankModel(mListBankBiller.get(i).getBank_code(),
                                                     mListBankBiller.get(i).getBank_name(),
                                                     mListBankBiller.get(i).getProduct_code(),
                                                     mListBankBiller.get(i).getProduct_name(),

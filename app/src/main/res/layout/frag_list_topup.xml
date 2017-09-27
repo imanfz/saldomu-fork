@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-        >
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
     <include android:id="@+id/layout_no_data"
-        layout="@layout/no_data"/>
+        layout="@layout/no_data"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/layout_list"
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent"
-            android:background="#80FFFFFF"
-            >
-        <ListView
-                android:id="@android:id/list"
-                android:layout_width="match_parent"
-                android:dividerHeight="1dp"
-                android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:background="@color/grey_300"
+        >
 
-        </ListView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/maxtopup_layout"
+            android:padding="10dp"
+            android:background="@color/white"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/expandableListView"
+            android:layout_alignEnd="@+id/expandableListView">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/max_topup_textview"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                />
+        </LinearLayout>
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:dividerHeight="1dp"
+            android:layout_height="match_parent"
+            android:divider="@color/grey_300"
+            android:childDivider="@color/grey_300"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:groupIndicator="@drawable/transparent"
+            android:layout_below="@+id/maxtopup_layout"
+            android:textIsSelectable="true">
+            <!--android:dividerHeight="2dp"-->
+            <!--android:divider="@color/grey_300"-->
+            <!--android:childDivider="@color/grey_300"-->
+
+        </ExpandableListView>
     </RelativeLayout>
 </LinearLayout>

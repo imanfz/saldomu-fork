@@ -2,33 +2,20 @@ package com.sgo.saldomu.Beans;/*
   Created by Administrator on 12/15/2014.
  */
 
-public class listbankModel{
-
+public class listBankModel {
 
   private String bank_name;
-
-
   private String bank_code;
-
-
   private String product_code;
-
-
   private String product_name;
-
-
   private String product_type;
-
-
   private String product_h2h;
 
-
-
-  public listbankModel(){
+  public listBankModel(){
     super();
   }
 
-  public listbankModel(String _bank_code, String _bank_name,String _product_code, String _product_name,
+  public listBankModel(String _bank_code, String _bank_name, String _product_code, String _product_name,
                        String _product_type, String _product_h2h){
     super();
     this.setBank_code(_bank_code);

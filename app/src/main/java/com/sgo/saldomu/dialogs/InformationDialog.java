@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,12 +59,25 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     private int type;
     private ProgressBar progbar;
     private boolean shown = false;
+    private Boolean isActivty = false;
+
+    public interface OnDialogOkCallback {
+        void onOkButton();
+    }
 
     public static InformationDialog newInstance( int idx) {
         InformationDialog f = new InformationDialog();
         Bundle d = new Bundle();
         d.putInt(DefineValue.TYPE,idx);
         f.setArguments(d);
+        return f;
+    }
+
+    public static InformationDialog newInstance(Fragment _context, int idx) {
+        InformationDialog f = new InformationDialog();
+        f.setTargetFragment(_context,0);
+        f.type = idx;
+        f.isActivty = false;
         return f;
     }
 

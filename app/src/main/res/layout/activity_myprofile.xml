@@ -164,59 +164,31 @@
 
             </FrameLayout>
 
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:layout_marginBottom="12dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/myprofile_text_name"
-                          android:textColor="@color/colorPrimary"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:textStyle="bold"
-                        />
-            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_text_name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
 
                 <com.sgo.saldomu.coreclass.CustomEditText
                     android:id="@+id/myprofile_value_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:layout_marginTop="4dp"
                     android:inputType="text"
                     android:maxLength="@integer/et_name"
-                    android:layout_marginTop="4dp"
-                    />
-
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="match_parent"
-                          android:layout_height="wrap_content"
-                          android:orientation="vertical"
-                          android:layout_marginBottom="12dp"
-                          android:layout_marginLeft="16dp"
-                          android:layout_marginRight="16dp"
-                    >
-                <TextView android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/myprofile_text_bod"
-                          android:textColor="@color/colorPrimary"
-                          android:textSize="@dimen/abc_text_size_medium_material"
-                          android:textStyle="bold"
-                        />
-                <TextView
-                        android:id="@+id/myprofile_value_bod"
-                        android:clickable="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/abc_text_size_medium_material"
-                        android:text="@string/myprofile_text_date_click"
-                        android:textColor="@color/grey_1000b"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginLeft="8dp"
-                        />
+                    android:textSize="@dimen/abc_text_size_medium_material" />
 
             </LinearLayout>
 
@@ -307,6 +279,35 @@
                             android:id="@+id/myprofile_spinner_negara"
                             android:layout_gravity="center_horizontal"/>
                 </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_text_bod"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/myprofile_value_bod"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="4dp"
+                    android:clickable="true"
+                    android:text="@string/myprofile_text_date_click"
+                    android:textColor="@color/grey_1000b"
+                    android:textSize="@dimen/abc_text_size_medium_material" />
 
             </LinearLayout>
 
