@@ -44,6 +44,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -57,6 +58,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -78,6 +80,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -492,7 +495,94 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private void getCompleteLocationAddress()
     {
 
-        try
+        if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
+
+        } else {
+            currentLatitude = lastLocation.getLatitude();
+            currentLongitude = lastLocation.getLongitude();
+        }
+
+        completeAddress = "";
+
+
+
+        MyApiClient.getGoogleAPIAddressByLatLng(this, currentLatitude, currentLongitude, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+
+                    String status = response.getString(WebParams.GMAP_API_STATUS);
+                    Timber.w("JSON Response: "+response.toString());
+
+
+                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                        for (HashMap<String, String> hashMapObject : gData) {
+                            for (String key : hashMapObject.keySet()) {
+                                switch(key) {
+                                    case "formattedAddress":
+                                        completeAddress = hashMapObject.get(key);
+                                        break;
+                                    case "province":
+                                        provinceName = hashMapObject.get(key);
+                                        break;
+                                    case "district":
+                                        districtName = hashMapObject.get(key);
+                                        break;
+                                    case "subdistrict":
+                                        break;
+                                    case "country":
+                                        countryName = hashMapObject.get(key);
+                                        break;
+                                }
+
+
+                            }
+                        }
+
+                        if ( completeAddress.equals("") ) {
+                            completeAddress += districtName + ", ";
+                            completeAddress += provinceName;
+                        }
+
+
+                    }
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                Timber.w("Error Koneksi: " + throwable.toString());
+
+            }
+        });
+
+        /*try
         {
             Geocoder geocoder = new Geocoder(this, new Locale("id"));
 
@@ -554,6 +644,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //errorMessage = "Catch : Invalid latitude or longitude values";
             errorDesc = "Catch : Invalid latitude or longitude values";
         }
+        */
 
 
         /*RequestParams params = new RequestParams();

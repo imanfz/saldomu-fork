@@ -8,10 +8,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -42,11 +45,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Timber.d("Message data payload: " + remoteMessage.getData());
             if(remoteMessage.getData().containsKey(WebParams.SYNC_CODE)){
-                switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))){
-                    case SYNC_BBS_DATA :
-                        scheduleJob();
-                        break;
-                }
+                    switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))){
+                        case SYNC_BBS_DATA :
+                            scheduleJob();
+                            break;
+                    }
             }
         }
 
@@ -106,10 +109,41 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //
 
         PendingIntent contentIntent = null;
+        Intent intent   = null;
         FCMManager fcmManager = new FCMManager(this);
         if(msg.containsKey("type")) {
-            Intent intent = fcmManager.checkingAction(Integer.parseInt(msg.getString("type")));
-            contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            int msgType     = Integer.parseInt(msg.getString("type"));
+
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+            switch(msgType) {
+                case FCMManager.OPEN_PLAYSTORE:
+                    intent   = fcmManager.checkingAction(msgType);
+                    contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    break;
+                case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
+                    intent          = new Intent(this, BbsApprovalAgentActivity.class);
+
+                    stackBuilder.addParentStack(BbsApprovalAgentActivity.class);
+                    stackBuilder.addNextIntent(intent);
+
+                    contentIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    break;
+                default:
+
+                    break;
+            }
+
+
+
+
+
+
+
 
 //            case 3:
 //                backIntent = new Intent(getApplicationContext(),
@@ -166,24 +200,26 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //                break;
         }
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_notif_logo)
-                        .setContentTitle(notification.getBody())
-                        .setContentText(msg.getString("msg",""))
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri);
+        if ( intent != null ) {
+            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_notif_logo)
+                            .setContentTitle(notification.getBody())
+                            .setContentText(msg.getString("msg", ""))
+                            .setAutoCancel(true)
+                            .setSound(defaultSoundUri);
 
-        if(contentIntent != null)
-            mBuilder.setContentIntent(contentIntent);
+            if (contentIntent != null)
+                mBuilder.setContentIntent(contentIntent);
 
-        mBuilder.setDefaults(Notification.DEFAULT_ALL);
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mBuilder.setDefaults(Notification.DEFAULT_ALL);
+            // Gets an instance of the NotificationManager service
+            NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(getNotifId(), mBuilder.build());
+            // Builds the notification and issues it.
+            mNotifyMgr.notify(getNotifId(), mBuilder.build());
+        }
     }
 
     int getNotifId(){
@@ -192,4 +228,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         String last4Str = tmpStr.substring(tmpStr.length() - 5);
         return Integer.valueOf(last4Str);
     }
+
+
 }

@@ -103,7 +103,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     Double selectedLat, selectedLong;
     Double defaultLat, defaultLong;
     Button btnSubmit, btnLokasiGPS;
-    ProgressDialog progdialog;
+    ProgressDialog progdialog, progdialog2;
     SecurePreferences sp;
     MerchantCommunityList memberDetail;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
@@ -170,6 +170,12 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         }
 
+        if(checkPlayServices())
+        {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
         myRealm = Realm.getDefaultInstance();
         setActionBarIcon(R.drawable.ic_arrow_left);
         memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
@@ -225,12 +231,13 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
 
                     } else {
-                        try {
+                        /*try {
                             defaultLat = lastLocation.getLatitude();
                             defaultLong = lastLocation.getLongitude();
                         } catch ( Exception e ) {
                             e.printStackTrace();
-                        }
+                        }*/
+                        searchLocationByDistrictProvince();
                     }
 
                     if (mMap == null) {
@@ -752,31 +759,33 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
             });
 
         } else {
-            latLng = new LatLng(defaultLat, defaultLong);
-            mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+            if ( defaultLat != null && defaultLong != null ) {
+                latLng = new LatLng(defaultLat, defaultLong);
+                mMap.addMarker(new MarkerOptions().position(latLng).title(memberDefaultAddress));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
-            cameraPosition = new CameraPosition.Builder()
-                    .target(latLng) // Center Set
-                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                    .build(); // Creates a CameraPosition from the builder
+                cameraPosition = new CameraPosition.Builder()
+                        .target(latLng) // Center Set
+                        .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                        .build(); // Creates a CameraPosition from the builder
 
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                @Override
-                public void onFinish() {
-                    //jika animate camera position sudah selesai, maka on receiver baru boleh dijalankan.
-                    //jika receiver dijalankan sebelum camera position selesai, maka map tidak akan ter-rendering sempurna
-                    //receiverStatus = true;
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        //jika animate camera position sudah selesai, maka on receiver baru boleh dijalankan.
+                        //jika receiver dijalankan sebelum camera position selesai, maka map tidak akan ter-rendering sempurna
+                        //receiverStatus = true;
 
-                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                    mMap.getUiSettings().setAllGesturesEnabled(true);
-                }
+                        //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                        mMap.getUiSettings().setAllGesturesEnabled(true);
+                    }
 
-                @Override
-                public void onCancel() {
-                }
-            });
+                    @Override
+                    public void onCancel() {
+                    }
+                });
+            }
         }
 
 
@@ -941,6 +950,106 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                 createLocationRequest();
                 googleApiClient.connect();
             }
+
+            memberDefaultAddress    = address +", "+ districtName + ", "+ provinceName;
+            progdialog                      = DefinedDialog.CreateProgressDialog(this, "");
+
+            MyApiClient.getGoogleAPICoordinateByAddress(this, memberDefaultAddress, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                    try {
+                        if ( progdialog.isShowing())
+                            progdialog.dismiss();
+
+                        String status = response.getString(WebParams.GMAP_API_STATUS);
+
+
+
+                        if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                            ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                            for (HashMap<String, String> hashMapObject : gData) {
+                                for (String key : hashMapObject.keySet()) {
+                                    switch(key) {
+                                        case "latitude":
+                                            selectedLat = Double.valueOf(hashMapObject.get(key));
+                                            defaultLat = selectedLat;
+                                            break;
+                                        case "longitude":
+                                            selectedLong = Double.valueOf(hashMapObject.get(key));
+                                            defaultLong = selectedLong;
+                                            break;
+                                        case "postal_code":
+                                            postalCode = hashMapObject.get(key);
+                                            break;
+                                        case "province":
+                                            provinceName = hashMapObject.get(key);
+                                            break;
+                                        case "district":
+                                            newDistrictName = hashMapObject.get(key);
+                                            break;
+                                        case "subdistrict":
+                                            break;
+                                        case "country":
+                                            countryName = hashMapObject.get(key);
+                                            break;
+                                    }
+
+
+                                }
+                            }
+
+
+
+                        } else {
+                            /*try {
+                                selectedLat = lastLocation.getLatitude();
+                                selectedLong = lastLocation.getLongitude();
+
+                            } catch ( Exception e ) {
+                                e.printStackTrace();
+                            }*/
+                            searchLocationByDistrictProvince();
+                        }
+
+                        if (mMap == null) {
+
+                            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                    .getMapAsync(BbsMemberLocationActivity.this);
+                        }
+
+                        setMapCamera();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                private void ifFailure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    progdialog.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
+                }
+            });
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -1087,5 +1196,106 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         } else {
 
         }
+    }
+
+    private void searchLocationByDistrictProvince() {
+        progdialog2                      = DefinedDialog.CreateProgressDialog(this, "");
+
+            MyApiClient.getGoogleAPICoordinateByAddress(this, districtName+", "+provinceName, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                    try {
+                        if ( progdialog2.isShowing())
+                            progdialog2.dismiss();
+
+                        String status = response.getString(WebParams.GMAP_API_STATUS);
+
+
+
+                        if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                            ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                            for (HashMap<String, String> hashMapObject : gData) {
+                                for (String key : hashMapObject.keySet()) {
+                                    switch(key) {
+                                        case "latitude":
+                                            selectedLat = Double.valueOf(hashMapObject.get(key));
+                                            defaultLat = selectedLat;
+                                            break;
+                                        case "longitude":
+                                            selectedLong = Double.valueOf(hashMapObject.get(key));
+                                            defaultLong = selectedLong;
+                                            break;
+                                        case "postal_code":
+                                            postalCode = hashMapObject.get(key);
+                                            break;
+                                        case "province":
+                                            provinceName = hashMapObject.get(key);
+                                            break;
+                                        case "district":
+                                            newDistrictName = hashMapObject.get(key);
+                                            break;
+                                        case "subdistrict":
+                                            break;
+                                        case "country":
+                                            countryName = hashMapObject.get(key);
+                                            break;
+                                    }
+
+
+                                }
+                            }
+
+
+
+                        } else {
+                            try {
+                                selectedLat = lastLocation.getLatitude();
+                                selectedLong = lastLocation.getLongitude();
+
+                            } catch ( Exception e ) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (mMap == null) {
+
+                            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+                                    .getMapAsync(BbsMemberLocationActivity.this);
+                        }
+
+                        setMapCamera();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                private void ifFailure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    progdialog2.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
+                }
+            });
+
+
     }
 }

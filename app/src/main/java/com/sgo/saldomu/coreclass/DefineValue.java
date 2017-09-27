@@ -317,8 +317,8 @@ public class DefineValue {
     public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
     public static int AGENT_DISPLACEMENT                            = 20; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 15000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 15000; //58 seconds
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
     public static int MEMBER_DISPLACEMENT                           = 20; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";

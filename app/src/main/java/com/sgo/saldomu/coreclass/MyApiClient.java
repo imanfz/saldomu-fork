@@ -72,6 +72,7 @@ public class MyApiClient {
     public static String headaddressfinal = BuildConfig.HeadAddress+"hpku/";
 
     public static String headaodaddressfinal    = BuildConfig.HeadAddress+"agentlocation/";
+    public static String urlMNotif              = BuildConfig.UrlMNotif;
 
     //Link webservices Signature
 
@@ -342,7 +343,7 @@ public class MyApiClient {
         LINK_INQUIRY_TOKEN_ATC  = headaddressfinal + "InquiryTokenATC/Retrieve";
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
-        LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
+        LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;

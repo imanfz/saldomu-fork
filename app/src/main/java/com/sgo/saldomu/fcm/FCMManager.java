@@ -18,6 +18,8 @@ public class FCMManager {
     public final static int SYNC_BBS_DATA = 70;
     public final static int OPEN_PLAYSTORE = 80;
 
+    public final static int AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT = 1001;
+
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
 

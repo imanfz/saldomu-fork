@@ -23,6 +23,7 @@ public class GoogleAPIUtils {
             hmObject.put("latitude", objLocation.getString("lat"));
             hmObject.put("longitude", objLocation.getString("lng"));
 
+            hmObject.put("formattedAddress", objResults.getJSONObject(0).getString("formatted_address"));
 
             JSONArray addressComponents        = objResults.getJSONObject(0).getJSONArray("address_components");
             for(int i =0 ; i < addressComponents.length(); i++){

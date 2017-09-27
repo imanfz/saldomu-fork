@@ -338,9 +338,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
-                                        Intent i = new Intent(BbsApprovalAgentActivity.this, MainPage.class);
-                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(i);
+                                        finish();
 
                                     }
                                 });

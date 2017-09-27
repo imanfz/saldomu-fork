@@ -285,6 +285,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         if ( lastLocation.getLongitude() != memberLongitude )
             memberLongitude     = lastLocation.getLongitude();
 
+        if ( progdialog != null ) {
+            if ( progdialog.isShowing() ) progdialog.dismiss();
+        }
+
         if ( !isRunning ) {
             handler.removeCallbacks(runnable2);
             updateLocationMember();
@@ -484,7 +488,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 try {
                     isRunning = false;
                     String code = response.getString(WebParams.ERROR_CODE);
-                    handler.postDelayed(runnable2, timeDelayed);
+
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
                         agentLatitude      = response.getDouble(WebParams.SHOP_LATITUDE);
@@ -504,6 +508,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                         //startActivity(new Intent(getApplicationContext(), MainPage.class));
                     }
+                    handler.postDelayed(runnable2, timeDelayed);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -522,13 +527,16 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             }
 
             private void ifFailure(Throwable throwable) {
+
+                progdialog.dismiss();
+
                 if (MyApiClient.PROD_FAILURE_FLAG)
                     Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 isRunning = false;
-                progdialog.dismiss();
+
                 Timber.w("Error Koneksi login:" + throwable.toString());
 
             }
@@ -646,9 +654,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 try {
-
-                    String code = response.getString(WebParams.ERROR_CODE);
                     progdialog2.dismiss();
+                    String code = response.getString(WebParams.ERROR_CODE);
+
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
                         Intent intent = new Intent(getApplicationContext(), MainPage.class);
