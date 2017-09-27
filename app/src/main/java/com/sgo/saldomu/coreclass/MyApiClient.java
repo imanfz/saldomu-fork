@@ -210,9 +210,15 @@ public class MyApiClient {
     public static String LINK_CANCEL_ATC;
     public static String LINK_REQ_CHANGE_EMAIL;
     public static String LINK_CONFIRM_CHANGE_EMAIL;
+    public static String LINK_REG_STEP1;
+    public static String LINK_REG_STEP2;
+    public static String LINK_REG_STEP3;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
+        LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
+        LINK_REG_STEP2           = headaddressfinal + "RegStep2/Invoke";
+        LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
@@ -1118,6 +1124,21 @@ public class MyApiClient {
     public static void sentConfirmChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address confirm change email:"+ LINK_CONFIRM_CHANGE_EMAIL);
         post(mContext, LINK_CONFIRM_CHANGE_EMAIL, params, responseHandler);
+    }
+
+    public static void sentRegStep3(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 3:"+ LINK_REG_STEP3);
+        post(mContext, LINK_REG_STEP3, params, responseHandler);
+    }
+
+    public static void sentRegStep1(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 1:"+ LINK_REG_STEP1);
+        post(mContext, LINK_REG_STEP1, params, responseHandler);
+    }
+
+    public static void sentRegStep2(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 2:"+ LINK_REG_STEP2);
+        post(mContext, LINK_REG_STEP2, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------
