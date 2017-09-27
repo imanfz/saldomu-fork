@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/camera_ktp_paspor"
         android:layout_below="@+id/tv_foto_ktp_paspor"
-        android:text="1. Pastikan Foto jelas dan tidak buram"
+        android:text="1. Pastikan Foto jelas dan tidak buram."
         android:textColor="@color/grey_1000b"
         android:id="@+id/tv_ktp_paspor_1"
         android:layout_margin="8dp"/>
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_ktp_paspor_1"
         android:layout_toRightOf="@+id/camera_ktp_paspor"
-        android:text="2. Foto asli (bukan fotocopy, hasil scan atau edit)"
+        android:text="2. Foto asli (bukan fotocopy, hasil scan atau edit)."
         android:textColor="@color/grey_1000b"
         android:id="@+id/tv_ktp_paspor_2"
         android:layout_marginLeft="8dp"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_selfie_ktp_paspor_1"
             android:layout_toRightOf="@+id/camera_selfie_ktp_paspor"
-            android:text="2. Pastikan wajah anda dan foto KTP anda terlihat jelas"
+            android:text="2. Pastikan wajah anda dan foto KTP anda terlihat jelas."
             android:textColor="@color/grey_1000b"
             android:id="@+id/tv_selfie_ktp_paspor_2"
             android:layout_marginLeft="8dp"
@@ -93,4 +93,52 @@
             android:layout_marginBottom="15dp"/>
     </RelativeLayout>
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Gambarkan Tanda Tangan Anda"
+        android:textColor="@color/grey_1000b"
+        android:textSize="16dp"
+        android:id="@+id/tv_ttd"/>
+    <ImageButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/tv_ttd"
+        android:id="@+id/camera_ttd"
+        android:src="@drawable/ic_photo_camera"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/camera_ttd"
+        android:layout_below="@+id/tv_ttd"
+        android:text="1. Gambarkan tanda tangan Anda di atas secarik kertas."
+        android:textColor="@color/grey_1000b"
+        android:id="@+id/tv_ttd_1"
+        android:layout_margin="8dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_ttd_1"
+        android:layout_toRightOf="@+id/camera_ttd"
+        android:text="2. Ambil foto kertas tersebut secara jelas."
+        android:textColor="@color/grey_1000b"
+        android:id="@+id/tv_ttd_2"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        />
+</RelativeLayout>
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="30dp"
+        android:background="@color/colorPrimaryDark"
+        android:text="Selanjutnya"
+        android:textColor="@color/white" />
 </LinearLayout>
