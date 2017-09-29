@@ -4,7 +4,7 @@ package com.sgo.saldomu.coreclass;/*
 
 import java.util.Locale;
 
-class LocaleUtils {
+public class LocaleUtils {
 
   public static Locale fromString(String locale) {
     String parts[] = locale.split("_", -1);

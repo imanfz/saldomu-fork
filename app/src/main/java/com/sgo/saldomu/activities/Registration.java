@@ -29,7 +29,15 @@ import timber.log.Timber;
 
 public class Registration extends BaseActivity{
 
-    private static Activity fa;
+    public static final int REQUEST_EXIT = 0 ;
+    public static final int RESULT_PIN = 1 ;
+    public static final int RESULT_NORMAL = 2 ;
+    public static final int RESULT_FINISHING = 5 ;
+    public static final int ACTIVITY_RESULT = 3;
+
+    FragmentManager fragmentManager;
+
+    public static Activity fa;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,7 @@ public class Registration extends BaseActivity{
 
             FirstScreen fs = new FirstScreen();
             fs.setArguments(getIntent().getExtras());
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.myfragment, fs,"fs");
             fragmentTransaction.commit();
@@ -87,7 +95,7 @@ public class Registration extends BaseActivity{
 
     }
 
-    private void switchActivity(Intent mIntent) {
+    public void switchActivity(Intent mIntent) {
         getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         startActivity(mIntent);
     }
@@ -114,8 +122,6 @@ public class Registration extends BaseActivity{
             super.onBackPressed();
         }
     }
-
-
 
     public void togglerBroadcastReceiver(Boolean _on, BroadcastReceiver _myreceiver){
 
@@ -157,7 +163,7 @@ public class Registration extends BaseActivity{
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment();
+                changeFragment(true);
                 dialog.dismiss();
             }
         });
@@ -165,7 +171,7 @@ public class Registration extends BaseActivity{
         dialog.show();
     }
 
-    private void changeFragment(){
+    public void changeFragment(Boolean submit){
         Intent i = new Intent(this,LoginActivity.class);
         switchActivity(i);
     }
@@ -185,11 +191,16 @@ public class Registration extends BaseActivity{
                 showDialog();
             }
         }*/
-        super.onActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
+    public void switchActivity(Intent mIntent, int activity_type) {
+        switch (activity_type){
+            case ACTIVITY_RESULT:
+                startActivityForResult(mIntent, REQUEST_EXIT);
+                break;
+        }
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
