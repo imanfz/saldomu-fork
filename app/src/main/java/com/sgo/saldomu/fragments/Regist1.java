@@ -85,13 +85,13 @@ public class Regist1 extends Fragment{
     public void onActivityCreated (Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
 
-        btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
-        btnLanjut.setOnClickListener(btnNextClickListener);
-
         namaValue=(EditText)getActivity().findViewById(R.id.name_value);
         emailValue=(EditText)getActivity().findViewById(R.id.email_value);
         noHPValue=(EditText)getActivity().findViewById(R.id.noHP_value);
         cb_terms = (CheckBox) v.findViewById(R.id.cb_termsncondition);
+
+        btnLanjut = (Button)getActivity().findViewById(R.id.btn_reg1_verification);
+        btnLanjut.setOnClickListener(btnNextClickListener);
 
         cb_terms.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -126,6 +126,18 @@ public class Regist1 extends Fragment{
                 switchFragment(mfrag,getString(R.string.termsncondition_title),true);
             }
         });
+
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+        {
+            Boolean is_unregister_member = bundle.getBoolean(DefineValue.IS_UNREGISTER_MEMBER, false);
+            String userId = bundle.getString(DefineValue.USER_ID);
+            if (is_unregister_member)
+            {
+                noHPValue.setText(userId);
+                noHPValue.setEnabled(false);
+            }
+        }
     }
 
     @Override

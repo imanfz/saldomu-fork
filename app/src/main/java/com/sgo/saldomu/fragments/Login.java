@@ -161,12 +161,26 @@ public class Login extends Fragment implements View.OnClickListener {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         String msg = response.getString(WebParams.ERROR_MESSAGE);
+                        Timber.d("isi params response login:"+response.toString());
+
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params response login:"+response.toString());
+                            String unregist_member = response.optString(WebParams.UNREGISTER_MEMBER,"N");
                             if(checkCommunity(response)){
-                                Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
-                                setLoginProfile(response);
-                                changeActivity();
+                                if (unregist_member.equals("N"))
+                                {
+                                    Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                                    setLoginProfile(response);
+                                    changeActivity();
+                                }
+                                else
+                                {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
+                                    bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
+                                    Fragment newFrag = new Regist1();
+                                    newFrag.setArguments(bundle);
+                                    switchFragment(newFrag, "reg1", true);
+                                }
                             }
                         } else {
                             if(code.equals(DefineValue.ERROR_0042)){
