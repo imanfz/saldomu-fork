@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.view.*;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
@@ -206,11 +207,14 @@ public class ListBillerMerchant extends ListFragment {
         if (billerIdNumber!=null && !billerIdNumber.equals(""))
         {
             PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(),billerIdNumber);
+            if (BillerIdNumber!=null)
+            {
                 for (int i=0; i<_data.size(); i++)
                 {
                     Timber.d("_data"+_data.get(i));
                     if (_data!=null)
                     {
+                        Timber.d("prefix name = "+BillerIdNumber.prefix_name);
                         if (_data.get(i).toLowerCase().contains(BillerIdNumber.prefix_name.toLowerCase()))
                         {
                             changeToInputBiller(mListBillerData.get(i).getComm_id(),
@@ -218,7 +222,9 @@ public class ListBillerMerchant extends ListFragment {
                                     mListBillerData.get(i).getItem_id());
                         }
                     }
+
                 }
+            }
         }
 
     }
