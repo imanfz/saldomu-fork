@@ -305,7 +305,7 @@ public class Regist2 extends Fragment {
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             flag_change_pin="N";
-                            showDialog();
+                            check();
                         } else {
                             Timber.d("isi error create pin:" + response.toString());
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -370,6 +370,7 @@ public class Regist2 extends Fragment {
             i.putExtra(DefineValue.REGISTRATION, true);
             switchActivityPIN(i);
         }
+        else showDialog();
     }
 
     private void switchActivityPIN(Intent i){
