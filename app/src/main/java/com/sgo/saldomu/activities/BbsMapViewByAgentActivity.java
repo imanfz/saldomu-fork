@@ -487,7 +487,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
                                 bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
 
-                                //handler.removeCallbacks(runnable);
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.putExtras(bundle);

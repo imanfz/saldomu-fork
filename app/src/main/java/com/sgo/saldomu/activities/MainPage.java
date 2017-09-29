@@ -137,15 +137,16 @@ public class MainPage extends BaseActivity{
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if(checkNotification()){
-                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
-
-                FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type);
-                startActivity(intent);
-                this.finish();
-            }
-            else {
+//            if(checkNotification()){
+//                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+//
+//                FCMManager fcmManager = new FCMManager(this);
+//                Intent intent = fcmManager.checkingAction(type);
+//                startActivity(intent);
+//                this.finish();
+//
+//            }
+//            else {
                 if (!isLogin()) {
                     openFirstScreen(FIRST_SCREEN_INTRO);
                 } else {
@@ -161,7 +162,7 @@ public class MainPage extends BaseActivity{
                     AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
                     startService(new Intent(this, UpdateLocationService.class));
                 }
-            }
+            //}
         }
         else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);

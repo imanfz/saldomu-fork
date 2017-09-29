@@ -18,7 +18,12 @@ public class FCMManager {
     public final static int SYNC_BBS_DATA = 70;
     public final static int OPEN_PLAYSTORE = 80;
 
-    public final static int AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT = 1001;
+    public final static int AGENT_LOCATION_SET_SHOP_LOCATION        = 1000;
+    public final static int AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT  = 1001;
+    public final static int AGENT_LOCATION_SHOP_REJECT_TRANSACTION  = 1002;
+    public final static int AGENT_LOCATION_KEY_ACCEPT_TRANSACTION   = 1003;
+    public final static int AGENT_LOCATION_KEY_REJECT_TRANSACTION   = 1004;
+    public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION      = 1005;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
