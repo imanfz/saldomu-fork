@@ -311,9 +311,9 @@ public class DefineValue {
     //GOOGLE MAP DEFINE PARAMETERS
     public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 15000; //15 seconds
-    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 10000; //10 seconds
-    public static int DISPLACEMENT                          = 10;
+    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
+    public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
     public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
@@ -365,6 +365,7 @@ public class DefineValue {
     public static String BBS_SENDER_ID							= "GOAPK";
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
     public static String BBS_AGENT_MOBILITY                     = "mobility";
+    public static String IS_AUTOSEARCH                          = "isAutoSearch";
 
     public static String TX_ID2             = "tx_id";
     public static String KEY_CODE           = "key_code";

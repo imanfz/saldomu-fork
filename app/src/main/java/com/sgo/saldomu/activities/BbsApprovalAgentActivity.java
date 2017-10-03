@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -47,11 +49,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        EasyPermissions.PermissionCallbacks {
 
     private SecurePreferences sp;
     ProgressDialog progdialog, progdialog2;
@@ -73,10 +78,48 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if ( checkPlayServices() ) {
-            buildGoogleApiClient();
-            createLocationRequest();
+        try {
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if(checkPlayServices())
+                {
+                    buildGoogleApiClient();
+                    createLocationRequest();
+                }
+
+                googleApiClient.connect();
+            } else {
+                // Ask for one permission
+                EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                        GlobalSetting.RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+
+            if ( !GlobalSetting.isLocationEnabled(this) )
+            {
+                final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setMessage(getString(R.string.alertbox_gps_warning))
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(ilocation, 1);
+
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                                dialog.cancel();
+                                startActivity(new Intent(getApplicationContext(), MainPage.class));
+                            }
+                        });
+                final android.app.AlertDialog alert = builder.create();
+                alert.show();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -112,7 +155,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             //is member
             Intent i = new Intent(this, MainPage.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
         }
@@ -325,7 +367,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         */
 
                     } else {
-                        progdialog.dismiss();
+                        if ( progdialog.isShowing())
+                            progdialog.dismiss();
+
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
@@ -396,7 +440,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         btnApprove.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+                    progdialog2              = DefinedDialog.CreateProgressDialog(BbsApprovalAgentActivity.this, "");
                     flagTxStatus = DefineValue.STRING_ACCEPT;
 
                     if ( shopDetails.size() > 1 ) {
@@ -420,7 +464,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         btnReject.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(getApplicationContext(), "");
+                    progdialog2              = DefinedDialog.CreateProgressDialog(BbsApprovalAgentActivity.this, "");
                     flagTxStatus = DefineValue.STRING_CANCEL;
 
                     if ( shopDetails.size() > 1 ) {
@@ -524,7 +568,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                             mEditor.apply();
 
                             Intent i = new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(i);
                             finish();
                         } else {
@@ -661,12 +704,8 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     @Override
     protected void onStart() {
         super.onStart();
-        try {
-            googleApiClient.connect();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
@@ -680,5 +719,55 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         if (googleApiClient != null && googleApiClient.isConnected()) {
             googleApiClient.disconnect();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if(checkPlayServices())
+        {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        googleApiClient.connect();
+
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        switch (requestCode) {
+            case GlobalSetting.RC_LOCATION_PERM:
+                // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
+                // This will display a dialog directing them to enable the permission in app settings.
+                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                    new AppSettingsDialog.Builder(this).build().show();
+                } else {
+                    android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+                    alertDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+
+        }
+
     }
 }

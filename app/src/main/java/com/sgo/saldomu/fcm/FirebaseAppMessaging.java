@@ -15,15 +15,19 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
+import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
+import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.WebParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -145,6 +149,43 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             );
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
+                    intent = new Intent(this, BbsSearchAgentActivity.class);
+                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                        try {
+                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
+                            String categoryName     = jsonOptions.getJSONObject(0).getString("category_name");
+                            String categoryId       = jsonOptions.getJSONObject(0).getString("category_id");
+                            Double benefLatitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
+                            Double benefLongitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
+
+                            bundle.putString(DefineValue.CATEGORY_ID, categoryId);
+                            bundle.putString(DefineValue.CATEGORY_NAME, categoryName);
+                            bundle.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundle.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                            bundle.putDouble(DefineValue.LAST_CURRENT_LATITUDE, benefLatitude);
+                            bundle.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, benefLongitude);
+
+                            intent.putExtras(bundle);
+
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: "+e.getMessage());
+                        }
+
+                    }
+                    stackBuilder.addParentStack(BbsSearchAgentActivity.class);
+                    stackBuilder.addNextIntent(intent);
+
+                    contentIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    break;
                 case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
                     intent = new Intent(this, MainPage.class);
 
@@ -174,16 +215,87 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     PendingIntent.FLAG_UPDATE_CURRENT
                             );
                     break;
+                case FCMManager.SHOP_ACCEPT_TRX:
+                    intent = new Intent(this, BbsMapViewByMemberActivity.class);
+
+                    stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
+                    stackBuilder.addNextIntent(intent);
+
+                    contentIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    break;
+                case FCMManager.SHOP_NOTIF_TRANSACTION:
+
+                    if ( msg.containsKey("options") && msg.getString("options") != null )
+                    {
+
+
+                        try {
+                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
+
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            if (keySchemeCode.equals(DefineValue.CTA)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                            } else if (keySchemeCode.equals(DefineValue.ATC)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                            }
+
+                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundle.putString(DefineValue.KEY_CODE, keyCode);
+
+                            intent = new Intent(this, BBSActivity.class);
+                            intent.putExtras(bundle);
+
+                            stackBuilder.addParentStack(BBSActivity.class);
+                            stackBuilder.addNextIntent(intent);
+
+                            contentIntent =
+                                    stackBuilder.getPendingIntent(
+                                            0,
+                                            PendingIntent.FLAG_UPDATE_CURRENT
+                                    );
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: "+e.getMessage());
+                        }
+                    }
+                    break;
                 case FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION:
 
                     if ( msg.containsKey("options") && msg.getString("options") != null )
                     {
-                        try {
-                            JSONObject jsonOptionObject = new JSONObject(msg.getString("options"));
 
-                            String keyCode          = jsonOptionObject.getString("key_code");
-                            String keyAmount        = jsonOptionObject.getString("amount");
-                            String keySchemeCode    = jsonOptionObject.getString("scheme_code");
+                        /*intent = new Intent(this, BbsMapViewByMemberActivity.class);
+
+                        stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
+                        stackBuilder.addNextIntent(intent);
+
+                        contentIntent =
+                                stackBuilder.getPendingIntent(
+                                        0,
+                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                );*/
+
+                        try {
+                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                            String keyCode          = jsonOptions.getJSONObject(0).getString("key_code");
+                            String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
+                            String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
+
+                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            if (keySchemeCode.equals(DefineValue.CTA)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                            } else if (keySchemeCode.equals(DefineValue.ATC)) {
+                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                            }
 
                             bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
@@ -222,10 +334,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             int msgType = Integer.parseInt(msg.getString("type"));
 
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            Map<String, String> mapData = new HashMap<String,String>();
 
             switch (msgType) {
                 case FCMManager.OPEN_PLAYSTORE:
-                    intent = fcmManager.checkingAction(msgType);
+                    intent = fcmManager.checkingAction(msgType, mapData);
                     contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     break;
                 case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
@@ -311,7 +424,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         .setContentTitle(notification.getBody())
                         .setContentText(msg.getString("msg", ""))
                         .setAutoCancel(true)
-                        .setSound(defaultSoundUri);
+                        .setSound(defaultSoundUri)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("msg", "")));
 
         if (contentIntent != null)
             mBuilder.setContentIntent(contentIntent);

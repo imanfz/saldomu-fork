@@ -488,10 +488,10 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                                 bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
 
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                                 finish();
+
                             } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
                                 Intent intent = new Intent(getApplicationContext(), MainPage.class);
                                 startActivity(intent);

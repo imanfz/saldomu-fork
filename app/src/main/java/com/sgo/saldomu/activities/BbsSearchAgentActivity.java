@@ -179,7 +179,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
         }
 
+        if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
+            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.putString(DefineValue.AMOUNT, amount);
+                mEditor.apply();
+
+                searchToko(currentLatitude, currentLongitude);
+            }
+        }
 
 
 
@@ -198,6 +211,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
         btnProses               = (Button) findViewById(R.id.btnProses);
+        btnProses.setEnabled(false);
 
         //startService(locationIntent);
 
@@ -331,7 +345,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             if ( lastLocation == null ){
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
-
+                btnProses.setEnabled(true);
                 if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
@@ -369,6 +383,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
+        btnProses.setEnabled(true);
 //        googleApiClient.disconnect();
 
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
@@ -1476,6 +1491,16 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
+
+            try {
+                if (checkPlayServices()) {
+                    buildGoogleApiClient();
+                    createLocationRequest();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             runningApp();
         } else {
             // Do not have permissions, request them now
@@ -1619,7 +1644,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        progdialog2.dismiss();
+                        if ( progdialog2.isShowing())
+                            progdialog2.dismiss();
+
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -1690,7 +1717,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 private void ifFailure(Throwable throwable) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
-                    progdialog2.dismiss();
+                    if ( progdialog2.isShowing())
+                        progdialog2.dismiss();
+
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
