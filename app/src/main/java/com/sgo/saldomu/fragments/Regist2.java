@@ -51,15 +51,13 @@ public class Regist2 extends Fragment {
     EditText etToken;
     TextView currEmail;
     Button btnProses, btnCancel;
-    String namaValid, noHPValid, emailValid, authType, custID, token, pass, confPass, memberID;
+    String namaValid, noHPValid, emailValid, authType, token, pass, confPass, memberID;
     String flag_change_pwd, flag_change_pin;
     ProgressDialog progdialog;
-    Boolean isFacebook;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isFacebook = false;
     }
 
     @Override
@@ -79,7 +77,6 @@ public class Regist2 extends Fragment {
             noHPValid = args.getString(DefineValue.CUST_PHONE, "");
             namaValid = args.getString(DefineValue.CUST_NAME, "");
             emailValid = args.getString(DefineValue.CUST_EMAIL, "-");
-            isFacebook = args.getBoolean(DefineValue.IS_FACEBOOK,false);
         }
 
         etToken = (EditText) v.findViewById(R.id.token_value);
@@ -215,7 +212,7 @@ public class Regist2 extends Fragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
-            params.put(WebParams.CUST_ID, custID);
+            params.put(WebParams.CUST_ID, noHPValid);
 
             Timber.d("params create pass:"+params.toString());
 
@@ -273,7 +270,7 @@ public class Regist2 extends Fragment {
                     Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                     i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                     switchActivityPIN(i);
-                    Timber.w("Error Koneksi create pass reg3:" + throwable.toString());
+                    Timber.w("Error Koneksi create pass reg2:" + throwable.toString());
                 }
             });
         }
@@ -287,7 +284,7 @@ public class Regist2 extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = new RequestParams();
-            params.put(WebParams.USER_ID, custID);
+            params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
@@ -301,6 +298,7 @@ public class Regist2 extends Fragment {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         String message = response.getString(WebParams.ERROR_MESSAGE);
+                        Timber.d("response create pin:"+response.toString());
 
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -348,7 +346,7 @@ public class Regist2 extends Fragment {
                     Intent i = new Intent(getActivity(), CreatePIN.class);
                     i.putExtra(DefineValue.REGISTRATION, true);
                     switchActivity(i);
-                    Timber.w("Error Koneksi create pin reg3:" + throwable.toString());
+                    Timber.w("Error Koneksi create pin reg2:" + throwable.toString());
                 }
             });
         }
@@ -399,6 +397,7 @@ public class Regist2 extends Fragment {
 
         Title.setText(getResources().getString(R.string.regist2_notif_title));
         Message.setText(getResources().getString(R.string.regist2_notif_message_1));
+        Message2.setText(noHPValid);
         Message2.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
         Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
 
