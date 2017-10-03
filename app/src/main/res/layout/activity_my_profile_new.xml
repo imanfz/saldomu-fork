@@ -3,7 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ExpandableListView
-        android:id="@+id/expandableListView"
+        android:id="@+id/expandableListProfile"
         android:layout_width="match_parent"
         android:dividerHeight="1dp"
         android:layout_height="match_parent"
@@ -17,4 +17,6 @@
         android:textIsSelectable="true">
 
     </ExpandableListView>
+
+
 </LinearLayout>

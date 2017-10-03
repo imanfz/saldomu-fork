@@ -109,4 +109,14 @@
 
     </LinearLayout>
 
+    <Button
+    android:id="@+id/button2"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_margin="30dp"
+    android:background="@color/colorPrimaryDark"
+    android:text="Selanjutnya"
+    android:textColor="@color/white" />
+
 </LinearLayout>

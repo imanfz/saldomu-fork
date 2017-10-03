@@ -50,7 +50,6 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notif_logo" />
@@ -286,59 +285,62 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <service
             android:name=".services.AgentShopService"
-            android:exported="false"/>
-        <activity android:name=".activities.ErrorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ErrorActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <service android:name=".services.BalanceService"
-            android:exported="false"
-            />
-        <service android:name=".services.AppInfoService"
-            android:exported="false"
-            />
-        <service android:name=".services.UserProfileService"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateLocationService"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateBBSCity"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateBBSData"
-            android:exported="false"/>
-
+        <service
+            android:name=".services.BalanceService"
+            android:exported="false" />
+        <service
+            android:name=".services.AppInfoService"
+            android:exported="false" />
+        <service
+            android:name=".services.UserProfileService"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateLocationService"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateBBSCity"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateBBSData"
+            android:exported="false" />
         // Job Dispatcher Service
         <service
-            android:exported="false"
-            android:name=".services.jobs.JobUpdateBBSData">
+            android:name=".services.jobs.JobUpdateBBSData"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
         <service
-            android:exported="false"
-            android:name=".services.jobs.JobRegisterFCM">
+            android:name=".services.jobs.JobRegisterFCM"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-
         <service android:name=".fcm.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".fcm.FirebaseAppMessaging">
+        <service android:name=".fcm.FirebaseAppMessaging">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name=".activities.MyProfileActivityNew"></activity>
     </application>
 
 </manifest>

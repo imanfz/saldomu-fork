@@ -131,7 +131,6 @@
         android:layout_marginRight="8dp"
         />
 </RelativeLayout>
-
     <Button
         android:id="@+id/button2"
         android:layout_width="150dp"
@@ -141,4 +140,6 @@
         android:background="@color/colorPrimaryDark"
         android:text="Selanjutnya"
         android:textColor="@color/white" />
+
+
 </LinearLayout>
