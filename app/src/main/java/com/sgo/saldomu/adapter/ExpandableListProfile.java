@@ -22,15 +22,15 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
     private Context mContext;
     private List<String> mListDataHeader;
-    private HashMap<String, ListMyProfile_model> mListDataChild;
+    private HashMap<String, List<ListMyProfile_model>> mListDataChild;
 
     public ExpandableListProfile(Context mContext, List<String> mListDataHeader,
-                                 HashMap<String,ListMyProfile_model> mListDataChild)
+                                 HashMap<String,List<ListMyProfile_model>> mListDataChild)
     {
         this.mContext = mContext;
         this.mListDataHeader = mListDataHeader;
         this.mListDataChild = mListDataChild;
-}
+    }
 
     @Override
     public int getGroupCount() {
@@ -69,12 +69,21 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        View v = convertView;
+        childHolder holder;
         LayoutInflater infalInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = infalInflater.inflate(R.layout.list_profile_group, parent, false);
 
-        TextView title = (TextView) v.findViewById(R.id.group_title);
-        title.setText(mListDataHeader.get(groupPosition));
+        if (v == null){
+            holder = new childHolder();
+            v = infalInflater.inflate(R.layout.list_profile_group, parent, false);
+            holder.title = (TextView) v.findViewById(R.id.group_title);
+            v.setTag(holder);
+        }else {
+            holder = (childHolder) v.getTag();
+        }
+
+        holder.title.setText(mListDataHeader.get(groupPosition));
         return v;
     }
 
@@ -82,7 +91,8 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
     @Override
     public int getChildType(int groupPosition, int childPosition) {
-        ListMyProfile_model obj= (ListMyProfile_model) getChild(groupPosition, childPosition);
+        List<ListMyProfile_model> lists = (List<ListMyProfile_model>)  getChild(groupPosition, childPosition);
+        ListMyProfile_model obj= lists.get(0);
         if (obj.getMemberBasic())
         {
             return 1;
@@ -97,18 +107,25 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        View v;
+        View v = convertView;
         LayoutInflater infalInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        switch(getChildType(groupPosition, childPosition)){
-            case 1:
-                v = infalInflater.inflate(R.layout.list_profile_child_item, parent, false);
-                return v;
-            default:
-                v = infalInflater.inflate(R.layout.list_verified_member_item, parent, false);
-                return v;
-        }
+        viewHolder Holder;
+        if (v==null) {
+            Holder = new viewHolder();
+            switch (getChildType(groupPosition, childPosition)) {
+                case 1:
+                    v = infalInflater.inflate(R.layout.list_profile_child_item, parent, false);
+                    break;
+                case 2:
+                    v = infalInflater.inflate(R.layout.list_verified_member_item, parent, false);
+                    break;
+            }
+            assert v != null;
+            v.setTag(Holder);
+        }else
+            Holder = (viewHolder) v.getTag();
+        return v;
     }
 
     @Override
@@ -117,6 +134,9 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
     }
 
     class viewHolder{
+        TextView title;
+    }
+    class childHolder{
         TextView title;
     }
 }
