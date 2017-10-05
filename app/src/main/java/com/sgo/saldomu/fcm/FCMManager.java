@@ -13,6 +13,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
+import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -88,6 +89,30 @@ public class FCMManager {
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
+                    i = new Intent(mContext, BbsMemberLocationActivity.class);
+                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                        try {
+                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                            bundle.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
+                            bundle.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
+                            bundle.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
+                            bundle.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
+                            bundle.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
+                            bundle.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
+
+                            bundle.putString("province", jsonOptions.getJSONObject(0).getString("province"));
+                            bundle.putString("district", jsonOptions.getJSONObject(0).getString("district"));
+                            bundle.putString("address", jsonOptions.getJSONObject(0).getString("address"));
+                            bundle.putString("category", "");
+                            bundle.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
+                            i.putExtras(bundle);
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: "+e.getMessage());
+                        }
+
+                    }
+
                     break;
                 case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
                     i = new Intent(mContext, BbsApprovalAgentActivity.class);

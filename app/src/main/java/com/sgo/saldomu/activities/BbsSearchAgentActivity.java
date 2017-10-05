@@ -1160,6 +1160,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
                                                     i.putExtra(DefineValue.AMOUNT, amount);
+                                                    i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
 
 
                                                 } else {
