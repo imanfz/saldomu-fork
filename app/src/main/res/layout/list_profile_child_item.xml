@@ -25,7 +25,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:inputType="textEmailAddress"
+            android:inputType="number"
             android:textSize="@dimen/abc_text_size_medium_material" />
     </LinearLayout>
 
@@ -97,7 +97,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/myprofile_value_bod"
+            android:id="@+id/myprofile_value_dob"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -110,7 +110,7 @@
     </LinearLayout>
 
     <Button
-    android:id="@+id/button2"
+    android:id="@+id/button1"
     android:layout_width="150dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"

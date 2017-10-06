@@ -1,26 +1,41 @@
 package com.sgo.saldomu.activities;
 
 import android.app.Application;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ExpandableListView;
 
 import com.sgo.saldomu.Beans.ListMyProfile_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.ExpandableListProfile;
 import com.sgo.saldomu.fragments.ListMyProfile;
+import com.sgo.saldomu.interfaces.OnDateChooseListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class MyProfileActivityNew extends AppCompatActivity {
+import static java.util.Calendar.DATE;
+
+public class MyProfileActivityNew extends AppCompatActivity implements ExpandableListProfile.onClick {
 
     ExpandableListView expandableListview;
 
     private List<String> mListDataHeader;
     private HashMap<String, List<ListMyProfile_model>> mListDataChild;
+    View v;
+
+    String noHP, nama, email;
+    private Calendar bak_date;
+    private Calendar date;
 
 
     @Override
@@ -48,7 +63,7 @@ public class MyProfileActivityNew extends AppCompatActivity {
 
         }
 
-        ExpandableListProfile adapter= new ExpandableListProfile(this, mListDataHeader, mListDataChild);
+        ExpandableListProfile adapter= new ExpandableListProfile(this, mListDataHeader, mListDataChild, this, onDateChooseListener);
         expandableListview.setAdapter(adapter);
         expandableListview.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
@@ -56,5 +71,30 @@ public class MyProfileActivityNew extends AppCompatActivity {
                 Log.d("group", "group post: "+groupPosition);
             }
         });
+
+        expandableListview.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
     }
+
+    @Override
+    public void onTextChange(String message, int choice) {
+        switch (choice)
+        {
+            case 1 : noHP=message;
+                nama = message;
+                email = message;
+                break;
+            case 2:
+                break;
+        }
+    }
+
+    OnDateChooseListener onDateChooseListener = new OnDateChooseListener() {
+        @Override
+        public void DateChooseListener() {
+
+        }
+    };
+
+
+
 }
