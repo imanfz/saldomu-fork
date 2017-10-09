@@ -1,7 +1,7 @@
 package com.sgo.saldomu.adapter;
 
+import android.app.FragmentManager;
 import android.content.Context;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,8 +17,11 @@ import com.sgo.saldomu.Beans.ListMyProfile_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.interfaces.OnDateChooseListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Lenovo Thinkpad on 9/27/2017.
@@ -26,23 +29,34 @@ import java.util.List;
 
 public class ExpandableListProfile extends BaseExpandableListAdapter {
 
+    private FragmentManager fragmentManager;
     private Context mContext;
     private List<String> mListDataHeader;
     private HashMap<String, List<ListMyProfile_model>> mListDataChild;
+    private final String DOB = "tagDOB";
+    private Calendar date ;
+    viewHolder Holder;
+
     onClick listener;
     OnDateChooseListener onDateChooseListener;
 
     public interface onClick{
         void onTextChange(String message, int choice);
+        void DateChooseListener(String date);
+        void NextListener ();
+        void setImageCameraKTP();
     }
 
     public ExpandableListProfile(Context mContext, List<String> mListDataHeader,
-                                 HashMap<String,List<ListMyProfile_model>> mListDataChild, onClick listener, OnDateChooseListener onDateChooseListener)
+                                 HashMap<String,List<ListMyProfile_model>> mListDataChild, onClick listener,
+                                 FragmentManager fragmentManager, Calendar date)
     {
         this.mContext = mContext;
         this.mListDataHeader = mListDataHeader;
         this.mListDataChild = mListDataChild;
         this.listener = listener;
+        this.fragmentManager = fragmentManager;
+        this.date = date;
         this.onDateChooseListener = onDateChooseListener;
     }
 
@@ -129,7 +143,7 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         View v = convertView;
         LayoutInflater infalInflater = (LayoutInflater) this.mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final viewHolder Holder;
+//        final viewHolder Holder;
         if (v==null) {
             Holder = new viewHolder();
             switch (getChildType(groupPosition, childPosition)) {
@@ -143,7 +157,22 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
                     Holder.dob.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onDateChooseListener.DateChooseListener();
+                            com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                                    dobPickerSetListener,
+                                    date.get(Calendar.YEAR),
+                                    date.get(Calendar.MONTH),
+                                    date.get(Calendar.DAY_OF_MONTH)
+                            );
+
+                            dpd.show(fragmentManager, DOB);
+                        }
+                    });
+
+                    Holder.button1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(Validation())
+                                listener.NextListener();
                         }
                     });
                     break;
@@ -153,7 +182,27 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
                     Holder.cameraSelfieKTP = (ImageButton) v.findViewById(R.id.camera_selfie_ktp_paspor);
                     Holder.cameraTTD = (ImageButton) v.findViewById(R.id.camera_ttd);
                     Holder.button2 = (Button) v.findViewById(R.id.button2);
-                    break;
+
+//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            listener.();
+//                        }
+//                    });
+//
+//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                        }
+//                    });
+//
+//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                        }
+//                    });
             }
             assert v != null;
             v.setTag(Holder);
@@ -175,10 +224,7 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        if (s.length()!=0)
-                        {
-                            Holder.noHP.getText().toString();
-                        }
+                        listener.onTextChange(s.toString(), 1);
                     }
                 });
 
@@ -195,7 +241,7 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-
+                        listener.onTextChange(s.toString(), 2);
                     }
                 });
 
@@ -212,7 +258,7 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-
+                        listener.onTextChange(s.toString(), 3);
                     }
                 });
 
@@ -223,6 +269,23 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         }
         return v;
     }
+
+    private com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener dobPickerSetListener = new com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+//            String dedate;
+
+//            if(view.getTag().equals(DOB)){
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, monthOfYear);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd",new Locale("id","INDONESIA"));
+                Holder.dob.setText(format.format(cal.getTime()));
+            listener.DateChooseListener(format.format(cal.getTime()));
+//            }
+        }
+    };
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -243,6 +306,34 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         ImageButton cameraTTD;
         Button button2;
 
+    }
+
+    public Boolean Validation()
+    {
+        if (Holder.noHP.getText().toString().equals(""))
+        {
+            Holder.noHP.setError("Nomor HP tidak boleh kosong!");
+            Holder.noHP.requestFocus();
+            return false;
+        }
+        if (Holder.nama.getText().toString().equals(""))
+        {
+            Holder.nama.setError("Nama tidak boleh kosong!");
+            Holder.nama.requestFocus();
+            return false;
+        }
+        if (Holder.email.getText().toString().equals(""))
+        {
+            Holder.email.setError("Email tidak boleh kosong!");
+            return false;
+        }
+        if (Holder.dob.getText().toString().equals(""))
+        {
+            Holder.dob.setError("Pilih tanggal lahir!");
+            return false;
+        }
+
+        return true;
     }
 
 }

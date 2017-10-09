@@ -609,7 +609,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void showMyProfile(){
-        Intent i = new Intent(this, MyProfileActivity.class);
+        Intent i = new Intent(this, MyProfileActivityNew.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }

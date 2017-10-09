@@ -18,7 +18,15 @@
         android:layout_height="60dp"
         android:layout_below="@+id/tv_foto_ktp_paspor"
         android:id="@+id/camera_ktp_paspor"
+        android:onClick="camera_ktp_paspor_dialog"
         android:src="@drawable/ic_photo_camera"/>
+    <ProgressBar
+        android:id="@+id/prgLoading"
+        android:layout_width="60dp"
+        android:layout_below="@+id/tv_foto_ktp_paspor"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -66,6 +74,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_below="@+id/tv_selfie_ktp_paspor"
+            android:onClick="selfie_ktp_paspor_dialog"
             android:src="@drawable/ic_photo_camera" />
 
         <TextView
@@ -116,6 +125,7 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_below="@+id/tv_ttd"
+            android:onClick="camera_ttd_dialog"
             android:src="@drawable/ic_photo_camera" />
 
         <TextView

@@ -500,34 +500,34 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
 
     private void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
-        String _url_profpic;
+            String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+            if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+            else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+            else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
 
-        Timber.wtf("url prof pic:"+ _url_profpic);
+            Timber.wtf("url prof pic:"+ _url_profpic);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
-        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+            Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+            RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(this);
-        else
-            mPic= Picasso.with(this);
+            Picasso mPic;
+            if(MyApiClient.PROD_FLAG_ADDRESS)
+                mPic = MyPicasso.getImageLoader(this);
+            else
+                mPic= Picasso.with(this);
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation()).into(profilePicContent);
-        }
-        else {
-            mPic.load(_url_profpic)
-                .error(roundedImage)
-                .fit()
+            if(_url_profpic != null && _url_profpic.isEmpty()){
+                mPic.load(R.drawable.user_unknown_menu)
+                        .error(roundedImage)
+                        .fit().centerInside()
+                        .placeholder(R.drawable.progress_animation)
+                        .transform(new RoundImageTransformation()).into(profilePicContent);
+            }
+            else {
+                mPic.load(_url_profpic)
+                        .error(roundedImage)
+                        .fit()
                 .centerCrop()
                 .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())

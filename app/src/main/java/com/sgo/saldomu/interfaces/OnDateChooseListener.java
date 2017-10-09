@@ -5,5 +5,5 @@ package com.sgo.saldomu.interfaces;
  */
 
 public interface OnDateChooseListener {
-    public void DateChooseListener(OnDateChooseListener view, int date, int month, int year);
+    public void DateChooseListener();
 }
