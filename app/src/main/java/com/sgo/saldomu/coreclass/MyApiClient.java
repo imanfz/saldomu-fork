@@ -527,7 +527,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -553,7 +553,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // InitializeAddress the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
