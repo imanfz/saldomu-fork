@@ -5,7 +5,6 @@ import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -62,7 +61,7 @@ public class MyApiClient {
     public static Boolean IS_PROD = BuildConfig.isProdDomain;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
     public static Boolean IS_INTERNET_BANKING;
-    private static final String PRIVATE_KEY = "590mobil3";
+    public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
 
@@ -528,7 +527,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -548,13 +547,13 @@ public class MyApiClient {
         }
     }
 
-    private MySSLSocketFactory getUntrustSSLSocketFactory(){
+    private SSLSocketFactory getUntrustSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // InitializeAddress the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -565,8 +564,8 @@ public class MyApiClient {
             // Pass the keystore to the SSLSocketFactory. The factory is responsible
             // for the verification of the server certificate.
 
-            MySSLSocketFactory test = new MySSLSocketFactory(trusted);
-            test.setHostnameVerifier(MySSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            SSLSocketFactory test = new SSLSocketFactory(trusted);
+            test.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
 
             return test;
         } catch (Exception e) {
