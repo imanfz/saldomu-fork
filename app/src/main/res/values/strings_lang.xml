@@ -1094,8 +1094,8 @@
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
-
-
+    <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
+    <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
 
 
 </resources>

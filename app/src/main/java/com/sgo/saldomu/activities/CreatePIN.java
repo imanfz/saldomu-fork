@@ -111,7 +111,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
         switch (item.getItemId()) {
             case android.R.id.home:
                 if(!isRegist) setResult(MainPage.RESULT_LOGOUT);
-                else setResult(Registration.RESULT_NORMAL);
+                else setResult(LoginActivity.RESULT_NORMAL);
                 finish();
                 return true;
         }
@@ -220,7 +220,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
             i.putExtra(DefineValue.PIN_VALUE,mValuePin);
             i.putExtra(DefineValue.CONF_PIN,confirmPin);
 
-            setResult(Registration.RESULT_FINISHING, i);
+            setResult(LoginActivity.RESULT_FINISHING, i);
         }
         this.finish();
     }

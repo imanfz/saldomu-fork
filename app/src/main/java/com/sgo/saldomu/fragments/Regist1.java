@@ -25,13 +25,11 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
-import com.sgo.saldomu.activities.Registration;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -41,29 +39,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
  Created by Administrator on 7/4/2014.
  */
-public class Regist1 extends Fragment{
+public class Regist1 extends Fragment implements EasyPermissions.PermissionCallbacks{
 
     String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
     EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
     CheckBox cb_terms;
     View v;
+    final int RC_READ_SMS = 10;
 
     Fragment mFragment;
-    ReqPermissionClass reqPermissionClass;
     ProgressDialog progdialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        reqPermissionClass = new ReqPermissionClass(getActivity());
-        reqPermissionClass.setTargetFragment(this);
 
         progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.dismiss();
@@ -103,8 +101,7 @@ public class Regist1 extends Fragment{
             }
         });
 
-        if(reqPermissionClass.checkPermission(Manifest.permission.READ_SMS,
-                ReqPermissionClass.PERMISSIONS_READ_SMS)) {
+        if(EasyPermissions.hasPermissions(getContext(),Manifest.permission.READ_PHONE_STATE)) {
             if (isSimExists()) {
 
                 TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
@@ -113,7 +110,11 @@ public class Regist1 extends Fragment{
                 noHPValue.setText(Nomor1);
             }
         }
-        //else Toast.makeText(getActivity(),"tidak ada sim",Toast.LENGTH_LONG).show();
+        else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_check_phone_number),
+                    RC_READ_SMS, Manifest.permission.READ_PHONE_STATE);
+        }
+
 
         noHPValue.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
@@ -143,15 +144,7 @@ public class Regist1 extends Fragment{
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_READ_SMS)){
-            if (isSimExists()) {
-
-                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-                String Nomor1 = tm.getLine1Number();
-
-                noHPValue.setText(Nomor1);
-            }
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
 
     Button.OnClickListener btnNextClickListener= new Button.OnClickListener(){
@@ -276,99 +269,6 @@ public class Regist1 extends Fragment{
         }
     }
 
-//    public void sentData(final String noHP){
-//        try{
-//            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-//            progdialog.show();
-//
-//            btnLanjut.setEnabled(false);
-//            noHPValue.setEnabled(false);
-//            namaValue.setEnabled(false);
-//            emailValue.setEnabled(false);
-//
-//            RequestParams params = new RequestParams();
-//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-//            params.put(WebParams.CUST_PHONE, noHP);
-//            params.put(WebParams.CUST_NAME,namaValue.getText());
-//            params.put(WebParams.CUST_EMAIL, emailValue.getText());
-//            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-//            params.put(WebParams.IS_SMS, "Y");
-//            params.put(WebParams.IS_EMAIL, "N");
-//
-//            Timber.d("isi params reg1:" + params.toString());
-//
-//            MyApiClient.sentDataRegister(getActivity(),params,new JsonHttpResponseHandler(){
-//                    @Override
-//                    public void onSuccess(int statusCode,Header[] headers, JSONObject response) {
-//                        btnLanjut.setEnabled(true);
-//                        noHPValue.setEnabled(true);
-//                        namaValue.setEnabled(true);
-//                        emailValue.setEnabled(true);
-//                        Timber.d("response register:"+response.toString());
-//                        progdialog.dismiss();
-//                        try {
-//                            String code = response.getString(WebParams.ERROR_CODE);
-//                            if(code.equals(WebParams.SUCCESS_CODE)){
-//
-//                                namaValid = response.getString(WebParams.CUST_NAME);
-//                                emailValid = response.getString(WebParams.CUST_EMAIL);
-//                                noHPValid = response.getString(WebParams.CUST_PHONE);
-//                                max_resend_token = response.getString(WebParams.MAX_RESEND_TOKEN);
-//                                auth_type = response.getString(WebParams.AUTHENTICATION_TYPE);
-//
-//                                showDialog(code);
-//                            }
-//                            else if(code.equals("0002")){
-//                                showDialog(code);
-//                            }
-//                            else {
-//                                Timber.d("Error Reg1:"+response.toString());
-//                                code = response.getString(WebParams.ERROR_MESSAGE);
-//                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                    super.onFailure(statusCode, headers, responseString, throwable);
-//                    failure(throwable);
-//                }
-//
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                    super.onFailure(statusCode, headers, throwable, errorResponse);
-//                    failure(throwable);
-//                }
-//
-//                @Override
-//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-//                    super.onFailure(statusCode, headers, throwable, errorResponse);
-//                    failure(throwable);
-//                }
-//
-//                private void failure(Throwable throwable){
-//                    if(MyApiClient.PROD_FAILURE_FLAG)
-//                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-//                    else
-//                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-//                    if(progdialog.isShowing())
-//                        progdialog.dismiss();
-//                    btnLanjut.setEnabled(true);
-//                    noHPValue.setEnabled(true);
-//                    namaValue.setEnabled(true);
-//                    emailValue.setEnabled(true);
-//                    Timber.w("Error Koneksi reg1 proses reg1:"+throwable.toString());
-//                }
-//                });
-//            }catch (Exception e){
-//                Timber.d("httpclient:"+e.getMessage());
-//            }
-//    }
-
     public void changeActivity(Boolean login){
         if(login){
             DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
@@ -488,4 +388,20 @@ public class Regist1 extends Fragment{
         super.onDestroy();
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (requestCode == RC_READ_SMS){
+            if (isSimExists()) {
+                TelephonyManager tm = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+                String Nomor1 = tm.getLine1Number();
+
+                noHPValue.setText(Nomor1);
+            }
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
 }

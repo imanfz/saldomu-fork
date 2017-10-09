@@ -26,7 +26,6 @@ import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
-import com.sgo.saldomu.activities.Registration;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;

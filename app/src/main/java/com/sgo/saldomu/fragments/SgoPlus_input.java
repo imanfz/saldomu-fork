@@ -42,7 +42,6 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -60,13 +59,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
   Created by Administrator on 11/5/2014.
  */
-public class SgoPlus_input extends Fragment implements InformationDialog.OnDialogOkCallback{
-
+public class SgoPlus_input extends Fragment implements EasyPermissions.PermissionCallbacks{
+    private final static int RC_SENDSMS = 103;
     private HashMap<String,String> listBankName;
     private HashMap<String,String> listBankProduct;
     private List<listBankModel> listDB;
@@ -87,8 +87,31 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     int privacy;
     boolean isSMSBanking = false, isTagihan = false, isFacebook = false;
     private SMSDialog smsDialog;
-    private ReqPermissionClass reqPermissionClass;
     private SentObject sentObject;
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch (requestCode) {
+            case RC_SENDSMS:
+                smsDialog.sentSms();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        switch (requestCode) {
+            case RC_SENDSMS:
+                Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                if (progdialog.isShowing())
+                    progdialog.dismiss();
+                if (smsDialog != null) {
+                    smsDialog.dismiss();
+                    smsDialog.reset();
+                }
+                break;
+        }
+    }
 //    CustomFacebookButton facebookButton;
 
 //    @Override
@@ -182,14 +205,18 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         if(isSMSBanking){
             isSMSBanking = true;
             dialogI = InformationDialog.newInstance(this,3);
-            reqPermissionClass = new ReqPermissionClass(getActivity());
-            reqPermissionClass.setTargetFragment(this);
+
             initializeSmsClass();
             smsDialog = new SMSDialog(getActivity(), new SMSDialog.DialogButtonListener() {
                 @Override
                 public void onClickOkButton(View v, boolean isLongClick) {
-                    if (reqPermissionClass.checkPermission(Manifest.permission.SEND_SMS,ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
+                    if (EasyPermissions.hasPermissions(getActivity(),Manifest.permission.SEND_SMS)) {
                         smsDialog.sentSms();
+                    }
+                    else {
+                        EasyPermissions.requestPermissions(SgoPlus_input.this,
+                                getString(R.string.rational_sent_sms),
+                                RC_SENDSMS, Manifest.permission.SEND_SMS);
                     }
                 }
 
@@ -264,20 +291,7 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode, grantResults, ReqPermissionClass.PERMISSIONS_SEND_SMS)) {
-                smsDialog.sentSms();
-        }
-        else {
-            if(requestCode == ReqPermissionClass.PERMISSIONS_SEND_SMS) {
-                Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                if(progdialog.isShowing())
-                    progdialog.dismiss();
-                if (smsDialog != null) {
-                    smsDialog.dismiss();
-                    smsDialog.reset();
-                }
-            }
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
     private void setActionBarTitle(String _title){
@@ -931,10 +945,6 @@ public class SgoPlus_input extends Fragment implements InformationDialog.OnDialo
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onOkButton() {
-
-    }
 
     @Override
     public void onDestroy() {
