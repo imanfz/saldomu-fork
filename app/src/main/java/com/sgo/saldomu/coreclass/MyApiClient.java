@@ -363,12 +363,12 @@ public class MyApiClient {
 
     public static String URL_HELP_DEV = "https://mobile-dev.espay.id/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.goworld.asia/static/pages/help/pin_faq_akardaya.html";
-    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_akardaya.html";
+    public static String URL_FAQ_PROD = "https://mobile.espay.id/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.goworld.asia/static/pages/help/pin_terms_conditions_id_akardaya.html";
-    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_akardaya.html";
+    public static String URL_TERMS_PROD = "https://mobile.espay.id/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
 
 
