@@ -16,12 +16,18 @@ import android.widget.TextView;
 import com.sgo.saldomu.Beans.ListMyProfile_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.interfaces.OnDateChooseListener;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 /**
  * Created by Lenovo Thinkpad on 9/27/2017.
@@ -45,6 +51,8 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         void DateChooseListener(String date);
         void NextListener ();
         void setImageCameraKTP();
+        void setImageSelfieKTP();
+        void setImageCameraTTD();
     }
 
     public ExpandableListProfile(Context mContext, List<String> mListDataHeader,
@@ -57,7 +65,6 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         this.listener = listener;
         this.fragmentManager = fragmentManager;
         this.date = date;
-        this.onDateChooseListener = onDateChooseListener;
     }
 
     @Override
@@ -183,26 +190,29 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
                     Holder.cameraTTD = (ImageButton) v.findViewById(R.id.camera_ttd);
                     Holder.button2 = (Button) v.findViewById(R.id.button2);
 
-//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            listener.();
-//                        }
-//                    });
-//
-//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                        }
-//                    });
-//
-//                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                        }
-//                    });
+                    Holder.cameraKTP.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Timber.d("Masuk ke onclick kamera ktp");
+                            listener.setImageCameraKTP();
+                        }
+                    });
+
+                    Holder.cameraSelfieKTP.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Timber.d("Masuk ke onclick selfie ktp");
+                            listener.setImageSelfieKTP();
+                        }
+                    });
+
+                    Holder.cameraTTD.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Timber.d("Masuk ke onclick camera ttd");
+                            listener.setImageCameraTTD();
+                        }
+                    });
             }
             assert v != null;
             v.setTag(Holder);
@@ -211,6 +221,11 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
         switch (getChildType(groupPosition, childPosition)) {
             case 1:
+                Holder.noHP.setText(mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).getNoHP());
+                Holder.nama.setText(mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).getNama());
+                Holder.email.setText(mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).getEmail());
+                Holder.dob.setText(mListDataChild.get(mListDataHeader.get(groupPosition)).get(childPosition).getDob());
+
                 Holder.noHP.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -262,8 +277,24 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
                     }
                 });
 
-//                Holder.button1.setOnClickListener(button1Listener());
+                Holder.dob.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        listener.onTextChange(s.toString(), 4);
+                    }
+                });
                 break;
+
             case 2:
                 break;
         }
@@ -310,6 +341,24 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
 
     public Boolean Validation()
     {
+//        int compare = 100;
+//        if(Holder.dob != null) {
+//            Date dob = null;
+//            Date now = null;
+//            try {
+//                dob = fromFormat.parse(date_dob);
+//                now = fromFormat.parse(dateNow);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (dob != null) {
+//                if (now != null) {
+//                    compare = dob.compareTo(now);
+//                }
+//            }
+//            Timber.d("compare date:"+ Integer.toString(compare));
+//        }
         if (Holder.noHP.getText().toString().equals(""))
         {
             Holder.noHP.setError("Nomor HP tidak boleh kosong!");
@@ -325,15 +374,41 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
         if (Holder.email.getText().toString().equals(""))
         {
             Holder.email.setError("Email tidak boleh kosong!");
+            Holder.email.requestFocus();
             return false;
         }
         if (Holder.dob.getText().toString().equals(""))
         {
             Holder.dob.setError("Pilih tanggal lahir!");
+            Holder.dob.requestFocus();
             return false;
         }
 
         return true;
     }
 
+    public void setImageCameraKTP(File file)
+    {
+        if(Holder.cameraKTP!=null && file!=null)
+        {
+            Timber.d("Filepath"+file.getPath());
+            Picasso.with(mContext).load(file).centerCrop().fit().into(Holder.cameraKTP);
+        }
+    }
+    public void setImageSelfieKTP(File file)
+    {
+        if(Holder.cameraSelfieKTP!=null && file!=null)
+        {
+            Timber.d("Filepath"+file.getPath());
+            Picasso.with(mContext).load(file).centerCrop().fit().into(Holder.cameraSelfieKTP);
+        }
+    }
+    public void setImageCameraTTD(File file)
+    {
+        if(Holder.cameraTTD!=null && file!=null)
+        {
+            Timber.d("Filepath"+file.getPath());
+            Picasso.with(mContext).load(file).centerCrop().fit().into(Holder.cameraTTD);
+        }
+    }
 }

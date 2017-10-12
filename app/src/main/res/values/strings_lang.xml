@@ -1087,4 +1087,11 @@
     <string name="listatm_topup_bri_4">Pilih YA</string>
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
+    <string name="upgrade_member">Upgrade Member</string>
+    <string name="data_member_basic">Data Member Basic</string>
+    <string name="data_verified_member">Data Verified Member</string>
+    <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik tunai?</string>
+
+
+
 </resources>

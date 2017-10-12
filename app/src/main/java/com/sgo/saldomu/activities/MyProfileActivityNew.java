@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,6 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
@@ -69,6 +71,7 @@ import static java.util.Calendar.MONTH;
 public class MyProfileActivityNew extends AppCompatActivity implements ExpandableListProfile.onClick {
 
     ExpandableListView expandableListview;
+    ExpandableListProfile expandableListProfile;
     SecurePreferences sp;
 
     private List<String> mListDataHeader;
@@ -77,16 +80,19 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
     String noHP, nama, email, dob_string;
     private Calendar calendar;
     private final int RESULT_GALERY = 100;
+    private final int RESULT_GALLERY_KTP = 101;
+    private final int RESULT_GALLERY_SELFIE = 102;
+    private final int RESULT_GALLERY_TTD = 103;
     private final int RESULT_CAMERA = 200;
+    private final int RESULT_CAMERA_KTP = 201;
+    private final int RESULT_SELFIE = 202;
+    private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
     private Uri mCapturedImageURI;
     private String userID;
     private String accessKey;
     private int RESULT;
     ImageButton cameraKTP, cameraSelfieKTP,cameraTTD;
-
-
-
     Boolean step1;
 
     @Override
@@ -95,8 +101,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         setContentView(R.layout.activity_my_profile_new);
 
         expandableListview = (ExpandableListView) findViewById(R.id.expandableListProfile);
-//
-//        VerifiedMember = (Layout) v.findViewById(R.layout.)
+
         cameraKTP = (ImageButton) findViewById(R.id.camera_ktp_paspor);
         cameraSelfieKTP = (ImageButton) findViewById(R.id.camera_selfie_ktp_paspor);
         cameraTTD = (ImageButton) findViewById(R.id.camera_ttd);
@@ -106,11 +111,13 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         mListDataHeader.add("Data Member Basic");
         mListDataHeader.add("Data Verified Member");
 
+
+
         for (String header: mListDataHeader) {
             List<ListMyProfile_model> lists = new ArrayList<>();
             if (header.equals("Data Member Basic"))
             {
-                lists.add(new ListMyProfile_model("","","", "", true));
+                lists.add(new ListMyProfile_model("","","","", true));
                 mListDataChild.put(header, lists);
             } else {
                 lists.add(new ListMyProfile_model("","","", "", false));
@@ -121,9 +128,9 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
 
         String OrifromDate = DateTimeFormat.getCurrentDateMinus(6);
         Calendar date_from = StringToCal(OrifromDate);
-        ExpandableListProfile adapter= new ExpandableListProfile(this, mListDataHeader, mListDataChild
+        expandableListProfile= new ExpandableListProfile(this, mListDataHeader, mListDataChild
                 , this, getFragmentManager(), date_from);
-        expandableListview.setAdapter(adapter);
+        expandableListview.setAdapter(expandableListProfile);
         expandableListview.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
             @Override
             public void onGroupCollapse(int groupPosition) {
@@ -159,6 +166,9 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
             case 3 :
                 email= message;
                 break;
+            case 4 :
+                dob_string = message;
+                break;
         }
     }
 
@@ -170,8 +180,8 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
     @Override
     public void NextListener() {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle("Upgrade Member");
-        builder1.setMessage("Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik tunai?");
+        builder1.setTitle(R.string.upgrade_member);
+        builder1.setMessage(R.string.message_upgrade_member);
         builder1.setCancelable(true);
 
         builder1.setPositiveButton(
@@ -196,43 +206,23 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
 
     @Override
     public void setImageCameraKTP() {
-        float density = getResources().getDisplayMetrics().density;
-        String _url_profpic;
-
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
-
-        Timber.wtf("url prof pic:"+ _url_profpic);
-
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
-        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(this);
-        else
-            mPic= Picasso.with(this);
-
-        if(_url_profpic != null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(cameraKTP);
-        }
-        else {
-            mPic.load(_url_profpic)
-                    .error(roundedImage)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(cameraKTP);
-        }
+        Timber.d("Masuk ke setImageCameraKTP di MyprofileactivityNew");
+        camera_dialog(RESULT_CAMERA_KTP);
     }
 
-    public void camera_ktp_paspor_dialog(View v)
+    @Override
+    public void setImageSelfieKTP() {
+        Timber.d("Masuk ke setImageSelfieKTP di MyprofileactivityNew");
+        camera_dialog(RESULT_SELFIE);
+    }
+
+    @Override
+    public void setImageCameraTTD() {
+        Timber.d("Masuk ke setImageCameraTTD di MyprofileactivityNew");
+        camera_dialog(RESULT_CAMERA_TTD);
+    }
+
+    public void camera_dialog(final int TipeFoto)
     {
         final String[] items = {"Choose from Gallery" , "Take a Photo"};
 
@@ -245,9 +235,17 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
                             Timber.wtf("masuk gallery");
-                            chooseGallery();
+                            if(TipeFoto == RESULT_CAMERA_KTP) {
+                                chooseGallery(RESULT_GALLERY_KTP);
+                            }
+                            else if(TipeFoto == RESULT_SELFIE) {
+                                chooseGallery(RESULT_GALLERY_SELFIE);
+                            }
+                            else if (TipeFoto == RESULT_CAMERA_TTD){
+                                chooseGallery(RESULT_GALLERY_TTD);
+                            }
                         } else if (which == 1) {
-                            chooseCamera();
+                            chooseCamera(TipeFoto);
                         }
 
                     }
@@ -257,16 +255,17 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         a.show();
     }
 
-    private void chooseGallery() {
+    private void chooseGallery(int TipeFoto) {
         Timber.wtf("masuk gallery");
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, RESULT_GALERY);
+        startActivityForResult(intent, TipeFoto);
     }
 
-    private void chooseCamera() {
+    @AfterPermissionGranted(RC_CAMERA_STORAGE)
+    private void chooseCamera(int TipeFoto) {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this,perms)) {
-            runCamera();
+            runCamera(TipeFoto);
         }
         else {
             EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
@@ -274,7 +273,13 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         }
     }
 
-    private void runCamera(){
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    private void runCamera(int TipeFoto){
         String fileName = "temp.jpg";
 
         ContentValues values = new ContentValues();
@@ -284,52 +289,52 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
 
         Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-        startActivityForResult(takePictureIntent, RESULT_CAMERA);
+        startActivityForResult(takePictureIntent, TipeFoto);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
-            case RESULT_GALERY:
+            case RESULT_GALLERY_KTP:
                 if(resultCode == RESULT_OK){
-
-                    Bitmap photo = null;
-                    Uri _urinya = data.getData();
-                    if(data.getData() == null) {
-                        photo = (Bitmap)data.getExtras().get("data");
-                    } else {
-                        try {
-                            photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
-                    uploadFileToServer(mGI.Convert());
-
+                    expandableListProfile.setImageCameraKTP(setmGalleryImage(data));
                 }
                 break;
-            case RESULT_CAMERA:
+            case RESULT_GALLERY_SELFIE:
+                if(resultCode == RESULT_OK){
+                    expandableListProfile.setImageSelfieKTP(setmGalleryImage(data));
+                }
+                break;
+            case RESULT_GALLERY_TTD :
+                if(resultCode == RESULT_OK){
+                    expandableListProfile.setImageCameraTTD(setmGalleryImage(data));
+                }
+                break;
+            case RESULT_CAMERA_KTP:
                 if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-                    String filePath;
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        filePath = cursor.getString(column_index_data);
-                    }
-                    else
-                        filePath = data.getData().getPath();
-//                    File photoFile = new File(filePath);
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-                    //getOrientationImage();
-                    uploadFileToServer(mGI.Convert());
-                    assert cursor != null;
-                    cursor.close();
+                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
+                    expandableListProfile.setImageCameraKTP(setmCapturedImage(data));
                 }
                 else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case RESULT_SELFIE :
+                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
+                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
+                    expandableListProfile.setImageSelfieKTP(setmCapturedImage(data));
+                }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case RESULT_CAMERA_TTD:
+                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
+                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
+                    expandableListProfile.setImageCameraTTD(setmCapturedImage(data));
+                }
+                        else{
                     Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -338,6 +343,51 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         }
     }
 
+    public File setmGalleryImage (Intent data)
+    {
+        Bitmap photo = null;
+        Uri _urinya = data.getData();
+        if(data.getData() == null) {
+            photo = (Bitmap)data.getExtras().get("data");
+        } else {
+            try {
+                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
+//        uploadFileToServer(mGI.Convert());
+
+        return mGI.Convert();
+    }
+
+    public File setmCapturedImage(Intent data)
+    {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
+        String filePath;
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            filePath = cursor.getString(column_index_data);
+        }
+        else
+            filePath = data.getData().getPath();
+//                    File photoFile = new File(filePath);
+
+        GeneralizeImage mGI = new GeneralizeImage(this,filePath);
+//                    getOrientationImage();
+//                    uploadFileToServer(mGI.Convert());
+        assert cursor != null;
+        cursor.close();
+
+        return mGI.Convert();
+
+//        return new File(filePath);
+    }
+
+//jalan setelah submit
     private void uploadFileToServer(File photoFile) {
         Picasso.with(this).load(R.drawable.progress_animation).into(cameraKTP);
 //        prgLoading.setVisibility(View.VISIBLE);
@@ -353,7 +403,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
             e.printStackTrace();
         }
 
-        Timber.d("params upload profile picture: " + params.toString());
+        Timber.d("params upload foto ktp: " + params.toString());
 
         MyApiClient.sentProfilePicture(this, params, new JsonHttpResponseHandler() {
             @Override
@@ -423,7 +473,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
 //                if (prgLoading.getVisibility() == View.VISIBLE)
 //                    prgLoading.setVisibility(View.GONE);
                 setImageCameraKTP();
-                Timber.w("Error Koneksi data update myprofile:" + throwable.toString());
+                Timber.w("Error Koneksi data update foto ktp:" + throwable.toString());
             }
 
         });
