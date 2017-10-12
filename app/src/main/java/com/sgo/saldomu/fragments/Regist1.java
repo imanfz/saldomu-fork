@@ -2,6 +2,7 @@ package com.sgo.saldomu.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -271,9 +272,9 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
 
     public void changeActivity(Boolean login){
         if(login){
-            DefineValue.NOBACK = false; //fragment selanjutnya tidak bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
+            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment test = new Login();
+            switchFragment(test,"Login",false);
         }
         else{
             DefineValue.NOBACK = true; //fragment selanjutnya tidak bisa menekan tombol BACK

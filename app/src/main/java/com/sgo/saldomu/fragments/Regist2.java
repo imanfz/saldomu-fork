@@ -371,11 +371,6 @@ public class Regist2 extends Fragment {
     }
 
     private void switchActivityPIN(Intent i){
-        /*if (getActivity() == null)
-            return;
-
-        Registration fca = (Registration) getActivity();
-        fca.switchActivity(i, Registration.ACTIVITY_RESULT);*/
         startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
     }
 
