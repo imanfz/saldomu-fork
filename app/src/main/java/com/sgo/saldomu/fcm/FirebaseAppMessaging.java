@@ -279,12 +279,28 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     case FCMManager.SHOP_ACCEPT_TRX:
                         intent = new Intent(this, BbsMapViewByMemberActivity.class);
 
+                        if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                            try {
+                                JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                                bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
+                                bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                                bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
+
+                                intent.putExtras(bundle);
+
+                            } catch (JSONException e) {
+                                Timber.d("JSONException: "+e.getMessage());
+                            }
+
+                        }
+
                         stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
                         stackBuilder.addNextIntent(intent);
 
                         contentIntent =
                                 stackBuilder.getPendingIntent(
-                                        0,
+                                        getNotifId(),
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                         break;

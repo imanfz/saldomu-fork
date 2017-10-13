@@ -214,7 +214,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        progdialog.dismiss();
+                        if ( progdialog.isShowing() )
+                            progdialog.dismiss();
+
                         String code = response.getString(WebParams.ERROR_CODE);
 
 
@@ -268,7 +270,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
 
                 private void ifFailure(Throwable throwable) {
-                    progdialog.dismiss();
+                    if ( progdialog.isShowing() )
+                        progdialog.dismiss();
+
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else

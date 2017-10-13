@@ -340,7 +340,6 @@ public class Login extends Fragment implements View.OnClickListener {
 
             }
 
-            FCMWebServiceLoader.getInstance(getActivity().getApplicationContext()).sentTokenAtLogin(false,userId,response.getString(WebParams.EMAIL));
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);
             mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);

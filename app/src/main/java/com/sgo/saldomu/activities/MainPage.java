@@ -155,6 +155,8 @@ public class MainPage extends BaseActivity{
                     progdialog.show();
                     InitializeNavDrawer();
                     setupFab();
+                    FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+
                     AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
                     startService(new Intent(this, UpdateLocationService.class));
 
@@ -524,7 +526,7 @@ public class MainPage extends BaseActivity{
                                 setupBBSData();
 
                                 if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
-                                    /*try{
+                                    try{
                                         JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
                                         Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -542,7 +544,7 @@ public class MainPage extends BaseActivity{
                                         switchActivity(intent, ACTIVITY_RESULT);
                                     }catch(Exception e){
                                         e.printStackTrace();
-                                    }*/
+                                    }
                                 } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
                                     try{
                                         Bundle bundle = new Bundle();

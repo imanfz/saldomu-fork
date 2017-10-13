@@ -84,6 +84,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     String gcmId;
     Button btnDone, btnCancel;
     ProgressDialog progdialog, progdialog2;
+    Intent intentData;
 
     private int timeDelayed = 30000;
 
@@ -128,9 +129,20 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         mapFrag.getMapAsync(this);
         mapFrag.getView().setVisibility(View.GONE);
 
-        txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
-        categoryName            = sp.getString(DefineValue.CATEGORY_NAME, "");
-        amount                  = sp.getString(DefineValue.AMOUNT, "");
+        intentData              = getIntent();
+
+        if ( intentData.hasExtra(DefineValue.BBS_TX_ID) ) {
+            Timber.d("isi intent amount oncreate " + intentData.getStringExtra(DefineValue.AMOUNT));
+
+            txId                    = intentData.getStringExtra(DefineValue.BBS_TX_ID);
+            categoryName                    = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+            amount                    = intentData.getStringExtra(DefineValue.AMOUNT);
+        } else {
+            txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
+            categoryName            = sp.getString(DefineValue.CATEGORY_NAME, "");
+            amount                  = sp.getString(DefineValue.AMOUNT, "");
+        }
+
 
         //temporary only
         agentLatitude           = -6.222699;
@@ -755,6 +767,31 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 startActivity(i);
                 finish();
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        try {
+
+            intentData              = getIntent();
+
+            if ( intentData.hasExtra(DefineValue.BBS_TX_ID) ) {
+
+                Timber.d("isi intent amount onresume " + intentData.getStringExtra(DefineValue.AMOUNT));
+                txId                    = intentData.getStringExtra(DefineValue.BBS_TX_ID);
+                categoryName            = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+                amount                  = intentData.getStringExtra(DefineValue.AMOUNT);
+            } else {
+                txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
+                categoryName            = sp.getString(DefineValue.CATEGORY_NAME, "");
+                amount                  = sp.getString(DefineValue.AMOUNT, "");
+            }
+
+        }catch(Exception e) {
+            e.printStackTrace();
         }
     }
 }

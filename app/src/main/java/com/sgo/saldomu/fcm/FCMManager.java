@@ -9,6 +9,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
@@ -16,6 +17,7 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import org.json.JSONArray;
@@ -167,6 +169,23 @@ public class FCMManager {
                     break;
                 case FCMManager.SHOP_ACCEPT_TRX:
                     i = new Intent(mContext, BbsMapViewByMemberActivity.class);
+
+                    if ( msg.containsKey("options") && msg.getString("options") != null ) {
+                        try {
+                            JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
+
+                            bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
+                            bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                            bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
+
+                            i.putExtras(bundle);
+
+
+                        } catch (JSONException e) {
+                            Timber.d("JSONException: "+e.getMessage());
+                        }
+
+                    }
 
 
                     break;
