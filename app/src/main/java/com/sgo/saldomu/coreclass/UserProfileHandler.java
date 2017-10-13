@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -62,11 +63,24 @@ public class UserProfileHandler {
                             mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE));
                             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
                             mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
-                            mEditor.apply();
-                        }
+//                            mEditor.apply();
 
+                            if(mEditor.commit()) {
+                                if (onLoadDataListener != null)
+                                    onLoadDataListener.onSuccess(response);
+                            }
+                        } else {
+                            if (onLoadDataListener != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.ERROR_CODE,response.optString(WebParams.ERROR_CODE,""));
+                                bundle.putString(DefineValue.ERROR,response.optString(WebParams.ERROR_MESSAGE,""));
+                                onLoadDataListener.onFail(bundle);
+                            }
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        if (onLoadDataListener != null)
+                            onLoadDataListener.onFailure(e.getMessage());
                     }
                 }
 
@@ -90,10 +104,15 @@ public class UserProfileHandler {
 
                 private void failure(Throwable throwable) {
                     Timber.w("Error Koneksi sent user profile" + throwable.toString());
+                    if (onLoadDataListener != null) {
+                        onLoadDataListener.onFailure(throwable.toString());
+                    }
                 }
             });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
+            if (onLoadDataListener != null)
+                onLoadDataListener.onFailure(e.getMessage());
         }
     }
 }

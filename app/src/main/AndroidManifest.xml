@@ -254,6 +254,11 @@
         <activity
             android:name=".activities.BbsSearchAgentActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ValidasiEmailActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".activities.BbsSearchByLocationActivity" />
         <activity android:name=".activities.BbsMemberShopActivity" />
         <activity android:name=".activities.BbsMemberShopDetailActivity" />

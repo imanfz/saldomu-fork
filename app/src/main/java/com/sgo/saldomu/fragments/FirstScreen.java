@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
-import com.sgo.saldomu.activities.Registration;
 import com.sgo.saldomu.adapter.FirstScreenSlideAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -68,7 +67,7 @@ public class FirstScreen extends Fragment {
         if (getActivity() == null)
             return;
 
-        Registration fca = (Registration) getActivity();
+        LoginActivity fca = (LoginActivity) getActivity();
         fca.switchContent(i,name,isBackstack);
     }
 
