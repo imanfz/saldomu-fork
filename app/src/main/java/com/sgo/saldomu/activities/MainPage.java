@@ -666,9 +666,9 @@ public class MainPage extends BaseActivity{
     }
 
     private void showChangePassword(){
-            Intent i = new Intent(this, ChangePassword.class);
-            i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-            switchActivity(i, ACTIVITY_RESULT);
+        Intent i = new Intent(this, ChangePassword.class);
+        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
+        switchActivity(i, ACTIVITY_RESULT);
     }
 
     private void showMyProfile(){

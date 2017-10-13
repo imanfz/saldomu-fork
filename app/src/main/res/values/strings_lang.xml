@@ -93,7 +93,7 @@
     <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Silahkan masukkan kode Token</string>
-    
+
     <string name="regist2_validation_pass">Kata sandi dibutuhkan!</string>
     <string name="regist2_validation_pass_length">Kata sandi minimal 6 karakter!</string>
     <string name="regist2_validation_confirmpass">Ketik ulang Kata sandi dibutuhkan!</string>
@@ -108,6 +108,12 @@
     <string name="reg2_notif_text_resend_token">Permintaan token baru sukses</string>
     <string name="reg2_notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="regist2_validation_token_invalid">Token salah!</string>
+    <string name="reg3_btn_text_resend_token_sms">Kirim ulang OTP ke sms</string>
+    <string name="regist3_validation_otp">Kode OTP dibutuhkan!</string>
+    <string name="reg3_dialog_token_message_sms">Kode OTP sudah dikirim lewat sms. Mohon ditunggu.</string>
+    <string name="reg3_notif_max_resend_token_empty">Anda sudah mencapai batas maksimal pengiriman OTP. Silahkan ulangi tahap registrasi beberapa saat lagi jika OTP belum diterima.</string>
+    <string name="reg3_cancel_message">Anda yakin ingin membatalkan proses pendaftaran?</string>
+    <string name="btnresend_text_try_again_after">Coba lagi setelah %1$s</string>
 
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
@@ -1088,8 +1094,8 @@
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
-
-
+    <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
+    <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
 
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
