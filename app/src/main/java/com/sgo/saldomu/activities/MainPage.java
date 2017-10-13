@@ -362,6 +362,7 @@ public class MainPage extends BaseActivity{
         mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = (RelativeLayout) findViewById(R.id.outer_layout_content);
+        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();

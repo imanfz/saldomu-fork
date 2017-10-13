@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -398,7 +399,9 @@ public class Regist2 extends Fragment {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(true);
+                getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Fragment test = new Login();
+                switchFragment(test,"Login",false);
                 dialog.dismiss();
             }
         });
@@ -457,16 +460,5 @@ public class Regist2 extends Fragment {
 
         LoginActivity fca = (LoginActivity) getActivity();
         fca.switchActivity(i);
-    }
-
-    public void changeFragment(Boolean submit){
-        if(submit){
-            DefineValue.NOBACK = false; //fragment selanjutnya bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
-        }
-        else{
-            getFragmentManager().popBackStack();
-        }
     }
 }

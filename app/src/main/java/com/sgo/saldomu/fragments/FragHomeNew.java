@@ -447,12 +447,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private ArrayList<String> SetupListMenu(){
-
+        String[] _data;
         ArrayList<String> data = new ArrayList<>() ;
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent) {
-            String[] _dataagent = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-            Collections.addAll(data,_dataagent);
+            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
+            Collections.addAll(data,_data);
 
         } else {
 
@@ -462,11 +462,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
             Collections.addAll(data,categories);
         }
-
-        String[] _datanonagent = getResources().getStringArray(R.array.list_menu_frag_new_home);
-        Collections.addAll(data,_datanonagent);
-
-
+        _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
+        Collections.addAll(data,_data);
         return data;
     }
 
@@ -488,18 +485,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data        = new int[totalIdx];
 
-
-
         if(isAgent) {
             for( int j = 0; j < taAgent.length(); j++) {
-                data[overallIdx] = taAgent.getResourceId(j, -1);
+                data[j] = taAgent.getResourceId(j, -1);
                 overallIdx++;
             }
 
 
         } else {
             for(int x =0; x < shopCategories.size(); x++ ) {
-                data[overallIdx] = R.drawable.ic_location_on_black;
+                data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
             }
 
