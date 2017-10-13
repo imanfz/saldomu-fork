@@ -635,12 +635,22 @@ public class Regist3 extends Fragment {
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                changeFragment(true);
+                getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Fragment test = new Login();
+                switchFragment(test,"Login",false);
                 dialog.dismiss();
             }
         });
 
         dialog.show();
+    }
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.switchContent(i,name,isBackstack);
     }
 
     private void showDialogEmptyToken() {
@@ -653,17 +663,6 @@ public class Regist3 extends Fragment {
             }
         })
         .show();
-    }
-
-    public void changeFragment(Boolean submit){
-        if(submit){
-            DefineValue.NOBACK = false; //fragment selanjutnya bisa menekan tombol BACK
-            Intent i = new Intent(getActivity(),LoginActivity.class);
-            switchActivity(i);
-        }
-        else{
-            getFragmentManager().popBackStack();
-        }
     }
 
     public boolean inputValidation(){
