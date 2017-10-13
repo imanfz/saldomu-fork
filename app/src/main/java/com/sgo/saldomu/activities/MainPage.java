@@ -140,7 +140,14 @@ public class MainPage extends BaseActivity{
             mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
+            if(checkNotification()){
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+            }
+            else {
 
                 if (!isLogin()) {
                     openFirstScreen(FIRST_SCREEN_INTRO);
@@ -160,15 +167,15 @@ public class MainPage extends BaseActivity{
                     AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
                     startService(new Intent(this, UpdateLocationService.class));
 
-                    if(checkNotification()){
-                        int type    = Integer.valueOf(getIntent().getExtras().getString("type"));
+                    if (checkNotification()) {
+                        int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-                        Map<String, String> msgMap  = new HashMap<String, String>();
+                        Map<String, String> msgMap = new HashMap<String, String>();
                         Intent intentData = getIntent();
-                        if ( intentData.hasExtra("model_notif") ) {
+                        if (intentData.hasExtra("model_notif")) {
                             msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
                         }
-                        if ( intentData.hasExtra("options") ) {
+                        if (intentData.hasExtra("options")) {
                             msgMap.put("options", intentData.getStringExtra("options"));
                         }
                         Timber.d("testing :" + msgMap.toString());
@@ -177,11 +184,9 @@ public class MainPage extends BaseActivity{
                         Intent intent = fcmManager.checkingAction(type, msgMap);
                         startActivity(intent);
                         //this.finish();
-
                     }
-
                 }
-
+            }
         }
         else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);

@@ -19,7 +19,6 @@ import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.activities.Introduction;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -29,16 +28,13 @@ import com.sgo.saldomu.coreclass.WebParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import timber.log.Timber;
 
-import static com.sgo.saldomu.fcm.FCMManager.OPEN_PLAYSTORE;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
 /**
@@ -66,8 +62,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             scheduleJob();
                             break;
                     }
-            } else {
-
             }
         }
 
@@ -404,7 +398,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         break;
                 }
             }
-        } else if(msg.containsKey("type")) {
+        }
+        else if(msg.containsKey("type")) {
 
             int msgType = Integer.parseInt(msg.getString("type"));
 

@@ -265,20 +265,27 @@ public class FCMManager {
                     break;
             }
 
-        } else {
-            switch (type) {
-                case OPEN_PLAYSTORE:
-                    Timber.d("masuk open playstore");
-                    String appPackageName = mContext.getPackageName(); // getPackageName() from Context or Activity object
+        }
+        return i;
+    }
 
-                    try {
-                        i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
-                    } catch (android.content.ActivityNotFoundException anfe) {
-                        i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
-                    }
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    break;
-            }
+    public Intent checkingAction(int type){
+        Intent i;
+        switch (type) {
+            case OPEN_PLAYSTORE:
+                Timber.d("masuk open playstore");
+                String appPackageName = mContext.getPackageName(); // getPackageName() from Context or Activity object
+
+                try {
+                    i = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
+                }
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                break;
+            default:
+                i =  new Intent();
+                break;
         }
         return i;
     }
