@@ -89,14 +89,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Realm realm;
 
     int[] imageId = {
+            R.drawable.ic_tariktunai,
+            R.drawable.ic_tariktunai,
             R.drawable.ic_tambahsaldo,
             R.drawable.ic_bayarteman1,
             R.drawable.ic_mintauang,
             R.drawable.ic_belanja,
             R.drawable.ic_laporan,
             R.drawable.ic_location_on_black,
-            R.drawable.ic_tariktunai,
-            R.drawable.ic_tariktunai,
+
     };
 //    String[] text = {
 //            getString(R.string.newhome_title_topup),
@@ -213,7 +214,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        progdialog.dismiss();
+                        if ( progdialog.isShowing() )
+                            progdialog.dismiss();
+
                         String code = response.getString(WebParams.ERROR_CODE);
 
 
@@ -267,7 +270,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
 
                 private void ifFailure(Throwable throwable) {
-                    progdialog.dismiss();
+                    if ( progdialog.isShowing() )
+                        progdialog.dismiss();
+
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
@@ -411,9 +416,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
                 } else if ( menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
-                    switchMenu(NavigationDrawMenu.MBBS, bundle);
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
                 else
                 {
@@ -442,21 +447,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private ArrayList<String> SetupListMenu(){
-        String[] _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
+
         ArrayList<String> data = new ArrayList<>() ;
-        Collections.addAll(data,_data);
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent) {
-            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-            Collections.addAll(data,_data);
+            String[] _dataagent = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
+            Collections.addAll(data,_dataagent);
+
         } else {
-            //_data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
+
             String[] categories = new String[shopCategories.size()];
             for(int x =0 ; x < shopCategories.size(); x++ ) {
                 categories[x] = getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName();
             }
             Collections.addAll(data,categories);
         }
+
+        String[] _datanonagent = getResources().getStringArray(R.array.list_menu_frag_new_home);
+        Collections.addAll(data,_datanonagent);
+
+
         return data;
     }
 
@@ -478,10 +488,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data        = new int[totalIdx];
 
-        for( int j = 0; j < ta.length(); j++) {
-            data[j] = ta.getResourceId(j, -1);
-            overallIdx++;
-        }
 
 
         if(isAgent) {
@@ -489,16 +495,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 data[overallIdx] = taAgent.getResourceId(j, -1);
                 overallIdx++;
             }
+
+
         } else {
             for(int x =0; x < shopCategories.size(); x++ ) {
                 data[overallIdx] = R.drawable.ic_location_on_black;
                 overallIdx++;
             }
+
+
             /*for( int j = 0; j < taNotAgent.length(); j++) {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
                 overallIdx++;
             }*/
         }
+
+        for( int j = 0; j < ta.length(); j++) {
+            data[overallIdx] = ta.getResourceId(j, -1);
+            overallIdx++;
+        }
+
         return data;
     }
 

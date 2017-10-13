@@ -34,6 +34,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -484,7 +485,10 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int which) {
-
+                                                    SecurePreferences.Editor mEditor = sp.edit();
+                                                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_YES);
+                                                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+                                                    mEditor.apply();
                                                     /*FragTutupManual fragTutupManual = new FragTutupManual();
                                                     FragmentManager fragmentManager = getFragmentManager();
                                                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -498,6 +502,10 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                                                     }
                                                     fragmentTransaction.commit();*/
                                                     //getActivity().onBackPressed();
+                                                    //getActivity().finish();
+                                                    Intent i = new Intent(getActivity().getApplicationContext(), MainPage.class);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(i);
                                                     getActivity().finish();
 
                                                 }

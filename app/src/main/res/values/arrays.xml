@@ -182,7 +182,7 @@
         <item>@string/cash_out</item>
         <item>@string/menu_item_title_trx_agent</item>
         <item>@string/title_bbs_list_account_bbs</item>
-        <item>@string/transaction</item>
+        <!-- item>@string/transaction</item -->
         <item>@string/menu_item_title_kelola</item>
         <!-- item>@string/menu_item_title_list_approval</item -->
         <!-- item>@string/menu_item_title_waktu_beroperasi</item -->
@@ -197,7 +197,7 @@
         <item>@drawable/ic_tariktunai</item>
         <!-- item>@drawable/ic_tariktunai</item -->
         <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_laporan</item>
+        <!-- item>@drawable/ic_laporan</item -->
         <item>@drawable/ic_belanja</item>
     </integer-array>
 

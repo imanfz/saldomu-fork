@@ -64,6 +64,7 @@ android {
             //buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile-dev.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
+            buildConfigField 'String', "UrlMNotif", "\"http://192.168.88.116:8114/\""
 
             versionCode = 1
             versionName "1.0"
@@ -86,6 +87,7 @@ android {
 //            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
+            buildConfigField 'String', "UrlMNotif", "\"https://mobile.espay.id/mnotif/\""
 
             signingConfig signingConfigs.prodKey
             versionCode = 3
