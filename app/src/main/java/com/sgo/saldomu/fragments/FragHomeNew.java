@@ -442,13 +442,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
     }
 
     private ArrayList<String> SetupListMenu(){
-        String[] _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
+        String[] _data;
         ArrayList<String> data = new ArrayList<>() ;
-        Collections.addAll(data,_data);
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent) {
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
             Collections.addAll(data,_data);
+
         } else {
             //_data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
             String[] categories = new String[shopCategories.size()];
@@ -457,6 +457,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
             Collections.addAll(data,categories);
         }
+        _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
+        Collections.addAll(data,_data);
         return data;
     }
 
@@ -478,20 +480,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data        = new int[totalIdx];
 
-        for( int j = 0; j < ta.length(); j++) {
-            data[j] = ta.getResourceId(j, -1);
-            overallIdx++;
-        }
-
-
         if(isAgent) {
             for( int j = 0; j < taAgent.length(); j++) {
-                data[overallIdx] = taAgent.getResourceId(j, -1);
+                data[j] = taAgent.getResourceId(j, -1);
                 overallIdx++;
             }
         } else {
             for(int x =0; x < shopCategories.size(); x++ ) {
-                data[overallIdx] = R.drawable.ic_location_on_black;
+                data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
             }
             /*for( int j = 0; j < taNotAgent.length(); j++) {
@@ -499,6 +495,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 overallIdx++;
             }*/
         }
+
+        for( int j = 0; j < ta.length(); j++) {
+            data[overallIdx] = ta.getResourceId(j, -1);
+            overallIdx++;
+        }
+
+
+
         return data;
     }
 
