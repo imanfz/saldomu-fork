@@ -558,7 +558,7 @@ public class BillerActivityRF extends Fragment{
     @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed())
-            realm.close();
+            RealmManager.closeRealm(realm);
         super.onDestroy();
     }
 }

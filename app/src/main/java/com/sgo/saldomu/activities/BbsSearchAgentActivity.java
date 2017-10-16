@@ -44,6 +44,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -57,6 +58,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -78,6 +80,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -176,7 +179,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
         }
 
+        if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
+            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.putString(DefineValue.AMOUNT, amount);
+                mEditor.apply();
+
+                searchToko(currentLatitude, currentLongitude);
+            }
+        }
 
 
 
@@ -195,6 +211,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
         btnProses               = (Button) findViewById(R.id.btnProses);
+        btnProses.setEnabled(false);
 
         //startService(locationIntent);
 
@@ -328,7 +345,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             if ( lastLocation == null ){
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
-
+                btnProses.setEnabled(true);
                 if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
@@ -366,6 +383,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
+        btnProses.setEnabled(true);
 //        googleApiClient.disconnect();
 
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
@@ -492,7 +510,94 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private void getCompleteLocationAddress()
     {
 
-        try
+        if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
+
+        } else {
+            currentLatitude = lastLocation.getLatitude();
+            currentLongitude = lastLocation.getLongitude();
+        }
+
+        completeAddress = "";
+
+
+
+        MyApiClient.getGoogleAPIAddressByLatLng(this, currentLatitude, currentLongitude, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+
+                    String status = response.getString(WebParams.GMAP_API_STATUS);
+                    Timber.w("JSON Response: "+response.toString());
+
+
+                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                        for (HashMap<String, String> hashMapObject : gData) {
+                            for (String key : hashMapObject.keySet()) {
+                                switch(key) {
+                                    case "formattedAddress":
+                                        completeAddress = hashMapObject.get(key);
+                                        break;
+                                    case "province":
+                                        provinceName = hashMapObject.get(key);
+                                        break;
+                                    case "district":
+                                        districtName = hashMapObject.get(key);
+                                        break;
+                                    case "subdistrict":
+                                        break;
+                                    case "country":
+                                        countryName = hashMapObject.get(key);
+                                        break;
+                                }
+
+
+                            }
+                        }
+
+                        if ( completeAddress.equals("") ) {
+                            completeAddress += districtName + ", ";
+                            completeAddress += provinceName;
+                        }
+
+
+                    }
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                Timber.w("Error Koneksi: " + throwable.toString());
+
+            }
+        });
+
+        /*try
         {
             Geocoder geocoder = new Geocoder(this, new Locale("id"));
 
@@ -554,6 +659,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //errorMessage = "Catch : Invalid latitude or longitude values";
             errorDesc = "Catch : Invalid latitude or longitude values";
         }
+        */
 
 
         /*RequestParams params = new RequestParams();
@@ -896,6 +1002,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         sp   = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
+            clicked = false;
+        }
+
         if ( txId.equals("") && !amount.equals("") && !clicked ) {
 
 
@@ -1050,6 +1160,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
                                                     i.putExtra(DefineValue.AMOUNT, amount);
+                                                    i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
 
 
                                                 } else {
@@ -1381,6 +1492,16 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
+
+            try {
+                if (checkPlayServices()) {
+                    buildGoogleApiClient();
+                    createLocationRequest();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             runningApp();
         } else {
             // Do not have permissions, request them now
@@ -1524,7 +1645,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        progdialog2.dismiss();
+                        if ( progdialog2.isShowing())
+                            progdialog2.dismiss();
+
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -1595,7 +1718,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 private void ifFailure(Throwable throwable) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
-                    progdialog2.dismiss();
+                    if ( progdialog2.isShowing())
+                        progdialog2.dismiss();
+
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else

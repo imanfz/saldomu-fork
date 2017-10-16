@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import com.sgo.saldomu.R;
 
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
@@ -26,10 +27,12 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
     private static final String PLACES_API_BASE = "https://maps.googleapis.com/maps/api/place";
     private static final String TYPE_AUTOCOMPLETE = "/autocomplete";
     private static final String OUT_JSON = "/json";
+
     //private static final String API_KEY = "AIzaSyBCcnPLK3bDto8y5rFGpEXzOi47R8ODLvw";
 
-    private static final String API_KEY = "AIzaSyDAKr-gNQI2cF5OlA6HnjjPXBB4CQ7zIRM";
+    //private static final String API_KEY = "AIzaSyDAKr-gNQI2cF5OlA6HnjjPXBB4CQ7zIRM";
 
+    private String apiKey;
     private ArrayList<String> resultList;
     private Context context;
 
@@ -37,6 +40,7 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
     {
         super(context, textViewResourceId);
         this.context  = context;
+        apiKey          = context.getString(R.string.google_maps_key);
     }
 
     @Override
@@ -99,8 +103,9 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
         try
         {
             StringBuilder sb = new StringBuilder(PLACES_API_BASE + TYPE_AUTOCOMPLETE + OUT_JSON);
-            sb.append("?key=" + API_KEY);
+            sb.append("?key=" + apiKey);
             sb.append("&components=country:id"); //indonesia
+            sb.append("&language=id");
             //sb.append("&offset=" + 3);
             sb.append("&input=" + URLEncoder.encode(input, "utf8"));
 

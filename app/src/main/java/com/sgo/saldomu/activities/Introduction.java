@@ -7,7 +7,10 @@ import android.widget.Button;
 
 import com.github.paolorotolo.appintro.AppIntro;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fragments.IntroPage;
+
+import timber.log.Timber;
 
 /*
  Created by Lenovo Thinkpad on 12/21/2015.
@@ -27,6 +30,7 @@ public class Introduction extends AppIntro{
         Button donebtn = (Button)doneButton;
         skipbtn.setText(getString(R.string.start_now));
         donebtn.setText(getString(R.string.done));
+        Timber.d("FCM ID :" + FCMManager.getTokenFCM());
     }
 
     @Override

@@ -351,8 +351,9 @@ public class Login extends Fragment implements View.OnClickListener {
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
                 BBSDataManager.resetBBSData();
-                FCMWebServiceLoader.getInstance(getActivity().getApplicationContext()).sentTokenAtLogin(false,userId,response.getString(WebParams.EMAIL));
+
             }
+
 
             mEditor.putString(DefineValue.USERID_PHONE, userId);
             mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
@@ -423,6 +424,16 @@ public class Login extends Fragment implements View.OnClickListener {
                         break;
                     }
                 }
+            }
+
+            if ( response.has("shop_id_agent") && !response.getString("shop_id_agent").equals("")) {
+                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
+                if (shopAgentObject.length() > 0) {
+                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
+                }
+
             }
 
             arraynya = response.getString(WebParams.SETTINGS);

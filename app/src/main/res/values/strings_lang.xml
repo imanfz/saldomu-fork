@@ -1098,4 +1098,6 @@
     <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
 
 
+    <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
+    <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
 </resources>

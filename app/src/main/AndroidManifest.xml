@@ -238,6 +238,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity
             android:name=".activities.BbsMerchantCategoryActivity"
             android:configChanges="orientation"
@@ -253,12 +254,22 @@
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
         <activity
             android:name=".activities.BbsSearchAgentActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".activities.MainPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
+
         <activity
             android:name=".activities.ValidasiEmailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity android:name=".activities.BbsSearchByLocationActivity" />
         <activity android:name=".activities.BbsMemberShopActivity" />
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
@@ -267,25 +278,52 @@
         <activity android:name=".activities.BbsMapNagivationActivity" />
         <activity
             android:name=".activities.BBSActivity"
+            android:parentActivityName=".activities.MainPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
         <activity
             android:name=".activities.BBSRegAccountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.BbsApprovalAgentActivity" />
+        <activity android:name=".activities.BbsApprovalAgentActivity"
+            android:parentActivityName=".activities.MainPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
         <activity
             android:name=".activities.BbsMapViewByAgentActivity"
             android:label="@string/title_activity_bbs_map_view_by_agent"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyTheme" />
+            android:theme="@style/Theme.MyTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
         <activity
             android:name=".activities.BbsMapViewByMemberActivity"
             android:label="@string/title_activity_bbs_map_view_by_member"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MyTheme" />
+            android:theme="@style/Theme.MyTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+            </activity>
         <activity
             android:name=".activities.TutorialActivity"
             android:configChanges="orientation"
