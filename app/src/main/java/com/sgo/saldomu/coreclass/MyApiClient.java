@@ -355,6 +355,9 @@ public class MyApiClient {
         String googleMapsKey = getmContext().getString(R.string.google_maps_key);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
 
+        LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
+        LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
+
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
             getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
