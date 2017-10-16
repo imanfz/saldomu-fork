@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+
+    <fragment
+        android:id="@+id/agentMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- button search location -->
+    <!-- LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchLocationContainer"
+        android:layout_marginTop="360dp"
+        android:layout_marginStart="310dp"
+        android:layout_marginLeft="310dp"
+        android:background="#FFFFFF"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/searchLocationBtn"
+            android:src="@drawable/search_location"
+            android:scaleType="fitXY" />
+
+    </LinearLayout -->
+
+    <!-- button current location -->
+    <!-- LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="420dp"
+        android:layout_marginStart="310dp"
+        android:layout_marginLeft="310dp"
+        android:background="#FFFFFF"
+        android:padding="5dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/currentLocationBtn"
+            android:src="@drawable/current_location_button"
+            android:scaleType="fitXY" />
+
+    </LinearLayout -->
+
+    <!-- button search location -->
+    <!-- <ImageView
+         android:layout_width="50dp"
+         android:layout_height="50dp"
+         android:id="@+id/currentLocationBtn"
+         android:src="@drawable/current_location_button"
+         android:layout_marginTop="430dp"
+         android:layout_marginStart="290dp"
+         android:scaleType="fitXY" />-->
+
+    <!-- Pick Up Point-->
+    <!-- LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:padding="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp" >
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/info_agent_map_bbs_fragment_label"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/pickupTextView"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout -->
+    <!-- Pick Up Point -->
+
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+
+            <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
+                android:id="@+id/searchLocationEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#808080"
+                android:inputType="text"
+                android:padding="@dimen/margin_10dp"
+                android:textSize="15sp"
+                android:selectAllOnFocus="true"
+                android:hint="@string/search_location_hint_request_bbs_activity_label" >
+
+            </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

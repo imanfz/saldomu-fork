@@ -190,38 +190,47 @@
                                 />
 
                     </LinearLayout>
+                    <ViewStub
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/stub"/>
+
+                    <!--<include android:id="@+id/report_dialog"-->
+                             <!--layout="@layout/layout_dialog_report_transaction"/>-->
+
+                    <!--<include android:id="@+id/report_dialog_espay"-->
+                         <!--layout="@layout/layout_dialog_report_espay_transaction"/>-->
 
 
-                    <include android:id="@+id/report_dialog"
-                             layout="@layout/layout_dialog_report_transaction"/>
+                <!--<include android:id="@+id/report_dialog_dap"-->
+                         <!--layout="@layout/layout_dialog_dap"/>-->
+			 <!---->
+                    <!--<include android:id="@+id/report_dialog_request"-->
+                             <!--layout="@layout/layout_dialog_request"/>-->
 
-                    <include android:id="@+id/report_dialog_espay"
-                         layout="@layout/layout_dialog_report_espay_transaction"/>
+                    <!--<include android:id="@+id/report_cashout"-->
+                             <!--layout="@layout/layout_dialog_report_cashout"/>-->
 
+                    <!--<include android:id="@+id/report_cashout_tunai"-->
+                        <!--layout="@layout/layout_dialog_report_cashouttunai"/>-->
 
-                <include android:id="@+id/report_dialog_dap"
-                         layout="@layout/layout_dialog_dap"/>
-			 
-                    <include android:id="@+id/report_dialog_request"
-                             layout="@layout/layout_dialog_request"/>
+                    <!--<include android:id="@+id/report_payfriends"-->
+                        <!--layout="@layout/layout_dialog_report_payfriends"/>-->
 
-                    <include android:id="@+id/report_cashout"
-                             layout="@layout/layout_dialog_report_cashout"/>
+                    <!--<include android:id="@+id/report_topup"-->
+                        <!--layout="@layout/layout_dialog_report_topup"/>-->
 
-                    <include android:id="@+id/report_cashout_tunai"
-                        layout="@layout/layout_dialog_report_cashouttunai"/>
+                    <!--<include android:id="@+id/report_biller"-->
+                        <!--layout="@layout/layout_dialog_report_biller"/>-->
 
-                    <include android:id="@+id/report_payfriends"
-                        layout="@layout/layout_dialog_report_payfriends"/>
+                    <!--<include android:id="@+id/report_biller_pln"-->
+                        <!--layout="@layout/layout_dialog_report_biller_pln"/>-->
 
-                    <include android:id="@+id/report_topup"
-                        layout="@layout/layout_dialog_report_topup"/>
+                    <!--<include android:id="@+id/report_bbs_cashin"-->
+                        <!--layout="@layout/layout_dialog_report_bbs_cashin"/>-->
 
-                    <include android:id="@+id/report_biller"
-                        layout="@layout/layout_dialog_report_biller"/>
-
-                    <include android:id="@+id/report_biller_pln"
-                        layout="@layout/layout_dialog_report_biller_pln"/>
+                    <!--<include android:id="@+id/report_bbs_cashout"-->
+                        <!--layout="@layout/layout_dialog_report_bbs_cashout"/>-->
 
                 </LinearLayout>
             <!--</ScrollView>-->

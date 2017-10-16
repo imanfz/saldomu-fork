@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+    <RelativeLayout
+        android:id="@+id/rlApproval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/main_toolbar"
+        android:visibility="invisible"
+        >
+
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tlInfo"
+            android:layout_marginBottom="20dp"
+            >
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/category"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvCategoryName"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/member_name"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvMemberName"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/amount"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:id="@+id/tvAmount"
+                    ></TextView>
+
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/tlInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/btnApprove"
+                android:text="@string/agent_approve"
+                android:background="@color/colorPrimaryDark"
+                android:layout_weight="1"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/btnReject"
+                android:text="@string/agent_reject"
+                android:background="@color/colorPrimaryDark"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -2,4 +2,7 @@
 <resources>
     <integer name="token_lenght_4">4</integer>
     <integer name="nomor_lenght_20">20</integer>
+    <integer name="start_radius">1</integer>
+    <integer name="increment_radius">1</integer>
+    <integer name="maximum_radius">10</integer>
 </resources>

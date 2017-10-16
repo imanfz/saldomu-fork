@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+    <com.sgo.saldomu.coreclass.RoundedQuickContactBadge
             android:id="@+id/mygroup_contact_icon"
             android:layout_height="50dp"
             android:layout_width="50dp"

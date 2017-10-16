@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:someNamespace="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_reg_acct"
+        android:orderInCategory="1"
+        android:title="@string/title_bbs_list_account_bbs"
+        someNamespace:showAsAction="always" />
+</menu>

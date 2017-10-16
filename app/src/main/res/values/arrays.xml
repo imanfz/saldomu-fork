@@ -149,12 +149,121 @@
 
     <string-array name="list_cash_out">
         <item>Bank</item>
-        <item>Tunai</item>
+        <!--<item>Tunai</item>-->
     </string-array>
 
     <string-array name="contact_tab_list">
         <item>Pusat Bantuan</item>
-        <item>FAQ</item>
+    </string-array>
+    <string-array name="list_closed_type">
+        <item>Pilih</item>
+        <item>Hari</item>
+        <item>Tanggal</item>
     </string-array>
 
+    <string-array name="list_menu_kelola">
+        <item>Merchant</item>
+        <item>Agent</item>
+    </string-array>
+
+    <string-array name="list_tab_bbs_search_agent">
+        <item>Map</item>
+        <item>List</item>
+    </string-array>
+
+    <string-array name="list_bbs">
+        <item>@string/title_bbs_list_account_bbs</item>
+        <item>@string/transaction</item>
+        <item>@string/title_cash_out_member</item>
+    </string-array>
+
+    <string-array name="list_bbs_agent">
+        <item>@string/cash_in</item>
+        <item>@string/cash_out</item>
+        <item>@string/menu_item_title_trx_agent</item>
+        <item>@string/title_bbs_list_account_bbs</item>
+        <item>@string/transaction</item>
+        <item>@string/menu_item_title_kelola</item>
+        <!-- item>@string/menu_item_title_list_approval</item -->
+        <!-- item>@string/menu_item_title_waktu_beroperasi</item -->
+        <!-- item>@string/menu_item_title_tutup_manual</item -->
+
+
+    </string-array>
+
+    <integer-array name="list_icon_bbs_agent">
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item>
+        <!-- item>@drawable/ic_tariktunai</item -->
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_laporan</item>
+        <item>@drawable/ic_belanja</item>
+    </integer-array>
+
+    <string-array name="list_bbs_member">
+        <item>@string/title_cash_out_member</item>
+        <!-- item>@string/title_bbs_my_orders</item>
+        <item>@string/title_rating_by_member</item -->
+    </string-array>
+    <integer-array name="list_icon_bbs_member">
+        <item>@drawable/ic_tariktunai</item>
+        <!-- item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item -->
+    </integer-array>
+
+
+
+    <string-array name="list_menu_frag_new_home">
+        <item>@string/newhome_title_topup</item>
+        <item>@string/menu_item_title_pay_friends</item>
+        <item>@string/menu_item_title_ask_for_money</item>
+        <item>@string/menu_item_title_buy</item>
+        <item>@string/menu_item_title_report</item>
+    </string-array>
+    <string-array name="list_menu_frag_new_home_agent">
+        <item>@string/cash_in</item>
+        <item>@string/cash_out</item>
+        <item>@string/menu_item_title_trx_agent</item>
+    </string-array>
+    <string-array name="list_menu_frag_new_home_not_agent">
+        <item>@string/menu_item_search_agent_cta</item>
+        <item>@string/menu_item_search_agent_atc</item>
+    </string-array>
+
+    <integer-array name="list_menu_icon_frag_new_home">
+        <item>@drawable/ic_tambahsaldo</item>
+        <item>@drawable/ic_bayarteman1</item>
+        <item>@drawable/ic_mintauang</item>
+        <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_laporan</item>
+    </integer-array>
+    <integer-array name="list_menu_icon_frag_new_home_agent">
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_tariktunai</item>
+    </integer-array>
+    <integer-array name="list_menu_icon_frag_new_home_not_agent">
+        <item>@drawable/ic_location_on_black</item>
+        <item>@drawable/ic_location_on_black</item>
+    </integer-array>
+    <string-array name="list_bbs_setting_kelola">
+        <item>@string/agent_name</item>
+        <item>@string/category</item>
+        <!-- item>@string/setup_agent_open_hour</item -->
+        <item>@string/setup_location</item>
+        <item>@string/setup_tutup_manual</item>
+        <!-- item>@string/setup_tutup_manual</item -->
+    </string-array>
+
+    <string-array name="bbs_order_status">
+        <item>In Progress</item>
+        <item>On Progress</item>
+        <item>Completed</item>
+    </string-array>
+
+    <string-array name="list_bbs_setting">
+        <!-- item>@string/setup_agent_open_hour</item -->
+        <item>@string/setup_tutup_manual</item>
+    </string-array>
 </resources>

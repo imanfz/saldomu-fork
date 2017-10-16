@@ -468,6 +468,19 @@ public class SecurePreferences implements SharedPreferences {
 		}
 	}
 
+	public double getDouble(String key, double defaultValue) {
+		final String encryptedValue = sharedPreferences.getString(
+				SecurePreferences.hashPrefKey(key), null);
+		if (encryptedValue == null) {
+			return defaultValue;
+		}
+		try {
+			return Double.longBitsToDouble(Long.parseLong(decrypt(encryptedValue)));
+		} catch (NumberFormatException e) {
+			throw new ClassCastException(e.getMessage());
+		}
+	}
+
 	@Override
 	public boolean contains(String key) {
 		return sharedPreferences.contains(SecurePreferences.hashPrefKey(key));
@@ -686,6 +699,12 @@ public class SecurePreferences implements SharedPreferences {
 		@Override
 		public SharedPreferences.Editor clear() {
 			mEditor.clear();
+			return this;
+		}
+
+		public SharedPreferences.Editor putDouble(String key, Double value) {
+			mEditor.putString(SecurePreferences.hashPrefKey(key),
+					encrypt(Long.toString(Double.doubleToLongBits(value))));
 			return this;
 		}
 

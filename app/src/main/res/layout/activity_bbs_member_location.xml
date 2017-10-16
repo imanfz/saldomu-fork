@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/main_toolbar">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llSearch"
+            android:orientation="horizontal"
+            android:layout_below="@+id/linearLayoutBtn"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+
+            <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#808080"
+                android:inputType="text"
+                android:layout_weight="3"
+                android:padding="@dimen/margin_10dp"
+                android:textSize="15sp"
+                android:selectAllOnFocus="true"
+                android:hint="@string/search_location_hint_request_bbs_activity_label" >
+
+            </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
+
+
+
+            <!-- Button
+            android:id="@+id/search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:onClick="onMapSearch"
+            android:text="@string/bbs_agent_search" / -->
+
+
+
+        </LinearLayout>
+
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_below="@+id/llSearch"
+                tools:context="com.viralandroid.googlemapsandroidapi.MapsActivity" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="35dp"
+            android:layout_margin="2dp"
+            android:gravity="center"
+            android:id="@+id/linearLayoutBtn"
+            android:layout_below="@+id/llSearch">
+
+            <Button
+                android:id="@+id/btnLokasiGPS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+
+                android:text="@string/bbs_gps_location"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_small"
+            android:id="@+id/llMemberDetail"
+            android:orientation="vertical"
+            android:layout_below="@+id/map">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvMemberNameLabel"
+                    android:text="@string/member_name"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvDetailMemberName"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCommNameLabel"
+                android:text="@string/community"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:layout_weight="1"
+
+                />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvCommName"
+                    android:layout_below="@+id/tvDetailMemberName"
+                    android:textSize="@dimen/abc_text_size_small_material"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAddressLabel"
+                android:layout_below="@+id/tvCommNameLabel"
+                android:text="@string/myprofile_text_address"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:layout_weight="1"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAddress"
+                android:layout_below="@+id/tvCommName"
+                android:textSize="@dimen/abc_text_size_small_material"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDistrictLabel"
+                android:layout_below="@+id/tvAddressLabel"
+                android:text="@string/district"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:layout_weight="1"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvDistrict"
+                android:inputType="textMultiLine"
+                android:layout_below="@+id/tvAddress"
+                android:textSize="@dimen/abc_text_size_small_material"
+                />
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvProvinceLabel"
+                android:layout_below="@+id/tvDistrictLabel"
+                android:text="@string/province"
+                android:textSize="@dimen/abc_text_size_small_material"
+                android:layout_weight="1"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvProvince"
+                android:layout_below="@+id/tvDistrict"
+                android:textSize="@dimen/abc_text_size_small_material"
+                />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:layout_weight="0.5"
+        android:text="@string/proses" />
+</RelativeLayout>

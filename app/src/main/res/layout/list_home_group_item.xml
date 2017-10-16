@@ -14,7 +14,7 @@
             android:paddingRight="20dp"
             />
 
-    <com.sgo.orimakardaya.coreclass.RoundedQuickContactBadge
+    <com.sgo.saldomu.coreclass.RoundedQuickContactBadge
             android:id="@+id/contact_icon_home_group"
             android:layout_height="?android:attr/listPreferredItemHeight"
             android:layout_width="?android:attr/listPreferredItemHeight"

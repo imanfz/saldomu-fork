@@ -34,41 +34,41 @@
 -keepattributes InnerClasses
 -keepattributes *Annotation*
 
--keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
--keep public class com.sgo.orimakardaya.Beans.** { *; }
-#-keep public class com.sgo.orimakardaya.Beans.** extends com.activeandroid.Model { *; }
-#-keep public class com.sgo.orimakardaya.Beans.** { *; }
--keep class com.sgo.orimakardaya.activities.CreateGroupActivity$TempObjectData { *; }
+-keep public class com.sgo.saldomu.Beans.** extends com.activeandroid.Model { *; }
+-keep public class com.sgo.saldomu.Beans.** { *; }
+#-keep public class com.sgo.saldomu.Beans.** extends com.activeandroid.Model { *; }
+#-keep public class com.sgo.saldomu.Beans.** { *; }
+-keep class com.sgo.saldomu.activities.CreateGroupActivity$TempObjectData { *; }
 
--keep class com.sgo.orimakardaya.coreclass.BalanceHandler { *; }
--keep class com.sgo.orimakardaya.coreclass.CollapseExpandAnimation { *; }
--keep class com.sgo.orimakardaya.coreclass.Contents { *; }
--keep class com.sgo.orimakardaya.coreclass.CoreApp { *; }
--keep class com.sgo.orimakardaya.coreclass.CurrencyFormat { *; }
--keep class com.sgo.orimakardaya.coreclass.HideKeyboard { *; }
--keep class com.sgo.orimakardaya.coreclass.InetHandler { *; }
--keep class com.sgo.orimakardaya.coreclass.LifeCycleHandler { *; }
--keep class com.sgo.orimakardaya.securities.Md5 { *; }
--keep class com.sgo.orimakardaya.coreclass.MyApiClient { *; }
--keep class com.sgo.orimakardaya.coreclass.MyPicasso { *; }
--keep class com.sgo.orimakardaya.coreclass.NotificationActionView { *; }
--keep class com.sgo.orimakardaya.coreclass.PeriodTime { *; }
--keep class com.sgo.orimakardaya.coreclass.RoundedImageView { *; }
--keep class com.sgo.orimakardaya.coreclass.QRCodeEncoder { *; }
--keep class com.sgo.orimakardaya.coreclass.WebParams { *; }
+-keep class com.sgo.saldomu.coreclass.BalanceHandler { *; }
+-keep class com.sgo.saldomu.coreclass.CollapseExpandAnimation { *; }
+-keep class com.sgo.saldomu.coreclass.Contents { *; }
+-keep class com.sgo.saldomu.coreclass.CoreApp { *; }
+-keep class com.sgo.saldomu.coreclass.CurrencyFormat { *; }
+-keep class com.sgo.saldomu.coreclass.HideKeyboard { *; }
+-keep class com.sgo.saldomu.coreclass.InetHandler { *; }
+-keep class com.sgo.saldomu.coreclass.LifeCycleHandler { *; }
+-keep class com.sgo.saldomu.securities.Md5 { *; }
+-keep class com.sgo.saldomu.coreclass.MyApiClient { *; }
+-keep class com.sgo.saldomu.coreclass.MyPicasso { *; }
+-keep class com.sgo.saldomu.coreclass.NotificationActionView { *; }
+-keep class com.sgo.saldomu.coreclass.PeriodTime { *; }
+-keep class com.sgo.saldomu.coreclass.RoundedImageView { *; }
+-keep class com.sgo.saldomu.coreclass.QRCodeEncoder { *; }
+-keep class com.sgo.saldomu.coreclass.WebParams { *; }
 
--keep class com.sgo.orimakardaya.dialogs.DefinedDialog { *; }
--keep class com.sgo.orimakardaya.dialogs.ReportBillerDialog { *; }
--keep class com.sgo.orimakardaya.dialogs.AlertDialogFrag { *; }
+-keep class com.sgo.saldomu.dialogs.DefinedDialog { *; }
+-keep class com.sgo.saldomu.dialogs.ReportBillerDialog { *; }
+-keep class com.sgo.saldomu.dialogs.AlertDialogFrag { *; }
 
--keep class com.sgo.orimakardaya.fragments.ListCollectionPayment$TempObjectData { *; }
+-keep class com.sgo.saldomu.fragments.ListCollectionPayment$TempObjectData { *; }
 
--keep class com.sgo.orimakardaya.fragments.FragAskForMoney$TempObjectData { *; }
--keep class com.sgo.orimakardaya.fragments.FragPayFriends$TempObjectData { *; }
--keep class com.sgo.orimakardaya.fragments.FragPayFriendsConfirm$TempTxID { *; }
--keep class com.sgo.orimakardaya.fragments.ListBillerMerchant$ListObject{ *; }
+-keep class com.sgo.saldomu.fragments.FragAskForMoney$TempObjectData { *; }
+-keep class com.sgo.saldomu.fragments.FragPayFriends$TempObjectData { *; }
+-keep class com.sgo.saldomu.fragments.FragPayFriendsConfirm$TempTxID { *; }
+-keep class com.sgo.saldomu.fragments.ListBillerMerchant$ListObject{ *; }
 
--keep class com.sgo.orimakardaya.services.BalanceService { *; }
+-keep class com.sgo.saldomu.services.BalanceService { *; }
 -keep class io.codetail.animation.arcanimator.** { *; }
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
@@ -108,6 +108,8 @@
 -dontwarn android.support.**
 -dontwarn okio.**
 -dontwarn org.joda.time.**
+-dontwarn com.google.android.gms.**
+-dontnote com.google.android.gms.**
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
