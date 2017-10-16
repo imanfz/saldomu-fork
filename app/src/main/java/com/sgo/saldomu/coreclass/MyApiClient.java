@@ -349,6 +349,7 @@ public class MyApiClient {
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
+        LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
