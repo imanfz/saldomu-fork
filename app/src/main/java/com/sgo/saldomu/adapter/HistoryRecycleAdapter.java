@@ -280,7 +280,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 
         Picasso mPic;
         if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(mContext);
+            mPic = MyPicasso.getUnsafeImageLoader(mContext);
         else
             mPic= Picasso.with(mContext);
 
