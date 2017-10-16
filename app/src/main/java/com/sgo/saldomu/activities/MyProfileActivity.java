@@ -513,7 +513,7 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
 
         Picasso mPic;
         if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(this);
+            mPic = MyPicasso.getUnsafeImageLoader(this);
         else
             mPic= Picasso.with(this);
 
