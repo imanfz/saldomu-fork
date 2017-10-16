@@ -271,7 +271,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
+                Timber.w("Error Koneksi getGoogleAPICoordinateByAddress oncreate:" + throwable.toString());
 
             }
         });
@@ -534,7 +534,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                 Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                             progdialog.dismiss();
-                            Timber.w("Error Koneksi login:" + throwable.toString());
+                            Timber.w("Error Koneksi updateMemberLocation:" + throwable.toString());
 
                         }
 
@@ -619,7 +619,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
 
-                Timber.w("Error Koneksi login:" + throwable.toString());
+                Timber.w("Error Koneksi setAdministrativeName:" + throwable.toString());
 
             }
         });
@@ -1045,7 +1045,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     progdialog.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
+                    Timber.w("Error Koneksi getGoogleAPICoordinateByAddress onpermission granted:" + throwable.toString());
 
                 }
             });
@@ -1291,7 +1291,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                         Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
+                    Timber.w("Error Koneksi searchLocationByDistrictProvince:" + throwable.toString());
 
                 }
             });

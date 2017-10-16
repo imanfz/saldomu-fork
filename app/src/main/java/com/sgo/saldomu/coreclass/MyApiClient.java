@@ -35,6 +35,8 @@ public class MyApiClient {
     private static MyApiClient singleton = null;
     private Context mContext;
     private AsyncHttpClient asyncHttpClient;
+    private AsyncHttpClient asyncHttpClient_google;
+    private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
 
     public MyApiClient(){
@@ -53,6 +55,8 @@ public class MyApiClient {
             singleton = new MyApiClient(_context);
             singleton.asyncHttpClient=new AsyncHttpClient();
             singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.asyncHttpClient_google=new AsyncHttpClient();
+            singleton.syncHttpClient_google=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
         }
@@ -355,6 +359,9 @@ public class MyApiClient {
         String googleMapsKey = getmContext().getString(R.string.google_maps_key);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
 
+        LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
+        LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
+
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
             getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
@@ -364,6 +371,11 @@ public class MyApiClient {
         if(PROD_FLAG_ADDRESS)
             getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
+
+        getInstance().asyncHttpClient_google.setTimeout(TIMEOUT);
+        getInstance().asyncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
+        getInstance().syncHttpClient_google.setTimeout(TIMEOUT);
+        getInstance().syncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
     }
 
 
@@ -515,6 +527,13 @@ public class MyApiClient {
     public static void sentReqChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address req change email:"+ LINK_REQ_CHANGE_EMAIL);
         post(mContext, LINK_REQ_CHANGE_EMAIL, params, responseHandler);
+    }
+
+    private static AsyncHttpClient getClientGoogle(boolean isSync){
+        if(isSync)
+            return getInstance().syncHttpClient_google;
+
+        return getInstance().asyncHttpClient_google;
     }
 
     public static AsyncHttpClient getClient()
@@ -1259,7 +1278,7 @@ public class MyApiClient {
         Timber.wtf("address sent google maps route: %1$s ",LINK_GOOGLE_MAP_API_ROUTE);
 
         RequestParams params = new RequestParams();
-        postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
+        getClientGoogle(true).post(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
     }
 
     public static void updateLocationAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1297,7 +1316,7 @@ public class MyApiClient {
         try {
             String query = URLEncoder.encode(address, "utf-8");
             Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE);
-            get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&address="+ query, responseHandler);
+            getClientGoogle(false).get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&address="+ query, responseHandler);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -1310,7 +1329,7 @@ public class MyApiClient {
 
         try {
             Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude);
-            get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude, responseHandler);
+            getClientGoogle(false).get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude, responseHandler);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
