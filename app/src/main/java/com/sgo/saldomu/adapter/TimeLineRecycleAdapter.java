@@ -210,7 +210,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
         Picasso mPic;
         if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(mContext);
+            mPic = MyPicasso.getUnsafeImageLoader(mContext);
         else
             mPic= Picasso.with(mContext);
 

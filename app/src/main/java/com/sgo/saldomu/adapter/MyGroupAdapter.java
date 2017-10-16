@@ -81,7 +81,7 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
 
             Picasso mPic;
             if(MyApiClient.PROD_FLAG_ADDRESS)
-                mPic = MyPicasso.getImageLoader(context);
+                mPic = MyPicasso.getUnsafeImageLoader(context);
             else
                 mPic= Picasso.with(context);
 

@@ -97,7 +97,7 @@ public class TimelineDetailActivity extends BaseActivity {
 
         Picasso mPic;
         if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(this);
+            mPic = MyPicasso.getUnsafeImageLoader(this);
         else
             mPic= Picasso.with(this);
 
