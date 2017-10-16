@@ -93,12 +93,8 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    public void switchActivity(Intent mIntent, int activity_type) {
-        switch (activity_type){
-            case ACTIVITY_RESULT:
+    public void switchActivity(Intent mIntent) {
                 startActivityForResult(mIntent, REQUEST_EXIT);
-                break;
-        }
     }
 
     @Override

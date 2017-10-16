@@ -111,7 +111,7 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
         memberID = sp.getString(DefineValue.MEMBER_ID, "");
         max_topup_holder = (TextView) v.findViewById(R.id.max_topup_textview);
         maxtopup_layout = (LinearLayout) v.findViewById(R.id.maxtopup_layout);
-        if (!sp.getBoolean(DefineValue.IS_AGENT, true)&& !sp.getBoolean(DefineValue.IS_MERCHANT, true)){
+        if (!sp.getBoolean(DefineValue.IS_AGENT, true)){
             max_topup_holder.setText("Max Topup: "+parseMaxTopupValue(sp.getString(DefineValue.BALANCE_MAX_TOPUP, "")));
         }else
             maxtopup_layout.setVisibility(View.GONE);
@@ -444,7 +444,7 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
         @Override
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
-            if (!sp.getBoolean(DefineValue.IS_AGENT, true)|| !sp.getBoolean(DefineValue.IS_MERCHANT, true)){
+            if (!sp.getBoolean(DefineValue.IS_AGENT, true)){
                 max_topup_holder.setText("Max Topup: "+parseMaxTopupValue(sp.getString(DefineValue.BALANCE_MAX_TOPUP, "")));
             }else
                 maxtopup_layout.setVisibility(View.GONE);

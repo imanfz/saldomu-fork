@@ -15,29 +15,30 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.ListTopUp;
 import com.sgo.saldomu.fragments.SgoPlus_input;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.ReqPermissionClass;
 import com.sgo.saldomu.coreclass.SMSclass;
 
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
   Created by Administrator on 4/28/2015.
  */
-public class TopUpActivity extends BaseActivity {
+public class TopUpActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
     FragmentManager fragmentManager;
     String transaction_type;
     Boolean is_full_activity = false;
     boolean isSMSBanking = false;
     private SMSclass smSclass;
-    private ReqPermissionClass reqPermissionClass;
+    private final static int RC_READ_PHONE_STATE = 121;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,9 +91,12 @@ public class TopUpActivity extends BaseActivity {
 
     private void initializeSMSBanking(){
         isSMSBanking = true;
-        reqPermissionClass = new ReqPermissionClass(this);
-        if(reqPermissionClass.checkPermission(Manifest.permission.READ_PHONE_STATE,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)){
+        if(EasyPermissions.hasPermissions(this,Manifest.permission.READ_PHONE_STATE)){
             initializeSmsClass();
+        }
+        else {
+            EasyPermissions.requestPermissions(this,getString(R.string.rational_readphonestate),
+                    RC_READ_PHONE_STATE,Manifest.permission.READ_PHONE_STATE);
         }
     }
 
@@ -133,15 +137,7 @@ public class TopUpActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (reqPermissionClass.checkOnPermissionResult(requestCode,grantResults,ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE)) {
-            initializeSmsClass();
-        }
-        else {
-            if(requestCode == ReqPermissionClass.PERMISSIONS_REQ_READPHONESTATE) {
-                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
 
     public void InitializeToolbar(){
@@ -237,5 +233,24 @@ public class TopUpActivity extends BaseActivity {
 
     public void setToolbarTitle(String _title) {
         setActionBarTitle(_title);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch (requestCode){
+            case RC_READ_PHONE_STATE:
+                initializeSmsClass();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        switch (requestCode){
+            case RC_READ_PHONE_STATE:
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                finish();
+                break;
+        }
     }
 }
