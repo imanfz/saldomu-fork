@@ -393,7 +393,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //currentLongitude = lastLocation.getLongitude();
         }
 
-        viewPager.getAdapter().notifyDataSetChanged();
+        //viewPager.getAdapter().notifyDataSetChanged();
         getCompleteLocationAddress();
 
         if ( mobility.equals(DefineValue.STRING_NO) ) {
