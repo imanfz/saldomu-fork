@@ -1,17 +1,18 @@
 package com.sgo.saldomu.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 
+
 public class ErrorActivity extends AppCompatActivity {
 
     public final static int GOOGLE_SERVICE_TYPE = 1;
+    public final static int DEVICE_ROOTED = 2;
     String msg;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,10 @@ public class ErrorActivity extends AppCompatActivity {
                 msg = getString(R.string.error_msg_googleplayservices, getString(R.string.appname));
                 showError(msg);
                 break;
-
+            case DEVICE_ROOTED:
+                msg = getString(R.string.error_msg_rooteddevice, getString(R.string.appname));
+                showError(msg);
+                break;
             default:
                 msg = getString(R.string.error_message);
                 showError(msg);
@@ -34,6 +38,12 @@ public class ErrorActivity extends AppCompatActivity {
     }
 
     void showError(String message){
+//        DefinedDialog.showErrorDialog(this, message, new DefinedDialog.DialogButtonListener() {
+//            @Override
+//            public void onClickButton(View v, boolean isLongClick) {
+//                finish();
+//            }
+//        });
         DefinedDialog.showErrorDialog(this, message, new DefinedDialog.DialogButtonListener() {
             @Override
             public void onClickButton(View v, boolean isLongClick) {
