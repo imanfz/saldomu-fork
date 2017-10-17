@@ -143,6 +143,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         //tvShop.setVisibility(View.GONE);
         //spPilihan.setVisibility(View.GONE);
+        btnApprove.setEnabled(false);
 
         rlApproval              = (RelativeLayout) findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
@@ -630,7 +631,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
                 currentLatitude     = lastLocation.getLatitude();
                 currentLongitude    = lastLocation.getLongitude();
-
+                btnApprove.setEnabled(true);
                 Timber.d("Location Found" + lastLocation.toString());
                 googleApiClient.disconnect();
             }
@@ -658,6 +659,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         currentLatitude = lastLocation.getLatitude();
         currentLongitude = lastLocation.getLongitude();
 
+        btnApprove.setEnabled(true);
         googleApiClient.disconnect();
 
         try {
