@@ -129,18 +129,14 @@ public class MainPage extends BaseActivity{
     AlertDialog devRootedDeviceAlertDialog;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Obtain the FirebaseAnalytics instance.
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        if (savedInstanceState != null)
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
@@ -151,7 +147,7 @@ public class MainPage extends BaseActivity{
                             .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    initializeDashboard();
+                                    initializeDashboard(savedInstanceState);
                                 }
                             });
                     builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -168,7 +164,7 @@ public class MainPage extends BaseActivity{
                 }
             }else {
 
-                initializeDashboard();
+                initializeDashboard(savedInstanceState);
             }
         }
         else {
@@ -176,51 +172,56 @@ public class MainPage extends BaseActivity{
         }
     }
 
-    private void initializeDashboard(){
-        if (checkNotification()) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+    private void initializeDashboard(Bundle savedInstanceState){
+        if (checkNotificationNotif()) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
             FCMManager fcmManager = new FCMManager(this);
             Intent intent = fcmManager.checkingAction(type);
             startActivity(intent);
+        }
+
+        if (!isLogin()) {
+            openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
+            userID = sp.getString(DefineValue.USERID_PHONE, "");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            if (!isLogin()) {
-                openFirstScreen(FIRST_SCREEN_INTRO);
-            } else {
+            if (savedInstanceState != null)
+                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
-                isForeground = true;
-                agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-                utilsLoader = new UtilsLoader(this, sp);
-                utilsLoader.getAppVersion();
-                ActiveAndroid.initialize(this);
-                progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                progdialog.show();
-                InitializeNavDrawer();
-                setupFab();
-                FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+            isForeground = true;
+            agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+            utilsLoader = new UtilsLoader(this, sp);
+            utilsLoader.getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
-                AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-                startService(new Intent(this, UpdateLocationService.class));
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+            startService(new Intent(this, UpdateLocationService.class));
 
-                if (checkNotification()) {
-                    int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-                    Map<String, String> msgMap = new HashMap<String, String>();
-                    Intent intentData = getIntent();
-                    if (intentData.hasExtra("model_notif")) {
-                        msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-                    }
-                    if (intentData.hasExtra("options")) {
-                        msgMap.put("options", intentData.getStringExtra("options"));
-                    }
-                    Timber.d("testing :" + msgMap.toString());
+            if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-                    FCMManager fcmManager = new FCMManager(this);
-                    Intent intent = fcmManager.checkingAction(type, msgMap);
-                    startActivity(intent);
-                    //this.finish();
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
                 }
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
+                startActivity(intent);
+                //this.finish();
             }
         }
     }
@@ -236,11 +237,22 @@ public class MainPage extends BaseActivity{
         startActivity(i);
     }
 
-    boolean checkNotification(){
+    boolean checkNotificationAction(){
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             Timber.d("masuk check notification " +extras.toString());
             if (extras.containsKey("type")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean checkNotificationNotif(){
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Timber.d("masuk check notification " +extras.toString());
+            if (extras.containsKey("type_notif")) {
                 return true;
             }
         }
