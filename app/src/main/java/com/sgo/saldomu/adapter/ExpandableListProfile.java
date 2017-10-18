@@ -157,8 +157,10 @@ public class ExpandableListProfile extends BaseExpandableListAdapter {
                 case 1:
                     v = infalInflater.inflate(R.layout.list_profile_child_item, parent, false);
                     Holder.noHP = (EditText) v.findViewById(R.id.myprofile_value_hp);
+                    Holder.noHP.setEnabled(false);
                     Holder.nama = (EditText) v.findViewById(R.id.myprofile_value_name);
                     Holder.email = (EditText) v.findViewById(R.id.myprofile_value_email);
+                    Holder.email.setEnabled(false);
                     Holder.dob = (TextView) v.findViewById(R.id.myprofile_value_dob);
                     Holder.button1 = (Button) v.findViewById(R.id.button1);
                     Holder.dob.setOnClickListener(new View.OnClickListener() {

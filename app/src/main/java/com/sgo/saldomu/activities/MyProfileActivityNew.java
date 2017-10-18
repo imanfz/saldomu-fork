@@ -33,6 +33,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.ListMyProfile_model;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.ExpandableListProfile;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
@@ -98,6 +99,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         setContentView(R.layout.activity_my_profile_new);
 
         expandableListview = (ExpandableListView) findViewById(R.id.expandableListProfile);
@@ -105,7 +107,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         cameraKTP = (ImageButton) findViewById(R.id.camera_ktp_paspor);
         cameraSelfieKTP = (ImageButton) findViewById(R.id.camera_selfie_ktp_paspor);
         cameraTTD = (ImageButton) findViewById(R.id.camera_ttd);
-        userID = sp.getString(DefineValue.USER_ID, "");
+        userID = sp.getString(DefineValue.CUST_ID, "");
         userName = sp.getString(DefineValue.PROFILE_FULL_NAME, "");
         userEmail = sp.getString(DefineValue.PROFILE_EMAIL,"" );
         userDOB = sp.getString(DefineValue.PROFILE_DOB,"" );
