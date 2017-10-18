@@ -89,7 +89,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
     private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
     private Uri mCapturedImageURI;
-    private String userID;
+    private String userID,userName, userEmail, userDOB;
     private String accessKey;
     private int RESULT;
     ImageButton cameraKTP, cameraSelfieKTP,cameraTTD;
@@ -105,6 +105,10 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
         cameraKTP = (ImageButton) findViewById(R.id.camera_ktp_paspor);
         cameraSelfieKTP = (ImageButton) findViewById(R.id.camera_selfie_ktp_paspor);
         cameraTTD = (ImageButton) findViewById(R.id.camera_ttd);
+        userID = sp.getString(DefineValue.USER_ID, "");
+        userName = sp.getString(DefineValue.PROFILE_FULL_NAME, "");
+        userEmail = sp.getString(DefineValue.PROFILE_EMAIL,"" );
+        userDOB = sp.getString(DefineValue.PROFILE_DOB,"" );
 
         mListDataHeader= new ArrayList<>();
         mListDataChild = new HashMap<>();
@@ -117,7 +121,7 @@ public class MyProfileActivityNew extends AppCompatActivity implements Expandabl
             List<ListMyProfile_model> lists = new ArrayList<>();
             if (header.equals("Data Member Basic"))
             {
-                lists.add(new ListMyProfile_model("","","","", true));
+                lists.add(new ListMyProfile_model(userID,userName,userEmail,userDOB, true));
                 mListDataChild.put(header, lists);
             } else {
                 lists.add(new ListMyProfile_model("","","", "", false));
