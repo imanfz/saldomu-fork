@@ -393,8 +393,8 @@ public class BillerInput extends Fragment {
         mArgs.putInt(DefineValue.BUY_TYPE, buy_code);
         mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
-//        if(biller_type_code.equalsIgnoreCase(billerType[17]))
-//            mArgs.putString(DefineValue.VALUE_ITEM_DATA, selectedMonth);
+        if(biller_type_code.equalsIgnoreCase(billerType[17]))
+            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
         Fragment mFrag = new BillerDesciption();
         mFrag.setArguments(mArgs);
