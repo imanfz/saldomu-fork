@@ -311,17 +311,17 @@ public class DefineValue {
     //GOOGLE MAP DEFINE PARAMETERS
     public static float ZOOM_CAMERA_POSITION                = 16.0f; //16.0f
     public static int REQUEST_CODE_RECOVER_PLAY_SERVICES    = 200;
-    public static long INTERVAL_LOCATION_REQUEST            = 15000; //15 seconds
-    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 10000; //10 seconds
-    public static int DISPLACEMENT                          = 10;
+    public static long INTERVAL_LOCATION_REQUEST            = 1000; //15 seconds
+    public static long FASTEST_INTERVAL_LOCATION_REQUEST    = 1000; //10 seconds
+    public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
     public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
     public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
     public static int AGENT_DISPLACEMENT                            = 20; //30meter
 
-    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 15000; //60 seconds
-    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 15000; //58 seconds
+    public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
+    public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
     public static int MEMBER_DISPLACEMENT                           = 20; //30meter
 
     public static String DEFAULT_LANGUAGE_CODE              = "id";
@@ -365,6 +365,7 @@ public class DefineValue {
     public static String BBS_SENDER_ID							= "GOAPK";
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
     public static String BBS_AGENT_MOBILITY                     = "mobility";
+    public static String IS_AUTOSEARCH                          = "isAutoSearch";
 
     public static String TX_ID2             = "tx_id";
     public static String KEY_CODE           = "key_code";
@@ -383,6 +384,9 @@ public class DefineValue {
     public static String STRING_ACCEPT          = "S";
     public static String STRING_CANCEL          = "F";
 
+    public static String IS_AGENT_SET_LOCATION  = "IsAgentSetLocation";
+    public static String IS_AGENT_SET_OPENHOUR  = "IsAgentSetOpenHour";
+    public static String SHOP_AGENT_DATA    = "ShopAgentData";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
@@ -434,6 +438,7 @@ public class DefineValue {
     public static String CASH_IN_HISTORY_TEMP = "cashinHistoryTemp";
     public static String CASH_OUT_HISTORY_TEMP = "cashout_history_temp";
 
+    public static String GMAP_STRING_OK = "OK";
     public static String IS_NEW_BULK = "isNewBulk";
     public static String TAGIHAN = "tagihan";
     public static final String BankJatim = "114";
@@ -446,6 +451,8 @@ public class DefineValue {
     public static final String BankBRI = "002";
     public static String BANKLIST_TYPE_ATM = "ATM" ;
     public static String IS_MERCHANT = "isMerchant";
+    public static String IS_UNREGISTER_MEMBER = "unregister_member";
+
 
 }
 

@@ -93,7 +93,7 @@
     <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Silahkan masukkan kode Token</string>
-    
+
     <string name="regist2_validation_pass">Kata sandi dibutuhkan!</string>
     <string name="regist2_validation_pass_length">Kata sandi minimal 6 karakter!</string>
     <string name="regist2_validation_confirmpass">Ketik ulang Kata sandi dibutuhkan!</string>
@@ -108,6 +108,12 @@
     <string name="reg2_notif_text_resend_token">Permintaan token baru sukses</string>
     <string name="reg2_notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
     <string name="regist2_validation_token_invalid">Token salah!</string>
+    <string name="reg3_btn_text_resend_token_sms">Kirim ulang OTP ke sms</string>
+    <string name="regist3_validation_otp">Kode OTP dibutuhkan!</string>
+    <string name="reg3_dialog_token_message_sms">Kode OTP sudah dikirim lewat sms. Mohon ditunggu.</string>
+    <string name="reg3_notif_max_resend_token_empty">Anda sudah mencapai batas maksimal pengiriman OTP. Silahkan ulangi tahap registrasi beberapa saat lagi jika OTP belum diterima.</string>
+    <string name="reg3_cancel_message">Anda yakin ingin membatalkan proses pendaftaran?</string>
+    <string name="btnresend_text_try_again_after">Coba lagi setelah %1$s</string>
 
     <string name="login_title">MASUK</string>
     <string name="login_text_id" translatable="false">ID</string>
@@ -833,11 +839,11 @@
     <string name="rekening_bank_agent">Rekening Agen</string>
     <string name="jumlah_transfer">Jumlah Transfer</string>
     <string name="jumlah_transfer_hint">Jumlah transfer</string>
-    <string name="rekening_bank_tujuan">Rekening Tujuan</string>
+    <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="rekening_bank_member">Rekening Member</string>
     <string name="no_rekening_sumber">No Rekening Sumber</string>
     <string name="nama_rekening_sumber">Nama Rekening Sumber</string>
-    <string name="no_tujuan">Nomor Tujuan</string>
+    <string name="no_tujuan">Nomor Rekening</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
     <string name="nama_rekening_tujuan">Nama rekening Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
@@ -894,7 +900,7 @@
     <string name="rekening_sumber">Rekening Sumber</string>
     <string name="contoh_no_hp">Contoh (0888-xxxxxxx)</string>
     <string name="contoh_name">Contoh (sutjipto)</string>
-    <string name="hint_destination_city">Pilih Kota Tujuan</string>
+    <string name="hint_destination_city">Pilih Kota Rekening</string>
     <string name="rp.">Rp.</string>
     <string name="agen">Agen</string>
     <string name="tujuan">Tujuan</string>
@@ -943,7 +949,7 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
-    <string name="nama_tujuan">Nama tujuan</string>
+    <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
 
     <string name="rationale_location">This app needs access to your location.</string>
@@ -1037,6 +1043,7 @@
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
     <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
     <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
+    <string name="error_msg_rooteddevice">Aplikasi %1$s tidak mendukung perangkat yang sudah di root. Hubungi produsen untuk mendapatkan bantuan.</string>
 
     <string name="title_cashout_bank">Tarik Dana - Bank</string>
     <string name="cashout_validation_bank">Bank dibutuhkan!</string>
@@ -1087,5 +1094,11 @@
     <string name="listatm_topup_bri_4">Pilih YA</string>
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
+    <string name="validation_pulsa">No. Hp tidak ditemukan</string>
+    <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
+    <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
 
+
+    <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
+    <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
 </resources>

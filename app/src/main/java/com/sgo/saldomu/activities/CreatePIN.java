@@ -213,7 +213,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
     private void finishChild(){
         if(!isRegist) {
-            setResult(MainPage.RESULT_NORMAL);
+            setResult(MainPage.RESULT_FIRST_TIME);
         }
         else {
             Intent i = new Intent();

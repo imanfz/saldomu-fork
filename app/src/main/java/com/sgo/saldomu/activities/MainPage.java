@@ -35,6 +35,7 @@ import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
@@ -45,6 +46,7 @@ import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -70,6 +72,9 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -121,50 +126,103 @@ public class MainPage extends BaseActivity{
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
+    AlertDialog devRootedDeviceAlertDialog;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Obtain the FirebaseAnalytics instance.
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        if (savedInstanceState != null)
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if(checkNotification()){
-                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+            if (RootUtil.isDeviceRooted()){
+                if (BuildConfig.FLAVOR.equals("development")){
 
-                FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type);
-                startActivity(intent);
-                this.finish();
-            }
-            else {
-                if (!isLogin()) {
-                    openFirstScreen(FIRST_SCREEN_INTRO);
-                } else {
-                    isForeground = true;
-                    agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-                    utilsLoader = new UtilsLoader(this, sp);
-                    utilsLoader.getAppVersion();
-                    ActiveAndroid.initialize(this);
-                    progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                    progdialog.show();
-                    InitializeNavDrawer();
-                    setupFab();
-                    AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-                    startService(new Intent(this, UpdateLocationService.class));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    initializeDashboard(savedInstanceState);
+                                }
+                            });
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
+                        }
+                    });
+                    builder.setCancelable(false);
+                    devRootedDeviceAlertDialog = builder.create();
+                    devRootedDeviceAlertDialog.show();
+                }else {
+                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
+            }else {
+
+                initializeDashboard(savedInstanceState);
             }
         }
         else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
+        }
+    }
+
+    private void initializeDashboard(Bundle savedInstanceState){
+        if (checkNotificationNotif()) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
+
+            FCMManager fcmManager = new FCMManager(this);
+            Intent intent = fcmManager.checkingAction(type);
+            startActivity(intent);
+        }
+
+        if (!isLogin()) {
+            openFirstScreen(FIRST_SCREEN_INTRO);
+        } else {
+            userID = sp.getString(DefineValue.USERID_PHONE, "");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+            if (savedInstanceState != null)
+                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+
+            isForeground = true;
+            agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+            utilsLoader = new UtilsLoader(this, sp);
+            utilsLoader.getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+            startService(new Intent(this, UpdateLocationService.class));
+
+
+            if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
+                }
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
+                startActivity(intent);
+                //this.finish();
+            }
         }
     }
 
@@ -179,11 +237,22 @@ public class MainPage extends BaseActivity{
         startActivity(i);
     }
 
-    boolean checkNotification(){
+    boolean checkNotificationAction(){
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             Timber.d("masuk check notification " +extras.toString());
             if (extras.containsKey("type")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean checkNotificationNotif(){
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Timber.d("masuk check notification " +extras.toString());
+            if (extras.containsKey("type_notif")) {
                 return true;
             }
         }
@@ -337,6 +406,7 @@ public class MainPage extends BaseActivity{
         mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
         mOuterRelativeContent = (RelativeLayout) findViewById(R.id.outer_layout_content);
+        findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -504,7 +574,45 @@ public class MainPage extends BaseActivity{
 //                                    progdialog.dismiss();
 //                                checkField();
                                 setupBBSData();
+
+                                if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+                                    try{
+                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
+                                        Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("memberId", shopAgentObject.getString("member_id"));
+                                        intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
+                                        intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
+                                        intent.putExtra("memberType", shopAgentObject.getString("member_type"));
+                                        intent.putExtra("memberName", shopAgentObject.getString("member_name"));
+                                        intent.putExtra("commName", shopAgentObject.getString("comm_name"));
+                                        intent.putExtra("province", shopAgentObject.getString("province"));
+                                        intent.putExtra("district", shopAgentObject.getString("district"));
+                                        intent.putExtra("address", shopAgentObject.getString("address1"));
+                                        intent.putExtra("category", "");
+                                        intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
+                                        switchActivity(intent, ACTIVITY_RESULT);
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
+                                    try{
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+                                        Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtras(bundle);
+                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                        finish();
+
+                                    }catch(Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+
                             } else {
+
                                 Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
                                 if (progdialog.isShowing())
                                     progdialog.dismiss();
@@ -603,9 +711,9 @@ public class MainPage extends BaseActivity{
     }
 
     private void showChangePassword(){
-            Intent i = new Intent(this, ChangePassword.class);
-            i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-            switchActivity(i, ACTIVITY_RESULT);
+        Intent i = new Intent(this, ChangePassword.class);
+        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
+        switchActivity(i, ACTIVITY_RESULT);
     }
 
     private void showMyProfile(){
@@ -732,6 +840,9 @@ public class MainPage extends BaseActivity{
         mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, "");
         mEditor.putString(DefineValue.BBS_MEMBER_ID, "");
         mEditor.putString(DefineValue.BBS_SHOP_ID, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
+        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
+        mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();

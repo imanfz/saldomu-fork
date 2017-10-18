@@ -68,7 +68,7 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
 
         Picasso mPic;
         if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getImageLoader(context);
+            mPic = MyPicasso.getUnsafeImageLoader(context);
         else
             mPic= Picasso.with(context);
 

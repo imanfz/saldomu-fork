@@ -5,7 +5,6 @@ import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -18,6 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.StringTokenizer;
 import java.util.UUID;
@@ -35,6 +35,8 @@ public class MyApiClient {
     private static MyApiClient singleton = null;
     private Context mContext;
     private AsyncHttpClient asyncHttpClient;
+    private AsyncHttpClient asyncHttpClient_google;
+    private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
 
     public MyApiClient(){
@@ -53,6 +55,8 @@ public class MyApiClient {
             singleton = new MyApiClient(_context);
             singleton.asyncHttpClient=new AsyncHttpClient();
             singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.asyncHttpClient_google=new AsyncHttpClient();
+            singleton.syncHttpClient_google=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
         }
@@ -62,7 +66,7 @@ public class MyApiClient {
     public static Boolean IS_PROD = BuildConfig.isProdDomain;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
     public static Boolean IS_INTERNET_BANKING;
-    private static final String PRIVATE_KEY = "590mobil3";
+    public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
     public static String COMM_ID_PULSA;
 
@@ -71,6 +75,7 @@ public class MyApiClient {
     public static String headaddressfinal = BuildConfig.HeadAddress+"hpku/";
 
     public static String headaodaddressfinal    = BuildConfig.HeadAddress+"agentlocation/";
+    public static String urlMNotif              = BuildConfig.UrlMNotif;
 
     //Link webservices Signature
 
@@ -210,9 +215,17 @@ public class MyApiClient {
     public static String LINK_CANCEL_ATC;
     public static String LINK_REQ_CHANGE_EMAIL;
     public static String LINK_CONFIRM_CHANGE_EMAIL;
+    public static String LINK_REG_STEP1;
+    public static String LINK_REG_STEP2;
+    public static String LINK_REG_STEP3;
+
+    public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
+        LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
+        LINK_REG_STEP2           = headaddressfinal + "RegStep2/Invoke";
+        LINK_REG_STEP3           = headaddressfinal + "RegStep3/Invoke";
         LINK_VALID_REGISTRASI    = headaddressfinal + "InsertCustomer/Invoke";
         LINK_LOGIN               = headaddressfinal + "MemberLogin/SignIn";
         LINK_VALID_TOPUP         = headaddressfinal + "TopUp/Invoke";
@@ -341,7 +354,13 @@ public class MyApiClient {
         LINK_INQUIRY_TOKEN_ATC  = headaddressfinal + "InquiryTokenATC/Retrieve";
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
-        LINK_REG_TOKEN_FCM = "https://mobile.espay.id/mnotif/user/register";
+        LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
+
+        String googleMapsKey = getmContext().getString(R.string.google_maps_key);
+        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
+
+        LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
+        LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
@@ -352,17 +371,22 @@ public class MyApiClient {
         if(PROD_FLAG_ADDRESS)
             getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
+
+        getInstance().asyncHttpClient_google.setTimeout(TIMEOUT);
+        getInstance().asyncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
+        getInstance().syncHttpClient_google.setTimeout(TIMEOUT);
+        getInstance().syncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
     }
 
 
     public static String URL_HELP_DEV = "https://mobile-dev.espay.id/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.goworld.asia/static/pages/help/pin_faq_akardaya.html";
-    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_akardaya.html";
+    public static String URL_FAQ_PROD = "https://mobile.espay.id/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.goworld.asia/static/pages/help/pin_terms_conditions_id_akardaya.html";
-    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_akardaya.html";
+    public static String URL_TERMS_PROD = "https://mobile.espay.id/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
 
 
@@ -505,6 +529,13 @@ public class MyApiClient {
         post(mContext, LINK_REQ_CHANGE_EMAIL, params, responseHandler);
     }
 
+    private static AsyncHttpClient getClientGoogle(boolean isSync){
+        if(isSync)
+            return getInstance().syncHttpClient_google;
+
+        return getInstance().asyncHttpClient_google;
+    }
+
     public static AsyncHttpClient getClient()
     {
         // Return the synchronous HTTP client when the thread is not prepared
@@ -528,7 +559,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -548,13 +579,13 @@ public class MyApiClient {
         }
     }
 
-    private MySSLSocketFactory getUntrustSSLSocketFactory(){
+    private SSLSocketFactory getUntrustSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_goworld_asia);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
             try {
                 // InitializeAddress the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -565,8 +596,8 @@ public class MyApiClient {
             // Pass the keystore to the SSLSocketFactory. The factory is responsible
             // for the verification of the server certificate.
 
-            MySSLSocketFactory test = new MySSLSocketFactory(trusted);
-            test.setHostnameVerifier(MySSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            SSLSocketFactory test = new SSLSocketFactory(trusted);
+            test.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
 
             return test;
         } catch (Exception e) {
@@ -1120,6 +1151,21 @@ public class MyApiClient {
         post(mContext, LINK_CONFIRM_CHANGE_EMAIL, params, responseHandler);
     }
 
+    public static void sentRegStep3(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 3:"+ LINK_REG_STEP3);
+        post(mContext, LINK_REG_STEP3, params, responseHandler);
+    }
+
+    public static void sentRegStep1(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 1:"+ LINK_REG_STEP1);
+        post(mContext, LINK_REG_STEP1, params, responseHandler);
+    }
+
+    public static void sentRegStep2(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address reg step 2:"+ LINK_REG_STEP2);
+        post(mContext, LINK_REG_STEP2, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
@@ -1232,7 +1278,7 @@ public class MyApiClient {
         Timber.wtf("address sent google maps route: %1$s ",LINK_GOOGLE_MAP_API_ROUTE);
 
         RequestParams params = new RequestParams();
-        postSync(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
+        getClientGoogle(true).post(mContext,LINK_GOOGLE_MAP_API_ROUTE+"?"+queryString, params, responseHandler);
     }
 
     public static void updateLocationAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1263,6 +1309,33 @@ public class MyApiClient {
 
         Timber.wtf("address cancel transaction member: %1$s ",LINK_CANCEL_TRANSACTION_MEMBER);
         post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
+    }
+
+    public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {
+
+        try {
+            String query = URLEncoder.encode(address, "utf-8");
+            Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE);
+            getClientGoogle(false).get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&address="+ query, responseHandler);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public static void getGoogleAPIAddressByLatLng(Context mContext, Double latitude, Double longitude, AsyncHttpResponseHandler responseHandler) {
+
+        try {
+            Timber.wtf("address google maps api geocode: %1$s ",LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude);
+            getClientGoogle(false).get(mContext,LINK_GOOGLE_MAPS_API_GEOCODE+"&latlng="+ latitude+","+longitude, responseHandler);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
     }
 }
 

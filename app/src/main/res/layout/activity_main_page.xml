@@ -82,6 +82,7 @@
 
     <include android:id="@+id/layout_include_fab"
         layout="@layout/layout_fab"
+        android:visibility="gone"
         />
 
 </RelativeLayout>

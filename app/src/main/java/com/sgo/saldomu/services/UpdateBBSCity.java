@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 

@@ -21,6 +21,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
@@ -197,6 +198,12 @@ public class BbsMerchantCommunityList extends BaseActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        RealmManager.closeRealm(myRealm);
+        super.onDestroy();
     }
 
     private void initializeToolbar() {

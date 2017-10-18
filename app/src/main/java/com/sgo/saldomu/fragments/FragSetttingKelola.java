@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -96,7 +97,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     ArrayList<ShopDetail> shopDetails = new ArrayList<>();
 
     TextView tvDetailMemberName, tvCategoryName, tvCommName, tvAddress, tvTutupSekarangLabel;
-    RelativeLayout llSettingLokasi, llMemberDetail;
+    View llMemberDetail;
     Button btnSettingLokasi;
     Switch swTutupToko;
     ArrayList<String> selectedDates = new ArrayList<>();
@@ -153,9 +154,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         lvSetting.setOverscrollFooter(new ColorDrawable(Color.TRANSPARENT));
         lvSetting.setVisibility(View.GONE);
 
-        llSettingLokasi         = (RelativeLayout) v.findViewById(R.id.llSettingLokasi);
-        llMemberDetail          = (RelativeLayout) v.findViewById(R.id.llMemberDetail);
-        llSettingLokasi.setVisibility(View.GONE);
+        llMemberDetail          =  v.findViewById(R.id.llMemberDetail);
         llMemberDetail.setVisibility(View.GONE);
 
         btnSettingLokasi        = (Button) v.findViewById(R.id.btnSettingLokasi);

@@ -55,6 +55,7 @@ import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 
@@ -704,4 +705,9 @@ public class SearchAgentActivity extends BaseActivity implements AdapterView.OnI
         Timber.d("onConnectionFailed Started " + connectionResult.toString());
     }
 
+    @Override
+    protected void onDestroy() {
+        RealmManager.closeRealm(realm);
+        super.onDestroy();
+    }
 }
