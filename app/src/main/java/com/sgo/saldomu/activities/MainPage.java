@@ -35,6 +35,7 @@ import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
@@ -45,6 +46,7 @@ import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -124,72 +126,103 @@ public class MainPage extends BaseActivity{
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
+    AlertDialog devRootedDeviceAlertDialog;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Obtain the FirebaseAnalytics instance.
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        if (savedInstanceState != null)
-            mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
-            if(checkNotification()){
-                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+            if (RootUtil.isDeviceRooted()){
+                if (BuildConfig.FLAVOR.equals("development")){
 
-                FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type);
-                startActivity(intent);
-            }
-            else {
-
-                if (!isLogin()) {
-                    openFirstScreen(FIRST_SCREEN_INTRO);
-                } else {
-
-                    isForeground = true;
-                    agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-                    utilsLoader = new UtilsLoader(this, sp);
-                    utilsLoader.getAppVersion();
-                    ActiveAndroid.initialize(this);
-                    progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-                    progdialog.show();
-                    InitializeNavDrawer();
-                    setupFab();
-                    FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
-
-                    AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-                    startService(new Intent(this, UpdateLocationService.class));
-
-                    if (checkNotification()) {
-                        int type = Integer.valueOf(getIntent().getExtras().getString("type"));
-
-                        Map<String, String> msgMap = new HashMap<String, String>();
-                        Intent intentData = getIntent();
-                        if (intentData.hasExtra("model_notif")) {
-                            msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
+                    builder.setMessage("Apakah anda ingin melewati pengecekan device?")
+                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    initializeDashboard(savedInstanceState);
+                                }
+                            });
+                    builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                         }
-                        if (intentData.hasExtra("options")) {
-                            msgMap.put("options", intentData.getStringExtra("options"));
-                        }
-                        Timber.d("testing :" + msgMap.toString());
-
-                        FCMManager fcmManager = new FCMManager(this);
-                        Intent intent = fcmManager.checkingAction(type, msgMap);
-                        startActivity(intent);
-                        //this.finish();
-                    }
+                    });
+                    builder.setCancelable(false);
+                    devRootedDeviceAlertDialog = builder.create();
+                    devRootedDeviceAlertDialog.show();
+                }else {
+                    switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
+            }else {
+
+                initializeDashboard(savedInstanceState);
             }
         }
         else {
             switchErrorActivity(ErrorActivity.GOOGLE_SERVICE_TYPE);
+        }
+    }
+
+    private void initializeDashboard(Bundle savedInstanceState){
+        if (checkNotificationNotif()) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
+
+            FCMManager fcmManager = new FCMManager(this);
+            Intent intent = fcmManager.checkingAction(type);
+            startActivity(intent);
+        }
+
+        if (!isLogin()) {
+            openFirstScreen(FIRST_SCREEN_INTRO);
+        } else {
+            userID = sp.getString(DefineValue.USERID_PHONE, "");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+            if (savedInstanceState != null)
+                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+
+            isForeground = true;
+            agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+            utilsLoader = new UtilsLoader(this, sp);
+            utilsLoader.getAppVersion();
+            ActiveAndroid.initialize(this);
+            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+            progdialog.show();
+            InitializeNavDrawer();
+            setupFab();
+            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+
+            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+            startService(new Intent(this, UpdateLocationService.class));
+
+
+            if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
+                }
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
+                startActivity(intent);
+                //this.finish();
+            }
         }
     }
 
@@ -204,11 +237,22 @@ public class MainPage extends BaseActivity{
         startActivity(i);
     }
 
-    boolean checkNotification(){
+    boolean checkNotificationAction(){
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             Timber.d("masuk check notification " +extras.toString());
             if (extras.containsKey("type")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    boolean checkNotificationNotif(){
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            Timber.d("masuk check notification " +extras.toString());
+            if (extras.containsKey("type_notif")) {
                 return true;
             }
         }

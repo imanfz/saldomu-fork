@@ -333,9 +333,10 @@
             android:name=".services.AgentShopService"
             android:exported="false"/>
         <activity android:name=".activities.ErrorActivity"
-            android:configChanges="orientation"
+            android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
 
         <service android:name=".services.BalanceService"
             android:exported="false"
