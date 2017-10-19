@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -149,7 +150,6 @@ public class BillerInput extends Fragment {
             public void onChange(Object element) {
 
                 if(isVisible()){
-
 
                     initializeLayout();
                     initializeSpinnerDenom();
