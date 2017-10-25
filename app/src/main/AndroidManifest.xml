@@ -286,10 +286,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".activities.MyProfileActivityNew"
+            android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="stateHidden" />
 
         <service
             android:name=".services.AgentShopService"

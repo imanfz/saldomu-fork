@@ -39,8 +39,7 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileActivity;
-import com.sgo.saldomu.activities.MyProfileActivityNew;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -186,7 +185,7 @@ public class NavigationDrawMenu extends ListFragment{
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), MyProfileActivityNew.class);
+                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
         });
@@ -312,7 +311,7 @@ public class NavigationDrawMenu extends ListFragment{
     public void initializeNavDrawer(){
        if(!getActivity().isFinishing()) {
            Fragment newFragment = new FragMainPage();
-           switchFragment(newFragment, getString(R.string.toolbar_title_home));
+           switchFragment(newFragment, getString(R.string.appname));
 
            refreshDataNavDrawer();
        }
