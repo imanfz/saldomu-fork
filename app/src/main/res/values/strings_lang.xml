@@ -1098,7 +1098,7 @@
     <string name="upgrade_member">Upgrade Member</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
-    <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik tunai?</string>
+    <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik dana?</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
