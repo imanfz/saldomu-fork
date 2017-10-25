@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.*;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class ListBillerMerchant extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.wtf("onCreate View ListBillerMerchant","onCreate View ListBillerMerchant" );
         v = inflater.inflate(R.layout.frag_list_biller_tab, container, false);
         return v;
     }
@@ -54,7 +56,7 @@ public class ListBillerMerchant extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.wtf("onActivityCreated ListBillerMerchant","onActivityCreated ListBillerMerchant" );
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
@@ -206,7 +208,9 @@ public class ListBillerMerchant extends ListFragment {
 
         if (billerIdNumber!=null && !billerIdNumber.equals(""))
         {
+
             PrefixOperatorValidator.OperatorModel BillerIdNumber = PrefixOperatorValidator.validation(getActivity(),billerIdNumber);
+            Log.wtf("billeridnumber","billeridnumber");
             if (BillerIdNumber!=null)
             {
                 for (int i=0; i<_data.size(); i++)

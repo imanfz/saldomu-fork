@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -150,7 +151,6 @@ public class BillerInput extends Fragment {
 
                 if(isVisible()){
 
-
                     initializeLayout();
                     initializeSpinnerDenom();
 
@@ -216,6 +216,8 @@ public class BillerInput extends Fragment {
             adapterMonth.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spin_month.setAdapter(adapterMonth);
             spin_month.setOnItemSelectedListener(spinnerMonthListener);
+            spin_month.setVisibility(View.GONE);
+            tv_month.setVisibility(View.GONE);
         }
         else {
             layout_month.setVisibility(View.GONE);
@@ -392,7 +394,7 @@ public class BillerInput extends Fragment {
         mArgs.putString(DefineValue.SHARE_TYPE, String.valueOf(privacy));
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
         if(biller_type_code.equalsIgnoreCase(billerType[17]))
-            mArgs.putString(DefineValue.VALUE_ITEM_DATA, selectedMonth);
+            mArgs.putString(DefineValue.VALUE_ITEM_DATA, "1");
 
         Fragment mFrag = new BillerDesciption();
         mFrag.setArguments(mArgs);
