@@ -16,6 +16,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 
@@ -286,7 +287,7 @@ public class ListBuyRF extends Fragment{
     @Override
     public void onDestroy() {
         if(!realm.isInTransaction() && !realm.isClosed())
-            realm.close();
+            RealmManager.closeRealm(realm);
         super.onDestroy();
     }
 }

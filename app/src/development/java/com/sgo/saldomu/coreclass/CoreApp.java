@@ -103,7 +103,7 @@ public class CoreApp extends Application {
         else {
             MyApiClient.COMM_ID = MyApiClient.COMM_ID_DEV;
             MyApiClient.COMM_ID_PULSA = MyApiClient.COMM_ID_PULSA_DEV;
-            MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_PROD;
+            MyApiClient.URL_FAQ = MyApiClient.URL_FAQ_DEV;
             MyApiClient.URL_TERMS = MyApiClient.URL_TERMS_DEV;
         }
 

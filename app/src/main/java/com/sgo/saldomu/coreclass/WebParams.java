@@ -41,6 +41,8 @@ public class WebParams {
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
     public static String MEMBER_NAME = "member_name";
+    public static String UNREGISTER_MEMBER = "unregister_member";
+
 
     public static String CCY_ID = "ccy_id";
     public static String AMOUNT = "amount";
@@ -412,6 +414,7 @@ public class WebParams {
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
+    public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
     public static String KEY_VALUE      = "key_value";
@@ -453,7 +456,13 @@ public class WebParams {
     public static String CASHOUT_TYPE = "cashout_type";
     public static String AGENT_MEMBER_NAME = "agent_member_name";
     public static String SHORT_URL = "short_url";
+
+    public static String GMAP_API_STATUS = "status";
+
     public static String IS_NEW_BULK = "is_new_bulk";
     public static String EMAIL_TOKEN = "email_token";
     public static String OTHER_ATM = "other_atm";
+    public static String SMS_TOKEN = "sms_token";
+    public static String FLAG_CHANGE_PWD = "flag_change_pwd";
+    public static String FLAG_CHANGE_PIN = "flag_change_pin";
 }

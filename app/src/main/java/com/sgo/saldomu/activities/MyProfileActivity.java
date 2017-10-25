@@ -510,24 +510,23 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
 
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
             RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+        Picasso mPic;
+        if(MyApiClient.PROD_FLAG_ADDRESS)
+            mPic = MyPicasso.getUnsafeImageLoader(this);
+        else
+            mPic= Picasso.with(this);
 
-            Picasso mPic;
-            if(MyApiClient.PROD_FLAG_ADDRESS)
-                mPic = MyPicasso.getImageLoader(this);
-            else
-                mPic= Picasso.with(this);
-
-            if(_url_profpic != null && _url_profpic.isEmpty()){
-                mPic.load(R.drawable.user_unknown_menu)
-                        .error(roundedImage)
-                        .fit().centerInside()
-                        .placeholder(R.drawable.progress_animation)
-                        .transform(new RoundImageTransformation()).into(profilePicContent);
-            }
-            else {
-                mPic.load(_url_profpic)
-                        .error(roundedImage)
-                        .fit()
+        if(_url_profpic != null && _url_profpic.isEmpty()){
+            mPic.load(R.drawable.user_unknown_menu)
+                .error(roundedImage)
+                .fit().centerInside()
+                .placeholder(R.drawable.progress_animation)
+                .transform(new RoundImageTransformation()).into(profilePicContent);
+        }
+        else {
+            mPic.load(_url_profpic)
+                .error(roundedImage)
+                .fit()
                 .centerCrop()
                 .placeholder(R.drawable.progress_animation)
                 .transform(new RoundImageTransformation())
