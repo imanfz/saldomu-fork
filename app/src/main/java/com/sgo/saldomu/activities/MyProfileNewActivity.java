@@ -100,7 +100,7 @@ public class MyProfileNewActivity extends BaseActivity {
     File ktp, selfie, ttd;
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
-    private Boolean isRegisteredLevel; //saat antri untuk diverifikasi
+    private String isRegisteredLevel; //saat antri untuk diverifikasi
     private boolean is_verified = false;
 
     @Override
@@ -120,7 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
         if(intent.hasExtra(DefineValue.IS_FIRST))
             is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
 
-        isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
+        isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
 
         InitializeToolbar();
 
@@ -147,7 +147,7 @@ public class MyProfileNewActivity extends BaseActivity {
         btn2 = (Button) v.findViewById(R.id.button2);
         levelClass = new LevelClass(this,sp);
 
-        if(isRegisteredLevel) { DialogSuccessUploadPhoto(); }
+        if(levelClass.isLevel1QAC() && isRegisteredLevel.equalsIgnoreCase("1")) { DialogSuccessUploadPhoto(); }
 
         if(!levelClass.isLevel1QAC())
         {
@@ -267,6 +267,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                 if(inputValidation())
                                 {
                                     sendDataUpdate();
+                                    Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                                     finish();
                                 }
                             }
@@ -432,7 +433,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
         Timber.d("isi is verified:"+String.valueOf(sp.getInt(DefineValue.PROFILE_VERIFIED, 0)) + " " + is_verified);
-//        changeVerified();
+//        if (levelClass.isLevel1QAC())changeVerified();
     }
 
     private void sendDataUpdate(){
@@ -482,7 +483,6 @@ public class MyProfileNewActivity extends BaseActivity {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             setLoginProfile(response);
-                            Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
                             if(is_first_time) {
                             RESULT = MainPage.RESULT_FIRST_TIME;
@@ -547,6 +547,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
+            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
         } catch (JSONException e) {
@@ -693,8 +694,6 @@ public class MyProfileNewActivity extends BaseActivity {
                 if(resultCode == RESULT_OK){
                     Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(cameraKTP);
                     ktp = setmGalleryImage(data);
-//                    files.add(setmGalleryImage(data));
-//                    uploadFileToServer(setmGalleryImage(data), 1);
                 }
                 break;
             case RESULT_GALLERY_SELFIE:
@@ -736,7 +735,6 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void uploadFileToServer(File photoFile, final int flag) {
-//        Picasso.with(this).load(R.drawable.progress_animation).into(cameraKTP);
         pb1.setVisibility(View.VISIBLE);
         pb2.setVisibility(View.VISIBLE);
         pb3.setVisibility(View.VISIBLE);
@@ -787,8 +785,6 @@ public class MyProfileNewActivity extends BaseActivity {
                 try {
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
-//                    prgLoading.setVisibility(View.GONE);
-//                    Timber.d("response Listbank:" + response.toString());
                     if (error_code.equalsIgnoreCase("0000")) {
                         SecurePreferences.Editor mEditor = sp.edit();
                         Timber.d("onsuccess upload foto type: " + flag);
@@ -796,10 +792,9 @@ public class MyProfileNewActivity extends BaseActivity {
                         mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
                         mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
                         mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
-
                         mEditor.apply();
-
-                        Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_foto_success),Toast.LENGTH_SHORT).show();
+//
+//                        Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_foto_success),Toast.LENGTH_SHORT).show();
                         Timber.d("isi response Upload Foto:"+ response.toString());
 
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
@@ -808,15 +803,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
                         AlertDialogLogout test = AlertDialogLogout.getInstance();
                         test.showDialoginActivity(MyProfileNewActivity.this, message);
-                    } else {
-//                        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
-//                        alert.setTitle("Upload Image");
-//                        alert.setMessage("Upload Image : " + error_message);
-//                        alert.setPositiveButton("OK", null);
-//                        alert.show();
-
                     }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
@@ -846,9 +833,6 @@ public class MyProfileNewActivity extends BaseActivity {
                     Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-//                if (prgLoading.getVisibility() == View.VISIBLE)
-//                    prgLoading.setVisibility(View.GONE);
-//                setImageCameraKTP();
                 Timber.w("Error Koneksi data update foto ktp:" + throwable.toString());
             }
 
@@ -872,6 +856,7 @@ public class MyProfileNewActivity extends BaseActivity {
             dialogSuccess = builder.create();
             dialogSuccess.show();
         }
+
     }
 
     private void validasiSuccess()
@@ -881,6 +866,7 @@ public class MyProfileNewActivity extends BaseActivity {
             cameraKTP.setEnabled(false);
             if(tv_pb2.getText().toString().equalsIgnoreCase("100%") && tv_pb3.getText().toString().equalsIgnoreCase("100%"))
             {
+                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
                 DialogSuccessUploadPhoto();
             }
 
@@ -890,6 +876,7 @@ public class MyProfileNewActivity extends BaseActivity {
             selfieKTP.setEnabled(false);
             if(tv_pb1.getText().toString().equalsIgnoreCase("100%") && tv_pb3.getText().toString().equalsIgnoreCase("100%"))
             {
+                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
                DialogSuccessUploadPhoto();
             }
         }
@@ -898,24 +885,26 @@ public class MyProfileNewActivity extends BaseActivity {
             cameraTTD.setEnabled(false);
             if(tv_pb1.getText().toString().equalsIgnoreCase("100%") && tv_pb2.getText().toString().equalsIgnoreCase("100%"))
             {
+                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
                 DialogSuccessUploadPhoto();
             }
         }
     }
 
-    private void changeVerified(){
-        if(is_verified) {
-            dataMemberBasic.setVisibility(View.VISIBLE);
-            et_nama.setEnabled(false);
-            tv_dob.setEnabled(false);
-            btn1.setVisibility(View.GONE);
-            dataVerifiedMember.setVisibility(View.GONE);
+//    private void changeVerified(){
+//        if(is_verified) {
+//            DialogSuccessUploadPhoto();
+//            dataMemberBasic.setVisibility(View.VISIBLE);
+//            et_nama.setEnabled(false);
+//            tv_dob.setEnabled(false);
+//            btn1.setVisibility(View.GONE);
+//            dataVerifiedMember.setVisibility(View.GONE);
 //            cameraKTP.setEnabled(false);
 //            selfieKTP.setEnabled(false);
 //            cameraTTD.setEnabled(false);
 //            btn2.setVisibility(View.GONE);
-        }
-    }
+//        }
+//    }
 
     private static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
