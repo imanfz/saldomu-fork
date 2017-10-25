@@ -252,11 +252,12 @@ public class MyProfileNewActivity extends BaseActivity {
                                 if(inputValidation())
                                 {
                                     sendDataUpdate();
+                                    dataVerifiedMember.setVisibility(View.VISIBLE);
+                                    et_nama.setEnabled(false);
+                                    tv_dob.setEnabled(false);
+                                    btn1.setVisibility(View.GONE);
                                 }
-                                dataVerifiedMember.setVisibility(View.VISIBLE);
-                                et_nama.setEnabled(false);
-                                tv_dob.setEnabled(false);
-                                btn1.setVisibility(View.GONE);
+
                             }
                         });
 

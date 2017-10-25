@@ -33,7 +33,7 @@
                     android:maxLines="1"
                     android:text="@string/data_member_basic"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <!--<ImageView-->
@@ -165,7 +165,7 @@
                     android:maxLines="1"
                     android:text="@string/data_verified_member"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <!--<ImageView-->
