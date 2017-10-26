@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +44,7 @@ public class PrefixOperatorValidator {
                 int end = operatorModels.size() - 1;
                 while (start <= end) {
                     int mid = (start + end) / 2;
+                    Log.wtf("operator validation","operator validation");
                     int cIdx = number.compareTo(operatorModels.get(mid).prefix);
                     if (cIdx == 0) {
                         return operatorModels.get(mid);
