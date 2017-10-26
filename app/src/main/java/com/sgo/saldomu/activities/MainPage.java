@@ -1046,7 +1046,7 @@ public class MainPage extends BaseActivity{
             else getSupportFragmentManager().popBackStack();
             return true;
         }
-        else if(item.getItemId() == R.id.right_drawer){
+        else if(item.getItemId() == R.id.right_drawer_menu){
             refreshPromo();
             if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)){
                 mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
@@ -1094,11 +1094,9 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        if(isForeground) {
-            doBindToService();
-            doBindToAppInfoService();
-            doBindToUserProfileService();
-        }
+        doBindToService();
+        doBindToAppInfoService();
+        doBindToUserProfileService();
     }
 
     @Override
