@@ -100,7 +100,7 @@ public class MyProfileNewActivity extends BaseActivity {
     File ktp, selfie, ttd;
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
-    private String isRegisteredLevel; //saat antri untuk diverifikasi
+    private boolean isRegisteredLevel =false; //saat antri untuk diverifikasi
     private boolean is_verified = false;
 
     @Override
@@ -120,7 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
         if(intent.hasExtra(DefineValue.IS_FIRST))
             is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
 
-        isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
+        isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
 
         InitializeToolbar();
 
@@ -147,7 +147,7 @@ public class MyProfileNewActivity extends BaseActivity {
         btn2 = (Button) v.findViewById(R.id.button2);
         levelClass = new LevelClass(this,sp);
 
-        if(levelClass.isLevel1QAC() && isRegisteredLevel.equalsIgnoreCase("1")) { DialogSuccessUploadPhoto(); }
+        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if(!levelClass.isLevel1QAC())
         {
@@ -867,7 +867,7 @@ public class MyProfileNewActivity extends BaseActivity {
             cameraKTP.setEnabled(false);
             if(tv_pb2.getText().toString().equalsIgnoreCase("100%") && tv_pb3.getText().toString().equalsIgnoreCase("100%"))
             {
-                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
+                sp.edit().putBoolean(DefineValue.IS_REGISTERED_LEVEL,true).commit();
                 DialogSuccessUploadPhoto();
             }
 
@@ -877,7 +877,7 @@ public class MyProfileNewActivity extends BaseActivity {
             selfieKTP.setEnabled(false);
             if(tv_pb1.getText().toString().equalsIgnoreCase("100%") && tv_pb3.getText().toString().equalsIgnoreCase("100%"))
             {
-                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
+                sp.edit().putBoolean(DefineValue.IS_REGISTERED_LEVEL,true).commit();
                DialogSuccessUploadPhoto();
             }
         }
@@ -886,7 +886,7 @@ public class MyProfileNewActivity extends BaseActivity {
             cameraTTD.setEnabled(false);
             if(tv_pb1.getText().toString().equalsIgnoreCase("100%") && tv_pb2.getText().toString().equalsIgnoreCase("100%"))
             {
-                sp.edit().putString(DefineValue.IS_REGISTERED_LEVEL, "1").commit();
+                sp.edit().putBoolean(DefineValue.IS_REGISTERED_LEVEL,true).commit();
                 DialogSuccessUploadPhoto();
             }
         }

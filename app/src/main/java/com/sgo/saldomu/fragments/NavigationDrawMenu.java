@@ -145,8 +145,9 @@ public class NavigationDrawMenu extends ListFragment{
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
+    private String isRegisteredLevel; //saat antri untuk diverifikasi
 
-    Boolean isLevel1,isRegisteredLevel;
+    Boolean isLevel1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -170,6 +171,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+        isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = (ListView) v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -367,46 +369,7 @@ public class NavigationDrawMenu extends ListFragment{
            refreshDataNavDrawer();
        }
     }
-    public File setmGalleryImage (Intent data)
-    {
-        Bitmap photo = null;
-        Uri _urinya = data.getData();
-        if(data.getData() == null) {
-            photo = (Bitmap)data.getExtras().get("data");
-        } else {
-            try {
-                photo = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        GeneralizeImage mGI = new GeneralizeImage(getActivity(),photo,_urinya);
-        uploadFileToServer(setmGalleryImage(data));
 
-        return mGI.Convert();
-    }
-
-    public File setmCapturedImage(Intent data)
-    {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getActivity().getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-        String filePath;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            filePath = cursor.getString(column_index_data);
-        }
-        else
-            filePath = data.getData().getPath();
-
-        GeneralizeImage mGI = new GeneralizeImage(getActivity(),filePath);
-        uploadFileToServer(setmCapturedImage(data));
-
-        assert cursor != null;
-        cursor.close();
-
-        return mGI.Convert();
-    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
