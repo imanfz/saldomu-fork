@@ -74,10 +74,10 @@ import timber.log.Timber;
  */
 public class MyProfileActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
-    private final int RESULT_GALERY = 100;
+
+    private String[] list_hobby;private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
-    private String[] list_hobby;
 
     private SecurePreferences sp;
     private TextView tv_dob;

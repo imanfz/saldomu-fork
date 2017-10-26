@@ -534,7 +534,8 @@
 
     <string name="myprofile_validation_date">Tanggal lahir tidak boleh melebihi tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
-    <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verfikasi.</string>
+    <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
+    <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
     <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>

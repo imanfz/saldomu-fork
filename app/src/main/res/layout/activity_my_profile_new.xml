@@ -130,6 +130,13 @@
                     android:text="@string/myprofile_text_date_click"
                     android:textColor="@color/grey_1000b"
                     android:textSize="@dimen/abc_text_size_medium_material" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_dob_warning"
+                    android:textColor="@color/red"
+                    android:textStyle="italic"
+                    android:textSize="12sp"/>
                 <Button
                     android:id="@+id/button1"
                     android:layout_width="150dp"
