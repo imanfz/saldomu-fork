@@ -787,6 +787,9 @@ public class NavigationDrawMenu extends ListFragment{
     }
 
     private void uploadFileToServer(File photoFile) {
+
+        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
                 userID,accessKey);
 
@@ -804,6 +807,7 @@ public class NavigationDrawMenu extends ListFragment{
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
+                    progdialog2.dismiss();
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
                     Timber.d("response Listbank:" + response.toString());
@@ -866,6 +870,7 @@ public class NavigationDrawMenu extends ListFragment{
                     Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                 setImageProfPic();
+                progdialog2.dismiss();
                 Timber.w("Error Koneksi data upload foto myprofile:" + throwable.toString());
             }
 

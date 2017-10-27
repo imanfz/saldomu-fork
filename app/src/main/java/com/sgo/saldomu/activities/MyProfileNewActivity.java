@@ -120,7 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
         if(intent.hasExtra(DefineValue.IS_FIRST))
             is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
 
-        isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL,false);
+        isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
 
         InitializeToolbar();
 
@@ -556,7 +556,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         mEditor.apply();
 //        changeVerified();
-        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+//        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
     }
 
     private boolean inputValidation(){
