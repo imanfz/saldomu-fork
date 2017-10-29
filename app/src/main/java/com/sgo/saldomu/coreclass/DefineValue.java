@@ -39,6 +39,7 @@ public class DefineValue {
     public static String PAYFRIENDS = "pf";
     public static String BILLER = "bl";
     public static String BILLER_PLN = "pl";
+    public static String BILLER_BPJS = "bpjs";
     public static String BILLER_ESPAY = "blep";
     public static String TOPUP = "tp";
     public static String CASHOUT = "ct";
@@ -151,8 +152,7 @@ public class DefineValue {
     public static String BUY_TYPE = "buyType";
     public static String BUY_TYPE_NAME = "buyTypeName";
     public static String AMOUNT_DESIRED = "amountDesired";
-    public static String DESC_FIELD = "isDesField";
-    public static String DESC_VALUE = "isDesValue";
+    public static String DETAILS_BILLER = "details_biller";
     public static String BANK_NAME = "bankName";
     public static String BANK_PRODUCT = "bankProduct";
     public static String FEE = "fee";

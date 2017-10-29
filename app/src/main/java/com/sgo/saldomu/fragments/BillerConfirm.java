@@ -94,8 +94,6 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     private Boolean isShowDescription = false;
     private Boolean isPLN = false;
     private ProgressDialog progdialog;
-    private JSONArray isi_field;
-    private JSONArray isi_value;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
     private SecurePreferences sp;
@@ -251,12 +249,16 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 Iterator keys = mDataDesc.keys();
                 List<String> tempList = new ArrayList<>();
 
-                while(keys.hasNext()) {
-                    tempList.add((String) keys.next());
+
+                //jika BPJS sorting fieldnya sesuai format
+                if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+                    tempList = JsonSorting.BPJSInquirySortingField();
                 }
-                Collections.sort(tempList);
-                isi_field = new JSONArray(tempList);
-                isi_value = new JSONArray();
+                else {
+                    while (keys.hasNext()) {
+                        tempList.add((String) keys.next());
+                    }
+                }
 
                 TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT);
@@ -267,7 +269,6 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 for (String aTempList : tempList) {
                     value_detail_field = aTempList;
                     value_detail_value = mDataDesc.getString(aTempList);
-                    isi_value.put(value_detail_value);
 
                     detail_field = new TextView(getActivity());
                     detail_field.setGravity(Gravity.LEFT);
@@ -757,11 +758,8 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.BIL_PAYMENT_TYPE);
 
 
-        String _isi_field = "", _isi_value = "",_isi_amount_desired = "";
-        if(is_display_amount){
-            _isi_field = String.valueOf(isi_field);
-            _isi_value = String.valueOf(isi_value);
-        }
+        String _isi_amount_desired = "";
+
         if(is_input_amount)_isi_amount_desired = amount_desire;
 
         if(isPLN){
@@ -770,9 +768,6 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
             args.putBoolean(DefineValue.IS_PLN,isPLN);
         }
 
-
-        i.putExtra(DefineValue.DESC_FIELD, _isi_field);
-        i.putExtra(DefineValue.DESC_VALUE, _isi_value);
         i.putExtra(DefineValue.AMOUNT_DESIRED,_isi_amount_desired);
         Timber.d("isi args:"+args.toString());
         btn_submit.setEnabled(true);
@@ -819,15 +814,11 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
 
-        String _isi_field = "", _isi_value = "",_isi_amount_desired = "";
-        if(is_display_amount){
-            _isi_field = String.valueOf(isi_field);
-            _isi_value = String.valueOf(isi_value);
-        }
-        if(is_input_amount)_isi_amount_desired = amount_desire;
+        String _isi_amount_desired = "";
+        if(is_input_amount)
+            _isi_amount_desired = amount_desire;
 
-        args.putString(DefineValue.DESC_FIELD, _isi_field);
-        args.putString(DefineValue.DESC_VALUE, _isi_value);
+        args.putString(DefineValue.DETAILS_BILLER,response.optString(WebParams.DETAIL,""));
 
         if(_isi_amount_desired.isEmpty())
             args.putString(DefineValue.AMOUNT_DESIRED, _isi_amount_desired);
@@ -836,8 +827,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
 
         if(isPLN && response.has(WebParams.DETAIL)){
             args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
+            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS))
+                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS);
             args.putString(DefineValue.BILLER_TYPE,biller_type_code);
-            args.putString(DefineValue.DETAIL,response.optString(WebParams.DETAIL,""));
         }
 
         dialog.setArguments(args);
