@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -366,12 +367,12 @@ public class MyApiClient {
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient_google.setTimeout(TIMEOUT);
@@ -560,8 +561,14 @@ public class MyApiClient {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
+            // your trusted certificates
+            int bks_version;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                bks_version = R.raw.espayid; //The BKS file
+            } else {
+                bks_version = R.raw.espayidv1; //The BKS (v-1) file
+            }
+            InputStream in = getmContext().getResources().openRawResource(bks_version);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -580,33 +587,6 @@ public class MyApiClient {
             throw new AssertionError(e);
         }
     }
-
-    private SSLSocketFactory getUntrustSSLSocketFactory(){
-        try {
-            // Get an instance of the Bouncy Castle KeyStore format
-            KeyStore trusted = KeyStore.getInstance("BKS");
-            // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
-            try {
-                // InitializeAddress the keystore with the provided trusted certificates
-                // Also provide the password of the keystore
-                trusted.load(in, PRIVATE_KEY.toCharArray());
-            } finally {
-                in.close();
-            }
-            // Pass the keystore to the SSLSocketFactory. The factory is responsible
-            // for the verification of the server certificate.
-
-            SSLSocketFactory test = new SSLSocketFactory(trusted);
-            test.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-
-            return test;
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
