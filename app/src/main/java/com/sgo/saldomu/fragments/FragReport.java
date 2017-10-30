@@ -49,10 +49,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_ESPAY = 0x0299393;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
-    final private String item_desc_listrik = "Listrik";
-    final private String item_desc_pln = "Voucher Token Listrik";
-    final private String item_desc_non = "PLN Non-Taglis";
-    final private String item_desc_bpjs = "BPJS";
+    final private String ITEM_DESC_LISTRIK = "Listrik";
+    final private String ITEM_DESC_PLN= "Voucher Token Listrik";
+    final private String ITEM_DESC_NON= "PLN Non-Taglis";
+    final private String ITEM_DESC_BPJS= "BPJS";
 
 
     private View v;
@@ -450,11 +450,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                                 mObj.optString(WebParams.TX_STATUS,"")
                                                 );
 
-                                        if(mTempData.getDescription().contains(item_desc_pln)||
-                                                mTempData.getDescription().contains(item_desc_bpjs)||
-                                                mTempData.getDescription().contains(item_desc_listrik)||
-                                                mTempData.getDescription().contains(item_desc_non)){
-                                            mTempData.setIs_pln(true);
+                                        if(mTempData.getDescription().contains(ITEM_DESC_PLN)||
+                                                mTempData.getDescription().contains(ITEM_DESC_LISTRIK)||
+                                                mTempData.getDescription().contains(ITEM_DESC_NON)){
+                                            mTempData.setType_desc(ITEM_DESC_PLN);
+                                        }
+
+                                        if(mTempData.getDescription().contains(ITEM_DESC_BPJS)){
+                                            mTempData.setType_desc(ITEM_DESC_BPJS);
                                         }
 
                                         AddNewData(mTempData);
@@ -678,7 +681,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 _tx_id = mobj.getTx_id();
                 _comm_id = mobj.getComm_id();
                 params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
-                if(mobj.getIs_pln()){
+                if(mobj.getType_desc().equals(ITEM_DESC_PLN)||mobj.getType_desc().equals(ITEM_DESC_BPJS)){
                     params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
                 }
             }
@@ -772,7 +775,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             ReportListEspayModel mobj = (ReportListEspayModel) _object;
             showReportEspayDialog(mobj.getDatetime(), mobj.getTx_id(), mobj.getBuss_scheme_name(), mobj.getComm_name(), mobj.getAmount(),
                     mobj.getAdmin_fee(), mobj.getCcy_id(), mobj.getDescription(), mobj.getRemark(),txstatus,txremark, mobj.getBank_name(),
-                    mobj.getProduct_name(), mobj.getIs_pln(),response);
+                    mobj.getProduct_name(), mobj.getType_desc(),response);
         }
     }
 
@@ -831,7 +834,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private void showReportEspayDialog(String date, String txId, String buss_scheme_name,String comm_name,
                                        String amount,String fee, String ccy_id,String description, String remark,
                                        String txStatus, String txRemark, String bankName, String productName,
-                                       Boolean isPln,
+                                       String type_desc,
                                        JSONObject response ){
         Bundle args = new Bundle();
         args.putString(DefineValue.DATE_TIME,DateTimeFormat.formatToID(date));
@@ -850,10 +853,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BANK_NAME, bankName);
         args.putString(DefineValue.PRODUCT_NAME, productName);
 
-        if(isPln){
+        if(type_desc.equals(ITEM_DESC_PLN)||type_desc.equals(ITEM_DESC_BPJS)){
             args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_PLN);
+            if(type_desc.equals(ITEM_DESC_BPJS))
+                args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS);
             try {
-                args.putString(DefineValue.DETAIL,response.getString(WebParams.DETAIL));
+                args.putString(DefineValue.DETAILS_BILLER,response.getString(WebParams.DETAIL));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
