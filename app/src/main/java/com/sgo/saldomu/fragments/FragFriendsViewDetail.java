@@ -64,7 +64,7 @@ private Button btnAsk;
     private String listContactPhone = "";
     private String listAddress = "";
     private SecurePreferences sp;
-    static boolean successUpgrade = false;
+    public static boolean successUpgrade = false;
     private ProgressDialog progdialog;
     private Activity act;
 

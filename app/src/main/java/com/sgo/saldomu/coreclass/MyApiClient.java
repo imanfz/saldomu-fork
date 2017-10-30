@@ -108,6 +108,7 @@ public class MyApiClient {
     private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
     public static String LINK_UPLOAD_PROFILE_PIC;
+    public static String LINK_UPLOAD_KTP;
     public static String LINK_LIST_BANK_BILLER;
 
     public static String LINK_REQ_TOKEN_P2P;
@@ -255,6 +256,7 @@ public class MyApiClient {
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
+        LINK_UPLOAD_KTP          = headaddressfinal + "UploadKtp/Submit";
         LINK_REQ_TOKEN_P2P       = headaddressfinal + "TransferP2P/Invoke";
         LINK_CONFIRM_TRANS_P2P   = headaddressfinal + "ConfirmTransfer/Invoke";
         LINK_RESENT_TOKEN_P2P    = headaddressfinal + "ResendTransfer/Invoke";
@@ -740,6 +742,11 @@ public class MyApiClient {
     public static void sentProfilePicture(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Upload Profile Picture: %1$s ",LINK_UPLOAD_PROFILE_PIC);
         post(mContext,LINK_UPLOAD_PROFILE_PIC, params, responseHandler);
+    }
+
+    public static void sentPhotoKTP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Upload KTP: %1$s ",LINK_UPLOAD_KTP);
+        post(mContext,LINK_UPLOAD_KTP, params, responseHandler);
     }
 
     public static void sentReqTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

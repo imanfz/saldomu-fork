@@ -39,7 +39,9 @@ import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
+import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -48,6 +50,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
@@ -431,6 +434,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("nobu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListAgent.add(hm);
@@ -777,8 +782,25 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                             test.showDialoginActivity(getActivity(),message);
                         }
                         else {
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(code.equals("0059")||code.equals("0164")){
                                 showDialogErrorSMS(_bank_name,code,response.optString(WebParams.ERROR_MESSAGE,""));
+                            }
+                            else if (code.equals("0057"))
+                            {
+                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
+                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent mI = new Intent(getActivity(),TopUpActivity.class);
+                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
+                                        getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+                                    }
+                                });
+                                dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
+                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                             }
                             else {
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
