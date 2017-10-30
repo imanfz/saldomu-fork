@@ -6,7 +6,7 @@
         <item
             android:id="@+id/menu_item_home"
             android:orderInCategory="1"
-            android:title="@string/toolbar_title_home"
+            android:title="@string/appname"
             android:icon="@drawable/ic_home_white"
             someNamespace:showAsAction="always"
             />

@@ -19,6 +19,7 @@ public class WebParams {
     public static String COMM_CODE = "comm_code";
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
+    public static String USER_IMAGES = "user_images";
     public static String TOKEN_ID = "token_id";
     public static String MEMBER_CODE = "member_code";
     public static String CUSTOMER_ID = "customer_id";

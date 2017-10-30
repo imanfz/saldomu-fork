@@ -717,7 +717,7 @@ public class MainPage extends BaseActivity{
     }
 
     private void showMyProfile(){
-        Intent i = new Intent(this, MyProfileActivity.class);
+        Intent i = new Intent(this, MyProfileNewActivity.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }
@@ -1057,7 +1057,7 @@ public class MainPage extends BaseActivity{
         else if(item.getItemId() == R.id.menu_item_home) {
             invalidateOptionsMenu();
             Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.toolbar_title_home));
+            switchContent(newFragment, getString(R.string.appname));
             mNavDrawer.setPositionNull();
             invalidateOptionsMenu();
         }

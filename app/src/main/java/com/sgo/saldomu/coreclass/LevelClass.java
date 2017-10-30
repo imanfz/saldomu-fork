@@ -40,11 +40,13 @@ public class LevelClass {
     public LevelClass(FragmentActivity activity, SecurePreferences sp) {
         this.setActivity(activity);
         this.setSp(sp);
+        refreshData();
     }
 
     public LevelClass(FragmentActivity activity) {
         this.setActivity(activity);
         this.setSp(CustomSecurePref.getInstance().getmSecurePrefs());
+        refreshData();
     }
 
     public Boolean isLevel1QAC(){
