@@ -7,7 +7,7 @@
         android:layout_height="match_parent">
 
             <TextView android:id="@+id/title_atm"
-                android:text="@string/other_atm"
+                android:text="@string/other_bank"
                 android:textColor="@color/colorSecondaryDark"
                 android:textSize="@dimen/text_size_medium_material"
                 android:layout_width="245dp"

@@ -36,6 +36,7 @@ public class ReportListEspayModel {
     this.setBank_name(_bank_name);
     this.setProduct_name(_product_name);
     this.setTx_status(_tx_status);
+        this.setType_desc("");
     }
 
 

@@ -222,7 +222,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
         initializeData();
 
-        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null)
+        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
         {
             dialogUpgradeMember();
         }
@@ -885,25 +885,29 @@ public class MyProfileNewActivity extends BaseActivity {
             }
 
             private void failure(Throwable throwable) {
+                Timber.d("Masuk failure");
                 if (MyApiClient.PROD_FAILURE_FLAG)
                 {
+                    Timber.d("Masuk if prod failure flag");
                     Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if(ktp==null)
+                    if(flag==1)
                     {
-                        pb1.setProgress((int) 0 );
-                        tv_pb1.setText(proses + "%");
+                        Timber.d("masuk failure ktp");
+                        pb1.setProgress( 0 );
+                        tv_pb1.setText("0 %");
                     }
-                    if (selfie==null)
+                    if (flag==2)
                     {
-                        pb2.setProgress((int) 0);
-                        tv_pb2.setText(proses + "%");
+                        Timber.d("masuk failure selfie");
+                        pb2.setProgress( 0);
+                        tv_pb2.setText("0 %");
 
                     }
-                    if (ttd==null)
+                    if (flag==3)
                     {
-                        pb3.setProgress((int) 0);
-                        tv_pb3.setText(proses + "%");
-
+                        Timber.d("masuk failure ttd");
+                        pb3.setProgress(0);
+                        tv_pb3.setText("0 %");
                     }
                 }
 

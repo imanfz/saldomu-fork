@@ -528,8 +528,13 @@ public class NavigationDrawMenu extends ListFragment{
                 switchFragment(newFragment, getString(R.string.toolbar_title_myfriends));
                 break;
             case MTARIKDANA:
-                newFragment = new ListCashOut();
-                switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                if(levelClass.isLevel1QAC()) {
+                    levelClass.showDialogLevel();
+                }
+                else {
+                    newFragment = new ListCashOut();
+                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                }
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();

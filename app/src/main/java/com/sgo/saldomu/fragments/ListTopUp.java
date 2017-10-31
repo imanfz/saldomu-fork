@@ -356,7 +356,7 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
 
                 //tambahin ATM lain ke header dan child jika ada
                 if(!other_atm.isEmpty() && temp_other_atm !=null){
-                    listDataHeader.add(new BankHeaderTopUp(getString(R.string.other_atm)));
+                    listDataHeader.add(new BankHeaderTopUp(getString(R.string.other_bank)));
                     listDataChild.put(getString(R.string.other_bank),temp_other_atm);
                 }
                 expand_lv_adapter.notifyDataSetChanged();
