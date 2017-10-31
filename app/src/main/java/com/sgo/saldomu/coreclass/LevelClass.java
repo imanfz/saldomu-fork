@@ -17,6 +17,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LevelFormRegisterActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -76,7 +77,7 @@ public class LevelClass {
             dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Intent mI = new Intent(getActivity(), LevelFormRegisterActivity.class);
+                    Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
                     getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
                 }
             });
