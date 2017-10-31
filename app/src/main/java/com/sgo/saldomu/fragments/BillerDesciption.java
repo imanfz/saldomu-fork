@@ -453,15 +453,15 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID_REMARK,MyApiClient.COMM_ID);
-            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
-                JSONObject detail = new JSONObject();
-                try {
-                    detail.put(WebParams.PERIOD_MONTH, value_item_data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                params.put(WebParams.ITEM_DATA, detail.toString());
-            }
+//            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+//                JSONObject detail = new JSONObject();
+//                try {
+//                    detail.put(WebParams.PERIOD_MONTH, value_item_data);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                params.put(WebParams.ITEM_DATA, detail.toString());
+//            }
 
             Timber.d("isi params sent inquiry biller:"+params.toString());
 

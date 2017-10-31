@@ -696,6 +696,7 @@
     <string name="hint_comment_timeline">Komentar...</string>
     <string name="updating">Memperbaharui...</string>
     <string name="other_atm">ATM Lainnya</string>
+    <string name="other_bank">Bank Lainnya</string>
     <string name="success">Berhasil</string>
     <string name="preview_detail_tagihan">Detil tagihan yang dibayar</string>
     <string name="show">Lihat</string>

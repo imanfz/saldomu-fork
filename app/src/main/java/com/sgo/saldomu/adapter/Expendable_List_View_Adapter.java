@@ -121,7 +121,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                 break;
         }
 
-        if (headerObject.getHeader().equals(mContext.getString(R.string.other_atm)))
+        if (headerObject.getHeader().equals(mContext.getString(R.string.other_bank)))
             logo_img.setVisibility(View.GONE);
         else {
             logo_img.setImageResource(logoId);
@@ -296,7 +296,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
     public int getChildType(int groupPosition, int childPosition) {
         if(this.mListDataChild.get(this.mListDataHeader.get(groupPosition).getHeader()).getBankData().
                 get(childPosition).getListBankModel().getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_ATM)) {
-            if(this.mListDataHeader.get(groupPosition).getHeader().equals(mContext.getString(R.string.other_atm)))
+            if(this.mListDataHeader.get(groupPosition).getHeader().equals(mContext.getString(R.string.other_bank)))
                 return OTHER_ATM_VIEW;
             else
                 return ATM_VIEW;
