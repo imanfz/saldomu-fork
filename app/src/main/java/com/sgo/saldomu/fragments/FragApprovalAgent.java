@@ -91,7 +91,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx;
     RelativeLayout rlApproval;
     Spinner spPilihan;
     ArrayAdapter<String> SpinnerAdapter;
@@ -161,6 +161,9 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         tvAmount                = (TextView) v.findViewById(R.id.tvAmount);
         rlApproval              = (RelativeLayout) v.findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
+
+        tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
+        tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
 
         shopDetail              = new ShopDetail();
         shopDetails             = new ArrayList<>();
@@ -233,6 +236,9 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvMemberName.setText(response.getString(WebParams.KEY_NAME));
                         //tvShop.setText(shopDetail.getShopName());
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
+
+                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
+                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
 
 
@@ -338,7 +344,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
-                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
+                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx_by_agent));
 
 
 

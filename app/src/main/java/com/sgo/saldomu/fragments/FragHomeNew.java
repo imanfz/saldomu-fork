@@ -28,6 +28,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 
 import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -425,7 +426,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     for(int x=0;x<shopCategories.size();x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if ( menuItemName.indexOf(categoryName) > 0 ) {
-                            Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
+                            Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                             i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);

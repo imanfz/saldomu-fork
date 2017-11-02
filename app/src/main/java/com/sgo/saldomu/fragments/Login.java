@@ -22,6 +22,11 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
+import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
+import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
+import com.sgo.saldomu.activities.BbsMemberLocationActivity;
+import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.BBSDataManager;
@@ -35,6 +40,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.securities.AES;
 
@@ -60,6 +66,7 @@ public class Login extends Fragment implements View.OnClickListener {
     private Animation frameAnimation;
 //    private MaterialRippleLayout btnLayout;
     private View v;
+    private Bundle argsBundleNextLogin = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,6 +78,8 @@ public class Login extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        argsBundleNextLogin = getArguments();
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
         userIDValue.requestFocus();
@@ -90,6 +99,8 @@ public class Login extends Fragment implements View.OnClickListener {
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
+
+
 
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
@@ -306,6 +317,9 @@ public class Login extends Fragment implements View.OnClickListener {
 
     private void changeActivity() {
         Intent i = new Intent(getActivity(),MainPage.class);
+        if ( argsBundleNextLogin != null )
+            i.putExtras(argsBundleNextLogin);
+
         startActivity(i);
         getActivity().finish();
 

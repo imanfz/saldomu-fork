@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -12,6 +13,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -27,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.activeandroid.util.Log;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -39,6 +42,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
@@ -65,7 +69,6 @@ import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.services.UpdateBBSCity;
-import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.services.UserProfileService;
 
 import org.apache.http.Header;
@@ -74,14 +77,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
  Created by Administrator on 7/11/2014.
  */
-public class MainPage extends BaseActivity{
+public class MainPage extends BaseActivity
+        implements EasyPermissions.PermissionCallbacks {
 
     public static final int REQUEST_FINISH = 0 ;//untuk Request Code dari child activity ke parent activity
     private static final int RESULT_ERROR = -1 ;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
@@ -128,6 +134,11 @@ public class MainPage extends BaseActivity{
     public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
 
+    private boolean isLocationPermissionGranted = false;
+    public static final int RC_LOCATION_PERM    = 500;
+    private Bundle bundleNextLogin = new Bundle();
+    private BundleToJSON bundleToJSON = new BundleToJSON();
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +148,13 @@ public class MainPage extends BaseActivity{
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            startLocationService();
+        } else {
+            // Ask for one permission
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
@@ -172,13 +190,45 @@ public class MainPage extends BaseActivity{
         }
     }
 
+    private void startLocationService() {
+        JobScheduleManager.getInstance(this).scheduleUploadLocationService();
+    }
+
     private void initializeDashboard(Bundle savedInstanceState){
         if (checkNotificationNotif()) {
             int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
             FCMManager fcmManager = new FCMManager(this);
             Intent intent = fcmManager.checkingAction(type);
+            bundleNextLogin = fcmManager.getBundleNextLogin();
             startActivity(intent);
+        } else if (checkNotificationAction() ) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+
+            Map<String, String> msgMap = new HashMap<String, String>();
+            Intent intentData = getIntent();
+            if (intentData.hasExtra("model_notif")) {
+                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
+            }
+            if (intentData.hasExtra("options")) {
+                msgMap.put("options", intentData.getStringExtra("options"));
+            }
+            Timber.d("testing :" + msgMap.toString());
+
+            FCMManager fcmManager = new FCMManager(this);
+            Intent intent = fcmManager.checkingAction(type, msgMap);
+            bundleNextLogin = fcmManager.getBundleNextLogin();
+        } else {
+            bundleNextLogin = getIntent().getExtras();
+        }
+
+        if ( bundleNextLogin != null ) {
+            String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+            if ( !bundleToJSONString.equals("") ) {
+                SecurePreferences.Editor mEditor = sp.edit();
+                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                mEditor.apply();
+            }
         }
 
         if (!isLogin()) {
@@ -202,8 +252,6 @@ public class MainPage extends BaseActivity{
             FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
-            startService(new Intent(this, UpdateLocationService.class));
-
 
             if (checkNotificationAction()) {
                 int type = Integer.valueOf(getIntent().getExtras().getString("type"));
@@ -220,10 +268,123 @@ public class MainPage extends BaseActivity{
 
                 FCMManager fcmManager = new FCMManager(this);
                 Intent intent = fcmManager.checkingAction(type, msgMap);
+                bundleNextLogin = fcmManager.getBundleNextLogin();
                 startActivity(intent);
                 //this.finish();
             }
+
+            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            if ( !notifDataNextLogin.equals("") ) {
+                changeActivityNextLogin(notifDataNextLogin);
+
+                SecurePreferences.Editor mEditor = sp.edit();
+                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,"");
+                mEditor.apply();
+            }
+
+
         }
+    }
+
+    void changeActivityNextLogin(String jsonStr) {
+
+        Intent i;
+        Bundle bundle = new Bundle();
+        try {
+            JSONObject jsonObj = new JSONObject(jsonStr);
+
+            int modelNotif = jsonObj.getInt("model_notif");
+
+
+            switch (modelNotif) {
+                case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
+                    i = new Intent(this, BbsMemberLocationActivity.class);
+
+                    bundle.putString("memberId", jsonObj.getString("memberId"));
+                    bundle.putString("shopId", jsonObj.getString("shopId"));
+                    bundle.putString("shopName", jsonObj.getString("shopName"));
+                    bundle.putString("memberType", jsonObj.getString("memberType"));
+                    bundle.putString("memberName", jsonObj.getString("memberName"));
+                    bundle.putString("commName", jsonObj.getString("commName"));
+
+                    bundle.putString("province", jsonObj.getString("province"));
+                    bundle.putString("district", jsonObj.getString("district"));
+                    bundle.putString("address", jsonObj.getString("address"));
+                    bundle.putString("category", jsonObj.getString("category"));
+                    bundle.putString("isMobility", jsonObj.getString("isMobility"));
+                    i.putExtras(bundle);
+                    break;
+                case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
+                    i = new Intent(this, BbsApprovalAgentActivity.class);
+                    break;
+                case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
+                    i = new Intent(this, BbsSearchAgentActivity.class);
+
+                    bundle.putString(DefineValue.CATEGORY_ID, jsonObj.getString(DefineValue.CATEGORY_ID));
+                    bundle.putString(DefineValue.CATEGORY_NAME, jsonObj.getString(DefineValue.CATEGORY_NAME));
+                    bundle.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(DefineValue.AMOUNT));
+                    bundle.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                    bundle.putDouble(DefineValue.LAST_CURRENT_LATITUDE, jsonObj.getDouble(DefineValue.LAST_CURRENT_LATITUDE));
+                    bundle.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, jsonObj.getDouble(DefineValue.LAST_CURRENT_LONGITUDE));
+
+                    i.putExtras(bundle);
+
+                    break;
+                case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
+                    i = new Intent(this, MainPage.class);
+                    break;
+                case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
+                    i = new Intent(this, BBSActivity.class);
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    i.putExtras(bundle);
+                    break;
+                case FCMManager.SHOP_ACCEPT_TRX:
+                    i = new Intent(this, BbsMapViewByMemberActivity.class);
+
+                    bundle.putString(DefineValue.BBS_TX_ID, jsonObj.getString(DefineValue.BBS_TX_ID));
+                    bundle.putString(DefineValue.CATEGORY_NAME, jsonObj.getString(DefineValue.CATEGORY_NAME));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(DefineValue.AMOUNT));
+
+
+                    i.putExtras(bundle);
+
+                    break;
+                case FCMManager.SHOP_NOTIF_TRANSACTION:
+                    i = new Intent(this, BBSActivity.class);
+
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    bundle.putString(DefineValue.TYPE, jsonObj.getString(DefineValue.TYPE));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(DefineValue.AMOUNT));
+                    bundle.putString(DefineValue.KEY_CODE, jsonObj.getString(DefineValue.KEY_CODE));
+
+                    i.putExtras(bundle);
+
+                    break;
+                case FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION:
+                    i = new Intent(this, BBSActivity.class);
+
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    bundle.putString(DefineValue.TYPE, jsonObj.getString(DefineValue.TYPE));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(DefineValue.AMOUNT));
+                    bundle.putString(DefineValue.KEY_CODE, jsonObj.getString(DefineValue.KEY_CODE));
+
+                    i.putExtras(bundle);
+
+
+                    break;
+                default:
+                    i = new Intent(this, MainPage.class);
+                    break;
+            }
+
+            startActivity(i);
+
+        } catch (JSONException e) {
+            Timber.d("Json parsing error: " + e.getMessage());
+        }
+
+
     }
 
     void switchErrorActivity(int type){
@@ -391,7 +552,6 @@ public class MainPage extends BaseActivity{
             isBoundUserProfile = bindService(bindIntent, UserProfileServiceConnection,Context.BIND_AUTO_CREATE);
         }
     }
-
 
     private void doUnbindUserProfileService() {
         Timber.i("Main Page service connection UserProfile Unbind ........");
@@ -762,6 +922,8 @@ public class MainPage extends BaseActivity{
                 i = new Intent(this,LoginActivity.class);
                 break;
         }
+        if ( bundleNextLogin != null)
+            i.putExtras(bundleNextLogin);
         startActivity(i);
         this.finish();
     }
@@ -873,7 +1035,7 @@ public class MainPage extends BaseActivity{
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("logout:"+response.toString());
-                            stopService(new Intent(MainPage.this, UpdateLocationService.class));
+                            //stopService(new Intent(MainPage.this, UpdateLocationService.class));
                             Logout();
 
                         } else {
@@ -1057,7 +1219,7 @@ public class MainPage extends BaseActivity{
         else if(item.getItemId() == R.id.menu_item_home) {
             invalidateOptionsMenu();
             Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.toolbar_title_home));
+            switchContent(newFragment, getString(R.string.appname).toUpperCase());
             mNavDrawer.setPositionNull();
             invalidateOptionsMenu();
         }
@@ -1094,12 +1256,18 @@ public class MainPage extends BaseActivity{
     @Override
     protected void onStart() {
         super.onStart();
+
         if(isForeground) {
             doBindToService();
             doBindToAppInfoService();
             doBindToUserProfileService();
         }
+
     }
+
+
+
+
 
     @Override
     protected void onResume() {
@@ -1141,6 +1309,7 @@ public class MainPage extends BaseActivity{
             doUnbindAppInfoService();
             doUnbindUserProfileService();
         }
+
     }
 
     @Override
@@ -1151,6 +1320,8 @@ public class MainPage extends BaseActivity{
         if(progdialog != null && progdialog.isShowing()) {
             progdialog.dismiss();
         }
+
+        JobScheduleManager.getInstance(this).cancelAll();
         MyApiClient.CancelRequestWS(this,true);
         super.onDestroy();
     }
@@ -1190,5 +1361,26 @@ public class MainPage extends BaseActivity{
 
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if ( requestCode == RC_LOCATION_PERM ) {
+            startLocationService();
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        if ( requestCode == RC_LOCATION_PERM )
+            this.isLocationPermissionGranted = false;
     }
 }

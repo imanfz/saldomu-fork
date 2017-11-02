@@ -8,8 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.fragments.Login;
@@ -29,6 +32,8 @@ public class LoginActivity extends BaseActivity {
     public static final int ACTIVITY_RESULT = 3;
 
     private FragmentManager fragmentManager;
+    private Bundle bundleNextLogin = new Bundle();
+    private SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,10 +48,26 @@ public class LoginActivity extends BaseActivity {
                 return;
             }
 
+            bundleNextLogin = getIntent().getExtras();
+
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+            String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+            if ( flagLogin == null )
+                flagLogin = DefineValue.STRING_NO;
+
+            if ( flagLogin.equals(DefineValue.STRING_YES) ) {
+                Intent i = new Intent(this,MainPage.class);
+                startActivity(i);
+                finish();
+            }
+
 
             Login login = new Login();
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            if ( bundleNextLogin != null ) {
+                login.setArguments(bundleNextLogin);
+            }
             fragmentTransaction.add(R.id.loginContent, login,"login");
             fragmentTransaction.commit();
         }
