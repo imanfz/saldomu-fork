@@ -62,7 +62,7 @@ public class GeneralizeImage {
         Bitmap newBitmap = setOrientationBitmap(finaleBitmap);
 
         String destFolder = mContext.getCacheDir().getAbsolutePath();
-        String mFileName = "temp.jpeg";
+        String mFileName = "temp"+ DateTimeFormat.getCurrentDateTime()+".jpeg";
         File mfile = new File(destFolder, mFileName);
 
         FileOutputStream out;

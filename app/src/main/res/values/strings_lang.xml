@@ -162,7 +162,6 @@
     <string name="purchase_token_dialog_merchantcode">\Penjual = </string>
     <string name="purchase_token_dialog_amount">\nJumlah = </string>
 
-    <string name="toolbar_title_home" translatable="false">socialbanking</string>
     <string name="toolbar_title_purchase">Belanja</string>
     <string name="toolbar_title_pay_friends">Kirim Saldo</string>
     <string name="toolbar_title_topup" translatable="false">Top Up</string>
@@ -246,6 +245,7 @@
     <string name="myprofile_text_social_id">Sosial ID</string>
     <string name="myprofile_text_hobby">Hobi</string>
     <string name="myprofile_toast_update_success">Perbaharui Profil Berhasil</string>
+    <string name="myprofile_toast_update_foto_success">Upload Foto Berhasil</string>
     <string name="myprofile_spinner_default">Pilih Negara</string>
     <string name="myprofile_validation_name">Nama dibutuhkan!</string>
     <string name="myprofile_validation_email">Email dibutuhkan!</string>
@@ -534,6 +534,8 @@
 
     <string name="myprofile_validation_date">Tanggal lahir tidak boleh melebihi tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
+    <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
+    <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
     <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
@@ -694,6 +696,7 @@
     <string name="hint_comment_timeline">Komentar...</string>
     <string name="updating">Memperbaharui...</string>
     <string name="other_atm">ATM Lainnya</string>
+    <string name="other_bank">Bank Lainnya</string>
     <string name="success">Berhasil</string>
     <string name="preview_detail_tagihan">Detil tagihan yang dibayar</string>
     <string name="show">Lihat</string>
@@ -1096,10 +1099,14 @@
     <string name="listatm_topup_bri_4">Pilih YA</string>
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
+    <string name="upgrade_member">Upgrade Member</string>
+    <string name="data_member_basic">Data Member Basic</string>
+    <string name="data_verified_member">Data Verified Member</string>
+    <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik dana?</string>
+
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
     <string name="rational_sent_sms">Aplikasi membutuhkan akses untuk mengirimkan sms verifikasi</string>
-
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>

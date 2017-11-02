@@ -17,7 +17,7 @@ public class ReportListEspayModel {
     private String bank_name;
     private String product_name;
     private String tx_status;
-    private Boolean is_pln = false;
+    private String type_desc;
 
 
     public ReportListEspayModel(String _datetime, String _buss_scheme_name,  String _comm_name, String _ccy_id, String _amount,
@@ -36,6 +36,7 @@ public class ReportListEspayModel {
     this.setBank_name(_bank_name);
     this.setProduct_name(_product_name);
     this.setTx_status(_tx_status);
+        this.setType_desc("");
     }
 
 
@@ -143,11 +144,11 @@ public class ReportListEspayModel {
     this.tx_status = tx_status;
     }
 
-    public Boolean getIs_pln() {
-        return is_pln;
+    public String getType_desc() {
+        return type_desc;
     }
 
-    public void setIs_pln(Boolean is_pln) {
-        this.is_pln = is_pln;
+    public void setType_desc(String type_desc) {
+        this.type_desc = type_desc;
     }
 }

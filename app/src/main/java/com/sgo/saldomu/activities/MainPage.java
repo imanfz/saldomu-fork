@@ -877,7 +877,7 @@ public class MainPage extends BaseActivity
     }
 
     private void showMyProfile(){
-        Intent i = new Intent(this, MyProfileActivity.class);
+        Intent i = new Intent(this, MyProfileNewActivity.class);
         i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
         switchActivity(i, ACTIVITY_RESULT);
     }
@@ -1208,7 +1208,7 @@ public class MainPage extends BaseActivity
             else getSupportFragmentManager().popBackStack();
             return true;
         }
-        else if(item.getItemId() == R.id.right_drawer){
+        else if(item.getItemId() == R.id.right_drawer_menu){
             refreshPromo();
             if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)){
                 mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
@@ -1257,11 +1257,9 @@ public class MainPage extends BaseActivity
     protected void onStart() {
         super.onStart();
 
-        if(isForeground) {
-            doBindToService();
-            doBindToAppInfoService();
-            doBindToUserProfileService();
-        }
+        doBindToService();
+        doBindToAppInfoService();
+        doBindToUserProfileService();
 
     }
 

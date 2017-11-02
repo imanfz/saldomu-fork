@@ -6,7 +6,7 @@
         <item
             android:id="@+id/menu_item_home"
             android:orderInCategory="1"
-            android:title="@string/toolbar_title_home"
+            android:title="@string/appname"
             android:icon="@drawable/ic_home_white"
             someNamespace:showAsAction="always"
             />
@@ -21,7 +21,7 @@
             />
 
     <item
-            android:id="@+id/right_drawer"
+            android:id="@+id/right_drawer_menu"
             android:orderInCategory="99"
             android:title="@string/social_promo"
             android:icon="@drawable/ic_menu_promo"

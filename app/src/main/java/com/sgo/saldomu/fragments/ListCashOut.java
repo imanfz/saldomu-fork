@@ -209,8 +209,9 @@ public class ListCashOut extends ListFragment {
                 if (isAllowedLevel && isLevel1) {
                     if (isRegisteredLevel) {
                         setListContact();
-                    } else
-                        showDialogLevel();
+                    }
+//                    else
+//                    showDialogLevel();
                 } else {
                     i = new Intent(getActivity(), CashoutActivity.class);
                     i.putExtra(DefineValue.CASHOUT_TYPE, DefineValue.CASHOUT_BANK);
@@ -233,8 +234,9 @@ public class ListCashOut extends ListFragment {
                 if (isAllowedLevel && isLevel1) {
                     if (isRegisteredLevel) {
                         setListContact();
-                    } else
-                        showDialogLevel();
+                    }
+//                    else
+//                        showDialogLevel();
                 } else {
                     i = new Intent(getActivity(), CashoutActivity.class);
                     i.putExtra(DefineValue.CASHOUT_TYPE, DefineValue.CASHOUT_LKD);
@@ -245,28 +247,28 @@ public class ListCashOut extends ListFragment {
 
     }
 
-    private void showDialogLevel(){
-        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.level_dialog_title),
-                getString(R.string.level_dialog_message),getString(R.string.level_dialog_btn_ok),getString(R.string.cancel),false);
-        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent mI = new Intent(getActivity(), LevelFormRegisterActivity.class);
-                switchActivity(mI, MainPage.ACTIVITY_RESULT);
-            }
-        });
-        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog_frag.dismiss();
-            }
-        });
-        dialog_frag.setTargetFragment(ListCashOut.this, 0);
-//        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        ft.add(dialog_frag, null);
-        ft.commitAllowingStateLoss();
-    }
+//    private void showDialogLevel(){
+//        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.level_dialog_title),
+//                getString(R.string.level_dialog_message),getString(R.string.level_dialog_btn_ok),getString(R.string.cancel),false);
+//        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Intent mI = new Intent(getActivity(), LevelFormRegisterActivity.class);
+//                switchActivity(mI, MainPage.ACTIVITY_RESULT);
+//            }
+//        });
+//        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog_frag.dismiss();
+//            }
+//        });
+//        dialog_frag.setTargetFragment(ListCashOut.this, 0);
+////        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+//        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+//        ft.add(dialog_frag, null);
+//        ft.commitAllowingStateLoss();
+//    }
 
     private void showDialogLevelRegistered(){
         Dialog dialognya = DefinedDialog.MessageDialog(getActivity(), getString(R.string.level_dialog_finish_title),

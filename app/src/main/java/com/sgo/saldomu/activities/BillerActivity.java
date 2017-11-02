@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -86,6 +87,8 @@ public class BillerActivity extends BaseActivity {
         InitializeToolbar();
 
         initializeData();
+
+        Log.wtf("onCreate BillerActivity","onCreate BillerActivity");
 
 //        //auto updater realm biller
 //        realmListener = new RealmChangeListener() {
@@ -185,13 +188,16 @@ public class BillerActivity extends BaseActivity {
             tag = BillerInput.TAG;
         }
         else {
+
             mLBM = new ListBillerMerchant();
             tag = ListBillerMerchant.TAG;
+            Log.wtf("ListBillerMerchant ","ListBillerMerchant");
         }
 
         if (IdNumber!=null)
         {
             mArgs.putString(DefineValue.BILLER_ID_NUMBER, IdNumber);
+            Log.wtf("IdNumber ","IdNumber");
         }
 
         setToolbarTitle(getString(R.string.biller_ab_title)+ " - " +_biller_merchant_name);
@@ -202,7 +208,7 @@ public class BillerActivity extends BaseActivity {
         fragmentTransaction.replace(R.id.biller_content, mLBM,tag);
         fragmentTransaction.commitAllowingStateLoss();
         setResult(MainPage.RESULT_NORMAL);
-
+        Log.wtf("initializeBiller ","initializeBiller");
     }
 
     @Override

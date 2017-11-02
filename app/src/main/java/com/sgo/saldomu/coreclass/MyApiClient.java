@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -108,6 +109,7 @@ public class MyApiClient {
     private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
     public static String LINK_UPLOAD_PROFILE_PIC;
+    public static String LINK_UPLOAD_KTP;
     public static String LINK_LIST_BANK_BILLER;
 
     public static String LINK_REQ_TOKEN_P2P;
@@ -255,6 +257,7 @@ public class MyApiClient {
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
+        LINK_UPLOAD_KTP          = headaddressfinal + "UploadKtp/Submit";
         LINK_REQ_TOKEN_P2P       = headaddressfinal + "TransferP2P/Invoke";
         LINK_CONFIRM_TRANS_P2P   = headaddressfinal + "ConfirmTransfer/Invoke";
         LINK_RESENT_TOKEN_P2P    = headaddressfinal + "ResendTransfer/Invoke";
@@ -364,12 +367,12 @@ public class MyApiClient {
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient_google.setTimeout(TIMEOUT);
@@ -561,8 +564,14 @@ public class MyApiClient {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
+            // your trusted certificates
+            int bks_version;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                bks_version = R.raw.espayid; //The BKS file
+            } else {
+                bks_version = R.raw.espayidv1; //The BKS (v-1) file
+            }
+            InputStream in = getmContext().getResources().openRawResource(bks_version);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -581,33 +590,6 @@ public class MyApiClient {
             throw new AssertionError(e);
         }
     }
-
-    private SSLSocketFactory getUntrustSSLSocketFactory(){
-        try {
-            // Get an instance of the Bouncy Castle KeyStore format
-            KeyStore trusted = KeyStore.getInstance("BKS");
-            // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
-            try {
-                // InitializeAddress the keystore with the provided trusted certificates
-                // Also provide the password of the keystore
-                trusted.load(in, PRIVATE_KEY.toCharArray());
-            } finally {
-                in.close();
-            }
-            // Pass the keystore to the SSLSocketFactory. The factory is responsible
-            // for the verification of the server certificate.
-
-            SSLSocketFactory test = new SSLSocketFactory(trusted);
-            test.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-
-            return test;
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
@@ -743,6 +725,11 @@ public class MyApiClient {
     public static void sentProfilePicture(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Upload Profile Picture: %1$s ",LINK_UPLOAD_PROFILE_PIC);
         post(mContext,LINK_UPLOAD_PROFILE_PIC, params, responseHandler);
+    }
+
+    public static void sentPhotoKTP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Upload KTP: %1$s ",LINK_UPLOAD_KTP);
+        post(mContext,LINK_UPLOAD_KTP, params, responseHandler);
     }
 
     public static void sentReqTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

@@ -56,6 +56,9 @@
 -keep class com.sgo.saldomu.coreclass.RoundedImageView { *; }
 -keep class com.sgo.saldomu.coreclass.QRCodeEncoder { *; }
 -keep class com.sgo.saldomu.coreclass.WebParams { *; }
+-keep class com.sgo.saldomu.coreclass.PrefixOperatorValidator { *; }
+-keep class com.sgo.saldomu.coreclass.PrefixOperatorValidator$OperatorModel { *; }
+
 
 -keep class com.sgo.saldomu.dialogs.DefinedDialog { *; }
 -keep class com.sgo.saldomu.dialogs.ReportBillerDialog { *; }
