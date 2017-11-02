@@ -251,6 +251,8 @@ public class BBSTransaksiAmount extends Fragment {
             {
                 actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
                 etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
+            } else if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
             }
             validasiTutorialCashIn();
         }
@@ -260,6 +262,8 @@ public class BBSTransaksiAmount extends Fragment {
             {
                 actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
                 etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
+            } else if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
             }
             validasiTutorialCashOut();
         }

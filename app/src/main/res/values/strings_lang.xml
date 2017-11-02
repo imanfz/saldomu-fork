@@ -977,13 +977,15 @@
     <string name="bbs_setting">Pengaturan</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Agen tidak ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
+    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
     <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
+    <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
     <string name="search"> Cari </string>
     <string name="waiting_approval_trx_agent">Menunggu persetujuan transaksi dari agen</string>
     <string name="message_notif_agent_approval">Mencari permintaan transaksi member</string>
     <string name="message_notif_waiting_agent_approval">Mohon menunggu. Permintaan anda sudah dikirim ke agen.</string>
-    <string name="message_notif_cancel_trx">Apakah Anda yakin mau membatalkan transaksi ?</string>
+    <string name="message_notif_cancel_trx">Pembatalan transaksi akan dikenakan biaya sebesar [CANCEL_FEE]. Apakah Anda yakin mau membatalkan transaksi ?</string>
+    <string name="message_notif_cancel_trx_by_agent">Apakah Anda yakin mau membatalkan transaksi ?</string>
     <string name="set_online">Set Online</string>
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
@@ -1101,4 +1103,9 @@
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
+    <string name="tiba_di_lokasi">Tiba di Lokasi</string>
+    <string name="amount_count_trx">Jumlah Transaksi</string>
+    <string name="amount_total_trx">Total Nominal Transaksi</string>
+    <string name="history_trx">History Transaksi Member</string>
+
 </resources>

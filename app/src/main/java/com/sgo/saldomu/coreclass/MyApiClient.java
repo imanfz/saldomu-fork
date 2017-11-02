@@ -357,7 +357,7 @@ public class MyApiClient {
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key);
-        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
+        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
@@ -409,6 +409,9 @@ public class MyApiClient {
     public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
     public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
     public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
+    public static String LINK_UPDATE_LOCATION = headaodaddressfinal + "Location/Update";
+    public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
+    public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -1311,6 +1314,18 @@ public class MyApiClient {
         post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
     }
 
+    public static void updateLocationService(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location service: %1$s ",LINK_UPDATE_LOCATION);
+        post(mContext,LINK_UPDATE_LOCATION, params, responseHandler);
+    }
+
+    public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update search agent service: %1$s ",LINK_BBS_NEW_SEARCH_AGENT);
+        post(mContext,LINK_BBS_NEW_SEARCH_AGENT, params, responseHandler);
+    }
+
     public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {
 
         try {
@@ -1336,6 +1351,11 @@ public class MyApiClient {
         }
 
 
+    }
+
+    public static void confirmTransactionByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm transaction by agent: %1$s ",LINK_CONFIRM_TRANSACTION_BY_AGENT);
+        post(mContext,LINK_CONFIRM_TRANSACTION_BY_AGENT, params, responseHandler);
     }
 }
 

@@ -311,7 +311,7 @@ public class NavigationDrawMenu extends ListFragment{
     public void initializeNavDrawer(){
        if(!getActivity().isFinishing()) {
            Fragment newFragment = new FragMainPage();
-           switchFragment(newFragment, getString(R.string.toolbar_title_home));
+           switchFragment(newFragment, getString(R.string.appname).toUpperCase());
 
            refreshDataNavDrawer();
        }
