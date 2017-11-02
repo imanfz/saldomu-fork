@@ -165,6 +165,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
         //fragment            = getSupportFragmentManager();
@@ -173,6 +175,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
+        completeAddress     = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
 
         if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
             currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
@@ -195,23 +198,24 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
 
+        methodRequiresTwoPermission();
 
 
         realm = Realm.getDefaultInstance();
 
         locationIntent = new Intent(this, UpdateLocationService.class);
 
-        llAmount                = (LinearLayout) findViewById(R.id.llAmount);
+        /*llAmount                = (LinearLayout) findViewById(R.id.llAmount);
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
         etJumlah.addTextChangedListener(jumlahChangeListener);
         llAmount.requestFocus();
 
         if ( !amount.equals("") ) {
             etJumlah.setText(amount);
-        }
+        }*/
 
-        btnProses               = (Button) findViewById(R.id.btnProses);
-        btnProses.setEnabled(false);
+        //btnProses               = (Button) findViewById(R.id.btnProses);
+        //btnProses.setEnabled(false);
 
         //startService(locationIntent);
 
@@ -226,7 +230,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         txId                = "";
 
 
-
+        /*
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,6 +267,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             }
         });
+        */
 
         gcmId               = "GCM-ID";
 
@@ -345,7 +350,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             if ( lastLocation == null ){
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
             } else {
-                btnProses.setEnabled(true);
+                //btnProses.setEnabled(true);
                 if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
@@ -1070,7 +1075,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            clicked                 = true;
+                            clicked = true;
                             txId = response.getString(DefineValue.TX_ID2);
 
                             JSONArray shops = response.getJSONArray("shop");
@@ -1098,6 +1103,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     shopDetail.setShopAddress(object.getString("shop_address"));
                                     shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
                                     shopDetail.setLastActivity(object.getString("shop_lastactivity"));
+                                    shopDetail.setShopMobility(object.getString("shop_mobility"));
                                     shopDetails.add(shopDetail);
                                 }
                             }
@@ -1121,7 +1127,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 dialog.dismiss();
 
 
-
                                             }
                                         });
                                 alertDialog.show();
@@ -1129,7 +1134,27 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             } else {
 
                             }
+                        } else if (code.equals(WebParams.INPROGRESS_CODE)) {
+                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                            alertDialog.setCanceledOnTouchOutside(false);
+                            alertDialog.setCancelable(false);
+                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                            String tempMessage = getString(R.string.alertbox_message_search_agent_inprogress_trx);
+                            alertDialog.setMessage(tempMessage);
 
+                            alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+
+                                            Intent i = new Intent(getApplicationContext(), MainPage.class);
+                                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(i);
+                                            finish();
+
+                                        }
+                                    });
+                            alertDialog.show();
                         } else {
                             shopDetails.clear();
                             //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
@@ -1137,6 +1162,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
 
                             if (mobility.equals(DefineValue.STRING_YES)) {
+
                                 android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                 alertDialog.setCanceledOnTouchOutside(false);
                                 alertDialog.setCancelable(false);
@@ -1514,7 +1540,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     protected void onStart() {
         super.onStart();
 
-        methodRequiresTwoPermission();
+
 
         /*if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             runningApp();
@@ -1672,23 +1698,41 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                 handler.removeCallbacks(runnable);
 
-                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                SecurePreferences.Editor mEditor = prefs.edit();
-                                mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                mEditor.putString(DefineValue.BBS_TX_ID, "");
-                                mEditor.putString(DefineValue.AMOUNT, amount);
-                                mEditor.apply();
+                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setCancelable(false);
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
+                                alertDialog.setMessage(tempMessage + " " + categoryName);
 
-                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                i.putExtra(DefineValue.AMOUNT, amount);
-                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
-                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
-                                startActivity(i);
-                                finish();
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                SecurePreferences.Editor mEditor = prefs.edit();
+                                                mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                                mEditor.putString(DefineValue.AMOUNT, amount);
+                                                mEditor.apply();
+
+                                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                i.putExtra(DefineValue.AMOUNT, amount);
+                                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                startActivity(i);
+                                                finish();
+
+                                            }
+                                        });
+                                alertDialog.show();
+
 
 //                                Intent intent = new Intent();
 //                                intent.putExtra(DefineValue.MSG_NOTIF, getString(R.string.msg_notif_batal_agen));

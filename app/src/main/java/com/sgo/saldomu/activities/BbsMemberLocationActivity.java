@@ -95,7 +95,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener{
 
-    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility;
+    String memberId, memberDefaultAddress, countryName, provinceName, districtName, shopId, shopName, address, memberType, agentName, commName, postalCode, isMobility, emoMemberId;
     Realm myRealm;
     TextView tvDetailMemberName, tvCommName, tvAddress, tvDistrict, tvProvince;
     private GoogleMap mMap;
@@ -133,6 +133,14 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
         districtName        = getIntent().getStringExtra("district");
         address             = getIntent().getStringExtra("address");
         isMobility          = getIntent().getStringExtra("isMobility");
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        if ( sp.contains(DefineValue.MEMBER_ID) ) {
+            emoMemberId = sp.getString(DefineValue.MEMBER_ID, "");
+        } else {
+            emoMemberId = "";
+        }
 
         sp                              = CustomSecurePref.getInstance().getmSecurePrefs();
 

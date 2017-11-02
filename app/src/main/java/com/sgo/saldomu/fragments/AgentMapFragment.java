@@ -159,7 +159,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             //}
 
 
-            searchLocationEditText = (CustomAutoCompleteTextView) rootView.findViewById(R.id.searchLocationEditText);
+            /*searchLocationEditText = (CustomAutoCompleteTextView) rootView.findViewById(R.id.searchLocationEditText);
             googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
             searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
             searchLocationEditText.setOnItemClickListener(this);
@@ -183,7 +183,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 }
             });
 
-            searchLocationEditText.setSelectAllOnFocus(true);
+            searchLocationEditText.setSelectAllOnFocus(true);*/
 
 
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -192,7 +192,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
         }
 
-        searchLocationEditText.setText(this.completeAddress);
+        //searchLocationEditText.setText(this.completeAddress);
 
         return rootView;
     }
@@ -649,11 +649,22 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
         //String nama = shopDetails.get(item).getMemberName();
 
         LatLng latLng = new LatLng(latitude, longitude);
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(latLng)
-                //.title("")
-                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+        MarkerOptions markerOptions;
+
+        if ( shopDetails.get(item).getShopMobility().equals(DefineValue.STRING_NO) ) {
+            markerOptions = new MarkerOptions()
+                    .position(latLng)
+                    //.title("")
+                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+        } else {
+            markerOptions = new MarkerOptions()
+                    .position(latLng)
+                    //.title("")
+                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+        }
+
         Marker marker = globalMap.addMarker(markerOptions);
         hashMarker.put(item, marker);
 
@@ -687,6 +698,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
             setPolyline();
         }
+
 
         return false;
 

@@ -100,7 +100,7 @@
     </LinearLayout -->
     <!-- Pick Up Point -->
 
-    <RelativeLayout
+    <!-- RelativeLayout
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:id="@+id/container_toolbar"
@@ -133,6 +133,6 @@
             </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
 
         </LinearLayout>
-    </RelativeLayout>
+    </RelativeLayout -->
 
 </RelativeLayout>

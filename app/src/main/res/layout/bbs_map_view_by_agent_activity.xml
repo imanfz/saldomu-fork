@@ -125,7 +125,22 @@
             </TableRow>
         </TableLayout>
 
+        <LinearLayout
+            android:layout_below="@+id/llAgentShop"
+            android:id="@+id/llButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:orientation="horizontal">
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/btnTibaLokasi"
+                android:text="@string/tiba_di_lokasi"
+                />
+        </LinearLayout>
 
         </LinearLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -71,7 +72,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private SecurePreferences sp;
     private String title;
-    String txId, memberId, shopId, categoryName, amount;
+    String txId, memberId, shopId, categoryName, amount, cancelFee;
     SupportMapFragment mapFrag;
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
@@ -81,7 +82,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     private GoogleMap globalMap;
     TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
     Boolean isFirstLoad = true, isRunning = false;
-    String gcmId;
+    String gcmId, emoMemberId;
     Button btnDone, btnCancel;
     ProgressDialog progdialog, progdialog2;
     Intent intentData;
@@ -116,13 +117,13 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             createLocationRequest();
         }
 
-
+        emoMemberId             = sp.getString(DefineValue.MEMBER_ID, "");
         gcmId                   = "";
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
-        btnDone                 = (Button) findViewById(R.id.btnDone);
+        //btnDone                 = (Button) findViewById(R.id.btnDone);
         btnCancel               = (Button) findViewById(R.id.btnCancel);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
@@ -148,7 +149,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         agentLatitude           = -6.222699;
         agentLongitude          = 106.653412;
 
-        btnDone.setOnClickListener(
+        /*btnDone.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         progdialog2              = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
@@ -156,7 +157,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         confirmTransactionMember();
                     }
                 }
-        );
+        );*/
 
         btnCancel.setOnClickListener(
                 new View.OnClickListener() {
@@ -167,10 +168,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         alertDialog.setCancelable(false);
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
+                        String cancelMessage = getString(R.string.message_notif_cancel_trx);
+                        String newCancelMessage = cancelMessage.replace("[CANCEL_FEE]", DefineValue.IDR + " " + CurrencyFormat.format(cancelFee));
 
-                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
-
-
+                        alertDialog.setMessage(newCancelMessage);
 
                         alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                 new DialogInterface.OnClickListener() {
@@ -297,7 +298,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         if ( lastLocation.getLongitude() != memberLongitude )
             memberLongitude     = lastLocation.getLongitude();
 
-        if ( progdialog != null ) {
+        /*if ( progdialog != null ) {
             if ( progdialog.isShowing() ) progdialog.dismiss();
         }
 
@@ -305,7 +306,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             handler.removeCallbacks(runnable2);
             updateLocationMember();
             handler.postDelayed(runnable2, timeDelayed);
-        }
+        }*/
     }
 
     @Override
@@ -414,7 +415,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                 memberLongitude     = lastLocation.getLongitude();
                 setMapCamera();
                 Timber.d("Location Found" + lastLocation.toString());
-
+                updateLocationMember();
             }
         } catch (SecurityException se) {
             se.printStackTrace();
@@ -501,27 +502,39 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     isRunning = false;
                     String code = response.getString(WebParams.ERROR_CODE);
 
+
+
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        agentLatitude      = response.getDouble(WebParams.SHOP_LATITUDE);
-                        agentLongitude     = response.getDouble(WebParams.SHOP_LONGITUDE);
+                        agentLatitude = response.getDouble(WebParams.SHOP_LATITUDE);
+                        agentLongitude = response.getDouble(WebParams.SHOP_LONGITUDE);
+                        cancelFee = String.valueOf(response.getDouble(WebParams.CANCEL_FEE));
 
                         tvMemberName.setText(response.getString(WebParams.MEMBER_NAME));
                         //tvShop.setText(response.getString(WebParams.SHOP_NAME));
                         tvCategoryName.setText(categoryName);
-                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount) );
+                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
 
                         setMapCamera();
+                        handler.postDelayed(runnable2, timeDelayed);
+                    } else if ( code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
+
+
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
 
                     } else {
                         //progdialog.dismiss();
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
+                        handler.postDelayed(runnable2, timeDelayed);
                         //startActivity(new Intent(getApplicationContext(), MainPage.class));
                     }
-                    handler.postDelayed(runnable2, timeDelayed);
+
                 } catch (JSONException e) {
+                    //Timber.d(String.valueOf(e.printStackTrace()));
                     e.printStackTrace();
                 }
             }
@@ -607,6 +620,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     } else {
                         Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                     }
+
+                    handler.removeCallbacks(runnable2);
+
+                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -655,6 +676,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.KEY_VALUE, gcmId);
         params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                 DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
