@@ -453,6 +453,8 @@ public class DefineValue {
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
 
-
+    public static String CONTACTCENTER_NAME = "contactCenterName";
+    public static String CONTACTCENTER_PHONE = "contactCenterPhone";
+    public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
 }
 

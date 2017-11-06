@@ -1108,4 +1108,6 @@
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
+
+    <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
 </resources>

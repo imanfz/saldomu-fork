@@ -465,4 +465,6 @@ public class WebParams {
     public static String SMS_TOKEN = "sms_token";
     public static String FLAG_CHANGE_PWD = "flag_change_pwd";
     public static String FLAG_CHANGE_PIN = "flag_change_pin";
+
+    public static String REGIS_FROM = "regis_from";
 }

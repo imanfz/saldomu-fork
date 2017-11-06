@@ -24,8 +24,11 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -128,6 +131,20 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
                 switchFragment(mfrag,getString(R.string.termsncondition_title),true);
             }
         });
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            noHPValid = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            noHPValue.setText(noHPValid);
+        }
+
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){
+            Bundle m = getArguments();
+            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+//                v.findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
+                noHPValue.setEnabled(true);
+            }
+        }
 
         Bundle bundle = getArguments();
         if (bundle!=null)
