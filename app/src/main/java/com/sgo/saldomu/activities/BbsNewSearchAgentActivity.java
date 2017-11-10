@@ -1,7 +1,10 @@
 package com.sgo.saldomu.activities;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,6 +55,7 @@ import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -71,6 +75,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
@@ -80,7 +86,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         AdapterView.OnItemClickListener,
         TextView.OnEditorActionListener,
         LocationListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback,
+        EasyPermissions.PermissionCallbacks {
 
     SecurePreferences sp;
     Double latitude, longitude;
@@ -103,6 +110,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     HashMap<String,Marker> hashMapMarkers;
     EditText etJumlah;
     String amount, completeAddress, provinceName, districtName, countryName;
+    private static final int RC_LOCATION_PERM = 500;
+    private static final int RC_GPS_REQUEST = 1;
 
     private int timeDelayed = 20000;
     // Init
@@ -130,6 +139,49 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
 
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
+        mapFrag.getMapAsync(this);
+
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            if ( !GlobalSetting.isLocationEnabled(this) ) {
+                showAlertEnabledGPS();
+            } else {
+                runningApp();
+            }
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
+                    RC_LOCATION_PERM, perms);
+        }
+
+
+
+    }
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        startActivity(new Intent(getApplicationContext(), MainPage.class));
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void runningApp() {
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -222,7 +274,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             }
         });
-
     }
 
     @Override
@@ -242,11 +293,50 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
+                if (globalMap != null ) {
+
+                    //disable map gesture untuk sementara sampai camera position selesai
+                    globalMap.getUiSettings().setAllGesturesEnabled(true);
+                    globalMap.getUiSettings().setMapToolbarEnabled(false);
+                    globalMap.setIndoorEnabled(false);
+                    globalMap.setMyLocationEnabled(false);
+
+                    if ( latitude != null && longitude != null ) {
+                        LatLng latLng = new LatLng(latitude, longitude);
+                        globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                        //add camera position and configuration
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(latLng) // Center Set
+                                .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                                .build(); // Creates a CameraPosition from the builder
+
+                        globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+                                //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                                globalMap.getUiSettings().setAllGesturesEnabled(true);
+                            }
+
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+
+
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(latLng)
+                                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
+                        markerCurrent = globalMap.addMarker(markerOptions);
+
+                    }
+
+                }
+
                 this.getAddressByLatLng();
 
                 btnProses.setEnabled(true);
-                mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
-                mapFrag.getMapAsync(this);
+
 
                 mGoogleApiClient.disconnect();
                 searchAgent();
@@ -271,6 +361,47 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         try {
             longitude = location.getLongitude();
             latitude = location.getLatitude();
+
+            if (globalMap != null ) {
+
+                //disable map gesture untuk sementara sampai camera position selesai
+                globalMap.getUiSettings().setAllGesturesEnabled(true);
+                globalMap.getUiSettings().setMapToolbarEnabled(false);
+                globalMap.setIndoorEnabled(false);
+                globalMap.setMyLocationEnabled(false);
+
+                if ( latitude != null && longitude != null ) {
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                    //add camera position and configuration
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(latLng) // Center Set
+                            .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                            .build(); // Creates a CameraPosition from the builder
+
+                    globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                        @Override
+                        public void onFinish() {
+                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                            globalMap.getUiSettings().setAllGesturesEnabled(true);
+                        }
+
+                        @Override
+                        public void onCancel() {
+                        }
+                    });
+
+
+                    MarkerOptions markerOptions = new MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
+                    markerCurrent = globalMap.addMarker(markerOptions);
+
+                }
+
+            }
+
             mGoogleApiClient.disconnect();
             this.getAddressByLatLng();
             searchAgent();
@@ -417,29 +548,28 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                             }
 
                             for(int i = 0; i < shopDetails.size(); i++){
-                                LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
 
-                                if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
-                                    Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
+                                if ( shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null ) {
+                                    LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
 
-                                    marker.setPosition(latLng);
-                                    hashMapMarkers.remove(shopDetails.get(i).getShopId());
-                                    hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
-                                } else {
+                                    if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
+                                        Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
 
-                                    MarkerOptions markerOptions;
-                                    if ( shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES) ) {
-                                          markerOptions = new MarkerOptions()
-                                                .position(latLng)
-                                                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+                                        marker.setPosition(latLng);
+                                        hashMapMarkers.remove(shopDetails.get(i).getShopId());
+                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
                                     } else {
-                                          markerOptions = new MarkerOptions()
-                                                .position(latLng)
-                                                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
-                                    }
 
-                                    Marker marker = globalMap.addMarker(markerOptions);
-                                    hashMapMarkers.put(shopDetails.get(i).getShopId(),marker);
+                                        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                                        if (shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES)) {
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+                                        } else {
+                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+                                        }
+
+                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), globalMap.addMarker(markerOptions));
+
+                                    }
                                 }
                             }
 
@@ -595,32 +725,35 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             globalMap.setIndoorEnabled(false);
             globalMap.setMyLocationEnabled(false);
 
-            LatLng latLng = new LatLng(latitude, longitude);
-            globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            if ( latitude != null && longitude != null ) {
+                LatLng latLng = new LatLng(latitude, longitude);
+                globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-            //add camera position and configuration
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(latLng) // Center Set
-                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                    .build(); // Creates a CameraPosition from the builder
+                //add camera position and configuration
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(latLng) // Center Set
+                        .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                        .build(); // Creates a CameraPosition from the builder
 
-            globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                @Override
-                public void onFinish() {
-                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                    globalMap.getUiSettings().setAllGesturesEnabled(true);
-                }
+                globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                    @Override
+                    public void onFinish() {
+                        //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                        globalMap.getUiSettings().setAllGesturesEnabled(true);
+                    }
 
-                @Override
-                public void onCancel() {
-                }
-            });
+                    @Override
+                    public void onCancel() {
+                    }
+                });
 
 
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
-            markerCurrent = globalMap.addMarker(markerOptions);
+                MarkerOptions markerOptions = new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
+                markerCurrent = globalMap.addMarker(markerOptions);
+
+            }
 
         }
 
@@ -743,4 +876,63 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ( requestCode == RC_GPS_REQUEST ) {
+            //if ( requestCode == Activity.RESULT_OK ) {
+                if ( GlobalSetting.isLocationEnabled(this) ) {
+                    runningApp();
+                }
+            //}
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_LOCATION_PERM:
+                if ( !GlobalSetting.isLocationEnabled(this) ) {
+                    showAlertEnabledGPS();
+                } else {
+                    runningApp();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        switch (requestCode) {
+            case RC_LOCATION_PERM:
+                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                    new AppSettingsDialog.Builder(this).build().show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.alertbox_message_warning));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+                }
+                break;
+        }
+    }
 }

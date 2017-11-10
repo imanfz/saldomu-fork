@@ -92,6 +92,8 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+import static com.sgo.saldomu.R.string.show;
+
 public class BbsSearchAgentActivity extends BaseActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -142,6 +144,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private final int RC_PHONE_CALL = 503;
     private final int RC_SEND_SMS = 504;
     private static final int RC_LOCATION_PHONE_SMS = 505;
+    private static final int RC_GPS_REQUEST = 1;
 
     Boolean clicked = false;
     ProgressDialog progdialog, progdialog2;
@@ -177,25 +180,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
         completeAddress     = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
 
-        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
-            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
-            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
-        }
 
-        if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
-            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
-                currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
-                currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
-
-                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                SecurePreferences.Editor mEditor = prefs.edit();
-                mEditor.putString(DefineValue.BBS_TX_ID, "");
-                mEditor.putString(DefineValue.AMOUNT, amount);
-                mEditor.apply();
-
-                searchToko(currentLatitude, currentLongitude);
-            }
-        }
 
 
         methodRequiresTwoPermission();
@@ -204,6 +189,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         realm = Realm.getDefaultInstance();
 
         locationIntent = new Intent(this, UpdateLocationService.class);
+
+        //btnProses               = (Button) findViewById(R.id.btnProses);
+        //btnProses.setEnabled(false);
+
 
         /*llAmount                = (LinearLayout) findViewById(R.id.llAmount);
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
@@ -280,6 +269,27 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
     public void runningApp() {
+
+        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+        }
+
+        if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
+            if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+
+                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                SecurePreferences.Editor mEditor = prefs.edit();
+                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                mEditor.putString(DefineValue.AMOUNT, amount);
+                mEditor.apply();
+
+                searchToko(currentLatitude, currentLongitude);
+            }
+        }
+
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
         tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -388,7 +398,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onLocationChanged(Location location) {
         lastLocation = location;
-        btnProses.setEnabled(true);
+        //btnProses.setEnabled(true);
 //        googleApiClient.disconnect();
 
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
@@ -1069,7 +1079,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
                     Timber.d("Response:" + response.toString());
-                    progdialog.dismiss();
+
+                    if ( progdialog.isShowing())
+                        progdialog.dismiss();
+
                     try {
 
                         String code = response.getString(WebParams.ERROR_CODE);
@@ -1247,7 +1260,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     Timber.w("Error Koneksi:" + throwable.toString());
-                    progdialog.dismiss();
+
+                    if ( progdialog.isShowing() )
+                        progdialog.dismiss();
 
                 }
 
@@ -1345,14 +1360,36 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         switch(requestCode) {
             //case RC_LOCATION_PERM:
             case RC_LOCATION_PHONE_SMS:
-                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
-                i.putExtra(DefineValue.AMOUNT, "");
-                startActivityForResult(i, MainPage.ACTIVITY_RESULT);
-                //startActivity(i);
-                finish();
+
+                if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+                    currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                    currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+                }
+
+                if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
+                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                        currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                        currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+
+                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                        SecurePreferences.Editor mEditor = prefs.edit();
+                        mEditor.putString(DefineValue.BBS_TX_ID, "");
+                        mEditor.putString(DefineValue.AMOUNT, amount);
+                        mEditor.apply();
+
+                        searchToko(currentLatitude, currentLongitude);
+                    }
+                } else {
+
+                    Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                    i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                    i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+                    i.putExtra(DefineValue.AMOUNT, "");
+                    startActivityForResult(i, MainPage.ACTIVITY_RESULT);
+                    //startActivity(i);
+                    finish();
+                }
                 break;
 
         }
@@ -1518,17 +1555,21 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
+            if ( !GlobalSetting.isLocationEnabled(this) ) {
+                showAlertEnabledGPS();
+            } else {
+                try {
+                    if (checkPlayServices()) {
+                        buildGoogleApiClient();
+                        createLocationRequest();
+                    }
 
-            try {
-                if (checkPlayServices()) {
-                    buildGoogleApiClient();
-                    createLocationRequest();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                runningApp();
             }
-            runningApp();
+
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location_phone_sms),
@@ -1549,32 +1590,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
                     RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
         }*/
-
-        if ( !GlobalSetting.isLocationEnabled(this) )
-        {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
-
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            startActivity(new Intent(getApplicationContext(), MainPage.class));
-                        }
-                    });
-            final AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-
-
-        }
 
         try {
             googleApiClient.connect();
@@ -1611,34 +1626,28 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             if ( !GlobalSetting.isLocationEnabled(this) )
             {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(getString(R.string.alertbox_gps_warning))
-                        .setCancelable(false)
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-
-                                Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivityForResult(ilocation, 1);
-
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                                dialog.cancel();
-                                startActivity(new Intent(getApplicationContext(), MainPage.class));
-                                finish();
-                            }
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
+                showAlertEnabledGPS();
             } else {
-                Intent i = new Intent(this, BbsSearchAgentActivity.class);
-                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
-                i.putExtra(DefineValue.AMOUNT, amount);
-                startActivity(i);
-                finish();
+
+                if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+                    currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                    currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+                }
+
+                if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
+                    if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
+                        runningApp();
+                    }
+                } else {
+
+                    Intent i = new Intent(this, BbsSearchAgentActivity.class);
+                    i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                    i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
+                    i.putExtra(DefineValue.AMOUNT, amount);
+                    startActivity(i);
+                    finish();
+                }
             }
         }
     }
@@ -1807,6 +1816,28 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         }
     };
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        startActivity(new Intent(getApplicationContext(), MainPage.class));
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     @Override
     public void onBackPressed() {
