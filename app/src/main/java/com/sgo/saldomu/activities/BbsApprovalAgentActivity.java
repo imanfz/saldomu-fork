@@ -472,7 +472,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         btnReject.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                    AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsApprovalAgentActivity.this).create();
                     alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
@@ -809,4 +809,5 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     public void onBackPressed() {
         super.onBackPressed();
     }
+
 }
