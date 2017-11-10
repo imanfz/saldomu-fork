@@ -17,6 +17,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -594,10 +595,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         if(id == android.R.id.home)
         {
             //kembali ke activity sebelumnya
-            onBackPressed();
+            disabledBackPressed();
+
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     /*@Override
@@ -970,4 +972,38 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
     }
 
+    @Override
+    public void onBackPressed() {
+        disabledBackPressed();
+
+        return;
+    }
+
+    private void disabledBackPressed() {
+        //kembali ke activity sebelumnya
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alert_message_disabled_agent_approval_backpressed))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.dismiss();
+                    }
+                })
+        ;
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            super.onKeyDown(keyCode, event);
+            return true;
+        }
+        return false;
+
+    }
 }
