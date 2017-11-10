@@ -103,6 +103,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     private LocationRequest mLocationRequest;
 
     private OnFragmentInteractionListener mListener;
+    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int RC_GPS_REQUEST = 1;
 
     public FragApprovalAgent() {
         // Required empty public constructor
@@ -155,7 +157,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
 
         btnApprove              = (Button) v.findViewById(R.id.btnApprove);
-        btnReject               = (Button) v.findViewById(R.id.btnReject);
+        //btnReject               = (Button) v.findViewById(R.id.btnReject);
         tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) v.findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) v.findViewById(R.id.tvAmount);
@@ -336,6 +338,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 }
         );
 
+        /*
         btnReject.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -385,6 +388,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     }
                 }
         );
+        */
 
         return v;
     }
@@ -572,6 +576,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     currentLongitude = lastLocation.getLongitude();
 
                     Timber.d("Location Found" + lastLocation.toString());
+                    btnApprove.setEnabled(true);
                     //googleApiClient.disconnect();
                 }
             } catch (SecurityException se) {
@@ -599,7 +604,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         lastLocation = location;
         currentLatitude = lastLocation.getLatitude();
         currentLongitude = lastLocation.getLongitude();
-
+        btnApprove.setEnabled(true);
         //googleApiClient.disconnect();
 
         try {
@@ -652,12 +657,18 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
-        Fragment frg = null;
-        frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.detach(frg);
-        ft.attach(frg);
-        ft.commitAllowingStateLoss();
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_LOCATION_PERM:
+                if ( !GlobalSetting.isLocationEnabled(getContext()) ) {
+                    showAlertEnabledGPS();
+                } else {
+                    runningApp();
+                }
+                break;
+        }
+
+
     }
 
     @Override
@@ -685,36 +696,19 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public void onStart() {
         super.onStart();
 
-        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+            if ( !GlobalSetting.isLocationEnabled(getContext()) ) {
+                showAlertEnabledGPS();
+            } else {
+                //runningApp();
+            }
         } else {
-            // Ask for one permission
+            // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+                    RC_LOCATION_PERM, perms);
         }
 
-        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
-        {
-            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
-
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            getActivity().finish();
-                        }
-                    });
-            final android.app.AlertDialog alert = builder.create();
-            alert.show();
-        }
 
 
         if ( checkPlayServices() ) {
@@ -734,30 +728,11 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
+        if ( !GlobalSetting.isLocationEnabled(getContext()) )
         {
-            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
-
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-
-                            getActivity().finish();
-                        }
-                    });
-            final android.app.AlertDialog alert = builder.create();
-            alert.show();
+            showAlertEnabledGPS();
         } else {
-            /*if (checkPlayServices()) {
+            if (checkPlayServices()) {
                 buildGoogleApiClient();
                 createLocationRequest();
             }
@@ -767,15 +742,46 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }
 
 
-            Fragment currentFragment = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+            /*Fragment currentFragment = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.detach(currentFragment);
             fragmentTransaction.attach(currentFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commit();*/
 
         }
+    }
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getActivity().startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        getActivity().startActivity(new Intent(getContext(), MainPage.class));
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void runningApp() {
+        Fragment frg = null;
+        frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commitAllowingStateLoss();
     }
 }
