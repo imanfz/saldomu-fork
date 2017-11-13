@@ -126,8 +126,9 @@ public class MyProfileNewActivity extends BaseActivity {
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Intent intent    = getIntent();
-        if(intent.hasExtra(DefineValue.IS_FIRST))
-            is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+        if(intent.hasExtra(DefineValue.IS_FIRST)) {
+            is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+        }
 
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
@@ -222,10 +223,10 @@ public class MyProfileNewActivity extends BaseActivity {
 
         initializeData();
 
-        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
-        {
-            dialogUpgradeMember();
-        }
+//        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
+//        {
+//            dialogUpgradeMember();
+//        }
 
     }
 
@@ -278,7 +279,9 @@ public class MyProfileNewActivity extends BaseActivity {
     {
         @Override
         public void onClick(View v) {
-            dialogUpgradeMember();
+            if (inputValidation()){
+                sendDataUpdate();
+            }
         }
     };
 
@@ -526,9 +529,46 @@ public class MyProfileNewActivity extends BaseActivity {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             setLoginProfile(response);
+                            Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
-                            if(is_first_time) {
-                            RESULT = MainPage.RESULT_FIRST_TIME;
+                            if (levelClass.isLevel1QAC()){
+                                android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+                                builder1.setTitle(R.string.upgrade_member);
+                                builder1.setMessage(R.string.message_upgrade_member);
+                                builder1.setCancelable(true);
+
+                                builder1.setPositiveButton(
+                                        "Yes",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                    dataVerifiedMember.setVisibility(View.VISIBLE);
+                                                    et_nama.setEnabled(false);
+                                                    tv_dob.setEnabled(false);
+                                                    btn1.setVisibility(View.GONE);
+                                                if(is_first_time) {
+                                                    setResult(MainPage.RESULT_FIRST_TIME);
+                                                }
+
+                                            }
+                                        });
+
+                                builder1.setNegativeButton(
+                                        "No",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                    tv_dob.setEnabled(false);
+
+                                                if(is_first_time) {
+                                                    setResult(MainPage.RESULT_FIRST_TIME);
+                                                }
+
+                                                finish();
+
+                                            }
+                                        });
+
+                                android.support.v7.app.AlertDialog alert11 = builder1.create();
+                                alert11.show();
                             }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -581,7 +621,10 @@ public class MyProfileNewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(!is_first_time) {
+        if(is_first_time) {
+            RESULT = MainPage.RESULT_FIRST_TIME;
+        }
+        else {
             RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
             closethis();
         }

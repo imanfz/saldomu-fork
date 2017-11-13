@@ -121,7 +121,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-        mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
         mCircleStepView.setCurrentCircleIndex(2, false);
 
         tvTitle = (TextView) v.findViewById(R.id.tv_title);
