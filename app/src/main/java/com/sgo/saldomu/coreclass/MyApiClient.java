@@ -415,6 +415,7 @@ public class MyApiClient {
     public static String LINK_UPDATE_LOCATION = headaodaddressfinal + "Location/Update";
     public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
     public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
+    public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -1256,6 +1257,12 @@ public class MyApiClient {
 
         Timber.wtf("address get trx agent list: %1$s ",LINK_TRANSACTION_AGENT);
         post(mContext,LINK_TRANSACTION_AGENT, params, responseHandler);
+    }
+
+    public static void getOnProgressByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get trx on progress by agent: %1$s ",LINK_TRX_ONPROGRESS_BY_AGENT);
+        post(mContext,LINK_TRX_ONPROGRESS_BY_AGENT, params, responseHandler);
     }
 
     public static void updateTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

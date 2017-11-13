@@ -91,7 +91,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
     RelativeLayout rlApproval;
     Spinner spPilihan;
     ArrayAdapter<String> SpinnerAdapter;
@@ -161,6 +161,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) v.findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) v.findViewById(R.id.tvAmount);
+        tvBbsNote               = (TextView) v.findViewById(R.id.tvBbsNote);
         rlApproval              = (RelativeLayout) v.findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
 
@@ -238,7 +239,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvMemberName.setText(response.getString(WebParams.KEY_NAME));
                         //tvShop.setText(shopDetail.getShopName());
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
-
+                        tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
                         tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                         tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 

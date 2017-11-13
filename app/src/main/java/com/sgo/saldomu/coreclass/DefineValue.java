@@ -366,6 +366,7 @@ public class DefineValue {
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
     public static String BBS_AGENT_MOBILITY                     = "mobility";
     public static String IS_AUTOSEARCH                          = "isAutoSearch";
+    public static String BBS_NOTE                               = "bbsNote";
 
     public static String TX_ID2             = "tx_id";
     public static String KEY_CODE           = "key_code";

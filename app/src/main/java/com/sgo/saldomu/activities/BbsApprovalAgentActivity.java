@@ -136,7 +136,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         customerId              = sp.getString(DefineValue.USERID_PHONE, "");
 
         btnApprove              = (Button) findViewById(R.id.btnApprove);
-        btnReject               = (Button) findViewById(R.id.btnReject);
+        //btnReject               = (Button) findViewById(R.id.btnReject);
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
@@ -469,6 +469,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             }
         );
 
+        /*
         btnReject.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
@@ -515,7 +516,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                 }
             }
         );
-
+        */
 
 
     }

@@ -21,11 +21,13 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,6 +99,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private String categoryId, categoryName;
     private Intent intentData;
     ProgressDialog progdialog;
+    private Boolean showHideLayoutNote = false;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private CustomAutoCompleteTextView searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
@@ -108,8 +111,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     List<String> latestShops;
     List<String> differentShops;
     HashMap<String,Marker> hashMapMarkers;
-    EditText etJumlah;
+    EditText etJumlah, etNote;
     String amount, completeAddress, provinceName, districtName, countryName;
+    private LinearLayout llNote;
     private static final int RC_LOCATION_PERM = 500;
     private static final int RC_GPS_REQUEST = 1;
 
@@ -138,6 +142,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
+
+        llNote          = (LinearLayout) findViewById(R.id.llNote);
+        llNote.setVisibility(View.GONE);
+
+        etNote          = (EditText) findViewById(R.id.etNote);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
@@ -220,11 +229,37 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
         etJumlah.addTextChangedListener(jumlahChangeListener);
 
+        etJumlah.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_RIGHT = 2;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (etJumlah.getRight() - etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        //Toast.makeText(BbsNewSearchAgentActivity.this, "TESTING", Toast.LENGTH_SHORT).show();
+
+                        if ( !showHideLayoutNote ) {
+                            showHideLayoutNote = true;
+                            llNote.setVisibility(View.VISIBLE);
+                        } else {
+                            showHideLayoutNote = false;
+                            llNote.setVisibility(View.GONE);
+                        }
+
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         btnProses               = (Button) findViewById(R.id.btnProses);
         btnProses.setEnabled(false);
 
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
 
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -244,6 +279,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 if ( !hasError ) {
                     amount = etJumlah.getText().toString();
+
+                    String note = etNote.getText().toString();
 
                     SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                     SecurePreferences.Editor mEditor = prefs.edit();
@@ -266,6 +303,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                     i.putExtra(DefineValue.AMOUNT, amount);
                     i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                    i.putExtra(DefineValue.BBS_NOTE, note);
 
                     startActivity(i);
                     finish();

@@ -130,7 +130,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private Button backBtn;
     public ViewPager viewPager;
     Realm realm;
-    private String categoryId, categoryName;
+    private String categoryId, categoryName, bbsNote;
     private String mobility, amount;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private Double currentLatitude;
@@ -179,7 +179,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
         completeAddress     = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
-
+        bbsNote             = intentData.getStringExtra(DefineValue.BBS_NOTE);
 
 
 
@@ -1046,6 +1046,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.LONGITUDE, longitude);
             params.put(WebParams.RADIUS, "10");
             params.put(WebParams.BBS_MOBILITY, mobility);
+            params.put(WebParams.BBS_NOTE, bbsNote);
 
             if (mobility.equals(DefineValue.STRING_YES)) {
                 params.put(WebParams.KEY_VALUE, gcmId);

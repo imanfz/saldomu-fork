@@ -161,7 +161,7 @@
                 android:layout_weight="1"
                 />
 
-            <Button
+            <!-- Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -169,7 +169,7 @@
                 android:text="@string/agent_reject"
                 android:background="@color/colorPrimaryDark"
                 android:layout_weight="1"
-                />
+                / -->
 
         </LinearLayout>
     </RelativeLayout>

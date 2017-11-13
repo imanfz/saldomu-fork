@@ -420,6 +420,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSONPROGRESSAGENT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
                 else
                 {

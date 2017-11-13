@@ -208,6 +208,7 @@
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
+    <string name="menu_item_title_onprogress_agent">Dalam Process</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -724,7 +725,7 @@
     <string name="header_desc_request_bbs_activity_label">Request for cash pickup and we will reach you within 30 minutes..</string>
     <string name="title_search_request_bbs_activity_label">Search Agent Based On :</string>
     <string name="current_location_request_bbs_activity_label">Current Location</string>
-    <string name="search_location_hint_request_bbs_activity_label">Cari Lokasi</string>
+    <string name="search_location_hint_request_bbs_activity_label">Di Sekitar Anda atau Masukkan Alamat</string>
     <string name="title_info_request_bbs_activity_label">Information</string>
     <string name="list_info1_request_bbs_activity_label">Service is currently is available in Jakarta</string>
     <string name="list_info2_request_bbs_activity_label">For security you will receive an OTP to complete on the above mentioned number</string>
@@ -1114,5 +1115,7 @@
     <string name="amount_count_trx">Jumlah Transaksi</string>
     <string name="amount_total_trx">Total Nominal Transaksi</string>
     <string name="history_trx">History Transaksi Member</string>
-
+    <string name="alert_message_disabled_agent_approval_backpressed">Pastikan Anda sudah bertemu dengan pelanggan, setelah itu baru klik tombol "Tiba di Lokasi"</string>
+    <string name="searching_onprogress_trx">Mencari Transaksi Dalam Proses</string>
+    <string name="bbs_note_meeting_point">Catatan Lokasi Pertemuan</string>
 </resources>
