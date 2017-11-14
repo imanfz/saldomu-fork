@@ -268,12 +268,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 if(etJumlah.getText().toString().length()==0){
                     etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
+                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus), null);
                     hasError = true;
                 }
                 else if(Long.parseLong(etJumlah.getText().toString()) < 1){
                     etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.payfriends_amount_zero));
+                    etJumlah.setError(getString(R.string.payfriends_amount_zero), null);
                     hasError = true;
                 }
 
