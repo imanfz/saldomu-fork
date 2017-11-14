@@ -35,7 +35,7 @@
 
     <application
         android:name=".coreclass.CoreApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_pin_only"
         android:label="@string/appname"
@@ -43,7 +43,7 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
-        tools:replace="android:label">
+        tools:replace="android:label,allowBackup">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
