@@ -990,7 +990,7 @@
     <string name="message_notif_waiting_agent_approval">Mohon menunggu. Permintaan anda sudah dikirim ke agen.</string>
     <string name="message_notif_cancel_trx">Pembatalan transaksi akan dikenakan biaya sebesar [CANCEL_FEE]. Apakah Anda yakin mau membatalkan transaksi ?</string>
     <string name="message_notif_cancel_trx_by_agent">Apakah Anda yakin mau membatalkan transaksi ?</string>
-    <string name="set_online">Set Online</string>
+    <string name="set_online">Set Agen Online</string>
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
