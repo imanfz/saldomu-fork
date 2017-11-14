@@ -34,7 +34,7 @@ public class SMSclass {
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
-    private static final String SMS_VERIFY = "REG IMEI "+MyApiClient.COMM_ID;
+    private static final String SMS_VERIFY = "REG EMO "+MyApiClient.COMM_ID;
 
     public interface SMS_SIM_STATE{
         void sim_state(Boolean isExist, String msg);

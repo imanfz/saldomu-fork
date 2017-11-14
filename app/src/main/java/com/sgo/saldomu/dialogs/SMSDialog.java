@@ -16,8 +16,10 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -39,14 +41,14 @@ public class SMSDialog extends Dialog {
 
     private ImageView img_view;
     private ProgressBar progBar;
-    private TextView progText,tvMessage;
-    private Button btnOk,btnCancel;
+    private TextView progText, tvMessage;
+    private Button btnOk, btnCancel;
     private CountDownTimer cdTimer;
     private static int lenghtTimer; //5 minute
     private final static int intervalTimer = 1000;
     private final static int max_fail_connect = 5; //5 minute
     private static Boolean isStop;
-    private String imeiDevice,ICCIDDevice;
+    private String imeiDevice, ICCIDDevice;
     private SMSclass smsClass;
     private String message1;
     private String timeStamp;
@@ -55,10 +57,13 @@ public class SMSDialog extends Dialog {
     private int idx_fail;
 
 
-    public interface DialogButtonListener{
+    public interface DialogButtonListener {
         void onClickOkButton(View v, boolean isLongClick);
+
         void onClickCancelButton(View v, boolean isLongClick);
+
         void onSuccess(int user_is_new);
+
         void onSuccess(String product_value);
     }
 
@@ -78,7 +83,7 @@ public class SMSDialog extends Dialog {
         // Include dialog.xml file
         setContentView(R.layout.dialog_sms_notification);
 
-        if(BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
+        if (BuildConfig.FLAVOR.equals(DefineValue.DEVELOPMENT))
             lenghtTimer = 150000;
         else
             lenghtTimer = 300000;
@@ -86,10 +91,10 @@ public class SMSDialog extends Dialog {
         smsClass = new SMSclass(getContext());
         // set values for custom dialog components - text, image and button
 
-        img_view = (ImageView)findViewById(R.id.dialog_pic_msg);
-        progBar = (ProgressBar)findViewById(R.id.dialog_probar_inquiry);
-        progText = (TextView)findViewById(R.id.dialog_duration_inquiry);
-        tvMessage = (TextView)findViewById(R.id.message_dialog);
+        img_view = (ImageView) findViewById(R.id.dialog_pic_msg);
+        progBar = (ProgressBar) findViewById(R.id.dialog_probar_inquiry);
+        progText = (TextView) findViewById(R.id.dialog_duration_inquiry);
+        tvMessage = (TextView) findViewById(R.id.message_dialog);
 
         progBar.setMax(100);
 
@@ -99,7 +104,7 @@ public class SMSDialog extends Dialog {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(InetHandler.isNetworkAvailable(getContext())){
+                if (InetHandler.isNetworkAvailable(getContext())) {
                     progBar.setProgress(0);
                     tvMessage.setText(getContext().getString(R.string.dialog_sms_msg2));
                     progBar.setVisibility(View.VISIBLE);
@@ -118,9 +123,8 @@ public class SMSDialog extends Dialog {
                     cdTimer.start();
                     if (deListener != null)
                         deListener.onClickOkButton(v, false);
-                }
-                else {
-                    Toast.makeText(getContext(),getContext().getString(R.string.inethandler_dialog_message),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), getContext().getString(R.string.inethandler_dialog_message), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -129,6 +133,8 @@ public class SMSDialog extends Dialog {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 tvMessage.setText(message1);
                 progText.setVisibility(View.GONE);
                 progBar.setVisibility(View.GONE);
@@ -136,16 +142,15 @@ public class SMSDialog extends Dialog {
                 btnCancel.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon));
-                }
-                else {
+                } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(),true);
+                MyApiClient.CancelRequestWS(getContext(), true);
                 isStop = true;
                 dismiss();
-                if (deListener!=null)
-                    deListener.onClickCancelButton(v,false);
+                if (deListener != null)
+                    deListener.onClickCancelButton(v, false);
             }
         });
 
@@ -153,13 +158,14 @@ public class SMSDialog extends Dialog {
         tvMessage.setText(message1);
 
 
-        cdTimer = new CountDownTimer(lenghtTimer,intervalTimer) {
+        cdTimer = new CountDownTimer(lenghtTimer, intervalTimer) {
             int i = 0;
+
             @Override
             public void onTick(long millisUntilFinished) {
                 progText.setText(DateTimeFormat.convertMilisToMinute(millisUntilFinished));
                 i++;
-                int prog = (i*100000)/lenghtTimer;
+                int prog = (i * 100000) / lenghtTimer;
 
                 progBar.setProgress(prog);
             }
@@ -167,7 +173,7 @@ public class SMSDialog extends Dialog {
             @Override
             public void onFinish() {
                 isStop = true;
-                MyApiClient.CancelRequestWS(getContext(),true);
+                MyApiClient.CancelRequestWS(getContext(), true);
 
                 i = 0;
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
@@ -177,8 +183,7 @@ public class SMSDialog extends Dialog {
                 btnCancel.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
-                else {
+                } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
             }
@@ -187,13 +192,12 @@ public class SMSDialog extends Dialog {
         SMSclass test = new SMSclass(getContext());
         imeiDevice = test.getDeviceIMEI();
         ICCIDDevice = test.getDeviceICCID();
-        Timber.wtf("device imei/ICCID : " + imeiDevice +"/"+ ICCIDDevice);
+        Timber.wtf("device imei/ICCID : " + imeiDevice + "/" + ICCIDDevice);
 
         smsVerifyListener = new SMSclass.SMS_VERIFY_LISTENER() {
             @Override
             public void success() {
                 Timber.i("sms terkirim sukses");
-                smsClass.Close();
             }
 
             @Override
@@ -206,31 +210,24 @@ public class SMSDialog extends Dialog {
                 btnCancel.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
-                else {
+                } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(),true);
+                MyApiClient.CancelRequestWS(getContext(), true);
                 isStop = true;
-                smsClass.Close();
             }
         };
-    }
-
-    public void setListener(DialogButtonListener dialogButtonListener){
-        this.deListener = dialogButtonListener;
-
     }
 
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         timeStamp = String.valueOf(DateTimeFormat.getCurrentDateTimeMillis());
-        Timber.i("isi timestamp : "+timeStamp);
+        Timber.i("isi timestamp : " + timeStamp);
     }
 
-    public void reset(){
+    public void reset() {
         tvMessage.setText(message1);
         progText.setVisibility(View.GONE);
         progBar.setVisibility(View.GONE);
@@ -238,39 +235,36 @@ public class SMSDialog extends Dialog {
         btnCancel.setVisibility(View.VISIBLE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon));
-        }
-        else {
+        } else {
             img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon));
         }
         DestroyDialog();
     }
 
-    public void DestroyDialog(){
-        if(cdTimer != null) {
+    public void DestroyDialog() {
+        if (cdTimer != null) {
             isStop = true;
             cdTimer.cancel();
         }
     }
 
-    public void sentSms(){
-        if(!isStop) {
+    public void sentSms() {
+        if (!isStop) {
             Timber.d("jalanin sentSMSVerify");
-            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_INFOBIP, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
         }
     }
 
-
-
-    private void sentInquirySMS (){
-        try{
-            Timber.d("idx fail = "+String.valueOf(idx_fail));
-            if(idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())){
-                if(!isStop) {
+    private void sentInquirySMS() {
+        try {
+            Timber.d("idx fail = " + String.valueOf(idx_fail));
+            if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
+                if (!isStop) {
                     RequestParams params = new RequestParams();
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);
-                    params.put(WebParams.SENT,timeStamp);
+                    params.put(WebParams.SENT, timeStamp);
 
                     Timber.d("isi params inquiry sms:" + params.toString());
 
@@ -280,7 +274,7 @@ public class SMSDialog extends Dialog {
                             try {
                                 Timber.d("isi params response inquiry sms:" + response.toString());
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                if(handler == null)
+                                if (handler == null)
                                     handler = new Handler();
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -290,8 +284,7 @@ public class SMSDialog extends Dialog {
                                     progBar.setVisibility(View.GONE);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                         img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_success));
-                                    }
-                                    else {
+                                    } else {
                                         img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_success));
                                     }
                                     cdTimer.cancel();
@@ -338,7 +331,7 @@ public class SMSDialog extends Dialog {
 
                         private void ifFailure(Throwable throwable) {
                             Timber.w("Error Koneksi login:" + throwable.toString());
-                            if(handler == null)
+                            if (handler == null)
                                 handler = new Handler();
 
                             handler.postDelayed(new Runnable() {
@@ -351,8 +344,7 @@ public class SMSDialog extends Dialog {
                         }
                     });
                 }
-            }
-            else {
+            } else {
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
                 progText.setVisibility(View.GONE);
                 progBar.setVisibility(View.GONE);
@@ -360,37 +352,38 @@ public class SMSDialog extends Dialog {
                 btnCancel.setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     img_view.setImageDrawable(getContext().getDrawable(R.drawable.phone_sms_icon_fail));
-                }
-                else {
+                } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
-                MyApiClient.CancelRequestWS(getContext(),true);
+                MyApiClient.CancelRequestWS(getContext(), true);
                 DestroyDialog();
                 idx_fail = 0;
             }
-
-
-
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void saveData(JSONObject mObj){
-//        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-//        SecurePreferences.Editor edit = sp.edit();
-//        edit.putString(DefineValue.SENDER_ID,mObj.optString(WebParams.SENDER_ID));
-//        if(mObj.optInt(WebParams.IS_NEW_USER,0) == 0) {
-//            edit.putString(DefineValue.DEIMEI, imeiDevice);
-//            edit.putString(DefineValue.DEICCID, ICCIDDevice);
-//            edit.commit();
-//            deListener.onSuccess(0);
-//        }
-//        else {
-//            edit.commit();
-//            deListener.onSuccess(1);
-//        }
-        deListener.onSuccess(mObj.optString(WebParams.SENDER_ID,""));
+    private void saveData(JSONObject mObj) {
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor edit = sp.edit();
+        edit.putString(DefineValue.SENDER_ID, mObj.optString(WebParams.SENDER_ID));
+        Bundle mbundler = new Bundle();
+
+        //check apakah user register dari ATM atau tidak
+
+
+        if (mObj.optInt(WebParams.IS_NEW_USER, 0) == 0) {
+            edit.putString(DefineValue.DEIMEI, imeiDevice);
+            edit.putString(DefineValue.DEICCID, ICCIDDevice);
+            edit.commit();
+
+            deListener.onSuccess(0);
+        } else {
+            edit.commit();
+            deListener.onSuccess(1);
+        }
+        deListener.onSuccess(mObj.optString(WebParams.SENDER_ID, ""));
     }
 
     @Override
@@ -401,5 +394,9 @@ public class SMSDialog extends Dialog {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+    }
+
+    public void setListener(DialogButtonListener dialogButtonListener) {
+        this.deListener = dialogButtonListener;
     }
 }

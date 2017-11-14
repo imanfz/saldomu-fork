@@ -544,14 +544,15 @@ public class MainPage extends BaseActivity{
                                 CheckNotification();
 
                                 String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
+
                                 if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
                                 {
                                     UserProfileHandler mBH = new UserProfileHandler(getApplication());
                                     mBH.sentUserProfile(new OnLoadDataListener() {
                                         @Override
                                         public void onSuccess(Object deData) {
+                                            if (progdialog.isShowing())
+                                                progdialog.dismiss();
                                             checkField();
                                         }
 
@@ -567,6 +568,8 @@ public class MainPage extends BaseActivity{
                                     }, is_new_bulk);
                                 }
                                 else {
+                                    if (progdialog.isShowing())
+                                        progdialog.dismiss();
                                     checkField();
                                 }
 
@@ -740,9 +743,9 @@ public class MainPage extends BaseActivity{
         else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
         }
-        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
-            showValidasiEmail();
-        }
+//        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
+//            showValidasiEmail();
+//        }
     }
 
 

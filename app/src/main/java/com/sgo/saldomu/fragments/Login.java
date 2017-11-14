@@ -21,6 +21,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -91,6 +92,19 @@ public class Login extends Fragment implements View.OnClickListener {
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            userIDValue.setText(userIDfinale);
+        }
+
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
+            Bundle m = getArguments();
+            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+                getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+            }
+            userIDValue.setEnabled(true);
+        }
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
 //        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();

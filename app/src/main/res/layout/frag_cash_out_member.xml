@@ -54,8 +54,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
-                android:background="@color/colorSecondaryDark"
-                android:textColor="@color/colorPrimary"
+                android:background="@color/colorSecondaryWhite"
+                android:textColor="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:textSize="@dimen/abc_text_size_large_material"/>
         </LinearLayout>
