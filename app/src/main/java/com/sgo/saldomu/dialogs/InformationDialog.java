@@ -76,8 +76,9 @@ public class InformationDialog extends DialogFragment implements View.OnClickLis
     public static InformationDialog newInstance(Fragment _context, int idx) {
         InformationDialog f = new InformationDialog();
         f.setTargetFragment(_context,0);
-        f.type = idx;
-        f.isActivty = false;
+        Bundle d = new Bundle();
+        d.putInt(DefineValue.TYPE,idx);
+        f.setArguments(d);
         return f;
     }
 
