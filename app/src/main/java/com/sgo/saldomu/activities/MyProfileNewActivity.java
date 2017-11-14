@@ -110,6 +110,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
+    private String is_new_bulk;
     private ProgressDialog progdialog;
 
     @Override
@@ -129,6 +130,8 @@ public class MyProfileNewActivity extends BaseActivity {
         if(intent.hasExtra(DefineValue.IS_FIRST)) {
             is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
         }
+
+        is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
 
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
@@ -178,6 +181,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
+
 
         if(!is_first_time)
         {
@@ -454,7 +458,14 @@ public class MyProfileNewActivity extends BaseActivity {
         et_noHp.setEnabled(false);
         et_nama.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL,""));
-        et_email.setEnabled(false);
+        if(is_new_bulk.equals("Y"))
+        {
+            et_email.setEnabled(true);
+        }else
+        {
+            et_email.setEnabled(false);
+        }
+
 
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
 
@@ -548,7 +559,6 @@ public class MyProfileNewActivity extends BaseActivity {
                                                 if(is_first_time) {
                                                     setResult(MainPage.RESULT_FIRST_TIME);
                                                 }
-
                                             }
                                         });
 
@@ -557,13 +567,11 @@ public class MyProfileNewActivity extends BaseActivity {
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                     tv_dob.setEnabled(false);
-
                                                 if(is_first_time) {
                                                     setResult(MainPage.RESULT_FIRST_TIME);
+                                                    finish();
                                                 }
-
-                                                finish();
-
+                                                closethis();
                                             }
                                         });
 

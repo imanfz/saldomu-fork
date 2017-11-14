@@ -537,6 +537,7 @@
     <string name="myprofile_validation_date">Tanggal lahir tidak boleh melebihi tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
+    <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>

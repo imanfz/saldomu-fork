@@ -242,7 +242,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             params.put(WebParams.CUST_NAME,namaValue.getText());
             params.put(WebParams.CUST_EMAIL, emailValue.getText());
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.YES);
+            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
 
             Timber.d("isi params reg1:" + params.toString());
 
@@ -275,15 +275,15 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
                                     flag_change_pin = response.optString(WebParams.FLAG_CHANGE_PIN, "Y");
                                     check(code);
                                 }
+                            } else {
+                                namaValid = response.getString(WebParams.CUST_NAME);
+                                emailValid = response.getString(WebParams.CUST_EMAIL);
+                                noHPValid = response.getString(WebParams.CUST_PHONE);
+
+                                Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                                i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                switchActivityPIN(i);
                             }
-
-                            namaValid = response.getString(WebParams.CUST_NAME);
-                            emailValid = response.getString(WebParams.CUST_EMAIL);
-                            noHPValid = response.getString(WebParams.CUST_PHONE);
-
-                            Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
-                            switchActivityPIN(i);
                         }
                         else if(code.equals("0002")){
                             showDialog(code);
@@ -345,7 +345,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
             params.put(WebParams.CUST_ID, noHPValid);
-            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.YES);
+            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
 
             Timber.d("params create pass:"+params.toString());
 
@@ -359,8 +359,17 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             memberID = response.getString(WebParams.MEMBER_ID);
-                            flag_change_pwd="N";
-                            check(code);
+                            if (response.has(WebParams.FLAG_CHANGE_PWD))
+                            {
+                                flag_change_pwd="N";
+                                check(code);
+                            }
+                            else
+                            {
+                                Intent i = new Intent(getActivity(), CreatePIN.class);
+                                i.putExtra(DefineValue.REGISTRATION, true);
+                                switchActivityPIN(i);
+                            }
                         } else {
                             Timber.d("isi error create pass:" + response.toString());
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -418,7 +427,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
 
             RequestParams params = new RequestParams();
             params.put(WebParams.USER_ID, noHPValid);
-            params.put(WebParams.MEMBER_ID, DefineValue.MEMBER_ID);
+            params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
             params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
@@ -435,8 +444,13 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
 
                         progdialog.dismiss();
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            flag_change_pin="N";
-                            check(code);
+                            if (response.has(WebParams.FLAG_CHANGE_PIN))
+                            {
+                                flag_change_pin="N";
+                                check(code);
+                            }
+                            else
+                                showDialog(code);
                         } else {
                             Timber.d("isi error create pin:" + response.toString());
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -508,7 +522,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             switchFragment(mFragment, "reg2", true);
         }
     }
-    private void check(final String code){
+    private void check(String code){
         if (flag_change_pwd.equals("Y"))
         {
             Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
@@ -535,7 +549,9 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         // set values for custom dialog components - text, image and button
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message2 = (TextView)dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
+        TextView Message3 = (TextView)dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
@@ -544,15 +560,24 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             Message.setText(getResources().getString(R.string.regist1_notif_message_registered));
         }
         else if(code.equals(WebParams.SUCCESS_CODE)){
-            Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-            Message.setText(getString(R.string.appname)+" "+getString(R.string.regist1_notif_message_email));
+            Title.setText(getResources().getString(R.string.regist2_notif_title));
+            Message.setText(getResources().getString(R.string.regist2_notif_message_1));
+            Message2.setText(noHPValue.getText().toString());
+            Message2.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
+            Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
         }
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(code.equals("0002")) changeActivity(true);
-                else if(code.equals(WebParams.SUCCESS_CODE)) changeActivity(false);
+                else if(code.equals(WebParams.SUCCESS_CODE))
+                {
+                    getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    Fragment test = new Login();
+                    switchFragment(test,"Login",false);
+                    dialog.show();
+                }
 
                 dialog.dismiss();
             }
