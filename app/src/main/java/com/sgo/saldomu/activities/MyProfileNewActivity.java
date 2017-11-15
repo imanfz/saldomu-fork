@@ -868,23 +868,30 @@ public class MyProfileNewActivity extends BaseActivity {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
+                Timber.d("sebelum proses uploadKTP " +bytesWritten);
+                Timber.d("sebelum proses uploadKTP " +totalSize);
                 proses = (int) (100 * bytesWritten / totalSize);
-                if(flag==1)
+                if(proses < 100 || proses == 100)
                 {
+                    if(flag==1)
+                    {
+                        Timber.d("sebelum proses uploadKTP " +proses);
+                        pb1.setProgress((int) (100 * bytesWritten / totalSize));
+                        Timber.d("proses uploadKTP " +proses);
+                        tv_pb1.setText(proses + "%");
+                    }
+                    else if(flag==2)
+                    {
+                        pb2.setProgress((int) (100 * bytesWritten / totalSize));
+                        tv_pb2.setText(proses + "%");
+                    }
+                    else if(flag==3)
+                    {
+                        pb3.setProgress((int) (100 * bytesWritten / totalSize));
+                        tv_pb3.setText(proses + "%");
+                    }
+                }
 
-                    pb1.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb1.setText(proses + "%");
-                }
-                else if(flag==2)
-                {
-                    pb2.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb2.setText(proses + "%");
-                }
-                else if(flag==3)
-                {
-                    pb3.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb3.setText(proses + "%");
-                }
             }
 
             @Override
@@ -893,16 +900,17 @@ public class MyProfileNewActivity extends BaseActivity {
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
                     if (error_code.equalsIgnoreCase("0000")) {
-                        SecurePreferences.Editor mEditor = sp.edit();
+//                        SecurePreferences.Editor mEditor = sp.edit();
                         Timber.d("onsuccess upload foto type: " + flag);
-                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
-                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
-                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
-                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
-                        mEditor.apply();
+                        Timber.d("isi response Upload Foto:"+ response.toString());
+//                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
+//                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
+//                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
+//                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
+//                        mEditor.apply();
 //
 //                        Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_foto_success),Toast.LENGTH_SHORT).show();
-                        Timber.d("isi response Upload Foto:"+ response.toString());
+//                        Timber.d("isi response Upload Foto:"+ response.toString());
 
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
                         Timber.d("isi response autologout:" + response.toString());
