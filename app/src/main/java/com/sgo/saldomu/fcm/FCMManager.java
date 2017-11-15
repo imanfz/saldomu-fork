@@ -43,6 +43,7 @@ public class FCMManager {
     public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION      = 1005;
     public final static int SHOP_ACCEPT_TRX                         = 1006;
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
+    public final static int REJECT_UPGRADE_MEMBER                   = 2;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;

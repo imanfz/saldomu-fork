@@ -21,6 +21,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
@@ -389,6 +390,35 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                         );
 
                             } catch (JSONException e) {
+                                Timber.d("JSONException: " + e.getMessage());
+                            }
+                        }
+                        break;
+                    case FCMManager.REJECT_UPGRADE_MEMBER:
+
+                        if (msg.containsKey("options") && msg.getString("options") != null) {
+                            try {
+                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+
+                                Boolean isRegisteredLevel          = jsonOptions.getJSONObject(0).getBoolean("is_registered");
+                                bundle.putBoolean(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel);
+
+                                sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
+
+                                intent = new Intent(this, MyProfileNewActivity.class);
+                                intent.putExtras(bundle);
+
+                                stackBuilder.addParentStack(MyProfileNewActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                0,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+                            }
+                            catch (JSONException e)
+                            {
                                 Timber.d("JSONException: " + e.getMessage());
                             }
                         }

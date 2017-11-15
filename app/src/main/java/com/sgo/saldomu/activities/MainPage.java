@@ -163,7 +163,6 @@ public class MainPage extends BaseActivity{
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
             }else {
-
                 initializeDashboard(savedInstanceState);
             }
         }

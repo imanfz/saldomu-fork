@@ -568,7 +568,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                             public void onClick(DialogInterface dialog, int id) {
                                                     tv_dob.setEnabled(false);
                                                 if(is_first_time) {
-                                                    setResult(MainPage.RESULT_FIRST_TIME);
+                                                    RESULT = MainPage.RESULT_FIRST_TIME;
                                                     finish();
                                                 }
                                                 closethis();

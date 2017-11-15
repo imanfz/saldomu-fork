@@ -457,5 +457,6 @@ public class DefineValue {
     public static String CONTACTCENTER_NAME = "contactCenterName";
     public static String CONTACTCENTER_PHONE = "contactCenterPhone";
     public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
+    public static String DATA_REJECT_UPGRADE_MEMBER = "dataRejectUpgradeMember";
 }
 
