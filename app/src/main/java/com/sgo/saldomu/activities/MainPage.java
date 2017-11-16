@@ -181,6 +181,19 @@ public class MainPage extends BaseActivity{
         }
 
         if (!isLogin()) {
+            Bundle bundle = getIntent().getExtras();
+            if(bundle!=null) {
+                if(bundle.getString(DefineValue.MODEL_NOTIF) != null) {
+                    int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
+                    if (modelNotif==2)
+                    {
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
+                        mEditor.apply();
+                    }
+
+                }
+            }
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
             userID = sp.getString(DefineValue.USERID_PHONE, "");
@@ -219,8 +232,22 @@ public class MainPage extends BaseActivity{
 
                 FCMManager fcmManager = new FCMManager(this);
                 Intent intent = fcmManager.checkingAction(type, msgMap);
-                startActivity(intent);
+                if (intent!=null){
+                    startActivity(intent);
+                }
                 //this.finish();
+            } else
+            {
+                String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
+                if (!sp_model_notif.equals(""))
+                {
+                    if (sp_model_notif.equals("2"))
+                    {
+                        Intent i = new Intent(this, MyProfileNewActivity.class);
+                        startActivity(i);
+
+                    }
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
@@ -47,6 +48,7 @@ public class FCMManager {
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
+    private SecurePreferences sp;
 
     private Context mContext;
 
@@ -258,6 +260,36 @@ public class FCMManager {
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
+                        }
+                    }
+                    break;
+                case FCMManager.REJECT_UPGRADE_MEMBER:
+                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
+                            String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
+                            String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
+                            String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
+                            String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
+                            String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
+                            String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
+
+                            sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
+                            sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
+                            sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
+                            sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
+                            sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
+                            sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
+                            sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
+                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
+
+                            i = new Intent(mContext, MyProfileNewActivity.class);
+                        }
+                        catch (JSONException e)
+                        {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
                     }
                     break;

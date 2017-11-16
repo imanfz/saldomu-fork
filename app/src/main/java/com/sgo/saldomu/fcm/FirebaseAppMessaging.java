@@ -399,14 +399,24 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         if (msg.containsKey("options") && msg.getString("options") != null) {
                             try {
                                 JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                                Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
+                                String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
+                                String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
+                                String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
+                                String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
+                                String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
+                                String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
 
-                                Boolean isRegisteredLevel          = jsonOptions.getJSONObject(0).getBoolean("is_registered");
-                                bundle.putBoolean(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel);
-
+                                sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
+                                sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
+                                sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
+                                sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
+                                sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
+                                sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
+                                sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
                                 sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
 
                                 intent = new Intent(this, MyProfileNewActivity.class);
-                                intent.putExtras(bundle);
 
                                 stackBuilder.addParentStack(MyProfileNewActivity.class);
                                 stackBuilder.addNextIntent(intent);
@@ -416,11 +426,14 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                                 0,
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         );
+
                             }
                             catch (JSONException e)
                             {
                                 Timber.d("JSONException: " + e.getMessage());
                             }
+
+
                         }
                         break;
                     default:
