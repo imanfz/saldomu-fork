@@ -151,7 +151,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                 contentIntent =
                         stackBuilder.getPendingIntent(
-                                0,
+                                1,
                                 PendingIntent.FLAG_UPDATE_CURRENT
                         );
             } else {
@@ -200,7 +200,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         contentIntent =
                                 stackBuilder.getPendingIntent(
-                                        0,
+                                        1,
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                         break;
@@ -238,7 +238,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         contentIntent =
                                 stackBuilder.getPendingIntent(
-                                        0,
+                                        1,
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                         break;
@@ -250,7 +250,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         contentIntent =
                                 stackBuilder.getPendingIntent(
-                                        0,
+                                        1,
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                         break;
@@ -267,7 +267,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         contentIntent =
                                 stackBuilder.getPendingIntent(
-                                        0,
+                                        1,
                                         PendingIntent.FLAG_UPDATE_CURRENT
                                 );
                         break;
@@ -329,7 +329,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 contentIntent =
                                         stackBuilder.getPendingIntent(
-                                                0,
+                                                1,
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         );
 
@@ -385,7 +385,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 contentIntent =
                                         stackBuilder.getPendingIntent(
-                                                0,
+                                                1,
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         );
 
@@ -423,7 +423,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 contentIntent =
                                         stackBuilder.getPendingIntent(
-                                                0,
+                                                1,
                                                 PendingIntent.FLAG_UPDATE_CURRENT
                                         );
 
