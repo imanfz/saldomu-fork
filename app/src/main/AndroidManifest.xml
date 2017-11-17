@@ -56,16 +56,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
-        <activity
-            android:name=".activities.Registration"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".activities.MainPage"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -332,8 +322,14 @@
         <activity
             android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
 
         <service
             android:name=".services.AgentShopService"

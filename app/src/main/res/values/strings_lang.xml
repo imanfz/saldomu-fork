@@ -165,7 +165,7 @@
 
     <string name="toolbar_title_purchase">Belanja</string>
     <string name="toolbar_title_pay_friends">Kirim Saldo</string>
-    <string name="toolbar_title_topup" translatable="false">Top Up</string>
+    <string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="toolbar_title_myfriends">Teman Saya</string>
@@ -183,7 +183,7 @@
     <string name="menu_item_title_buy">Belanja</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank</string>
-    <string name="menu_item_title_topup" translatable="false">Top Up</string>
+    <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
     <string name="menu_group_title_account">Akun</string>
@@ -1052,7 +1052,7 @@
     <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
     <string name="error_msg_rooteddevice">Aplikasi %1$s tidak mendukung perangkat yang sudah di root. Hubungi produsen untuk mendapatkan bantuan.</string>
 
-    <string name="title_cashout_bank">Tarik Dana - Bank</string>
+    <string name="title_cashout_bank">Transfer ke Bank</string>
     <string name="cashout_validation_bank">Bank dibutuhkan!</string>
     <string name="title_cashout_agen">Tarik Dana - Agent</string>
     <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>

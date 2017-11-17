@@ -258,6 +258,8 @@ public class BillerDesciption extends Fragment {
 
             paymentData.addAll(tempDataPaymentName);
             adapterPaymentOptions.notifyDataSetChanged();
+
+            spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
         }
 
         if (progdialog != null && progdialog.isShowing())

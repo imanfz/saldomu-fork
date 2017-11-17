@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/grey_1000w"
+            android:background="@color/white"
             android:layout_margin="3dp"
             >
             <TextView
@@ -52,12 +52,13 @@
                 android:id="@+id/cashoutmember_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:background="@color/colorSecondaryWhite"
-                android:textColor="@color/colorPrimaryDark"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@color/white"
+                android:textColor="@color/colorSecondaryWhiteFixed"
                 android:gravity="center"
-                android:textSize="@dimen/abc_text_size_large_material"/>
+                android:textStyle="bold"
+                android:textSize="26sp"/>
         </LinearLayout>
 
         <LinearLayout
