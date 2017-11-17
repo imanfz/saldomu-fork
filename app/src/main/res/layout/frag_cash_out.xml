@@ -139,6 +139,14 @@
                         android:hint="@string/cashout_bank_acc_no_hint"
                         android:paddingLeft="10dp"
                         />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashout_lkd_warning_1"
+                    android:textColor="@color/red"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:paddingBottom="10sp"/>
             </LinearLayout>
 
             <LinearLayout android:id="@+id/layout_bankcashout_acc_name"
@@ -169,6 +177,14 @@
                     android:hint="@string/cashout_bank_acc_name_hint"
                     android:paddingLeft="10dp"
                     />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashout_lkd_warning_2"
+                    android:textColor="@color/red"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:paddingBottom="10sp"/>
             </LinearLayout>
 
             <LinearLayout android:layout_width="match_parent"
