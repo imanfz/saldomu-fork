@@ -1051,6 +1051,7 @@
     <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
     <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
     <string name="error_msg_rooteddevice">Aplikasi %1$s tidak mendukung perangkat yang sudah di root. Hubungi produsen untuk mendapatkan bantuan.</string>
+    <string name="error_msg_no_simcard">SIM Card tidak terdeteksi</string>
 
     <string name="title_cashout_bank">Transfer ke Bank</string>
     <string name="cashout_validation_bank">Bank dibutuhkan!</string>
