@@ -245,8 +245,8 @@ public class MainPage extends BaseActivity{
                     {
                         Intent i = new Intent(this, MyProfileNewActivity.class);
                         startActivity(i);
-
                     }
+                    sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
                 }
             }
         }
@@ -760,6 +760,7 @@ public class MainPage extends BaseActivity{
     private void checkField(){
         String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
         String dob = sp.getString(DefineValue.PROFILE_DOB, "");
+        Timber.d("is_have_pin" +sp.getString(DefineValue.IS_HAVE_PIN,""));
         if (dob.isEmpty() || bom_value.isEmpty()) {
             showMyProfile();
         }

@@ -196,6 +196,12 @@ public class MyProfileNewActivity extends BaseActivity {
             tv_dob.setEnabled(false);
         }
 
+        if(levelClass.isLevel1QAC())
+        {
+            btn1.setVisibility(View.VISIBLE);
+            dataVerifiedMember.setVisibility(View.GONE);
+        }
+
         if(!levelClass.isLevel1QAC())
         {
             et_nama.setEnabled(false);
@@ -233,7 +239,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
-        if(reject_KTP!=null || reject_selfie !=null || reject_ttd != null) {
+        if(reject_KTP.equals("Y") || reject_selfie.equals("Y") || reject_ttd.equals("Y")) {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
             btn1.setVisibility(View.GONE);
@@ -482,8 +488,10 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void initializeData(){
-
-        RESULT = MainPage.RESULT_NORMAL;
+//        if(is_first_time) {
+//            RESULT = MainPage.RESULT_FIRST_TIME;
+//        }else
+//            RESULT = MainPage.RESULT_NORMAL;
 
         et_noHp.setText(sp.getString(DefineValue.CUST_ID,""));
         et_noHp.setEnabled(false);
@@ -606,8 +614,9 @@ public class MyProfileNewActivity extends BaseActivity {
                                                     tv_dob.setEnabled(false);
                                                     if(is_first_time) {
                                                         RESULT = MainPage.RESULT_FIRST_TIME;
+                                                        setResult(MainPage.RESULT_FIRST_TIME);
                                                         finish();
-                                                    }
+                                                    }else
                                                     closethis();
                                                 }
                                             });
@@ -685,6 +694,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
             mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
             mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
+            mEditor.putString(DefineValue.PROFILE_BOM, response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
@@ -945,7 +955,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
                         Timber.d("onsuccess upload foto type: " + flag);
                         Timber.d("isi response Upload Foto:"+ response.toString());
-                        
+
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
 
                         Timber.d("isi response autologout:" + response.toString());
