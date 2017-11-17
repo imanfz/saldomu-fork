@@ -538,6 +538,8 @@
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
     <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
+    <string name="cashout_lkd_warning_1">*Pastikan bahwa No. Rekening yang Anda masukkan sudah benar.</string>
+    <string name="cashout_lkd_warning_2">*Pastikan bahwa Nama Penerima yang Anda masukkan sudah benar.</string>
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
@@ -1051,6 +1053,7 @@
     <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
     <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
     <string name="error_msg_rooteddevice">Aplikasi %1$s tidak mendukung perangkat yang sudah di root. Hubungi produsen untuk mendapatkan bantuan.</string>
+    <string name="error_msg_no_simcard">SIM Card tidak terdeteksi</string>
 
     <string name="title_cashout_bank">Transfer ke Bank</string>
     <string name="cashout_validation_bank">Bank dibutuhkan!</string>

@@ -62,8 +62,9 @@
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey_400"
                 android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold">
-
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:saveEnabled="false">
                 <requestFocus />
             </EditText>
 
@@ -150,7 +151,8 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:layout_marginTop="0dp"/>
+                android:layout_marginTop="0dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

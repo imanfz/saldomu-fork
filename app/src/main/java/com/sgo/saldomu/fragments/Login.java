@@ -74,7 +74,6 @@ public class Login extends Fragment implements View.OnClickListener {
         super.onActivityCreated(savedInstanceState);
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
-        userIDValue.requestFocus();
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
