@@ -23,6 +23,7 @@
     <string name="up_indicator" translatable="false">{fa-sort-asc}</string>
     <string name="exempli_gratia" translatable="false">contoh</string>
     <string name="transaction">Transaksi</string>
+    <string name="informasi_pelanggan">Informasi Pelanggan</string>
     <string name="transaction_success">Transaksi Berhasil</string>
     <string name="transaction_pending">Transaksi Sedang di Proses</string>
     <string name="transaction_suspect">Transaksi Suspect</string>
@@ -164,7 +165,7 @@
 
     <string name="toolbar_title_purchase">Belanja</string>
     <string name="toolbar_title_pay_friends">Kirim Saldo</string>
-    <string name="toolbar_title_topup" translatable="false">Top Up</string>
+    <string name="toolbar_title_topup" translatable="false">Tambah Saldo</string>
     <string name="toolbar_title_evoucherhp">Beli E-Voucher HP</string>
     <string name="toolbar_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="toolbar_title_myfriends">Teman Saya</string>
@@ -180,8 +181,9 @@
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
     <string name="menu_item_title_buy">Belanja</string>
-    <string name="menu_item_title_cash_out">Tarik Dana</string>
-    <string name="menu_item_title_topup" translatable="false">Top Up</string>
+    <string name="menu_item_title_beli">Beli</string>
+    <string name="menu_item_title_cash_out">Transfer ke Bank</string>
+    <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
     <string name="menu_group_title_account">Akun</string>
@@ -397,7 +399,7 @@
     <string name="desc_add_by_qrcode">*Posisikan barcode pada panel tampilan \ndan tahan posisinya</string>
     <string name="view_detail">Profil Detail</string>
 
-    <string name="askformoney_text_recipients">Penerima</string>
+    <string name="askformoney_text_recipients">Minta Saldo dari</string>
     <string name="askformoney_text_amount">Jumlah</string>
     <string name="askformoney_text_message">Pesan</string>
     <string name="askformoney_text_otp">Kode OTP</string>
@@ -535,6 +537,9 @@
     <string name="myprofile_validation_date">Tanggal lahir tidak boleh melebihi tanggal hari ini</string>
     <string name="myprofile_validation_date_empty">Tanggal lahir tidak boleh kosong</string>
     <string name="myprofile_dob_warning">*Pastikan bahwa tanggal lahir yang Anda pilih sudah sesuai dengan yang tertera pada KTP.</string>
+    <string name="myprofile_email_warning">*Pastikan bahwa alamat Email yang tercantum sudah sesuai dan dalam keadaan aktif, karena seluruh laporan transaksi Saldomu Anda akan dikirimkan ke alamat Email tersebut.</string>
+    <string name="cashout_lkd_warning_1">*Pastikan bahwa No. Rekening yang Anda masukkan sudah benar.</string>
+    <string name="cashout_lkd_warning_2">*Pastikan bahwa Nama Penerima yang Anda masukkan sudah benar.</string>
     <string name="myprofile_upload_photo_finish">Foto sudah berhasil diupload dan sedang menunggu Admin untuk verifikasi data.</string>
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
@@ -910,8 +915,9 @@
     <string name="member">Member</string>
     <string name="kota_tujuan_hint">Kota rekening tujuan</string>
     <string name="jumlah">Jumlah</string>
-    <string name="informasi">Informasi</string>
-    <string name="konfirmasi">Konfirmasi</string>
+    <string name="informasi">Informasi Agen</string>
+    <string name="konfirmasi">Konfirmasi Pelanggan</string>
+    <string name="konfirmasi_agen">Konfirmasi Agen</string>
     <string name="rekening_agent_error_message">Rekening agent dibutuhkan</string>
     <string name="rekening_member_error_message">Rekening member dibutuhkan</string>
     <string name="konfirmasi_alert_text">Harap periksa terlebih dahulu sebelum transaksi ini di proses</string>
@@ -944,7 +950,7 @@
     <string name="agent_approve">Terima</string>
     <string name="agent_reject">Tolak</string>
     <string name="agent_shop">Agent Shop ID</string>
-    <string name="user_id">Nomor Handphone member</string>
+    <string name="user_id">Nomor Handphone pelanggan</string>
     <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
     <string name="city_empty_message">Kota tujuan harus diisi!</string>
@@ -1039,16 +1045,17 @@
     <string name="label_rekening_transfer_dari">Nomor Rekening Sumber</string>
 
     <string name="label_transfer_ke_agent">Rekening Agen</string>
-    <string name="label_transfer_dari_member_atc">Dari Rekening Mana ?</string>
-    <string name="label_rekening_pelangggan">Rekening Pelanggan</string>
+    <string name="label_transfer_dari_member_atc">Dari Bank Mana ?</string>
+    <string name="label_bank_pelangggan">Bank Pelanggan</string>
 
     <string name="message_retry">Coba lagi ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
     <string name="bbstransaction_toast_not_registered">Belum terdaftar di komunitas %1$s</string>
     <string name="error_msg_googleplayservices">Aplikasi %1$s membutuhkan layanan Google Play, yang tidak didukung perangkat anda. Hubungi produsen untuk mendapatkan bantuan.</string>
     <string name="error_msg_rooteddevice">Aplikasi %1$s tidak mendukung perangkat yang sudah di root. Hubungi produsen untuk mendapatkan bantuan.</string>
+    <string name="error_msg_no_simcard">SIM Card tidak terdeteksi</string>
 
-    <string name="title_cashout_bank">Tarik Dana - Bank</string>
+    <string name="title_cashout_bank">Transfer ke Bank</string>
     <string name="cashout_validation_bank">Bank dibutuhkan!</string>
     <string name="title_cashout_agen">Tarik Dana - Agent</string>
     <string name="notif_max_resend_token_empty">Kesempatan kirim token baru sudah habis</string>
@@ -1108,4 +1115,8 @@
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
+
+    <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
+    <string name="email_validation">Validasi Email</string>
+    <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
 </resources>

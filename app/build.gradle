@@ -61,7 +61,7 @@ android {
             resValue "integer", "realBBScheme", "0"
             buildConfigField 'boolean', "isProdDomain", "false"
             buildConfigField 'String', "commCodeBBSATC", "\"EMOMSCADM\""
-            //buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
+//            buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile-dev.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "UrlMNotif", "\"http://192.168.88.116:8114/\""

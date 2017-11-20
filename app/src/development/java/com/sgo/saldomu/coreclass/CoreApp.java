@@ -2,8 +2,10 @@ package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
@@ -15,6 +17,7 @@ import com.facebook.stetho.Stetho;
 
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.communityModel;
 import com.sgo.saldomu.Beans.friendModel;
@@ -121,6 +124,31 @@ public class CoreApp extends Application {
         );
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
+
+        registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if(LifeCycleHandler.isApplicationVisible()) {
+                    if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
+                        if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
+                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                            SecurePreferences.Editor mEditor = prefs.edit();
+                            mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+                            mEditor.apply();
+                            Intent i = new Intent(CoreApp.this.getApplicationContext(), ErrorActivity.class);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                            i.putExtra(DefineValue.TYPE, ErrorActivity.SIM_CARD_ABSENT);
+                            CoreApp.this.startActivity(i);
+                        }
+                    }
+                }
+            }
+        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
     }
 
     private void deleteBundledRealmFile(String outFileName) {

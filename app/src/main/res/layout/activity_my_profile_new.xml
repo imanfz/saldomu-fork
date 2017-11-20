@@ -109,7 +109,14 @@
                     android:layout_marginTop="4dp"
                     android:inputType="textEmailAddress"
                     android:textSize="@dimen/abc_text_size_medium_material" />
-
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/myprofile_email_warning"
+                    android:textColor="@color/red"
+                    android:textStyle="italic"
+                    android:textSize="12sp"
+                    android:paddingBottom="10sp"/>
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
@@ -193,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:id="@+id/data_verified_member"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_marginRight="16dp"
                     android:layout_marginLeft="16dp">
                     <RelativeLayout
@@ -235,10 +242,17 @@
                             android:layout_marginRight="8dp"
                             />
                         <TextView
-                            android:id="@+id/tv_pb1_myprofileactivity"
+                            android:id="@+id/tv_respon_reject_ktp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tv_ktp_paspor_2"
+                            android:textColor="@color/red"
+                            android:gravity="left"/>
+                        <TextView
+                            android:id="@+id/tv_pb1_myprofileactivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_respon_reject_ktp"
                             android:textColor="@color/grey_1000b"
                             android:gravity="right"/>
                         <ProgressBar
@@ -295,6 +309,13 @@
                             android:layout_toRightOf="@+id/camera_selfie_ktp_paspor"
                             android:text="2. Pastikan wajah anda dan foto KTP anda terlihat jelas."
                             android:textColor="@color/grey_1000b" />
+                        <TextView
+                            android:id="@+id/tv_respon_reject_selfie"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_selfie_ktp_paspor_2"
+                            android:textColor="@color/red"
+                            android:gravity="left"/>
                         <TextView
                             android:id="@+id/tv_pb2_myprofileactivity"
                             android:layout_width="match_parent"
@@ -355,6 +376,13 @@
                             android:layout_toRightOf="@+id/camera_ttd"
                             android:text="2. Ambil foto kertas tersebut secara jelas."
                             android:textColor="@color/grey_1000b" />
+                        <TextView
+                            android:id="@+id/tv_respon_reject_ttd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tv_ttd_2"
+                            android:textColor="@color/red"
+                            android:gravity="left"/>
                         <TextView
                             android:id="@+id/tv_pb3_myprofileactivity"
                             android:layout_width="match_parent"

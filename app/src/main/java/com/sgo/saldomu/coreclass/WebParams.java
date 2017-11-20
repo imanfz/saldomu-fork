@@ -87,7 +87,7 @@ public class WebParams {
 
     public static String API_KEY = "api_key";
 
-    public static String USER_IS_NEW = "user_is_new";
+    public static String USER_IS_NEW = "is_new";
     public static String CONTACTS = "contacts";
 
     public static String BILLER_TYPE_DATA = "biller_type_data";
@@ -465,4 +465,7 @@ public class WebParams {
     public static String SMS_TOKEN = "sms_token";
     public static String FLAG_CHANGE_PWD = "flag_change_pwd";
     public static String FLAG_CHANGE_PIN = "flag_change_pin";
+    public static String FLAG_NEW_FLOW = "flag_new_flow";
+
+    public static String REGIS_FROM = "regis_from";
 }

@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.fragments.Login;
+import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.loader.UtilsLoader;
 
 import timber.log.Timber;
@@ -44,10 +47,28 @@ public class LoginActivity extends BaseActivity {
             }
 
 
-            Login login = new Login();
+            Fragment newFrag = new Login();
+
+            Bundle m = getIntent().getExtras();
+            if (m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+                if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
+                    newFrag = new Regist1();
+                    newFrag.setArguments(m);
+                } else if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")
+                        && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
+                    if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
+                        newFrag = new Regist1();
+
+                    } else if (m.getInt(DefineValue.USER_IS_NEW, 0) == -2) {
+                        newFrag = new Login();
+                    }
+                    newFrag.setArguments(m);
+                }
+            }
+
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.loginContent, login,"login");
+            fragmentTransaction.add(R.id.loginContent, newFrag,"login");
             fragmentTransaction.commit();
         }
     }

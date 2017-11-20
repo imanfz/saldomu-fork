@@ -163,7 +163,6 @@ public class MainPage extends BaseActivity{
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
             }else {
-
                 initializeDashboard(savedInstanceState);
             }
         }
@@ -182,6 +181,19 @@ public class MainPage extends BaseActivity{
         }
 
         if (!isLogin()) {
+            Bundle bundle = getIntent().getExtras();
+            if(bundle!=null) {
+                if(bundle.getString(DefineValue.MODEL_NOTIF) != null) {
+                    int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
+                    if (modelNotif==2)
+                    {
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
+                        mEditor.apply();
+                    }
+
+                }
+            }
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
             userID = sp.getString(DefineValue.USERID_PHONE, "");
@@ -220,8 +232,22 @@ public class MainPage extends BaseActivity{
 
                 FCMManager fcmManager = new FCMManager(this);
                 Intent intent = fcmManager.checkingAction(type, msgMap);
-                startActivity(intent);
+                if (intent!=null){
+                    startActivity(intent);
+                }
                 //this.finish();
+            } else
+            {
+                String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
+                if (!sp_model_notif.equals(""))
+                {
+                    if (sp_model_notif.equals("2"))
+                    {
+                        Intent i = new Intent(this, MyProfileNewActivity.class);
+                        startActivity(i);
+                    }
+                    sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
+                }
             }
         }
     }
@@ -544,14 +570,15 @@ public class MainPage extends BaseActivity{
                                 CheckNotification();
 
                                 String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
+
                                 if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
                                 {
                                     UserProfileHandler mBH = new UserProfileHandler(getApplication());
                                     mBH.sentUserProfile(new OnLoadDataListener() {
                                         @Override
                                         public void onSuccess(Object deData) {
+                                            if (progdialog.isShowing())
+                                                progdialog.dismiss();
                                             checkField();
                                         }
 
@@ -567,6 +594,8 @@ public class MainPage extends BaseActivity{
                                     }, is_new_bulk);
                                 }
                                 else {
+                                    if (progdialog.isShowing())
+                                        progdialog.dismiss();
                                     checkField();
                                 }
 
@@ -731,6 +760,7 @@ public class MainPage extends BaseActivity{
     private void checkField(){
         String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
         String dob = sp.getString(DefineValue.PROFILE_DOB, "");
+        Timber.d("is_have_pin" +sp.getString(DefineValue.IS_HAVE_PIN,""));
         if (dob.isEmpty() || bom_value.isEmpty()) {
             showMyProfile();
         }
@@ -740,9 +770,9 @@ public class MainPage extends BaseActivity{
         else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
         }
-        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
-            showValidasiEmail();
-        }
+//        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
+//            showValidasiEmail();
+//        }
     }
 
 

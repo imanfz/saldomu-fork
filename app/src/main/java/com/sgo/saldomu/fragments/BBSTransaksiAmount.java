@@ -135,7 +135,8 @@ public class BBSTransaksiAmount extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-        mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+        mCircleStepView.setTextBelowCircle(getString(R.string.informasi_pelanggan), "", "");
+//        mCircleStepView.setTextBelowCircle(getString(R.string.informasi_pelanggan), getString(R.string.informasi), getString(R.string.konfirmasi));
         mCircleStepView.setCurrentCircleIndex(0, false);
 
         tvTitle = (TextView) v.findViewById(R.id.tv_title);

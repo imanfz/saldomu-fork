@@ -30,6 +30,7 @@ public class DefineValue {
     public static String TOPUP_ACL_TYPE = "6";
     public static String CASHOUT_TUNAI_TYPE = "7";
     public static String YES = "1";
+    public static String Y = "Y";
     public static String NO = "0";
     public static String SUCCESS = "S";
     public static String ONRECONCILED = "OR";
@@ -453,6 +454,16 @@ public class DefineValue {
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
 
-
+    public static String CONTACTCENTER_NAME = "contactCenterName";
+    public static String CONTACTCENTER_PHONE = "contactCenterPhone";
+    public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
+    public static String DATA_REJECT_UPGRADE_MEMBER = "dataRejectUpgradeMember";
+    public static String REJECT_KTP = "rejectKtp";
+    public static String REJECT_FOTO = "rejectFoto";
+    public static String REJECT_TTD = "rejectTtd";
+    public static String REMARK_KTP = "remarkKtp";
+    public static String REMARK_FOTO = "remarkFoto";
+    public static String REMARK_TTD = "remarkTtd";
+    public static String MODEL_NOTIF = "model_notif";
 }
 

@@ -56,7 +56,7 @@ public class FragMainPage extends Fragment {
 //        mList.add(new Home());
         mList.add(new FragHomeNew());
         mList.add(new MyHistory());
-        mList.add(new TimeLine());
+//        mList.add(new TimeLine());
 //        mList.add(new Group());
 
         tabs = (TitlePageIndicator)getCurrentView().findViewById(R.id.main_tabs);
@@ -67,7 +67,7 @@ public class FragMainPage extends Fragment {
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
         pager.setCurrentItem(0);
-        pager.setOffscreenPageLimit(3);
+        pager.setOffscreenPageLimit(2);
 
         setCurrentAdapternya(adapternya);
 
