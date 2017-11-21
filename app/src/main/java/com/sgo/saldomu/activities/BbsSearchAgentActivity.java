@@ -270,6 +270,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     public void runningApp() {
 
+        menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
+        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(tabPageAdapter);
+
         if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
             currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
             currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
@@ -277,8 +283,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
             if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
-                currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
-                currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+                //currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+                //currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
 
                 SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                 SecurePreferences.Editor mEditor = prefs.edit();
@@ -290,11 +296,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             }
         }
 
-        menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
-        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(tabPageAdapter);
+
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -1109,6 +1111,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     JSONObject object = shops.getJSONObject(j);
                                     ShopDetail shopDetail = new ShopDetail();
 
+                                    shopDetail.setShopName(object.getString("shop_name"));
                                     shopDetail.setMemberCust(object.getString("member_cust"));
                                     shopDetail.setMemberId(object.getString("member_id"));
                                     shopDetail.setShopLatitude(object.getDouble("shop_latitude"));

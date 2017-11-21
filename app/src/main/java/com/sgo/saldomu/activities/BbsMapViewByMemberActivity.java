@@ -2,16 +2,21 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Log;
@@ -39,6 +44,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -56,14 +63,19 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+import static android.R.attr.lines;
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
@@ -80,8 +92,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
-    Boolean isFirstLoad = true, isRunning = false;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi;
+    Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
+    int distanceBetween = 0;
     String gcmId, emoMemberId;
     Button btnDone, btnCancel;
     ProgressDialog progdialog, progdialog2;
@@ -95,6 +108,11 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         @Override
         public void run() {
             isRunning = true;
+
+            if ( isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween ) {
+                showToast();
+            }
+
             updateLocationMember();
             handler.postDelayed(this, timeDelayed);
         }
@@ -122,6 +140,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
+        tvDurasi                = (TextView) findViewById(R.id.tvDurasi);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
         //btnDone                 = (Button) findViewById(R.id.btnDone);
         btnCancel               = (Button) findViewById(R.id.btnCancel);
@@ -146,8 +165,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
 
         //temporary only
-        agentLatitude           = -6.222699;
-        agentLongitude          = 106.653412;
+        agentLatitude           = null;
+        agentLongitude          = null;
 
         /*btnDone.setOnClickListener(
                 new View.OnClickListener() {
@@ -236,10 +255,13 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private void setMapCamera()
     {
-        if ( memberLatitude != 0 && memberLongitude != 0 ) {
+        if ( memberLatitude != 0 && memberLongitude != 0 && agentLatitude != null && agentLongitude != null ) {
             globalMap.clear();
 
             //new BbsMapNagivationActivity.GoogleMapRouteDirectionTask(targetLatitude, targetLongitude, currentLatitude, currentLongitude).execute();
+            new BbsMapViewByMemberActivity.GoogleMapRouteDirectionTask(memberLatitude, memberLongitude, agentLatitude, agentLongitude).execute();
+
+
             globalMap.getUiSettings().setMapToolbarEnabled(false);
 
             LatLng latLng = new LatLng(agentLatitude, agentLongitude);
@@ -292,12 +314,13 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     public void onLocationChanged(Location location) {
         lastLocation        = location;
 
-        if ( lastLocation.getLatitude() != memberLatitude )
-            memberLatitude      = lastLocation.getLatitude();
+        if ( lastLocation != null ) {
+            if (lastLocation.getLatitude() != memberLatitude)
+                memberLatitude = lastLocation.getLatitude();
 
-        if ( lastLocation.getLongitude() != memberLongitude )
-            memberLongitude     = lastLocation.getLongitude();
-
+            if (lastLocation.getLongitude() != memberLongitude)
+                memberLongitude = lastLocation.getLongitude();
+        }
         /*if ( progdialog != null ) {
             if ( progdialog.isShowing() ) progdialog.dismiss();
         }
@@ -469,6 +492,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         RequestParams params    = new RequestParams();
 
+        isInquiryRoute          = false;
 
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
@@ -510,7 +534,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         agentLongitude = response.getDouble(WebParams.SHOP_LONGITUDE);
                         cancelFee = String.valueOf(response.getDouble(WebParams.CANCEL_FEE));
 
-                        tvMemberName.setText(response.getString(WebParams.MEMBER_NAME));
+                        tvMemberName.setText(response.getString(WebParams.SHOP_NAME));
                         //tvShop.setText(response.getString(WebParams.SHOP_NAME));
                         tvCategoryName.setText(categoryName);
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
@@ -743,7 +767,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         if(id == android.R.id.home)
         {
             //kembali ke activity sebelumnya
-            onBackPressed();
+            disabledBackPressed();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -816,4 +841,204 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             e.printStackTrace();
         }
     }
+
+    private class GoogleMapRouteDirectionTask extends AsyncTask<Void, Void, Integer> {
+
+        private ArrayList<ShopDetail> dataDetails = new ArrayList<>();
+        private Double dataCurrentLatitude;
+        private Double dataCurrentLongitude;
+        private Double targetLatitude;
+        private Double targetLongitude;
+
+        public GoogleMapRouteDirectionTask(Double targetLatitude, Double targetLongitude, Double currentLatitude, Double currentLongitude)
+        {
+            this.targetLatitude = targetLatitude;
+            this.targetLongitude = targetLongitude;
+            dataCurrentLatitude = currentLatitude;
+            dataCurrentLongitude = currentLongitude;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+
+            /*if ( isTTSActive && !htmlDirections.equals("") ) {
+                //tvDirection.setText(Html.fromHtml(htmlDirections));
+                TextToSpeechFunction();
+            }*/
+            setPolyline();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            String nextParams = "origin="+dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString();
+            nextParams += "&sensor=false";
+            nextParams += "&units=metric";
+            nextParams += "&mode="+DefineValue.GMAP_MODE;
+            nextParams += "&language="+ Locale.getDefault().getLanguage();
+
+            RequestParams rqParams = new RequestParams();
+            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+            rqParams.put("sensor", "false");
+            rqParams.put("units", "metric");
+            rqParams.put("mode", DefineValue.GMAP_MODE);
+            rqParams.put("language", Locale.getDefault().getLanguage() );
+
+
+            String tempParams = nextParams;
+            tempParams += "&destination=" + targetLatitude.toString() + "," + targetLongitude.toString();
+
+            getGoogleMapRoute(tempParams, 0);
+            return null;
+        }
+
+    }
+
+    public void getGoogleMapRoute(String tempParams, final int idx) {
+        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Timber.w("Response google map route:" + response.toString());
+                try {
+
+                    JSONArray array = response.getJSONArray("routes");
+                    JSONObject routes = array.getJSONObject(0);
+                    JSONArray legs = routes.getJSONArray("legs");
+                    JSONObject steps = legs.getJSONObject(0);
+                    JSONObject distance = steps.getJSONObject("distance");
+                    JSONObject duration = steps.getJSONObject("duration");
+
+                    String parsedDistance = distance.getString("text");
+                    distanceBetween = distance.getInt("value");
+
+                    isInquiryRoute = true;
+                    /*if ( DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > iDistance ) {
+
+
+
+                    }*/
+
+                    String parseDuration =  duration.getString("text");
+
+                    tvDurasi.setText(parseDuration);
+
+                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                    String points = overviewPolyline.getString("points");
+
+                    //encodedPoints = points;
+
+                    JSONArray directions = steps.getJSONArray("steps");
+
+                    if ( directions.length() > 0 ) {
+                        JSONObject toDirection = directions.getJSONObject(0);
+                        //htmlDirections = toDirection.getString("html_instructions");
+
+                        /*JSONArray toDistanceArray = toDirection.getJSONArray("distance");
+                        JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
+                        String toDistanceString = toDistanceObject.getString("text");
+
+                        htmlDirections += " ( " + toDistanceString + " ) ";
+                        //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
+                        */
+                    }
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+
+                Timber.w("Error Koneksi login:" + throwable.toString());
+
+            }
+
+        });
+
+
+
+    }
+
+    public void setPolyline() {
+
+    }
+
+    private List<LatLng> decodePoly(String encoded) {
+        List<LatLng> poly = new ArrayList<LatLng>();
+        int index = 0, len = encoded.length();
+        int lat = 0, lng = 0;
+
+        while (index < len) {
+            int b, shift = 0, result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lat += dlat;
+
+            shift = 0;
+            result = 0;
+            do {
+                b = encoded.charAt(index++) - 63;
+                result |= (b & 0x1f) << shift;
+                shift += 5;
+            } while (b >= 0x20);
+            int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
+            lng += dlng;
+
+            LatLng p = new LatLng( (((double) lat / 1E5)),
+                    (((double) lng / 1E5) ));
+            poly.add(p);
+        }
+
+        return poly;
+    }
+
+    private void showToast() {
+        Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
+    }
+
+    private void disabledBackPressed() {
+        //kembali ke activity sebelumnya
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alert_message_disabled_member_cancel_backpressed))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        progdialog2              = DefinedDialog.CreateProgressDialog(BbsMapViewByMemberActivity.this, "");
+                        cancelTransactionMember();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.dismiss();
+                    }
+                })
+        ;
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+
 }

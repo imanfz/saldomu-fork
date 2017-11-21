@@ -182,119 +182,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
 
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params.put(WebParams.SHOP_PHONE, customerId);
-        params.put(WebParams.SHOP_REMARK, gcmId);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
-
-        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
-                try {
-
-                    String code = response.getString(WebParams.ERROR_CODE);
-
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        progdialog.dismiss();
-                        rlApproval.setVisibility(View.VISIBLE);
-
-                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                        shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
-                        shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
-                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                        shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
-                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
-                        shopDetail.setCommId(response.getString(WebParams.COMM_ID));
-
-                        shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
-                        shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
-                        shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
-                        shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
-                        shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
-                        shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
-
-                        shopDetails.add(shopDetail);
-
-                        tvCategoryName.setText(shopDetail.getCategoryName());
-                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
-                        //tvShop.setText(shopDetail.getShopName());
-                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
-                        tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
-                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
-                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
-
-
-
-                    } else {
-                        progdialog.dismiss();
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                        rlApproval.setVisibility(View.GONE);
-
-                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        getActivity().finish();
-
-                                    }
-                                });
-                        alertDialog.show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
 
 
         //rlApproval.setVisibility(View.VISIBLE);
@@ -701,7 +589,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
             if ( !GlobalSetting.isLocationEnabled(getContext()) ) {
                 showAlertEnabledGPS();
             } else {
-                //runningApp();
+                runningApp();
             }
         } else {
             // Do not have permissions, request them now
@@ -712,17 +600,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
 
 
-        if ( checkPlayServices() ) {
-            buildGoogleApiClient();
-            createLocationRequest();
-        }
 
-        try {
-            googleApiClient.connect();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -778,11 +656,142 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     }
 
     private void runningApp() {
-        Fragment frg = null;
+        if ( checkPlayServices() ) {
+            buildGoogleApiClient();
+            createLocationRequest();
+        }
+
+        try {
+            googleApiClient.connect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        /*Fragment frg = null;
         frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
         final FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.detach(frg);
         ft.attach(frg);
-        ft.commitAllowingStateLoss();
+        ft.commitAllowingStateLoss();*/
+
+        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
+        RequestParams params    = new RequestParams();
+
+        UUID rcUUID             = UUID.randomUUID();
+        String  dtime           = DateTimeFormat.getCurrentDateTime();
+
+        params.put(WebParams.RC_UUID, rcUUID);
+        params.put(WebParams.RC_DATETIME, dtime);
+        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params.put(WebParams.SHOP_PHONE, customerId);
+        params.put(WebParams.SHOP_REMARK, gcmId);
+
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
+
+        params.put(WebParams.SIGNATURE, signature);
+
+        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+
+                    String code = response.getString(WebParams.ERROR_CODE);
+
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                        progdialog.dismiss();
+                        rlApproval.setVisibility(View.VISIBLE);
+
+                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
+                        shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
+                        shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
+                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+                        shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
+                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
+                        shopDetail.setCommId(response.getString(WebParams.COMM_ID));
+
+                        shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
+                        shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
+                        shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
+                        shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
+                        shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
+                        shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
+
+                        shopDetails.add(shopDetail);
+
+                        tvCategoryName.setText(shopDetail.getCategoryName());
+                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
+                        //tvShop.setText(shopDetail.getShopName());
+                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
+
+                        if ( response.getString(WebParams.BBS_NOTE) != null ) {
+                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                        } else {
+                            tvBbsNote.setText("");
+                        }
+                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
+                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
+
+
+
+                    } else {
+                        progdialog.dismiss();
+                        code = response.getString(WebParams.ERROR_MESSAGE);
+                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                        rlApproval.setVisibility(View.GONE);
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        getActivity().finish();
+
+                                    }
+                                });
+                        alertDialog.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                progdialog.dismiss();
+                Timber.w("Error Koneksi getListTrxAgent:" + throwable.toString());
+
+            }
+
+        });
     }
 }

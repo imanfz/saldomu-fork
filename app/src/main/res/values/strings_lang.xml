@@ -802,7 +802,7 @@
     <string name="province">Propinsi</string>
     <string name="err_empty_merchant_address">Silakan isi dengan alamat</string>
     <string name="merchant">Merchant</string>
-    <string name="agent">Agent</string>
+    <string name="agent">Agen</string>
 
     <string name="setting_merchant">Kelola Merchant</string>
     <string name="setting_agent">Kelola Agent</string>
@@ -1116,6 +1116,11 @@
     <string name="amount_total_trx">Total Nominal Transaksi</string>
     <string name="history_trx">History Transaksi Member</string>
     <string name="alert_message_disabled_agent_approval_backpressed">Pastikan Anda sudah bertemu dengan pelanggan, setelah itu baru klik tombol "Tiba di Lokasi"</string>
+    <string name="alert_message_disabled_member_cancel_backpressed">Apakah Anda mau membatalkan transaksi ini? Jika ya, maka Anda akan dikenakan penalti atas pembatalan tersebut.</string>
     <string name="searching_onprogress_trx">Mencari Transaksi Dalam Proses</string>
     <string name="bbs_note_meeting_point">Catatan Lokasi Pertemuan</string>
+    <string name="bbs_shop">Toko</string>
+    <string name="bbs_you">Nasabah</string>
+    <string name="duration">Tiba dalam</string>
+    <string name="bbs_agent_almost_arrive">Agen hampir tiba di lokasi pertemuan.</string>
 </resources>

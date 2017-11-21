@@ -89,8 +89,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
-    Boolean isFirstLoad = true, isRunning = false;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi;
+    Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
+    int distanceBetween = 0;
     List<Polyline> lines;
     Polyline line;
     String encodedPoints = "";
@@ -106,6 +107,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         @Override
         public void run() {
             isRunning = true;
+
+            if ( isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween ) {
+                Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
+            }
+
             updateLocationAgent();
             handler.postDelayed(this, timeDelayed);
         }
@@ -140,6 +146,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
+        tvDurasi                = (TextView) findViewById(R.id.tvDurasi);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
 
         btnTibaDiLokasi         = (Button) findViewById(R.id.btnTibaLokasi);
@@ -440,7 +447,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         //temporary only
         //setMapCamera();
 
-
+        isInquiryRoute          = false;
 
         RequestParams params    = new RequestParams();
 
@@ -669,7 +676,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Error Koneksi login:" + response.toString());
+                Timber.w("Response google map route:" + response.toString());
                 try {
 
                     JSONArray array = response.getJSONArray("routes");
@@ -677,7 +684,19 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     JSONArray legs = routes.getJSONArray("legs");
                     JSONObject steps = legs.getJSONObject(0);
                     JSONObject distance = steps.getJSONObject("distance");
+                    JSONObject duration = steps.getJSONObject("duration");
+
+                    distanceBetween = distance.getInt("value");
+
+                    isInquiryRoute = true;
+
                     String parsedDistance = distance.getString("text");
+
+                    int iDistance = distance.getInt("value");
+
+                    String parseDuration =  duration.getString("text");
+
+                    tvDurasi.setText(parseDuration);
 
                     JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
                     String points = overviewPolyline.getString("points");

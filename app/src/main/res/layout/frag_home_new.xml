@@ -6,6 +6,7 @@
     android:background="@color/windowBackgroundColor">
 
     <LinearLayout
+        android:id="@+id/llAgentDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey_600"

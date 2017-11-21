@@ -458,5 +458,6 @@ public class DefineValue {
     public static final int MAX_RADIUS_SEARCH_AGENT = 10;
     public static final String BBS_COMPLETE_ADDRESS = "bbsCompleteAddress";
     public static final String NOTIF_DATA_NEXT_LOGIN = "NotifDataNextLogin";
+    public static final int MIN_DISTANCE_ALMOST_ARRIVE = 50;
 }
 

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,6 +65,7 @@ import io.realm.Realm;
 import timber.log.Timber;
 
 import static android.R.attr.action;
+import static com.sgo.saldomu.R.id.llBalanceDetail;
 import static com.sgo.saldomu.R.id.tvAgentDetailName;
 
 /**
@@ -95,6 +97,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataTKN;
     private Realm realm;
     private Switch swSettingOnline;
+    private LinearLayout llAgentDetail;
     ProgressDialog progdialog2;
     String shopStatus;
 
@@ -140,6 +143,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         GridHome=(GridView)v.findViewById(R.id.grid);
         tv_saldo = (TextView)v.findViewById(R.id.tv_saldo);
         swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
+        llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
         return v;
 
     }
@@ -199,6 +203,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
         else{
             TKN.setVisibility(View.GONE);
+        }
+
+        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            llAgentDetail.setVisibility(View.GONE);
+
+        } else {
+            if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                llAgentDetail.setVisibility(View.VISIBLE);
+            } else {
+                llAgentDetail.setVisibility(View.GONE);
+            }
+
         }
 
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
@@ -605,6 +621,19 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             String action = intent.getAction();
             if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+
+                if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+                    llAgentDetail.setVisibility(View.GONE);
+
+                } else {
+                    if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                        llAgentDetail.setVisibility(View.VISIBLE);
+                    } else {
+                        llAgentDetail.setVisibility(View.GONE);
+                    }
+
+                }
+
                 if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
 
                     swSettingOnline.setOnCheckedChangeListener(null);

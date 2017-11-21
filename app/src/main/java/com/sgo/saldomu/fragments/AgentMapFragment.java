@@ -93,8 +93,8 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private int agentPosition;
     private ImageView currentLocationBtn;
     private ImageView searchLocationBtn;
-    private LinearLayout searchLocationContainer;
-    private TextView pickupTextView;
+    private LinearLayout searchLocationContainer, llLegendAgent, llLegendShop, llLegendYou;
+    private TextView pickupTextView, tvAgent, tvShop, tvYou;
     private Double currentLatitude;
     private Double currentLongitude;
     private Marker lastCoordinateMarker;
@@ -150,6 +150,17 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
             mapFrag.getView().setVisibility(View.GONE);
+
+
+            llLegendAgent   = (LinearLayout) rootView.findViewById(R.id.llLegendAgent);
+            llLegendShop    = (LinearLayout) rootView.findViewById(R.id.llLegendShop);
+            llLegendYou     = (LinearLayout) rootView.findViewById(R.id.llLegendYou);
+
+            if ( this.mobility.equals(DefineValue.STRING_NO) ) {
+                llLegendAgent.setVisibility(View.GONE);
+            } else {
+                llLegendShop.setVisibility(View.GONE);
+            }
 
             //buildGoogleApiClient();
             //createLocationRequest();
@@ -481,7 +492,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
     private void setMapCamera()
     {
-        if ( currentLongitude != null && currentLatitude != null ) {
+        if ( currentLongitude != null && currentLatitude != null && globalMap != null ) {
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
             //jika radio button search location dichecked
@@ -517,7 +528,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void setSearchMarker()
     {
 
-        if (currentLatitude != null && currentLongitude != null) {
+        if (currentLatitude != null && currentLongitude != null && globalMap != null) {
 
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
