@@ -126,7 +126,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
                 String source = args.getString(DefineValue.DETAILS_BILLER, "");
                 Timber.d("isi source : \n", source);
-                if(!source.isEmpty()) {
+                if(!source.isEmpty() && !source.equalsIgnoreCase("")) {
                     source = source.replace("customer_id", getString(R.string.customer_id));
                     createTableDesc(source, mTableLayout,type);
                 }
