@@ -145,7 +145,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){
             Bundle m = getArguments();
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
-//                v.findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
+                v.findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
                 noHPValue.setEnabled(true);
             }
         }
