@@ -414,6 +414,7 @@ public class WebParams {
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
+    public static String BBS_NOTE = "note";
     public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
@@ -465,4 +466,9 @@ public class WebParams {
     public static String SMS_TOKEN = "sms_token";
     public static String FLAG_CHANGE_PWD = "flag_change_pwd";
     public static String FLAG_CHANGE_PIN = "flag_change_pin";
+
+    public static String CANCEL_FEE = "cancel_fee_amount";
+    public static String COUNT_TRX = "count_trx";
+    public static String TOTAL_TRX = "total_trx";
+    public static String INPROGRESS_CODE= "0099";
 }

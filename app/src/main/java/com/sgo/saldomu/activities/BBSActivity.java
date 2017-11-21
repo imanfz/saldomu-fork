@@ -28,6 +28,7 @@ import com.sgo.saldomu.fragments.FragBbsMyOrders;
 import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
+import com.sgo.saldomu.fragments.FragOnProgressAgent;
 import com.sgo.saldomu.fragments.FragSetttingKelola;
 import com.sgo.saldomu.fragments.FragTutupManual;
 import com.sgo.saldomu.fragments.FragWaktuBeroperasi;
@@ -54,6 +55,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSTUTUPMANUAL      = 9;
     public static final int BBSRATINGBYMEMBER   = 10;
     public static final int BBSMYORDERS         = 11;
+    public static final int BBSONPROGRESSAGENT  = 12;
 
 
     FragmentManager fragmentManager;
@@ -132,6 +134,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case BBSMYORDERS:
                     newFragment = new FragBbsMyOrders();
                     tag = FragBbsMyOrders.TAG;
+                    break;
+                case BBSONPROGRESSAGENT:
+                    newFragment = new FragOnProgressAgent();
+                    tag = FragOnProgressAgent.TAG;
                     break;
             }
 

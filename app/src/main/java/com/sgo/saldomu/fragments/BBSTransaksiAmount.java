@@ -184,7 +184,6 @@ public class BBSTransaksiAmount extends Fragment {
 
 
 
-
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
 
@@ -247,7 +246,9 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
-            if (cashInHistoryModel!=null)
+            if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
+            } else if (cashInHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
                 etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
@@ -256,7 +257,9 @@ public class BBSTransaksiAmount extends Fragment {
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
-            if (cashOutHistoryModel!=null)
+            if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
+            } else if (cashOutHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
                 etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());

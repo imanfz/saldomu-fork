@@ -1,62 +1,67 @@
 package com.sgo.saldomu.services;
 
-import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.firebase.jobdispatcher.JobParameters;
+import com.firebase.jobdispatcher.JobService;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.HashMessage;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.UUID;
+
+import timber.log.Timber;
 
 
 /**
  * Created by Lenovo on 05/04/2017.
  */
 
-public class UpdateLocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
+public class UpdateLocationService extends JobService implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
+    static public final String TAG = "UpdateLocationService";
     private Location mLastLocation;
 
     // Google client to interact with Google API
     private GoogleApiClient mGoogleApiClient;
 
-    // boolean flag to toggle periodic location updates
-    private boolean mRequestingLocationUpdates = true;
-
     private LocationRequest mLocationRequest;
 
     Double longitude, latitude;
+    SecurePreferences sp;
+    JobParameters jobLocation;
 
     @Override
-    public void onCreate()
-    {
-        super.onCreate();
-        //intent = new Intent(BROADCAST_ACTION);
-
-
+    public boolean onStartJob(JobParameters job) {
+        Timber.d("OnStartJob Location Service");
         if (checkPlayServices()) {
-
-            // Building the GoogleApi client
             buildGoogleApiClient();
-
             createLocationRequest();
         }
 
@@ -64,21 +69,40 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
             mGoogleApiClient.connect();
         }
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("UpdateLocationIntent"));
+        jobLocation = job;
+
+        return false;
     }
 
-
-    @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+    public boolean onStopJob(JobParameters job) {
+        Timber.d("OnStopJob Location Service");
+        return true;
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
+        Timber.d("Location Service onConnected Started");
+        //startLocationUpdate();
+
+        try {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+            if ( mLastLocation == null ){
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                Timber.d("Location Service Location Found" + mLastLocation.toString());
+
+                latitude  = mLastLocation.getLatitude();
+                longitude = mLastLocation.getLongitude();
+
+                updateLocation();
+                mGoogleApiClient.disconnect();
+                jobFinished(jobLocation, true);
+
+            }
+        } catch (SecurityException se) {
+            se.printStackTrace();
         }
     }
 
@@ -98,48 +122,16 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         // Assign the new location
         mLastLocation = location;
 
-        Log.d("LAST LONGITUDE", String.valueOf(mLastLocation.getLongitude()) );
-        Log.d("LAST LATITUDE", String.valueOf(mLastLocation.getLatitude()) );
+        Log.d("Location LAST LONGITUDE", String.valueOf(mLastLocation.getLongitude()) );
+        Log.d("Location LAST LATITUDE", String.valueOf(mLastLocation.getLatitude()) );
 
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
 
-        //Toast.makeText(getApplicationContext(),longitude.toString() + " -- " + latitude.toString(),Toast.LENGTH_LONG).show();
+        updateLocation();
 
-        /*
-        //Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-        Geocoder geocoder = new Geocoder(this, new Locale("id"));
-
-        List<Address> addresses = null;
-
-        try {
-            addresses = geocoder.getFromLocation(
-                    mLastLocation.getLatitude(),
-                    mLastLocation.getLongitude(),
-                    // In this sample, get just a single address.
-                    1);
-        } catch (IOException ioException) {
-            // Catch network or other I/O problems.
-            Log.d("IOEXCEPTION", "IO EXCEPTION", ioException);
-        } catch (IllegalArgumentException illegalArgumentException) {
-            Log.e("ILLEGAL", "ILLEGAL EXP" + ". " +
-                    "Latitude = " + mLastLocation.getLatitude() +
-                    ", Longitude = " +
-                    mLastLocation.getLongitude(), illegalArgumentException);
-        }
-
-
-        // Handle case where no address was found.
-        if (addresses == null || addresses.size()  == 0) {
-
-        } else {
-            Address address = addresses.get(0);
-
-            ArrayList<String> addressFragments = new ArrayList<String>();
-        }
-
-        updateLocationMessageToActivity();
-        */
+        mGoogleApiClient.disconnect();
+        jobFinished(jobLocation, true);
     }
 
     /**
@@ -182,67 +174,70 @@ public class UpdateLocationService extends Service implements GoogleApiClient.Co
         mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
     }
 
-    /**
-     * Starting the location updates
-     * */
-    protected void startLocationUpdates() {
+    private void updateLocation() {
+        RequestParams params    = new RequestParams();
+        UUID rcUUID             = UUID.randomUUID();
+        String  dtime           = DateTimeFormat.getCurrentDateTime();
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        SecurePreferences.Editor mEditor = sp.edit();
         try {
-            PendingResult<Status> statusPendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mGoogleApiClient, mLocationRequest, this);
-        } catch ( SecurityException se) {
-            se.printStackTrace();
+            mEditor.putDouble(DefineValue.LAST_CURRENT_LATITUDE, latitude);
+            mEditor.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, longitude);
+            mEditor.apply();
+        } catch( Exception e ) {
+            e.printStackTrace();
         }
+
+        params.put(WebParams.RC_UUID, rcUUID);
+        params.put(WebParams.RC_DATETIME, dtime);
+        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+        params.put(WebParams.LONGITUDE, longitude );
+        params.put(WebParams.LATITUDE, latitude );
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
+
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + String.valueOf(latitude)
+                + String.valueOf(longitude) + sp.getString(DefineValue.USERID_PHONE, "") ));
+
+        params.put(WebParams.SIGNATURE, signature);
+
+        MyApiClient.updateLocationService(getApplicationContext(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+                    String code = response.getString(WebParams.ERROR_CODE);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+
+                Timber.w("Error Koneksi Update Location Service:" + throwable.toString());
+
+            }
+
+        });
+
     }
 
-    /**
-     * Stopping location updates
-     */
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-    }
-
-    private void updateLocationMessageToActivity() {
-        //Intent intent = new Intent("UpdateLocationIntent");
-        //sendLocationBroadcast(intent);
-    }
-
-    private void sendLocationBroadcast(Intent intent){
-        intent.putExtra("latitude", latitude);
-        intent.putExtra("longitude", longitude);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            Double currentLatitude = intent.getDoubleExtra("latitude", 0);
-            Double currentLongitude = intent.getDoubleExtra("longitude", 0);
-
-
-
-            //TextView lblLocation = (TextView) findViewById(R.id.lblLocation);
-            //lblLocation.setText(currentLatitude + ", " + currentLongitude + ", "+ subAdminArea +  ", "+ adminArea + ", " + countryName);
-        }
-    };
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-    }
-
-    public final class Constants {
-        public static final int SUCCESS_RESULT = 0;
-        public static final int FAILURE_RESULT = 1;
-        public static final String PACKAGE_NAME =
-                "com.google.android.gms.location.sample.locationaddress";
-        public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
-        public static final String RESULT_DATA_KEY = PACKAGE_NAME +
-                ".RESULT_DATA_KEY";
-        public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
-                ".LOCATION_DATA_EXTRA";
-    }
 }
