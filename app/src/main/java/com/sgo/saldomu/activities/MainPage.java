@@ -761,14 +761,14 @@ public class MainPage extends BaseActivity{
         String bom_value = sp.getString(DefineValue.PROFILE_BOM, "");
         String dob = sp.getString(DefineValue.PROFILE_DOB, "");
         Timber.d("is_have_pin" +sp.getString(DefineValue.IS_HAVE_PIN,""));
-        if (dob.isEmpty() || bom_value.isEmpty()) {
-            showMyProfile();
-        }
-        else if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
+        if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
             showChangePassword();
         }
         else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
+        }
+        else  if (dob.isEmpty() || bom_value.isEmpty()) {
+            showMyProfile();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
 //            showValidasiEmail();

@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +79,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private Activity act;
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
+    RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
     EditText et_nama, et_noHp, et_email;
     private String userID;
     private String accessKey;
@@ -165,6 +167,9 @@ public class MyProfileNewActivity extends BaseActivity {
         assert v != null;
         dataMemberBasic = (LinearLayout) findViewById(R.id.data_member_basic);
         dataVerifiedMember = (LinearLayout) findViewById(R.id.data_verified_member);
+        layoutKTP = (RelativeLayout) findViewById(R.id.layout_foto_ktp);
+        layoutSelfie = (RelativeLayout) findViewById(R.id.layout_selfie);
+        layoutTTD = (RelativeLayout) findViewById(R.id.layout_ttd);
         pb1 = (ProgressBar) v.findViewById(R.id.pb1_myprofileactivity);
         pb2 = (ProgressBar) v.findViewById(R.id.pb2_myprofileactivity);
         pb3 = (ProgressBar) v.findViewById(R.id.pb3_myprofileactivity);
@@ -245,21 +250,27 @@ public class MyProfileNewActivity extends BaseActivity {
             btn1.setVisibility(View.GONE);
             dataVerifiedMember.setVisibility(View.VISIBLE);
             btn2.setVisibility(View.VISIBLE);
+
             if (reject_KTP.equals("Y"))
             {
                 cameraKTP.setEnabled(true);
                 tv_respon_reject_KTP.setText(respon_reject_ktp);
             }
+            else layoutKTP.setVisibility(View.GONE);
+
             if (reject_selfie.equals("Y"))
             {
                 selfieKTP.setEnabled(true);
                 tv_respon_reject_selfie.setText(respon_reject_selfie);
             }
+            else layoutSelfie.setVisibility(View.GONE);
+
             if (reject_ttd.equals("Y"))
             {
                 cameraTTD.setEnabled(true);
                 tv_respon_reject_ttd.setText(respon_reject_ttd);
             }
+            else layoutTTD.setVisibility(View.GONE);
         }
 
         initializeData();
@@ -326,58 +337,12 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     };
 
-    private void dialogUpgradeMember()
-    {
-        if (levelClass.isLevel1QAC()){
-            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
-            builder1.setTitle(R.string.upgrade_member);
-            builder1.setMessage(R.string.message_upgrade_member);
-            builder1.setCancelable(true);
-
-            builder1.setPositiveButton(
-                    "Yes",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            if(inputValidation())
-                            {
-                                sendDataUpdate();
-                                dataVerifiedMember.setVisibility(View.VISIBLE);
-                                et_nama.setEnabled(false);
-                                tv_dob.setEnabled(false);
-                                btn1.setVisibility(View.GONE);
-                            }
-
-                        }
-                    });
-
-            builder1.setNegativeButton(
-                    "No",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            if(inputValidation())
-                            {
-                                sendDataUpdate();
-                                tv_dob.setEnabled(false);
-                                Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        }
-                    });
-
-            android.support.v7.app.AlertDialog alert11 = builder1.create();
-            alert11.show();
-        }
-    }
-
     private Button.OnClickListener submitListener = new Button.OnClickListener()
     {
         @Override
         public void onClick(View v) {
             if(ValidationPhoto())
             {
-//                uploadFileToServer(ktp, 1);
-//                uploadFileToServer(selfie, 2);
-//                uploadFileToServer(ttd, 3);
                 sentExecCust();
             }
         }
@@ -488,14 +453,10 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void initializeData(){
-//        if(is_first_time) {
-//            RESULT = MainPage.RESULT_FIRST_TIME;
-//        }else
-//            RESULT = MainPage.RESULT_NORMAL;
-
         et_noHp.setText(sp.getString(DefineValue.CUST_ID,""));
         et_noHp.setEnabled(false);
         et_nama.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
+        et_nama.setEnabled(false);
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL,""));
         if(is_new_bulk.equals("Y"))
         {
@@ -529,7 +490,6 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
         Timber.d("isi is verified:"+String.valueOf(sp.getInt(DefineValue.PROFILE_VERIFIED, 0)) + " " + is_verified);
-//        if (levelClass.isLevel1QAC())changeVerified();
     }
 
     private void sendDataUpdate(){
@@ -705,8 +665,6 @@ public class MyProfileNewActivity extends BaseActivity {
             e.printStackTrace();
         }
         mEditor.apply();
-//        changeVerified();
-//        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
     }
 
     private boolean inputValidation(){
@@ -1114,29 +1072,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
-//                            if(response.optInt(WebParams.MEMBER_LEVEL, 1) == 2){
-//                                Toast.makeText(MyProfileNewActivity.this,getString(R.string.level_dialog_finish_message_auto),Toast.LENGTH_LONG).show();
-//                                FragFriendsViewDetail.successUpgrade = true;
-//                                MyProfileNewActivity.this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-//                                MyProfileNewActivity.this.finish();
-//                            }
-//                            else {
-
-//                                Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, getString(R.string.level_dialog_finish_title),
-//                                        getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-//                                                getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-//                                        new DefinedDialog.DialogButtonListener() {
-//                                            @Override
-//                                            public void onClickButton(View v, boolean isLongClick) {
-//                                                FragFriendsViewDetail.successUpgrade = true;
-//                                                MyProfileNewActivity.this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-//                                                MyProfileNewActivity.this.finish();
-//                                            }
-//                                        }
-//                                );
-//
-//                                dialognya.show();
-//                            }
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);

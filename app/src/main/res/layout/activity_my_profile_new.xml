@@ -205,7 +205,8 @@
                     android:layout_marginLeft="16dp">
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_foto_ktp">
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -270,7 +271,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_selfie">
 
                         <TextView
                             android:id="@+id/tv_selfie_ktp_paspor"
@@ -337,7 +339,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:id="@+id/layout_ttd">
 
                         <TextView
                             android:id="@+id/tv_ttd"
