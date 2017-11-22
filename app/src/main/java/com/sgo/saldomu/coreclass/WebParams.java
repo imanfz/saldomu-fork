@@ -87,7 +87,7 @@ public class WebParams {
 
     public static String API_KEY = "api_key";
 
-    public static String USER_IS_NEW = "is_new";
+    public static String USER_IS_NEW = "user_is_new";
     public static String CONTACTS = "contacts";
 
     public static String BILLER_TYPE_DATA = "biller_type_data";

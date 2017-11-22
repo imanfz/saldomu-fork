@@ -122,6 +122,13 @@
             android:text="*e.g.  hary@mail.com"
             android:textColor="@color/white"
             android:textStyle="italic" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="@string/myprofile_email_warning"
+            android:textColor="@color/yellow_200"
+            android:textStyle="italic" />
 
         <CheckBox
             android:id="@+id/cb_termsncondition"

@@ -12,13 +12,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,20 +28,17 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
-import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.FragFriendsViewDetail;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -60,8 +53,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -468,6 +459,9 @@ public class MyProfileNewActivity extends BaseActivity {
 
 
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
+        if (dedate.equals("")){
+            tv_dob.setEnabled(true);
+        }
 
         if(!dedate.equals("")){
             Calendar c = Calendar.getInstance();
@@ -577,7 +571,7 @@ public class MyProfileNewActivity extends BaseActivity {
                                                         setResult(MainPage.RESULT_FIRST_TIME);
                                                         finish();
                                                     }else
-                                                    closethis();
+                                                    finish();
                                                 }
                                             });
 

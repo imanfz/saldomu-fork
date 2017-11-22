@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -31,12 +30,10 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.securities.AES;
 
 import org.apache.http.Header;
@@ -391,7 +388,7 @@ public class Login extends Fragment implements View.OnClickListener {
             mEditor.putString(DefineValue.LIST_ID_TYPES,response.getString(WebParams.ID_TYPES));
 //            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
-//            mEditor.putString(DefineValue.IS_FIRST_TIME,response.getString(WebParams.USER_IS_NEW));
+            mEditor.putString(DefineValue.IS_FIRST,response.getString(WebParams.USER_IS_NEW));
             mEditor.putString(DefineValue.IS_CHANGED_PASS,response.optString(WebParams.CHANGE_PASS, ""));
 
             mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
