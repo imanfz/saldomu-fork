@@ -15,7 +15,6 @@ import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
 import java.net.URLEncoder;
@@ -556,19 +555,13 @@ public class MyApiClient {
         return encode.replace('+','-').replace('/','_');
     }
 
-    public SSLSocketFactory getSSLSocketFactory(){
+    public TLSSocketFactory getSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates
-            int bks_version;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                bks_version = R.raw.espayid; //The BKS file
-            } else {
-                bks_version = R.raw.espayidv1; //The BKS (v-1) file
-            }
-            InputStream in = getmContext().getResources().openRawResource(bks_version);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -578,10 +571,10 @@ public class MyApiClient {
             }
             // Pass the keystore to the SSLSocketFactory. The factory is responsible
             // for the verification of the server certificate.
-            SSLSocketFactory sf = new SSLSocketFactory(trusted);
+            TLSSocketFactory sf = new TLSSocketFactory(trusted);
             // Hostname verification from certificate
             // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
-            sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            sf.setHostnameVerifier(TLSSocketFactory.STRICT_HOSTNAME_VERIFIER);
             return sf;
         } catch (Exception e) {
             throw new AssertionError(e);
