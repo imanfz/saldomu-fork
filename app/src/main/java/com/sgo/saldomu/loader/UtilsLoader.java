@@ -64,7 +64,8 @@ public class UtilsLoader {
     public void getDataBalance(Boolean is_auto,final OnLoadDataListener mListener){
         try{
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
-            if(!member_id.isEmpty()) {
+            String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
+            if(!member_id.isEmpty() && !access_key.isEmpty()) {
                 RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
                         sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
                 params.put(WebParams.MEMBER_ID, member_id);
