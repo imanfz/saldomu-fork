@@ -102,7 +102,6 @@ public class DefineValue {
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
     public static String PULSA = "pulsa";
-//    public static String IS_FIRST_TIME = "isFirstTime";
     public static String IS_FIRST = "isFirst";
     public static String BANK_CHANNEL = "bankChannel";
     public static String CONTACT_FIRST_TIME = "contactFirstTime";

@@ -366,9 +366,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
                             }
                             else
                             {
-                                Intent i = new Intent(getActivity(), CreatePIN.class);
-                                i.putExtra(DefineValue.REGISTRATION, true);
-                                switchActivityPIN(i);
+                                showDialog(code);
                             }
                         } else {
                             Timber.d("isi error create pass:" + response.toString());
