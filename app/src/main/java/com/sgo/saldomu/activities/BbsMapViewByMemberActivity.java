@@ -76,6 +76,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static android.R.attr.lines;
+import static android.R.attr.value;
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
@@ -544,9 +545,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                     } else if ( code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
 
 
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
                         finish();
 
                     } else {
@@ -919,9 +917,15 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                     }*/
 
-                    String parseDuration =  duration.getString("text");
+                    final String parseDuration =  duration.getString("text");
 
-                    tvDurasi.setText(parseDuration);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvDurasi.setText(parseDuration);
+                        }
+                    });
+
 
                     JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
                     String points = overviewPolyline.getString("points");

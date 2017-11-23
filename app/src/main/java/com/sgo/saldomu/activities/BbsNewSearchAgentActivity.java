@@ -373,7 +373,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 this.getAddressByLatLng();
 
-                btnProses.setEnabled(true);
+                //btnProses.setEnabled(true);
 
 
                 mGoogleApiClient.disconnect();
