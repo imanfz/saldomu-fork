@@ -32,7 +32,6 @@ public class LoginActivity extends BaseActivity {
     public static final int ACTIVITY_RESULT = 3;
 
     private FragmentManager fragmentManager;
-    private Bundle bundleNextLogin = new Bundle();
     private SecurePreferences sp;
 
     @Override
@@ -47,8 +46,6 @@ public class LoginActivity extends BaseActivity {
             if (savedInstanceState != null) {
                 return;
             }
-
-            bundleNextLogin = getIntent().getExtras();
 
             sp = CustomSecurePref.getInstance().getmSecurePrefs();
             String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
@@ -65,9 +62,6 @@ public class LoginActivity extends BaseActivity {
             Login login = new Login();
             fragmentManager = getSupportFragmentManager();
             android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if ( bundleNextLogin != null ) {
-                login.setArguments(bundleNextLogin);
-            }
             fragmentTransaction.add(R.id.loginContent, login,"login");
             fragmentTransaction.commit();
         }
