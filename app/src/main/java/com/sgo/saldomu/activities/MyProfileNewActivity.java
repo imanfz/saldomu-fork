@@ -245,21 +245,21 @@ public class MyProfileNewActivity extends BaseActivity {
             if (reject_KTP.equals("Y"))
             {
                 cameraKTP.setEnabled(true);
-                tv_respon_reject_KTP.setText(respon_reject_ktp);
+                tv_respon_reject_KTP.setText("Alasan : " +respon_reject_ktp);
             }
             else layoutKTP.setVisibility(View.GONE);
 
             if (reject_selfie.equals("Y"))
             {
                 selfieKTP.setEnabled(true);
-                tv_respon_reject_selfie.setText(respon_reject_selfie);
+                tv_respon_reject_selfie.setText("Alasan : " +respon_reject_selfie);
             }
             else layoutSelfie.setVisibility(View.GONE);
 
             if (reject_ttd.equals("Y"))
             {
                 cameraTTD.setEnabled(true);
-                tv_respon_reject_ttd.setText(respon_reject_ttd);
+                tv_respon_reject_ttd.setText("Alasan : " +respon_reject_ttd);
             }
             else layoutTTD.setVisibility(View.GONE);
         }
@@ -730,21 +730,31 @@ public class MyProfileNewActivity extends BaseActivity {
 
     public Boolean ValidationPhoto()
     {
-        if(ktp==null)
+        if(layoutKTP.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
-            return false;
+            if(ktp==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
+                return false;
+            }
         }
-        else if(selfie==null)
+        if (layoutSelfie.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
-            return false;
+            if(selfie==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
+                return false;
+            }
         }
-        else if(ttd==null)
+        if (layoutTTD.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
-            return false;
+            if(ttd==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
+                return false;
+            }
         }
+
         return true;
     }
 
