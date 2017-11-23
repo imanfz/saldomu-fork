@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="@string/set_online"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_medium_material"
+            android:textSize="@dimen/text_size_menu_material"
             />
 
         <Switch

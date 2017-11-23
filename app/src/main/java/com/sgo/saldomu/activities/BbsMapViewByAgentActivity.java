@@ -89,7 +89,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvBbsNote;
     Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
     int distanceBetween = 0;
     List<Polyline> lines;
@@ -148,6 +148,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
         tvDurasi                = (TextView) findViewById(R.id.tvDurasi);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
+        tvBbsNote               = (TextView) findViewById(R.id.tvBbsNote);
 
         btnTibaDiLokasi         = (Button) findViewById(R.id.btnTibaLokasi);
 
@@ -495,6 +496,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
                         //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
+                        if ( response.getString(WebParams.BBS_NOTE) != null ) {
+                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                        } else {
+                            tvBbsNote.setText("");
+                        }
                         tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
                         if ( response.has(DefineValue.KEY_TX_STATUS) ) {

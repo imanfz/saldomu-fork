@@ -326,7 +326,8 @@ public class MainPage extends BaseActivity
                     i.putExtras(bundle);
                     break;
                 case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
-                    i = new Intent(this, BbsApprovalAgentActivity.class);
+                    i = new Intent(this, BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
                     i = new Intent(this, BbsSearchAgentActivity.class);
