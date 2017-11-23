@@ -36,7 +36,7 @@
     <string-array name="home_vpi_title">
         <item>BERANDA</item>
         <item>RIWAYAT</item>
-        <item>LINI WAKTU</item>
+        <!--<item>LINI WAKTU</item>-->
         <!--<item>GROUP</item>-->
     </string-array>
 

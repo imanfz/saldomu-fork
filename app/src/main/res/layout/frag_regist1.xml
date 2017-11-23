@@ -62,7 +62,8 @@
             android:textColor="@color/grey_1000w"
             android:textColorHint="@color/semi_white_transparant"
             android:textSize="@dimen/text_size_menu_material"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -120,6 +121,13 @@
             android:layout_gravity="right"
             android:text="*e.g.  hary@mail.com"
             android:textColor="@color/white"
+            android:textStyle="italic" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="@string/myprofile_email_warning"
+            android:textColor="@color/yellow_200"
             android:textStyle="italic" />
 
         <CheckBox

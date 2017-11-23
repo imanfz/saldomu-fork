@@ -73,7 +73,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-        mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+        mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi));
         mCircleStepView.setCurrentCircleIndex(2, false);
 
         TextView tvTitle = (TextView) v.findViewById(R.id.tv_title);

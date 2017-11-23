@@ -15,12 +15,11 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
-import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -147,8 +146,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             bundle.putInt("model_notif", modelNotif);
 
 
-
-
                 switch (modelNotif) {
                     case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
                         intent = new Intent(this, BbsMemberLocationActivity.class);
@@ -216,7 +213,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                             mEditor.apply();
                         }
-
                         break;
                     case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
                         intent = new Intent(this, BbsSearchAgentActivity.class);
@@ -263,7 +259,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             }
 
                         }
-
                         break;
                     case FCMManager.AGENT_LOCATION_SHOP_REJECT_TRANSACTION:
                         intent = new Intent(this, MainPage.class);
@@ -281,8 +276,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             SecurePreferences.Editor mEditor = sp.edit();
                             mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                             mEditor.apply();
-
-
                         }
                         break;
                     case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
@@ -307,8 +300,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             SecurePreferences.Editor mEditor = sp.edit();
                             mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                             mEditor.apply();
-
-
                         }
                         break;
                     case FCMManager.SHOP_ACCEPT_TRX:
@@ -347,7 +338,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         }
 
-
                         break;
                     case FCMManager.SHOP_NOTIF_TRANSACTION:
 
@@ -379,9 +369,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     SecurePreferences.Editor mEditor = sp.edit();
                                     mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                     mEditor.apply();
-
                                 } else {
-
                                     stackBuilder.addParentStack(BBSActivity.class);
                                     stackBuilder.addNextIntent(intent);
 
@@ -445,10 +433,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                     mEditor.apply();
 
                                 } else {
-
                                     stackBuilder.addParentStack(BBSActivity.class);
                                     stackBuilder.addNextIntent(intent);
-
                                     contentIntent =
                                             stackBuilder.getPendingIntent(
                                                     1,
@@ -458,6 +444,48 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             } catch (JSONException e) {
                                 Timber.d("JSONException: " + e.getMessage());
                             }
+                        }
+                        break;
+                    case FCMManager.REJECT_UPGRADE_MEMBER:
+
+                        if (msg.containsKey("options") && msg.getString("options") != null) {
+                            try {
+                                JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                                Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
+                                String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
+                                String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
+                                String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
+                                String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
+                                String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
+                                String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
+
+                                sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
+                                sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
+                                sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
+                                sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
+                                sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
+                                sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
+                                sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
+                                sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
+
+                                intent = new Intent(this, MyProfileNewActivity.class);
+
+                                stackBuilder.addParentStack(MyProfileNewActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+
+                            }
+                            catch (JSONException e)
+                            {
+                                Timber.d("JSONException: " + e.getMessage());
+                            }
+
+
                         }
                         break;
                     default:
@@ -495,61 +523,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                     break;
             }
-
-
-//            case 3:
-//                backIntent = new Intent(getApplicationContext(),
-//                        CustomeWebView.class);
-//
-//                backIntent.putExtras(msg);
-//                // The stack builder object will contain an artificial back stack
-//                // for the
-//                // started Activity.
-//                // This ensures that navigating backward from the Activity leads out
-//                // of
-//                // your application to the Home screen.
-//                stackBuilder = TaskStackBuilder.create(this);
-//                // Adds the back stack for the Intent (but not the Intent itself)
-//                // stackBuilder.addParentStack(AppUpdate.class);
-//                // Adds the Intent that starts the Activity to the top of the stack
-//                stackBuilder.addNextIntent(backIntent);
-//                pendingIntent = stackBuilder.getPendingIntent(num,
-//                        PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//
-//                break;
-//
-//            case 4:
-//                backIntent = new Intent(getApplicationContext(),
-//                        MainActivity.class);
-//
-//                // The stack builder object will contain an artificial back stack
-//                // for the
-//                // started Activity.
-//                // This ensures that navigating backward from the Activity leads out
-//                // of
-//                // your application to the Home screen.
-//                stackBuilder = TaskStackBuilder.create(this);
-//                // Adds the back stack for the Intent (but not the Intent itself)
-//                // stackBuilder.addParentStack(AppUpdate.class);
-//                // Adds the Intent that starts the Activity to the top of the stack
-//                stackBuilder.addNextIntent(backIntent);
-//                pendingIntent = stackBuilder.getPendingIntent(num,
-//                        PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//
-//                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-//                db.addContact(
-//                        new News(msg.getString("title"), msg.getString("msg"),
-//                                msg.getString("link"), msg.getString("image")),
-//                        DatabaseHandler.TABLE_NEWS);
-//
-//                Intent intent_notify = new Intent(FCMActivity.NEW_NOTIFICATION);
-//                intent_notify.putExtra("DUMMY","MUST");
-//                sendBroadcast(intent_notify);
-//                break;
-//            default:
-//                break;
         }
 
 

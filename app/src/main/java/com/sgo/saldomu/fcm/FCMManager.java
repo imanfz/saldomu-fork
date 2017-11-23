@@ -1,22 +1,20 @@
 package com.sgo.saldomu.fcm;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -44,6 +42,7 @@ public class FCMManager {
     public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION      = 1005;
     public final static int SHOP_ACCEPT_TRX                         = 1006;
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
+    public final static int REJECT_UPGRADE_MEMBER                   = 2;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -317,6 +316,36 @@ public class FCMManager {
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
+                        }
+                    }
+                    break;
+                case FCMManager.REJECT_UPGRADE_MEMBER:
+                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            Integer isRegisteredLevel = jsonOptions.getJSONObject(0).getInt("is_registered");
+                            String reject_ktp = jsonOptions.getJSONObject(0).getString("reject_ktp");
+                            String reject_foto = jsonOptions.getJSONObject(0).getString("reject_foto");
+                            String reject_ttd = jsonOptions.getJSONObject(0).getString("reject_ttd");
+                            String remark_ktp = jsonOptions.getJSONObject(0).getString("remark_ktp");
+                            String remark_foto = jsonOptions.getJSONObject(0).getString("remark_foto");
+                            String remark_ttd = jsonOptions.getJSONObject(0).getString("remark_ttd");
+
+                            sp.edit().putInt(DefineValue.IS_REGISTERED_LEVEL,isRegisteredLevel).apply();
+                            sp.edit().putString(DefineValue.REJECT_KTP,reject_ktp).apply();
+                            sp.edit().putString(DefineValue.REJECT_FOTO,reject_foto).apply();
+                            sp.edit().putString(DefineValue.REJECT_TTD,reject_ttd).apply();
+                            sp.edit().putString(DefineValue.REMARK_KTP,remark_ktp).apply();
+                            sp.edit().putString(DefineValue.REMARK_FOTO,remark_foto).apply();
+                            sp.edit().putString(DefineValue.REMARK_TTD,remark_ttd).apply();
+                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_MEMBER, jsonOptions.toString()).apply();
+
+                            i = new Intent(mContext, MyProfileNewActivity.class);
+                        }
+                        catch (JSONException e)
+                        {
+                            Timber.d("JSONException: " + e.getMessage());
                         }
                     }
                     break;

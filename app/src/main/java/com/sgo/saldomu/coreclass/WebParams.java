@@ -471,4 +471,7 @@ public class WebParams {
     public static String COUNT_TRX = "count_trx";
     public static String TOTAL_TRX = "total_trx";
     public static String INPROGRESS_CODE= "0099";
+    public static String FLAG_NEW_FLOW = "flag_new_flow";
+
+    public static String REGIS_FROM = "regis_from";
 }

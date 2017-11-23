@@ -12,39 +12,33 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.text.Layout;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
-import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.FragFriendsViewDetail;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -59,8 +53,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -76,8 +68,9 @@ import timber.log.Timber;
 public class MyProfileNewActivity extends BaseActivity {
     private SecurePreferences sp;
     private Activity act;
-    TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member;
+    TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
+    RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
     EditText et_nama, et_noHp, et_email;
     private String userID;
     private String accessKey;
@@ -110,6 +103,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
+    private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie, respon_reject_ttd;
     private ProgressDialog progdialog;
 
     @Override
@@ -126,9 +120,17 @@ public class MyProfileNewActivity extends BaseActivity {
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Intent intent    = getIntent();
-        if(intent.hasExtra(DefineValue.IS_FIRST))
-            is_first_time  = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+        if(intent.hasExtra(DefineValue.IS_FIRST)) {
+            is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
+        }
 
+        is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
+        reject_KTP = sp.getString(DefineValue.REJECT_KTP,"N");
+        reject_selfie = sp.getString(DefineValue.REJECT_FOTO,"N");
+        reject_ttd = sp.getString(DefineValue.REJECT_TTD,"N");
+        respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP,"");
+        respon_reject_selfie = sp.getString(DefineValue.REMARK_FOTO,"");
+        respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD,"");
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
 
@@ -156,6 +158,9 @@ public class MyProfileNewActivity extends BaseActivity {
         assert v != null;
         dataMemberBasic = (LinearLayout) findViewById(R.id.data_member_basic);
         dataVerifiedMember = (LinearLayout) findViewById(R.id.data_verified_member);
+        layoutKTP = (RelativeLayout) findViewById(R.id.layout_foto_ktp);
+        layoutSelfie = (RelativeLayout) findViewById(R.id.layout_selfie);
+        layoutTTD = (RelativeLayout) findViewById(R.id.layout_ttd);
         pb1 = (ProgressBar) v.findViewById(R.id.pb1_myprofileactivity);
         pb2 = (ProgressBar) v.findViewById(R.id.pb2_myprofileactivity);
         pb3 = (ProgressBar) v.findViewById(R.id.pb3_myprofileactivity);
@@ -164,6 +169,9 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_pb3 = (TextView) v.findViewById(R.id.tv_pb3_myprofileactivity);
         tv_dob = (TextView) v.findViewById(R.id.myprofile_value_dob);
         tv_verified_member = (TextView) v.findViewById(R.id.group_title2);
+        tv_respon_reject_KTP = (TextView) v.findViewById(R.id.tv_respon_reject_ktp);
+        tv_respon_reject_selfie = (TextView) v.findViewById(R.id.tv_respon_reject_selfie);
+        tv_respon_reject_ttd = (TextView) v.findViewById(R.id.tv_respon_reject_ttd);
         et_noHp = (EditText) v.findViewById(R.id.myprofile_value_hp);
         et_nama = (EditText) v.findViewById(R.id.myprofile_value_name);
         et_email = (EditText) v.findViewById(R.id.myprofile_value_email);
@@ -178,9 +186,16 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
+
         if(!is_first_time)
         {
             tv_dob.setEnabled(false);
+        }
+
+        if(levelClass.isLevel1QAC())
+        {
+            btn1.setVisibility(View.VISIBLE);
+            dataVerifiedMember.setVisibility(View.GONE);
         }
 
         if(!levelClass.isLevel1QAC())
@@ -220,12 +235,41 @@ public class MyProfileNewActivity extends BaseActivity {
                 c.get(Calendar.DAY_OF_MONTH)
         );
 
+        if(reject_KTP.equals("Y") || reject_selfie.equals("Y") || reject_ttd.equals("Y")) {
+            et_nama.setEnabled(false);
+            tv_dob.setEnabled(false);
+            btn1.setVisibility(View.GONE);
+            dataVerifiedMember.setVisibility(View.VISIBLE);
+            btn2.setVisibility(View.VISIBLE);
+
+            if (reject_KTP.equals("Y"))
+            {
+                cameraKTP.setEnabled(true);
+                tv_respon_reject_KTP.setText("Alasan : " +respon_reject_ktp);
+            }
+            else layoutKTP.setVisibility(View.GONE);
+
+            if (reject_selfie.equals("Y"))
+            {
+                selfieKTP.setEnabled(true);
+                tv_respon_reject_selfie.setText("Alasan : " +respon_reject_selfie);
+            }
+            else layoutSelfie.setVisibility(View.GONE);
+
+            if (reject_ttd.equals("Y"))
+            {
+                cameraTTD.setEnabled(true);
+                tv_respon_reject_ttd.setText("Alasan : " +respon_reject_ttd);
+            }
+            else layoutTTD.setVisibility(View.GONE);
+        }
+
         initializeData();
 
-        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
-        {
-            dialogUpgradeMember();
-        }
+//        if(et_noHp!=null && et_nama!=null && et_email!=null && tv_dob!=null && !isRegisteredLevel)
+//        {
+//            dialogUpgradeMember();
+//        }
 
     }
 
@@ -278,52 +322,11 @@ public class MyProfileNewActivity extends BaseActivity {
     {
         @Override
         public void onClick(View v) {
-            dialogUpgradeMember();
+            if (inputValidation()){
+                sendDataUpdate();
+            }
         }
     };
-
-    private void dialogUpgradeMember()
-    {
-        if (levelClass.isLevel1QAC()){
-            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
-            builder1.setTitle(R.string.upgrade_member);
-            builder1.setMessage(R.string.message_upgrade_member);
-            builder1.setCancelable(true);
-
-            builder1.setPositiveButton(
-                    "Yes",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            if(inputValidation())
-                            {
-                                sendDataUpdate();
-                                dataVerifiedMember.setVisibility(View.VISIBLE);
-                                et_nama.setEnabled(false);
-                                tv_dob.setEnabled(false);
-                                btn1.setVisibility(View.GONE);
-                            }
-
-                        }
-                    });
-
-            builder1.setNegativeButton(
-                    "No",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            if(inputValidation())
-                            {
-                                sendDataUpdate();
-                                tv_dob.setEnabled(false);
-                                Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        }
-                    });
-
-            android.support.v7.app.AlertDialog alert11 = builder1.create();
-            alert11.show();
-        }
-    }
 
     private Button.OnClickListener submitListener = new Button.OnClickListener()
     {
@@ -331,9 +334,6 @@ public class MyProfileNewActivity extends BaseActivity {
         public void onClick(View v) {
             if(ValidationPhoto())
             {
-//                uploadFileToServer(ktp, 1);
-//                uploadFileToServer(selfie, 2);
-//                uploadFileToServer(ttd, 3);
                 sentExecCust();
             }
         }
@@ -444,16 +444,24 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     private void initializeData(){
-
-        RESULT = MainPage.RESULT_NORMAL;
-
         et_noHp.setText(sp.getString(DefineValue.CUST_ID,""));
         et_noHp.setEnabled(false);
         et_nama.setText(sp.getString(DefineValue.PROFILE_FULL_NAME, ""));
+        et_nama.setEnabled(false);
         et_email.setText(sp.getString(DefineValue.PROFILE_EMAIL,""));
-        et_email.setEnabled(false);
+        if(is_new_bulk.equals("Y"))
+        {
+            et_email.setEnabled(true);
+        }else
+        {
+            et_email.setEnabled(false);
+        }
+
 
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
+        if (dedate.equals("")){
+            tv_dob.setEnabled(true);
+        }
 
         if(!dedate.equals("")){
             Calendar c = Calendar.getInstance();
@@ -476,11 +484,14 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         is_verified = sp.getInt(DefineValue.PROFILE_VERIFIED, 0) == 1;
         Timber.d("isi is verified:"+String.valueOf(sp.getInt(DefineValue.PROFILE_VERIFIED, 0)) + " " + is_verified);
-//        if (levelClass.isLevel1QAC())changeVerified();
     }
 
     private void sendDataUpdate(){
         try{
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(MyProfileNewActivity.this, "");
+            else
+                progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
                     userID,accessKey);
@@ -525,11 +536,48 @@ public class MyProfileNewActivity extends BaseActivity {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                             setLoginProfile(response);
+                            Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
-                            if(is_first_time) {
-                            RESULT = MainPage.RESULT_FIRST_TIME;
-                            }
+                            if (levelClass.isLevel1QAC()){
+                                    android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+                                    builder1.setTitle(R.string.upgrade_member);
+                                    builder1.setMessage(R.string.message_upgrade_member);
+                                    builder1.setCancelable(true);
+
+                                    builder1.setPositiveButton(
+                                            "Yes",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dataVerifiedMember.setVisibility(View.VISIBLE);
+                                                    et_nama.setEnabled(false);
+                                                    tv_dob.setEnabled(false);
+                                                    btn1.setVisibility(View.GONE);
+                                                    if(is_first_time) {
+                                                        setResult(MainPage.RESULT_FIRST_TIME);
+                                                    }
+                                                }
+                                            });
+
+                                    builder1.setNegativeButton(
+                                            "No",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    tv_dob.setEnabled(false);
+                                                    if(is_first_time) {
+                                                        RESULT = MainPage.RESULT_FIRST_TIME;
+                                                        setResult(MainPage.RESULT_FIRST_TIME);
+                                                        finish();
+                                                    }else
+                                                    finish();
+                                                }
+                                            });
+
+                                    android.support.v7.app.AlertDialog alert11 = builder1.create();
+                                    alert11.show();
+                                }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
@@ -571,6 +619,8 @@ public class MyProfileNewActivity extends BaseActivity {
                         Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
                     Timber.w("Error Koneksi data update myprofile:"+ throwable.toString());
                 }
             });
@@ -581,7 +631,10 @@ public class MyProfileNewActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(!is_first_time) {
+        if(is_first_time) {
+            RESULT = MainPage.RESULT_FIRST_TIME;
+        }
+        else {
             RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
             closethis();
         }
@@ -595,6 +648,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
             mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
             mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
+            mEditor.putString(DefineValue.PROFILE_BOM, response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
@@ -605,8 +659,6 @@ public class MyProfileNewActivity extends BaseActivity {
             e.printStackTrace();
         }
         mEditor.apply();
-//        changeVerified();
-//        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
     }
 
     private boolean inputValidation(){
@@ -678,21 +730,31 @@ public class MyProfileNewActivity extends BaseActivity {
 
     public Boolean ValidationPhoto()
     {
-        if(ktp==null)
+        if(layoutKTP.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
-            return false;
+            if(ktp==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto KTP tidak boleh kosong!");
+                return false;
+            }
         }
-        else if(selfie==null)
+        if (layoutSelfie.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
-            return false;
+            if(selfie==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Selfie dengan KTP tidak boleh kosong!");
+                return false;
+            }
         }
-        else if(ttd==null)
+        if (layoutTTD.getVisibility()==View.VISIBLE)
         {
-            DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
-            return false;
+            if(ttd==null)
+            {
+                DefinedDialog.showErrorDialog(MyProfileNewActivity.this, "Foto Tanda Tangan tidak boleh kosong!");
+                return false;
+            }
         }
+
         return true;
     }
 
@@ -798,6 +860,9 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_pb1.setVisibility(View.VISIBLE);
         tv_pb2.setVisibility(View.VISIBLE);
         tv_pb3.setVisibility(View.VISIBLE);
+        tv_respon_reject_KTP.setVisibility(View.GONE);
+        tv_respon_reject_selfie.setVisibility(View.GONE);
+        tv_respon_reject_ttd.setVisibility(View.GONE);
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
                 userID,accessKey);
@@ -817,23 +882,30 @@ public class MyProfileNewActivity extends BaseActivity {
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
                 super.onProgress(bytesWritten, totalSize);
+                Timber.d("sebelum proses uploadKTP " +bytesWritten);
+                Timber.d("sebelum proses uploadKTP " +totalSize);
                 proses = (int) (100 * bytesWritten / totalSize);
-                if(flag==1)
+                if(proses < 100 || proses == 100)
                 {
+                    if(flag==1)
+                    {
+                        Timber.d("sebelum proses uploadKTP " +proses);
+                        pb1.setProgress((int) (100 * bytesWritten / totalSize));
+                        Timber.d("proses uploadKTP " +proses);
+                        tv_pb1.setText(proses + "%");
+                    }
+                    else if(flag==2)
+                    {
+                        pb2.setProgress((int) (100 * bytesWritten / totalSize));
+                        tv_pb2.setText(proses + "%");
+                    }
+                    else if(flag==3)
+                    {
+                        pb3.setProgress((int) (100 * bytesWritten / totalSize));
+                        tv_pb3.setText(proses + "%");
+                    }
+                }
 
-                    pb1.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb1.setText(proses + "%");
-                }
-                else if(flag==2)
-                {
-                    pb2.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb2.setText(proses + "%");
-                }
-                else if(flag==3)
-                {
-                    pb3.setProgress((int) (100 * bytesWritten / totalSize));
-                    tv_pb3.setText(proses + "%");
-                }
             }
 
             @Override
@@ -842,18 +914,12 @@ public class MyProfileNewActivity extends BaseActivity {
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
                     if (error_code.equalsIgnoreCase("0000")) {
-                        SecurePreferences.Editor mEditor = sp.edit();
+
                         Timber.d("onsuccess upload foto type: " + flag);
-                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
-                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
-                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
-                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
-                        mEditor.apply();
-//
-//                        Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_foto_success),Toast.LENGTH_SHORT).show();
                         Timber.d("isi response Upload Foto:"+ response.toString());
 
                     } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+
                         Timber.d("isi response autologout:" + response.toString());
                         String message = response.getString(WebParams.ERROR_MESSAGE);
 
@@ -989,6 +1055,13 @@ public class MyProfileNewActivity extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             SecurePreferences.Editor mEdit = sp.edit();
 //                            int member_level = sp.getInt(DefineValue.LEVEL_VALUE,1);
+                            mEdit.remove(DefineValue.REJECT_KTP);
+                            mEdit.remove(DefineValue.REJECT_FOTO);
+                            mEdit.remove(DefineValue.REJECT_TTD);
+                            mEdit.remove(DefineValue.REMARK_KTP);
+                            mEdit.remove(DefineValue.REMARK_FOTO);
+                            mEdit.remove(DefineValue.REMARK_TTD);
+                            mEdit.remove(DefineValue.MODEL_NOTIF);
                             mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
                             mEdit.putString(DefineValue.PROFILE_DOB, tv_dob.getText().toString());
                             mEdit.putString(DefineValue.PROFILE_FULL_NAME,et_nama.getText().toString());
@@ -1003,29 +1076,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
-//                            if(response.optInt(WebParams.MEMBER_LEVEL, 1) == 2){
-//                                Toast.makeText(MyProfileNewActivity.this,getString(R.string.level_dialog_finish_message_auto),Toast.LENGTH_LONG).show();
-//                                FragFriendsViewDetail.successUpgrade = true;
-//                                MyProfileNewActivity.this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-//                                MyProfileNewActivity.this.finish();
-//                            }
-//                            else {
-
-//                                Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, getString(R.string.level_dialog_finish_title),
-//                                        getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
-//                                                getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
-//                                        new DefinedDialog.DialogButtonListener() {
-//                                            @Override
-//                                            public void onClickButton(View v, boolean isLongClick) {
-//                                                FragFriendsViewDetail.successUpgrade = true;
-//                                                MyProfileNewActivity.this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-//                                                MyProfileNewActivity.this.finish();
-//                                            }
-//                                        }
-//                                );
-//
-//                                dialognya.show();
-//                            }
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);

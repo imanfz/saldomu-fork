@@ -227,7 +227,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             }
 
             CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-            mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+            mCircleStepView.setTextBelowCircle("", getString(R.string.informasi), "");
             mCircleStepView.setCurrentCircleIndex(1, false);
 
             tvTitle = (TextView) v.findViewById(R.id.tv_title);
