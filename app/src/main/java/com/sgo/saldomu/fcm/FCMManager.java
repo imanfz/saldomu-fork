@@ -17,6 +17,7 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
@@ -49,6 +50,8 @@ public class FCMManager {
 
     private Bundle bundleNextLogin  = new Bundle();
     private Context mContext;
+    private SecurePreferences sp;
+    private BundleToJSON bundleToJSON = new BundleToJSON();
 
     public FCMManager(Context context){
         this.mContext = context;
@@ -83,6 +86,12 @@ public class FCMManager {
         Intent i = null;
         Timber.d("isi index type "+ String.valueOf(type));
 
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
         Bundle msg = new Bundle();
         for (String key : data.keySet()) {
             Timber.e(key, data.get(key));
@@ -114,6 +123,14 @@ public class FCMManager {
                             bundleNextLogin.putString("category", "");
                             bundleNextLogin.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
                             i.putExtras(bundleNextLogin);
+
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
+
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
                         }
@@ -126,6 +143,13 @@ public class FCMManager {
                     i = new Intent(mContext, BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
 
+                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
+
+                    }
 
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
@@ -151,6 +175,12 @@ public class FCMManager {
 
                             i.putExtras(bundleNextLogin);
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -172,6 +202,12 @@ public class FCMManager {
                     i = new Intent(mContext, BBSActivity.class);
                     i.putExtras(bundleNextLogin);
 
+                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
+                    }
 
                     break;
                 case FCMManager.SHOP_ACCEPT_TRX:
@@ -187,6 +223,12 @@ public class FCMManager {
 
                             i.putExtras(bundleNextLogin);
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -223,6 +265,12 @@ public class FCMManager {
                             i.putExtras(bundleNextLogin);
 
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
                         }
@@ -260,7 +308,12 @@ public class FCMManager {
                             i = new Intent(mContext, BBSActivity.class);
                             i.putExtras(bundleNextLogin);
 
-
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());

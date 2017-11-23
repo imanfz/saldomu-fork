@@ -136,7 +136,6 @@ public class MainPage extends BaseActivity
 
     private boolean isLocationPermissionGranted = false;
     public static final int RC_LOCATION_PERM    = 500;
-    private Bundle bundleNextLogin = new Bundle();
     private BundleToJSON bundleToJSON = new BundleToJSON();
 
     @Override
@@ -200,7 +199,6 @@ public class MainPage extends BaseActivity
 
             FCMManager fcmManager = new FCMManager(this);
             Intent intent = fcmManager.checkingAction(type);
-            bundleNextLogin = fcmManager.getBundleNextLogin();
             startActivity(intent);
         } else if (checkNotificationAction() ) {
             int type = Integer.valueOf(getIntent().getExtras().getString("type"));
@@ -217,18 +215,6 @@ public class MainPage extends BaseActivity
 
             FCMManager fcmManager = new FCMManager(this);
             Intent intent = fcmManager.checkingAction(type, msgMap);
-            bundleNextLogin = fcmManager.getBundleNextLogin();
-        } else {
-            bundleNextLogin = getIntent().getExtras();
-        }
-
-        if ( bundleNextLogin != null ) {
-            String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-            if ( !bundleToJSONString.equals("") ) {
-                SecurePreferences.Editor mEditor = sp.edit();
-                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                mEditor.apply();
-            }
         }
 
         if (!isLogin()) {
@@ -268,18 +254,18 @@ public class MainPage extends BaseActivity
 
                 FCMManager fcmManager = new FCMManager(this);
                 Intent intent = fcmManager.checkingAction(type, msgMap);
-                bundleNextLogin = fcmManager.getBundleNextLogin();
                 startActivity(intent);
                 //this.finish();
             }
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
             if ( !notifDataNextLogin.equals("") ) {
-                changeActivityNextLogin(notifDataNextLogin);
-
                 SecurePreferences.Editor mEditor = sp.edit();
                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,"");
                 mEditor.apply();
+
+                changeActivityNextLogin(notifDataNextLogin);
+
             }
 
 
@@ -922,8 +908,6 @@ public class MainPage extends BaseActivity
                 i = new Intent(this,LoginActivity.class);
                 break;
         }
-        if ( bundleNextLogin != null)
-            i.putExtras(bundleNextLogin);
         startActivity(i);
         this.finish();
     }

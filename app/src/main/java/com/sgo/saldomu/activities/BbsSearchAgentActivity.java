@@ -270,16 +270,18 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     public void runningApp() {
 
+        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+        }
+
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
         tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
 
-        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
-            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
-            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
-        }
+
 
         if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
             if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {

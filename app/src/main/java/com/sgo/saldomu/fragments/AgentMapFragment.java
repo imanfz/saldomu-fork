@@ -149,8 +149,8 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             getDataSharedPreferences();
 
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
-            mapFrag.getView().setVisibility(View.GONE);
-
+            //mapFrag.getView().setVisibility(View.GONE);
+            mapFrag.getMapAsync(this);
 
             llLegendAgent   = (LinearLayout) rootView.findViewById(R.id.llLegendAgent);
             llLegendShop    = (LinearLayout) rootView.findViewById(R.id.llLegendShop);
@@ -398,8 +398,8 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
 
         }
-        rootView.findViewById(R.id.agentMap).setVisibility(View.VISIBLE);
-        mapFrag.getMapAsync(this);
+        //mapFrag.getView().setVisibility(View.VISIBLE);
+        //mapFrag.getMapAsync(this);
 
     }
 
@@ -492,7 +492,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
     private void setMapCamera()
     {
-        if ( currentLongitude != null && currentLatitude != null && globalMap != null ) {
+        if ( currentLongitude != null && currentLatitude != null ) {
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
             //jika radio button search location dichecked
@@ -719,7 +719,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
         try {
             ArrayList<Double> tempCoordinate = ((BbsSearchAgentActivity) getActivity()).getCurrentCoordinate();
-
+            displayMap();
             if (tempCoordinate.size() > 0) {
                 this.currentLatitude = tempCoordinate.get(0);
                 this.currentLongitude = tempCoordinate.get(1);
@@ -739,12 +739,12 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
                 this.shopDetails.addAll(shopDetails);
 
-                displayMap();
+
                 //process();
             } else {
 
                 if ( currentLatitude != null && currentLongitude != null ) {
-                    displayMap();
+
                     setMapCamera();
                     setSearchMarker();
                 }
