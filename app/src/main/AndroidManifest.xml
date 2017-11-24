@@ -72,7 +72,8 @@
             android:name=".activities.LoginActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activities.ListATM"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -228,7 +229,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.BbsMerchantCategoryActivity"
             android:configChanges="orientation"
@@ -244,22 +244,19 @@
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
         <activity
             android:name=".activities.BbsSearchAgentActivity"
-            android:parentActivityName=".activities.MainPage"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
-
         <activity
             android:name=".activities.ValidasiEmailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity android:name=".activities.BbsSearchByLocationActivity" />
         <activity android:name=".activities.BbsMemberShopActivity" />
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
@@ -268,29 +265,28 @@
         <activity android:name=".activities.BbsMapNagivationActivity" />
         <activity
             android:name=".activities.BBSActivity"
-            android:parentActivityName=".activities.MainPage"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BBSRegAccountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.BbsApprovalAgentActivity"
-            android:parentActivityName=".activities.MainPage"
+        <activity
+            android:name=".activities.BbsApprovalAgentActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BbsMapViewByAgentActivity"
@@ -300,8 +296,7 @@
             android:theme="@style/Theme.MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BbsMapViewByMemberActivity"
@@ -311,14 +306,14 @@
             android:theme="@style/Theme.MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
-            </activity>
+                android:value=".activities.MainPage" />
+        </activity>
         <activity
             android:name=".activities.TutorialActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity
             android:name=".activities.MyProfileNewActivity"
             android:configChanges="orientation"
@@ -333,12 +328,13 @@
 
         <service
             android:name=".services.AgentShopService"
-            android:exported="false"/>
-        <activity android:name=".activities.ErrorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ErrorActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
             android:name=".services.BalanceService"
@@ -348,9 +344,6 @@
             android:exported="false" />
         <service
             android:name=".services.UserProfileService"
-            android:exported="false" />
-        <service
-            android:name=".services.UpdateLocationService"
             android:exported="false" />
         <service
             android:name=".services.UpdateBBSCity"
@@ -373,6 +366,13 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+        <service
+            android:name=".services.UpdateLocationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
         <service android:name=".fcm.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
@@ -383,6 +383,17 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".activities.BbsNewSearchAgentActivity"
+            android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage" />
+        </activity>
 
     </application>
 

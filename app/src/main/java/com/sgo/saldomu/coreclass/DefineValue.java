@@ -164,7 +164,7 @@ public class DefineValue {
     public static String COUNT = "10";
     public static String TIMELINE_FIRST_TIME = "timelineFirstTime";
     public static String DETAIL = "detail";
-    public static String TYPE = "type";
+    public static String TYPE = "bbs_trx_type";
     public static String DESCRIPTION = "description";
     public static String REMARK = "remark";
     public static String AUTHENTICATION_TYPE = "authenticationType";
@@ -316,9 +316,9 @@ public class DefineValue {
     public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
-    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
-    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
-    public static int AGENT_DISPLACEMENT                            = 20; //30meter
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 1; //30meter
 
     public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
     public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
@@ -366,6 +366,7 @@ public class DefineValue {
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
     public static String BBS_AGENT_MOBILITY                     = "mobility";
     public static String IS_AUTOSEARCH                          = "isAutoSearch";
+    public static String BBS_NOTE                               = "bbsNote";
 
     public static String TX_ID2             = "tx_id";
     public static String KEY_CODE           = "key_code";
@@ -453,6 +454,11 @@ public class DefineValue {
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
 
+    public static final int RC_LOCATION_PERMISSION = 500;
+    public static final int MAX_RADIUS_SEARCH_AGENT = 10;
+    public static final String BBS_COMPLETE_ADDRESS = "bbsCompleteAddress";
+    public static final String NOTIF_DATA_NEXT_LOGIN = "NotifDataNextLogin";
+    public static final int MIN_DISTANCE_ALMOST_ARRIVE = 50;
     public static String CONTACTCENTER_NAME = "contactCenterName";
     public static String CONTACTCENTER_PHONE = "contactCenterPhone";
     public static String CONTACTCENTER_EMAIL = "contactCenterEmail";

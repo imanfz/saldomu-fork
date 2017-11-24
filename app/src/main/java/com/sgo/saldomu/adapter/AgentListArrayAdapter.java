@@ -148,7 +148,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         }*/
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
-            agentName = shopDetail.getMemberName();
+            agentName = shopDetail.getShopName();
             agentAddress = shopDetail.getShopAddress();
             agentDistance = shopDetail.getCalculatedDistance();
 
@@ -165,29 +165,6 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
 
             }
         }
-
-        /*try
-        {
-            //convert json array to json object
-            JSONObject object = agentLocation.getJSONObject(position);
-
-            //get value from session
-            if(!object.isNull("name"))     agentName       = object.getString("name");
-            if(!object.isNull("date"))     agentLastOnline = object.getString("date");
-            if(!object.isNull("address"))  agentAddress    = object.getString("address");
-            if(!object.isNull("image"))    agentProfilePic = object.getString("image");
-            if(!object.isNull("rate"))    agentRate = object.getString("rate");
-            if(!object.isNull("distance")) agentDistance   = object.getString("distance");
-            if(!object.isNull("available_flag")) agentAvailable   = object.getString("available_flag");
-            if(!object.isNull("services")) agentServiceList   = object.getString("services");
-
-            //modification data
-            //agentProfilePic = "http://192.168.43.206/public/images/" + agentProfilePic;
-            //agentProfilePic = "http://192.168.0.100/public/images/" + agentProfilePic;
-        }
-        catch (JSONException ex) {
-            ex.printStackTrace();
-        }*/
 
         //attach all data to view holder
         viewHolder.agentName.setText(agentName);

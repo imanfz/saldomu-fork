@@ -1,12 +1,20 @@
 package com.sgo.saldomu.coreclass;
 
+import android.Manifest;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.*;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fragments.ClosedTypePickerFragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 /*
   Created by Administrator on 11/24/2014.
@@ -18,7 +26,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,12 +42,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         isActive = true;
+
+
     }
 
     @Override

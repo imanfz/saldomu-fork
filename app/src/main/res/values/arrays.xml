@@ -225,6 +225,7 @@
         <item>@string/cash_in</item>
         <item>@string/cash_out</item>
         <item>@string/menu_item_title_trx_agent</item>
+        <item>@string/menu_item_title_onprogress_agent</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_not_agent">
         <item>@string/menu_item_search_agent_cta</item>
@@ -242,6 +243,7 @@
         <item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item>
+        <item>@drawable/ic_location_on_black</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_not_agent">
         <item>@drawable/ic_location_on_black</item>
@@ -266,4 +268,5 @@
         <!-- item>@string/setup_agent_open_hour</item -->
         <item>@string/setup_tutup_manual</item>
     </string-array>
+    
 </resources>

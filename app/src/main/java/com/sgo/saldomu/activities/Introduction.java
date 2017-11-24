@@ -40,7 +40,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
     }
-
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
         if(InetHandler.isNetworkAvailable(this))
@@ -80,7 +79,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             });
         }
 
-        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS};
+        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+                Manifest.permission.ACCESS_FINE_LOCATION};
 
         if (EasyPermissions.hasPermissions(this, perms)) {
             InitializeSmsClass();
@@ -197,7 +197,6 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         startActivity(i);
         this.finish();
     }
-
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {

@@ -17,8 +17,10 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,14 +89,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
-    Boolean isFirstLoad = true, isRunning = false;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvBbsNote;
+    Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
+    int distanceBetween = 0;
     List<Polyline> lines;
     Polyline line;
     String encodedPoints = "";
     String htmlDirections   = "";
     //TextToSpeech textToSpeech;
     Boolean isTTSActive = true;
+    Button btnTibaDiLokasi;
     private int timeDelayed = 30000;
 
     // Init
@@ -103,6 +107,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         @Override
         public void run() {
             isRunning = true;
+
+            if ( isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween ) {
+                Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
+            }
+
             updateLocationAgent();
             handler.postDelayed(this, timeDelayed);
         }
@@ -137,8 +146,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
+        tvDurasi                = (TextView) findViewById(R.id.tvDurasi);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
+        tvBbsNote               = (TextView) findViewById(R.id.tvBbsNote);
 
+        btnTibaDiLokasi         = (Button) findViewById(R.id.btnTibaLokasi);
 
         shopDetail              = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
@@ -175,6 +187,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         TextView t = (TextView) findViewById(R.id.name);
         t.setText(Html.fromHtml(getString(R.string.bbs_trx_detail_agent)));
+
+        btnTibaDiLokasi.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        progdialog2              = DefinedDialog.CreateProgressDialog(BbsMapViewByAgentActivity.this, "");
+
+                        confirmTransactionByAgent();
+                    }
+                }
+        );
     }
 
     @Override
@@ -266,11 +288,15 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         agentLatitude   = lastLocation.getLatitude();
         agentLongitude  = lastLocation.getLongitude();
 
+        /*if ( progdialog != null ) {
+            if ( progdialog.isShowing() ) progdialog.dismiss();
+        }
+
         if ( !isRunning ) {
             handler.removeCallbacks(runnable2);
             updateLocationAgent();
             handler.postDelayed(runnable2, timeDelayed);
-        }
+        }*/
     }
 
     @Override
@@ -378,7 +404,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 agentLongitude    = lastLocation.getLongitude();
 
                 Timber.d("Location Found" + lastLocation.toString());
-
+                updateLocationAgent();
             }
         } catch (SecurityException se) {
             se.printStackTrace();
@@ -422,7 +448,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         //temporary only
         //setMapCamera();
 
-
+        isInquiryRoute          = false;
 
         RequestParams params    = new RequestParams();
 
@@ -450,7 +476,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         MyApiClient.updateLocationAgent(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+                if ( progdialog.isShowing())
+                    progdialog.dismiss();
 
                 try {
                     isRunning = false;
@@ -469,6 +496,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         //shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
                         //shopDetail.setCcyId(response.getString(DefineValue.KEY_CCY));
 
+                        if ( response.getString(WebParams.BBS_NOTE) != null ) {
+                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                        } else {
+                            tvBbsNote.setText("");
+                        }
                         tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
                         if ( response.has(DefineValue.KEY_TX_STATUS) ) {
@@ -510,7 +542,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                             handler.postDelayed(runnable2, timeDelayed);
                         }
                     } else {
-                        progdialog.dismiss();
+                        if ( progdialog.isShowing())
+                            progdialog.dismiss();
+
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
@@ -541,7 +575,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 else
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                progdialog.dismiss();
+                if ( progdialog.isShowing() )
+                    progdialog.dismiss();
+
                 isRunning = false;
                 Timber.w("Error Koneksi login:" + throwable.toString());
 
@@ -572,10 +608,11 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         if(id == android.R.id.home)
         {
             //kembali ke activity sebelumnya
-            onBackPressed();
+            disabledBackPressed();
+
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     /*@Override
@@ -645,7 +682,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Error Koneksi login:" + response.toString());
+                Timber.w("Response google map route:" + response.toString());
                 try {
 
                     JSONArray array = response.getJSONArray("routes");
@@ -653,7 +690,19 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                     JSONArray legs = routes.getJSONArray("legs");
                     JSONObject steps = legs.getJSONObject(0);
                     JSONObject distance = steps.getJSONObject("distance");
+                    JSONObject duration = steps.getJSONObject("duration");
+
+                    distanceBetween = distance.getInt("value");
+
+                    isInquiryRoute = true;
+
                     String parsedDistance = distance.getString("text");
+
+                    int iDistance = distance.getInt("value");
+
+                    String parseDuration =  duration.getString("text");
+
+                    tvDurasi.setText(parseDuration);
 
                     JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
                     String points = overviewPolyline.getString("points");
@@ -824,4 +873,162 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         }
     }
 
+    private void confirmTransactionByAgent() {
+
+        RequestParams params = new RequestParams();
+        UUID rcUUID = UUID.randomUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+
+        params.put(WebParams.RC_UUID, rcUUID);
+        params.put(WebParams.RC_DATETIME, dtime);
+        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params.put(WebParams.TX_ID, txId);
+        params.put(WebParams.KEY_VALUE, "");
+        params.put(WebParams.SHOP_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+
+        params.put(WebParams.SIGNATURE, signature);
+
+        MyApiClient.confirmTransactionByAgent(getApplicationContext(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                try {
+                    if ( progdialog2.isShowing() )
+                        progdialog2.dismiss();
+
+                    String code = response.getString(WebParams.ERROR_CODE);
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                        benefLatitude = response.getDouble(WebParams.KEY_LATITUDE);
+                        benefLongitude = response.getDouble(WebParams.KEY_LONGITUDE);
+
+                        shopDetail.setKeyCode(response.getString(DefineValue.KEY_CODE));
+                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+
+                        tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
+
+                        if ( response.has(DefineValue.KEY_TX_STATUS) ) {
+                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
+
+                                handler.removeCallbacks(runnable2);
+
+                                Bundle bundle = new Bundle();
+                                bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                                if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.CTA)) {
+                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                } else if (response.getString(DefineValue.CATEGORY_SCHEME_CODE).equals(DefineValue.ATC)) {
+                                    bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                }
+
+                                bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
+                                bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+
+                                Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                finish();
+
+                            } else if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.TX_STATUS_RJ)) {
+                                Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                                startActivity(intent);
+                                finish();
+                            }
+
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+
+                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    handler.removeCallbacks(runnable2);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
+
+            private void ifFailure(Throwable throwable) {
+                //llHeaderProgress.setVisibility(View.GONE);
+                //pbHeaderProgress.setVisibility(View.GONE);
+                if ( progdialog2.isShowing() )
+                    progdialog2.dismiss();
+
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                Timber.w("Error Koneksi login:" + throwable.toString());
+
+            }
+
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        disabledBackPressed();
+
+        return;
+    }
+
+    private void disabledBackPressed() {
+        //kembali ke activity sebelumnya
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alert_message_disabled_agent_approval_backpressed))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.dismiss();
+                    }
+                })
+        ;
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            super.onKeyDown(keyCode, event);
+            return true;
+        }
+        return false;
+
+    }
 }

@@ -58,6 +58,7 @@ public class Login extends Fragment implements View.OnClickListener {
     private Animation frameAnimation;
 //    private MaterialRippleLayout btnLayout;
     private View v;
+    private Bundle argsBundleNextLogin = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +70,8 @@ public class Login extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        argsBundleNextLogin = getArguments();
 
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
@@ -101,6 +104,8 @@ public class Login extends Fragment implements View.OnClickListener {
             }
             userIDValue.setEnabled(true);
         }
+
+
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
 //        String deviceModel = new DeviceUtils(getActivity()).getDeviceModelID();
@@ -316,6 +321,9 @@ public class Login extends Fragment implements View.OnClickListener {
 
     private void changeActivity() {
         Intent i = new Intent(getActivity(),MainPage.class);
+        if ( argsBundleNextLogin != null )
+            i.putExtras(argsBundleNextLogin);
+
         startActivity(i);
         getActivity().finish();
 

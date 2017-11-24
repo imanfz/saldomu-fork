@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -32,6 +34,7 @@ public class LoginActivity extends BaseActivity {
     public static final int ACTIVITY_RESULT = 3;
 
     private FragmentManager fragmentManager;
+    private SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,17 @@ public class LoginActivity extends BaseActivity {
         if (findViewById(R.id.loginContent) != null) {
             if (savedInstanceState != null) {
                 return;
+            }
+
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+            String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+            if ( flagLogin == null )
+                flagLogin = DefineValue.STRING_NO;
+
+            if ( flagLogin.equals(DefineValue.STRING_YES) ) {
+                Intent i = new Intent(this,MainPage.class);
+                startActivity(i);
+                finish();
             }
 
 

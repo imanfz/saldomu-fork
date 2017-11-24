@@ -1,23 +1,21 @@
 package com.sgo.saldomu.fcm;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
@@ -48,9 +46,11 @@ public class FCMManager {
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
-    private SecurePreferences sp;
 
+    private Bundle bundleNextLogin  = new Bundle();
     private Context mContext;
+    private SecurePreferences sp;
+    private BundleToJSON bundleToJSON = new BundleToJSON();
 
     public FCMManager(Context context){
         this.mContext = context;
@@ -72,6 +72,10 @@ public class FCMManager {
         FirebaseMessaging.getInstance().unsubscribeFromTopic(AGENT_TOPIC);
     }
 
+    public Bundle getBundleNextLogin() {
+        return bundleNextLogin;
+    }
+
     public static void subscribeAll(){
         Timber.d("Subscribe All");
         FirebaseMessaging.getInstance().subscribeToTopic(ALL_TOPIC);
@@ -80,6 +84,12 @@ public class FCMManager {
     public Intent checkingAction(int type, Map<String, String> data){
         Intent i = null;
         Timber.d("isi index type "+ String.valueOf(type));
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
 
         Bundle msg = new Bundle();
         for (String key : data.keySet()) {
@@ -90,7 +100,7 @@ public class FCMManager {
         if ( msg.containsKey("model_notif") && msg.getString("model_notif") != null ) {
 
             int modelNotif = Integer.parseInt(msg.getString("model_notif"));
-            Bundle bundle = new Bundle();
+            bundleNextLogin.putInt("model_notif", modelNotif);
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
@@ -99,19 +109,27 @@ public class FCMManager {
                         try {
                             JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
 
-                            bundle.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
-                            bundle.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
-                            bundle.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
-                            bundle.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
-                            bundle.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
-                            bundle.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
+                            bundleNextLogin.putString("memberId", jsonOptions.getJSONObject(0).getString("member_id"));
+                            bundleNextLogin.putString("shopId", jsonOptions.getJSONObject(0).getString("shop_id"));
+                            bundleNextLogin.putString("shopName", jsonOptions.getJSONObject(0).getString("shop_name"));
+                            bundleNextLogin.putString("memberType", jsonOptions.getJSONObject(0).getString("member_type"));
+                            bundleNextLogin.putString("memberName", jsonOptions.getJSONObject(0).getString("member_name"));
+                            bundleNextLogin.putString("commName", jsonOptions.getJSONObject(0).getString("comm_name"));
 
-                            bundle.putString("province", jsonOptions.getJSONObject(0).getString("province"));
-                            bundle.putString("district", jsonOptions.getJSONObject(0).getString("district"));
-                            bundle.putString("address", jsonOptions.getJSONObject(0).getString("address"));
-                            bundle.putString("category", "");
-                            bundle.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
-                            i.putExtras(bundle);
+                            bundleNextLogin.putString("province", jsonOptions.getJSONObject(0).getString("province"));
+                            bundleNextLogin.putString("district", jsonOptions.getJSONObject(0).getString("district"));
+                            bundleNextLogin.putString("address", jsonOptions.getJSONObject(0).getString("address"));
+                            bundleNextLogin.putString("category", "");
+                            bundleNextLogin.putString("isMobility", jsonOptions.getJSONObject(0).getString("is_mobility"));
+                            i.putExtras(bundleNextLogin);
+
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
+
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
                         }
@@ -120,8 +138,17 @@ public class FCMManager {
 
                     break;
                 case FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT:
-                    i = new Intent(mContext, BbsApprovalAgentActivity.class);
 
+                    i = new Intent(mContext, BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
+
+                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
+
+                    }
 
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
@@ -137,16 +164,22 @@ public class FCMManager {
                             Double benefLatitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_latitude"));
                             Double benefLongitude    = Double.valueOf(jsonOptions.getJSONObject(0).getString("benef_longitude"));
 
-                            bundle.putString(DefineValue.CATEGORY_ID, categoryId);
-                            bundle.putString(DefineValue.CATEGORY_NAME, categoryName);
-                            bundle.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                            bundle.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
-                            bundle.putDouble(DefineValue.LAST_CURRENT_LATITUDE, benefLatitude);
-                            bundle.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, benefLongitude);
+                            bundleNextLogin.putString(DefineValue.CATEGORY_ID, categoryId);
+                            bundleNextLogin.putString(DefineValue.CATEGORY_NAME, categoryName);
+                            bundleNextLogin.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                            bundleNextLogin.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundleNextLogin.putString(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                            bundleNextLogin.putDouble(DefineValue.LAST_CURRENT_LATITUDE, benefLatitude);
+                            bundleNextLogin.putDouble(DefineValue.LAST_CURRENT_LONGITUDE, benefLongitude);
 
-                            i.putExtras(bundle);
+                            i.putExtras(bundleNextLogin);
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -163,11 +196,17 @@ public class FCMManager {
                 case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
 
 
-                    bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
 
                     i = new Intent(mContext, BBSActivity.class);
-                    i.putExtras(bundle);
+                    i.putExtras(bundleNextLogin);
 
+                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
+                    }
 
                     break;
                 case FCMManager.SHOP_ACCEPT_TRX:
@@ -177,12 +216,18 @@ public class FCMManager {
                         try {
                             JSONArray jsonOptions   = new JSONArray(msg.getString("options"));
 
-                            bundle.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
-                            bundle.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
-                            bundle.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
+                            bundleNextLogin.putString(DefineValue.BBS_TX_ID, jsonOptions.getJSONObject(0).getString("tx_id"));
+                            bundleNextLogin.putString(DefineValue.CATEGORY_NAME, jsonOptions.getJSONObject(0).getString("category_name"));
+                            bundleNextLogin.putString(DefineValue.AMOUNT, jsonOptions.getJSONObject(0).getString("amount"));
 
-                            i.putExtras(bundle);
+                            i.putExtras(bundleNextLogin);
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -205,20 +250,26 @@ public class FCMManager {
                             String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
                             String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
 
-                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                             } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                             }
 
-                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                            bundle.putString(DefineValue.KEY_CODE, keyCode);
+                            bundleNextLogin.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundleNextLogin.putString(DefineValue.KEY_CODE, keyCode);
 
                             i = new Intent(mContext, BBSActivity.class);
-                            i.putExtras(bundle);
+                            i.putExtras(bundleNextLogin);
 
 
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
                         }
@@ -236,27 +287,32 @@ public class FCMManager {
                             String keyAmount        = jsonOptions.getJSONObject(0).getString("amount");
                             String keySchemeCode    = jsonOptions.getJSONObject(0).getString("scheme_code");
 
-                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                             } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                             }
 
-                            bundle.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                            bundleNextLogin.putInt(DefineValue.INDEX, BBSActivity.TRANSACTION);
                             if (keySchemeCode.equals(DefineValue.CTA)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHIN);
                             } else if (keySchemeCode.equals(DefineValue.ATC)) {
-                                bundle.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
+                                bundleNextLogin.putString(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
                             }
 
-                            bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
-                            bundle.putString(DefineValue.KEY_CODE, keyCode);
+                            bundleNextLogin.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(keyAmount)));
+                            bundleNextLogin.putString(DefineValue.KEY_CODE, keyCode);
 
                             i = new Intent(mContext, BBSActivity.class);
-                            i.putExtras(bundle);
+                            i.putExtras(bundleNextLogin);
 
-
+                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+                            }
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -294,7 +350,7 @@ public class FCMManager {
                     }
                     break;
                 default:
-
+                    i = new Intent(mContext, MainPage.class);
                     break;
             }
 

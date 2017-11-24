@@ -210,6 +210,7 @@
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
+    <string name="menu_item_title_onprogress_agent">Dalam Process</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -729,7 +730,7 @@
     <string name="header_desc_request_bbs_activity_label">Request for cash pickup and we will reach you within 30 minutes..</string>
     <string name="title_search_request_bbs_activity_label">Search Agent Based On :</string>
     <string name="current_location_request_bbs_activity_label">Current Location</string>
-    <string name="search_location_hint_request_bbs_activity_label">Cari Lokasi</string>
+    <string name="search_location_hint_request_bbs_activity_label">Di Sekitar Anda atau Masukkan Alamat</string>
     <string name="title_info_request_bbs_activity_label">Information</string>
     <string name="list_info1_request_bbs_activity_label">Service is currently is available in Jakarta</string>
     <string name="list_info2_request_bbs_activity_label">For security you will receive an OTP to complete on the above mentioned number</string>
@@ -806,7 +807,7 @@
     <string name="province">Propinsi</string>
     <string name="err_empty_merchant_address">Silakan isi dengan alamat</string>
     <string name="merchant">Merchant</string>
-    <string name="agent">Agent</string>
+    <string name="agent">Agen</string>
 
     <string name="setting_merchant">Kelola Merchant</string>
     <string name="setting_agent">Kelola Agent</string>
@@ -986,14 +987,16 @@
     <string name="bbs_setting">Pengaturan</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Agen tidak ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
+    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
     <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
+    <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
     <string name="search"> Cari </string>
     <string name="waiting_approval_trx_agent">Menunggu persetujuan transaksi dari agen</string>
     <string name="message_notif_agent_approval">Mencari permintaan transaksi member</string>
     <string name="message_notif_waiting_agent_approval">Mohon menunggu. Permintaan anda sudah dikirim ke agen.</string>
-    <string name="message_notif_cancel_trx">Apakah Anda yakin mau membatalkan transaksi ?</string>
-    <string name="set_online">Set Online</string>
+    <string name="message_notif_cancel_trx">Pembatalan transaksi akan dikenakan biaya sebesar [CANCEL_FEE]. Apakah Anda yakin mau membatalkan transaksi ?</string>
+    <string name="message_notif_cancel_trx_by_agent">Apakah Anda yakin mau membatalkan transaksi ?</string>
+    <string name="set_online">Set Agen Online</string>
     <string name="message_notif_not_registered_agent">Hubungi customer service untuk menyelesaikan pendaftaran agen Anda.</string>
     <string name="process_update_online_success">Proses ubah online berhasil</string>
     <string name="process_update_offline_success">Proses ubah offline berhasil</string>
@@ -1115,8 +1118,20 @@
 
     <string name="alertbox_set_agent_location_warning">Silakan set lokasi Anda untuk aktifkan status Agent</string>
     <string name="alertbox_set_working_hour_warning">Silakan set waktu beroperasi untuk aktifkan status Agent</string>
-
+    <string name="tiba_di_lokasi">Tiba di Lokasi</string>
+    <string name="amount_count_trx">Jumlah Transaksi</string>
+    <string name="amount_total_trx">Total Nominal Transaksi</string>
+    <string name="history_trx">History Transaksi Member</string>
+    <string name="alert_message_disabled_agent_approval_backpressed">Pastikan Anda sudah bertemu dengan pelanggan, setelah itu baru klik tombol "Tiba di Lokasi"</string>
+    <string name="alert_message_disabled_member_cancel_backpressed">Apakah Anda mau membatalkan transaksi ini? Jika ya, maka Anda akan dikenakan penalti atas pembatalan tersebut.</string>
+    <string name="searching_onprogress_trx">Mencari Transaksi Dalam Proses</string>
+    <string name="bbs_note_meeting_point">Catatan Lokasi Pertemuan</string>
+    <string name="bbs_shop">Toko</string>
+    <string name="bbs_you">Nasabah</string>
+    <string name="duration">Tiba dalam</string>
+    <string name="bbs_agent_almost_arrive">Agen hampir tiba di lokasi pertemuan.</string>
     <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
+
 </resources>
