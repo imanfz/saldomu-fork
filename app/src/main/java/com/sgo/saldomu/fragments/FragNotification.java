@@ -244,6 +244,22 @@ public class FragNotification extends Fragment {
                     if(!flagClaim)
                         sentClaimTransfer(true, mObj.getId_result());
                     break;
+
+                case NotificationActivity.REJECTED_KTP:
+                    SecurePreferences.Editor editor = sp.edit();
+                    editor.putString(DefineValue.REJECT_KTP,mObjDetail.optString(WebParams.REJECT_KTP,"N"));
+                    editor.putString(DefineValue.REJECT_FOTO,mObjDetail.optString(WebParams.REJECT_FOTO,"N"));
+                    editor.putString(DefineValue.REJECT_TTD,mObjDetail.optString(WebParams.REJECT_TTD,"N"));
+                    editor.putString(DefineValue.REMARK_KTP,mObjDetail.optString(WebParams.REMARK_KTP,"N"));
+                    editor.putString(DefineValue.REMARK_FOTO,mObjDetail.optString(WebParams.REMARK_FOTO,"N"));
+                    editor.putString(DefineValue.REMARK_TTD,mObjDetail.optString(WebParams.REMARK_TTD,"N"));
+                    editor.putString(DefineValue.IS_REGISTERED_LEVEL,mObjDetail.optString(WebParams.IS_REGISTERED,"N"));
+                    editor.apply();
+                    Intent dataProfile = new Intent();
+                    dataProfile.putExtra(DefineValue.NOTIF_TYPE,NotificationActivity.REJECTED_KTP);
+                    getActivity().setResult(MainPage.RESULT_NOTIF, dataProfile);
+                    getActivity().finish();
+                    break;
             }
 
 
@@ -479,6 +495,10 @@ public class FragNotification extends Fragment {
                                                 detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
                                                         "\n" + from_name + " " + getString(R.string.notif_detail_claim_non_member);
                                                 break;
+                                            case NotificationActivity.REJECTED_KTP:
+                                                image = R.drawable.ic_photo_camera_rejected;
+                                                title = getString(R.string.notif_title_photo_ktp_rejected);
+                                                break;
                                         }
 
                                         if (notif_type == NotificationActivity.TYPE_LIKE ||
@@ -487,7 +507,9 @@ public class FragNotification extends Fragment {
                                                 notif_type == NotificationActivity.TYPE_PAID ||
                                                 notif_type == NotificationActivity.TYPE_DECLINE ||
                                                 notif_type == NotificationActivity.TYPE_NON_MEMBER ||
-                                                notif_type == NotificationActivity.CLAIM_NON_MEMBER) {
+                                                notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
+                                                notif_type == NotificationActivity.REJECTED_KTP
+                                                ) {
                                             mDataNotifDetail.add(notif_detail);
 
                                             time1 = DateTimeFormat.convertStringtoCustomDateTime(date_time);

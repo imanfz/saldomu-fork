@@ -768,9 +768,9 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
                     else
                         filePath = data.getData().getPath();
 //                    File photoFile = new File(filePath);
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-                    //getOrientationImage();
-                    uploadFileToServer(mGI.Convert());
+//                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
+//                    //getOrientationImage();
+//                    uploadFileToServer(mGI.Convert());
                     assert cursor != null;
                     cursor.close();
                 }

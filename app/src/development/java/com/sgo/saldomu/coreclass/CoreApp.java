@@ -132,18 +132,20 @@ public class CoreApp extends Application {
                 if(LifeCycleHandler.isApplicationVisible()) {
                     if (action.equalsIgnoreCase("android.intent.action.SIM_STATE_CHANGED")) {
                         if (intent.getStringExtra("ss").equalsIgnoreCase("ABSENT")) {
-                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                            SecurePreferences.Editor mEditor = prefs.edit();
-                            mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-                            mEditor.apply();
-                            Intent i = new Intent(CoreApp.this.getApplicationContext(), ErrorActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                            i.putExtra(DefineValue.TYPE, ErrorActivity.SIM_CARD_ABSENT);
-                            CoreApp.this.startActivity(i);
+                            if(new SMSclass(CoreApp.this).isSimExists()) {
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+                                mEditor.apply();
+                                Intent i = new Intent(CoreApp.this.getApplicationContext(), ErrorActivity.class);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                i.putExtra(DefineValue.TYPE, ErrorActivity.SIM_CARD_ABSENT);
+                                CoreApp.this.startActivity(i);
+                            }
                         }
                     }
                 }
