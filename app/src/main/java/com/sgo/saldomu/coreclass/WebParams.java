@@ -474,4 +474,10 @@ public class WebParams {
     public static String FLAG_NEW_FLOW = "flag_new_flow";
 
     public static String REGIS_FROM = "regis_from";
+    public static String REJECT_KTP = "reject_ktp";
+    public static String REJECT_FOTO = "reject_foto";
+    public static String REJECT_TTD = "reject_ttd";
+    public static String REMARK_KTP = "remark_ktp";
+    public static String REMARK_FOTO = "remark_foto";
+    public static String REMARK_TTD = "remark_ttd";
 }

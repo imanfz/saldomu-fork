@@ -46,6 +46,7 @@ import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
+import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
@@ -1116,30 +1117,36 @@ public class MainPage extends BaseActivity
                 invalidateOptionsMenu();
                 if(data != null){
                     int _type = data.getIntExtra(DefineValue.NOTIF_TYPE,0);
-                    if( _type == NotificationActivity.TYPE_TRANSFER){
-                        Bundle dataBundle = new Bundle();
-                        dataBundle.putString(DefineValue.AMOUNT,data.getStringExtra(DefineValue.AMOUNT));
-                        dataBundle.putString(DefineValue.CUST_NAME,data.getStringExtra(DefineValue.CUST_NAME));
-                        dataBundle.putString(DefineValue.MESSAGE,data.getStringExtra(DefineValue.MESSAGE));
-                        dataBundle.putString(DefineValue.USERID_PHONE,data.getStringExtra(DefineValue.USERID_PHONE));
-                        dataBundle.putString(DefineValue.TRX,data.getStringExtra(DefineValue.TRX));
-                        dataBundle.putString(DefineValue.REQUEST_ID,data.getStringExtra(DefineValue.REQUEST_ID));
+                    switch (_type){
+                        case NotificationActivity.TYPE_TRANSFER :
+                            Bundle dataBundle = new Bundle();
+                            dataBundle.putString(DefineValue.AMOUNT,data.getStringExtra(DefineValue.AMOUNT));
+                            dataBundle.putString(DefineValue.CUST_NAME,data.getStringExtra(DefineValue.CUST_NAME));
+                            dataBundle.putString(DefineValue.MESSAGE,data.getStringExtra(DefineValue.MESSAGE));
+                            dataBundle.putString(DefineValue.USERID_PHONE,data.getStringExtra(DefineValue.USERID_PHONE));
+                            dataBundle.putString(DefineValue.TRX,data.getStringExtra(DefineValue.TRX));
+                            dataBundle.putString(DefineValue.REQUEST_ID,data.getStringExtra(DefineValue.REQUEST_ID));
 
-                        mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS,dataBundle);
-                    }
-                    else if(_type == NotificationActivity.TYPE_LIKE || _type == NotificationActivity.TYPE_COMMENT){
-                        int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID,"0"));
-                        if(mContent instanceof FragMainPage){
-                            FragMainPage mFrag = (FragMainPage)mContent;
-                            if(mFrag.getFragment(0) instanceof MyHistory){
-                                MyHistory _history =(MyHistory) mFrag.getFragment(0);
-                                _history.ScrolltoItem(_post_id);
+                            mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS,dataBundle);
+                            break;
+                        case NotificationActivity.TYPE_LIKE:
+                        case NotificationActivity.TYPE_COMMENT:
+                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID,"0"));
+                            if(mContent instanceof FragMainPage){
+                                FragMainPage mFrag = (FragMainPage)mContent;
+                                if(mFrag.getFragment(0) instanceof MyHistory){
+                                    MyHistory _history =(MyHistory) mFrag.getFragment(0);
+                                    _history.ScrolltoItem(_post_id);
+                                }
                             }
-                        }
-                        Intent i = new Intent(this, HistoryDetailActivity.class);
-                        i.putExtras(data);
-                        switchActivity(i,ACTIVITY_RESULT);
-
+                            Intent i = new Intent(this, HistoryDetailActivity.class);
+                            i.putExtras(data);
+                            switchActivity(i,ACTIVITY_RESULT);
+                            break;
+                        case NotificationActivity.REJECTED_KTP:
+                            Intent e = new Intent(this, MyProfileNewActivity.class);
+                            switchActivity(e,ACTIVITY_RESULT);
+                            break;
                     }
                 }
             }
@@ -1313,12 +1320,9 @@ public class MainPage extends BaseActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if(isForeground) {
-            doUnbindService();
-            doUnbindAppInfoService();
-            doUnbindUserProfileService();
-        }
-
+        doUnbindService();
+        doUnbindAppInfoService();
+        doUnbindUserProfileService();
     }
 
     @Override
