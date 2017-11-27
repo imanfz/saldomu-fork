@@ -223,7 +223,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
             GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
             GridHome.setAdapter(adapter);
         } else {
-            progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
@@ -240,83 +239,85 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.SIGNATURE, signature);
 
-            MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            if(this.isVisible()) {
+                progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
+                MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    try {
-                        if ( progdialog.isShowing() )
-                            progdialog.dismiss();
+                        try {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
 
-                        String code = response.getString(WebParams.ERROR_CODE);
+                            String code = response.getString(WebParams.ERROR_CODE);
 
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            JSONArray categories = response.getJSONArray("category");
+                                JSONArray categories = response.getJSONArray("category");
 
-                            for (int i = 0; i < categories.length(); i++) {
+                                for (int i = 0; i < categories.length(); i++) {
 
-                                JSONObject object = categories.getJSONObject(i);
-                                ShopCategory shopCategory = new ShopCategory();
-                                shopCategory.setCategoryId(object.getString("category_id"));
-                                String tempCategory = object.getString("category_name").toLowerCase();
+                                    JSONObject object = categories.getJSONObject(i);
+                                    ShopCategory shopCategory = new ShopCategory();
+                                    shopCategory.setCategoryId(object.getString("category_id"));
+                                    String tempCategory = object.getString("category_name").toLowerCase();
 
-                                String[] strArray = tempCategory.split(" ");
-                                StringBuilder builder = new StringBuilder();
-                                for (String s : strArray) {
-                                    String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                    builder.append(cap + " ");
+                                    String[] strArray = tempCategory.split(" ");
+                                    StringBuilder builder = new StringBuilder();
+                                    for (String s : strArray) {
+                                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                        builder.append(cap + " ");
+                                    }
+
+                                    shopCategory.setCategoryName(builder.toString());
+                                    shopCategories.add(shopCategory);
                                 }
 
-                                shopCategory.setCategoryName(builder.toString());
-                                shopCategories.add(shopCategory);
+
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                             }
 
+                            //gridBbsCategoryAdapter.notifyDataSetChanged();
+                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                            GridHome.setAdapter(adapter);
 
-
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        ifFailure(throwable);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                        ifFailure(throwable);
+                    }
+
+                    private void ifFailure(Throwable throwable) {
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
+
+                        if (MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                        Timber.w("Error Koneksi login:" + throwable.toString());
 
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
                         GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                         GridHome.setAdapter(adapter);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    if ( progdialog.isShowing() )
-                        progdialog.dismiss();
-
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                    //gridBbsCategoryAdapter.notifyDataSetChanged();
-                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                    GridHome.setAdapter(adapter);
-                }
-
-            });
+                });
+            }
         }
 
 

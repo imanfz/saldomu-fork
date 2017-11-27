@@ -6,13 +6,19 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,6 +34,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -39,6 +46,8 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fragments.NavigationDrawMenu;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -66,8 +75,12 @@ import timber.log.Timber;
  */
 
 public class MyProfileNewActivity extends BaseActivity {
+    private final int KTP_TYPE = 1;
+    private final int SELFIE_TYPE = 2;
+    private final int TTD_TYPE = 3;
+
+
     private SecurePreferences sp;
-    private Activity act;
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
@@ -94,7 +107,6 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int RESULT_SELFIE = 202;
     private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
-    private Uri mCapturedImageURI;
     File ktp, selfie, ttd;
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
@@ -105,6 +117,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String contactCenter;
     private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie, respon_reject_ttd;
     private ProgressDialog progdialog;
+    private PickAndCameraUtil pickAndCameraUtil;
 
     @Override
     protected int getLayoutResource() {
@@ -118,6 +131,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        pickAndCameraUtil = new PickAndCameraUtil(this);
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST)) {
@@ -391,15 +405,14 @@ public class MyProfileNewActivity extends BaseActivity {
 
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
-                            Timber.wtf("masuk gallery");
                             if(TipeFoto == RESULT_CAMERA_KTP) {
-                                chooseGallery(RESULT_GALLERY_KTP);
+                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
                             }
                             else if(TipeFoto == RESULT_SELFIE) {
-                                chooseGallery(RESULT_GALLERY_SELFIE);
+                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
                             }
                             else if (TipeFoto == RESULT_CAMERA_TTD){
-                                chooseGallery(RESULT_GALLERY_TTD);
+                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
                             }
                         } else if (which == 1) {
                             chooseCamera(TipeFoto);
@@ -412,35 +425,23 @@ public class MyProfileNewActivity extends BaseActivity {
         a.show();
     }
 
-    private void chooseGallery(int TipeFoto) {
-        Timber.wtf("masuk gallery");
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, TipeFoto);
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     private void chooseCamera(int TipeFoto) {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this,perms)) {
-            runCamera(TipeFoto);
+            pickAndCameraUtil.runCamera(TipeFoto);
         }
         else {
             EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE,perms);
         }
-    }
-
-    private void runCamera(int TipeFoto){
-        String fileName = "temp.jpg";
-
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-
-        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-        startActivityForResult(takePictureIntent, TipeFoto);
     }
 
     private void initializeData(){
@@ -652,7 +653,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
+//            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
         } catch (JSONException e) {
@@ -758,94 +759,64 @@ public class MyProfileNewActivity extends BaseActivity {
         return true;
     }
 
-    public File setmGalleryImage (Intent data)
-    {
-        Bitmap photo = null;
-        Uri _urinya = data.getData();
-        if(data.getData() == null) {
-            photo = (Bitmap)data.getExtras().get("data");
-        } else {
-            try {
-                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
-
-        return mGI.Convert();
-    }
-
-    public File setmCapturedImage(Intent data)
-    {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-        String filePath;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            filePath = cursor.getString(column_index_data);
-        }
-        else
-            filePath = data.getData().getPath();
-//                    File photoFile = new File(filePath);
-
-        GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-//                    getOrientationImage();
-//        uploadFileToServer(mGI.Convert());
-        assert cursor != null;
-        cursor.close();
-
-        return mGI.Convert();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case RESULT_GALLERY_KTP:
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(cameraKTP);
-                    ktp = setmGalleryImage(data);
-                    uploadFileToServer(ktp, 1);
+                    new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                }
+                break;
+            case RESULT_CAMERA_KTP:
+                if(resultCode == RESULT_OK){
+                    if( pickAndCameraUtil.getCaptureImageUri()!=null){
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                        }
+                        else {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                        }
+                    }
+                    else{
+                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case RESULT_GALLERY_SELFIE:
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(selfieKTP);
-                    selfie = setmGalleryImage(data);
-                    uploadFileToServer(selfie, 2);
+                    new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                }
+                break;
+            case RESULT_SELFIE :
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    }
+                    else {
+                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
+                }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
             case RESULT_GALLERY_TTD :
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(cameraTTD);
-                    ttd = setmGalleryImage(data);
-                    uploadFileToServer(ttd, 3);
-                }
-                break;
-            case RESULT_CAMERA_KTP:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(cameraKTP);
-                    ktp = setmCapturedImage(data);
-                    uploadFileToServer(ktp, 1);
-                }
-                break;
-            case RESULT_SELFIE :
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(selfieKTP);
-                    selfie = setmCapturedImage(data);
-                    uploadFileToServer(selfie, 2);
+                    new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA_TTD:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(cameraTTD);
-                    ttd= setmCapturedImage(data);
-                    uploadFileToServer(ttd, 3);
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    }
+                    else {
+                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
+                }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -887,19 +858,19 @@ public class MyProfileNewActivity extends BaseActivity {
                 proses = (int) (100 * bytesWritten / totalSize);
                 if(proses < 100 || proses == 100)
                 {
-                    if(flag==1)
+                    if(flag==KTP_TYPE)
                     {
                         Timber.d("sebelum proses uploadKTP " +proses);
                         pb1.setProgress((int) (100 * bytesWritten / totalSize));
                         Timber.d("proses uploadKTP " +proses);
                         tv_pb1.setText(proses + "%");
                     }
-                    else if(flag==2)
+                    else if(flag==SELFIE_TYPE)
                     {
                         pb2.setProgress((int) (100 * bytesWritten / totalSize));
                         tv_pb2.setText(proses + "%");
                     }
-                    else if(flag==3)
+                    else if(flag==TTD_TYPE)
                     {
                         pb3.setProgress((int) (100 * bytesWritten / totalSize));
                         tv_pb3.setText(proses + "%");
@@ -1131,7 +1102,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(act, "");
+            progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
@@ -1172,11 +1143,11 @@ public class MyProfileNewActivity extends BaseActivity {
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(act,message);
+                            test.showDialoginActivity(MyProfileNewActivity.this,message);
                         }
                         else {
                             Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                         }
 
                         progdialog.dismiss();
@@ -1219,6 +1190,41 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+        private int type;
+
+
+        ImageCompressionAsyncTask(int type){
+            this.type = type;
+        }
+
+        @Override
+        protected File doInBackground(String... params) {
+            return pickAndCameraUtil.compressImage(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            switch (type){
+                case KTP_TYPE :
+                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
+                    ktp = file;
+                    uploadFileToServer(ktp, KTP_TYPE);
+                    break;
+                case SELFIE_TYPE :
+                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
+                    selfie = file;
+                    uploadFileToServer(selfie, SELFIE_TYPE);
+                    break;
+                case TTD_TYPE:
+                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
+                    ttd = file;
+                    uploadFileToServer(ttd, TTD_TYPE);
+                    break;
+            }
         }
     }
 }

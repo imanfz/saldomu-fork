@@ -390,6 +390,7 @@
     <string name="notif_text_like_name">suka post Anda</string>
     <string name="notif_text_non_member">Klaim kirim uang dari</string>
     <string name="notif_text_claim_non_member">sudah klaim transfer dana Anda</string>
+    <string name="notif_title_photo_ktp_rejected">Data Photo Anda Ditolak</string>
     <string name="notifications_empty">Tidak ada Notifikasi</string>
     <string name="notifications_p2p_status_paid">Anda sudah melakukan transaksi ini.</string>
     <string name="notif_detail_claim_non_member">sudah bergabung di PIN</string>
