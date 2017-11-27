@@ -356,7 +356,7 @@
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
     <string name="payfriends_otp">* maks. 4 karakter</string>
-    <string name="payfriends_ab_title_activity">Kirim Saldo - Kode OTP</string>
+    <string name="payfriends_ab_title_activity">Kirim Saldo</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>
     <string name="payfriends_recipients_max_validation1">Maksimal Penerima</string>
