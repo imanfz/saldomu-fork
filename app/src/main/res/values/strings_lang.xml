@@ -216,7 +216,8 @@
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
     <string name="menu_item_title_tutup_manual">Tutup Manual</string>
     <string name="topup_token_bank_name">Nama Bank</string>
-    <string name="topup_token_bank_product">Produk Bank</string>
+    <string name="topup_token_bank_product">Produk Bank Tujuan</string>
+    <string name="topup_token_bank_product_sumber">Produk Bank Sumber</string>
     <string name="topup_token_fee">Biaya Admin</string>
     <string name="topup_token_total_fee">Total Jumlah</string>
     <string name="topup_token_bank_channel">Produk Bank</string>
@@ -846,20 +847,24 @@
     <string name="cta">CTA</string>
     <string name="listatm_topup_deskripsi_fee">Jumlah topup Saldo yang anda masukan, sudah termasuk dengan biaya Admin sebesar %1$s</string>
     <string name="metode_pembayaran">Metode Pembayaran</string>
-    <string name="rekening_bank_agent">Rekening Agen</string>
+    <string name="rekening_bank_agent">Bank / E-Money Agen</string>
     <string name="jumlah_transfer">Jumlah Transfer</string>
     <string name="jumlah_transfer_hint">Jumlah transfer</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
+    <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
     <string name="rekening_bank_member">Rekening Member</string>
-    <string name="no_rekening_sumber">No Rekening Sumber</string>
-    <string name="nama_rekening_sumber">Nama Rekening Sumber</string>
+    <string name="no_rekening_agen">No Bank / E-Money Agen</string>
+    <string name="no_bank_emoney_sumber">No Bank / E-Money Sumber</string>
+    <string name="nama_rekening_agen">Nama Agen</string>
+    <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="no_tujuan">Nomor Rekening</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
-    <string name="nama_rekening_tujuan">Nama rekening Tujuan</string>
+    <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
     <string name="kota_rekening_tujuan">Kota Tujuan</string>
     <string name="no_hp_pengirim">Nomor Handphone Pengirim</string>
-    <string name="no_hp_pengirim_hint">Nomor Handphone pengirim</string>
+    <string name="notif_no_hp_pengirim">Notif ke No. HP Pelanggan</string>
+    <string name="no_hp_pengirim_hint">Nomor Handphone Pelanggan</string>
     <string name="number_destination">No Rekening Tujuan</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
     <string name="number_hp_destination">Nomor Handphone Tujuan</string>
@@ -874,11 +879,11 @@
     <string name="auto_generate">Auto-generate</string>
     <string name="join_agent">Registrasi Agen</string>
     <string name="tipe_account">Tipe Account</string>
-    <string name="register_bank_account">Daftar Rekening Tarik Tunai </string>
+    <string name="register_bank_account">Daftar Bank / E-Money Tarik Tunai </string>
     <string name="update_bank_account">Perbaharui Bank Account</string>
     <string name="no_rekening_validation">Nomor Rekening Dibutuhkan !</string>
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
-    <string name="title_bbs_list_account_bbs">Daftar Rekening</string>
+    <string name="title_bbs_list_account_bbs">Daftar Bank / E-Money</string>
     <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
     <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan kata sandi anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
@@ -895,7 +900,7 @@
     <string name="community_empty">Tidak ada daftar komunitas</string>
     <string name="remark">Pesan</string>
     <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
-    <string name="no_member">Nomor Member</string>
+    <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>
     <string name="no_rekening">No Rekening</string>
@@ -908,6 +913,7 @@
     <string name="no_source_list_message">Tidak ada rekening member yang terdaftar</string>
     <string name="registrasi_account">Registrasi Account</string>
     <string name="rekening_sumber">Rekening Sumber</string>
+    <string name="bank_emoney_sumber">Bank / E-Money Sumber</string>
     <string name="contoh_no_hp">Contoh (0888-xxxxxxx)</string>
     <string name="contoh_name">Contoh (sutjipto)</string>
     <string name="hint_destination_city">Pilih Kota Rekening</string>
@@ -952,7 +958,7 @@
     <string name="agent_approve">Terima</string>
     <string name="agent_reject">Tolak</string>
     <string name="agent_shop">Agent Shop ID</string>
-    <string name="user_id">Nomor Handphone pelanggan</string>
+    <string name="user_id">No. Handphone pelanggan</string>
     <string name="user_id_validation">Nomor Handphone member dibutuhkan !</string>
     <string name="city_not_found_message">Nama kota tidak ditemukan</string>
     <string name="city_empty_message">Kota tujuan harus diisi!</string>
@@ -1039,18 +1045,19 @@
 
     <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
-    <string name="label_bank_transfer_ke">Ke Rekening Mana?</string>
+    <string name="label_bank_transfer_ke">Ke Bank / E-Money mana?</string>
     <string name="label_rekening_transfer_ke">Nomor Rekening Tujuan</string>
-    <string name="label_transfer_dari_agent">Anda mau menggunakan rekening apa ?</string>
+    <string name="label_transfer_dari_agent">Anda mau menggunakan Bank/E-Money apa ?</string>
     <string name="label_no_hp_sender">Nomor Handphone Nasabah</string>
+    <string name="label_notif_sender">Notif ke Pelanggan</string>
     <string name="label_trx_description">Informasi Transaksi</string>
 
     <string name="label_transfer_dari">Rekening Sumber</string>
     <string name="label_rekening_transfer_dari">Nomor Rekening Sumber</string>
 
-    <string name="label_transfer_ke_agent">Rekening Agen</string>
-    <string name="label_transfer_dari_member_atc">Dari Bank Mana ?</string>
-    <string name="label_bank_pelangggan">Bank Pelanggan</string>
+    <string name="label_transfer_ke_agent">Bank / E-Money Agen</string>
+    <string name="label_transfer_dari_member_atc">Dari Bank / E-Money mana ?</string>
+    <string name="label_bank_pelangggan">Bank / E-Money Pelanggan</string>
 
     <string name="message_retry">Coba lagi ?</string>
     <string name="message_bbs_error_service">Gagal update data. Cek kembali koneksi internet anda.</string>
