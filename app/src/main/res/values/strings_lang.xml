@@ -879,11 +879,11 @@
     <string name="auto_generate">Auto-generate</string>
     <string name="join_agent">Registrasi Agen</string>
     <string name="tipe_account">Tipe Account</string>
-    <string name="register_bank_account">Daftar Bank / E-Money Tarik Tunai</string>
+    <string name="register_bank_account">Daftar Bank / E-Money</string>
     <string name="update_bank_account">Perbaharui Bank Account</string>
     <string name="no_rekening_validation">Nomor Rekening Dibutuhkan !</string>
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
-    <string name="title_bbs_list_account_bbs">Daftar Bank / E-Money Tarik Tunai</string>
+    <string name="title_bbs_list_account_bbs">Daftar Bank / E-Money</string>
     <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
     <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan kata sandi anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
