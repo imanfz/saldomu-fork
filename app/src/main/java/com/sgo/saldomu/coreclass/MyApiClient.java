@@ -1,11 +1,11 @@
 package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -22,9 +22,6 @@ import java.security.KeyStore;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
 import timber.log.Timber;
 
 /**
@@ -38,6 +35,7 @@ public class MyApiClient {
     private AsyncHttpClient asyncHttpClient_google;
     private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
+    private AsyncHttpClient asyncHttpClientUnstrusted;
 
     public MyApiClient(){
 
@@ -59,6 +57,7 @@ public class MyApiClient {
             singleton.syncHttpClient_google=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.asyncHttpClientUnstrusted = new AsyncHttpClient();
         }
         return singleton;
     }
@@ -331,6 +330,7 @@ public class MyApiClient {
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.isProdDomain)
             LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
+//            LINK_INQUIRY_SMS   = "https://mobile.espay.id/hpku/" + "InquirySMS/Retrieve";
         else
             LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
@@ -378,6 +378,12 @@ public class MyApiClient {
         getInstance().asyncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
         getInstance().syncHttpClient_google.setTimeout(TIMEOUT);
         getInstance().syncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
+
+        //untrusted asynchttp
+        getInstance().asyncHttpClientUnstrusted.setTimeout(TIMEOUT);
+        if(PROD_FLAG_ADDRESS)
+            getInstance().asyncHttpClientUnstrusted.setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
+        getInstance().asyncHttpClientUnstrusted.setMaxRetriesAndTimeout(2, 10000);
     }
 
 
@@ -500,6 +506,11 @@ public class MyApiClient {
     private static void post(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler);
         Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
+    }
+
+    private static void postUntrustedSSL(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getInstance().asyncHttpClientUnstrusted.post(mContext, url, params, responseHandler);
+        Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
     }
 
     public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1012,7 +1023,7 @@ public class MyApiClient {
 
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent inquiry sms: %1$s ",LINK_INQUIRY_SMS);
-        post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
+        postUntrustedSSL(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent claim non member transfer: %1$s ",LINK_CLAIM_TRANSFER_NON_MEMBER);
