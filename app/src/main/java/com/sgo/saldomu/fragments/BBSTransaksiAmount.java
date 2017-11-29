@@ -31,6 +31,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -447,6 +448,7 @@ public class BBSTransaksiAmount extends Fragment {
 
                     getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
                             .addToBackStack(TAG).commit();
+//                    switchFragment(newFrag, "Tarik Tunai", true);
                     ToggleKeyboard.hide_keyboard(act);
                 }
                 else {
@@ -455,6 +457,14 @@ public class BBSTransaksiAmount extends Fragment {
             }
         }
     };
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        BBSActivity fca = (BBSActivity ) getActivity();
+        fca.switchContent(i,name,isBackstack);
+    }
 
     private void setMember(List<BBSBankModel> bankMember) {
         aListMember.clear();
@@ -589,7 +599,7 @@ public class BBSTransaksiAmount extends Fragment {
             actv_rekening_member.requestFocus();
             actv_rekening_member.setError(getString(R.string.rekening_member_error_message));
             return false;
-        }
+        }else actv_rekening_member.setError(null);
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                 if (etNoAcct.getText().toString().length() == 0) {

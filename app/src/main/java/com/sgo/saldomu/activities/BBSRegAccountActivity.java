@@ -66,6 +66,7 @@ public class BBSRegAccountActivity extends BaseActivity implements BBSRegisterAc
                     .replace(R.id.bbsreg_content, mFragment, fragName)
                     .addToBackStack(null)
                     .commitAllowingStateLoss();
+
         }
         else {
             Timber.d("bukan backstack");

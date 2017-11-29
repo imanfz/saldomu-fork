@@ -142,7 +142,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:textColor="@color/colorSecondaryDark"
-                            android:gravity="left"
+                            android:gravity="center"
                             android:text="@string/label_jumlah_amount"/>
                     </LinearLayout>
 

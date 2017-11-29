@@ -1162,7 +1162,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 actv_rekening_cta.requestFocus();
                 actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
                 return false;
-            }
+            } else actv_rekening_cta.setError(null);
             if (etNoHp.getText().toString().length() == 0) {
                 etNoHp.requestFocus();
                 etNoHp.setError(getString(R.string.no_hp_pengirim_validation));
