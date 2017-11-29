@@ -25,7 +25,6 @@ import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragBbsMyOrders;
-import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
 import com.sgo.saldomu.fragments.FragOnProgressAgent;

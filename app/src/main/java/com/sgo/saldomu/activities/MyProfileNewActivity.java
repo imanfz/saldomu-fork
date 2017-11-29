@@ -1,24 +1,15 @@
 package com.sgo.saldomu.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -34,19 +25,16 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GeneralizeImage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -58,7 +46,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -216,13 +203,17 @@ public class MyProfileNewActivity extends BaseActivity {
         {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
-            btn1.setVisibility(View.GONE);
             tv_verified_member.setText("Data Verfied Member Sudah Terverifikasi");
             dataVerifiedMember.setVisibility(View.GONE);
             cameraKTP.setEnabled(false);
             selfieKTP.setEnabled(false);
             cameraTTD.setEnabled(false);
             btn2.setVisibility(View.GONE);
+            if(is_new_bulk.equals("Y")) {
+                btn1.setVisibility(View.VISIBLE);
+            }else
+            btn1.setVisibility(View.GONE);
+
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);
@@ -653,6 +644,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
+            mEditor.putString(DefineValue.IS_NEW_BULK,response.getString(WebParams.IS_NEW_BULK));
 //            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
