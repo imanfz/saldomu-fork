@@ -1,8 +1,10 @@
 package com.sgo.saldomu.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +25,8 @@ public class BBSTransaksiPagerItem extends Fragment {
 
     private View v, layout;
     private String title;
+    private boolean isShowRegAccountMenu = false;
+
 
     @Nullable
     @Override
@@ -42,6 +46,7 @@ public class BBSTransaksiPagerItem extends Fragment {
         String type = "",defaultAmount="", noHpPengirim="";
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
+            isShowRegAccountMenu = false;
             if(bundle.containsKey(DefineValue.TYPE)) {
                 type = bundle.getString(DefineValue.TYPE);
             }
@@ -61,15 +66,33 @@ public class BBSTransaksiPagerItem extends Fragment {
         args.putString(DefineValue.KEY_CODE, noHpPengirim);
         newFrag.setArguments(args);
         getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiAmount.TAG).commit();
+
+        getChildFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if(title.equalsIgnoreCase(getString(R.string.cash_out))) {
+                    if (getChildFragmentManager().findFragmentById(R.id.bbsTransaksiFragmentContent) instanceof BBSTransaksiInformasi) {
+                        isShowRegAccountMenu = true;
+                        getActivity().invalidateOptionsMenu();
+                    }
+                    else {
+                        isShowRegAccountMenu = false;
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        if(title.equalsIgnoreCase(getString(R.string.cash_out)))
-            inflater.inflate(R.menu.bbs_reg_acct, menu);
+        if(title.equalsIgnoreCase(getString(R.string.cash_out))) {
+            if(isShowRegAccountMenu)
+                inflater.inflate(R.menu.bbs_reg_acct, menu);
+        }
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

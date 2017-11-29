@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
 
     <LinearLayout android:id="@+id/bbstransaksi_bottom_layout"
         android:background="@color/windowBackgroundColor"
@@ -71,6 +71,7 @@
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/bbinformasi_input_layout"
         android:layout_above="@id/bbstransaksi_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -125,4 +126,8 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
+
+    <include android:id="@+id/empty_cashout_benef_layout"
+        layout="@layout/empty_bbs_cashout"
+        android:visibility="gone"/>
 </RelativeLayout>
