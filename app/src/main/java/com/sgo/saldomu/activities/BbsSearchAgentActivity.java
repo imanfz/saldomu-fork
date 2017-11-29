@@ -1756,6 +1756,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                 //startActivity(new Intent(getApplicationContext(), Bb.class));
                             }
+                        } else {
+                            finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
