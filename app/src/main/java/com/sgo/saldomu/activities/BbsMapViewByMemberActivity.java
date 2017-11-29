@@ -521,7 +521,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+                if ( progdialog.isShowing())
+                    progdialog.dismiss();
 
                 try {
                     isRunning = false;
@@ -575,7 +576,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
             private void ifFailure(Throwable throwable) {
 
-                progdialog.dismiss();
+                if ( progdialog.isShowing())
+                    progdialog.dismiss();
 
                 if (MyApiClient.PROD_FAILURE_FLAG)
                     Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
@@ -629,7 +631,10 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                 try {
-                    progdialog2.dismiss();
+
+                    if ( progdialog2.isShowing())
+                        progdialog2.dismiss();
+
                     String code = response.getString(WebParams.ERROR_CODE);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -670,7 +675,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             private void ifFailure(Throwable throwable) {
                 //llHeaderProgress.setVisibility(View.GONE);
                 //pbHeaderProgress.setVisibility(View.GONE);
-                progdialog2.dismiss();
+                if ( progdialog2.isShowing())
+                    progdialog2.dismiss();
+
                 if (MyApiClient.PROD_FAILURE_FLAG)
                     Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                 else
