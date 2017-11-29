@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -312,9 +313,13 @@ public class SMSclass {
     }
 
     private void deleteSMS( String message, String number) {
-        if(!isWriteEnabled(mContext.getApplicationContext())) {
-            setWriteEnabled(mContext.getApplicationContext(), true);
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            // only for gingerbread and newer versions
+            if(!isWriteEnabled(mContext.getApplicationContext())) {
+                setWriteEnabled(mContext.getApplicationContext(), true);
+            }
         }
+
 
         try {
             Uri uriSms = Uri.parse("content://sms");

@@ -87,6 +87,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String date_dob;
     private int RESULT;
     private Integer proses;
+    private Integer set_result_photo;
     private final int RESULT_GALLERY_KTP = 101;
     private final int RESULT_GALLERY_SELFIE = 102;
     private final int RESULT_GALLERY_TTD = 103;
@@ -94,6 +95,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int RESULT_SELFIE = 202;
     private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
+    final int RC_GALLERY = 15;
     File ktp, selfie, ttd;
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
@@ -364,7 +366,8 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraKTP di MyprofileactivityNew");
-            camera_dialog(RESULT_CAMERA_KTP);
+            set_result_photo = RESULT_CAMERA_KTP;
+            camera_dialog();
         }
     };
     private ImageButton.OnClickListener setImageSelfieKTP= new ImageButton.OnClickListener ()
@@ -372,7 +375,8 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageSelfieKTP di MyprofileactivityNew");
-            camera_dialog(RESULT_SELFIE);
+            set_result_photo = RESULT_SELFIE;
+            camera_dialog();
         }
     };
     private ImageButton.OnClickListener setImageCameraTTD= new ImageButton.OnClickListener ()
@@ -380,40 +384,46 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraTTD di MyprofileactivityNew");
-            camera_dialog(RESULT_CAMERA_TTD);
+            set_result_photo = RESULT_CAMERA_TTD;
+            camera_dialog();
         }
     };
 
-    public void camera_dialog(final int TipeFoto)
+    @AfterPermissionGranted(RC_CAMERA_STORAGE)
+    public void camera_dialog()
     {
-        final String[] items = {"Choose from Gallery" , "Take a Photo"};
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(this,perms)) {
+            final String[] items = {"Choose from Gallery", "Take a Photo"};
 
-        android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
-        a.setCancelable(true);
-        a.setTitle("Choose Profile Picture");
-        a.setAdapter(new ArrayAdapter<>(MyProfileNewActivity.this, android.R.layout.simple_list_item_1, items),
-                new DialogInterface.OnClickListener() {
+            android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
+            a.setCancelable(true);
+            a.setTitle("Choose Profile Picture");
+            a.setAdapter(new ArrayAdapter<>(MyProfileNewActivity.this, android.R.layout.simple_list_item_1, items),
+                    new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            if(TipeFoto == RESULT_CAMERA_KTP) {
-                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                if (set_result_photo == RESULT_CAMERA_KTP) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
+                                } else if (set_result_photo == RESULT_SELFIE) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
+                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
+                                }
+                            } else if (which == 1) {
+                                pickAndCameraUtil.runCamera(set_result_photo);
                             }
-                            else if(TipeFoto == RESULT_SELFIE) {
-                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
-                            }
-                            else if (TipeFoto == RESULT_CAMERA_TTD){
-                                pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
-                            }
-                        } else if (which == 1) {
-                            chooseCamera(TipeFoto);
+
                         }
-
                     }
-                }
-        );
-        a.create();
-        a.show();
+            );
+            a.create();
+            a.show();
+        }else {
+            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE,perms);
+        }
     }
 
 
@@ -421,18 +431,6 @@ public class MyProfileNewActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
-    }
-
-    @AfterPermissionGranted(RC_CAMERA_STORAGE)
-    private void chooseCamera(int TipeFoto) {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(this,perms)) {
-            pickAndCameraUtil.runCamera(TipeFoto);
-        }
-        else {
-            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE,perms);
-        }
     }
 
     private void initializeData(){
