@@ -81,7 +81,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private final String MANDIRISMS = "MANDIRISMS";
     private static final int RC_READ_PHONE_STATE = 122;
     private static final int RC_SEND_SMS = 123;
-    private View v;
+    private View v,bbs_informasi_form,emptyCashoutBenefLayout;
     private ProgressDialog progdialog;
     private Activity act;
     private TextView tvTitle;
@@ -233,6 +233,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             tvTitle = (TextView) v.findViewById(R.id.tv_title);
             btnNext = (Button) v.findViewById(R.id.proses_btn);
             btnBack = (Button) v.findViewById(R.id.back_btn);
+            emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
+            bbs_informasi_form = v.findViewById(R.id.bbinformasi_input_layout);
             ViewStub stub = (ViewStub) v.findViewById(R.id.informasi_stub);
 
             tvTitle.setText(transaksi);
@@ -298,7 +300,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     }
                     etRemark.setText(cashOutHistoryModel.getPesan());
                 }
-
+                if(listbankBenef.size() == 0){
+                    bbs_informasi_form.setVisibility(View.GONE);
+                    emptyCashoutBenefLayout.setVisibility(View.VISIBLE);
+                }
             }
 
             btnBack.setOnClickListener(backListener);

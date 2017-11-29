@@ -57,7 +57,7 @@ import io.realm.RealmResults;
 public class BBSTransaksiAmount extends Fragment {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiAmount";
 
-    private View v, inputForm, emptyLayout, cityLayout, nameLayout, emptyCashoutBenefLayout;
+    private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
     private EditText etAmount;
     private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
@@ -142,7 +142,6 @@ public class BBSTransaksiAmount extends Fragment {
         tvTitle = (TextView) v.findViewById(R.id.tv_title);
         inputForm = v.findViewById(R.id.bbs_amount_form);
         emptyLayout = v.findViewById(R.id.empty_layout);
-        emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
         etAmount = (EditText) v.findViewById(R.id.jumlah_transfer_edit);
         btnProses = (Button) v.findViewById(R.id.proses_btn);
         btnBack = (Button) v.findViewById(R.id.back_btn);
@@ -559,12 +558,7 @@ public class BBSTransaksiAmount extends Fragment {
                 inputForm.setVisibility(View.GONE);
             }
             setMember(listbankSource);
-            long countbankBenefATC = realmBBS.where(BBSAccountACTModel.class).count();
-            if(countbankBenefATC == 0){
-                inputForm.setVisibility(View.GONE);
-                emptyLayout.setVisibility(View.GONE);
-                emptyCashoutBenefLayout.setVisibility(View.VISIBLE);
-            }
+
         }
 
         if(comm == null) {

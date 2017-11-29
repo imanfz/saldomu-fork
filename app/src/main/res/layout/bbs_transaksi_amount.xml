@@ -196,7 +196,4 @@
     <include android:id="@+id/empty_layout"
         layout="@layout/empty_bbs_view"
         android:visibility="gone"/>
-    <include android:id="@+id/empty_cashout_benef_layout"
-        layout="@layout/empty_bbs_cashout"
-        android:visibility="gone"/>
 </RelativeLayout>

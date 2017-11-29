@@ -5,9 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,7 +13,6 @@ import android.widget.LinearLayout;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BBSTransaksiPagerAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.dialogs.InformationDialog;
 
 /**
  * Created by thinkpad on 5/8/2017.
