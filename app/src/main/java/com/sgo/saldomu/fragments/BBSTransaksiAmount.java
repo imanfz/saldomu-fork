@@ -447,9 +447,9 @@ public class BBSTransaksiAmount extends Fragment {
                     }
                     newFrag.setArguments(args);
 
-//                    getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
-//                            .addToBackStack(TAG).commit();
-                    switchFragment(newFrag, "Transaksi", true);
+                    getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
+                            .addToBackStack(TAG).commit();
+//                    switchFragment(newFrag, "Tarik Tunai", true);
                     ToggleKeyboard.hide_keyboard(act);
                 }
                 else {
