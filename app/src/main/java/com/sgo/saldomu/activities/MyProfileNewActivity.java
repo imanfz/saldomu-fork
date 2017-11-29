@@ -530,6 +530,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             if(progdialog.isShowing())
                                 progdialog.dismiss();
+                            sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
                             setLoginProfile(response);
                             Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
@@ -569,7 +570,10 @@ public class MyProfileNewActivity extends BaseActivity {
 
                                     android.support.v7.app.AlertDialog alert11 = builder1.create();
                                     alert11.show();
-                                }
+                                }else
+                            {
+                                finish();
+                            }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
@@ -644,7 +648,7 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.IS_NEW_BULK,response.getString(WebParams.IS_NEW_BULK));
+            mEditor.putString(DefineValue.IS_NEW_BULK,"N");
 //            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
