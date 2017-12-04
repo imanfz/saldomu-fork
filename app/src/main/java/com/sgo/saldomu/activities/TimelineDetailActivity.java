@@ -26,7 +26,6 @@ import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,11 +94,11 @@ public class TimelineDetailActivity extends BaseActivity {
         Bitmap bm = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(this);
-        else
-            mPic= Picasso.with(this);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(this);
+//        else
+//            mPic= Picasso.with(this);
 
         Intent i = getIntent();
         if(i != null) {
@@ -122,20 +121,10 @@ public class TimelineDetailActivity extends BaseActivity {
             if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
                 iconPictureRight.setVisibility(View.VISIBLE);
                 if(with_profpic != null && with_profpic.equals(""))
-                    mPic.load(R.drawable.user_unknown_menu)
-                            .error(roundedImage)
-                            .fit().centerInside()
-                            .placeholder(R.drawable.progress_animation)
-                            .transform(new RoundImageTransformation())
-                            .into(iconPictureRight);
+                    GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
                 else
-                    mPic.load(with_profpic)
-                            .error(R.drawable.user_unknown_menu)
-                            .placeholder(R.drawable.progress_animation)
-                            .fit()
-                            .centerCrop()
-                            .transform(new RoundImageTransformation())
-                            .into(iconPictureRight);
+                    GlideManager.sharedInstance().initializeGlide(this, with_profpic, roundedImage, iconPictureRight);
+
                 toId.setText(to_name);
                 textStatus.setText(tx_status);
             }
@@ -146,20 +135,8 @@ public class TimelineDetailActivity extends BaseActivity {
             }
 
             if(profpic != null && profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(iconPicture);
-            else
-                mPic.load(profpic)
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.drawable.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .transform(new RoundImageTransformation())
-                    .into(iconPicture);
+                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
+            else GlideManager.sharedInstance().initializeGlide(this, profpic, getResources().getDrawable(R.drawable.user_unknown_menu), iconPicture);
 
             PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
             Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
@@ -184,12 +161,7 @@ public class TimelineDetailActivity extends BaseActivity {
             dateTime.setText(period);
             amount.setText(ccy + " " + amountvalue);
         } else {
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(iconPicture);
+            GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
         }
 
         commentAdapter = new TimelineCommentAdapter(getApplicationContext(), listComment);

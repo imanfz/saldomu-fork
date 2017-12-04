@@ -25,7 +25,6 @@ import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,11 +92,11 @@ public class HistoryDetailActivity extends BaseActivity {
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(this);
-        else
-            mPic= Picasso.with(this);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(this);
+//        else
+//            mPic= Picasso.with(this);
 
         Bundle i = getIntent().getExtras();
 
@@ -118,20 +117,11 @@ public class HistoryDetailActivity extends BaseActivity {
         if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
             iconPictureRight.setVisibility(View.VISIBLE);
             if(with_profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                        .error(roundedImage)
-                        .fit().centerInside()
-                        .placeholder(R.drawable.progress_animation)
-                        .transform(new RoundImageTransformation())
-                        .into(iconPictureRight);
+                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
+
             else
-                mPic.load(with_profpic)
-                        .error(R.drawable.user_unknown_menu)
-                        .placeholder(R.drawable.progress_animation)
-                        .fit()
-                        .centerCrop()
-                        .transform(new RoundImageTransformation())
-                        .into(iconPictureRight);
+                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
+
             toId.setText(to_name);
             textStatus.setText(tx_status);
         }
@@ -142,22 +132,9 @@ public class HistoryDetailActivity extends BaseActivity {
         }
 
         if(profpic != null && profpic.equals(""))
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(iconPicture);
+            GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
         else
-            mPic.load(profpic)
-                .error(R.drawable.user_unknown_menu)
-                .placeholder(R.drawable.progress_animation)
-                .fit()
-                .centerCrop()
-                .transform(new RoundImageTransformation())
-                .into(iconPicture);
-
-
+            GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
 
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
         Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);

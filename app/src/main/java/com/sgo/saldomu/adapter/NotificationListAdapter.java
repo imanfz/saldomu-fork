@@ -16,13 +16,11 @@ import com.sgo.saldomu.Beans.NotificationModelClass;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.RejectNotifDialog;
 import com.sgo.saldomu.fragments.FragNotification;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -230,28 +228,17 @@ public class NotificationListAdapter extends RecyclerView.Adapter<NotificationHo
         Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(mContext);
-        else
-            mPic= Picasso.with(mContext);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(mContext);
+//        else
+//            mPic= Picasso.with(mContext);
 
         if(_data.equals("") || _data.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(_holder);
+            GlideManager.sharedInstance().initializeGlide(mContext, R.drawable.user_unknown_menu, roundedImage, _holder);
         }
         else {
-            mPic.load(_data)
-                    .error(roundedImage)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(_holder);
+            GlideManager.sharedInstance().initializeGlide(mContext, _data, roundedImage, _holder);
         }
     }
 

@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.hb.views.PinnedSectionListView;
 import com.sgo.saldomu.Beans.HomeGroupObject;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -86,28 +85,17 @@ public class HomeGroupAdapter extends BaseAdapter implements PinnedSectionListVi
 
             String profpic = groups.get(position).getProfpic();
 
-            Picasso mPic;
-            if(MyApiClient.PROD_FLAG_ADDRESS)
-                mPic = MyPicasso.getUnsafeImageLoader(context);
-            else
-                mPic= Picasso.with(context);
+//            Picasso mPic;
+//            if(MyApiClient.PROD_FLAG_ADDRESS)
+//                mPic = MyPicasso.getUnsafeImageLoader(context);
+//            else
+//                mPic= Picasso.with(context);
 
             if(profpic.equals("")){
-                mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(holder.qc_pic);
+                GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, roundedImage, holder.qc_pic);
             }
             else {
-                mPic.load(profpic)
-                    .error(roundedImage)
-                    .fit()
-                    .centerCrop()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(holder.qc_pic);
+                GlideManager.sharedInstance().initializeGlide(context, profpic, roundedImage, holder.qc_pic);
             }
 
             holder.txtPay.setText(groups.get(position).getPay());
