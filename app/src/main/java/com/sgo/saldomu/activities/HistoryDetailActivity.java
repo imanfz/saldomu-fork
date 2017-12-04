@@ -120,7 +120,7 @@ public class HistoryDetailActivity extends BaseActivity {
                 GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
 
             else
-                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
+                GlideManager.sharedInstance().initializeGlide(this, with_profpic, roundedImage, iconPictureRight);
 
             toId.setText(to_name);
             textStatus.setText(tx_status);
@@ -134,7 +134,7 @@ public class HistoryDetailActivity extends BaseActivity {
         if(profpic != null && profpic.equals(""))
             GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
         else
-            GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
+            GlideManager.sharedInstance().initializeGlide(this, profpic, roundedImage, iconPicture);
 
         PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
         Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
