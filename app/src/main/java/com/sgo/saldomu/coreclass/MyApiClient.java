@@ -52,12 +52,16 @@ public class MyApiClient {
         if(singleton == null) {
             singleton = new MyApiClient(_context);
             singleton.asyncHttpClient=new AsyncHttpClient();
-            singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClient_google=new AsyncHttpClient();
             singleton.syncHttpClient_google=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
-            singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClientUnstrusted = new AsyncHttpClient();
+            if(!BuildConfig.isProdDomain){
+                singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+                singleton.asyncHttpClientUnstrusted.addHeader("Authorization", "Basic " + getBasicAuth());
+                singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            }
+
         }
         return singleton;
     }
