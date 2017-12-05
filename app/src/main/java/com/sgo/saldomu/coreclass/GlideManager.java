@@ -30,11 +30,21 @@ public class GlideManager {
         Glide.with(context)
                 .load(source)
                 .centerCrop()
+                .fitCenter()
                 .error(errorDrawable)
                 .transform(new CircleTransform(context))
                 .placeholder(R.drawable.progress_animation)
                 .into(target);
     }
+
+    public void initializeGlideProfile(Context context, Object source, ImageView target){
+        Glide.with(context)
+                .load(source)
+                .centerCrop()
+                .placeholder(R.drawable.progress_animation)
+                .into(target);
+    }
+
 //    public void initializeGlide(Context context, String source, Drawable errorDrawable, ImageView target){
 //        Glide.with(context)
 //                .load(source)
