@@ -202,7 +202,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
             if (shopDetail.getUrlSmallProfilePicture() != null && !shopDetail.getUrlSmallProfilePicture().isEmpty()) {
-                GlideManager.sharedInstance().initializeGlide(context, R.drawable.progress_animation, roundedImage, viewHolder.agentProfilePic);
+                GlideManager.sharedInstance().initializeGlide(context, shopDetail.getUrlSmallProfilePicture(), roundedImage, viewHolder.agentProfilePic);
 //                mPic.load(shopDetail.getUrlSmallProfilePicture())
 //                        .error(roundedImage)
 //                        .fit().centerInside()

@@ -129,14 +129,9 @@ public class ProfileAgentFragment extends Fragment
 //            mPic= Picasso.with(getActivity());
 
         if ( this.shopDetail.getUrlSmallProfilePicture() != null && !this.shopDetail.getUrlSmallProfilePicture().isEmpty() ) {
-            GlideManager.sharedInstance().initializeGlide(getActivity(), this.shopDetail.getUrlSmallProfilePicture(),  roundedImage, agentProfilePic );
-//            mPic.load(this.shopDetail.getUrlSmallProfilePicture())
-//                    .error(roundedImage)
-//                    .fit().centerInside()
-//                    .placeholder(R.drawable.progress_animation)
-//                    .transform(new RoundImageTransformation()).into(agentProfilePic);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), shopDetail.getUrlSmallProfilePicture(),  roundedImage, agentProfilePic );
         } else {
-            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.progress_animation, roundedImage, agentProfilePic);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, agentProfilePic);
 //            mPic.load(R.drawable.user_unknown_menu)
 //                    .error(roundedImage)
 //                    .fit().centerInside()
