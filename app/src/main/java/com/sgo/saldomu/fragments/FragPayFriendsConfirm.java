@@ -31,7 +31,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -748,28 +747,17 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         if(_url_profpic != null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(imgProfile);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);
         }
         else {
-            mPic.load(_url_profpic)
-                .error(roundedImage)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(imgProfile);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, imgProfile);
         }
     }
 

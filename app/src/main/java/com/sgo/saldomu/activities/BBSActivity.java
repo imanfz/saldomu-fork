@@ -25,7 +25,6 @@ import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragBbsMyOrders;
-import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
 import com.sgo.saldomu.fragments.FragOnProgressAgent;
@@ -305,6 +304,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         }
     }
 
+
+    /**
+     * Buka RegAccountActivity untuk daftarin akun agent, ini interface dari ListAccountBBS di BBSActivity
+     * @param data data account yang dibutuhkan untuk menambahkan account seperti comm id dll
+     */
     @Override
     public void OnAddAccountListener(Bundle data) {
         Intent i = new Intent(this, BBSRegAccountActivity.class);
@@ -313,6 +317,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 .startActivityForResult(i, MainPage.ACTIVITY_RESULT);
     }
 
+    /**
+     * Buka RegAccountActivity untuk update akun agent, ini interface dari ListAccountBBS di BBSActivity
+     * @param data data account yang dibutuhkan untuk meng-update account seperti comm id dll
+     */
     @Override
     public void OnUpdateAccountListener(Bundle data) {
         Intent i = new Intent(this, BBSRegAccountActivity.class);

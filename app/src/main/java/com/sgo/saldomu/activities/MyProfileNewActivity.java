@@ -1,18 +1,15 @@
 package com.sgo.saldomu.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -33,13 +30,13 @@ import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GeneralizeImage;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.squareup.picasso.Picasso;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -49,7 +46,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,8 +62,12 @@ import timber.log.Timber;
  */
 
 public class MyProfileNewActivity extends BaseActivity {
+    private final int KTP_TYPE = 1;
+    private final int SELFIE_TYPE = 2;
+    private final int TTD_TYPE = 3;
+
+
     private SecurePreferences sp;
-    private Activity act;
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
@@ -87,6 +87,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String date_dob;
     private int RESULT;
     private Integer proses;
+    private Integer set_result_photo;
     private final int RESULT_GALLERY_KTP = 101;
     private final int RESULT_GALLERY_SELFIE = 102;
     private final int RESULT_GALLERY_TTD = 103;
@@ -94,7 +95,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int RESULT_SELFIE = 202;
     private final int RESULT_CAMERA_TTD = 203;
     final int RC_CAMERA_STORAGE = 14;
-    private Uri mCapturedImageURI;
+    final int RC_GALLERY = 15;
     File ktp, selfie, ttd;
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
@@ -105,6 +106,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private String contactCenter;
     private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie, respon_reject_ttd;
     private ProgressDialog progdialog;
+    private PickAndCameraUtil pickAndCameraUtil;
 
     @Override
     protected int getLayoutResource() {
@@ -118,6 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+        pickAndCameraUtil = new PickAndCameraUtil(this);
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST)) {
@@ -202,13 +205,17 @@ public class MyProfileNewActivity extends BaseActivity {
         {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
-            btn1.setVisibility(View.GONE);
             tv_verified_member.setText("Data Verfied Member Sudah Terverifikasi");
             dataVerifiedMember.setVisibility(View.GONE);
             cameraKTP.setEnabled(false);
             selfieKTP.setEnabled(false);
             cameraTTD.setEnabled(false);
             btn2.setVisibility(View.GONE);
+            if(is_new_bulk.equals("Y")) {
+                btn1.setVisibility(View.VISIBLE);
+            }else
+            btn1.setVisibility(View.GONE);
+
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);
@@ -359,7 +366,8 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraKTP di MyprofileactivityNew");
-            camera_dialog(RESULT_CAMERA_KTP);
+            set_result_photo = RESULT_CAMERA_KTP;
+            camera_dialog();
         }
     };
     private ImageButton.OnClickListener setImageSelfieKTP= new ImageButton.OnClickListener ()
@@ -367,7 +375,8 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageSelfieKTP di MyprofileactivityNew");
-            camera_dialog(RESULT_SELFIE);
+            set_result_photo = RESULT_SELFIE;
+            camera_dialog();
         }
     };
     private ImageButton.OnClickListener setImageCameraTTD= new ImageButton.OnClickListener ()
@@ -375,72 +384,53 @@ public class MyProfileNewActivity extends BaseActivity {
         @Override
         public void onClick(View v) {
             Timber.d("Masuk ke setImageCameraTTD di MyprofileactivityNew");
-            camera_dialog(RESULT_CAMERA_TTD);
+            set_result_photo = RESULT_CAMERA_TTD;
+            camera_dialog();
         }
     };
 
-    public void camera_dialog(final int TipeFoto)
-    {
-        final String[] items = {"Choose from Gallery" , "Take a Photo"};
-
-        android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
-        a.setCancelable(true);
-        a.setTitle("Choose Profile Picture");
-        a.setAdapter(new ArrayAdapter<>(MyProfileNewActivity.this, android.R.layout.simple_list_item_1, items),
-                new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            Timber.wtf("masuk gallery");
-                            if(TipeFoto == RESULT_CAMERA_KTP) {
-                                chooseGallery(RESULT_GALLERY_KTP);
-                            }
-                            else if(TipeFoto == RESULT_SELFIE) {
-                                chooseGallery(RESULT_GALLERY_SELFIE);
-                            }
-                            else if (TipeFoto == RESULT_CAMERA_TTD){
-                                chooseGallery(RESULT_GALLERY_TTD);
-                            }
-                        } else if (which == 1) {
-                            chooseCamera(TipeFoto);
-                        }
-
-                    }
-                }
-        );
-        a.create();
-        a.show();
-    }
-
-    private void chooseGallery(int TipeFoto) {
-        Timber.wtf("masuk gallery");
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, TipeFoto);
-    }
-
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
-    private void chooseCamera(int TipeFoto) {
+    public void camera_dialog()
+    {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         if (EasyPermissions.hasPermissions(this,perms)) {
-            runCamera(TipeFoto);
-        }
-        else {
+            final String[] items = {"Choose from Gallery", "Take a Photo"};
+
+            android.app.AlertDialog.Builder a = new android.app.AlertDialog.Builder(MyProfileNewActivity.this);
+            a.setCancelable(true);
+            a.setTitle("Choose Profile Picture");
+            a.setAdapter(new ArrayAdapter<>(MyProfileNewActivity.this, android.R.layout.simple_list_item_1, items),
+                    new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                if (set_result_photo == RESULT_CAMERA_KTP) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_KTP);
+                                } else if (set_result_photo == RESULT_SELFIE) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_SELFIE);
+                                } else if (set_result_photo == RESULT_CAMERA_TTD) {
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALLERY_TTD);
+                                }
+                            } else if (which == 1) {
+                                pickAndCameraUtil.runCamera(set_result_photo);
+                            }
+
+                        }
+                    }
+            );
+            a.create();
+            a.show();
+        }else {
             EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
                     RC_CAMERA_STORAGE,perms);
         }
     }
 
-    private void runCamera(int TipeFoto){
-        String fileName = "temp.jpg";
 
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-
-        mCapturedImageURI = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-        startActivityForResult(takePictureIntent, TipeFoto);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
     private void initializeData(){
@@ -538,6 +528,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             if(progdialog.isShowing())
                                 progdialog.dismiss();
+                            sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
                             setLoginProfile(response);
                             Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
                             Timber.d("isi response Update Profile:"+ response.toString());
@@ -577,7 +568,10 @@ public class MyProfileNewActivity extends BaseActivity {
 
                                     android.support.v7.app.AlertDialog alert11 = builder1.create();
                                     alert11.show();
-                                }
+                                }else
+                            {
+                                finish();
+                            }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
@@ -652,7 +646,8 @@ public class MyProfileNewActivity extends BaseActivity {
             mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
             mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
+            mEditor.putString(DefineValue.IS_NEW_BULK,"N");
+//            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
             is_verified = response.getInt(WebParams.VERIFIED) == 1;
             mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
         } catch (JSONException e) {
@@ -758,94 +753,64 @@ public class MyProfileNewActivity extends BaseActivity {
         return true;
     }
 
-    public File setmGalleryImage (Intent data)
-    {
-        Bitmap photo = null;
-        Uri _urinya = data.getData();
-        if(data.getData() == null) {
-            photo = (Bitmap)data.getExtras().get("data");
-        } else {
-            try {
-                photo = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        GeneralizeImage mGI = new GeneralizeImage(this,photo,_urinya);
-
-        return mGI.Convert();
-    }
-
-    public File setmCapturedImage(Intent data)
-    {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-        String filePath;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            filePath = cursor.getString(column_index_data);
-        }
-        else
-            filePath = data.getData().getPath();
-//                    File photoFile = new File(filePath);
-
-        GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-//                    getOrientationImage();
-//        uploadFileToServer(mGI.Convert());
-        assert cursor != null;
-        cursor.close();
-
-        return mGI.Convert();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case RESULT_GALLERY_KTP:
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(cameraKTP);
-                    ktp = setmGalleryImage(data);
-                    uploadFileToServer(ktp, 1);
+                    new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                }
+                break;
+            case RESULT_CAMERA_KTP:
+                if(resultCode == RESULT_OK){
+                    if( pickAndCameraUtil.getCaptureImageUri()!=null){
+                        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                        }
+                        else {
+                            new ImageCompressionAsyncTask(KTP_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                        }
+                    }
+                    else{
+                        Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case RESULT_GALLERY_SELFIE:
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(selfieKTP);
-                    selfie = setmGalleryImage(data);
-                    uploadFileToServer(selfie, 2);
+                    new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                }
+                break;
+            case RESULT_SELFIE :
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    }
+                    else {
+                        new ImageCompressionAsyncTask(SELFIE_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
+                }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
             case RESULT_GALLERY_TTD :
                 if(resultCode == RESULT_OK){
-                    Picasso.with(this).load(setmGalleryImage(data)).centerCrop().fit().into(cameraTTD);
-                    ttd = setmGalleryImage(data);
-                    uploadFileToServer(ttd, 3);
-                }
-                break;
-            case RESULT_CAMERA_KTP:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(cameraKTP);
-                    ktp = setmCapturedImage(data);
-                    uploadFileToServer(ktp, 1);
-                }
-                break;
-            case RESULT_SELFIE :
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(selfieKTP);
-                    selfie = setmCapturedImage(data);
-                    uploadFileToServer(selfie, 2);
+                    new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA_TTD:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-                    Timber.d("isi mcapture image "+mCapturedImageURI.getPath());
-                    Picasso.with(this).load(setmCapturedImage(data)).centerCrop().fit().into(cameraTTD);
-                    ttd= setmCapturedImage(data);
-                    uploadFileToServer(ttd, 3);
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    }
+                    else {
+                        new ImageCompressionAsyncTask(TTD_TYPE).execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
+                }
+                else{
+                    Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 }
                 break;
             default:
@@ -887,19 +852,19 @@ public class MyProfileNewActivity extends BaseActivity {
                 proses = (int) (100 * bytesWritten / totalSize);
                 if(proses < 100 || proses == 100)
                 {
-                    if(flag==1)
+                    if(flag==KTP_TYPE)
                     {
                         Timber.d("sebelum proses uploadKTP " +proses);
                         pb1.setProgress((int) (100 * bytesWritten / totalSize));
                         Timber.d("proses uploadKTP " +proses);
                         tv_pb1.setText(proses + "%");
                     }
-                    else if(flag==2)
+                    else if(flag==SELFIE_TYPE)
                     {
                         pb2.setProgress((int) (100 * bytesWritten / totalSize));
                         tv_pb2.setText(proses + "%");
                     }
-                    else if(flag==3)
+                    else if(flag==TTD_TYPE)
                     {
                         pb3.setProgress((int) (100 * bytesWritten / totalSize));
                         tv_pb3.setText(proses + "%");
@@ -1131,7 +1096,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
     private void getHelpList() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(act, "");
+            progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
@@ -1172,11 +1137,11 @@ public class MyProfileNewActivity extends BaseActivity {
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(act,message);
+                            test.showDialoginActivity(MyProfileNewActivity.this,message);
                         }
                         else {
                             Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(act, message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                         }
 
                         progdialog.dismiss();
@@ -1219,6 +1184,44 @@ public class MyProfileNewActivity extends BaseActivity {
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+        private int type;
+
+
+        ImageCompressionAsyncTask(int type){
+            this.type = type;
+        }
+
+        @Override
+        protected File doInBackground(String... params) {
+            return pickAndCameraUtil.compressImage(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            switch (type){
+                case KTP_TYPE :
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file,cameraKTP);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
+                    ktp = file;
+                    uploadFileToServer(ktp, KTP_TYPE);
+                    break;
+                case SELFIE_TYPE :
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file,selfieKTP);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
+                    selfie = file;
+                    uploadFileToServer(selfie, SELFIE_TYPE);
+                    break;
+                case TTD_TYPE:
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, cameraTTD);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
+                    ttd = file;
+                    uploadFileToServer(ttd, TTD_TYPE);
+                    break;
+            }
         }
     }
 }

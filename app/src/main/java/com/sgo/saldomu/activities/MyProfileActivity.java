@@ -40,12 +40,10 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GeneralizeImage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -510,28 +508,29 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
 
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
             RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(this);
-        else
-            mPic= Picasso.with(this);
 
-        if(_url_profpic != null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation()).into(profilePicContent);
-        }
-        else {
-            mPic.load(_url_profpic)
-                .error(roundedImage)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(profilePicContent);
-        }
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(this);
+//        else
+//            mPic= Picasso.with(this);
+
+//        if(_url_profpic != null && _url_profpic.isEmpty()){
+//            mPic.load(R.drawable.user_unknown_menu)
+//                .error(roundedImage)
+//                .fit().centerInside()
+//                .placeholder(R.drawable.progress_animation)
+//                .transform(new RoundImageTransformation()).into(profilePicContent);
+//        }
+//        else {
+//            mPic.load(_url_profpic)
+//                .error(roundedImage)
+//                .fit()
+//                .centerCrop()
+//                .placeholder(R.drawable.progress_animation)
+//                .transform(new RoundImageTransformation())
+//                .into(profilePicContent);
+//        }
 
     }
 
@@ -768,9 +767,9 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
                     else
                         filePath = data.getData().getPath();
 //                    File photoFile = new File(filePath);
-                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
-                    //getOrientationImage();
-                    uploadFileToServer(mGI.Convert());
+//                    GeneralizeImage mGI = new GeneralizeImage(this,filePath);
+//                    //getOrientationImage();
+//                    uploadFileToServer(mGI.Convert());
                     assert cursor != null;
                     cursor.close();
                 }
@@ -784,7 +783,7 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
     }
 
     private void uploadFileToServer(File photoFile) {
-        Picasso.with(this).load(R.drawable.progress_animation).into(profilePicContent);
+//        Picasso.with(this).load(R.drawable.progress_animation).into(profilePicContent);
         prgLoading.setVisibility(View.VISIBLE);
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,

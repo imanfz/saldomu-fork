@@ -187,6 +187,13 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
 
     }
 
+    @Override
+    protected void onDestroy() {
+        if (smsclass!=null)
+            smsclass.Close();
+        super.onDestroy();
+    }
+
     private void openLogin(int user_is_new){
         if(smsDialog.isShowing())
             smsDialog.dismiss();

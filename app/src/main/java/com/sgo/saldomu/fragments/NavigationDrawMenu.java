@@ -4,17 +4,16 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -45,18 +44,16 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GeneralizeImage;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -65,7 +62,7 @@ import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
-import com.squareup.picasso.Picasso;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -74,10 +71,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
@@ -141,10 +138,10 @@ public class NavigationDrawMenu extends ListFragment{
     private String userID;
     private String accessKey;
     private int RESULT;
-    private Uri mCapturedImageURI;
     private final int RESULT_GALERY = 100;
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
+    private PickAndCameraUtil pickAndCameraUtil;
     private String isRegisteredLevel; //saat antri untuk diverifikasi
 
     Boolean isLevel1;
@@ -156,6 +153,7 @@ public class NavigationDrawMenu extends ListFragment{
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
     }
 
     @Override
@@ -222,7 +220,7 @@ public class NavigationDrawMenu extends ListFragment{
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which == 0) {
                                     Timber.wtf("masuk gallery");
-                                    chooseGallery();
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALERY);
                                 } else if (which == 1) {
                                     chooseCamera();
                                 }
@@ -256,6 +254,18 @@ public class NavigationDrawMenu extends ListFragment{
         });
 
         setBalanceToUI();
+    }
+
+    @AfterPermissionGranted(RC_CAMERA_STORAGE)
+    private void chooseCamera() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(getActivity(),perms)) {
+            pickAndCameraUtil.runCamera(RESULT_CAMERA);
+        }
+        else {
+            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE,perms);
+        }
     }
 
     @Override
@@ -338,25 +348,17 @@ public class NavigationDrawMenu extends ListFragment{
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         if(_url_profpic !=null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, headerCustImage);
         }
         else {
-            mPic.load(_url_profpic)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, headerCustImage);
         }
 
     }
@@ -375,41 +377,17 @@ public class NavigationDrawMenu extends ListFragment{
         switch(requestCode) {
             case RESULT_GALERY:
                 if(resultCode == RESULT_OK){
-//                    Picasso.with(getActivity()).load(setmGalleryImage(data)).transform(new RoundImageTransformation()).centerCrop().fit().into(headerCustImage);
-                    Bitmap photo = null;
-                    Uri _urinya = data.getData();
-                    if(data.getData() == null) {
-                        photo = (Bitmap)data.getExtras().get("data");
-                    } else {
-                        try {
-                            photo = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    GeneralizeImage mGI = new GeneralizeImage(getActivity(),photo,_urinya);
-                    uploadFileToServer(mGI.Convert());
+                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
                 }
                 break;
             case RESULT_CAMERA:
-                if(resultCode == RESULT_OK && mCapturedImageURI!=null){
-//                    Picasso.with(getActivity()).load(setmCapturedImage(data)).transform(new RoundImageTransformation()).centerCrop().fit().into(headerCustImage);
-                    String[] projection = {MediaStore.Images.Media.DATA};
-                    Cursor cursor = getActivity().getContentResolver().query(mCapturedImageURI, projection, null, null, null);
-                    String filePath;
-                    if (cursor != null) {
-                        cursor.moveToFirst();
-                        int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                        filePath = cursor.getString(column_index_data);
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
                     }
-                    else
-                        filePath = data.getData().getPath();
-
-                    GeneralizeImage mGI = new GeneralizeImage(getActivity(),filePath);
-                    uploadFileToServer(mGI.Convert());
-
-                    assert cursor != null;
-                    cursor.close();
+                    else {
+                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
                 }
                 else{
                     Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
@@ -760,39 +738,34 @@ public class NavigationDrawMenu extends ListFragment{
         }
     };
 
-    private void chooseGallery() {
-        Timber.wtf("masuk gallery");
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, RESULT_GALERY);
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
     }
 
-    private void chooseCamera() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
-        if (EasyPermissions.hasPermissions(getActivity(),perms)) {
-            runCamera();
+    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+            return pickAndCameraUtil.compressImage(params[0]);
         }
-        else {
-            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
-                    RC_CAMERA_STORAGE,perms);
+
+        @Override
+        protected void onPostExecute(File file) {
+            uploadFileToServer(file);
         }
-    }
-
-    private void runCamera(){
-        String fileName = "temp.jpg";
-
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-
-        mCapturedImageURI = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        Intent takePictureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedImageURI);
-        startActivityForResult(takePictureIntent, RESULT_CAMERA);
     }
 
     private void uploadFileToServer(File photoFile) {
 
         progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+        if(accessKey == null)
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+        if(userID == null)
+            userID = sp.getString(DefineValue.USER_ID,"");
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
                 userID,accessKey);
