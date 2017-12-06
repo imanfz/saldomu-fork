@@ -16,7 +16,6 @@ import com.sgo.saldomu.Beans.GroupCommentObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GroupCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -78,11 +77,11 @@ public class GroupDetailActivity extends BaseActivity {
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(this);
-        else
-            mPic= Picasso.with(this);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(this);
+//        else
+//            mPic= Picasso.with(this);
 
         Intent i = getIntent();
         if(i != null) {
@@ -94,33 +93,18 @@ public class GroupDetailActivity extends BaseActivity {
             String profpic = i.getStringExtra("profpic");
 
 
+
             if(profpic != null && profpic.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation())
-                    .into(iconPicture);
+                GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
             else
-                mPic.load(profpic)
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.drawable.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .transform(new RoundImageTransformation())
-                    .into(iconPicture);
+                GlideManager.sharedInstance().initializeGlide(this, profpic, roundedImage, iconPicture);
 
             txtPay.setText(pay);
             txtGetPaid.setText(getpaid);
             txtDesc.setText(desc);
             txtDate.setText(date);
         } else {
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(iconPicture);
+            GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
         }
 
         listComment = new ArrayList<>();

@@ -30,13 +30,13 @@ import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
-import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -1204,17 +1204,20 @@ public class MyProfileNewActivity extends BaseActivity {
         protected void onPostExecute(File file) {
             switch (type){
                 case KTP_TYPE :
-                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file,cameraKTP);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
                     ktp = file;
                     uploadFileToServer(ktp, KTP_TYPE);
                     break;
                 case SELFIE_TYPE :
-                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file,selfieKTP);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
                     selfie = file;
                     uploadFileToServer(selfie, SELFIE_TYPE);
                     break;
                 case TTD_TYPE:
-                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
+                    GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, file, cameraTTD);
+//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraTTD);
                     ttd = file;
                     uploadFileToServer(ttd, TTD_TYPE);
                     break;

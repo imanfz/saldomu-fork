@@ -21,7 +21,6 @@ import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
-import com.squareup.picasso.Picasso;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -278,29 +277,18 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
         Bitmap bm = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(mContext);
-        else
-            mPic= Picasso.with(mContext);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(mContext);
+//        else
+//            mPic= Picasso.with(mContext);
 
         assert _data != null;
         if(_data != null && _data.equals("") || _data.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                .error(roundedImage)
-                .fit().centerInside()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(_holder);
+            GlideManager.sharedInstance().initializeGlide(mContext, R.drawable.user_unknown_menu, roundedImage, _holder);
         }
         else {
-            mPic.load(_data)
-                .error(roundedImage)
-                .fit()
-                .centerCrop()
-                .placeholder(R.drawable.progress_animation)
-                .transform(new RoundImageTransformation())
-                .into(_holder);
+            GlideManager.sharedInstance().initializeGlide(mContext, _data, roundedImage, _holder);
         }
     }
 

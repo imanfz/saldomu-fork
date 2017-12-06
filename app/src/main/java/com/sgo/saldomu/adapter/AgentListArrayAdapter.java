@@ -20,11 +20,9 @@ import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.models.ShopDetail;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +43,6 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
     private ImageView agentMapBtn;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private BbsSearchAgentActivity bbsSearchAgentActivity;
-    Picasso mPic;
 
     public AgentListArrayAdapter(Context context, int layoutResourceId, ArrayList<ShopDetail> shopDetails)
     {
@@ -197,25 +194,27 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
 
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(context);
-        else
-            mPic= Picasso.with(context);
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(context);
+//        else
+//            mPic= Picasso.with(context);
 
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
             if (shopDetail.getUrlSmallProfilePicture() != null && !shopDetail.getUrlSmallProfilePicture().isEmpty()) {
-                mPic.load(shopDetail.getUrlSmallProfilePicture())
-                        .error(roundedImage)
-                        .fit().centerInside()
-                        .placeholder(R.drawable.progress_animation)
-                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
+                GlideManager.sharedInstance().initializeGlide(context, shopDetail.getUrlSmallProfilePicture(), roundedImage, viewHolder.agentProfilePic);
+//                mPic.load(shopDetail.getUrlSmallProfilePicture())
+//                        .error(roundedImage)
+//                        .fit().centerInside()
+//                        .placeholder(R.drawable.progress_animation)
+//                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
             } else {
-                mPic.load(R.drawable.user_unknown_menu)
-                        .error(roundedImage)
-                        .fit().centerInside()
-                        .placeholder(R.drawable.progress_animation)
-                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
+                GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, roundedImage, viewHolder.agentProfilePic);
+//                mPic.load(R.drawable.user_unknown_menu)
+//                        .error(roundedImage)
+//                        .fit().centerInside()
+//                        .placeholder(R.drawable.progress_animation)
+//                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
             }
         }
 

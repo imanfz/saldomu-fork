@@ -12,12 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -66,24 +65,16 @@ public class MyFriendAdapter extends ArrayAdapter<myFriendModel> implements Filt
         holder.txt_name.setText(itemnya.getFull_name());
         holder.txt_number.setText(itemnya.getFriend_number());
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(context);
-        else
-            mPic= Picasso.with(context);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(context);
+//        else
+//            mPic= Picasso.with(context);
 
         if(itemnya.getImg_url().isEmpty())
-            mPic.load(R.drawable.user_unknown_menu)
-                .fit()
-                .centerCrop()
-                .into(holder.qc_pic);
-        else
-            mPic.load(itemnya.getImg_url())
-                .error(R.drawable.user_unknown_menu)
-                .placeholder(R.drawable.progress_animation)
-                .fit()
-                .centerCrop()
-                .into(holder.qc_pic);
+            GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, null, holder.qc_pic);
+        else GlideManager.sharedInstance().initializeGlide(context, itemnya.getImg_url(), context.getResources().getDrawable(R.drawable.icon_no_photo), holder.qc_pic);
+
 
         return row;
     }
