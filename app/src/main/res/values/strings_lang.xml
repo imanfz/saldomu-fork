@@ -1034,7 +1034,7 @@
     <string name="label_sampai_dengan">Sampai dengan</string>
     <string name="message_notif_update_tutup_manual_success">Pengaturan informasi waktu tutup manual berhasil disimpan</string>
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
-    <string name="title_rating_by_member">Dummy Rating by Member</string>
+    <string name="title_rating_by_member">Agent Review</string>
 
     <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
@@ -1134,4 +1134,6 @@
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
 
+    <string name="bbs_member_review_title">Please Review Your Experience</string>
+    <string name="bbs_rating_description">Give 1 star for bad service, 5 for good</string>
 </resources>
