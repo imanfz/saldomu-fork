@@ -8,11 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.sgo.saldomu.Beans.PromoObject;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
-import com.squareup.picasso.Picasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 
 import java.util.ArrayList;
 
@@ -65,19 +64,30 @@ public class PromoAdapter extends BaseAdapter {
         String pic = promo.get(position).getImage();
         String name = promo.get(position).getName();
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(context);
-        else
-            mPic= Picasso.with(context);
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(context);
+//        else
+//            mPic= Picasso.with(context);
 
-        if(!pic.equals("")){
-            mPic.load(pic)
-                .fit()
-                .placeholder(R.drawable.progress_animation)
-                .into(holder.imagePromo);
+//        if(!pic.equals("")){
+//            mPic.load(pic)
+//                .fit()
+//                .placeholder(R.drawable.progress_animation)
+//                .into(holder.imagePromo);
+//
+//            if(name.equals("")) {
+//                holder.llPromoDesc.setVisibility(View.GONE);
+//            }
+//            else {
+//                holder.llPromoDesc.setVisibility(View.VISIBLE);
+//                holder.promoDesc.setText(name);
+//            }
+//        }
 
-            if(name.equals("")) {
+        if(!pic.equals("") || !pic.equals(null)){
+            GlideManager.sharedInstance().initializeGlide(context, pic, null, holder.imagePromo);
+            if(name.equals("") || name.equals(null)) {
                 holder.llPromoDesc.setVisibility(View.GONE);
             }
             else {

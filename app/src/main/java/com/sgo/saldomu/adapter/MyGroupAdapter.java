@@ -6,13 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.hb.views.PinnedSectionListView;
 import com.sgo.saldomu.Beans.MyGroupObject;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -79,24 +78,23 @@ public class MyGroupAdapter extends BaseAdapter implements PinnedSectionListView
 
             holder.txtMemberName.setText(groups.get(position).getMemberName());
 
-            Picasso mPic;
-            if(MyApiClient.PROD_FLAG_ADDRESS)
-                mPic = MyPicasso.getUnsafeImageLoader(context);
-            else
-                mPic= Picasso.with(context);
+//            Picasso mPic;
+//            if(MyApiClient.PROD_FLAG_ADDRESS)
+//                mPic = MyPicasso.getUnsafeImageLoader(context);
+//            else
+//                mPic= Picasso.with(context);
 
             if(myGroupObject.getMemberProfilePicture() != null && myGroupObject.getMemberProfilePicture().isEmpty())
-                mPic.load(R.drawable.user_unknown_menu)
-                    .fit()
-                    .centerCrop()
-                    .into(holder.qc_pic);
+                GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, null, holder.qc_pic);
             else
-                mPic.load(myGroupObject.getMemberProfilePicture())
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.drawable.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .into(holder.qc_pic);
+                GlideManager.sharedInstance().initializeGlide(context, myGroupObject.getMemberProfilePicture()
+                        , context.getResources().getDrawable(R.drawable.user_unknown_menu), holder.qc_pic);
+//                mPic.load(myGroupObject.getMemberProfilePicture())
+//                    .error(R.drawable.user_unknown_menu)
+//                    .placeholder(R.drawable.progress_animation)
+//                    .fit()
+//                    .centerCrop()
+//                    .into(holder.qc_pic);
         }
 
         return view;

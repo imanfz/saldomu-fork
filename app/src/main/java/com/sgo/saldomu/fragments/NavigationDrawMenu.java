@@ -4,19 +4,15 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -48,18 +44,16 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GeneralizeImage;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -69,7 +63,6 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -78,7 +71,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -356,25 +348,17 @@ public class NavigationDrawMenu extends ListFragment{
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         if(_url_profpic !=null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, headerCustImage);
         }
         else {
-            mPic.load(_url_profpic)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, headerCustImage);
         }
 
     }
