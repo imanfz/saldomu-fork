@@ -368,12 +368,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
-                    currentLatitude = lastLocation.getLatitude();
-                    currentLongitude = lastLocation.getLongitude();
+                    //currentLatitude = lastLocation.getLatitude();
+                    //currentLongitude = lastLocation.getLongitude();
                 }
 
                 Timber.d("Location Found" + lastLocation.toString());
-                viewPager.getAdapter().notifyDataSetChanged();
+                //viewPager.getAdapter().notifyDataSetChanged();
                 getCompleteLocationAddress();
                 //searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
                 googleApiClient.disconnect();
@@ -532,8 +532,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
 
         } else {
-            currentLatitude = lastLocation.getLatitude();
-            currentLongitude = lastLocation.getLongitude();
+            //currentLatitude = lastLocation.getLatitude();
+            //currentLongitude = lastLocation.getLongitude();
         }
 
         completeAddress = "";
@@ -1153,6 +1153,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             } else {
 
                             }
+
                         } else if (code.equals(WebParams.INPROGRESS_CODE)) {
                             android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                             alertDialog.setCanceledOnTouchOutside(false);
@@ -1236,7 +1237,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         }
 
-                        viewPager.getAdapter().notifyDataSetChanged();
+                        //viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
                     } catch (JSONException e) {
