@@ -237,10 +237,7 @@
             android:name=".activities.BbsMerchantSetupHourActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.BbsSearchTokoActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
         <activity
             android:name=".activities.BbsSearchAgentActivity"
