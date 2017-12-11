@@ -1141,5 +1141,6 @@
     <string name="rational_readphonestate_readcontacts">Aplikasi membutuhkan akses ke perangkat mengecek status perangkat dan kontak</string>
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
+    <string name="member_saldo_not_enough">Saldo Member tidak mencukupi, sehingga transaksi tidak dapat dilanjutkan.</string>
 
 </resources>
