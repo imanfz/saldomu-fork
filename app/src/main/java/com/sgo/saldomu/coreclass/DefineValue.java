@@ -470,5 +470,14 @@ public class DefineValue {
     public static String REMARK_FOTO = "remarkFoto";
     public static String REMARK_TTD = "remarkTtd";
     public static String MODEL_NOTIF = "model_notif";
+
+    public static String MEMBER_PROFILE_PICTURE = "member_profile_picture";
+    public static String AGENT_PROFILE_PICTURE  = "agent_profile_picture";
+
+    public static String BBS_MODULE             = "bbs_module";
+    public static String BBS_REVIEW             = "bbs_review";
+    public static String BBS_SHOP_NAME          = "shop_name";
+    public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
+    public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
 }
 

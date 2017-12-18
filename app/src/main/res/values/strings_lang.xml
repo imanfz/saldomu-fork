@@ -1144,4 +1144,6 @@
 
     <string name="bbs_member_review_title">Please Review Your Experience</string>
     <string name="bbs_rating_description">Give 1 star for bad service, 5 for good</string>
+    <string name="err_rating_empty">Silakan pilih rating</string>
+    <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
 </resources>
