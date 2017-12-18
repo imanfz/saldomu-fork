@@ -63,7 +63,7 @@ public class JobScheduleManager {
         Job myLocationJob = dispatcher.newJobBuilder()
                 .setService(servicesClass)
                 .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(120, 130)) //120-130detik 
+                .setTrigger(Trigger.executionWindow(120, 130)) //120-130detik
                 .setReplaceCurrent(true)
                 .setRetryStrategy(RetryStrategy.DEFAULT_LINEAR)
                 .setConstraints(Constraint.ON_ANY_NETWORK)
