@@ -227,6 +227,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         searchLocationEditText.setSelectAllOnFocus(true);
 
         etJumlah                = (EditText) findViewById(R.id.etJumlah);
+        etJumlah.requestFocus();
         etJumlah.addTextChangedListener(jumlahChangeListener);
 
         etJumlah.setOnTouchListener(new View.OnTouchListener() {
