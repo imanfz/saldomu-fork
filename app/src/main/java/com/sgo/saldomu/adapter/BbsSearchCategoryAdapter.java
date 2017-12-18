@@ -1,7 +1,6 @@
 package com.sgo.saldomu.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,31 +9,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BbsSearchTokoActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.models.ShopCategory;
-
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import timber.log.Timber;
 
 /**
  * Created by Lenovo on 22/03/2017.
@@ -123,76 +105,6 @@ public class BbsSearchCategoryAdapter extends RecyclerView.Adapter<BbsSearchCate
 
         });
 
-    }
-
-    private void requestSearchTokoByCategory(View v, int position) {
-        //Toast.makeText(v.getContext(), "Button Clicked " + categoryList.get(position).getCategoryCode(), Toast.LENGTH_SHORT).show();
-
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
-        params.put(WebParams.SENDER_ID, DefineValue.SENDER_ID);
-        params.put(WebParams.RECEIVER_ID, DefineValue.RECEIVER_ID);
-        params.put(WebParams.CATEGORY_ID, categoryList.get(position).getCategoryId());
-        //params.put(WebParams.LATITUDE, sp.getDouble(DefineValue.LAST_CURRENT_LATITUDE, 0.0));
-        //dparams.put(WebParams.LONGITUDE, sp.getDouble(DefineValue.LAST_CURRENT_LONGITUDE, 0.0));
-        params.put(WebParams.RADIUS, 1);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.SENDER_ID + DefineValue.RECEIVER_ID + BuildConfig.AppID + categoryList.get(position).getCategoryId()
-                + BbsSearchTokoActivity.latitude + BbsSearchTokoActivity.longitude));
-
-        params.put(WebParams.SIGNATURE, signature);
-
-        MyApiClient.searchToko(context, params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                try {
-
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-
-                    } else {
-                        Toast.makeText(context, response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(context, Resources.getSystem().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(context, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
     }
 
     @Override

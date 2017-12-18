@@ -1048,7 +1048,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.CATEGORY_ID, categoryId);
             params.put(WebParams.LATITUDE, latitude);
             params.put(WebParams.LONGITUDE, longitude);
-            params.put(WebParams.RADIUS, "10");
+            params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
 
@@ -1069,8 +1069,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 handler.postDelayed(runnable, timeDelayed);
             }
 
-            currentLatitude = latitude;
-            currentLongitude = longitude;
+            //Timber.d("Current Latitude: " + currentLatitude.toString() + ", Current Longitude: " + currentLongitude.toString());
+            //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
+            //currentLatitude = latitude;
+            //currentLongitude = longitude;
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                     DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + categoryId
@@ -1285,34 +1287,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
     }
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-
-            currentLatitude = intent.getDoubleExtra("latitude", 0);
-            currentLongitude = intent.getDoubleExtra("longitude", 0);
-
-            searchToko(currentLatitude, currentLongitude);
-
-            stopService(locationIntent);
-
-            //Kabupaten
-            String subAdminArea = intent.getStringExtra("subAdminArea");
-
-            //Propinsi
-            String adminArea = intent.getStringExtra("adminArea");
-
-            //Negara
-            String countryName = intent.getStringExtra("countryName");
-            //  ... react to local broadcast message
-
-            //TextView lblLocation = (TextView) findViewById(R.id.lblLocation);
-            //lblLocation.setText(currentLatitude + ", " + currentLongitude + ", "+ subAdminArea +  ", "+ adminArea + ", " + countryName);
-        }
-    };
 
     public ArrayList<Double> getCurrentCoordinate() {
         ArrayList<Double> tempCoordinate = new ArrayList<>();
