@@ -140,7 +140,7 @@
         android:layout_height="wrap_content"
         >
 
-        <TableRow android:layout_marginTop="10dip">
+        <!-- TableRow android:layout_marginTop="10dip">
 
             <ImageView
                 android:layout_width="100dp"
@@ -148,7 +148,6 @@
                 android:id="@+id/ivPPMember"
                 android:src="@drawable/user_unknown_menu"
                 android:layout_weight="1"
-                android:paddingLeft="5dp"
                 />
 
             <RatingBar
@@ -159,10 +158,12 @@
                 android:numStars="5"
                 android:stepSize="0.5"
                 android:rating="3.5"
+                android:layout_weight="1"
+
                 />
 
 
-        </TableRow>
+        </TableRow -->
 
         <TableRow android:layout_marginTop="10dip">
 
