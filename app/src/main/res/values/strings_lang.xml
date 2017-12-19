@@ -62,7 +62,7 @@
 
     <string name="regist1_notif_title">Registrasi Sukses</string>
     <string name="regist1_notif_title_registered">Nomor Handphone sudah Terdaftar</string>
-    <string name="regist1_notif_message_registered">Silahkan gunakan Nomor Handphone dan Kata Sandi Anda untuk masuk. </string>
+    <string name="regist1_notif_message_registered">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk. </string>
     <string name="regist1_notif_title_verification">Verifikasi Sukses</string>
     <string name="regist1_notif_message_email">Silahkan cek inbox Email Anda untuk proses aktivasi selanjutnya.</string>
     <string name="regist1_notif_message_sms">akan mengirimkan satu SMS berisi kode Token untuk proses
@@ -84,21 +84,21 @@
 
     <string name="regist2_notif_title">Registrasi Sukses</string>
     <string name="regist2_notif_message_1">Nomor handphone Anda adalah:</string>
-    <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Kata Sandi Anda untuk masuk.</string>
+    <string name="regist2_notif_message_3">Silahkan gunakan Nomor Handphone dan Password Anda untuk masuk.</string>
     <string name="regist2_title">Registrasi</string>
-    <string name="regist2_text_pass">Kata Sandi</string>
+    <string name="regist2_text_pass">Password</string>
     <string name="regist2_edithint_pass">min. 6 karakter</string>
-    <string name="regist2_checkbox_showpass">Tampilkan kata sandi</string>
-    <string name="regist2_text_ulangpass">Ketik ulang kata sandi</string>
+    <string name="regist2_checkbox_showpass">Tampilkan Password</string>
+    <string name="regist2_text_ulangpass">Ketik ulang Password</string>
     <string name="regist2_checkbox_showpin">Tampilkan PIN</string>
     <string name="regist2_text_ulangpin">Ketik ulang PIN</string>
     <string name="regist2_text_otp">Token</string>
     <string name="regist2_edithint_otp">Silahkan masukkan kode Token</string>
 
-    <string name="regist2_validation_pass">Kata sandi dibutuhkan!</string>
-    <string name="regist2_validation_pass_length">Kata sandi minimal 6 karakter!</string>
-    <string name="regist2_validation_confirmpass">Ketik ulang Kata sandi dibutuhkan!</string>
-    <string name="regist2_validation_confirmpass_pass">Ketik ulang Kata sandi tidak sama dengan Kata sandi!</string>
+    <string name="regist2_validation_pass">Password dibutuhkan!</string>
+    <string name="regist2_validation_pass_length">Password minimal 6 karakter!</string>
+    <string name="regist2_validation_confirmpass">Ketik ulang Password dibutuhkan!</string>
+    <string name="regist2_validation_confirmpass_pass">Ketik ulang Password tidak sama dengan Password!</string>
     <string name="regist2_validation_otp">Token dibutuhkan!</string>
     <string name="reg2_activation_code">Kode Aktivasi</string>
     <string name="reg2_hint_token_code">Kode Token</string>
@@ -120,15 +120,15 @@
     <string name="login_text_id" translatable="false">ID</string>
     <string name="login_edithint_id">No HP Anda yang sudah terdaftar</string>
     <string name="edittext_hint_id">Masukkan No. HP</string>
-    <string name="login_text_pass">Kata Sandi</string>
-    <string name="login_edithint_pass">Kata Sandi</string>
+    <string name="login_text_pass">Password</string>
+    <string name="login_edithint_pass">Password</string>
     <string name="login_button_login">Masuk</string>
     <string name="login_text_forgetpin">Lupa PIN, silahkan menghubungi\ncall center di 0813–3335–5541</string>
-    <string name="login_text_forgetpass">Lupa Kata Sandi</string>
-    <string name="login_text_forgetpass_hide">Lupa kata sandi, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
+    <string name="login_text_forgetpass">Lupa Password</string>
+    <string name="login_text_forgetpass_hide">Lupa Password, silahkan kirim email ke\n supportmandiri@sgo.co.id</string>
     <string name="login_toast_loginsukses">Masuk Berhasil</string>
     <string name="login_validation_userID">Nomor handphone dibutuhkan !</string>
-    <string name="login_validation_pass">Kata sandi dibutuhkan!</string>
+    <string name="login_validation_pass">Password dibutuhkan!</string>
     <string name="login_validation_comm">Maaf Anda belum terdaftar sebagai member.</string>
 
     <string name="inethandler_dialog_message">Tidak ada koneksi internet atau koneksi internet bermasalah.</string>
@@ -210,7 +210,7 @@
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
-    <string name="menu_item_title_onprogress_agent">Dalam Process</string>
+    <string name="menu_item_title_onprogress_agent">Dalam Proses</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -263,23 +263,23 @@
         Pastikan tanggal lahir dan Nama ibu kandung diisi dengan data yang benar karena digunakan sebagai pengecekan kesamaan data saat lupa PIN.
     </string>
 
-    <string name="changepass_ab_changepass">Ganti Kata Sandi</string>
-    <string name="changepass_text_currentpass">Kata Sandi Berlaku</string>
-    <string name="changepass_text_newpass">Kata Sandi Baru</string>
-    <string name="changepass_text_retypenewpass">Ketik Ulang Kata Sandi Baru</string>
-    <string name="changepass_edit_error_currentpass">Kata Sandi dibutuhkan!</string>
-    <string name="changepass_edit_error_newpass">Kata Sandi Baru dibutuhkan!</string>
-    <string name="changepass_edit_error_retypenewpass">Ketik Ulang Kata Sandi dibutuhkan!</string>
+    <string name="changepass_ab_changepass">Ganti Password</string>
+    <string name="changepass_text_currentpass">Password Berlaku</string>
+    <string name="changepass_text_newpass">Password Baru</string>
+    <string name="changepass_text_retypenewpass">Ketik Ulang Password Baru</string>
+    <string name="changepass_edit_error_currentpass">Password dibutuhkan!</string>
+    <string name="changepass_edit_error_newpass">Password Baru dibutuhkan!</string>
+    <string name="changepass_edit_error_retypenewpass">Ketik Ulang Password dibutuhkan!</string>
     <string name="changepass_edit_error_newpasslength">Minimal 6 karakter!</string>
-    <string name="changepass_edit_error_retypenewpass_confirm">Kata Sandi tidak cocok!</string>
-    <string name="changepass_checkbox_showpass">Tampilkan Kata Sandi</string>
-    <string name="changepass_toast_success">Ganti Kata Sandi Berhasil</string>
-    <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti kata sandi Anda untuk alasan keamanan.</string>
+    <string name="changepass_edit_error_retypenewpass_confirm">Password tidak cocok!</string>
+    <string name="changepass_checkbox_showpass">Tampilkan Password</string>
+    <string name="changepass_toast_success">Ganti Password Berhasil</string>
+    <string name="changepass_text_firsttime_msg">Sebelum menggunakan aplikasi, harap mengganti password Anda untuk alasan keamanan.</string>
 
-    <string name="forgotpass_text_title">Lupa Kata Sandi</string>
-    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Kata Sandi. Pilih tipe notifikasi Lupa Kata Sandi yang akan diproses.</string>
-    <string name="forgotpass_text_instruction3">Isi nomor handphone anda yang terhubung dengan akun anda dan kata sandi yang baru.</string>
-    <string name="forgotpass_text_message_success">Ganti kata sandi berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>
+    <string name="forgotpass_text_title">Lupa Password</string>
+    <string name="forgotpass_text_instruction">%1$s akan mengirimkan prosedur Lupa Password. Pilih tipe notifikasi Lupa Password yang akan diproses.</string>
+    <string name="forgotpass_text_instruction3">Isi nomor handphone anda yang terhubung dengan akun anda dan password yang baru.</string>
+    <string name="forgotpass_text_message_success">Ganti password berhasil. Silahkan cek email atau sms anda sesuai pilihan tipe notifikasi yang anda pilih.</string>
     <string name="validation_minimal">Minimal</string>
     <string name="validation_character">karakter!</string>
 
@@ -289,11 +289,11 @@
 
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
 
-    <string name="forgetpass_dialog_title">Lupa Kata Sandi</string>
-    <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Kata sandi selanjutnya.</string>
+    <string name="forgetpass_dialog_title">Lupa Password</string>
+    <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>
     <string name="forgetpass_edittext_validation">Nomor handphone dibutuhkan!</string>
 
-    <string name="mainpage_dialog_changepass_title">Ganti Kata Sandi</string>
+    <string name="mainpage_dialog_changepass_title">Ganti Password</string>
     <string name="mainpage_dialog_changepass_msg">Apakah Anda ingin mengganti password ?</string>
 
     <string name="listevoucherhp_ab_title_ib" translatable="false">E-Voucher HP - Internet Banking</string>
@@ -547,7 +547,7 @@
 
     <string name="login_failed_attempt_title">Gagal Masuk</string>
     <string name="login_failed_attempt_1">Anda punya %1$d kesempatan sebelum diblokir.</string>
-    <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Kata Sandi" untuk melepas blokir.</string>
+    <string name="login_failed_attempt_3">ID Anda sudah terblokir karena salah password melebihi batas toleransi, silahkan gunakan fitur "Lupa Password" untuk melepas blokir.</string>
     <string name="login_failed_inactive">ID Anda tidak aktif</string>
     <string name="login_failed_dormant">ID Anda dormant</string>
     <string name="login_failed_wrong_pass">Password Salah</string>
@@ -650,7 +650,7 @@
     <string name="cashoutagen_nodata_message">Untuk menggunakan fitur ini silahkan datang ke :</string>
     <string name="request">Permintaan</string>
 
-    <string name="changepass_ab_createpass">Buat Kata Sandi</string>
+    <string name="changepass_ab_createpass">Buat Password</string>
     <string name="password_valid_lowcase">Huruf Kecil dibutuhkan!</string>
     <string name="password_valid_upcase">Huruf Kapital dibutuhkan!</string>
     <string name="password_valid_number">Angka dibutuhkan!</string>
@@ -885,7 +885,7 @@
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
     <string name="title_bbs_list_account_bbs">Daftar Bank / E-Money</string>
     <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
-    <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan kata sandi anda untuk menghapus akun.</string>
+    <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
     <string name="bbsreg_et_error_namebenef">Nama Rekening dibutuhkan !</string>
     <string name="bbsreg_spin_error_citybenef">Kota Rekening dibutuhkan !</string>
@@ -1142,5 +1142,8 @@
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
     <string name="member_saldo_not_enough">Saldo Member tidak mencukupi, sehingga transaksi tidak dapat dilanjutkan.</string>
+
+    <string name="milik_agen">(Milik Agen)</string>
+    <string name="milik_pelanggan">(Milik Pelanggan)</string>
 
 </resources>
