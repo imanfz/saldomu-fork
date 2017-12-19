@@ -210,7 +210,7 @@
     <string name="menu_item_title_list_toko">Kelola Member</string>
     <string name="menu_item_title_list_approval">Daftar Persetujuan</string>
     <string name="menu_item_title_trx_agent">Permintaan Transaksi</string>
-    <string name="menu_item_title_onprogress_agent">Dalam Process</string>
+    <string name="menu_item_title_onprogress_agent">Dalam Proses</string>
     <string name="menu_item_title_map_agent">Peta Agen</string>
     <string name="menu_item_title_map_member">Peta Member</string>
     <string name="menu_item_title_waktu_beroperasi">Waktu Beroperasi</string>
@@ -1041,7 +1041,7 @@
     <string name="label_sampai_dengan">Sampai dengan</string>
     <string name="message_notif_update_tutup_manual_success">Pengaturan informasi waktu tutup manual berhasil disimpan</string>
     <string name="err_notif_start_or_end_date_empty">Silakan isi tanggal mulai atau tanggal akhir terlebih dahulu</string>
-    <string name="title_rating_by_member">Agent Review</string>
+    <string name="title_rating_by_member">Agen Review</string>
 
     <string name="label_jumlah_amount">Berapa Jumlah yang akan ditransfer ?</string>
     <string name="label_transfer_ke">Transfer Ke</string>
@@ -1142,8 +1142,9 @@
     <string name="email_validation">Validasi Email</string>
     <string name="email_warning">Cek kembali email Anda, apakah alamat email tersebut sudah sesuai?</string>
 
-    <string name="bbs_member_review_title">Please Review Your Experience</string>
+    <string name="bbs_member_review_title">Silakan review pengalaman Anda dengan agen ini</string>
     <string name="bbs_rating_description">Give 1 star for bad service, 5 for good</string>
     <string name="err_rating_empty">Silakan pilih rating</string>
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
+    <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
 </resources>

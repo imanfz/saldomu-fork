@@ -479,5 +479,6 @@ public class DefineValue {
     public static String BBS_SHOP_NAME          = "shop_name";
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
+    public static String URL_PROFILE_PICTURE    = "url_profile_picture";
 }
 

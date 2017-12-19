@@ -138,7 +138,7 @@
             android:layout_height="wrap_content"
             >
 
-            <TableRow android:layout_marginTop="10dip">
+            <!-- TableRow android:layout_marginTop="10dip">
 
                 <ImageView
                     android:layout_width="100dp"
@@ -161,7 +161,7 @@
                     />
 
 
-            </TableRow>
+            </TableRow -->
 
             <TableRow android:layout_marginTop="10dip">
 

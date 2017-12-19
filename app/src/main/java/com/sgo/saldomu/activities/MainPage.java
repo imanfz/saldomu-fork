@@ -685,7 +685,7 @@ public class MainPage extends BaseActivity
             tempBundle.putString(DefineValue.BBS_TX_ID, sp.getString(DefineValue.BBS_TX_ID, ""));
             tempBundle.putString(DefineValue.CATEGORY_NAME, sp.getString(DefineValue.CATEGORY_NAME, ""));
             tempBundle.putString(DefineValue.AMOUNT, sp.getString(DefineValue.AMOUNT, ""));
-            tempBundle.putString(DefineValue.IMG_MEDIUM_URL, sp.getString(DefineValue.IMG_MEDIUM_URL, ""));
+            tempBundle.putString(DefineValue.URL_PROFILE_PICTURE, sp.getString(DefineValue.URL_PROFILE_PICTURE, ""));
             tempBundle.putString(DefineValue.BBS_SHOP_NAME, sp.getString(DefineValue.BBS_SHOP_NAME, ""));
             tempBundle.putString(DefineValue.BBS_MAXIMUM_RATING, sp.getString(DefineValue.BBS_MAXIMUM_RATING, ""));
             tempBundle.putString(DefineValue.BBS_DEFAULT_RATING, sp.getString(DefineValue.BBS_DEFAULT_RATING, ""));

@@ -547,7 +547,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                         SecurePreferences.Editor mEditor = sp.edit();
                         mEditor.putString(DefineValue.BBS_MODULE, DefineValue.BBS_REVIEW);
-                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, "");
+                        mEditor.putString(DefineValue.URL_PROFILE_PICTURE, response.getString(WebParams.PROFILE_PICTURE));
                         mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
                         mEditor.putString(DefineValue.AMOUNT, amount);
                         mEditor.putString(DefineValue.BBS_TX_ID, txId);
@@ -562,7 +562,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         tempBundle.putString(DefineValue.BBS_TX_ID, txId);
                         tempBundle.putString(DefineValue.CATEGORY_NAME, categoryName);
                         tempBundle.putString(DefineValue.AMOUNT, amount);
-                        tempBundle.putString(DefineValue.IMG_MEDIUM_URL, "");
+                        tempBundle.putString(DefineValue.URL_PROFILE_PICTURE, response.getString(WebParams.PROFILE_PICTURE));
                         tempBundle.putString(DefineValue.BBS_SHOP_NAME, response.getString(WebParams.SHOP_NAME));
                         tempBundle.putString(DefineValue.BBS_MAXIMUM_RATING, response.getString(WebParams.MAXIMUM_RATING));
                         tempBundle.putString(DefineValue.BBS_DEFAULT_RATING, response.getString(WebParams.DEFAULT_RATING));

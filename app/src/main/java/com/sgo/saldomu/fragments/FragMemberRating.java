@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -65,8 +66,9 @@ public class FragMemberRating extends Fragment {
     private SecurePreferences sp;
 
     // TODO: Rename and change types of parameters
-    private String categoryName, txId, imageURL, shopName, amount, maximumRating, defaultRating, comment, customerId;
+    private String categoryName, txId, imageURL, shopName, amount, maximumRating, defaultRating, comment, customerId, isCancel;
     private TextView tvNameKategori,tvDescAmount, tvAgentName;
+    private EditText etComment;
     private Button btnSubmit, btnCancel;
     private RatingBar ratingBar;
     private ImageView agentProfilePic;
@@ -92,7 +94,7 @@ public class FragMemberRating extends Fragment {
         if (getArguments() != null) {
             categoryName    = getArguments().getString(DefineValue.CATEGORY_NAME);
             amount          = getArguments().getString(DefineValue.AMOUNT);
-            imageURL        = getArguments().getString(DefineValue.IMG_MEDIUM_URL);
+            imageURL        = getArguments().getString(DefineValue.URL_PROFILE_PICTURE);
             txId            = getArguments().getString(DefineValue.BBS_TX_ID);
             shopName        = getArguments().getString(DefineValue.BBS_SHOP_NAME);
 
@@ -116,6 +118,7 @@ public class FragMemberRating extends Fragment {
         btnSubmit       = (Button) v.findViewById(R.id.btnSubmit);
         btnCancel       = (Button) v.findViewById(R.id.btnCancel);
         agentProfilePic = (ImageView) v.findViewById(R.id.agentProfilePic);
+        etComment       = (EditText) v.findViewById(R.id.etComment);
 
         ratingBar.setNumStars(Integer.valueOf(maximumRating));
         ratingBar.setMax(Integer.valueOf(maximumRating));
@@ -147,6 +150,7 @@ public class FragMemberRating extends Fragment {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isCancel    = DefineValue.STRING_YES;
                 comment     = "";
                 userRating  = Integer.valueOf(defaultRating);
                 submitData();
@@ -158,6 +162,8 @@ public class FragMemberRating extends Fragment {
             @Override
             public void onClick(View v) {
                 if ( userRating > 0 ) {
+                    isCancel    = DefineValue.STRING_NO;
+                    comment     = etComment.getText().toString();
                     submitData();
                 } else {
                     AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
@@ -212,12 +218,6 @@ public class FragMemberRating extends Fragment {
                     Timber.d("isi params response updatefeedback:"+response.toString());
                     String code = response.getString(WebParams.ERROR_CODE);
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                    } else {
-                        Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
-                    }
-
                     // Now remove tvalue from shared preferences
                     mEditor.remove(DefineValue.BBS_MODULE);
                     mEditor.remove(DefineValue.BBS_TX_ID);
@@ -227,8 +227,26 @@ public class FragMemberRating extends Fragment {
                     mEditor.remove(DefineValue.BBS_SHOP_NAME);
                     mEditor.apply();
 
-                    getActivity().finish();
-
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                        if ( isCancel.equals(DefineValue.STRING_NO) ) {
+                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                            alertDialog.setMessage(getString(R.string.alertbox_thx_for_rating));
+                            alertDialog.setCancelable(false);
+                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            getActivity().finish();
+                                        }
+                                    });
+                            alertDialog.show();
+                        } else {
+                            getActivity().finish();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                        getActivity().finish();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
