@@ -324,7 +324,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             onBackPressed();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public void initializeToolbar(String title)
@@ -416,7 +416,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         getCompleteLocationAddress();
 
         if ( mobility.equals(DefineValue.STRING_NO) ) {
-            searchToko(currentLatitude, currentLongitude);
+            //searchToko(currentLatitude, currentLongitude);
         }
 
         googleApiClient.disconnect();
@@ -1310,7 +1310,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         this.currentLongitude   = lastLongitude;
         this.completeAddress    = newAddress;
         //getCompleteLocationAddress2();
-        searchToko(lastLatitude, lastLongitude);
+        //searchToko(lastLatitude, lastLongitude);
     }
 
     public void onIconMapClick(int position) {
@@ -1825,7 +1825,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onBackPressed() {
 
-        super.onBackPressed();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.dismiss();
+                    }
+                })
+        ;
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+        return;
+        //super.onBackPressed();
         /*if(fragment !=null) {
             if ( fragment instanceof AgentMapFragment) {
 

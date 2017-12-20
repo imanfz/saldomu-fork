@@ -800,10 +800,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         {
             //kembali ke activity sebelumnya
             disabledBackPressed();
-            return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
@@ -1078,5 +1077,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        disabledBackPressed();
+        return;
+    }
 }

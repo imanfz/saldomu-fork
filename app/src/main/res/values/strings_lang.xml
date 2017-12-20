@@ -1151,4 +1151,5 @@
     <string name="err_rating_empty">Silakan pilih rating</string>
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
     <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
+    <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
 </resources>
