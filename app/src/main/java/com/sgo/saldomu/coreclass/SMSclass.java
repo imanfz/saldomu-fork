@@ -1,5 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -11,7 +12,10 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.IBinder;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
@@ -146,7 +150,19 @@ public class SMSclass {
         getmContext().registerReceiver(receiverDelivered, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
+            List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+            Timber.d("subscriptionId slot 1 = "+ subscriptionInfoList.get(0).getSubscriptionId());
+            if( SmsManager.getSmsManagerForSubscriptionId( subscriptionInfoList.get(0).getSubscriptionId()) != null)
+                SmsManager.getSmsManagerForSubscriptionId( subscriptionInfoList.get(0).getSubscriptionId()).sendTextMessage(phoneNumber, null, message,sentPI,deliveredPI);
+            else
+                sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        }
+        else {
+            if(sendSMS(mContext, getIndexActiveSIMSlot(), phoneNumber, null, message, sentPI, deliveredPI))
+                Timber.d("Sukses jalanin sendSMS dibawah Lollipop");
+        }
         Timber.d("Send message sms : "+ message);
     }
 
@@ -157,47 +173,100 @@ public class SMSclass {
             getmContext().unregisterReceiver(receiverDelivered);
     }
 
+    private static  boolean getSIMStateBySlot(Context context, String predictedMethodName, int slotID) throws GeminiMethodNotFoundException {
+
+        boolean isReady = false;
+
+        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        try{
+
+            Class<?> telephonyClass = Class.forName(telephony.getClass().getName());
+
+            Class<?>[] parameter = new Class[1];
+            parameter[0] = int.class;
+            Method getSimStateGemini = telephonyClass.getMethod(predictedMethodName, parameter);
+
+            Object[] obParameter = new Object[1];
+            obParameter[0] = slotID;
+            Object ob_phone = getSimStateGemini.invoke(telephony, obParameter);
+
+            if(ob_phone != null){
+                int simState = Integer.parseInt(ob_phone.toString());
+                if(simState == TelephonyManager.SIM_STATE_READY){
+                    isReady = true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GeminiMethodNotFoundException(predictedMethodName);
+        }
+
+        return isReady;
+    }
+
+    private static class GeminiMethodNotFoundException extends Exception {
+
+        private static final long serialVersionUID = -996812356902545308L;
+
+        public GeminiMethodNotFoundException(String info) {
+            super(info);
+        }
+    }
+
 
     public boolean isSimExists(){
        return isSimExists(null);
     }
 
-
-
     public boolean isSimExists(SMS_SIM_STATE listener)
     {
 
-        int SIM_STATE = telephonyManager.getSimState();
-
-        if(SIM_STATE == TelephonyManager.SIM_STATE_READY) {
-            if (listener != null)
-                listener.sim_state(true, "Ada isinya");
-            return true;
-        }
-        else
-        {
-            String SimState = getmContext().getString(R.string.sim_failed);
-            switch(SIM_STATE)
-            {
-                case TelephonyManager.SIM_STATE_ABSENT:
-                    SimState = getmContext().getString(R.string.sim_not_found);
-                    break;
-                case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
-                    SimState = getmContext().getString(R.string.sim_network_locked);
-                    break;
-                case TelephonyManager.SIM_STATE_PIN_REQUIRED:
-                    SimState = getmContext().getString(R.string.sim_pin_required);
-                    break;
-                case TelephonyManager.SIM_STATE_PUK_REQUIRED:
-                    SimState = getmContext().getString(R.string.sim_puk_required);
-                    break;
-                case TelephonyManager.SIM_STATE_UNKNOWN:
-                    SimState = getmContext().getString(R.string.sim_failed);
-                    break;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
+            List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+            if(SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
+                if (listener != null)
+                    listener.sim_state(true, "Ada isinya");
+                return true;
             }
-            if(listener != null)
-                listener.sim_state(false,SimState);
-            return false;
+            else {
+                if (listener != null)
+                    listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
+                return false;
+            }
+        }
+        else {
+
+            int SIM_STATE = telephonyManager.getSimState();
+
+            if (SIM_STATE == TelephonyManager.SIM_STATE_READY) {
+                if (listener != null)
+                    listener.sim_state(true, "Ada isinya");
+                return true;
+            } else {
+                String SimState = getmContext().getString(R.string.sim_failed);
+                switch (SIM_STATE) {
+                    case TelephonyManager.SIM_STATE_ABSENT:
+                        SimState = getmContext().getString(R.string.sim_not_found);
+                        break;
+                    case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+                        SimState = getmContext().getString(R.string.sim_network_locked);
+                        break;
+                    case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+                        SimState = getmContext().getString(R.string.sim_pin_required);
+                        break;
+                    case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                        SimState = getmContext().getString(R.string.sim_puk_required);
+                        break;
+                    case TelephonyManager.SIM_STATE_UNKNOWN:
+                        SimState = getmContext().getString(R.string.sim_failed);
+                        break;
+                }
+                if (listener != null)
+                    listener.sim_state(false, SimState);
+                return false;
+            }
         }
     }
 
@@ -222,21 +291,50 @@ public class SMSclass {
     }
 
     public String getDeviceIMEI(){
-        if(telephonyManager.getDeviceId() == null)
-            return "00000";
+        String imei;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager sm = SubscriptionManager.from(mContext);
+            List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
+            imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
+        }
+        else {
+            if (telephonyManager.getDeviceId() == null)
+                imei =  "00000";
+            else
+                imei = telephonyManager.getDeviceId();
+        }
 
-        return telephonyManager.getDeviceId();
+        return imei;
     }
 
     public String getSimNumber(){
         return telephonyManager.getLine1Number();
     }
 
-    public String getDeviceICCID(){
-        if(telephonyManager.getSimSerialNumber() == null)
-            return "00000";
 
-        return telephonyManager.getSimSerialNumber();
+    /**
+     * Return iccid untuk lollipop 5.1 keatas akan diambil iccid di simcard 1,
+     * sedangkan lollipop 5.1 kebawah default ambil iccid di simcard 1 juga.
+     * Terkecuali kondisi dimana simcard dimasukkan hanya di slot 2, maka otomatis ambil
+     * iccid di slot ke 2
+     * @return iccid di simcard slot 1
+     */
+    public String getDeviceICCID(){
+        String iccId;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+            SubscriptionManager sm = SubscriptionManager.from(mContext);
+            List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
+            SubscriptionInfo si = sis.get(0);
+            iccId = si.getIccId();
+        }
+        else {
+            if (telephonyManager.getSimSerialNumber() == null)
+                iccId = "00000";
+            else
+                iccId = telephonyManager.getSimSerialNumber();
+        }
+
+        return iccId;
     }
 
     public Context getmContext() {
@@ -310,6 +408,43 @@ public class SMSclass {
                     ", slot=" + slot +
                     '}';
         }
+    }
+
+    private int getIndexActiveSIMSlot(){
+        boolean isSIM1Ready = false;
+        boolean isSIM2Ready = false;
+
+        try {
+            isSIM1Ready = getSIMStateBySlot(mContext, "getSimStateGemini", 0);
+        } catch (GeminiMethodNotFoundException e) {
+            e.printStackTrace();
+            try {
+                isSIM1Ready = getSIMStateBySlot(mContext, "getSimState", 0);
+            } catch (GeminiMethodNotFoundException e1) {
+                //Call here for next manufacturer's predicted method name if you wish
+                e1.printStackTrace();
+            }
+        }
+
+        try {
+            isSIM2Ready = getSIMStateBySlot(mContext, "getSimStateGemini", 1);
+        } catch (GeminiMethodNotFoundException e) {
+            e.printStackTrace();
+            try {
+                isSIM2Ready = getSIMStateBySlot(mContext, "getSimState", 1);
+            } catch (GeminiMethodNotFoundException e1) {
+                //Call here for next manufacturer's predicted method name if you wish
+                e1.printStackTrace();
+            }
+        }
+
+        if(isSIM1Ready)
+            return 0;
+
+        if(isSIM2Ready)
+            return 1;
+
+        return 0;
     }
 
     private void deleteSMS( String message, String number) {
@@ -449,5 +584,51 @@ public class SMSclass {
             return 0;
         }
     }
+
+
+    public boolean sendSMS(Context ctx, int simID, String toNum, String centerNum, String smsText, PendingIntent sentIntent, PendingIntent deliveryIntent) {
+        String name;
+
+        try {
+            if (simID == 0) {
+                Timber.d("send SMS using sim 1");
+                name = "isms";
+                // for model : "Philips T939" name = "isms0"
+            } else if (simID == 1) {
+                Timber.d("send SMS using sim 2");
+                name = "isms2";
+            } else {
+                throw new Exception("can not get service which for sim '" + simID + "', only 0,1 accepted as values");
+            }
+            Method method = Class.forName("android.os.ServiceManager").getDeclaredMethod("getService", String.class);
+            method.setAccessible(true);
+            Object param = method.invoke(null, name);
+
+            method = Class.forName("com.android.internal.telephony.ISms$Stub").getDeclaredMethod("asInterface", IBinder.class);
+            method.setAccessible(true);
+            Object stubObj = method.invoke(null, param);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                method = stubObj.getClass().getMethod("sendText", String.class, String.class, String.class, PendingIntent.class, PendingIntent.class);
+                method.invoke(stubObj, toNum, centerNum, smsText, sentIntent, deliveryIntent);
+            } else {
+                method = stubObj.getClass().getMethod("sendText", String.class, String.class, String.class, String.class, PendingIntent.class, PendingIntent.class);
+                method.invoke(stubObj, ctx.getPackageName(), toNum, centerNum, smsText, sentIntent, deliveryIntent);
+            }
+
+            return true;
+        } catch (ClassNotFoundException e) {
+            Timber.e( "ClassNotFoundException:" + e.getMessage());
+        } catch (NoSuchMethodException e) {
+            Timber.e("NoSuchMethodException:" + e.getMessage());
+        } catch (InvocationTargetException e) {
+            Timber.e("InvocationTargetException:" + e.getMessage());
+        } catch (IllegalAccessException e) {
+            Timber.e("IllegalAccessException:" + e.getMessage());
+        } catch (Exception e) {
+            Timber.e("Exception:" + e.getMessage());
+        }
+        return false;
+    }
+
 
 }

@@ -51,6 +51,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RootUtil;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -80,14 +81,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
  Created by Administrator on 7/11/2014.
  */
-public class MainPage extends BaseActivity
-        implements EasyPermissions.PermissionCallbacks {
+public class MainPage extends BaseActivity {
 
     public static final int REQUEST_FINISH = 0 ;//untuk Request Code dari child activity ke parent activity
     private static final int RESULT_ERROR = -1 ;//untuk Result Code dari child activity ke parent activity kalau error (aplikasi exit)
@@ -110,6 +111,7 @@ public class MainPage extends BaseActivity
     private final static int REQCODE_PLAY_SERVICE = 312;
 
     private static int AmountNotif = 0;
+    private final static int RC_READPHONESTATE = 5;
 
     private String flagLogin = DefineValue.STRING_NO;
     private String userID;
@@ -117,7 +119,6 @@ public class MainPage extends BaseActivity
     private SecurePreferences sp;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
-    private FragmentManager mFragmentManager;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
@@ -133,10 +134,10 @@ public class MainPage extends BaseActivity
     private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
+    private Bundle savedInstanceState;
+    private SMSclass smSclass;
 
-    private boolean isLocationPermissionGranted = false;
     public static final int RC_LOCATION_PERM    = 500;
-    private BundleToJSON bundleToJSON = new BundleToJSON();
 
     private LevelClass levelClass;
 
@@ -146,7 +147,7 @@ public class MainPage extends BaseActivity
 
         // Obtain the FirebaseAnalytics instance.
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
+        this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(this,sp);
 
@@ -167,7 +168,7 @@ public class MainPage extends BaseActivity
                             .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    initializeDashboard(savedInstanceState);
+                                    initializeDashboard();
                                 }
                             });
                     builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -183,7 +184,7 @@ public class MainPage extends BaseActivity
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
             }else {
-                initializeDashboard(savedInstanceState);
+                initializeDashboard();
             }
         }
         else {
@@ -191,11 +192,12 @@ public class MainPage extends BaseActivity
         }
     }
 
+    @AfterPermissionGranted(RC_LOCATION_PERM)
     private void startLocationService() {
         JobScheduleManager.getInstance(this).scheduleUploadLocationService();
     }
 
-    private void initializeDashboard(Bundle savedInstanceState){
+    private void initializeDashboard(){
         if (checkNotificationNotif()) {
             int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
@@ -235,8 +237,33 @@ public class MainPage extends BaseActivity
             }
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
+            String[] perms = {Manifest.permission.READ_PHONE_STATE};
+
+            if (EasyPermissions.hasPermissions(this, perms)) {
+                initializeLogin();
+            } else {
+                EasyPermissions.requestPermissions(this,
+                        getString(R.string.rational_readphonestate),
+                        RC_READPHONESTATE, perms);
+            }
+
+        }
+    }
+
+    @AfterPermissionGranted(RC_READPHONESTATE)
+    void initializeLogin(){
+        Boolean isSimSame = true;
+        if (BuildConfig.FLAVOR.equals("production")){
+            if(smSclass == null)
+                smSclass = new SMSclass(this);
+
+            isSimSame = smSclass.isSimSameSP();
+        }
+
+        if(isSimSame) {
+
             userID = sp.getString(DefineValue.USERID_PHONE, "");
-            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+            accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
             if (savedInstanceState != null)
                 mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
@@ -269,17 +296,14 @@ public class MainPage extends BaseActivity
 
                 FCMManager fcmManager = new FCMManager(this);
                 Intent intent = fcmManager.checkingAction(type, msgMap);
-                if (intent!=null){
+                if (intent != null) {
                     startActivity(intent);
                 }
                 //this.finish();
-            } else
-            {
+            } else {
                 String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
-                if (!sp_model_notif.equals(""))
-                {
-                    if (sp_model_notif.equals("2"))
-                    {
+                if (!sp_model_notif.equals("")) {
+                    if (sp_model_notif.equals("2")) {
                         Intent i = new Intent(this, MyProfileNewActivity.class);
                         startActivity(i);
                     }
@@ -288,16 +312,17 @@ public class MainPage extends BaseActivity
             }
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-            if ( !notifDataNextLogin.equals("") ) {
+            if (!notifDataNextLogin.equals("")) {
                 SecurePreferences.Editor mEditor = sp.edit();
-                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,"");
+                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
                 mEditor.apply();
 
                 changeActivityNextLogin(notifDataNextLogin);
 
             }
-
-
+        }
+        else {
+            Logout(FIRST_SCREEN_INTRO);
         }
     }
 
@@ -576,7 +601,7 @@ public class MainPage extends BaseActivity
     }
 
     private void InitializeNavDrawer(){
-        mFragmentManager = getSupportFragmentManager();
+        FragmentManager mFragmentManager = getSupportFragmentManager();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
         mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
@@ -1001,7 +1026,7 @@ public class MainPage extends BaseActivity
     public void switchLogout() {
         sentLogout();
     }
-    private void Logout() {
+    private void Logout(int logoutTo) {
 
         String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
         String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
@@ -1023,7 +1048,7 @@ public class MainPage extends BaseActivity
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
-        openFirstScreen(FIRST_SCREEN_LOGIN);
+        openFirstScreen(logoutTo);
     }
 	
 	private void sentLogout(){
@@ -1051,7 +1076,7 @@ public class MainPage extends BaseActivity
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("logout:"+response.toString());
                             //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                            Logout();
+                            Logout(FIRST_SCREEN_LOGIN);
 
                         } else {
                             progdialog.dismiss();
@@ -1382,21 +1407,8 @@ public class MainPage extends BaseActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         // Forward results to EasyPermissions
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-        if ( requestCode == RC_LOCATION_PERM ) {
-            startLocationService();
-        }
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-        if ( requestCode == RC_LOCATION_PERM )
-            this.isLocationPermissionGranted = false;
-    }
 }
