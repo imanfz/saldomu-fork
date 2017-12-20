@@ -109,7 +109,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             isRunning = true;
 
             if ( isInquiryRoute && DefineValue.MIN_DISTANCE_ALMOST_ARRIVE > distanceBetween ) {
-                Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), getString(R.string.bbs_agent_almost_arrive), Toast.LENGTH_LONG).show();
             }
 
             updateLocationAgent();

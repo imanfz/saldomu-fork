@@ -1,25 +1,27 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,18 +38,17 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
-import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
@@ -64,6 +65,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
+import static com.sgo.saldomu.coreclass.GlobalUtils.setRatingStarColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,7 +95,9 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     List<ShopDetail> shopDetails;
     TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
     RelativeLayout rlApproval;
+    RatingBar rbMemberRating;
     Spinner spPilihan;
+    ImageView ivPPMember;
     ArrayAdapter<String> SpinnerAdapter;
     Button btnApprove, btnReject;
     int itemId;
@@ -167,6 +171,14 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
         tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
+
+        //rbMemberRating          = (RatingBar) v.findViewById(R.id.rbMemberRating);
+        //ivPPMember              = (ImageView) v.findViewById(R.id.ivPPMember);
+
+        //LayerDrawable stars = (LayerDrawable) rbMemberRating.getProgressDrawable();
+        // Filled stars
+        //setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+
 
         shopDetail              = new ShopDetail();
         shopDetails             = new ArrayList<>();
@@ -741,6 +753,15 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                         tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
+
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+                        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+                        /*if ( !response.getString(DefineValue.MEMBER_PROFILE_PICTURE).equals("") ) {
+                            GlideManager.sharedInstance().initializeGlide(getContext(), response.getString(DefineValue.MEMBER_PROFILE_PICTURE), roundedImage, ivPPMember);
+                        } else {
+                            GlideManager.sharedInstance().initializeGlide(getContext(), R.drawable.user_unknown_menu, roundedImage, ivPPMember);
+                        }*/
 
 
                     } else {

@@ -324,7 +324,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             onBackPressed();
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     public void initializeToolbar(String title)
@@ -368,12 +368,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null) {
 
                 } else {
-                    currentLatitude = lastLocation.getLatitude();
-                    currentLongitude = lastLocation.getLongitude();
+                    //currentLatitude = lastLocation.getLatitude();
+                    //currentLongitude = lastLocation.getLongitude();
                 }
 
                 Timber.d("Location Found" + lastLocation.toString());
-                viewPager.getAdapter().notifyDataSetChanged();
+                //viewPager.getAdapter().notifyDataSetChanged();
                 getCompleteLocationAddress();
                 //searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
                 googleApiClient.disconnect();
@@ -416,7 +416,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         getCompleteLocationAddress();
 
         if ( mobility.equals(DefineValue.STRING_NO) ) {
-            searchToko(currentLatitude, currentLongitude);
+            //searchToko(currentLatitude, currentLongitude);
         }
 
         googleApiClient.disconnect();
@@ -532,8 +532,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( mobility.equals(DefineValue.STRING_NO) && currentLatitude != null ) {
 
         } else {
-            currentLatitude = lastLocation.getLatitude();
-            currentLongitude = lastLocation.getLongitude();
+            //currentLatitude = lastLocation.getLatitude();
+            //currentLongitude = lastLocation.getLongitude();
         }
 
         completeAddress = "";
@@ -1048,7 +1048,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.CATEGORY_ID, categoryId);
             params.put(WebParams.LATITUDE, latitude);
             params.put(WebParams.LONGITUDE, longitude);
-            params.put(WebParams.RADIUS, "10");
+            params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
 
@@ -1069,8 +1069,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 handler.postDelayed(runnable, timeDelayed);
             }
 
-            currentLatitude = latitude;
-            currentLongitude = longitude;
+            //Timber.d("Current Latitude: " + currentLatitude.toString() + ", Current Longitude: " + currentLongitude.toString());
+            //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
+            //currentLatitude = latitude;
+            //currentLongitude = longitude;
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                     DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + categoryId
@@ -1153,6 +1155,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             } else {
 
                             }
+
                         } else if (code.equals(WebParams.INPROGRESS_CODE)) {
                             android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                             alertDialog.setCanceledOnTouchOutside(false);
@@ -1236,7 +1239,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         }
 
-                        viewPager.getAdapter().notifyDataSetChanged();
+                        //viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
                     } catch (JSONException e) {
@@ -1285,34 +1288,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         mLocationRequest.setSmallestDisplacement(DefineValue.DISPLACEMENT);
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-
-            currentLatitude = intent.getDoubleExtra("latitude", 0);
-            currentLongitude = intent.getDoubleExtra("longitude", 0);
-
-            searchToko(currentLatitude, currentLongitude);
-
-            stopService(locationIntent);
-
-            //Kabupaten
-            String subAdminArea = intent.getStringExtra("subAdminArea");
-
-            //Propinsi
-            String adminArea = intent.getStringExtra("adminArea");
-
-            //Negara
-            String countryName = intent.getStringExtra("countryName");
-            //  ... react to local broadcast message
-
-            //TextView lblLocation = (TextView) findViewById(R.id.lblLocation);
-            //lblLocation.setText(currentLatitude + ", " + currentLongitude + ", "+ subAdminArea +  ", "+ adminArea + ", " + countryName);
-        }
-    };
-
     public ArrayList<Double> getCurrentCoordinate() {
         ArrayList<Double> tempCoordinate = new ArrayList<>();
         if ( currentLatitude != null ) {
@@ -1335,7 +1310,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         this.currentLongitude   = lastLongitude;
         this.completeAddress    = newAddress;
         //getCompleteLocationAddress2();
-        searchToko(lastLatitude, lastLongitude);
+        //searchToko(lastLatitude, lastLongitude);
     }
 
     public void onIconMapClick(int position) {
@@ -1850,7 +1825,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onBackPressed() {
 
-        super.onBackPressed();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.dismiss();
+                    }
+                })
+        ;
+        final AlertDialog alert = builder.create();
+        alert.show();
+
+        return;
+        //super.onBackPressed();
         /*if(fragment !=null) {
             if ( fragment instanceof AgentMapFragment) {
 
