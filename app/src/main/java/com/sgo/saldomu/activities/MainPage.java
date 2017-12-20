@@ -46,6 +46,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
+import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
@@ -138,6 +139,8 @@ public class MainPage extends BaseActivity {
 
     public static final int RC_LOCATION_PERM    = 500;
 
+    private LevelClass levelClass;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,6 +149,7 @@ public class MainPage extends BaseActivity {
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        levelClass = new LevelClass(this,sp);
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             startLocationService();
@@ -935,7 +939,7 @@ public class MainPage extends BaseActivity {
         else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
             showCreatePin();
         }
-        else  if (sp.getString(DefineValue.IS_FIRST,"").equalsIgnoreCase(DefineValue.YES)) {
+        else  if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST,"").equalsIgnoreCase(DefineValue.YES)) {
             showMyProfile();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
