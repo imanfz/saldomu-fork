@@ -114,6 +114,61 @@ public class MyProfileNewActivity extends BaseActivity {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        if (dataVerifiedMember.getVisibility()==View.VISIBLE)
+        {
+            savedInstanceState.putBoolean("isVerifiedMember", true);
+            if (ktp!=null)
+            {
+                savedInstanceState.putSerializable("KTP", ktp);
+            }
+            if (selfie!=null)
+            {
+                savedInstanceState.putSerializable("selfieKtp", selfie);
+            }
+            if (ttd!=null)
+            {
+                savedInstanceState.putSerializable("TTD", ttd);
+            }
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        boolean isVerifiedMember = savedInstanceState.getBoolean("isVerifiedMember");
+        ktp = (File) savedInstanceState.getSerializable("KTP");
+        selfie = (File) savedInstanceState.getSerializable("selfieKtp");
+        ttd = (File) savedInstanceState.getSerializable("TTD");
+
+        if (isVerifiedMember==true)
+        {
+            btn1.setVisibility(View.GONE);
+            dataVerifiedMember.setVisibility(View.VISIBLE);
+            if (ktp!=null)
+            {
+                Timber.d("ktp :" +ktp);
+                GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, ktp,cameraKTP);
+                uploadFileToServer(ktp, KTP_TYPE);
+            }
+
+            if (selfie!=null)
+            {
+                GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, selfie,selfieKTP);
+                uploadFileToServer(selfie, SELFIE_TYPE);
+            }
+
+            if (ttd !=null)
+            {
+                GlideManager.sharedInstance().initializeGlideProfile(MyProfileNewActivity.this, ttd,cameraTTD);
+                uploadFileToServer(ttd, TTD_TYPE);
+            }
+        }
+
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
