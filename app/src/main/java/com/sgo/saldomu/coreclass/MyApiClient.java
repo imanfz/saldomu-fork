@@ -425,6 +425,7 @@ public class MyApiClient {
     public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
     public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
     public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
+    public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -1358,6 +1359,12 @@ public class MyApiClient {
     public static void confirmTransactionByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address confirm transaction by agent: %1$s ",LINK_CONFIRM_TRANSACTION_BY_AGENT);
         post(mContext,LINK_CONFIRM_TRANSACTION_BY_AGENT, params, responseHandler);
+    }
+
+    public static void updateFeedback(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update feedback: %1$s ",LINK_UPDATE_FEEDBACK);
+        post(mContext,LINK_UPDATE_FEEDBACK, params, responseHandler);
     }
 }
 

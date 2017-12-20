@@ -72,6 +72,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             }
 
             Intent intent    = getIntent();
+            Bundle bundle = getIntent().getExtras();
 
             Fragment newFragment = null;
             int index = intent.getIntExtra(DefineValue.INDEX,0);
@@ -88,7 +89,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case TRANSACTION:
                     newFragment = new BBSTransaksiPager();
                     tag = BBSTransaksiPager.TAG;
-                    Bundle bundle = getIntent().getExtras();
+
                     if(bundle != null){
                         newFragment.setArguments(bundle);
                     }
@@ -129,6 +130,9 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case BBSRATINGBYMEMBER:
                     newFragment = new FragMemberRating();
                     tag = FragMemberRating.TAG;
+                    if(bundle != null){
+                        newFragment.setArguments(bundle);
+                    }
                     break;
                 case BBSMYORDERS:
                     newFragment = new FragBbsMyOrders();
@@ -336,7 +340,20 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         int index = intent.getIntExtra(DefineValue.INDEX,0);
 
         Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
-        if ( fragment instanceof FragWaktuBeroperasi ) {
+
+        if ( fragment instanceof FragMemberRating ) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_set_rating_trx))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.dismiss();
+                        }
+                    })
+            ;
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else if ( fragment instanceof FragWaktuBeroperasi ) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_set_working_hour_warning))
                     .setCancelable(false)

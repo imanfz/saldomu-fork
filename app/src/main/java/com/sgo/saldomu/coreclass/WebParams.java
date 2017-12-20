@@ -480,4 +480,9 @@ public class WebParams {
     public static String REMARK_KTP = "remark_ktp";
     public static String REMARK_FOTO = "remark_foto";
     public static String REMARK_TTD = "remark_ttd";
+
+    public static String MAXIMUM_RATING = "maximum_rating";
+    public static String DEFAULT_RATING = "default_rating";
+    public static String RATING         = "rating";
+    public static String PROFILE_PICTURE    = "profile_picture";
 }

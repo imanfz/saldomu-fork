@@ -700,7 +700,24 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    private void getDataListMember(){
+    private void getDataListMember() {
+
+        if (sp.getString(DefineValue.BBS_MODULE, "").equals(DefineValue.BBS_REVIEW)) {
+            //do validate before redirect to rating
+            Intent tempIntent = new Intent(getApplicationContext(), BBSActivity.class);
+            Bundle tempBundle = new Bundle();
+            tempBundle.putInt(DefineValue.INDEX, BBSActivity.BBSRATINGBYMEMBER);
+            tempBundle.putString(DefineValue.BBS_TX_ID, sp.getString(DefineValue.BBS_TX_ID, ""));
+            tempBundle.putString(DefineValue.CATEGORY_NAME, sp.getString(DefineValue.CATEGORY_NAME, ""));
+            tempBundle.putString(DefineValue.AMOUNT, sp.getString(DefineValue.AMOUNT, ""));
+            tempBundle.putString(DefineValue.URL_PROFILE_PICTURE, sp.getString(DefineValue.URL_PROFILE_PICTURE, ""));
+            tempBundle.putString(DefineValue.BBS_SHOP_NAME, sp.getString(DefineValue.BBS_SHOP_NAME, ""));
+            tempBundle.putString(DefineValue.BBS_MAXIMUM_RATING, sp.getString(DefineValue.BBS_MAXIMUM_RATING, ""));
+            tempBundle.putString(DefineValue.BBS_DEFAULT_RATING, sp.getString(DefineValue.BBS_DEFAULT_RATING, ""));
+            tempIntent.putExtras(tempBundle);
+            switchActivity(tempIntent, ACTIVITY_RESULT);
+        }
+
         try{
 
             String comm_id = sp.getString(DefineValue.COMMUNITY_ID,"");
