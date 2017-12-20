@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -38,7 +39,6 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
@@ -60,7 +60,7 @@ public class BBSTransaksiAmount extends Fragment {
 
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
-    private EditText etAmount;
+    private AutoCompleteTextView etAmount;
     private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
     private Activity act;
     private Button btnProses, btnBack;
@@ -85,8 +85,7 @@ public class BBSTransaksiAmount extends Fragment {
     SecurePreferences sp;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
-
-
+    String denom[] = {"10000", "20000", "50000", "100000", "150000", "200000"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,7 +142,20 @@ public class BBSTransaksiAmount extends Fragment {
         tvTitle = (TextView) v.findViewById(R.id.tv_title);
         inputForm = v.findViewById(R.id.bbs_amount_form);
         emptyLayout = v.findViewById(R.id.empty_layout);
-        etAmount = (EditText) v.findViewById(R.id.jumlah_transfer_edit);
+        etAmount = (AutoCompleteTextView) v.findViewById(R.id.jumlah_transfer_edit);
+
+        ArrayAdapter adapterDenom = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,denom);
+
+        etAmount.setAdapter(adapterDenom);
+        etAmount.setThreshold(1);
+        etAmount.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                etAmount.showDropDown();
+                return false;
+            }
+        });
+
         btnProses = (Button) v.findViewById(R.id.proses_btn);
         btnBack = (Button) v.findViewById(R.id.back_btn);
         ViewStub stub = (ViewStub) v.findViewById(R.id.transaksi_stub);
@@ -590,11 +602,11 @@ public class BBSTransaksiAmount extends Fragment {
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
         }
-        else if(Long.parseLong(etAmount.getText().toString()) < 1){
-            etAmount.requestFocus();
-            etAmount.setError(getString(R.string.payfriends_amount_zero));
-            return false;
-        }
+//        else if(Integer.parseInt(etAmount.getText().toString()) < 1){
+//            etAmount.requestFocus();
+//            etAmount.setError(getString(R.string.payfriends_amount_zero));
+//            return false;
+//        }
         if(actv_rekening_member.getText().toString().length()==0){
             actv_rekening_member.requestFocus();
             actv_rekening_member.setError(getString(R.string.rekening_member_error_message));
