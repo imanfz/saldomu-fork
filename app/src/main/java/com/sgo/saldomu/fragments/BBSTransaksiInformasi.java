@@ -68,8 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import pub.devrel.easypermissions.EasyPermissions;
 import io.realm.RealmChangeListener;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
@@ -793,19 +793,34 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                             }
                             else if (code.equals("0057"))
                             {
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
-                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent mI = new Intent(getActivity(),TopUpActivity.class);
-                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
-                                        getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-                                    }
-                                });
-                                dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
-                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                if(transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+                                {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setTitle("Alert")
+                                            .setMessage(getString(R.string.member_saldo_not_enough))
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getActivity().finish();
+                                                }
+                                            });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                } else {
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                }
                             }
                             else {
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
