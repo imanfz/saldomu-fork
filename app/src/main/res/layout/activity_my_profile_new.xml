@@ -347,7 +347,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="12dp"
-                            android:text="Gambarkan Tanda Tangan Anda"
+                            android:text="Foto Tanda Tangan Anda"
                             android:textColor="@color/grey_1000b"
                             android:textSize="16dp" />
 
@@ -366,7 +366,7 @@
                             android:layout_below="@+id/tv_ttd"
                             android:layout_margin="8dp"
                             android:layout_toRightOf="@+id/camera_ttd"
-                            android:text="1. Gambarkan tanda tangan Anda di atas secarik kertas."
+                            android:text="1. Foto tanda tangan Anda pada kertas kosong."
                             android:textColor="@color/grey_1000b" />
 
                         <TextView
@@ -377,7 +377,7 @@
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
                             android:layout_toRightOf="@+id/camera_ttd"
-                            android:text="2. Ambil foto kertas tersebut secara jelas."
+                            android:text="2. Pastikan foto tanda tangan Anda terlihat jelas."
                             android:textColor="@color/grey_1000b" />
                         <TextView
                             android:id="@+id/tv_respon_reject_ttd"
