@@ -324,7 +324,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             onBackPressed();
         }
 
-        return true;
+        if ( mobility.equals(DefineValue.STRING_YES) ) {
+            return super.onOptionsItemSelected(item);
+        } else {
+            return true;
+        }
     }
 
     public void initializeToolbar(String title)
@@ -1825,17 +1829,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onBackPressed() {
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
-                .setCancelable(false)
-                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                        dialog.dismiss();
-                    }
-                })
-        ;
-        final AlertDialog alert = builder.create();
-        alert.show();
+
+        if ( mobility.equals(DefineValue.STRING_YES) ) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_waiting_agent_approval))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.dismiss();
+                        }
+                    })
+            ;
+            final AlertDialog alert = builder.create();
+            alert.show();
+        }
 
         return;
         //super.onBackPressed();
