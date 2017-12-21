@@ -324,7 +324,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             onBackPressed();
         }
 
-        if ( mobility.equals(DefineValue.STRING_YES) ) {
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
             return super.onOptionsItemSelected(item);
         } else {
             return true;
