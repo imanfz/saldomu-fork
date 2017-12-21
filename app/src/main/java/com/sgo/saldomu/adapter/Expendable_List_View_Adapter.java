@@ -119,6 +119,9 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             case DefineValue.BankBRI:
                 logoId = R.drawable.logo_bank_bri_small;
                 break;
+            case DefineValue.BankBNI:
+                logoId = R.drawable.logo_bank_bni;
+                break;
         }
 
         if (headerObject.getHeader().equals(mContext.getString(R.string.other_bank)))

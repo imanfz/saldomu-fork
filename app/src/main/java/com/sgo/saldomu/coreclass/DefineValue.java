@@ -450,6 +450,7 @@ public class DefineValue {
     public static final String BankBII = "016";
     public static final String BankUOB = "058";
     public static final String BankBRI = "002";
+    public static final String BankBNI = "009";
     public static String BANKLIST_TYPE_ATM = "ATM" ;
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
