@@ -225,10 +225,17 @@ public class SMSclass {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
             List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-            if(SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
-                if (listener != null)
-                    listener.sim_state(true, "Ada isinya");
-                return true;
+            if(subscriptionInfoList != null && subscriptionInfoList .size() > 0) {
+                if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
+                    if (listener != null)
+                        listener.sim_state(true, "Ada isinya");
+                    return true;
+                }
+                else {
+                    if (listener != null)
+                        listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
+                    return false;
+                }
             }
             else {
                 if (listener != null)
