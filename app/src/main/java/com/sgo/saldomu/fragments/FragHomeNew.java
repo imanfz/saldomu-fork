@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -29,10 +28,8 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
-import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.GridHome;
@@ -63,10 +60,6 @@ import java.util.UUID;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
 import timber.log.Timber;
-
-import static android.R.attr.action;
-import static com.sgo.saldomu.R.id.llBalanceDetail;
-import static com.sgo.saldomu.R.id.tvAgentDetailName;
 
 /**
  * Created by Lenovo Thinkpad on 5/10/2017.
@@ -455,6 +448,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSONPROGRESSAGENT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
+                }else if (menuItemName.equals(getString(R.string.title_cash_out_member)) ) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
                 else
                 {
@@ -508,6 +505,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 categories[x] = getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName();
             }
             Collections.addAll(data,categories);
+
+            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
+            Collections.addAll(data,_data);
         }
         _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
         Collections.addAll(data,_data);
@@ -528,6 +528,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             totalIdx    += taAgent.length();
         } else {
             totalIdx    += shopCategories.size();
+            totalIdx    += taNotAgent.length();
+
         }
 
         int[] data        = new int[totalIdx];
@@ -546,10 +548,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
 
-            /*for( int j = 0; j < taNotAgent.length(); j++) {
+            for( int j = 0; j < taNotAgent.length(); j++) {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
                 overallIdx++;
-            }*/
+            }
         }
 
         for( int j = 0; j < ta.length(); j++) {
