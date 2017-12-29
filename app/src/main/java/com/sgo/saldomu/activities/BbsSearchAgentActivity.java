@@ -1641,7 +1641,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void checkTransactionMember() {
         if ( !txId.equals("") ) {
-            progdialog2         = DefinedDialog.CreateProgressDialog(this, getString(R.string.waiting_approval_trx_agent));
+
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
@@ -1665,8 +1665,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
                     try {
-                        if ( progdialog2.isShowing())
-                            progdialog2.dismiss();
 
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -1699,7 +1697,24 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
                                 alertDialog.setMessage(tempMessage + " " + categoryName);
 
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                SecurePreferences.Editor mEditor = prefs.edit();
+                                                mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                                mEditor.apply();
+
+                                                clicked = false;
+
+                                                searchToko(currentLatitude,currentLongitude);
+
+                                            }
+                                        });
+
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
@@ -1711,7 +1726,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 mEditor.putString(DefineValue.AMOUNT, amount);
                                                 mEditor.apply();
 
-                                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                                Intent i = new Intent(BbsSearchAgentActivity.this, BbsSearchAgentActivity.class);
                                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
                                                 i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
@@ -1758,8 +1773,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 private void ifFailure(Throwable throwable) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
-                    if ( progdialog2.isShowing())
-                        progdialog2.dismiss();
 
                     if (MyApiClient.PROD_FAILURE_FLAG)
                         Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();

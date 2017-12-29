@@ -25,6 +25,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -111,11 +113,13 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     List<String> latestShops;
     List<String> differentShops;
     HashMap<String,Marker> hashMapMarkers;
-    EditText etJumlah, etNote;
+    EditText etNote;
+    AutoCompleteTextView etJumlah;
     String amount, completeAddress, provinceName, districtName, countryName;
     private LinearLayout llNote;
     private static final int RC_LOCATION_PERM = 500;
     private static final int RC_GPS_REQUEST = 1;
+    String denom[];
 
     private int timeDelayed = 20000;
     // Init
@@ -138,6 +142,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         latestShops     = new ArrayList<String>();
         differentShops  = new ArrayList<String>();
         hashMapMarkers  = new HashMap<>();
+        denom           = getResources().getStringArray(R.array.list_denom_amount);
 
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
@@ -226,9 +231,21 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         searchLocationEditText.setSelectAllOnFocus(true);
 
-        etJumlah                = (EditText) findViewById(R.id.etJumlah);
+        etJumlah                = (AutoCompleteTextView) findViewById(R.id.etJumlah);
         etJumlah.requestFocus();
         etJumlah.addTextChangedListener(jumlahChangeListener);
+
+        ArrayAdapter adapterDenom = new ArrayAdapter(this,android.R.layout.simple_list_item_1,denom);
+
+        etJumlah.setAdapter(adapterDenom);
+        etJumlah.setThreshold(1);
+        etJumlah.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                etJumlah.showDropDown();
+                return false;
+            }
+        });
 
         etJumlah.setOnTouchListener(new View.OnTouchListener() {
             @Override
