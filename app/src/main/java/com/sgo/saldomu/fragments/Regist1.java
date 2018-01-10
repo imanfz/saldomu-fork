@@ -227,6 +227,14 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         fca.switchActivity(i);
     }
 
+    private void SaveIMEIICCID(){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.SaveImeiICCIDDevice();
+    }
+
     public void sentData(final String noHP){
         try{
                 progdialog.show();
@@ -503,6 +511,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
     public void changeActivity(Boolean login){
         if(login){
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            SaveIMEIICCID();
             Fragment test = new Login();
             switchFragment(test,"Login",false);
         }
