@@ -22,16 +22,6 @@
         android:gravity="center"
         android:hint="@string/label_bank_pelangggan" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="6dp"
-        android:textColor="@color/colorSecondaryDark"
-        android:textStyle="italic"
-        android:gravity="right"
-        android:text="(contoh: BANK MANDIRI)"/>
 
 
     <EditText
@@ -55,6 +45,30 @@
         android:textStyle="italic"
         android:gravity="right"
         android:text="@string/eg_no_acct"/>
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="right"
+        android:text="(contoh: BANK MANDIRI)"
+        android:textColor="@color/colorSecondaryDark"
+        android:textStyle="italic" />
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/no_OTP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/otp_hint"
+        android:inputType="number"
+        android:maxLength="20"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <LinearLayout
         android:id="@+id/bbs_cashin_name_layout"

@@ -61,7 +61,7 @@ public class BBSTransaksiAmount extends Fragment {
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
     private AutoCompleteTextView etAmount;
-    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
+    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim, benef_product_code;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -73,7 +73,7 @@ public class BBSTransaksiAmount extends Fragment {
     private List<HashMap<String,String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
-    private EditText etNoAcct, etNameAcct;
+    private EditText etNoAcct, etNameAcct, et_no_OTP;
     private TextView tvEgNo;
     private ImageView spinwheelCity;
     private AutoCompleteTextView spBenefCity;
@@ -186,6 +186,7 @@ public class BBSTransaksiAmount extends Fragment {
 
             nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
             actv_rekening_member = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_member_value);
+            et_no_OTP = (EditText) cashin_layout.findViewById(R.id.no_OTP);
             etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
             tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
             etNameAcct = (EditText) cashin_layout.findViewById(R.id.name_value);
@@ -369,7 +370,14 @@ public class BBSTransaksiAmount extends Fragment {
                     position = i;
                     if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                         benef_product_type = listbankBenef.get(position).getProduct_type();
+                        benef_product_code = listbankBenef.get(position).getProduct_code();
                         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
+                            if(benef_product_code.equalsIgnoreCase("TCASH"))
+                            {
+                                et_no_OTP.setVisibility(View.VISIBLE);
+                            }
+                            else
+                                et_no_OTP.setVisibility(View.GONE);
                             cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
@@ -443,6 +451,10 @@ public class BBSTransaksiAmount extends Fragment {
                             String city_name = spBenefCity.getText().toString();
                             args.putString(DefineValue.ACCT_CITY_CODE, city_id);
                             args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                        }
+                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        {
+                            args.putString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, et_no_OTP.getText().toString());
                         }
                         if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
                             if (!noHpPengirim.equals(""))

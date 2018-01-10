@@ -103,6 +103,7 @@
     <string name="reg2_activation_code">Kode Aktivasi</string>
     <string name="reg2_hint_token_code">Kode Token</string>
     <string name="reg2_btn_text_resend_token_sms">Kirim ulang token ke sms</string>
+    <string name="reg2_btn_text_resend_token_tcash">Kirim ulang token T-Cash</string>
     <string name="reg2_btn_text_resend_token_email">Kirim ulang token ke email</string>
     <string name="reg2_dialog_token_message_sms">Kode token sudah dikirim lewat sms. Mohon ditunggu.</string>
     <string name="reg2_dialog_token_message_email">Kode token sudah dikirim lewat email. Mohon ditunggu.</string>
@@ -859,6 +860,7 @@
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="no_tujuan">Nomor Rekening</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
+    <string name="otp_hint">Masukkan kode OTP</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
     <string name="kota_rekening_tujuan">Kota Tujuan</string>
@@ -900,6 +902,7 @@
     <string name="community_empty">Tidak ada daftar komunitas</string>
     <string name="remark">Pesan</string>
     <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
+    <string name="no_tcash">No. Handphone TCASH</string>
     <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>

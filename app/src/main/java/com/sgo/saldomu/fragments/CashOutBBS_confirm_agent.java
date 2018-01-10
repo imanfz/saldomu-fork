@@ -49,7 +49,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private View v, layout_OTP;
-    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle;
+    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle, tvKode;
     private EditText tokenValue;
     private Button btnSubmit;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
@@ -83,6 +83,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         tvBankBenef = (TextView) v.findViewById(R.id.bbscashout_value_benef);
         tvAmount = (TextView) v.findViewById(R.id.bbscashout_value_amount);
         tvRemark = (TextView) v.findViewById(R.id.bbscashout_value_remark);
+        tvKode = (TextView) v.findViewById(R.id.tv_kode);
         btnSubmit = (Button) v.findViewById(R.id.btn_submit);
         layout_OTP = v.findViewById(R.id.layout_OTP);
         tokenValue = (EditText) v.findViewById(R.id.bbscashout_value_token);
@@ -114,6 +115,10 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             }
             else {
                 tvUserIdTitle.setText(getString(R.string.no_rekening));
+            }
+            if(source_product_name.equalsIgnoreCase("TCASH"))
+            {
+                tvKode.setText("Kode OTP");
             }
             tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));

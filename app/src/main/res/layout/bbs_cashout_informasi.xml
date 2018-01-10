@@ -9,15 +9,25 @@
         android:gravity="center"
         android:text="@string/label_transfer_ke_agent"/>
 
+    <EditText
+        android:id="@+id/kode_OTP"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/otp_hint"
+        android:inputType="number"
+        android:maxLength="20"/>
+
     <Spinner
         android:id="@+id/rekening_agen_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:hint="@string/rekening_bank_agent"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:hint="@string/rekening_bank_agent" />
 
     <TextView
         android:layout_width="match_parent"

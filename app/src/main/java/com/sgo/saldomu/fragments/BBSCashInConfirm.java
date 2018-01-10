@@ -62,17 +62,17 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private TextView tvTitle;
-    private View v, cityLayout, layout_btn_resend, layout_OTP;
+    private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
             tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination;
-    private EditText tokenValue;
+    private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
     private int max_token_resend;
-    private boolean isSMS = false, isIB = false, isPIN = false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
@@ -143,6 +143,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         btnResend = (Button) v.findViewById(R.id.btn_resend_token);
         tvNoDestination = (TextView) v.findViewById(R.id.bbscashin_confirm_text_no_destination);
         btnBack = (Button) v.findViewById(R.id.btn_back);
+        layoutTCASH = v.findViewById(R.id.layout_TCASH);
+        noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -171,6 +173,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             no_hp_benef  = bundle.getString(DefineValue.NO_HP_BENEF);
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
+            TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF,"");
 
             if(!bundle.getString(DefineValue.MAX_RESEND).equals(""))
@@ -194,6 +197,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                 if(benef_product_type.equalsIgnoreCase("EMO")) {
                     cityLayout.setVisibility(View.GONE);
+
                 }
                 else if(benef_product_type.equalsIgnoreCase("ACCT")) {
                     cityLayout.setVisibility(View.VISIBLE);
@@ -218,9 +222,19 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                         }
                     });
+//                    if(source_product_code.equalsIgnoreCase("TCASH"))
+//                    {
+//                        layout_OTP.setVisibility(View.VISIBLE);
+//                        layout_btn_resend.setVisibility(View.VISIBLE);
+//                        tokenValue.requestFocus();
+//                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_tcash) + " (" + max_token_resend + ")");
+//                        btnResend.setOnClickListener(resendListener);
+//                    } else {
+
+                        layout_OTP.setVisibility(View.GONE);
+                        layout_btn_resend.setVisibility(View.GONE);
+//                    }
                     cityLayout.setVisibility(View.GONE);
-                    layout_OTP.setVisibility(View.GONE);
-                    layout_btn_resend.setVisibility(View.GONE);
                 }
                 else if(source_product_type.equalsIgnoreCase("ACCT")) {
                     isSMS = true;
@@ -238,6 +252,11 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 tvNoDestination.setText(R.string.number_destination);
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
+
+            if (TCASH_hp_validation)
+            {
+                layoutTCASH.setVisibility(View.VISIBLE);
+            }
 
             btnBack.setOnClickListener(backListener);
             btnSubmit.setOnClickListener(submitListener);

@@ -95,7 +95,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private EditText etNoHp, etRemark;
+    private EditText etNoHp, etRemark, etOTP;
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
@@ -104,11 +104,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
-            transaksi, no_benef, name_benef,city_name,no_source;
+            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     SecurePreferences sp;
+    private Boolean TCASHValidation=false;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -191,6 +192,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
                 benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
                 benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
+                benef_product_value_token = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN);
                 if (cashInHistoryModel!=null)
                 {
                     source_product_code=(cashInHistoryModel.getSource_product_code());
@@ -278,6 +280,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 View cashout_layout = stub.inflate();
                 sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
+                etOTP = (EditText) cashout_layout.findViewById(R.id.no_OTP);
                 String[] from = {"flag", "txt"};
                 // Ids of views in listview_layout
                 int[] to = {R.id.flag, R.id.txt};
@@ -335,6 +338,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     source_product_type = listbankSource.get(position).getProduct_type();
                     source_product_h2h = listbankSource.get(position).getProduct_h2h();
                     source_product_name = listbankSource.get(position).getProduct_name();
+//                    if(source_product_name.equalsIgnoreCase("TCASH"))
+//                    {
+//                        etOTP.setVisibility(View.VISIBLE);
+//                    }
                     break;
                 }
             }
@@ -394,7 +401,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     }
                 }
                 else {
-                    btnNext.setEnabled(false);
+//                    btnNext.setEnabled(false);
                     if (inputValidation()) {
                         sentInsertA2C();
                     }
@@ -406,7 +413,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     };
 
     private void SubmitAction(){
-        btnNext.setEnabled(false);
+//        btnNext.setEnabled(false);
         if (inputValidation()) {
             sentInsertC2A();
         }
@@ -509,6 +516,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.BENEF_PRODUCT_TYPE, benef_product_type);
             params.put(WebParams.BENEF_PRODUCT_VALUE_CODE, no_benef);
             params.put(WebParams.BENEF_PRODUCT_VALUE_NAME, name_benef);
+            if (benef_product_code.equalsIgnoreCase("TCASH")) {
+                params.put(WebParams.BENEF_PRODUCT_VALUE_TOKEN, benef_product_value_token);
+            }
+
             if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                 params.put(WebParams.BENEF_PRODUCT_VALUE_CITY, city_id);
             }
@@ -527,8 +538,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
 
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") ) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
+                            if(code.equals("0282"))
+                            {
+                                TCASHValidation = true;
+                            }
                             if(isSMSBanking) {
                                 if(smsDialog == null){
                                     smsDialog = new SMSDialog(getActivity(), null);
@@ -588,7 +603,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                         response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                             }
                             else {
-                                changeToConfirmCashIn(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
+                                changeToConfirmCashIn
+                                        (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
                                         response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
                                         response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
                                         response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
@@ -929,6 +945,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
+        mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         btnNext.setEnabled(true);
         cashInHistory();
 
