@@ -81,6 +81,10 @@ public class RealmManager {
         return Realm.getInstance(BBSConfiguration);
     }
 
+    public static Realm getRealmBiller(){
+        return Realm.getInstance(BillerConfiguration);
+    }
+
     public static void closeRealm(Realm realm){
         if(realm != null) {
             realm.removeAllChangeListeners();
