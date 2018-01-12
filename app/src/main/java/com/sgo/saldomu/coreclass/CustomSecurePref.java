@@ -95,6 +95,10 @@ public class CustomSecurePref {
         this.mContext = mContext;
     }
 
+    public static SecurePreferences getSecurePrefsInstance() {
+        return getInstance().mSecurePrefs;
+    }
+
     public SecurePreferences getmSecurePrefs() {
         return mSecurePrefs;
     }

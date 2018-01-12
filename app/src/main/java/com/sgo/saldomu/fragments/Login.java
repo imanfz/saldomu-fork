@@ -361,6 +361,7 @@ public class Login extends Fragment implements View.OnClickListener {
             if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
                 mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,true);
             }
             else {
                 if(prevContactFT.equals(DefineValue.NO)) {
@@ -368,8 +369,8 @@ public class Login extends Fragment implements View.OnClickListener {
                     mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
                 }
                 mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,false);
                 BBSDataManager.resetBBSData();
-
             }
 
 

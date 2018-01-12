@@ -913,9 +913,16 @@ public class MainPage extends BaseActivity {
 
         checkAndRunServiceBBS();
     }
-
+    /**
+     * Check jika bisa menjalankan ServiceUpdateData langsung
+     * Check jika MustUpdate, IsSameUser, dan IsUpdated
+     */
     void checkAndRunServiceBBS(){
-        BBSDataManager.checkAndRunService(this);
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(bbsDataManager.isValidToUpdate()) {
+            bbsDataManager.runServiceUpdateData(this);
+            Timber.d("Run Service update data BBS");
+        }
     }
 
     private void CheckNotification(){

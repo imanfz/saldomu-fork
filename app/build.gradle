@@ -90,8 +90,8 @@ android {
             buildConfigField 'String', "UrlMNotif", "\"https://mobile.espay.id/mnotif/\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 6
-            versionName "1.4"
+            versionCode = 7
+            versionName "1.5"
             buildConfigField 'String', "AppID", "\"SDOM\""
         }
     }

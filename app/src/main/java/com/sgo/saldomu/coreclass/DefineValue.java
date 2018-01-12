@@ -487,10 +487,15 @@ public class DefineValue {
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
     public static String URL_PROFILE_PICTURE    = "url_profile_picture";
+
     public static String BBS_SCHEME_CODE        = "bbs_scheme_code";
 
     public static String SOURCE                 = "SOURCE";
     public static String BENEF                  = "BENEF";
     public static String BBS_PRODUCT_NAME       = "bbs_product_name";
+
+    public static String IS_SAME_PREVIOUS_USER  = "is_same_previous_user";
+    public static String IS_MUST_UPDATE_BBS_DATA  = "is_must_update_bbs_data";
+
 }
 

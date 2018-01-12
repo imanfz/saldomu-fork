@@ -4,6 +4,9 @@ package com.sgo.saldomu.coreclass;/*
 
 import android.content.Context;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +23,9 @@ public class DateTimeFormat {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
     }
 
+    public static boolean checkDateisMoreThan31Days(Date date){
+        return Days.daysBetween(new DateTime(date),new DateTime()).isGreaterThan(Days.days(31));
+    }
 
     public static Long getCurrentDateTimeMillis(){
         Calendar calendar = Calendar.getInstance();
