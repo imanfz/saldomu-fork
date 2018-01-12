@@ -389,6 +389,7 @@ public class DefineValue {
     public static String IS_AGENT_SET_OPENHOUR  = "IsAgentSetOpenHour";
     public static String SHOP_AGENT_DATA    = "ShopAgentData";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
+    public static String AOD_TX_ID          = "AodTxId";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
     public static String BBS_SHOP_ID        = "BbsShopId";
@@ -426,6 +427,11 @@ public class DefineValue {
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
+
+    public static String UPDATE_TIME_BBS_MEMBER_CTA_DATA = "updateTimeBBSMemberCTAData";
+    public static String UPDATE_TIME_BBS_MEMBER_ATC_DATA = "updateTimeBBSMemberATCData";
+    public static String IS_UPDATING_BBS_MEMBER_DATA = "isUpdatingBBSMemberData";
+    public static String IS_BBS_MEMBER_DATA_UPDATED = "IsBBSMemberDataUpdated";
 
     public static String AGENT_NAME             = "agentName";
     public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
@@ -481,5 +487,10 @@ public class DefineValue {
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
     public static String URL_PROFILE_PICTURE    = "url_profile_picture";
+    public static String BBS_SCHEME_CODE        = "bbs_scheme_code";
+
+    public static String SOURCE                 = "SOURCE";
+    public static String BENEF                  = "BENEF";
+    public static String BBS_PRODUCT_NAME       = "bbs_product_name";
 }
 

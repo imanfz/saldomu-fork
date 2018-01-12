@@ -63,10 +63,12 @@ import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.entityRealm.AgentServiceDetail;
+import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.AgentListFrameFragment;
 import com.sgo.saldomu.fragments.AgentMapFragment;
@@ -129,14 +131,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private TextView errorMsg;
     private Button backBtn;
     public ViewPager viewPager;
-    Realm realm;
     private String categoryId, categoryName, bbsNote;
     private String mobility, amount;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private Double currentLatitude;
     private Double currentLongitude;
     SecurePreferences sp;
-    private String completeAddress, districtName, provinceName, countryName, txId;
+    private String completeAddress, districtName, provinceName, countryName, txId,
+        bbsProductName, bbsProductCode, bbsProductType, bbsProductDisplay, bbsSchemeCode;
     private int timeDelayed = 30000;
     EditText etJumlah;
     Button btnProses;
@@ -148,7 +150,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     Boolean clicked = false;
     ProgressDialog progdialog, progdialog2;
-    LinearLayout llAmount;
+    private Realm realm, realmBBS;
 
     // Init
     private Handler handler = new Handler();
@@ -168,7 +170,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        realm               = Realm.getDefaultInstance();
+        realmBBS            = Realm.getInstance(RealmManager.BBSConfiguration);
 
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -180,14 +183,31 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         amount              = intentData.getStringExtra(DefineValue.AMOUNT);
         completeAddress     = intentData.getStringExtra(DefineValue.BBS_COMPLETE_ADDRESS);
         bbsNote             = intentData.getStringExtra(DefineValue.BBS_NOTE);
+        bbsProductName      = intentData.getStringExtra(DefineValue.BBS_PRODUCT_NAME);
+        bbsSchemeCode       = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
 
+        BBSBankModel bbsBankModel = null;
+
+        if ( bbsSchemeCode.equals(DefineValue.CTA) ) {
+            bbsBankModel = realmBBS.where(BBSBankModel.class).
+                    equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                    equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
+                    .findFirst();
+        } else {
+            bbsBankModel = realmBBS.where(BBSBankModel.class).
+                    equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
+                    equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
+                    .findFirst();
+        }
+
+        if ( bbsBankModel != null ) {
+            bbsProductCode      = bbsBankModel.getProduct_code();
+            bbsProductType      = bbsBankModel.getProduct_type();
+            bbsProductDisplay   = bbsBankModel.getProduct_display();
+        }
 
 
         methodRequiresTwoPermission();
-
-
-        realm = Realm.getDefaultInstance();
-
         locationIntent = new Intent(this, UpdateLocationService.class);
 
         //btnProses               = (Button) findViewById(R.id.btnProses);
@@ -1031,7 +1051,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         if ( txId.equals("") && !amount.equals("") && !clicked ) {
 
-
+            clicked                 = true;
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
             RequestParams params = new RequestParams();
@@ -1055,6 +1075,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
+
+            params.put(WebParams.PRODUCT_CODE, bbsProductCode);
+            params.put(WebParams.PRODUCT_NAME, bbsProductName);
+            params.put(WebParams.PRODUCT_TYPE, bbsProductType);
+            params.put(WebParams.PRODUCT_DISPLAY, bbsProductDisplay);
 
             if (mobility.equals(DefineValue.STRING_YES)) {
                 params.put(WebParams.KEY_VALUE, gcmId);
@@ -1207,6 +1232,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                                                 i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
                                                 i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
 
                                                 if ( mobility.equals(DefineValue.STRING_YES) ) {
 
@@ -1371,6 +1398,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
                     i.putExtra(DefineValue.AMOUNT, "");
+                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
                     startActivityForResult(i, MainPage.ACTIVITY_RESULT);
                     //startActivity(i);
                     finish();
@@ -1630,6 +1659,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, mobility);
                     i.putExtra(DefineValue.AMOUNT, amount);
+                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
                     startActivity(i);
                     finish();
                 }
@@ -1695,29 +1726,21 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 alertDialog.setCancelable(false);
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
-                                alertDialog.setMessage(tempMessage + " " + categoryName);
+                                alertDialog.setMessage(tempMessage);
 
                                 alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
 
-                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                /*SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                                 SecurePreferences.Editor mEditor = prefs.edit();
                                                 mEditor.putString(DefineValue.BBS_TX_ID, "");
                                                 mEditor.apply();
 
                                                 clicked = false;
 
-                                                searchToko(currentLatitude,currentLongitude);
-
-                                            }
-                                        });
-
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
+                                                searchToko(currentLatitude,currentLongitude);*/
 
                                                 SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                                 SecurePreferences.Editor mEditor = prefs.edit();
@@ -1735,7 +1758,26 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                                 i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                                                 i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
                                                 i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
                                                 startActivity(i);
+                                                finish();
+
+                                            }
+                                        });
+
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                SecurePreferences.Editor mEditor = prefs.edit();
+                                                mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                mEditor.remove(DefineValue.BBS_TX_ID);
+                                                mEditor.remove(DefineValue.AMOUNT);
+                                                mEditor.apply();
+
                                                 finish();
 
                                             }

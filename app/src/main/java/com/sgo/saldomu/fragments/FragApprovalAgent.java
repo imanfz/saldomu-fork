@@ -93,7 +93,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote, tvAcctLabel, tvAcctName;
     RelativeLayout rlApproval;
     RatingBar rbMemberRating;
     Spinner spPilihan;
@@ -171,7 +171,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
         tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
-
+        tvAcctLabel             = (TextView) v.findViewById(R.id.tvAcctLabel);
+        tvAcctName              = (TextView) v.findViewById(R.id.tvAcctName);
         //rbMemberRating          = (RatingBar) v.findViewById(R.id.rbMemberRating);
         //ivPPMember              = (ImageView) v.findViewById(R.id.ivPPMember);
 
@@ -393,7 +394,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                                 mEditor.apply();
 
                                 Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra(DefineValue.AOD_TX_ID, shopDetails.get(itemId).getTxId());
                                 startActivity(i);
                                 getActivity().finish();
                             } else {
@@ -753,6 +754,13 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                         tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
+                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                        } else {
+                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                        }
+
+                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
                         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);

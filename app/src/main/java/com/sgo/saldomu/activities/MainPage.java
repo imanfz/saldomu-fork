@@ -906,9 +906,12 @@ public class MainPage extends BaseActivity {
         boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent){
             callBBSCityService();
-            checkAndRunServiceBBS();
             callAgentShopService();
+        }else {
+
         }
+
+        checkAndRunServiceBBS();
     }
 
     void checkAndRunServiceBBS(){

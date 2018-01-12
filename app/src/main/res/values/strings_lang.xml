@@ -966,6 +966,7 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
+    <string name="no_match_customer_acct_message">Pilih rekening pelanggan yang tersedia</string>
     <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
 
@@ -1153,4 +1154,6 @@
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
     <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
     <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
+    <string name="bbs_setor_ke">Setor ke Rek.</string>
+    <string name="bbs_tarik_dari">Tarik dari Rek.</string>
 </resources>

@@ -44,6 +44,7 @@ public class ShopCategory {
     private String shopId;
     private String categoryCode;
     private String categoryName;
+    private String schemeCode;
     private int categoryImage;
 
     public ShopCategory() {
@@ -92,6 +93,14 @@ public class ShopCategory {
 
     public void setCategoryCode(String categoryCode) {
         this.categoryCode = categoryCode;
+    }
+
+    public String getSchemeCode() {
+        return schemeCode;
+    }
+
+    public void setSchemeCode(String schemeCode) {
+        this.schemeCode = schemeCode;
     }
 
     public String getCategoryName() {

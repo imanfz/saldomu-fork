@@ -93,7 +93,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvAcctLabel, tvAcctName;
     Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
     int distanceBetween = 0;
     String gcmId, emoMemberId;
@@ -145,6 +145,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
         //btnDone                 = (Button) findViewById(R.id.btnDone);
         btnCancel               = (Button) findViewById(R.id.btnCancel);
+        tvAcctLabel             = (TextView) findViewById(R.id.tvAcctLabel);
+        tvAcctName              = (TextView) findViewById(R.id.tvAcctName);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
@@ -540,6 +542,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         //tvShop.setText(response.getString(WebParams.SHOP_NAME));
                         tvCategoryName.setText(categoryName);
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(amount));
+
+                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                        } else {
+                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                        }
+
+                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
                         setMapCamera();
                         handler.postDelayed(runnable2, timeDelayed);

@@ -63,6 +63,7 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,8 @@ import java.util.UUID;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+import static com.sgo.saldomu.R.id.tvAcctLabel;
+import static com.sgo.saldomu.R.id.tvAcctName;
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapReadyCallback,
@@ -89,7 +92,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Double memberLatitude, memberLongitude, agentLatitude, agentLongitude, benefLatitude, benefLongitude;
     ShopDetail shopDetail;
     private GoogleMap globalMap;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvBbsNote;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvDurasi, tvBbsNote, tvAcctLabel, tvAcctName;
     Boolean isFirstLoad = true, isRunning = false, isInquiryRoute = false;
     int distanceBetween = 0;
     List<Polyline> lines;
@@ -100,6 +103,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     Boolean isTTSActive = true;
     Button btnTibaDiLokasi;
     private int timeDelayed = 30000;
+    Intent intentData;
 
     // Init
     private Handler handler = new Handler();
@@ -142,6 +146,9 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             isTTSActive = false;
         }*/
 
+        intentData              = getIntent();
+
+        txId                    = intentData.getStringExtra(DefineValue.AOD_TX_ID);
         lines                   = new ArrayList<>();
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
@@ -151,6 +158,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         tvBbsNote               = (TextView) findViewById(R.id.tvBbsNote);
 
         btnTibaDiLokasi         = (Button) findViewById(R.id.btnTibaLokasi);
+        tvAcctLabel             = (TextView) findViewById(R.id.tvAcctLabel);
+        tvAcctName              = (TextView) findViewById(R.id.tvAcctName);
 
         shopDetail              = new ShopDetail();
         shopDetail.setKeyCode(sp.getString(DefineValue.KEY_CODE, ""));
@@ -168,14 +177,16 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         mapFrag.getMapAsync(this);
         mapFrag.getView().setVisibility(View.GONE);
 
-        txId                    = sp.getString(DefineValue.BBS_TX_ID, "");
+        if ( txId == null ) {
+            txId                = sp.getString(DefineValue.BBS_TX_ID, "");
+        }
         memberId                = sp.getString(DefineValue.BBS_MEMBER_ID, "");
         shopId                  = sp.getString(DefineValue.BBS_SHOP_ID, "");
-        agentLatitude           = sp.getDouble(DefineValue.AGENT_LATITUDE, -6.2271133);
-        agentLongitude          = sp.getDouble(DefineValue.AGENT_LONGITUDE, 106.6578917);
+        agentLatitude           = sp.getDouble(DefineValue.AGENT_LATITUDE, 0.0);
+        agentLongitude          = sp.getDouble(DefineValue.AGENT_LONGITUDE, 0.0);
 
-        benefLatitude           = sp.getDouble(DefineValue.BENEF_LATITUDE, -6.222227);
-        benefLongitude          = sp.getDouble(DefineValue.BENEF_LONGITUDE, 106.651973);
+        benefLatitude           = sp.getDouble(DefineValue.BENEF_LATITUDE, 0.0);
+        benefLongitude          = sp.getDouble(DefineValue.BENEF_LONGITUDE, 0.0);
 
         tvCategoryName.setText(shopDetail.getCategoryName());
         tvMemberName.setText(shopDetail.getKeyName());
@@ -502,6 +513,14 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                             tvBbsNote.setText("");
                         }
                         tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
+
+                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                        } else {
+                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                        }
+
+                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
                         if ( response.has(DefineValue.KEY_TX_STATUS) ) {
                             if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
@@ -914,7 +933,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                         tvCategoryName.setText(response.getString(DefineValue.CATEGORY_NAME));
 
                         if ( response.has(DefineValue.KEY_TX_STATUS) ) {
-                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.SUCCESS)) {
+                            if (response.getString(DefineValue.KEY_TX_STATUS).equals(DefineValue.ONRECONCILED)) {
 
                                 handler.removeCallbacks(runnable2);
 
@@ -928,6 +947,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                                 bundle.putString(DefineValue.AMOUNT, String.format("%.0f", Double.valueOf(response.getString(DefineValue.AMOUNT))));
                                 bundle.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                bundle.putString(DefineValue.PRODUCT_CODE, response.getString(WebParams.PRODUCT_CODE));
+
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.AOD_TX_ID, txId);
+                                mEditor.apply();
 
                                 Intent intent = new Intent(getApplicationContext(), BBSActivity.class);
                                 intent.putExtras(bundle);
