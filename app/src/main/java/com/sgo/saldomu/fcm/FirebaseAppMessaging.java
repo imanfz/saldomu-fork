@@ -25,6 +25,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.utils.UserUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +61,10 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
             if(remoteMessage.getData().containsKey(WebParams.SYNC_CODE)){
                     switch (Integer.valueOf(remoteMessage.getData().get(WebParams.SYNC_CODE))){
                         case SYNC_BBS_DATA :
-                            scheduleJob();
+                            if(UserUtils.isLogin())
+                                scheduleJob();
+                            else
+                                CustomSecurePref.getSecurePrefsInstance().edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,true).apply();
                             break;
                     }
             }
