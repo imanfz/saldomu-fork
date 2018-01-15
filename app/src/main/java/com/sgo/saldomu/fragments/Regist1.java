@@ -577,14 +577,8 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(code.equals("0002")) changeActivity(true);
-                else if(code.equals(WebParams.SUCCESS_CODE))
-                {
-                    getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    Fragment test = new Login();
-                    switchFragment(test,"Login",false);
-                    dialog.show();
-                }
+                if(code.equals(WebParams.SUCCESS_CODE) || code.equals("0002"))
+                    changeActivity(true);
 
                 dialog.dismiss();
             }
