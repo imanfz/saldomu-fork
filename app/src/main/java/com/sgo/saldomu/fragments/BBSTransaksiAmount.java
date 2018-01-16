@@ -380,11 +380,11 @@ public class BBSTransaksiAmount extends Fragment {
                             }
                             else
                                 etNoOTPC2A.setVisibility(View.GONE);
-                            cityLayout.setVisibility(View.GONE);
+//                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
                         } else {
-                            cityLayout.setVisibility(VISIBLE);
+//                            cityLayout.setVisibility(VISIBLE);
                             etNoAcct.setHint(R.string.number_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_acct));
                         }
