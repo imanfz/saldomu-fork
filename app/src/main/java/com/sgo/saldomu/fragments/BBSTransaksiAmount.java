@@ -75,7 +75,7 @@ public class BBSTransaksiAmount extends Fragment {
     private List<HashMap<String,String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
-    private EditText etNoAcct, etNameAcct, etNoOTPC2A, etNoOTPA2C;
+    private EditText etNoAcct, etNameAcct, etNoOTPC2A;
     private TextView tvEgNo;
     private ImageView spinwheelCity;
     private AutoCompleteTextView spBenefCity;

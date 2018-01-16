@@ -428,7 +428,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="number|numberPassword"
                     android:textSize="@dimen/text_size_small_material"
-                    android:maxLength="4"
+                    android:maxLength="10"
                     android:hint="@string/regist2_edithint_otp"
                     />
 
