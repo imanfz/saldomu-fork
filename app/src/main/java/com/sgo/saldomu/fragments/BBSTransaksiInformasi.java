@@ -104,7 +104,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
-            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token;
+            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -217,6 +217,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
                 source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
                 source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
+                source_product_value_token = bundle.getString(DefineValue.SOURCE_PRODUCT_VALUE_TOKEN);
                 no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
 
                 setBankDataBenef();
@@ -280,7 +281,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 View cashout_layout = stub.inflate();
                 sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
                 etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
-                etOTP = (EditText) cashout_layout.findViewById(R.id.no_OTP);
+                etOTP = (EditText) cashout_layout.findViewById(R.id.no_OTP_cashout);
+
+
                 String[] from = {"flag", "txt"};
                 // Ids of views in listview_layout
                 int[] to = {R.id.flag, R.id.txt};
@@ -338,10 +341,6 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     source_product_type = listbankSource.get(position).getProduct_type();
                     source_product_h2h = listbankSource.get(position).getProduct_h2h();
                     source_product_name = listbankSource.get(position).getProduct_name();
-//                    if(source_product_name.equalsIgnoreCase("TCASH"))
-//                    {
-//                        etOTP.setVisibility(View.VISIBLE);
-//                    }
                     break;
                 }
             }
@@ -360,6 +359,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             benef_product_code = listbankBenef.get(position).getProduct_code();
             benef_product_type = listbankBenef.get(position).getProduct_type();
             benef_product_name = listbankBenef.get(position).getProduct_name();
+
+            if (benef_product_code.equalsIgnoreCase("TCASH"))
+                etOTP.setVisibility(View.VISIBLE);
+            else etOTP.setVisibility(View.GONE);
         }
 
         @Override
@@ -540,6 +543,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") ) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
+                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
                             if(code.equals("0282"))
                             {
                                 TCASHValidation = true;
@@ -595,12 +599,20 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                     smsDialog.show();
                             }
                             else if(source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                                sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
+                                if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH"))
+                                    sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
                                         response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
                                         response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
                                         response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
                                         response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
                                         response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
+                                else changeToConfirmCashIn
+                                        (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
+                                                response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
+                                                response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
+                                                response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
+                                                response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                                response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                             }
                             else {
                                 changeToConfirmCashIn
@@ -680,6 +692,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.SOURCE_PRODUCT_TYPE, source_product_type);
             params.put(WebParams.SOURCE_PRODUCT_VALUE, no_source);
             params.put(WebParams.BENEF_PRODUCT_CODE, benef_product_code);
+            if(benef_product_code.equalsIgnoreCase("TCASH"))
+            {
+                params.put((WebParams.PRODUCT_VALUE), etOTP.getText().toString() );
+            }
             params.put(WebParams.BENEF_PRODUCT_TYPE, benef_product_type);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, amount);
@@ -766,8 +782,11 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
+            if (source_product_code.equalsIgnoreCase("TCASH"))
+                params.put(WebParams.PRODUCT_VALUE,"");
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, comm_id);
+
             if(isSMSBanking)
                 params.put(WebParams.PRODUCT_VALUE,productValue);
 

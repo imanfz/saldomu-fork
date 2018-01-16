@@ -40,6 +40,17 @@
         android:gravity="right"
         android:text="(contoh: BANK BCA)"/>
 
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/no_OTP_cashout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/otp_hint"
+        android:inputType="numberPassword"
+        android:maxLength="6"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
 
     <TextView
         android:layout_width="match_parent"

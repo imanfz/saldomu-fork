@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,6 +66,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
             tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination;
+    private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
@@ -72,7 +74,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
     private int max_token_resend;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
@@ -145,6 +147,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         btnBack = (Button) v.findViewById(R.id.btn_back);
         layoutTCASH = v.findViewById(R.id.layout_TCASH);
         noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
+        tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -186,6 +189,10 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
             tvNameBenefAcct.setText(name_benef);
+            if (name_benef.isEmpty()|| name_benef==null || name_benef.equalsIgnoreCase(""))
+            {
+                tbNameBenef.setVisibility(View.GONE);
+            }
             tvNoBenefAcct.setText(no_benef);
             tvNoHp.setText(no_hp_benef);
             tvRemark.setText(remark);
@@ -204,7 +211,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             }
             else if(source_product_h2h.equalsIgnoreCase("Y")) {
-                if(source_product_type.equalsIgnoreCase("EMO")) {
+                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH")) {
                     isPIN = true;
                     new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                         @Override
@@ -246,6 +253,16 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     btnResend.setOnClickListener(resendListener);
                     initializeSmsClass();
                 }
+                else if (tx_product_code.equalsIgnoreCase("TCASH"))
+                {
+                    if (TCASH_hp_validation)
+                    {
+                        isTCASH = true;
+                        layoutTCASH.setVisibility(View.VISIBLE);
+                        layout_OTP.setVisibility(View.GONE);
+                        layout_btn_resend.setVisibility(View.GONE);
+                    }
+                }
             }
 
             if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT))
@@ -253,10 +270,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
 
-            if (TCASH_hp_validation)
-            {
-                layoutTCASH.setVisibility(View.VISIBLE);
-            }
+
 
             btnBack.setOnClickListener(backListener);
             btnSubmit.setOnClickListener(submitListener);
@@ -339,6 +353,19 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 else if(isPIN) {
                     CallPINinput(attempt);
                     btnSubmit.setEnabled(true);
+                }
+                else if (isTCASH)
+                {
+                    if (validasiNoHP())
+                    {
+                        noHpTCASH.setEnabled(false);
+                        layout_OTP.setVisibility(View.VISIBLE);
+                        btnSubmit.setEnabled(true);
+                    }
+                    if (inputValidation())
+                    {
+                        sentInsertTransTopup(tokenValue.getText().toString());
+                    }
                 }
                 else btnSubmit.setEnabled(true);
             }
@@ -437,6 +464,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                         }
                         progdialog.dismiss();
                     } catch (JSONException e) {
@@ -498,6 +526,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            if(noHpTCASH!=null)
+                params.put(WebParams.PRODUCT_VALUE, noHpTCASH.getText().toString());
 
             Timber.d("isi params resendTokenSGOL:"+params.toString());
 
@@ -846,6 +876,18 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_token_resend+")");
             }
         });
+    }
+
+    public boolean validasiNoHP()
+    {
+        if (noHpTCASH.getText().toString().length()==0)
+        {
+            noHpTCASH.requestFocus();
+            noHpTCASH.setError("No. Handphone dibutuhkan!");
+            return false;
+        }
+        tokenValue.setVisibility(View.VISIBLE);
+        return true;
     }
 
     public boolean inputValidation(){
