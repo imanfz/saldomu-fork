@@ -11,18 +11,18 @@ import java.util.HashMap;
  * Created by thinkpad on 4/26/2017.
  */
 
-public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCompatAutoCompleteTextView {
+public class CustomAutoCompleteTextViewWithIcon extends android.support.v7.widget.AppCompatAutoCompleteTextView {
 
-    public CustomAutoCompleteTextView(Context context, AttributeSet attrs) {
+    public CustomAutoCompleteTextViewWithIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
 
-    public CustomAutoCompleteTextView(Context context) {
+    public CustomAutoCompleteTextViewWithIcon(Context context) {
         super(context);
     }
 
-    public CustomAutoCompleteTextView(Context arg0, AttributeSet arg1, int arg2) {
+    public CustomAutoCompleteTextViewWithIcon(Context arg0, AttributeSet arg1, int arg2) {
         super(arg0, arg1, arg2);
     }
 

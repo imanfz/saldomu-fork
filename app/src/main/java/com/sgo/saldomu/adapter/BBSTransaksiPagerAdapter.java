@@ -46,6 +46,7 @@ public class BBSTransaksiPagerAdapter extends FragmentPagerAdapter {
             args.putString(DefineValue.TYPE, bundle.getString(DefineValue.TYPE));
             args.putString(DefineValue.AMOUNT, bundle.getString(DefineValue.AMOUNT));
             args.putString(DefineValue.KEY_CODE, bundle.getString(DefineValue.KEY_CODE));
+            args.putString(DefineValue.PRODUCT_CODE, bundle.getString(DefineValue.PRODUCT_CODE));
         }
         mFrag.setArguments(args);
         return mFrag;

@@ -908,7 +908,11 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
+        }else {
+
         }
+
+
     }
     /**
      * Check jika bisa menjalankan ServiceUpdateData langsung

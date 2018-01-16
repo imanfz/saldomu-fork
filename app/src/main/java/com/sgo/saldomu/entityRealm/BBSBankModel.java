@@ -12,6 +12,15 @@ public class BBSBankModel extends RealmObject {
     @Ignore
     public final static String SCHEME_CODE = "scheme_code";
 
+    @Ignore
+    public final static String PRODUCT_CODE = "product_code";
+
+    @Ignore
+    public final static String COMM_TYPE = "comm_type";
+
+    @Ignore
+    public final static String PRODUCT_NAME = "product_name";
+
     private String comm_id;
     private String comm_type;
     private String product_code;
@@ -21,6 +30,7 @@ public class BBSBankModel extends RealmObject {
     private String scheme_code;
     private String bank_gateway;
     private String last_update;
+    private String product_display;
 
     public String getComm_id() {
         return comm_id;
@@ -92,5 +102,13 @@ public class BBSBankModel extends RealmObject {
 
     public void setLast_update(String last_update) {
         this.last_update = last_update;
+    }
+
+    public String getProduct_display() {
+        return product_display;
+    }
+
+    public void setProduct_display(String product_display) {
+        this.product_display = product_display;
     }
 }

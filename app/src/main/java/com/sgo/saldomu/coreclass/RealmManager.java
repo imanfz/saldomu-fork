@@ -34,6 +34,7 @@ public class RealmManager {
 
     public static RealmConfiguration BillerConfiguration;
     public static RealmConfiguration BBSConfiguration;
+    public static RealmConfiguration BBSMemberBankConfiguration;
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
@@ -48,9 +49,16 @@ public class RealmManager {
     private static class BBSModule {
     }
 
+    @RealmModule(classes = { BBSBankModel.class})
+    private static class BBSMemberBankModule {
+    }
+
     public static void init(Context mContext, int rawBiller){
         File file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBillerName));
         copyBundledRealmFile(mContext.getResources().openRawResource(rawBiller),file);
+
+        file = new File(mContext.getFilesDir(),mContext.getString(R.string.realmBBSMemberBankName));
+        copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
 
         Realm.init(mContext);
         RealmConfiguration config = new RealmConfiguration.Builder()
@@ -75,6 +83,17 @@ public class RealmManager {
                 .modules(new BBSModule())
                 .migration(new BBSRealMigration())
                 .build();
+
+        BBSMemberBankConfiguration = new RealmConfiguration.Builder()
+                .name(mContext.getString(R.string.realmBBSMemberBankName))
+                .schemaVersion(mContext.getResources().getInteger(R.integer.realBBSMemberBankscheme))
+                .modules(new BBSMemberBankModule())
+                .migration(new BBSMemberBankMigration())
+                .build();
+    }
+
+    public static Realm getRealmBBSMemberBank(){
+        return Realm.getInstance(BBSMemberBankConfiguration);
     }
 
     public static Realm getRealmBBS(){

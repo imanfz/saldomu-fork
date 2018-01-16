@@ -4,8 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -15,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,9 +29,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,8 +58,14 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.fragments.NavigationDrawMenu;
+import com.sgo.saldomu.services.AgentShopService;
+import com.sgo.saldomu.services.UpdateBBSData;
+import com.sgo.saldomu.utils.BbsUtil;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -61,8 +73,11 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.BBSBankModel;
+import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.apache.http.Header;
@@ -77,11 +92,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import io.realm.Realm;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
+import static com.sgo.saldomu.coreclass.DefineValue.ATC;
+import static com.sgo.saldomu.coreclass.DefineValue.BENEF;
+import static com.sgo.saldomu.coreclass.DefineValue.CTA;
+import static com.sgo.saldomu.utils.BbsUtil.mappingProductCodeIcons;
 
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -96,12 +116,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
-    private String categoryId, categoryName;
+    private String categoryId, categoryName, bbsSchemeCode;
     private Intent intentData;
-    ProgressDialog progdialog;
+    ProgressDialog progdialog, progDialog;
     private Boolean showHideLayoutNote = false;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
-    private CustomAutoCompleteTextView searchLocationEditText;
+    private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
     private GoogleMap globalMap;
     SupportMapFragment mapFrag;
@@ -111,11 +131,28 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     List<String> latestShops;
     List<String> differentShops;
     HashMap<String,Marker> hashMapMarkers;
-    EditText etJumlah, etNote;
-    String amount, completeAddress, provinceName, districtName, countryName;
-    private LinearLayout llNote;
+    EditText etNote;
+    AutoCompleteTextView etJumlah;
+    String amount, completeAddress, provinceName, districtName, countryName, bbsProductName;
     private static final int RC_LOCATION_PERM = 500;
     private static final int RC_GPS_REQUEST = 1;
+    String denom[];
+    private Realm realm, realmBBSMemberBank;
+    private CustomAutoCompleteTextViewWithIcon acMemberAcct;
+    private SimpleAdapter adapterAccounts;
+    private List<BBSBankModel> listbankSource, listbankBenef;
+
+    private List<HashMap<String,String>> aListMember;
+    // Keys used in Hashmap
+    private String[] from = {"flag", "txt"};
+
+    // Ids of views in listview_layout
+    private int[] to = {R.id.flag, R.id.txt};
+
+    private Boolean isAgent;
+
+    private List<BBSBankModel> listBankAccounts;
+    BBSCommModel comm;
 
     private int timeDelayed = 20000;
     // Init
@@ -131,22 +168,54 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        realm           = Realm.getDefaultInstance();
+        realmBBSMemberBank        = RealmManager.getRealmBBSMemberBank();
+
         sp              = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        progDialog = DefinedDialog.CreateProgressDialog(this);
+        progDialog.dismiss();
+
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+
+        if ( !isAgent ) {
+            boolean isUpdatingDataMember = sp.getBoolean(DefineValue.IS_UPDATING_BBS_MEMBER_DATA,false);
+            if(isUpdatingDataMember)
+                progDialog.show();
+            else
+                checkAndRunServiceBBS();
+        }
+
+        aListMember     = new ArrayList<>();
+
+
+        adapterAccounts = new SimpleAdapter(this, aListMember, R.layout.bbs_autocomplete_layout, from, to);
+
 
         intentData      = getIntent();
         currentShops    = new ArrayList<String>();
         latestShops     = new ArrayList<String>();
         differentShops  = new ArrayList<String>();
         hashMapMarkers  = new HashMap<>();
+        denom           = getResources().getStringArray(R.array.list_denom_amount);
 
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         categoryName        = intentData.getStringExtra(DefineValue.CATEGORY_NAME);
+        bbsSchemeCode       = intentData.getStringExtra(DefineValue.BBS_SCHEME_CODE);
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
 
-        llNote          = (LinearLayout) findViewById(R.id.llNote);
-        llNote.setVisibility(View.GONE);
+        initializeDataBBS(bbsSchemeCode);
+
+        acMemberAcct = (CustomAutoCompleteTextViewWithIcon) findViewById(R.id.acMemberAcct);
+        if ( bbsSchemeCode.equals(CTA) ) {
+            acMemberAcct.setHint(getString(R.string.bbs_setor_ke) + " " + getString(R.string.label_bank_pelangggan));
+        } else {
+            acMemberAcct.setHint(getString(R.string.bbs_tarik_dari) + " " + getString(R.string.label_bank_pelangggan));
+        }
+        acMemberAcct.setAdapter(adapterAccounts);
 
         etNote          = (EditText) findViewById(R.id.etNote);
+        etNote.setVisibility(View.GONE);
 
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
@@ -201,7 +270,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         }
 
 
-        searchLocationEditText = (CustomAutoCompleteTextView) findViewById(R.id.searchLocationEditText);
+        searchLocationEditText = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.searchLocationEditText);
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
         searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         searchLocationEditText.setOnItemClickListener(this);
@@ -226,9 +295,21 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         searchLocationEditText.setSelectAllOnFocus(true);
 
-        etJumlah                = (EditText) findViewById(R.id.etJumlah);
+        etJumlah                = (AutoCompleteTextView) findViewById(R.id.etJumlah);
         etJumlah.requestFocus();
         etJumlah.addTextChangedListener(jumlahChangeListener);
+
+        ArrayAdapter adapterDenom = new ArrayAdapter(this,android.R.layout.simple_list_item_1,denom);
+
+        etJumlah.setAdapter(adapterDenom);
+        etJumlah.setThreshold(1);
+        etJumlah.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                etJumlah.showDropDown();
+                return false;
+            }
+        });
 
         etJumlah.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -241,10 +322,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                         if ( !showHideLayoutNote ) {
                             showHideLayoutNote = true;
-                            llNote.setVisibility(View.VISIBLE);
+                            etNote.setVisibility(View.VISIBLE);
                         } else {
                             showHideLayoutNote = false;
-                            llNote.setVisibility(View.GONE);
+                            etNote.setVisibility(View.GONE);
                         }
 
 
@@ -278,8 +359,22 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     hasError = true;
                 }
 
+                int idxValid =-1;
+                String nameAcct = acMemberAcct.getText().toString();
+                for(int i = 0 ; i < aListMember.size() ; i++) {
+                    if(nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
+                        idxValid = i;
+                }
+
+                if(idxValid == -1){
+                    acMemberAcct.requestFocus();
+                    acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+                    hasError = true;
+                }
+
                 if ( !hasError ) {
                     amount = etJumlah.getText().toString();
+                    bbsProductName = acMemberAcct.getText().toString();
 
                     String note = etNote.getText().toString();
 
@@ -299,6 +394,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
                     i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, latitude);
                     i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, longitude);
+                    i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                    i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
 
                     i.putExtra(DefineValue.BBS_COMPLETE_ADDRESS, completeAddress);
                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
@@ -974,4 +1071,54 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 break;
         }
     }
+
+    void checkAndRunServiceBBS(){
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(!bbsDataManager.isDataUpdated()) {
+            progDialog = DefinedDialog.CreateProgressDialog(this);
+            progDialog.show();
+            bbsDataManager.runServiceUpdateData(getContext());
+            Timber.d("Run Service update data BBS");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+
+    private void initializeDataBBS(String schemeCode){
+
+        if(schemeCode.equalsIgnoreCase(DefineValue.CTA)){
+            listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
+                    .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
+            setMember(listbankBenef);
+        }
+        else {
+            listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
+                    .equalTo(WebParams.SCHEME_CODE,DefineValue.ATC)
+                    .equalTo(WebParams.COMM_TYPE,DefineValue.SOURCE).findAll();
+            if(listbankSource == null){
+                Toast.makeText(this, getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
+            }
+            setMember(listbankSource);
+
+        }
+
+
+
+    }
+
+    private void setMember(List<BBSBankModel> bankMember) {
+        aListMember.clear();
+
+        aListMember.addAll( BbsUtil.mappingProductCodeIcons(bankMember));
+
+        adapterAccounts.notifyDataSetChanged();
+
+    }
+
+
 }

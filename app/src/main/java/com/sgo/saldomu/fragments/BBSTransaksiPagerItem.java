@@ -43,7 +43,7 @@ public class BBSTransaksiPagerItem extends Fragment {
         layout = v.findViewById(R.id.bbsTransaksiFragmentContent);
 
         Bundle bundle = getArguments();
-        String type = "",defaultAmount="", noHpPengirim="";
+        String type = "",defaultAmount="", noHpPengirim="", defaultProductCode="";
         if(bundle != null) {
             title = bundle.getString(DefineValue.TRANSACTION,"");
             isShowRegAccountMenu = false;
@@ -56,6 +56,9 @@ public class BBSTransaksiPagerItem extends Fragment {
             if(bundle.containsKey(DefineValue.KEY_CODE)) {
                 noHpPengirim = bundle.getString(DefineValue.KEY_CODE);
             }
+            if(bundle.containsKey(DefineValue.PRODUCT_CODE)) {
+                defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE);
+            }
         }
 
         Fragment newFrag = new BBSTransaksiAmount();
@@ -64,6 +67,8 @@ public class BBSTransaksiPagerItem extends Fragment {
         args.putString(DefineValue.TYPE, type);
         args.putString(DefineValue.AMOUNT, defaultAmount);
         args.putString(DefineValue.KEY_CODE, noHpPengirim);
+        if ( !defaultProductCode.equals("") )
+            args.putString(DefineValue.PRODUCT_CODE, defaultProductCode);
         newFrag.setArguments(args);
         getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiAmount.TAG).commit();
 

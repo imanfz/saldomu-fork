@@ -56,7 +56,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -85,7 +85,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private ProgressDialog progdialog;
     private Activity act;
     private TextView tvTitle;
-    private CustomAutoCompleteTextView actv_rekening_cta;
+    private CustomAutoCompleteTextViewWithIcon actv_rekening_cta;
     private Spinner sp_rekening_act;
     private List<HashMap<String,String>> aListAgent;
     private SimpleAdapter adapterAgent;
@@ -241,7 +241,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
                 View cashin_layout = stub.inflate();
-                actv_rekening_cta = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_agen_value);
+                actv_rekening_cta = (CustomAutoCompleteTextViewWithIcon) cashin_layout.findViewById(R.id.rekening_agen_value);
                 etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
@@ -518,6 +518,11 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
             params.put(WebParams.USER_COMM_CODE, BuildConfig.commCodeBBSATC);
 
+            String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
+            if ( !aodTxId.equals("")) {
+                params.put(WebParams.TX_ID, aodTxId);
+            }
+
             Log.d("params insert c2a", params.toString());
             MyApiClient.sentGlobalBBSInsertC2A(getActivity(),params, new JsonHttpResponseHandler(){
                 @Override
@@ -529,6 +534,13 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
+
+                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                            SecurePreferences.Editor mEditor = prefs.edit();
+                            mEditor.remove(DefineValue.AOD_TX_ID);
+                            mEditor.apply();
+                            mEditor.commit();
+
                             if(isSMSBanking) {
                                 if(smsDialog == null){
                                     smsDialog = new SMSDialog(getActivity(), null);
@@ -669,6 +681,11 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
 
+            String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
+            if ( !aodTxId.equals("")) {
+                params.put(WebParams.TX_ID, aodTxId);
+            }
+
             Log.d("params insert a2c", params.toString());
             MyApiClient.sentGlobalBBSInsertA2C(getActivity(),params, new JsonHttpResponseHandler(){
                 @Override
@@ -680,6 +697,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response sent insert a2c:"+response.toString());
+
+                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                            SecurePreferences.Editor mEditor = prefs.edit();
+                            mEditor.remove(DefineValue.AOD_TX_ID);
+                            mEditor.apply();
+                            mEditor.commit();
 
                             sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
                                     response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),

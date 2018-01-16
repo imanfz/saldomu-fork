@@ -1,11 +1,10 @@
-package com.sgo.saldomu.coreclass;
+package com.sgo.saldomu.widgets;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -13,22 +12,22 @@ import android.widget.RadioGroup;
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
-public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCompatAutoCompleteTextView {
+public class CustomAutoCompleteTextViewWithRadioButton extends android.support.v7.widget.AppCompatAutoCompleteTextView {
 
     private Button btn;
     private RadioGroup locationRadioGroup;
     private RadioButton searchLocationRadioBtn;
 
 
-    public CustomAutoCompleteTextView(Context context) {
+    public CustomAutoCompleteTextViewWithRadioButton(Context context) {
         super(context);
     }
 
-    public CustomAutoCompleteTextView(Context context, AttributeSet attrs) {
+    public CustomAutoCompleteTextViewWithRadioButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomAutoCompleteTextViewWithRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -88,6 +87,6 @@ public class CustomAutoCompleteTextView extends android.support.v7.widget.AppCom
     }
 
     public interface KeyboardListener {
-        void onStateChanged(CustomAutoCompleteTextView CustomBbsAutoCompleteTextView, boolean showing);
+        void onStateChanged(CustomAutoCompleteTextViewWithRadioButton CustomBbsAutoCompleteTextView, boolean showing);
     }
 }

@@ -254,6 +254,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     JSONObject object = categories.getJSONObject(i);
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
+                                    shopCategory.setSchemeCode(object.getString("scheme_code"));
                                     String tempCategory = object.getString("category_name").toLowerCase();
 
                                     String[] strArray = tempCategory.split(" ");
@@ -463,6 +464,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                             i.putExtra(DefineValue.AMOUNT, "");
+                            i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                             break;
                         }

@@ -42,12 +42,13 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -61,7 +62,7 @@ public class BBSTransaksiAmount extends Fragment {
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
     private AutoCompleteTextView etAmount;
-    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
+    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim, defaultProductCode;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -69,7 +70,7 @@ public class BBSTransaksiAmount extends Fragment {
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private CustomAutoCompleteTextView actv_rekening_member;
+    private CustomAutoCompleteTextViewWithIcon actv_rekening_member;
     private List<HashMap<String,String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
@@ -103,7 +104,7 @@ public class BBSTransaksiAmount extends Fragment {
             type = bundle.getString(DefineValue.TYPE,"");
             defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
-
+            defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "");
 
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
             {
@@ -185,7 +186,7 @@ public class BBSTransaksiAmount extends Fragment {
             View cashin_layout = stub.inflate();
 
             nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
-            actv_rekening_member = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_member_value);
+            actv_rekening_member = (CustomAutoCompleteTextViewWithIcon) cashin_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
             tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
             etNameAcct = (EditText) cashin_layout.findViewById(R.id.name_value);
@@ -194,8 +195,6 @@ public class BBSTransaksiAmount extends Fragment {
             spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
-
-
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -234,7 +233,7 @@ public class BBSTransaksiAmount extends Fragment {
             stub.setLayoutResource(R.layout.bbs_cashout_amount);
             View cashout_layout = stub.inflate();
 
-            actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
+            actv_rekening_member = (CustomAutoCompleteTextViewWithIcon) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
 
 
@@ -259,8 +258,23 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
-            if ( !noHpPengirim.equals("") ) {
-                etNoAcct.setText(noHpPengirim);
+            if ( !defaultProductCode.equals("") ) {
+                BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
+                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                        .findFirst();
+
+                if ( bbsBankModel != null ) {
+                    actv_rekening_member.setText(bbsBankModel.getProduct_name());
+                    if ( bbsBankModel.getProduct_display().equals(DefineValue.STRING_YES) ) {
+
+
+                        if ( !noHpPengirim.equals("") ) {
+                            etNoAcct.setText(noHpPengirim);
+                        }
+                    }
+                }
             } else if (cashInHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
@@ -270,8 +284,23 @@ public class BBSTransaksiAmount extends Fragment {
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
-            if ( !noHpPengirim.equals("") ) {
-                etNoAcct.setText(noHpPengirim);
+            if ( !defaultProductCode.equals("") ) {
+                BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
+                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
+                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                        .findFirst();
+
+                if ( bbsBankModel != null ) {
+                    actv_rekening_member.setText(bbsBankModel.getProduct_name());
+                    if ( bbsBankModel.getProduct_display().equals(DefineValue.STRING_YES) ) {
+
+
+                        if ( !noHpPengirim.equals("") ) {
+                            etNoAcct.setText(noHpPengirim);
+                        }
+                    }
+                }
             } else if (cashOutHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
