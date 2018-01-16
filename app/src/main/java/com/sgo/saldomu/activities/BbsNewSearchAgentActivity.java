@@ -63,7 +63,6 @@ import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.UpdateBBSData;
-import com.sgo.saldomu.services.UpdateBBSMemberData;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
@@ -138,7 +137,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private static final int RC_LOCATION_PERM = 500;
     private static final int RC_GPS_REQUEST = 1;
     String denom[];
-    private Realm realm, realmBBS;
+    private Realm realm, realmBBSMemberBank;
     private CustomAutoCompleteTextViewWithIcon acMemberAcct;
     private SimpleAdapter adapterAccounts;
     private List<BBSBankModel> listbankSource, listbankBenef;
@@ -150,7 +149,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     // Ids of views in listview_layout
     private int[] to = {R.id.flag, R.id.txt};
 
-    private IntentFilter filter;
     private Boolean isAgent;
 
     private List<BBSBankModel> listBankAccounts;
@@ -171,12 +169,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm           = Realm.getDefaultInstance();
-        realmBBS        = Realm.getInstance(RealmManager.BBSConfiguration);
+        realmBBSMemberBank        = RealmManager.getRealmBBSMemberBank();
 
         sp              = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        filter = new IntentFilter();
-        filter.addAction(UpdateBBSMemberData.INTENT_ACTION_BBS_MEMBER_DATA);
 
         progDialog = DefinedDialog.CreateProgressDialog(this);
         progDialog.dismiss();
@@ -910,7 +905,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
     }
 
@@ -1078,23 +1072,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         }
     }
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action.equals(UpdateBBSMemberData.INTENT_ACTION_BBS_MEMBER_DATA)){
-                if(progDialog.isShowing())
-                    progDialog.dismiss();
-                if(!intent.getBooleanExtra(DefineValue.IS_SUCCESS,false)){
-                    Toast.makeText(getContext(),getString(R.string.error_message),Toast.LENGTH_LONG).show();
-                    finish();
-                }
-            }
-
-        }
-    };
-
     void checkAndRunServiceBBS(){
         BBSDataManager bbsDataManager = new BBSDataManager();
         if(!bbsDataManager.isDataUpdated()) {
@@ -1108,22 +1085,19 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     protected void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
 
     private void initializeDataBBS(String schemeCode){
-        comm = realmBBS.where(BBSCommModel.class)
-                .equalTo(WebParams.SCHEME_CODE, schemeCode).findFirst();
 
         if(schemeCode.equalsIgnoreCase(DefineValue.CTA)){
-            listbankBenef = realmBBS.where(BBSBankModel.class)
+            listbankBenef = realmBBSMemberBank.where(BBSBankModel.class)
                     .equalTo(WebParams.SCHEME_CODE, DefineValue.CTA)
                     .equalTo(WebParams.COMM_TYPE, DefineValue.BENEF).findAll();
             setMember(listbankBenef);
         }
         else {
-            listbankSource = realmBBS.where(BBSBankModel.class)
+            listbankSource = realmBBSMemberBank.where(BBSBankModel.class)
                     .equalTo(WebParams.SCHEME_CODE,DefineValue.ATC)
                     .equalTo(WebParams.COMM_TYPE,DefineValue.SOURCE).findAll();
             if(listbankSource == null){
@@ -1133,14 +1107,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         }
 
-        if(comm == null) {
-            if(schemeCode.equalsIgnoreCase(DefineValue.CTA))
-                Toast.makeText(this, getString(R.string.bbstransaction_toast_not_registered,
-                        getString(R.string.cash_in)), Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, getString(R.string.bbstransaction_toast_not_registered,
-                        getString(R.string.cash_out)), Toast.LENGTH_LONG).show();
-        }
+
 
     }
 

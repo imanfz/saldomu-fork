@@ -94,6 +94,7 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+import static com.sgo.saldomu.R.string.realmBBSMemberBankName;
 import static com.sgo.saldomu.R.string.show;
 
 public class BbsSearchAgentActivity extends BaseActivity implements View.OnClickListener,
@@ -150,7 +151,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     Boolean clicked = false;
     ProgressDialog progdialog, progdialog2;
-    private Realm realm, realmBBS;
+    private Realm realm, realmBBSMemberBank;
 
     // Init
     private Handler handler = new Handler();
@@ -171,7 +172,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         super.onCreate(savedInstanceState);
 
         realm               = Realm.getDefaultInstance();
-        realmBBS            = Realm.getInstance(RealmManager.BBSConfiguration);
+        realmBBSMemberBank            = Realm.getInstance(RealmManager.BBSMemberBankConfiguration);
 
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -189,12 +190,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         BBSBankModel bbsBankModel = null;
 
         if ( bbsSchemeCode.equals(DefineValue.CTA) ) {
-            bbsBankModel = realmBBS.where(BBSBankModel.class).
+            bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
                     .findFirst();
         } else {
-            bbsBankModel = realmBBS.where(BBSBankModel.class).
+            bbsBankModel = realmBBSMemberBank.where(BBSBankModel.class).
                     equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
                     equalTo(BBSBankModel.PRODUCT_NAME, bbsProductName)
                     .findFirst();
