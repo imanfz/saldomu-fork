@@ -372,14 +372,8 @@ public class BBSTransaksiAmount extends Fragment {
                     position = i;
                     if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                         benef_product_type = listbankBenef.get(position).getProduct_type();
-                        benef_product_code = listbankBenef.get(position).getProduct_code();
                         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                            if(benef_product_code.equalsIgnoreCase("TCASH"))
-                            {
-                                etNoOTPC2A.setVisibility(VISIBLE);
-                            }
-                            else
-                                etNoOTPC2A.setVisibility(View.GONE);
+
 //                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
@@ -393,12 +387,20 @@ public class BBSTransaksiAmount extends Fragment {
                             nameLayout.setVisibility(View.GONE);
                         else
                             nameLayout.setVisibility(VISIBLE);
+
+                        benef_product_code = listbankBenef.get(position).getProduct_code();
+                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        {
+                            etNoOTPC2A.setVisibility(VISIBLE);
+                        }
+                        else
+                            etNoOTPC2A.setVisibility(View.GONE);
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             source_product_code = listbankSource.get(position).getProduct_code();
-                            if (listbankSource.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
-                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.appname));
-                            else
+//                            if (listbankSource.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
+//                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.appname));
+//                            else
                                 etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
                         }
                     }

@@ -357,7 +357,7 @@
     <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
-    <string name="payfriends_otp">* maks. 4 karakter</string>
+    <string name="payfriends_otp">* maks. 10 karakter</string>
     <string name="payfriends_ab_title_activity">Kirim Saldo</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>

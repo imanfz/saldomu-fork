@@ -74,7 +74,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
     private int max_token_resend;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
@@ -356,15 +356,26 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
                 else if (isTCASH)
                 {
+                    layout_OTP.setVisibility(View.VISIBLE);
                     if (validasiNoHP())
                     {
                         noHpTCASH.setEnabled(false);
-                        layout_OTP.setVisibility(View.VISIBLE);
                         btnSubmit.setEnabled(true);
-                    }
-                    if (inputValidation())
-                    {
-                        sentInsertTransTopup(tokenValue.getText().toString());
+                        validasiNomor = true;
+                        if(InetHandler.isNetworkAvailable(getActivity())){
+                            if(max_token_resend!=0)requestResendToken();
+                        }
+                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                        btnSubmit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (inputValidation())
+                                {
+                                    sentInsertTransTopup(tokenValue.getText().toString());
+                                    btnSubmit.setEnabled(true);
+                                }
+                            }
+                        });
                     }
                 }
                 else btnSubmit.setEnabled(true);
