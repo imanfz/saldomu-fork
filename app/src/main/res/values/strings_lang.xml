@@ -969,6 +969,7 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
+    <string name="no_rekening_source_cashout">Nomor Rekening Pelanggan</string>
     <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
 
