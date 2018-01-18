@@ -516,7 +516,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, etRemark.getText().toString());
             params.put(WebParams.MEMBER_SHOP_PHONE, etNoHp.getText().toString());
-            params.put(WebParams.USER_COMM_CODE, BuildConfig.commCodeBBSATC);
+            params.put(WebParams.USER_COMM_CODE, BuildConfig.COMM_CODE_BBS_ATC);
 
             String aodTxId = sp.getString(DefineValue.AOD_TX_ID, "");
             if ( !aodTxId.equals("")) {

@@ -469,7 +469,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -479,7 +479,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.LONGITUDE, agentLongitude);
         //
         progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.message_notif_agent_approval));
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + memberId + shopId ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + memberId + shopId ));
 
         handler.removeCallbacks(runnable2);
         params.put(WebParams.SIGNATURE, signature);
@@ -900,7 +900,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -908,7 +908,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.SHOP_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
 
         params.put(WebParams.SIGNATURE, signature);
 

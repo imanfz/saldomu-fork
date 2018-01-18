@@ -4,20 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.activeandroid.query.Update;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.receivers.LocalResultReceiver;
 import com.sgo.saldomu.services.UpdateBBSData;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
-import io.realm.Realm;
 import timber.log.Timber;
+
 /**
  * Created by yuddistirakiki on 8/9/17.
  */
@@ -41,8 +36,11 @@ public class BBSDataManager {
 
     public static Boolean isDataCTANotValid(){
         BBSDataManager bbsDataManager = new BBSDataManager();
-        if(bbsDataManager.isMustUpdate())
+        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
+            Timber.d("return true data cta must update");
             return true;
+        }
+
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         if(sp.contains(DefineValue.UPDATE_TIME_BBS_CTA_DATA)){
@@ -50,17 +48,21 @@ public class BBSDataManager {
 //            Calendar checkCalendar = Calendar.getInstance();
             Date checkDate = DateTimeFormat.convertStringtoCustomDate(curr_date);
             //            return checkDate.compareTo(checkCalendar.getTime()) == 0;
+            Timber.d("return dari checkDateismorethan31days data cta ");
             return DateTimeFormat.checkDateisMoreThan31Days(checkDate);
         }
         else {
-            return false;
+            Timber.d("return true data cta not valid");
+            return true;
         }
     }
 
     public static Boolean isDataATCNotValid(){
         BBSDataManager bbsDataManager = new BBSDataManager();
-        if(bbsDataManager.isMustUpdate())
+        if(bbsDataManager.isMustUpdate() || !bbsDataManager.isSameUser()) {
+            Timber.d("return true data atc must update");
             return true;
+        }
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
         if(sp.contains(DefineValue.UPDATE_TIME_BBS_ATC_DATA)){
@@ -68,16 +70,24 @@ public class BBSDataManager {
 //            Calendar checkCalendar = Calendar.getInstance();
             Date checkDate = DateTimeFormat.convertStringtoCustomDate(curr_date);
 //            return checkDate.compareTo(checkCalendar.getTime()) == 0;
+            Timber.d("return dari checkDateismorethan31days data atc ");
             return DateTimeFormat.checkDateisMoreThan31Days(checkDate);
         }
         else {
+            Timber.d("return true data atc not valid");
             return true;
         }
     }
 
     @NonNull
     public Boolean isValidToUpdate() {
-        return isMustUpdate() || (isSameUser() && !isDataUpdated());
+        return  isMustUpdate() || ! isSameUser() || isRealmBBSVersionNotSame() || !isDataUpdated();
+    }
+
+    private Boolean isRealmBBSVersionNotSame(){
+        long oldver = RealmManager.getCurrentVersionRealm(RealmManager.BBSConfiguration);
+        long currver = BuildConfig.REALM_SCHEME_BBS_VERSION;
+        return oldver != currver;
     }
 
     @NonNull

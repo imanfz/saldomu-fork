@@ -94,9 +94,6 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-import static com.sgo.saldomu.R.string.realmBBSMemberBankName;
-import static com.sgo.saldomu.R.string.show;
-
 public class BbsSearchAgentActivity extends BaseActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -1067,7 +1064,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.CATEGORY_ID, categoryId);
@@ -1105,7 +1102,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //currentLongitude = longitude;
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + categoryId
+                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryId
                     + latitude + longitude));
 
             params.put(WebParams.SIGNATURE, signature);
@@ -1680,7 +1677,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.TX_ID, txId);
@@ -1688,7 +1685,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
 
             params.put(WebParams.SIGNATURE, signature);
 

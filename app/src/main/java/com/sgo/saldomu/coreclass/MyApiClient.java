@@ -37,6 +37,15 @@ public class MyApiClient {
     private SyncHttpClient syncHttpClient;
     private AsyncHttpClient asyncHttpClientUnstrusted;
 
+    private Context getmContext() {
+        return mContext;
+    }
+
+    private void setmContext(Context mContext) {
+        this.mContext = mContext;
+    }
+
+
     public MyApiClient(){
 
     }
@@ -63,8 +72,8 @@ public class MyApiClient {
         return singleton;
     }
     public static Boolean PROD_FAILURE_FLAG = true;
-    public static Boolean IS_PROD = BuildConfig.isProdDomain;
-    public static Boolean PROD_FLAG_ADDRESS = BuildConfig.isProdDomain;
+    public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
+    public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean IS_INTERNET_BANKING;
     public static final String PRIVATE_KEY = "590mobil3";
     public static String COMM_ID;
@@ -72,10 +81,10 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HeadAddress+"hpku/";
+    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"hpku/";
 
-    public static String headaodaddressfinal    = BuildConfig.HeadAddress+"agentlocation/";
-    public static String urlMNotif              = BuildConfig.UrlMNotif;
+    public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"agentlocation/";
+    public static String urlMNotif              = BuildConfig.URL_MNOTIF;
 
     //Link webservices Signature
 
@@ -329,7 +338,7 @@ public class MyApiClient {
         LINK_ATMTOPUP       = headaddressfinal + "ATMTopUp/Retrieve";
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
-        if(BuildConfig.isProdDomain)
+        if(BuildConfig.IS_PROD_DOMAIN)
             LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
 //            LINK_INQUIRY_SMS   = "https://mobile.espay.id/hpku/" + "InquirySMS/Retrieve";
         else
@@ -366,12 +375,12 @@ public class MyApiClient {
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
-        if(PROD_FLAG_ADDRESS)
+//        if(PROD_FLAG_ADDRESS)
             getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
-        if(PROD_FLAG_ADDRESS)
+//        if(PROD_FLAG_ADDRESS)
             getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
@@ -435,7 +444,7 @@ public class MyApiClient {
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
-    public static String APP_ID = BuildConfig.AppID;
+    public static String APP_ID = BuildConfig.APP_ID;
     public static String CCY_VALUE = "IDR";
     public static String DEV_MEMBER_ID_PULSA_RETAIL = "EFENDI1421144347BPFIM";
     public static String PROD_MEMBER_ID_PULSA_RETAIL = "EFENDI1421205049F0018";
@@ -454,7 +463,7 @@ public class MyApiClient {
         return tokens.nextToken();
     }
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.AppID+WebServiceName+noID;
+        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
         String hash = SHA.SHA256(apinya,msgnya);
         return hash;
     }
@@ -464,7 +473,7 @@ public class MyApiClient {
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.AppID+webServiceName+ commID + user_id;
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
@@ -526,26 +535,6 @@ public class MyApiClient {
 
     public static void getSync(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
         getInstance().syncHttpClient.get(mContext, url, responseHandler);
-    }
-
-    public static void sentInquiryDataATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent inquiry data ATC:"+LINK_INQUIRY_DATA_ATC);
-        post(mContext,LINK_INQUIRY_DATA_ATC, params, responseHandler);
-    }
-
-    public static void sentInquiryTokenATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent inquiry token ATC:"+LINK_INQUIRY_TOKEN_ATC);
-        post(mContext,LINK_INQUIRY_TOKEN_ATC, params, responseHandler);
-    }
-
-    public static void sentCancelATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address sent cancel ATC:"+LINK_CANCEL_ATC);
-        post(mContext,LINK_CANCEL_ATC, params, responseHandler);
-    }
-
-    public static void sentReqChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address req change email:"+ LINK_REQ_CHANGE_EMAIL);
-        post(mContext, LINK_REQ_CHANGE_EMAIL, params, responseHandler);
     }
 
     private static AsyncHttpClient getClientGoogle(boolean isSync){
@@ -1163,41 +1152,24 @@ public class MyApiClient {
         post(mContext, LINK_REG_STEP2, params, responseHandler);
     }
 
-    //get Data------------------------------------------------------------------------------------------
-
-
-    public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
-        get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
+    public static void sentInquiryDataATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent inquiry data ATC:"+LINK_INQUIRY_DATA_ATC);
+        post(mContext,LINK_INQUIRY_DATA_ATC, params, responseHandler);
     }
 
-    public static void getAllBank(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        get(mContext,LINK_GET_ALL_BANK, responseHandler);
+    public static void sentInquiryTokenATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent inquiry token ATC:"+LINK_INQUIRY_TOKEN_ATC);
+        post(mContext,LINK_INQUIRY_TOKEN_ATC, params, responseHandler);
     }
 
-    public static void getAppVersion(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        get(mContext,LINK_APP_VERSION, responseHandler);
-    }
-	
-	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address getHelpPIN: %1$s ",LINK_HELP_PIN);
-        get(mContext,LINK_HELP_PIN, responseHandler);
+    public static void sentCancelATC(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent cancel ATC:"+LINK_CANCEL_ATC);
+        post(mContext,LINK_CANCEL_ATC, params, responseHandler);
     }
 
-    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
-        if(isSync)
-            getSync(mContext,LINK_BBS_CITY,responseHandler);
-        else
-            get(mContext,LINK_BBS_CITY, responseHandler);
-    }
-
-    private Context getmContext() {
-        return mContext;
-    }
-
-    private void setmContext(Context mContext) {
-        this.mContext = mContext;
+    public static void sentReqChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address req change email:"+ LINK_REQ_CHANGE_EMAIL);
+        post(mContext, LINK_REQ_CHANGE_EMAIL, params, responseHandler);
     }
 
     public static void updateMemberLocation(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1320,11 +1292,53 @@ public class MyApiClient {
         post(mContext,LINK_UPDATE_LOCATION, params, responseHandler);
     }
 
-    public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
+    public static void confirmTransactionByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm transaction by agent: %1$s ",LINK_CONFIRM_TRANSACTION_BY_AGENT);
+        post(mContext,LINK_CONFIRM_TRANSACTION_BY_AGENT, params, responseHandler);
+    }
+
+    public static void updateFeedback(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update feedback: %1$s ",LINK_UPDATE_FEEDBACK);
+        post(mContext,LINK_UPDATE_FEEDBACK, params, responseHandler);
+    }
+
+
+    public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address update search agent service: %1$s ",LINK_BBS_NEW_SEARCH_AGENT);
         post(mContext,LINK_BBS_NEW_SEARCH_AGENT, params, responseHandler);
     }
+
+    //get Data------------------------------------------------------------------------------------------
+
+
+    public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
+    }
+
+    public static void getAllBank(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        get(mContext,LINK_GET_ALL_BANK, responseHandler);
+    }
+
+    public static void getAppVersion(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        get(mContext,LINK_APP_VERSION, responseHandler);
+    }
+	
+	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getHelpPIN: %1$s ",LINK_HELP_PIN);
+        get(mContext,LINK_HELP_PIN, responseHandler);
+    }
+
+    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
+        if(isSync)
+            getSync(mContext,LINK_BBS_CITY,responseHandler);
+        else
+            get(mContext,LINK_BBS_CITY, responseHandler);
+    }
+
 
     public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {
 
@@ -1349,19 +1363,7 @@ public class MyApiClient {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
     }
 
-    public static void confirmTransactionByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address confirm transaction by agent: %1$s ",LINK_CONFIRM_TRANSACTION_BY_AGENT);
-        post(mContext,LINK_CONFIRM_TRANSACTION_BY_AGENT, params, responseHandler);
-    }
-
-    public static void updateFeedback(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-
-        Timber.wtf("address update feedback: %1$s ",LINK_UPDATE_FEEDBACK);
-        post(mContext,LINK_UPDATE_FEEDBACK, params, responseHandler);
-    }
 }
 

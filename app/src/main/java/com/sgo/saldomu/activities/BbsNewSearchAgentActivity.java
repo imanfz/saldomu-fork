@@ -60,9 +60,6 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.fragments.NavigationDrawMenu;
-import com.sgo.saldomu.services.AgentShopService;
-import com.sgo.saldomu.services.UpdateBBSData;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
@@ -595,7 +592,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.CATEGORY_ID, categoryId);
@@ -604,7 +601,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + categoryId
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryId
                 + latitude + longitude));
 
         params.put(WebParams.SIGNATURE, signature);

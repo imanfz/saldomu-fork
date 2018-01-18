@@ -502,7 +502,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -516,7 +516,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         handler.removeCallbacks(runnable2);
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
 
         params.put(WebParams.SIGNATURE, signature);
 
@@ -651,7 +651,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -659,7 +659,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
 
         params.put(WebParams.SIGNATURE, signature);
 
@@ -736,7 +736,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
@@ -745,7 +745,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
 
         params.put(WebParams.SIGNATURE, signature);
 

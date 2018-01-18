@@ -222,13 +222,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, "");
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID));
+                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID));
 
             params.put(WebParams.SIGNATURE, signature);
 
@@ -690,7 +690,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
@@ -698,7 +698,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.SHOP_STATUS, shopStatus);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
 
             params.put(WebParams.SIGNATURE, signature);
 

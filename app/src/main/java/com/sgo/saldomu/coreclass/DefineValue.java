@@ -422,8 +422,8 @@ public class DefineValue {
     public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
-    public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSData";
-    public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSData";
+    public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
+    public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";

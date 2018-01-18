@@ -270,7 +270,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
-                    params.put(WebParams.APP_ID, BuildConfig.AppID);
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, shopId);
@@ -286,7 +286,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.ZIP_CODE, postalCode);
 
                     String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase()
-                            + BuildConfig.AppID + selectedLat + selectedLong));
+                            + BuildConfig.APP_ID + selectedLat + selectedLong));
 
                     params.put(WebParams.SIGNATURE, signature);
 
@@ -323,7 +323,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                                         params2.put(WebParams.RC_UUID, rcUUID2);
                                         params2.put(WebParams.RC_DATETIME, dtime2);
-                                        params2.put(WebParams.APP_ID, BuildConfig.AppID);
+                                        params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
                                         params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                                         params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                                         params2.put(WebParams.SHOP_ID, shopId);
@@ -332,7 +332,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
 
 
-                                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+                                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.APP_ID));
 
                                         params2.put(WebParams.SIGNATURE, signature);
 

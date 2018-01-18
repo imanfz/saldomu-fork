@@ -348,7 +348,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
             params3.put(WebParams.RC_UUID, rcUUID);
             params3.put(WebParams.RC_DATETIME, dtime);
-            params3.put(WebParams.APP_ID, BuildConfig.AppID);
+            params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
@@ -362,7 +362,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 params3.put(WebParams.LONGITUDE, currentLongitude);
             }
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
 
             params3.put(WebParams.SIGNATURE, signature);
 
@@ -696,13 +696,13 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + customerId ));
 
         params.put(WebParams.SIGNATURE, signature);
 
