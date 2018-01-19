@@ -85,6 +85,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NavigationDrawMenu extends ListFragment{
 
+    public static final String TAG = "com.sgo.saldomu.fragments.NavigationDrawMenu";
     public static final int MHOME = 0;
     public static final int MTOPUP = 1;
     public static final int MPAYFRIENDS= 2;

@@ -601,7 +601,6 @@ public class MainPage extends BaseActivity {
     }
 
     private void InitializeNavDrawer(){
-        FragmentManager mFragmentManager = getSupportFragmentManager();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
         mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
@@ -687,7 +686,8 @@ public class MainPage extends BaseActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
-        mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
+        mNavDrawer = new NavigationDrawMenu();
+        getSupportFragmentManager().beginTransaction().add(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
     }
 
 
@@ -756,8 +756,7 @@ public class MainPage extends BaseActivity {
 
                                 if(mNavDrawer != null && serviceReferenceBalance != null)
                                     serviceReferenceBalance.runBalance();
-//                                TurnOnGCM();
-//                                getBalance(true);
+
                                 initializeNavDrawer();
                                 CheckNotification();
 
