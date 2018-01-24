@@ -356,7 +356,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
                 else if (isTCASH)
                 {
-                    layout_OTP.setVisibility(View.VISIBLE);
+                    btnSubmit.setEnabled(true);
                     if (validasiNoHP())
                     {
                         noHpTCASH.setEnabled(false);
@@ -552,6 +552,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             max_token_resend = max_token_resend - 1;
 
                             changeTextBtnSub();
+                            layout_OTP.setVisibility(View.VISIBLE);
                             Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
                             Timber.w("txid response resend tokenSGOL:"+response.toString());
                         }
