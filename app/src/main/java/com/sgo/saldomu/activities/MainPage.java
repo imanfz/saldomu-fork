@@ -149,7 +149,6 @@ public class MainPage extends BaseActivity {
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(this,sp);
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             startLocationService();
@@ -268,6 +267,7 @@ public class MainPage extends BaseActivity {
             if (savedInstanceState != null)
                 mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
+            levelClass = new LevelClass(this,sp);
             isForeground = true;
             agent = sp.getBoolean(DefineValue.IS_AGENT, false);
             utilsLoader = new UtilsLoader(this, sp);
