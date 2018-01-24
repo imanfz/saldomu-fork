@@ -4,6 +4,7 @@ package com.sgo.saldomu.fragments;
  */
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,6 +37,7 @@ import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -42,7 +45,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
@@ -52,11 +55,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
-
 import timber.log.Timber;
 
-public class Cashoutbbs_describ_member extends Fragment {
+public class Cashoutbbs_describ_member extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
 //    layout_button_transaction;
@@ -383,7 +384,7 @@ public class Cashoutbbs_describ_member extends Fragment {
         }
     }
 
-    public void OTPMemberATC(String _token, String _tx_id) {
+    public void OTPMemberATC(String _token, final String _tx_id) {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -412,11 +413,13 @@ public class Cashoutbbs_describ_member extends Fragment {
                         String code = response.getString(WebParams.ERROR_CODE);
                         String message = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            layoutCode.setVisibility(View.VISIBLE);
+//                            layoutCode.setVisibility(View.VISIBLE);
 //                            layout_button_transaction.setVisibility(View.VISIBLE);
-                            if(isOTP) layoutOTP.setVisibility(View.GONE);
-                            layoutButton.setVisibility(View.GONE);
-                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
+//                            if(isOTP) layoutOTP.setVisibility(View.GONE);
+//                            layoutButton.setVisibility(View.GONE);
+//                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
+//                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
@@ -551,6 +554,185 @@ public class Cashoutbbs_describ_member extends Fragment {
         }
     }
 
+    public void getTrxStatusBBS(final String userName, final String txId, final String userId){
+        try{
+            final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
+            out.show();
+
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
+                    userId,accessKey);
+            params.put(WebParams.TX_ID, txId);
+            params.put(WebParams.COMM_ID, comm_id);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.USER_ID, userId);
+
+            Timber.d("isi params sent get Trx Status bbs:"+params.toString());
+
+            MyApiClient.sentGetTRXStatusBBS(getActivity(),params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        out.dismiss();
+                        Timber.d("isi response sent get Trx Status bbs:"+response.toString());
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+
+                            String txstatus = response.getString(WebParams.TX_STATUS);
+
+                            Timber.d("Source_acct_no" +response.getString(WebParams.SOURCE_ACCT_NO));
+
+                            showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
+                                    txId, userId, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
+                                    response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
+                                    txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
+                                    response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
+                                    response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
+                                    response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
+                                    response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), response.optString(WebParams.OTP_MEMBER,""));
+                        } else if(code.equals(WebParams.LOGOUT_CODE)){
+                            Timber.d("isi response autologout:"+response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(),message);
+                        }
+                        else {
+                            String msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            if(code.equals("0003")){
+//                                showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
+//                                        txId, userId,response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
+//                                        response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
+//                                        response.getString(WebParams.TX_STATUS),response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
+//                                        response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
+//                                        response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
+//                                        response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
+//                                        response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
+//                                        response.optString(WebParams.MEMBER_SHOP_NAME,""), response.optString(WebParams.OTP_MEMBER,""));
+//                            }
+//                            else
+                                showDialog(msg);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+//                    btnSubmit.setEnabled(true);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if(out.isShowing())
+                        out.dismiss();
+//                    btnSubmit.setEnabled(true);
+                    Timber.w("Error Koneksi trx status bbs:"+throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+ e.getMessage());
+        }
+    }
+
+    private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
+                                        String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
+                                        String source_bank_name, String source_acct_no, String source_acct_name,
+                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
+                                        String member_shop_name, String otp_member) {
+        Bundle args = new Bundle();
+        ReportBillerDialog dialog = new ReportBillerDialog();
+        args.putString(DefineValue.USER_NAME, userName);
+        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.TX_ID, txId);
+        args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_MEMBER_OTP);
+        args.putString(DefineValue.USERID_PHONE, userId);
+        args.putString(DefineValue.BANK_NAME, bankName);
+        args.putString(DefineValue.BANK_PRODUCT, bankProduct);
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
+
+        Boolean txStat = false;
+        if (txStatus.equals(DefineValue.SUCCESS)){
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+        }else if(txStatus.equals(DefineValue.SUSPECT)){
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+        }
+        else if(!txStatus.equals(DefineValue.FAILED)){
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
+        }
+        else {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        args.putString(DefineValue.MEMBER_NAME, member_name);
+        args.putString(DefineValue.SOURCE_ACCT, source_bank_name);
+        args.putString(DefineValue.SOURCE_ACCT_NO, source_acct_no);
+        args.putString(DefineValue.SOURCE_ACCT_NAME, source_acct_name);
+        args.putString(DefineValue.BANK_BENEF, benef_bank_name);
+        args.putString(DefineValue.NO_BENEF, benef_acct_no);
+        args.putString(DefineValue.NAME_BENEF, benef_acct_name);
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
+        args.putString(DefineValue.MEMBER_SHOP_NAME, member_shop_name);
+        args.putString(DefineValue.OTP_MEMBER, otp_member);
+
+        dialog.setArguments(args);
+        dialog.setTargetFragment(this,0);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+    }
+
+    void showDialog(String msg) {
+        // Create custom dialog object
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCanceledOnTouchOutside(false);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.dialog_notification);
+
+        // set values for custom dialog components - text, image and button
+        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
+        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+
+        Message.setVisibility(View.VISIBLE);
+        Title.setText(getString(R.string.error));
+        Message.setText(msg);
+
+        btnDialogOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                //SgoPlusWeb.this.finish();
+            }
+        });
+
+        dialog.show();
+    }
+
     public void setMemberOTP(String otp) {
         layoutCode.setVisibility(View.VISIBLE);
         layoutButton.setVisibility(View.GONE);
@@ -621,5 +803,10 @@ public class Cashoutbbs_describ_member extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onOkButton() {
+        getActivity().finish();
     }
 }

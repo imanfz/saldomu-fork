@@ -64,7 +64,7 @@ android {
 //            buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
             buildConfigField 'String', "HeadAddress", "\"https://mobile-dev.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
-            buildConfigField 'String', "UrlMNotif", "\"http://192.168.88.116:8114/\""
+            buildConfigField 'String', "UrlMNotif", "\"http://192.168.86.116:8114/\""
 
             versionCode = 1
             versionName "1.0"

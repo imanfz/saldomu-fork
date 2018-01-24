@@ -91,6 +91,8 @@ public class DefineValue {
     public static String MEMBER_CODE = "memberCode";
     public static String MEMBER_ID = "memberID";
     public static String MEMBER_NAME = "memberName";
+    public static String MEMBER_SHOP_PHONE = "memberShopPhone";
+    public static String MEMBER_SHOP_NAME = "memberShopName";
     public static String ACCESS_KEY = "accessKey";
     public static String TRANSACTION_TYPE = "transactionType";
     public static String TOPUP_TYPE = "topupType";
@@ -361,6 +363,8 @@ public class DefineValue {
     public static String BENEF_PRODUCT_CODE = "benefProductCode";
     public static String BENEF_PRODUCT_TYPE = "benefProductType";
     public static String BENEF_PRODUCT_NAME = "benefProductName";
+    public static String BENEF_PRODUCT_VALUE_TOKEN = "benefProductValueToken";
+    public static String SOURCE_PRODUCT_VALUE_TOKEN = "sourceProductValueToken";
 
     public static String BBS_SENDER_ID							= "GOAPK";
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
@@ -481,5 +485,6 @@ public class DefineValue {
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
     public static String URL_PROFILE_PICTURE    = "url_profile_picture";
+    public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
 }
 
