@@ -116,7 +116,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private String categoryId, categoryName, bbsSchemeCode;
     private Intent intentData;
     ProgressDialog progdialog, progDialog;
-    private Boolean showHideLayoutNote = false;
+    private Boolean showHideLayoutNote = false, isZoomedAlready = false;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
@@ -169,6 +169,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         realmBBSMemberBank        = RealmManager.getRealmBBSMemberBank();
 
         sp              = CustomSecurePref.getInstance().getmSecurePrefs();
+        isZoomedAlready = false;
 
         progDialog = DefinedDialog.CreateProgressDialog(this);
         progDialog.dismiss();
@@ -460,6 +461,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                             public void onFinish() {
                                 //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
                                 globalMap.getUiSettings().setAllGesturesEnabled(true);
+                                isZoomedAlready = true;
                             }
 
                             @Override
@@ -509,33 +511,32 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             if (globalMap != null ) {
 
-                //disable map gesture untuk sementara sampai camera position selesai
-                globalMap.getUiSettings().setAllGesturesEnabled(true);
-                globalMap.getUiSettings().setMapToolbarEnabled(false);
-                globalMap.setIndoorEnabled(false);
-                globalMap.setMyLocationEnabled(false);
-
                 if ( latitude != null && longitude != null ) {
                     LatLng latLng = new LatLng(latitude, longitude);
                     globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                    //add camera position and configuration
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(latLng) // Center Set
-                            .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                            .build(); // Creates a CameraPosition from the builder
+                    isZoomedAlready = false;
+                    if ( !isZoomedAlready ) {
 
-                    globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                        @Override
-                        public void onFinish() {
-                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                            globalMap.getUiSettings().setAllGesturesEnabled(true);
-                        }
+                        //add camera position and configuration
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(latLng) // Center Set
+                                .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                                .build(); // Creates a CameraPosition from the builder
 
-                        @Override
-                        public void onCancel() {
-                        }
-                    });
+                        globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+                                //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                                globalMap.getUiSettings().setAllGesturesEnabled(true);
+                                isZoomedAlready = true;
+                            }
+
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+                    }
 
                     if ( markerCurrent != null ) markerCurrent.remove();
 
