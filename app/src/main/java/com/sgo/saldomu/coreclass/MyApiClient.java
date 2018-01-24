@@ -561,7 +561,7 @@ public class MyApiClient {
         return encode.replace('+','-').replace('/','_');
     }
 
-    public TLSSocketFactory getSSLSocketFactory(){
+    private TLSSocketFactory getSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
