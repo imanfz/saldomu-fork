@@ -378,7 +378,7 @@ public class FragCashOut extends Fragment {
                 }
             }
         }
-        else if(etNominal.getText().toString().length() == 0){
+        if(etNominal.getText().toString().length() == 0 ){
             etNominal.requestFocus();
             etNominal.setError(getString(R.string.cashout_nominal_validation));
             return false;

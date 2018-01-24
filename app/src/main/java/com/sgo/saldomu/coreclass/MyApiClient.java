@@ -5,6 +5,7 @@ import android.os.Looper;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -14,16 +15,12 @@ import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.StringTokenizer;
 import java.util.UUID;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 import timber.log.Timber;
 
@@ -38,6 +35,7 @@ public class MyApiClient {
     private AsyncHttpClient asyncHttpClient_google;
     private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
+    private AsyncHttpClient asyncHttpClientUnstrusted;
 
     public MyApiClient(){
 
@@ -54,10 +52,12 @@ public class MyApiClient {
         if(singleton == null) {
             singleton = new MyApiClient(_context);
             singleton.asyncHttpClient=new AsyncHttpClient();
-            singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClient_google=new AsyncHttpClient();
             singleton.syncHttpClient_google=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
+            singleton.asyncHttpClientUnstrusted = new AsyncHttpClient();
+            singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.asyncHttpClientUnstrusted.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
         }
         return singleton;
@@ -108,6 +108,7 @@ public class MyApiClient {
     private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
     public static String LINK_UPLOAD_PROFILE_PIC;
+    public static String LINK_UPLOAD_KTP;
     public static String LINK_LIST_BANK_BILLER;
 
     public static String LINK_REQ_TOKEN_P2P;
@@ -255,6 +256,7 @@ public class MyApiClient {
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
+        LINK_UPLOAD_KTP          = headaddressfinal + "UploadKtp/Submit";
         LINK_REQ_TOKEN_P2P       = headaddressfinal + "TransferP2P/Invoke";
         LINK_CONFIRM_TRANS_P2P   = headaddressfinal + "ConfirmTransfer/Invoke";
         LINK_RESENT_TOKEN_P2P    = headaddressfinal + "ResendTransfer/Invoke";
@@ -329,6 +331,7 @@ public class MyApiClient {
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.isProdDomain)
             LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
+//            LINK_INQUIRY_SMS   = "https://mobile.espay.id/hpku/" + "InquirySMS/Retrieve";
         else
             LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
         LINK_CLAIM_TRANSFER_NON_MEMBER = headaddressfinal + "ClaimNonMbrTrf/Invoke";
@@ -357,25 +360,31 @@ public class MyApiClient {
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key);
-        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey;
+        LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().syncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().syncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().syncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient.setTimeout(TIMEOUT);
         if(PROD_FLAG_ADDRESS)
-            getInstance().asyncHttpClient.setSSLSocketFactory(getUntrustSSLSocketFactory());
+            getInstance().asyncHttpClient.setSSLSocketFactory(getSSLSocketFactory());
         getInstance().asyncHttpClient.setMaxRetriesAndTimeout(2, 10000);
 
         getInstance().asyncHttpClient_google.setTimeout(TIMEOUT);
         getInstance().asyncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
         getInstance().syncHttpClient_google.setTimeout(TIMEOUT);
         getInstance().syncHttpClient_google.setMaxRetriesAndTimeout(2, 10000);
+
+        //untrusted asynchttp
+        getInstance().asyncHttpClientUnstrusted.setTimeout(TIMEOUT);
+        if(PROD_FLAG_ADDRESS)
+            getInstance().asyncHttpClientUnstrusted.setSSLSocketFactory(MySSLSocketFactory.getFixedSocketFactory());
+        getInstance().asyncHttpClientUnstrusted.setMaxRetriesAndTimeout(2, 10000);
     }
 
 
@@ -409,6 +418,11 @@ public class MyApiClient {
     public static String LINK_CHECK_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Checktransaction";
     public static String LINK_CONFIRM_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Confirmtransaction";
     public static String LINK_CANCEL_TRANSACTION_MEMBER = headaodaddressfinal + "Transaction/Canceltransaction";
+    public static String LINK_UPDATE_LOCATION = headaodaddressfinal + "Location/Update";
+    public static String LINK_BBS_NEW_SEARCH_AGENT = headaodaddressfinal + "Search/Agent";
+    public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
+    public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
+    public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -496,6 +510,11 @@ public class MyApiClient {
         Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
     }
 
+    private static void postUntrustedSSL(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getInstance().asyncHttpClientUnstrusted.post(mContext, url, params, responseHandler);
+        Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
+    }
+
     public static void postByTag(Context mContext,String tag,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getClient().post(mContext, url, params, responseHandler).setTag(tag);
         Timber.d("isis timeoutnya : %1$s ", String.valueOf(getClient().getConnectTimeout()));
@@ -553,13 +572,13 @@ public class MyApiClient {
         return encode.replace('+','-').replace('/','_');
     }
 
-    public SSLSocketFactory getSSLSocketFactory(){
+    public TLSSocketFactory getSSLSocketFactory(){
         try {
             // Get an instance of the Bouncy Castle KeyStore format
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
+            // your trusted certificates
+            InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
@@ -569,42 +588,15 @@ public class MyApiClient {
             }
             // Pass the keystore to the SSLSocketFactory. The factory is responsible
             // for the verification of the server certificate.
-            SSLSocketFactory sf = new SSLSocketFactory(trusted);
+            TLSSocketFactory sf = new TLSSocketFactory(trusted);
             // Hostname verification from certificate
             // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
-            sf.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+            sf.setHostnameVerifier(TLSSocketFactory.STRICT_HOSTNAME_VERIFIER);
             return sf;
         } catch (Exception e) {
             throw new AssertionError(e);
         }
     }
-
-    private SSLSocketFactory getUntrustSSLSocketFactory(){
-        try {
-            // Get an instance of the Bouncy Castle KeyStore format
-            KeyStore trusted = KeyStore.getInstance("BKS");
-            // Get the raw resource, which contains the keystore with
-            // your trusted certificates (root and any intermediate certs)
-            InputStream in = getmContext().getResources().openRawResource(R.raw.mobile_espay_id);
-            try {
-                // InitializeAddress the keystore with the provided trusted certificates
-                // Also provide the password of the keystore
-                trusted.load(in, PRIVATE_KEY.toCharArray());
-            } finally {
-                in.close();
-            }
-            // Pass the keystore to the SSLSocketFactory. The factory is responsible
-            // for the verification of the server certificate.
-
-            SSLSocketFactory test = new SSLSocketFactory(trusted);
-            test.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-
-            return test;
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        }
-    }
-
 
     public static void CancelRequestWS(Context _context,Boolean interruptIfRunning)
     {
@@ -740,6 +732,11 @@ public class MyApiClient {
     public static void sentProfilePicture(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Upload Profile Picture: %1$s ",LINK_UPLOAD_PROFILE_PIC);
         post(mContext,LINK_UPLOAD_PROFILE_PIC, params, responseHandler);
+    }
+
+    public static void sentPhotoKTP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Upload KTP: %1$s ",LINK_UPLOAD_KTP);
+        post(mContext,LINK_UPLOAD_KTP, params, responseHandler);
     }
 
     public static void sentReqTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
@@ -1028,7 +1025,7 @@ public class MyApiClient {
 
     public static void sentInquirySMS(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent inquiry sms: %1$s ",LINK_INQUIRY_SMS);
-        post(mContext,LINK_INQUIRY_SMS, params, responseHandler);
+        postUntrustedSSL(mContext,LINK_INQUIRY_SMS, params, responseHandler);
     }
     public static void sentClaimNonMemberTrf(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent claim non member transfer: %1$s ",LINK_CLAIM_TRANSFER_NON_MEMBER);
@@ -1268,6 +1265,12 @@ public class MyApiClient {
         post(mContext,LINK_TRANSACTION_AGENT, params, responseHandler);
     }
 
+    public static void getOnProgressByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address get trx on progress by agent: %1$s ",LINK_TRX_ONPROGRESS_BY_AGENT);
+        post(mContext,LINK_TRX_ONPROGRESS_BY_AGENT, params, responseHandler);
+    }
+
     public static void updateTransactionAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
 
         Timber.wtf("address update approval trx agent: %1$s ",LINK_UPDATE_APPROVAL_TRX_AGENT);
@@ -1311,6 +1314,18 @@ public class MyApiClient {
         post(mContext,LINK_CANCEL_TRANSACTION_MEMBER, params, responseHandler);
     }
 
+    public static void updateLocationService(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update location service: %1$s ",LINK_UPDATE_LOCATION);
+        post(mContext,LINK_UPDATE_LOCATION, params, responseHandler);
+    }
+
+    public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update search agent service: %1$s ",LINK_BBS_NEW_SEARCH_AGENT);
+        post(mContext,LINK_BBS_NEW_SEARCH_AGENT, params, responseHandler);
+    }
+
     public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {
 
         try {
@@ -1336,6 +1351,17 @@ public class MyApiClient {
         }
 
 
+    }
+
+    public static void confirmTransactionByAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm transaction by agent: %1$s ",LINK_CONFIRM_TRANSACTION_BY_AGENT);
+        post(mContext,LINK_CONFIRM_TRANSACTION_BY_AGENT, params, responseHandler);
+    }
+
+    public static void updateFeedback(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address update feedback: %1$s ",LINK_UPDATE_FEEDBACK);
+        post(mContext,LINK_UPDATE_FEEDBACK, params, responseHandler);
     }
 }
 

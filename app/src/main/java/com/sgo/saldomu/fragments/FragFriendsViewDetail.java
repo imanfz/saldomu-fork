@@ -24,14 +24,13 @@ import com.sgo.saldomu.activities.LevelFormRegisterActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -64,7 +63,7 @@ private Button btnAsk;
     private String listContactPhone = "";
     private String listAddress = "";
     private SecurePreferences sp;
-    static boolean successUpgrade = false;
+    public static boolean successUpgrade = false;
     private ProgressDialog progdialog;
     private Activity act;
 
@@ -114,11 +113,11 @@ private Button btnAsk;
         btnAsk = (Button) getActivity().findViewById(R.id.btn_ask_for_money);
         btnPay = (Button) getActivity().findViewById(R.id.btn_pay);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         Intent intent = getActivity().getIntent();
         if(intent != null) {
@@ -129,17 +128,10 @@ private Button btnAsk;
             email = intent.getStringExtra("email");
 
             if(imgUrl.equals(""))
-                mPic.load(R.drawable.user_unknown_menu)
-                    .fit()
-                    .centerCrop()
-                    .into(friendsPicContent);
+                GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, null, friendsPicContent);
             else
-                mPic.load(imgUrl)
-                    .error(R.drawable.user_unknown_menu)
-                    .placeholder(R.drawable.progress_animation)
-                    .fit()
-                    .centerCrop()
-                    .into(friendsPicContent);
+                GlideManager.sharedInstance().initializeGlide(getActivity(), imgUrl
+                        , getActivity().getResources().getDrawable(R.drawable.user_unknown_menu), friendsPicContent);
 
             tvName.setText(name);
 //            tvID.setText(id);
@@ -147,10 +139,7 @@ private Button btnAsk;
             tvEmail.setText(email);
         }
         else {
-            mPic.load(R.drawable.user_unknown_menu)
-                .fit()
-                .centerCrop()
-                .into(friendsPicContent);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, null, friendsPicContent);
         }
 
         btnAsk.setOnClickListener(new View.OnClickListener() {

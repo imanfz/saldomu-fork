@@ -19,6 +19,7 @@ public class WebParams {
     public static String COMM_CODE = "comm_code";
     public static String USER_COMM_CODE = "user_comm_code";
     public static String USER_ID = "user_id";
+    public static String USER_IMAGES = "user_images";
     public static String TOKEN_ID = "token_id";
     public static String MEMBER_CODE = "member_code";
     public static String CUSTOMER_ID = "customer_id";
@@ -413,6 +414,7 @@ public class WebParams {
     public static String COMM_TYPE = "comm_type";
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
+    public static String BBS_NOTE = "note";
     public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
@@ -464,4 +466,23 @@ public class WebParams {
     public static String SMS_TOKEN = "sms_token";
     public static String FLAG_CHANGE_PWD = "flag_change_pwd";
     public static String FLAG_CHANGE_PIN = "flag_change_pin";
+
+    public static String CANCEL_FEE = "cancel_fee_amount";
+    public static String COUNT_TRX = "count_trx";
+    public static String TOTAL_TRX = "total_trx";
+    public static String INPROGRESS_CODE= "0099";
+    public static String FLAG_NEW_FLOW = "flag_new_flow";
+
+    public static String REGIS_FROM = "regis_from";
+    public static String REJECT_KTP = "reject_ktp";
+    public static String REJECT_FOTO = "reject_foto";
+    public static String REJECT_TTD = "reject_ttd";
+    public static String REMARK_KTP = "remark_ktp";
+    public static String REMARK_FOTO = "remark_foto";
+    public static String REMARK_TTD = "remark_ttd";
+
+    public static String MAXIMUM_RATING = "maximum_rating";
+    public static String DEFAULT_RATING = "default_rating";
+    public static String RATING         = "rating";
+    public static String PROFILE_PICTURE    = "profile_picture";
 }

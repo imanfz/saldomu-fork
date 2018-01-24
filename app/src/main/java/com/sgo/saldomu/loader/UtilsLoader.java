@@ -63,91 +63,94 @@ public class UtilsLoader {
 
     public void getDataBalance(Boolean is_auto,final OnLoadDataListener mListener){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
-                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
-            params.put(WebParams.MEMBER_ID, member_id);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            String isAuto = (is_auto)? DefineValue.STRING_YES:DefineValue.STRING_NO;
-            params.put(WebParams.IS_AUTO,isAuto);
+            String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
+            if(!member_id.isEmpty() && !access_key.isEmpty()) {
+                RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
+                        sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
+                params.put(WebParams.MEMBER_ID, member_id);
+                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+                String isAuto = (is_auto) ? DefineValue.STRING_YES : DefineValue.STRING_NO;
+                params.put(WebParams.IS_AUTO, isAuto);
 
-            Timber.d("isi params get Balance Loader:" + params.toString());
-            if(!member_id.isEmpty()) {
-                MyApiClient.getSaldo(getmActivity(), params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            Timber.d("Isi response getBalance Loader:" + response.toString());
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.v("masuk sini new balance caller Loader");
+                Timber.d("isi params get Balance Loader:" + params.toString());
+                if (!member_id.isEmpty()) {
+                    MyApiClient.getSaldo(getmActivity(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response getBalance Loader:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.v("masuk sini new balance caller Loader");
 
-                                String unread = sp.getString(WebParams.UNREAD_NOTIF,"");
-                                if(unread.equals("")) {
+                                    String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
+                                    if (unread.equals("")) {
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(WebParams.UNREAD_NOTIF, response.getString(WebParams.UNREAD_NOTIF));
+                                        mEditor.apply();
+
+                                        setNotifCount(response.getString(WebParams.UNREAD_NOTIF));
+                                    }
+
                                     SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(WebParams.UNREAD_NOTIF, response.getString(WebParams.UNREAD_NOTIF));
+                                    mEditor.putString(DefineValue.BALANCE_AMOUNT, response.optString(WebParams.AMOUNT, ""));
+                                    mEditor.putString(DefineValue.BALANCE_MAX_TOPUP, response.optString(WebParams.MAX_TOPUP, ""));
+                                    mEditor.putString(DefineValue.BALANCE_CCYID, response.optString(WebParams.CCY_ID, ""));
+                                    mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, response.optString(WebParams.REMAIN_LIMIT, ""));
+                                    mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, response.optString(WebParams.PERIOD_LIMIT, ""));
+                                    mEditor.putString(DefineValue.BALANCE_NEXT_RESET, response.optString(WebParams.NEXT_RESET, ""));
                                     mEditor.apply();
 
-                                    setNotifCount(response.getString(WebParams.UNREAD_NOTIF));
+                                    mListener.onSuccess(true);
+                                    Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
+                                    LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    if (getmActivity().isFinishing()) {
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getmActivity(), message);
+                                    }
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(DefineValue.ERROR, code);
+                                    bundle.putString(DefineValue.ERROR_CODE, response.getString(WebParams.ERROR_CODE));
+                                    mListener.onFail(bundle);
                                 }
 
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.BALANCE_AMOUNT, response.optString(WebParams.AMOUNT, ""));
-                                mEditor.putString(DefineValue.BALANCE_MAX_TOPUP,response.optString(WebParams.MAX_TOPUP, ""));
-                                mEditor.putString(DefineValue.BALANCE_CCYID,response.optString(WebParams.CCY_ID, ""));
-                                mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT,response.optString(WebParams.REMAIN_LIMIT, ""));
-                                mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT,response.optString(WebParams.PERIOD_LIMIT, ""));
-                                mEditor.putString(DefineValue.BALANCE_NEXT_RESET,response.optString(WebParams.NEXT_RESET, ""));
-                                mEditor.apply();
-
-                                mListener.onSuccess(true);
-                                Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
-                                LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                if(getmActivity().isFinishing()) {
-                                    String message = response.getString(WebParams.ERROR_MESSAGE);
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getmActivity(), message);
-                                }
-                            } else {
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                                Bundle bundle = new Bundle();
-                                bundle.putString(DefineValue.ERROR,code);
-                                bundle.putString(DefineValue.ERROR_CODE,response.getString(WebParams.ERROR_CODE));
-                                mListener.onFail(bundle);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
 
-                    }
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            failure(throwable);
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        failure(throwable);
-                    }
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    private void failure(Throwable throwable) {
-                        Timber.w("Error Koneksi get Saldo Loader:" + throwable.toString());
-                        mListener.onFailure(throwable.toString());
-                    }
-                });
+                        private void failure(Throwable throwable) {
+                            Timber.w("Error Koneksi get Saldo Loader:" + throwable.toString());
+                            mListener.onFailure(throwable.toString());
+                        }
+                    });
+                }
             }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

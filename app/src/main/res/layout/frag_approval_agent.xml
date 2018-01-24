@@ -27,25 +27,29 @@
             android:layout_marginBottom="20dp"
             >
 
-            <TableRow android:layout_marginTop="10dip">
+            <!--TableRow android:layout_marginTop="10dip">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/category"
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/ivPPMember"
+                    android:src="@drawable/user_unknown_menu"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    android:paddingLeft="10dp"
-                    ></TextView>
+                    />
 
-                <TextView
+                <RatingBar
+                    android:id="@+id/rbMemberRating"
+                    style="?android:attr/ratingBarStyleIndicator"
                     android:layout_width="wrap_content"
-                    android:id="@+id/tvCategoryName"
-                    android:text=""
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:rating="3.5"
                     android:layout_weight="1"
-                    android:textSize="14sp"
-                    ></TextView>
 
-            </TableRow>
+                    />
+
+            </TableRow -->
 
             <TableRow android:layout_marginTop="10dip">
 
@@ -71,6 +75,28 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:text="@string/category"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvCategoryName"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    ></TextView>
+
+            </TableRow>
+
+
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:text="@string/amount"
                     android:layout_weight="1"
                     android:textSize="14sp"
@@ -86,6 +112,81 @@
                     ></TextView>
 
             </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/bbs_note_meeting_point"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:id="@+id/tvBbsNote"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/history_trx"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/amount_count_trx"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:id="@+id/tvCountTrx"
+                    ></TextView>
+
+            </TableRow>
+
+            <TableRow android:layout_marginTop="10dip">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text="@string/amount_total_trx"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:paddingLeft="10dp"
+                    ></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:text=""
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:id="@+id/tvTotalTrx"
+                    ></TextView>
+
+            </TableRow>
+
         </TableLayout>
 
         <LinearLayout
@@ -104,7 +205,7 @@
                 android:layout_weight="1"
                 />
 
-            <Button
+            <!-- Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -112,7 +213,7 @@
                 android:text="@string/agent_reject"
                 android:background="@color/colorPrimaryDark"
                 android:layout_weight="1"
-                />
+                /-->
 
         </LinearLayout>
     </RelativeLayout>

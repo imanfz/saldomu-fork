@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent">
@@ -9,130 +10,128 @@
     <fragment
         android:id="@+id/agentMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- button search location -->
-    <!-- LinearLayout
-        android:orientation="horizontal"
+    <LinearLayout
+        android:id="@+id/llLegend"
+        android:padding="8dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchLocationContainer"
-        android:layout_marginTop="360dp"
-        android:layout_marginStart="310dp"
-        android:layout_marginLeft="310dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:alpha="0.7"
         android:background="#FFFFFF"
-        android:padding="5dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/searchLocationBtn"
-            android:src="@drawable/search_location"
-            android:scaleType="fitXY" />
-
-    </LinearLayout -->
-
-    <!-- button current location -->
-    <!-- LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="420dp"
-        android:layout_marginStart="310dp"
-        android:layout_marginLeft="310dp"
-        android:background="#FFFFFF"
-        android:padding="5dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/currentLocationBtn"
-            android:src="@drawable/current_location_button"
-            android:scaleType="fitXY" />
-
-    </LinearLayout -->
-
-    <!-- button search location -->
-    <!-- <ImageView
-         android:layout_width="50dp"
-         android:layout_height="50dp"
-         android:id="@+id/currentLocationBtn"
-         android:src="@drawable/current_location_button"
-         android:layout_marginTop="430dp"
-         android:layout_marginStart="290dp"
-         android:scaleType="fitXY" />-->
-
-    <!-- Pick Up Point-->
-    <!-- LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        android:padding="5dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp" >
-
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/agentMap"
+        android:layout_marginTop="8dp">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:id="@+id/llLegendAgent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="70px"
+                android:layout_height="70px"
+                app:srcCompat="@drawable/map_person"
+                tools:layout_editor_absoluteX="-71dp"
+                tools:layout_editor_absoluteY="320dp" />
 
             <TextView
+                android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/info_agent_map_bbs_fragment_label"
-                android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textColor="@color/orange_800"
+                android:layout_alignBottom="@+id/imageView3"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/imageView3"
+                android:layout_toRightOf="@+id/imageView3"
+                android:text="@string/agent"
+                tools:layout_editor_absoluteX="-27dp"
+                tools:layout_editor_absoluteY="329dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/pickupTextView"
-                android:textSize="12sp" />
 
         </LinearLayout>
-
-    </LinearLayout -->
-    <!-- Pick Up Point -->
-
-    <RelativeLayout
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:id="@+id/container_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/llLegendShop"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical"
-            android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:orientation="horizontal">
 
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="70px"
+                android:layout_height="70px"
+                app:srcCompat="@drawable/map_home"
+                tools:layout_editor_absoluteX="-71dp"
+                tools:layout_editor_absoluteY="320dp" />
 
-            <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
-                android:id="@+id/searchLocationEditText"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#808080"
-                android:inputType="text"
-                android:padding="@dimen/margin_10dp"
-                android:textSize="15sp"
-                android:selectAllOnFocus="true"
-                android:hint="@string/search_location_hint_request_bbs_activity_label" >
+                android:textColor="@color/orange_800"
+                android:layout_alignBottom="@+id/imageView2"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/imageView2"
+                android:layout_toRightOf="@+id/imageView2"
+                android:text="@string/bbs_shop"
+                tools:layout_editor_absoluteX="-27dp"
+                tools:layout_editor_absoluteY="329dp" />
 
-            </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
 
         </LinearLayout>
-    </RelativeLayout>
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/llLegendYou"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="70px"
+                android:layout_height="70px"
+                app:srcCompat="@drawable/search_location"
+                tools:layout_editor_absoluteX="-71dp"
+                tools:layout_editor_absoluteY="320dp" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/orange_800"
+                android:layout_alignBottom="@+id/imageView4"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/imageView4"
+                android:layout_toRightOf="@+id/imageView4"
+                android:text="@string/bbs_you"
+                tools:layout_editor_absoluteX="-27dp"
+                tools:layout_editor_absoluteY="329dp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

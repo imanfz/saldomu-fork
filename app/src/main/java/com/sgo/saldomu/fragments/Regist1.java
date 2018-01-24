@@ -24,8 +24,13 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
+import com.sgo.saldomu.activities.PasswordRegisterActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -34,6 +39,7 @@ import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.securities.Md5;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -50,9 +56,10 @@ import timber.log.Timber;
  */
 public class Regist1 extends Fragment implements EasyPermissions.PermissionCallbacks{
 
-    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", auth_type = "";
+    String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", authType, memberID;
     EditText namaValue,emailValue,noHPValue;
     Button btnLanjut;
+    String flag_change_pwd, flag_change_pin, pass, confPass;
     CheckBox cb_terms;
     View v;
     final int RC_READ_SMS = 10;
@@ -129,6 +136,20 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             }
         });
 
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            noHPValid = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            noHPValue.setText(noHPValid);
+        }
+
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){
+            Bundle m = getArguments();
+            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+                v.findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);
+                noHPValue.setEnabled(true);
+            }
+        }
+
         Bundle bundle = getArguments();
         if (bundle!=null)
         {
@@ -165,7 +186,31 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
 	@Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("isi regist 1 requestCode:"+String.valueOf(requestCode));
+        if (requestCode == LoginActivity.ACTIVITY_RESULT) {
+            Timber.d("isi regist 1 resultcode:"+String.valueOf(resultCode));
+            if (resultCode == LoginActivity.RESULT_PIN) {
+                Timber.d("isi regist 1 authtype:"+authType);
+
+                pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
+                confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
+
+//                Intent i = new Intent(getActivity(), CreatePIN.class);
+//                i.putExtra(DefineValue.REGISTRATION, true);
+//                switchActivityPIN(i);
+
+                sendCreatePass();
+            }
+            else if(resultCode == LoginActivity.RESULT_FINISHING){
+//                if(authType.equals(DefineValue.AUTH_TYPE_OTP)){
+//                    pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
+//                    confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
+//                }
+                sendCreatePin(data);
+            }
+        }
     }
+
     private void switchFragment(Fragment i, String name, Boolean isBackstack){
         if (getActivity() == null)
             return;
@@ -180,6 +225,14 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
 
         LoginActivity fca = (LoginActivity) getActivity();
         fca.switchActivity(i);
+    }
+
+    private void SaveIMEIICCID(){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.SaveImeiICCIDDevice();
     }
 
     public void sentData(final String noHP){
@@ -197,6 +250,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             params.put(WebParams.CUST_NAME,namaValue.getText());
             params.put(WebParams.CUST_EMAIL, emailValue.getText());
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
 
             Timber.d("isi params reg1:" + params.toString());
 
@@ -211,13 +265,33 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
                     progdialog.dismiss();
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        if(code.equals(WebParams.SUCCESS_CODE)){
+                        if(code.equals(WebParams.SUCCESS_CODE)) {
 
-                            namaValid = response.getString(WebParams.CUST_NAME);
-                            emailValid = response.getString(WebParams.CUST_EMAIL);
-                            noHPValid = response.getString(WebParams.CUST_PHONE);
+                            if (response.has(WebParams.FLAG_PROCESS))
+                            {
+                                String flag_process = response.getString(WebParams.FLAG_PROCESS);
+                                if(flag_process.equals("N"))
+                                {
+                                    namaValid = response.getString(WebParams.CUST_NAME);
+                                    emailValid = response.getString(WebParams.CUST_EMAIL);
+                                    noHPValid = response.getString(WebParams.CUST_PHONE);
+                                    Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                                    i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                    switchActivityPIN(i);
+                                }else{
+                                    flag_change_pwd = response.optString(WebParams.FLAG_CHANGE_PWD, "Y");
+                                    flag_change_pin = response.optString(WebParams.FLAG_CHANGE_PIN, "Y");
+                                    check(code);
+                                }
+                            } else {
+                                namaValid = response.getString(WebParams.CUST_NAME);
+                                emailValid = response.getString(WebParams.CUST_EMAIL);
+                                noHPValid = response.getString(WebParams.CUST_PHONE);
 
-                            showDialog(code);
+                                Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                                i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                switchActivityPIN(i);
+                            }
                         }
                         else if(code.equals("0002")){
                             showDialog(code);
@@ -270,9 +344,174 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         }
     }
 
+    public void sendCreatePass(){
+        try{
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+
+            RequestParams params = new RequestParams();
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.PASS, pass);
+            params.put(WebParams.CONF_PASS, confPass);
+            params.put(WebParams.CUST_ID, noHPValid);
+            params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
+
+            Timber.d("params create pass:"+params.toString());
+
+            MyApiClient.sentCreatePass(getActivity(),params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                        Timber.d("response create pass:" + response.toString());
+                        progdialog.dismiss();
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            memberID = response.getString(WebParams.MEMBER_ID);
+                            if (response.has(WebParams.FLAG_CHANGE_PWD))
+                            {
+                                flag_change_pwd="N";
+                                check(code);
+                            }
+                            else
+                            {
+                                showDialog(code);
+                            }
+                        } else {
+                            Timber.d("isi error create pass:" + response.toString());
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                            switchActivityPIN(i);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if (progdialog.isShowing())
+                        progdialog.dismiss();
+                    Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                    i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                    switchActivityPIN(i);
+                    Timber.w("Error Koneksi create pass reg2:" + throwable.toString());
+                }
+            });
+        }
+        catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    public void sendCreatePin(Intent data){
+        try{
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+
+            RequestParams params = new RequestParams();
+            params.put(WebParams.USER_ID, noHPValid);
+            params.put(WebParams.MEMBER_ID, memberID);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
+            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
+
+            Timber.d("params create pin:"+params.toString());
+
+            MyApiClient.sentCreatePin(getActivity(),params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                        Timber.d("response create pin:"+response.toString());
+
+                        progdialog.dismiss();
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (response.has(WebParams.FLAG_CHANGE_PIN))
+                            {
+                                flag_change_pin="N";
+                                check(code);
+                            }
+                            else
+                                showDialog(code);
+                        } else {
+                            Timber.d("isi error create pin:" + response.toString());
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            Intent i = new Intent(getActivity(), CreatePIN.class);
+                            i.putExtra(DefineValue.REGISTRATION, true);
+                            switchActivity(i);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if (progdialog.isShowing())
+                        progdialog.dismiss();
+                    Intent i = new Intent(getActivity(), CreatePIN.class);
+                    i.putExtra(DefineValue.REGISTRATION, true);
+                    switchActivity(i);
+                    Timber.w("Error Koneksi create pin reg2:" + throwable.toString());
+                }
+            });
+        }
+        catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
     public void changeActivity(Boolean login){
         if(login){
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            SaveIMEIICCID();
             Fragment test = new Login();
             switchFragment(test,"Login",false);
         }
@@ -290,6 +529,21 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             switchFragment(mFragment, "reg2", true);
         }
     }
+    private void check(String code){
+        if (flag_change_pwd.equals("Y"))
+        {
+            Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+            switchActivityPIN(i);
+        }
+        else if(flag_change_pin.equals("Y"))
+        {
+            Intent i = new Intent(getActivity(), CreatePIN.class);
+            i.putExtra(DefineValue.REGISTRATION, true);
+            switchActivityPIN(i);
+        }
+        else showDialog(code);
+    }
 
     void showDialog(final String code) {
         // Create custom dialog object
@@ -302,7 +556,9 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         // set values for custom dialog components - text, image and button
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message2 = (TextView)dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
+        TextView Message3 = (TextView)dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title));
@@ -311,21 +567,33 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             Message.setText(getResources().getString(R.string.regist1_notif_message_registered));
         }
         else if(code.equals(WebParams.SUCCESS_CODE)){
-            Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-            Message.setText(getString(R.string.appname)+" "+getString(R.string.regist1_notif_message_email));
+            Title.setText(getResources().getString(R.string.regist2_notif_title));
+            Message.setText(getResources().getString(R.string.regist2_notif_message_1));
+            Message2.setText(noHPValue.getText().toString());
+            Message2.setTextSize(getResources().getDimension(R.dimen.abc_text_size_small_material));
+            Message3.setText(getResources().getString(R.string.regist2_notif_message_3));
         }
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(code.equals("0002")) changeActivity(true);
-                else if(code.equals(WebParams.SUCCESS_CODE)) changeActivity(false);
+                if(code.equals(WebParams.SUCCESS_CODE) || code.equals("0002"))
+                    changeActivity(true);
 
                 dialog.dismiss();
             }
         });
 
         dialog.show();
+    }
+
+    private void switchActivityPIN(Intent i){
+        /*if (getActivity() == null)
+            return;
+
+        Registration fca = (Registration) getActivity();
+        fca.switchActivity(i, Registration.ACTIVITY_RESULT);*/
+        startActivityForResult(i, LoginActivity.ACTIVITY_RESULT);
     }
 
     //----------------------------------------------------------------------------------------------------------------

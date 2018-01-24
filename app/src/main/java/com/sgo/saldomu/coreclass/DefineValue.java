@@ -30,6 +30,7 @@ public class DefineValue {
     public static String TOPUP_ACL_TYPE = "6";
     public static String CASHOUT_TUNAI_TYPE = "7";
     public static String YES = "1";
+    public static String Y = "Y";
     public static String NO = "0";
     public static String SUCCESS = "S";
     public static String ONRECONCILED = "OR";
@@ -39,6 +40,7 @@ public class DefineValue {
     public static String PAYFRIENDS = "pf";
     public static String BILLER = "bl";
     public static String BILLER_PLN = "pl";
+    public static String BILLER_BPJS = "bpjs";
     public static String BILLER_ESPAY = "blep";
     public static String TOPUP = "tp";
     public static String CASHOUT = "ct";
@@ -100,7 +102,6 @@ public class DefineValue {
     public static String SMS_BANKING = "smsBanking";
     public static String EMONEY = "emoney";
     public static String PULSA = "pulsa";
-//    public static String IS_FIRST_TIME = "isFirstTime";
     public static String IS_FIRST = "isFirst";
     public static String BANK_CHANNEL = "bankChannel";
     public static String CONTACT_FIRST_TIME = "contactFirstTime";
@@ -151,8 +152,7 @@ public class DefineValue {
     public static String BUY_TYPE = "buyType";
     public static String BUY_TYPE_NAME = "buyTypeName";
     public static String AMOUNT_DESIRED = "amountDesired";
-    public static String DESC_FIELD = "isDesField";
-    public static String DESC_VALUE = "isDesValue";
+    public static String DETAILS_BILLER = "details_biller";
     public static String BANK_NAME = "bankName";
     public static String BANK_PRODUCT = "bankProduct";
     public static String FEE = "fee";
@@ -164,7 +164,7 @@ public class DefineValue {
     public static String COUNT = "10";
     public static String TIMELINE_FIRST_TIME = "timelineFirstTime";
     public static String DETAIL = "detail";
-    public static String TYPE = "type";
+    public static String TYPE = "bbs_trx_type";
     public static String DESCRIPTION = "description";
     public static String REMARK = "remark";
     public static String AUTHENTICATION_TYPE = "authenticationType";
@@ -316,9 +316,9 @@ public class DefineValue {
     public static int DISPLACEMENT                          = 1;
     public static int REQUEST_CODE_AUTOCOMPLETE             = 1;
 
-    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 15000; //60 seconds
-    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 15000; //58 seconds
-    public static int AGENT_DISPLACEMENT                            = 20; //30meter
+    public static long AGENT_INTERVAL_LOCATION_REQUEST              = 1000; //60 seconds
+    public static long AGENT_FASTEST_INTERVAL_LOCATION_REQUEST      = 1000; //58 seconds
+    public static int AGENT_DISPLACEMENT                            = 1; //30meter
 
     public static long MEMBER_INTERVAL_LOCATION_REQUEST             = 60000; //60 seconds
     public static long MEMBER_FASTEST_INTERVAL_LOCATION_REQUEST     = 58000; //58 seconds
@@ -366,6 +366,7 @@ public class DefineValue {
     public static String BBS_RECEIVER_ID						= "GOMOBILE";
     public static String BBS_AGENT_MOBILITY                     = "mobility";
     public static String IS_AUTOSEARCH                          = "isAutoSearch";
+    public static String BBS_NOTE                               = "bbsNote";
 
     public static String TX_ID2             = "tx_id";
     public static String KEY_CODE           = "key_code";
@@ -449,10 +450,36 @@ public class DefineValue {
     public static final String BankBII = "016";
     public static final String BankUOB = "058";
     public static final String BankBRI = "002";
+    public static final String BankBNI = "009";
     public static String BANKLIST_TYPE_ATM = "ATM" ;
     public static String IS_MERCHANT = "isMerchant";
     public static String IS_UNREGISTER_MEMBER = "unregister_member";
 
+    public static final int RC_LOCATION_PERMISSION = 500;
+    public static final int MAX_RADIUS_SEARCH_AGENT = 10;
+    public static final String BBS_COMPLETE_ADDRESS = "bbsCompleteAddress";
+    public static final String NOTIF_DATA_NEXT_LOGIN = "NotifDataNextLogin";
+    public static final int MIN_DISTANCE_ALMOST_ARRIVE = 50;
+    public static String CONTACTCENTER_NAME = "contactCenterName";
+    public static String CONTACTCENTER_PHONE = "contactCenterPhone";
+    public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
+    public static String DATA_REJECT_UPGRADE_MEMBER = "dataRejectUpgradeMember";
+    public static String REJECT_KTP = "rejectKtp";
+    public static String REJECT_FOTO = "rejectFoto";
+    public static String REJECT_TTD = "rejectTtd";
+    public static String REMARK_KTP = "remarkKtp";
+    public static String REMARK_FOTO = "remarkFoto";
+    public static String REMARK_TTD = "remarkTtd";
+    public static String MODEL_NOTIF = "model_notif";
 
+    public static String MEMBER_PROFILE_PICTURE = "member_profile_picture";
+    public static String AGENT_PROFILE_PICTURE  = "agent_profile_picture";
+
+    public static String BBS_MODULE             = "bbs_module";
+    public static String BBS_REVIEW             = "bbs_review";
+    public static String BBS_SHOP_NAME          = "shop_name";
+    public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
+    public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
+    public static String URL_PROFILE_PICTURE    = "url_profile_picture";
 }
 

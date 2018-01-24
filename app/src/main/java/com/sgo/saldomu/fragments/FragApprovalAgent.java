@@ -1,25 +1,27 @@
 package com.sgo.saldomu.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,18 +38,17 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
-import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
@@ -64,6 +65,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
+import static com.sgo.saldomu.coreclass.GlobalUtils.setRatingStarColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,9 +93,11 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
     RelativeLayout rlApproval;
+    RatingBar rbMemberRating;
     Spinner spPilihan;
+    ImageView ivPPMember;
     ArrayAdapter<String> SpinnerAdapter;
     Button btnApprove, btnReject;
     int itemId;
@@ -103,6 +107,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     private LocationRequest mLocationRequest;
 
     private OnFragmentInteractionListener mListener;
+    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+    private static final int RC_GPS_REQUEST = 1;
 
     public FragApprovalAgent() {
         // Required empty public constructor
@@ -155,12 +161,24 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
 
         btnApprove              = (Button) v.findViewById(R.id.btnApprove);
-        btnReject               = (Button) v.findViewById(R.id.btnReject);
+        //btnReject               = (Button) v.findViewById(R.id.btnReject);
         tvCategoryName          = (TextView) v.findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) v.findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) v.findViewById(R.id.tvAmount);
+        tvBbsNote               = (TextView) v.findViewById(R.id.tvBbsNote);
         rlApproval              = (RelativeLayout) v.findViewById(R.id.rlApproval);
         rlApproval.setVisibility(View.GONE);
+
+        tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
+        tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
+
+        //rbMemberRating          = (RatingBar) v.findViewById(R.id.rbMemberRating);
+        //ivPPMember              = (ImageView) v.findViewById(R.id.ivPPMember);
+
+        //LayerDrawable stars = (LayerDrawable) rbMemberRating.getProgressDrawable();
+        // Filled stars
+        //setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
+
 
         shopDetail              = new ShopDetail();
         shopDetails             = new ArrayList<>();
@@ -176,116 +194,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
 
 
-        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params.put(WebParams.SHOP_PHONE, customerId);
-        params.put(WebParams.SHOP_REMARK, gcmId);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
-
-        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-
-                try {
-
-                    String code = response.getString(WebParams.ERROR_CODE);
-
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        progdialog.dismiss();
-                        rlApproval.setVisibility(View.VISIBLE);
-
-                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
-                        shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
-                        shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
-                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
-                        shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
-                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
-                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
-                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
-                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
-                        shopDetail.setCommId(response.getString(WebParams.COMM_ID));
-
-                        shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
-                        shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
-                        shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
-                        shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
-                        shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
-                        shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
-
-                        shopDetails.add(shopDetail);
-
-                        tvCategoryName.setText(shopDetail.getCategoryName());
-                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
-                        //tvShop.setText(shopDetail.getShopName());
-                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
-
-
-
-                    } else {
-                        progdialog.dismiss();
-                        code = response.getString(WebParams.ERROR_MESSAGE);
-                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
-
-                        rlApproval.setVisibility(View.GONE);
-
-                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        getActivity().finish();
-
-                                    }
-                                });
-                        alertDialog.show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
 
 
         //rlApproval.setVisibility(View.VISIBLE);
@@ -330,6 +239,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 }
         );
 
+        /*
         btnReject.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
@@ -338,7 +248,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
-                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx));
+                        alertDialog.setMessage(getString(R.string.message_notif_cancel_trx_by_agent));
 
 
 
@@ -379,6 +289,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     }
                 }
         );
+        */
 
         return v;
     }
@@ -566,6 +477,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                     currentLongitude = lastLocation.getLongitude();
 
                     Timber.d("Location Found" + lastLocation.toString());
+                    btnApprove.setEnabled(true);
                     //googleApiClient.disconnect();
                 }
             } catch (SecurityException se) {
@@ -593,7 +505,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         lastLocation = location;
         currentLatitude = lastLocation.getLatitude();
         currentLongitude = lastLocation.getLongitude();
-
+        btnApprove.setEnabled(true);
         //googleApiClient.disconnect();
 
         try {
@@ -646,12 +558,18 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
 
-        Fragment frg = null;
-        frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
-        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.detach(frg);
-        ft.attach(frg);
-        ft.commitAllowingStateLoss();
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_LOCATION_PERM:
+                if ( !GlobalSetting.isLocationEnabled(getContext()) ) {
+                    showAlertEnabledGPS();
+                } else {
+                    runningApp();
+                }
+                break;
+        }
+
+
     }
 
     @Override
@@ -679,38 +597,77 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     public void onStart() {
         super.onStart();
 
-        if (EasyPermissions.hasPermissions(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-
+        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+            if ( !GlobalSetting.isLocationEnabled(getContext()) ) {
+                showAlertEnabledGPS();
+            } else {
+                runningApp();
+            }
         } else {
-            // Ask for one permission
+            // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
+                    RC_LOCATION_PERM, perms);
         }
 
-        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
+
+
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if ( !GlobalSetting.isLocationEnabled(getContext()) )
         {
-            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+            showAlertEnabledGPS();
+        } else {
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+            }
 
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
+            try {
+                googleApiClient.connect();
 
-                        }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
-                            getActivity().finish();
-                        }
-                    });
-            final android.app.AlertDialog alert = builder.create();
-            alert.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            /*Fragment currentFragment = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.detach(currentFragment);
+            fragmentTransaction.attach(currentFragment);
+            fragmentTransaction.commit();*/
+
         }
+    }
 
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
 
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getActivity().startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+                        getActivity().startActivity(new Intent(getContext(), MainPage.class));
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void runningApp() {
         if ( checkPlayServices() ) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -722,54 +679,140 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        /*Fragment frg = null;
+        frg = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
+        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commitAllowingStateLoss();*/
 
-        if ( !GlobalSetting.isLocationEnabled(getActivity()) )
-        {
-            final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.alertbox_gps_warning))
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+        progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
+        RequestParams params    = new RequestParams();
 
-                            Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivityForResult(ilocation, 1);
+        UUID rcUUID             = UUID.randomUUID();
+        String  dtime           = DateTimeFormat.getCurrentDateTime();
 
+        params.put(WebParams.RC_UUID, rcUUID);
+        params.put(WebParams.RC_DATETIME, dtime);
+        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+        params.put(WebParams.SHOP_PHONE, customerId);
+        params.put(WebParams.SHOP_REMARK, gcmId);
+
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
+
+        params.put(WebParams.SIGNATURE, signature);
+
+        MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+
+                try {
+
+                    String code = response.getString(WebParams.ERROR_CODE);
+
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                        progdialog.dismiss();
+                        rlApproval.setVisibility(View.VISIBLE);
+
+                        shopDetail.setAmount(response.getString(DefineValue.KEY_AMOUNT));
+                        shopDetail.setTxId(response.getString(DefineValue.TX_ID2));
+                        shopDetail.setCategoryId(response.getString(DefineValue.CATEGORY_ID));
+                        shopDetail.setCategoryName(response.getString(DefineValue.CATEGORY_NAME));
+                        shopDetail.setCategoryCode(response.getString(DefineValue.CATEGORY_CODE));
+                        shopDetail.setKeyName(response.getString(DefineValue.KEY_NAME));
+                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                        //shopDetail.setKeyDistrict(response.getString(DefineValue.KEY_DISTRICT));
+                        shopDetail.setKeyAddress(response.getString(DefineValue.KEY_ADDRESS));
+                        //shopDetail.setKeyProvince(response.getString(DefineValue.KEY_PROVINCE));
+                        //shopDetail.setKeyCountry(response.getString(DefineValue.KEY_COUNTRY));
+                        shopDetail.setCommId(response.getString(WebParams.COMM_ID));
+
+                        shopDetail.setMemberId(response.getString(WebParams.MEMBER_ID));
+                        shopDetail.setMemberCode(response.getString(WebParams.MEMBER_CODE));
+                        shopDetail.setMemberName(response.getString(WebParams.MEMBER_NAME));
+                        shopDetail.setMemberType(response.getString(WebParams.MEMBER_TYPE));
+                        shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
+                        shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
+
+                        shopDetails.add(shopDetail);
+
+                        tvCategoryName.setText(shopDetail.getCategoryName());
+                        tvMemberName.setText(response.getString(WebParams.KEY_NAME));
+                        //tvShop.setText(shopDetail.getShopName());
+                        tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
+
+                        if ( response.getString(WebParams.BBS_NOTE) != null ) {
+                            tvBbsNote.setText(response.getString(WebParams.BBS_NOTE));
+                        } else {
+                            tvBbsNote.setText("");
                         }
-                    })
-                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
-                            dialog.cancel();
+                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
+                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
-                            getActivity().finish();
-                        }
-                    });
-            final android.app.AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            /*if (checkPlayServices()) {
-                buildGoogleApiClient();
-                createLocationRequest();
+
+                        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
+                        RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
+
+                        /*if ( !response.getString(DefineValue.MEMBER_PROFILE_PICTURE).equals("") ) {
+                            GlideManager.sharedInstance().initializeGlide(getContext(), response.getString(DefineValue.MEMBER_PROFILE_PICTURE), roundedImage, ivPPMember);
+                        } else {
+                            GlideManager.sharedInstance().initializeGlide(getContext(), R.drawable.user_unknown_menu, roundedImage, ivPPMember);
+                        }*/
+
+
+                    } else {
+                        progdialog.dismiss();
+                        code = response.getString(WebParams.ERROR_MESSAGE);
+                        //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+
+                        rlApproval.setVisibility(View.GONE);
+
+                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        getActivity().finish();
+
+                                    }
+                                });
+                        alertDialog.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
-            try {
-                googleApiClient.connect();
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                ifFailure(throwable);
+            }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                ifFailure(throwable);
+            }
 
+            private void ifFailure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-            Fragment currentFragment = getFragmentManager().findFragmentByTag(FragApprovalAgent.TAG);
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.detach(currentFragment);
-            fragmentTransaction.attach(currentFragment);
-            fragmentTransaction.commit();
+                progdialog.dismiss();
+                Timber.w("Error Koneksi getListTrxAgent:" + throwable.toString());
 
-        }
+            }
+
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -9,7 +10,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -19,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -39,32 +44,41 @@ import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileActivity;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
-import com.squareup.picasso.Picasso;
+import com.sgo.saldomu.utils.PickAndCameraUtil;
 
+import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+import static android.app.Activity.RESULT_OK;
 
 /*
   Created by Administrator on 12/8/2014.
@@ -121,8 +135,16 @@ public class NavigationDrawMenu extends ListFragment{
     private IntentFilter filter;
     ProgressDialog progdialog2;
     String shopStatus;
+    private String userID;
+    private String accessKey;
+    private int RESULT;
+    private final int RESULT_GALERY = 100;
+    private final int RESULT_CAMERA = 200;
+    final int RC_CAMERA_STORAGE = 14;
+    private PickAndCameraUtil pickAndCameraUtil;
+    private String isRegisteredLevel; //saat antri untuk diverifikasi
 
-    Boolean isLevel1,isRegisteredLevel;
+    Boolean isLevel1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -131,6 +153,7 @@ public class NavigationDrawMenu extends ListFragment{
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
     }
 
     @Override
@@ -146,6 +169,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+        isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = (ListView) v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -182,10 +206,37 @@ public class NavigationDrawMenu extends ListFragment{
         refreshUINavDrawer();
 //        refreshDataNavDrawer();
 
+        headerCustImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String[] items = {"Choose from Gallery" , "Take a Photo"};
+
+                AlertDialog.Builder a = new AlertDialog.Builder(getActivity());
+                a.setCancelable(true);
+                a.setTitle("Choose Profile Picture");
+                a.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, items),
+                        new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    Timber.wtf("masuk gallery");
+                                    pickAndCameraUtil.chooseGallery(RESULT_GALERY);
+                                } else if (which == 1) {
+                                    chooseCamera();
+                                }
+
+                            }
+                        }
+                );
+                a.create();
+                a.show();
+            }
+        });
+
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), MyProfileActivity.class);
+                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
                 switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
         });
@@ -203,6 +254,18 @@ public class NavigationDrawMenu extends ListFragment{
         });
 
         setBalanceToUI();
+    }
+
+    @AfterPermissionGranted(RC_CAMERA_STORAGE)
+    private void chooseCamera() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        if (EasyPermissions.hasPermissions(getActivity(),perms)) {
+            pickAndCameraUtil.runCamera(RESULT_CAMERA);
+        }
+        else {
+            EasyPermissions.requestPermissions(this,getString(R.string.rationale_camera_and_storage),
+                    RC_CAMERA_STORAGE,perms);
+        }
     }
 
     @Override
@@ -285,25 +348,17 @@ public class NavigationDrawMenu extends ListFragment{
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         if(_url_profpic !=null && _url_profpic.isEmpty()){
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, headerCustImage);
         }
         else {
-            mPic.load(_url_profpic)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(headerCustImage);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), _url_profpic, roundedImage, headerCustImage);
         }
 
     }
@@ -311,10 +366,36 @@ public class NavigationDrawMenu extends ListFragment{
     public void initializeNavDrawer(){
        if(!getActivity().isFinishing()) {
            Fragment newFragment = new FragMainPage();
-           switchFragment(newFragment, getString(R.string.toolbar_title_home));
-
+           switchFragment(newFragment, getString(R.string.appname).toUpperCase());
            refreshDataNavDrawer();
        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case RESULT_GALERY:
+                if(resultCode == RESULT_OK){
+                    new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(data.getDataString()));
+                }
+                break;
+            case RESULT_CAMERA:
+                if(resultCode == RESULT_OK && pickAndCameraUtil.getCaptureImageUri()!=null){
+                    if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getRealPathFromURI(pickAndCameraUtil.getCaptureImageUri()));
+                    }
+                    else {
+                        new ImageCompressionAsyncTask().execute(pickAndCameraUtil.getCurrentPhotoPath());
+                    }
+                }
+                else{
+                    Toast.makeText(getActivity(), "Try Again", Toast.LENGTH_LONG).show();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public void refreshUINavDrawer(){
@@ -339,8 +420,9 @@ public class NavigationDrawMenu extends ListFragment{
     private ArrayList<navdrawmainmenuModel> generateData(){
         ArrayList<navdrawmainmenuModel> models = new ArrayList<>();
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_main_menu)));
-        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_topup_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
-
+        if(!levelClass.isLevel1QAC()) {
+            models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_topup_icon_color, getString(R.string.menu_item_title_bbs), MBBS));
+        }
         models.add(new navdrawmainmenuModel(R.drawable.ic_topup_icon_color, R.drawable.ic_topup_icon_color, getString(R.string.menu_item_title_topup),MTOPUP));              //1
         models.add(new navdrawmainmenuModel(R.drawable.ic_payfriends_icon_color,R.drawable.ic_payfriends_icon_color,getString(R.string.menu_item_title_pay_friends),MPAYFRIENDS));    //2
         models.add(new navdrawmainmenuModel(R.drawable.ic_ask_icon_color,R.drawable.ic_ask_icon_color,getString(R.string.menu_item_title_ask_for_money),MASK4MONEY));            //3
@@ -424,8 +506,13 @@ public class NavigationDrawMenu extends ListFragment{
                 switchFragment(newFragment, getString(R.string.toolbar_title_myfriends));
                 break;
             case MTARIKDANA:
-                newFragment = new ListCashOut();
-                switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                if(levelClass.isLevel1QAC()) {
+                    levelClass.showDialogLevel();
+                }
+                else {
+                    newFragment = new ListCashOut();
+                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                }
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();
@@ -652,4 +739,119 @@ public class NavigationDrawMenu extends ListFragment{
         }
     };
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+        @Override
+        protected File doInBackground(String... params) {
+            return pickAndCameraUtil.compressImage(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(File file) {
+            uploadFileToServer(file);
+        }
+    }
+
+    private void uploadFileToServer(File photoFile) {
+
+        progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+        if(accessKey == null)
+            accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
+        if(userID == null)
+            userID = sp.getString(DefineValue.USER_ID,"");
+
+        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
+                userID,accessKey);
+
+        try {
+            params.put(WebParams.USER_ID,headerCustID.getText().toString());
+            params.put(WebParams.USER_FILE, photoFile);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Timber.d("params upload profile picture: " + params.toString());
+
+        MyApiClient.sentProfilePicture(getActivity(), params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    progdialog2.dismiss();
+                    String error_code = response.getString("error_code");
+                    String error_message = response.getString("error_message");
+                    Timber.d("response Listbank:" + response.toString());
+                    if (error_code.equalsIgnoreCase("0000")) {
+                        SecurePreferences.Editor mEditor = sp.edit();
+
+                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
+                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
+                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
+                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
+
+                        mEditor.apply();
+
+                        setImageProfPic();
+
+                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+                        Timber.d("isi response autologout:" + response.toString());
+                        String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                        test.showDialoginActivity(getActivity(), message);
+                    } else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                        alert.setTitle("Upload Image");
+                        alert.setMessage("Upload Image : " + error_message);
+                        alert.setPositiveButton("OK", null);
+                        alert.show();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                failure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                failure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                failure(throwable);
+            }
+
+            private void failure(Throwable throwable) {
+                if (MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                setImageProfPic();
+                progdialog2.dismiss();
+                Timber.w("Error Koneksi data upload foto myprofile:" + throwable.toString());
+            }
+
+        });
+    }
 }

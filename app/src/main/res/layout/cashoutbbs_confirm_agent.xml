@@ -99,7 +99,10 @@
                 android:id="@+id/circle_step_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:paddingBottom="16dp"
+                android:paddingStart="16dp"
                 android:layout_marginBottom="15dp"
                 app:circlestep_circle_count="3"
                 app:circlestep_path_color="@color/colorPrimaryDark"
@@ -177,6 +180,41 @@
                     android:textSize="@dimen/text_size_medium_material"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="@dimen/margin_10dp">
+
+                <TextView
+                    android:id="@+id/tv_milik_agen"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="50dp"
+                    android:gravity="right"
+                    android:textSize="10sp"
+                    android:text="@string/milik_pelanggan"
+                    android:textStyle="italic"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_milik_pelanggan"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="70dp"
+                    android:gravity="left"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="10sp"
+                    android:text="@string/milik_agen"
+                    android:textStyle="italic"/>
+            </LinearLayout>
+
 
             <TableLayout
                 android:layout_width="match_parent"

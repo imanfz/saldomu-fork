@@ -49,6 +49,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
@@ -113,8 +114,6 @@ public class BillerDesciption extends Fragment {
     private ProgressDialog progdialog;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
-    private JSONArray isi_field;
-    private JSONArray isi_value;
     private listBankModel mTempBank;
     private Spinner spin_payment_options;
     private SecurePreferences sp;
@@ -187,11 +186,13 @@ public class BillerDesciption extends Fragment {
         biller_api_key = mBillerData.getApi_key();
         callback_url = mBillerData.getCallback_url();
 
-        if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG)||
+        if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)||
+                biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_NON_TAG)||
                 biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN)||
                 biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_PLN_TKN)){
             isPLN = true;
-            }
+        }
+
     }
 
     private void initializeLayout() {
@@ -257,6 +258,8 @@ public class BillerDesciption extends Fragment {
 
             paymentData.addAll(tempDataPaymentName);
             adapterPaymentOptions.notifyDataSetChanged();
+
+            spin_payment_options.setSelection(1); //set metode pembayaran jadi saldomu
         }
 
         if (progdialog != null && progdialog.isShowing())
@@ -282,12 +285,16 @@ public class BillerDesciption extends Fragment {
             Iterator keys = mDataDesc.keys();
             List<String> tempList = new ArrayList<>();
 
-            while(keys.hasNext()) {
-                tempList.add((String) keys.next());
+            //jika BPJS sorting fieldnya sesuai format
+            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+                tempList = JsonSorting.BPJSInquirySortingField();
             }
-            Collections.sort(tempList);
-            isi_field = new JSONArray(tempList);
-            isi_value = new JSONArray();
+            else {
+                while (keys.hasNext()) {
+                    tempList.add((String) keys.next());
+                }
+            }
+//            Collections.sort(tempList);
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.WRAP_CONTENT);
@@ -299,7 +306,6 @@ public class BillerDesciption extends Fragment {
             for (String aTempList : tempList) {
                 value_detail_field = aTempList;
                 value_detail_value = mDataDesc.getString(aTempList);
-                isi_value.put(value_detail_value);
 
                 detail_field = new TextView(getActivity());
                 detail_field.setGravity(Gravity.LEFT);
@@ -449,15 +455,15 @@ public class BillerDesciption extends Fragment {
             params.put(WebParams.COMM_ID, biller_comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID_REMARK,MyApiClient.COMM_ID);
-            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
-                JSONObject detail = new JSONObject();
-                try {
-                    detail.put(WebParams.PERIOD_MONTH, value_item_data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                params.put(WebParams.ITEM_DATA, detail.toString());
-            }
+//            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+//                JSONObject detail = new JSONObject();
+//                try {
+//                    detail.put(WebParams.PERIOD_MONTH, value_item_data);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                params.put(WebParams.ITEM_DATA, detail.toString());
+//            }
 
             Timber.d("isi params sent inquiry biller:"+params.toString());
 
@@ -481,7 +487,8 @@ public class BillerDesciption extends Fragment {
                             description =  response.getString(WebParams.DESCRIPTION);
                             if(isPLN && response.has(WebParams.ADMINFEE)) {
                                 fee = response.optString(WebParams.ADMINFEE, "");
-                                }
+                            }
+
                             if(isAdded())
                                 initializeLayout();
                             else

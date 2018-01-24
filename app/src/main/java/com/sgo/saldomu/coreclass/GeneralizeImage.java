@@ -4,16 +4,26 @@ package com.sgo.saldomu.coreclass;/*
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+
+import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import timber.log.Timber;
 
 public class GeneralizeImage {
 
@@ -22,8 +32,12 @@ public class GeneralizeImage {
     private Uri mUri;
     private Bitmap mBitmap;
 
-    public GeneralizeImage(Context _context, String _file_path){
-        this.mFilePath = _file_path;
+//    public GeneralizeImage(Context _context, String _file_path){
+//        this.mFilePath = _file_path;
+//        this.mContext = _context;
+//    }
+
+    public GeneralizeImage(Context _context){
         this.mContext = _context;
     }
 
@@ -40,6 +54,8 @@ public class GeneralizeImage {
         options.inJustDecodeBounds = true;
         int imageHeight;
         int imageWidth;
+        float maxHeight = 816.0f;
+        float maxWidth = 612.0f;
         Bitmap finaleBitmap;
         if(mFilePath == null || mFilePath.isEmpty()){
             finaleBitmap = this.mBitmap;
@@ -53,22 +69,73 @@ public class GeneralizeImage {
             finaleBitmap = BitmapFactory.decodeFile(mFilePath);
         }
 
-        if(imageHeight > 3800 || imageWidth > 3800  ){
-            imageHeight = imageHeight/2;
-            imageWidth  = imageWidth/2;
-            finaleBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, false);
+        float imgRatio = imageWidth / imageHeight;
+        float maxRatio = maxWidth / maxHeight;
+
+
+        if (imageHeight > maxHeight || imageWidth > maxWidth) {
+            if (imgRatio < maxRatio) {
+                imgRatio = maxHeight / imageHeight;
+                imageWidth = (int) (imgRatio * imageWidth);
+                imageHeight = (int) maxHeight;
+            } else if (imgRatio > maxRatio) {
+                imgRatio = maxWidth / imageWidth;
+                imageHeight = (int) (imgRatio * imageHeight);
+                imageWidth = (int) maxWidth;
+            } else {
+                imageHeight = (int) maxHeight;
+                imageWidth = (int) maxWidth;
+            }
         }
 
-        Bitmap newBitmap = setOrientationBitmap(finaleBitmap);
+
+//      setting inSampleSize value allows to load a scaled down version of the original image
+        options.inSampleSize = calculateInSampleSize(options, imageWidth, imageHeight);
+//      inJustDecodeBounds set to false to load the actual bitmap
+        options.inJustDecodeBounds = false;
+
+//      this options allow android to claim the bitmap memory if it runs low on memory
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inTempStorage = new byte[16 * 1024];
+
+
+
+        Bitmap scaledBitmap = finaleBitmap;
+        try {
+            scaledBitmap = Bitmap.createBitmap(imageWidth,imageHeight,Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+        }
+
+        float ratioX = imageWidth / (float) options.outWidth;
+        float ratioY = imageHeight / (float) options.outHeight;
+        float middleX = imageWidth / 2.0f;
+        float middleY = imageHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(finaleBitmap, middleX - imageWidth / 2, middleY - imageHeight / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+//        if(imageHeight > 3800 || imageWidth > 3800  ){
+//            imageHeight = imageHeight/2;
+//            imageWidth  = imageWidth/2;
+//            finaleBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, false);
+//        }
+
+        Bitmap newBitmap = setOrientationBitmap(scaledBitmap);
 
         String destFolder = mContext.getCacheDir().getAbsolutePath();
-        String mFileName = "temp.jpeg";
+        String mFileName = "temp"+ DateTimeFormat.getCurrentDateTime()+".jpeg";
         File mfile = new File(destFolder, mFileName);
 
         FileOutputStream out;
         try {
             out = new FileOutputStream(mfile);
-            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
 
             out.flush();
             out.close();
@@ -80,51 +147,144 @@ public class GeneralizeImage {
         return mfile;
     }
 
-    public static File ConvertCapturedImage(Context mContext, Uri mUri, int rotateXDegree){
-        int imageHeight = 0;
-        int imageWidth = 0;
-        Bitmap finaleBitmap;
+    public File compressImage(String stringUri) {
 
-        finaleBitmap = readBitmap(mContext,mUri);
-        if (finaleBitmap != null) {
-            imageHeight = finaleBitmap.getHeight();
-            imageWidth = finaleBitmap.getWidth();
+//        String filePath = getRealPathFromURI(stringUri);
+        Bitmap scaledBitmap = null;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+//      by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
+//      you try the use the bitmap here, you will get null.
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(stringUri, options);
+
+        int actualHeight = options.outHeight;
+        int actualWidth = options.outWidth;
+
+//      max Height and width values of the compressed image is taken as 816x612
+
+        float maxHeight = 816.0f;
+        float maxWidth = 612.0f;
+        float imgRatio = actualWidth / actualHeight;
+        float maxRatio = maxWidth / maxHeight;
+
+//      width and height values are set maintaining the aspect ratio of the image
+
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if (imgRatio < maxRatio) {               imgRatio = maxHeight / actualHeight;                actualWidth = (int) (imgRatio * actualWidth);               actualHeight = (int) maxHeight;             } else if (imgRatio > maxRatio) {
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = (int) (imgRatio * actualHeight);
+                actualWidth = (int) maxWidth;
+            } else {
+                actualHeight = (int) maxHeight;
+                actualWidth = (int) maxWidth;
+
+            }
         }
 
-        if(imageHeight > 3000 ){
-            imageHeight = imageHeight/4;
-            imageWidth  = imageWidth/4;
-        }
-        else {
-            imageHeight = imageHeight/2;
-            imageWidth  = imageWidth/2;
-        }
+//      setting inSampleSize value allows to load a scaled down version of the original image
 
-        Bitmap oldBitmap = Bitmap.createScaledBitmap(finaleBitmap, imageWidth, imageHeight, true);
+        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
 
-        Matrix matrix = new Matrix();
-        matrix.postRotate(rotateXDegree);
-        Bitmap newBitmap = Bitmap.createBitmap(oldBitmap, 0, 0, oldBitmap.getWidth(), oldBitmap.getHeight(),
-                matrix, false);
+//      inJustDecodeBounds set to false to load the actual bitmap
+        options.inJustDecodeBounds = false;
 
-        String destFolder = mContext.getCacheDir().getAbsolutePath();
-        String mFileName = "temp.jpeg";
-        File mfile = new File(destFolder, mFileName);
+//      this options allow android to claim the bitmap memory if it runs low on memory
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inTempStorage = new byte[16 * 1024];
 
-        FileOutputStream out;
         try {
-            out = new FileOutputStream(mfile);
-            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+//          load the bitmap from its path
+            bmp = BitmapFactory.decodeFile(stringUri, options);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
 
-            out.flush();
-            out.close();
+        }
+        try {
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight,Bitmap.Config.ARGB_8888);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+        }
+
+        float ratioX = actualWidth / (float) options.outWidth;
+        float ratioY = actualHeight / (float) options.outHeight;
+        float middleX = actualWidth / 2.0f;
+        float middleY = actualHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+//      check the rotation of the image and display it properly
+        ExifInterface exif;
+        try {
+            exif = new ExifInterface(stringUri);
+
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION, 0);
+            Timber.d("Exif: " + orientation);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+                Timber.d("Exif: " + orientation);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+                Timber.d("Exif: " + orientation);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+                Timber.d("Exif: " + orientation);
+            }
+            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0,
+                    scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix,
+                    true);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        System.gc();
+        FileOutputStream out;
+        String filename = getFilename();
 
-        return mfile;
+        try {
+            out = new FileOutputStream(filename);
+
+//          write the compressed bitmap at the destination specified by filename.
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return new File(filename);
+
+    }
+
+    private String getFilename() {
+        File file = new File(Environment.getExternalStorageDirectory().getPath(), mContext.getString(R.string.appname)+"Image");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return (file.getAbsolutePath() + "/"+ System.currentTimeMillis() + ".jpg");
+
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height/ (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;      }       final float totalPixels = width * height;       final float totalReqPixelsCap = reqWidth * reqHeight * 2;       while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+            inSampleSize++;
+        }
+
+        return inSampleSize;
     }
 
     private static Bitmap readBitmap(Context context, Uri selectedImage) {

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -15,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +28,8 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-
 import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.BbsSearchAgentActivity;
+import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.GridHome;
@@ -44,6 +45,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopCategory;
+import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 
 import org.apache.http.Header;
@@ -87,6 +89,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
     private Biller_Type_Data_Model mBillerTypeDataBPJS;
     private Biller_Type_Data_Model mBillerTypeDataTKN;
     private Realm realm;
+    private Switch swSettingOnline;
+    private LinearLayout llAgentDetail;
+    ProgressDialog progdialog2;
+    String shopStatus;
 
     int[] imageId = {
             R.drawable.ic_tariktunai,
@@ -116,6 +122,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        filter = new IntentFilter();
+        filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
+        filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
     }
 
     @Override
@@ -125,6 +135,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         v = inflater.inflate(R.layout.frag_home_new, container, false);
         GridHome=(GridView)v.findViewById(R.id.grid);
         tv_saldo = (TextView)v.findViewById(R.id.tv_saldo);
+        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
+        llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
         return v;
 
     }
@@ -186,13 +198,24 @@ public class FragHomeNew extends BaseFragmentMainPage {
             TKN.setVisibility(View.GONE);
         }
 
+        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+            llAgentDetail.setVisibility(View.GONE);
+
+        } else {
+            if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                llAgentDetail.setVisibility(View.VISIBLE);
+            } else {
+                llAgentDetail.setVisibility(View.GONE);
+            }
+
+        }
+
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         if ( isAgent ) {
             GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
             GridHome.setAdapter(adapter);
         } else {
-            progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
@@ -209,83 +232,85 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.SIGNATURE, signature);
 
-            MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            if(this.isVisible()) {
+                progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
+                MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                    try {
-                        if ( progdialog.isShowing() )
-                            progdialog.dismiss();
+                        try {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
 
-                        String code = response.getString(WebParams.ERROR_CODE);
+                            String code = response.getString(WebParams.ERROR_CODE);
 
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            JSONArray categories = response.getJSONArray("category");
+                                JSONArray categories = response.getJSONArray("category");
 
-                            for (int i = 0; i < categories.length(); i++) {
+                                for (int i = 0; i < categories.length(); i++) {
 
-                                JSONObject object = categories.getJSONObject(i);
-                                ShopCategory shopCategory = new ShopCategory();
-                                shopCategory.setCategoryId(object.getString("category_id"));
-                                String tempCategory = object.getString("category_name").toLowerCase();
+                                    JSONObject object = categories.getJSONObject(i);
+                                    ShopCategory shopCategory = new ShopCategory();
+                                    shopCategory.setCategoryId(object.getString("category_id"));
+                                    String tempCategory = object.getString("category_name").toLowerCase();
 
-                                String[] strArray = tempCategory.split(" ");
-                                StringBuilder builder = new StringBuilder();
-                                for (String s : strArray) {
-                                    String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                    builder.append(cap + " ");
+                                    String[] strArray = tempCategory.split(" ");
+                                    StringBuilder builder = new StringBuilder();
+                                    for (String s : strArray) {
+                                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                        builder.append(cap + " ");
+                                    }
+
+                                    shopCategory.setCategoryName(builder.toString());
+                                    shopCategories.add(shopCategory);
                                 }
 
-                                shopCategory.setCategoryName(builder.toString());
-                                shopCategories.add(shopCategory);
+
+                            } else {
+                                Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
                             }
 
+                            //gridBbsCategoryAdapter.notifyDataSetChanged();
+                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                            GridHome.setAdapter(adapter);
 
-
-                        } else {
-                            Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        ifFailure(throwable);
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                        ifFailure(throwable);
+                    }
+
+                    private void ifFailure(Throwable throwable) {
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
+
+                        if (MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                        Timber.w("Error Koneksi login:" + throwable.toString());
 
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
                         GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                         GridHome.setAdapter(adapter);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    if ( progdialog.isShowing() )
-                        progdialog.dismiss();
-
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                    //gridBbsCategoryAdapter.notifyDataSetChanged();
-                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                    GridHome.setAdapter(adapter);
-                }
-
-            });
+                });
+            }
         }
 
 
@@ -419,13 +444,21 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.BBSONPROGRESSAGENT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                }else if (menuItemName.equals(getString(R.string.title_cash_out_member)) ) {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
                 else
                 {
                     for(int x=0;x<shopCategories.size();x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if ( menuItemName.indexOf(categoryName) > 0 ) {
-                            Intent i = new Intent(getActivity(), BbsSearchAgentActivity.class);
+                            Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                             i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
@@ -440,6 +473,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
+
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+
+            swSettingOnline.setOnCheckedChangeListener(null);
+            if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                swSettingOnline.setChecked(true);
+            } else {
+                swSettingOnline.setChecked(false);
+            }
+            swSettingOnline.setOnCheckedChangeListener(switchListener);
+        }
 
         RefreshSaldo();
         if(levelClass != null)
@@ -461,6 +505,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 categories[x] = getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName();
             }
             Collections.addAll(data,categories);
+
+            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
+            Collections.addAll(data,_data);
         }
         _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
         Collections.addAll(data,_data);
@@ -481,6 +528,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             totalIdx    += taAgent.length();
         } else {
             totalIdx    += shopCategories.size();
+            totalIdx    += taNotAgent.length();
+
         }
 
         int[] data        = new int[totalIdx];
@@ -499,10 +548,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
 
-            /*for( int j = 0; j < taNotAgent.length(); j++) {
+            for( int j = 0; j < taNotAgent.length(); j++) {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
                 overallIdx++;
-            }*/
+            }
         }
 
         for( int j = 0; j < ta.length(); j++) {
@@ -572,6 +621,33 @@ public class FragHomeNew extends BaseFragmentMainPage {
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
             RefreshSaldo();
+
+            String action = intent.getAction();
+            if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+
+                if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+                    llAgentDetail.setVisibility(View.GONE);
+
+                } else {
+                    if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                        llAgentDetail.setVisibility(View.VISIBLE);
+                    } else {
+                        llAgentDetail.setVisibility(View.GONE);
+                    }
+
+                }
+
+                if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+
+                    swSettingOnline.setOnCheckedChangeListener(null);
+                    if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                        swSettingOnline.setChecked(true);
+                    } else {
+                        swSettingOnline.setChecked(false);
+                    }
+                    swSettingOnline.setOnCheckedChangeListener(switchListener);
+                }
+            }
         }
     };
     @Override
@@ -593,4 +669,88 @@ public class FragHomeNew extends BaseFragmentMainPage {
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent,j);
     }
+    Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            RequestParams params    = new RequestParams();
+            shopStatus              = DefineValue.SHOP_OPEN;
+
+            if (!isChecked) {
+                //buka
+                shopStatus          = DefineValue.SHOP_CLOSE;
+
+            }
+
+            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+            UUID rcUUID = UUID.randomUUID();
+            String dtime = DateTimeFormat.getCurrentDateTime();
+
+            params.put(WebParams.RC_UUID, rcUUID);
+            params.put(WebParams.RC_DATETIME, dtime);
+            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+            params.put(WebParams.SHOP_STATUS, shopStatus);
+
+
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+
+            params.put(WebParams.SIGNATURE, signature);
+
+            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                    progdialog2.dismiss();
+
+                    try {
+
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                            } else {
+                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                            }
+
+                            mEditor.apply();
+                        } else {
+                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                        }
+
+                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    ifFailure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    ifFailure(throwable);
+                }
+
+                private void ifFailure(Throwable throwable) {
+                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    progdialog2.dismiss();
+                    Timber.w("Error Koneksi login:" + throwable.toString());
+
+                }
+            });
+        }
+    };
 }

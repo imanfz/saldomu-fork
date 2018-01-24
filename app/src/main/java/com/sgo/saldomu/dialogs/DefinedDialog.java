@@ -53,6 +53,7 @@ public class DefinedDialog {
         dialog.setCanceledOnTouchOutside(false);
         // Include dialog.xml file
         dialog.setContentView(R.layout.dialog_error);
+        dialog.setCancelable(false);
 
         // set values for custom dialog components - text, image and button
         Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_error_ok);

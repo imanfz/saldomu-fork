@@ -16,21 +16,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.faber.circlestepview.CircleStepView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ChangePIN;
-import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
-import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileActivity;
 import com.sgo.saldomu.activities.PasswordRegisterActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.securities.Md5;
@@ -51,7 +49,7 @@ public class Regist2 extends Fragment {
     EditText etToken;
     TextView currEmail;
     Button btnProses, btnCancel;
-    String namaValid, noHPValid, emailValid, authType, token, pass, confPass, memberID;
+    String namaValid, noHPValid, emailValid, authType, token, pass, confPass, memberID, custID="";
     String flag_change_pwd, flag_change_pin;
     ProgressDialog progdialog;
 
@@ -71,6 +69,10 @@ public class Regist2 extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 //        getActivity().getWindow().setBackgroundDrawableResource(R.drawable.background);
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            custID = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+        }
 
         Bundle args = getArguments();
         if(args != null) {
@@ -376,6 +378,8 @@ public class Regist2 extends Fragment {
     }
 
     void showDialog(){
+        SaveIMEIICCID();
+
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -435,6 +439,14 @@ public class Regist2 extends Fragment {
                 sendCreatePin(data);
             }
         }
+    }
+
+    private void SaveIMEIICCID(){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.SaveImeiICCIDDevice();
     }
 
     public void changeActivity(String token){

@@ -131,7 +131,7 @@
     <!-- agent_profile_bbs -->
     <!-- name -->
     <style name="NameAgentProfileBbs">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 

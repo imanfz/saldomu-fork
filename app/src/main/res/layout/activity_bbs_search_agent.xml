@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         app:tabMode="fixed" />
 
-    <LinearLayout
+    <!-- LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="60dip"
         android:orientation="horizontal">
@@ -80,7 +80,7 @@
                 android:gravity="center_vertical|center"
                 android:text="@string/proses" />
         </LinearLayout>
-    </LinearLayout>
+    </LinearLayout -->
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"

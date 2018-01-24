@@ -35,7 +35,7 @@
 
     <application
         android:name=".coreclass.CoreApp"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_pin_only"
         android:label="@string/appname"
@@ -43,30 +43,19 @@
         android:launchMode="singleInstance"
         android:noHistory="true"
         android:theme="@style/Theme.MyTheme"
-        tools:replace="android:label">
+        tools:replace="android:label,allowBackup">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notif_logo" />
+            android:resource="@mipmap/ic_launcher_pin_only" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorPrimary" />
-
-        <activity
-            android:name=".activities.Registration"
-            android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".activities.MainPage"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -82,7 +71,9 @@
         <activity
             android:name=".activities.LoginActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activities.ListATM"
             android:configChanges="screenSize|keyboardHidden|orientation"
@@ -238,7 +229,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".activities.BbsMerchantCategoryActivity"
             android:configChanges="orientation"
@@ -247,29 +237,23 @@
             android:name=".activities.BbsMerchantSetupHourActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.BbsSearchTokoActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+
         <activity android:name=".activities.BbsRegisterOpenClosedShopActivity" />
         <activity
             android:name=".activities.BbsSearchAgentActivity"
-            android:parentActivityName=".activities.MainPage"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
-
         <activity
             android:name=".activities.ValidasiEmailActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity android:name=".activities.BbsSearchByLocationActivity" />
         <activity android:name=".activities.BbsMemberShopActivity" />
         <activity android:name=".activities.BbsMemberShopDetailActivity" />
@@ -278,29 +262,28 @@
         <activity android:name=".activities.BbsMapNagivationActivity" />
         <activity
             android:name=".activities.BBSActivity"
-            android:parentActivityName=".activities.MainPage"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BBSRegAccountActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".activities.BbsApprovalAgentActivity"
-            android:parentActivityName=".activities.MainPage"
+        <activity
+            android:name=".activities.BbsApprovalAgentActivity"
             android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BbsMapViewByAgentActivity"
@@ -310,8 +293,7 @@
             android:theme="@style/Theme.MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
+                android:value=".activities.MainPage" />
         </activity>
         <activity
             android:name=".activities.BbsMapViewByMemberActivity"
@@ -321,68 +303,105 @@
             android:theme="@style/Theme.MyTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainPage"
-                />
-            </activity>
+                android:value=".activities.MainPage" />
+        </activity>
         <activity
             android:name=".activities.TutorialActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name=".activities.MyProfileNewActivity"
+            android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage"
+                />
+        </activity>
+
         <service
             android:name=".services.AgentShopService"
-            android:exported="false"/>
-        <activity android:name=".activities.ErrorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ErrorActivity"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            />
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <service android:name=".services.BalanceService"
-            android:exported="false"
-            />
-        <service android:name=".services.AppInfoService"
-            android:exported="false"
-            />
-        <service android:name=".services.UserProfileService"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateLocationService"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateBBSCity"
-            android:exported="false"
-            />
-        <service android:name=".services.UpdateBBSData"
-            android:exported="false"/>
-
+        <service
+            android:name=".services.BalanceService"
+            android:exported="false" />
+        <service
+            android:name=".services.AppInfoService"
+            android:exported="false" />
+        <service
+            android:name=".services.UserProfileService"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateBBSCity"
+            android:exported="false" />
+        <service
+            android:name=".services.UpdateBBSData"
+            android:exported="false" />
         // Job Dispatcher Service
         <service
-            android:exported="false"
-            android:name=".services.jobs.JobUpdateBBSData">
+            android:name=".services.jobs.JobUpdateBBSData"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
         <service
-            android:exported="false"
-            android:name=".services.jobs.JobRegisterFCM">
+            android:name=".services.jobs.JobRegisterFCM"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-
+        <service
+            android:name=".services.UpdateLocationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
         <service android:name=".fcm.FireBaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".fcm.FirebaseAppMessaging">
+        <service android:name=".fcm.FirebaseAppMessaging">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".activities.BbsNewSearchAgentActivity"
+            android:configChanges="orientation"
+            android:parentActivityName=".activities.MainPage"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.MainPage" />
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
     </application>
 
 </manifest>

@@ -17,6 +17,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.*;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
 import org.json.JSONArray;
@@ -108,7 +109,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         if (type != null) {
-            if (type.equals(DefineValue.BILLER_PLN)) {
+            if (type.equals(DefineValue.BILLER_PLN)||type.equals(DefineValue.BILLER_BPJS)) {
 //                View mLayout = view.findViewById(R.id.report_biller_pln);
                 stub.setLayoutResource(R.layout.layout_dialog_report_biller_pln);
                 View inflated = stub.inflate();
@@ -123,32 +124,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setText(transRemark);
                 }
                 TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
-                String source = args.getString(DefineValue.DETAIL, "");
-                String desc = "", value = "";
-                JSONObject mDataDesc;
-                try {
-                    mDataDesc = new JSONObject(source);
-                    Iterator keys = mDataDesc.keys();
-                    List<String> tempList = new ArrayList<>();
-                    JSONArray isi_value = new JSONArray();
-
-                    while (keys.hasNext()) {
-                        String temp = (String) keys.next();
-                        isi_value.put(mDataDesc.getString(temp));
-                        if (temp.equalsIgnoreCase("customer_id"))
-                            temp = getString(R.string.customer_id);
-
-                        tempList.add(temp);
-                    }
-
-//                    Collections.sort(tempList);
-                    JSONArray isi_field = new JSONArray(tempList);
-                    desc = String.valueOf(isi_field);
-                    value = String.valueOf(isi_value);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                String source = args.getString(DefineValue.DETAILS_BILLER, "");
+                Timber.d("isi source : \n", source);
+                if(!source.isEmpty() && !source.equalsIgnoreCase("")) {
+                    source = source.replace("customer_id", getString(R.string.customer_id));
+                    createTableDesc(source, mTableLayout,type);
                 }
-                createTableDesc(desc, value, mTableLayout);
             } else if (type.equals(DefineValue.BILLER)) {
 //                View mLayout = view.findViewById(R.id.report_biller);
                 stub.setLayoutResource(R.layout.layout_dialog_report_biller);
@@ -190,7 +171,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     View desclayout = inflated.findViewById(R.id.dialog_reportbiller_layout_desc);
                     RelativeLayout mDescLayout = (RelativeLayout) inflated.findViewById(R.id.billertoken_layout_deskripsi);
 
-                    if (!args.getString(DefineValue.DESC_FIELD, "").isEmpty()) {
+                    if (!args.getString(DefineValue.DETAILS_BILLER, "").isEmpty()) {
                         mDescLayout.setVisibility(View.VISIBLE);
                         desclayout.setVisibility(View.VISIBLE);
                         final TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
@@ -232,7 +213,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                         mDescLayout.setOnClickListener(descriptionClickListener);
                         mIconArrow.setOnClickListener(descriptionClickListener);
 
-                        createTableDesc(args.getString(DefineValue.DESC_FIELD, ""), args.getString(DefineValue.DESC_VALUE, ""), mTableLayout);
+                        createTableDesc(args.getString(DefineValue.DETAILS_BILLER, ""), mTableLayout,type);
                     }
 
                     Timber.d("isi Amount desired:" + args.getString(DefineValue.AMOUNT_DESIRED));
@@ -639,13 +620,26 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     }
 
 
-    private void createTableDesc(String _desc_field, String _desc_value, TableLayout mTableLayout) {
+    private void createTableDesc(String jsonData, TableLayout mTableLayout, String billerType) {
         try {
-            JSONArray desc_field = new JSONArray(_desc_field);
-            JSONArray desc_value = new JSONArray(_desc_value);
+            JSONObject jsonObject = new JSONObject(jsonData);
             TextView detail_field;
             TextView detail_value;
             TableRow layout_table_row;
+
+            Iterator keys = jsonObject.keys();
+            List<String> tempList = new ArrayList<>();
+
+            if(billerType.equals(DefineValue.BILLER_BPJS)){
+                tempList = JsonSorting.BPJSTrxStructSortingField();
+            }
+            else {
+                while (keys.hasNext()) {
+                    String temp = (String) keys.next();
+                    tempList.add(temp);
+                }
+            }
+
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                     TableLayout.LayoutParams.WRAP_CONTENT);
@@ -657,7 +651,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             rowParams2.setMargins(6, 6, 6, 6);
 
 
-            for (int i = 0; i < desc_field.length(); i++) {
+            for (int i = 0; i < tempList.size(); i++) {
                 detail_field = new TextView(getActivity());
                 detail_field.setGravity(Gravity.LEFT);
                 detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
@@ -672,8 +666,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 layout_table_row.setLayoutParams(tableParams);
                 layout_table_row.addView(detail_field);
                 layout_table_row.addView(detail_value);
-                detail_field.setText(desc_field.getString(i));
-                detail_value.setText(desc_value.getString(i));
+                detail_field.setText(tempList.get(i));
+                detail_value.setText(jsonObject.optString(tempList.get(i)));
                 mTableLayout.addView(layout_table_row);
             }
 

@@ -53,6 +53,8 @@ import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
+import static com.activeandroid.Cache.getContext;
+
 public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
@@ -63,7 +65,7 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx;
     RelativeLayout rlApproval;
     Spinner spPilihan;
     ArrayAdapter<String> SpinnerAdapter;
@@ -134,10 +136,12 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         customerId              = sp.getString(DefineValue.USERID_PHONE, "");
 
         btnApprove              = (Button) findViewById(R.id.btnApprove);
-        btnReject               = (Button) findViewById(R.id.btnReject);
+        //btnReject               = (Button) findViewById(R.id.btnReject);
         tvCategoryName          = (TextView) findViewById(R.id.tvCategoryName);
         tvMemberName            = (TextView) findViewById(R.id.tvMemberName);
         tvAmount                = (TextView) findViewById(R.id.tvAmount);
+        tvCountTrx              = (TextView) findViewById(R.id.tvCountTrx);
+        tvTotalTrx              = (TextView) findViewById(R.id.tvTotalTrx);
         //tvShop                  = (TextView) findViewById(R.id.tvShop);
         //spPilihan               = (Spinner) findViewById(R.id.spPilihan);
 
@@ -253,6 +257,9 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
                         tvMemberName.setText(response.getString(WebParams.KEY_NAME));
                         //tvShop.setText(shopDetail.getShopName());
                         tvAmount.setText(DefineValue.IDR + " " + CurrencyFormat.format(shopDetail.getAmount()));
+
+                        tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
+                        tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
                         /*
                         RequestParams params2    = new RequestParams();
@@ -462,28 +469,54 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             }
         );
 
+        /*
         btnReject.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
-                    progdialog2              = DefinedDialog.CreateProgressDialog(BbsApprovalAgentActivity.this, "");
-                    flagTxStatus = DefineValue.STRING_CANCEL;
+                    AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsApprovalAgentActivity.this).create();
+                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                    if ( shopDetails.size() > 1 ) {
-                        itemId  = spPilihan.getSelectedItemPosition();
 
-                    } else {
-                        itemId = 0;
-                    }
+                    alertDialog.setMessage(getString(R.string.message_notif_cancel_trx_by_agent));
 
-                    if ( shopDetails.size() > 0 ) {
-                        shopId = shopDetails.get(itemId).getShopId();
-                        memberId = shopDetails.get(itemId).getMemberId();
-                        updateTrxAgent();
-                    }
+
+
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
+                                    flagTxStatus = DefineValue.STRING_CANCEL;
+
+                                    if ( shopDetails.size() > 1 ) {
+                                        itemId  = spPilihan.getSelectedItemPosition();
+
+                                    } else {
+                                        itemId = 0;
+                                    }
+
+                                    if ( shopDetails.size() > 0 ) {
+                                        shopId = shopDetails.get(itemId).getShopId();
+                                        memberId = shopDetails.get(itemId).getMemberId();
+                                        updateTrxAgent();
+                                    }
+
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+
+
+                                }
+                            });
+                    alertDialog.show();
                 }
             }
         );
-
+        */
 
 
     }
@@ -772,4 +805,10 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
 }

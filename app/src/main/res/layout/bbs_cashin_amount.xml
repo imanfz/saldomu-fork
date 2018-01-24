@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left"
+        android:gravity="center"
         android:textColor="@color/colorSecondaryDark"
         android:layout_marginLeft="16dp"
         android:text="@string/label_bank_transfer_ke"/>
@@ -20,7 +20,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:hint="@string/label_rekening_pelangggan" />
+        android:hint="@string/label_bank_pelangggan" />
 
     <TextView
         android:layout_width="match_parent"

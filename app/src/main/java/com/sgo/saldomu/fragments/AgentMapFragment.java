@@ -93,8 +93,8 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private int agentPosition;
     private ImageView currentLocationBtn;
     private ImageView searchLocationBtn;
-    private LinearLayout searchLocationContainer;
-    private TextView pickupTextView;
+    private LinearLayout searchLocationContainer, llLegendAgent, llLegendShop, llLegendYou;
+    private TextView pickupTextView, tvAgent, tvShop, tvYou;
     private Double currentLatitude;
     private Double currentLongitude;
     private Marker lastCoordinateMarker;
@@ -149,7 +149,18 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             getDataSharedPreferences();
 
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
-            mapFrag.getView().setVisibility(View.GONE);
+            //mapFrag.getView().setVisibility(View.GONE);
+            mapFrag.getMapAsync(this);
+
+            llLegendAgent   = (LinearLayout) rootView.findViewById(R.id.llLegendAgent);
+            llLegendShop    = (LinearLayout) rootView.findViewById(R.id.llLegendShop);
+            llLegendYou     = (LinearLayout) rootView.findViewById(R.id.llLegendYou);
+
+            if ( this.mobility.equals(DefineValue.STRING_NO) ) {
+                llLegendAgent.setVisibility(View.GONE);
+            } else {
+                llLegendShop.setVisibility(View.GONE);
+            }
 
             //buildGoogleApiClient();
             //createLocationRequest();
@@ -159,7 +170,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             //}
 
 
-            searchLocationEditText = (CustomAutoCompleteTextView) rootView.findViewById(R.id.searchLocationEditText);
+            /*searchLocationEditText = (CustomAutoCompleteTextView) rootView.findViewById(R.id.searchLocationEditText);
             googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
             searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
             searchLocationEditText.setOnItemClickListener(this);
@@ -183,7 +194,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 }
             });
 
-            searchLocationEditText.setSelectAllOnFocus(true);
+            searchLocationEditText.setSelectAllOnFocus(true);*/
 
 
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -192,7 +203,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
         }
 
-        searchLocationEditText.setText(this.completeAddress);
+        //searchLocationEditText.setText(this.completeAddress);
 
         return rootView;
     }
@@ -387,8 +398,8 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
 
         }
-        rootView.findViewById(R.id.agentMap).setVisibility(View.VISIBLE);
-        mapFrag.getMapAsync(this);
+        //mapFrag.getView().setVisibility(View.VISIBLE);
+        //mapFrag.getMapAsync(this);
 
     }
 
@@ -517,7 +528,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void setSearchMarker()
     {
 
-        if (currentLatitude != null && currentLongitude != null) {
+        if (currentLatitude != null && currentLongitude != null && globalMap != null) {
 
             LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
@@ -649,11 +660,22 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
         //String nama = shopDetails.get(item).getMemberName();
 
         LatLng latLng = new LatLng(latitude, longitude);
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(latLng)
-                //.title("")
-                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+        MarkerOptions markerOptions;
+
+        if ( shopDetails.get(item).getShopMobility().equals(DefineValue.STRING_NO) ) {
+            markerOptions = new MarkerOptions()
+                    .position(latLng)
+                    //.title("")
+                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+        } else {
+            markerOptions = new MarkerOptions()
+                    .position(latLng)
+                    //.title("")
+                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+        }
+
         Marker marker = globalMap.addMarker(markerOptions);
         hashMarker.put(item, marker);
 
@@ -688,6 +710,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             setPolyline();
         }
 
+
         return false;
 
     }
@@ -696,7 +719,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
         try {
             ArrayList<Double> tempCoordinate = ((BbsSearchAgentActivity) getActivity()).getCurrentCoordinate();
-
+            displayMap();
             if (tempCoordinate.size() > 0) {
                 this.currentLatitude = tempCoordinate.get(0);
                 this.currentLongitude = tempCoordinate.get(1);
@@ -716,12 +739,12 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
 
                 this.shopDetails.addAll(shopDetails);
 
-                displayMap();
+
                 //process();
             } else {
 
                 if ( currentLatitude != null && currentLongitude != null ) {
-                    displayMap();
+
                     setMapCamera();
                     setSearchMarker();
                 }

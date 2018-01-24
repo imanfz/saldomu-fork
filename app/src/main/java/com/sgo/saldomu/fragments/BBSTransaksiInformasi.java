@@ -39,7 +39,9 @@ import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
+import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -48,6 +50,7 @@ import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
@@ -65,8 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import pub.devrel.easypermissions.EasyPermissions;
 import io.realm.RealmChangeListener;
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
@@ -78,7 +81,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private final String MANDIRISMS = "MANDIRISMS";
     private static final int RC_READ_PHONE_STATE = 122;
     private static final int RC_SEND_SMS = 123;
-    private View v;
+    private View v,bbs_informasi_form,emptyCashoutBenefLayout;
     private ProgressDialog progdialog;
     private Activity act;
     private TextView tvTitle;
@@ -224,12 +227,14 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             }
 
             CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-            mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+            mCircleStepView.setTextBelowCircle("", getString(R.string.informasi), "");
             mCircleStepView.setCurrentCircleIndex(1, false);
 
             tvTitle = (TextView) v.findViewById(R.id.tv_title);
             btnNext = (Button) v.findViewById(R.id.proses_btn);
             btnBack = (Button) v.findViewById(R.id.back_btn);
+            emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
+            bbs_informasi_form = v.findViewById(R.id.bbinformasi_input_layout);
             ViewStub stub = (ViewStub) v.findViewById(R.id.informasi_stub);
 
             tvTitle.setText(transaksi);
@@ -295,7 +300,10 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     }
                     etRemark.setText(cashOutHistoryModel.getPesan());
                 }
-
+                if(listbankBenef.size() == 0){
+                    bbs_informasi_form.setVisibility(View.GONE);
+                    emptyCashoutBenefLayout.setVisibility(View.VISIBLE);
+                }
             }
 
             btnBack.setOnClickListener(backListener);
@@ -431,6 +439,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("nobu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListAgent.add(hm);
@@ -777,8 +787,40 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                             test.showDialoginActivity(getActivity(),message);
                         }
                         else {
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(code.equals("0059")||code.equals("0164")){
                                 showDialogErrorSMS(_bank_name,code,response.optString(WebParams.ERROR_MESSAGE,""));
+                            }
+                            else if (code.equals("0057"))
+                            {
+                                if(transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
+                                {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setTitle("Alert")
+                                            .setMessage(getString(R.string.member_saldo_not_enough))
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getActivity().finish();
+                                                }
+                                            });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                } else {
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                }
                             }
                             else {
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
@@ -1135,7 +1177,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 actv_rekening_cta.requestFocus();
                 actv_rekening_cta.setError(getString(R.string.rekening_agent_error_message));
                 return false;
-            }
+            } else actv_rekening_cta.setError(null);
             if (etNoHp.getText().toString().length() == 0) {
                 etNoHp.requestFocus();
                 etNoHp.setError(getString(R.string.no_hp_pengirim_validation));

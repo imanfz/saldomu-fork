@@ -16,11 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -30,12 +30,10 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.fcm.FCMWebServiceLoader;
 import com.sgo.saldomu.securities.AES;
 
 import org.apache.http.Header;
@@ -60,6 +58,7 @@ public class Login extends Fragment implements View.OnClickListener {
     private Animation frameAnimation;
 //    private MaterialRippleLayout btnLayout;
     private View v;
+    private Bundle argsBundleNextLogin = new Bundle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,8 +71,9 @@ public class Login extends Fragment implements View.OnClickListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        argsBundleNextLogin = getArguments();
+
         userIDValue = (EditText) v.findViewById(R.id.userID_value);
-        userIDValue.requestFocus();
         passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
 
         btnLogin = (Button) v.findViewById(R.id.btn_login);
@@ -90,6 +90,21 @@ public class Login extends Fragment implements View.OnClickListener {
         image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
+
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            userIDValue.setText(userIDfinale);
+        }
+
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
+            Bundle m = getArguments();
+            if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
+                getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+            }
+            userIDValue.setEnabled(true);
+        }
+
 
 
 //        String mcAddress = new DeviceUtils(getActivity()).getWifiMcAddress();
@@ -306,6 +321,9 @@ public class Login extends Fragment implements View.OnClickListener {
 
     private void changeActivity() {
         Intent i = new Intent(getActivity(),MainPage.class);
+        if ( argsBundleNextLogin != null )
+            i.putExtras(argsBundleNextLogin);
+
         startActivity(i);
         getActivity().finish();
 
@@ -378,7 +396,7 @@ public class Login extends Fragment implements View.OnClickListener {
             mEditor.putString(DefineValue.LIST_ID_TYPES,response.getString(WebParams.ID_TYPES));
 //            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
-//            mEditor.putString(DefineValue.IS_FIRST_TIME,response.getString(WebParams.USER_IS_NEW));
+            mEditor.putString(DefineValue.IS_FIRST,response.getString(WebParams.USER_IS_NEW));
             mEditor.putString(DefineValue.IS_CHANGED_PASS,response.optString(WebParams.CHANGE_PASS, ""));
 
             mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));

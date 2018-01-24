@@ -25,9 +25,9 @@ import com.sgo.saldomu.fragments.BBSTransaksiPagerItem;
 import com.sgo.saldomu.fragments.Cashoutbbs_describ_member;
 import com.sgo.saldomu.fragments.FragApprovalAgent;
 import com.sgo.saldomu.fragments.FragBbsMyOrders;
-import com.sgo.saldomu.fragments.FragListSettingKelola;
 import com.sgo.saldomu.fragments.FragMemberRating;
 import com.sgo.saldomu.fragments.FragMenuKelola;
+import com.sgo.saldomu.fragments.FragOnProgressAgent;
 import com.sgo.saldomu.fragments.FragSetttingKelola;
 import com.sgo.saldomu.fragments.FragTutupManual;
 import com.sgo.saldomu.fragments.FragWaktuBeroperasi;
@@ -54,6 +54,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSTUTUPMANUAL      = 9;
     public static final int BBSRATINGBYMEMBER   = 10;
     public static final int BBSMYORDERS         = 11;
+    public static final int BBSONPROGRESSAGENT  = 12;
 
 
     FragmentManager fragmentManager;
@@ -71,6 +72,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
             }
 
             Intent intent    = getIntent();
+            Bundle bundle = getIntent().getExtras();
 
             Fragment newFragment = null;
             int index = intent.getIntExtra(DefineValue.INDEX,0);
@@ -87,7 +89,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case TRANSACTION:
                     newFragment = new BBSTransaksiPager();
                     tag = BBSTransaksiPager.TAG;
-                    Bundle bundle = getIntent().getExtras();
+
                     if(bundle != null){
                         newFragment.setArguments(bundle);
                     }
@@ -128,10 +130,17 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 case BBSRATINGBYMEMBER:
                     newFragment = new FragMemberRating();
                     tag = FragMemberRating.TAG;
+                    if(bundle != null){
+                        newFragment.setArguments(bundle);
+                    }
                     break;
                 case BBSMYORDERS:
                     newFragment = new FragBbsMyOrders();
                     tag = FragBbsMyOrders.TAG;
+                    break;
+                case BBSONPROGRESSAGENT:
+                    newFragment = new FragOnProgressAgent();
+                    tag = FragOnProgressAgent.TAG;
                     break;
             }
 
@@ -299,6 +308,11 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         }
     }
 
+
+    /**
+     * Buka RegAccountActivity untuk daftarin akun agent, ini interface dari ListAccountBBS di BBSActivity
+     * @param data data account yang dibutuhkan untuk menambahkan account seperti comm id dll
+     */
     @Override
     public void OnAddAccountListener(Bundle data) {
         Intent i = new Intent(this, BBSRegAccountActivity.class);
@@ -307,6 +321,10 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                 .startActivityForResult(i, MainPage.ACTIVITY_RESULT);
     }
 
+    /**
+     * Buka RegAccountActivity untuk update akun agent, ini interface dari ListAccountBBS di BBSActivity
+     * @param data data account yang dibutuhkan untuk meng-update account seperti comm id dll
+     */
     @Override
     public void OnUpdateAccountListener(Bundle data) {
         Intent i = new Intent(this, BBSRegAccountActivity.class);
@@ -322,7 +340,20 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
         int index = intent.getIntExtra(DefineValue.INDEX,0);
 
         Fragment fragment = fragmentManager.findFragmentById(R.id.bbs_content);
-        if ( fragment instanceof FragWaktuBeroperasi ) {
+
+        if ( fragment instanceof FragMemberRating ) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.alertbox_set_rating_trx))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                            dialog.dismiss();
+                        }
+                    })
+            ;
+            final AlertDialog alert = builder.create();
+            alert.show();
+        } else if ( fragment instanceof FragWaktuBeroperasi ) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.alertbox_set_working_hour_warning))
                     .setCancelable(false)

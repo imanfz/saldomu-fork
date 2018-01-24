@@ -14,6 +14,7 @@ import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -57,7 +58,15 @@ public class ForgotPassword extends Fragment {
         String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
         textMsg.setText(msg);
 
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        if(sp.contains(DefineValue.SENDER_ID)) {
+            userIDfinale = NoHPFormat.formatTo62(sp.getString(DefineValue.SENDER_ID, ""));
+            et_user_id.setText(userIDfinale);
+        }
 
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
+            et_user_id.setEnabled(true);
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_item_white,
                 getResources().getStringArray(R.array.list_tipe_notif));
@@ -70,8 +79,7 @@ public class ForgotPassword extends Fragment {
         et_user_id.requestFocus();
         ToggleKeyboard.show_keyboard(getActivity());
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
+//        et_user_id.setText(sp.getString(DefineValue.SENDER_ID,""));
     }
 
     private Spinner.OnItemSelectedListener spinnerTipeNotif = new Spinner.OnItemSelectedListener() {

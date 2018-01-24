@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -31,13 +32,13 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
@@ -57,9 +58,9 @@ import io.realm.RealmResults;
 public class BBSTransaksiAmount extends Fragment {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiAmount";
 
-    private View v, inputForm, emptyLayout, cityLayout, nameLayout, emptyCashoutBenefLayout;
+    private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
-    private EditText etAmount;
+    private AutoCompleteTextView etAmount;
     private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim;
     private Activity act;
     private Button btnProses, btnBack;
@@ -84,8 +85,7 @@ public class BBSTransaksiAmount extends Fragment {
     SecurePreferences sp;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
-
-
+    String denom[] = {"10000", "20000", "50000", "100000", "150000", "200000"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,14 +135,27 @@ public class BBSTransaksiAmount extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
-        mCircleStepView.setTextBelowCircle(getString(R.string.transaction), getString(R.string.informasi), getString(R.string.konfirmasi));
+        mCircleStepView.setTextBelowCircle(getString(R.string.informasi_pelanggan), "", "");
+//        mCircleStepView.setTextBelowCircle(getString(R.string.informasi_pelanggan), getString(R.string.informasi), getString(R.string.konfirmasi));
         mCircleStepView.setCurrentCircleIndex(0, false);
 
         tvTitle = (TextView) v.findViewById(R.id.tv_title);
         inputForm = v.findViewById(R.id.bbs_amount_form);
         emptyLayout = v.findViewById(R.id.empty_layout);
-        emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
-        etAmount = (EditText) v.findViewById(R.id.jumlah_transfer_edit);
+        etAmount = (AutoCompleteTextView) v.findViewById(R.id.jumlah_transfer_edit);
+
+        ArrayAdapter adapterDenom = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,denom);
+
+        etAmount.setAdapter(adapterDenom);
+        etAmount.setThreshold(1);
+        etAmount.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                etAmount.showDropDown();
+                return false;
+            }
+        });
+
         btnProses = (Button) v.findViewById(R.id.proses_btn);
         btnBack = (Button) v.findViewById(R.id.back_btn);
         ViewStub stub = (ViewStub) v.findViewById(R.id.transaksi_stub);
@@ -181,7 +194,6 @@ public class BBSTransaksiAmount extends Fragment {
             spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
-
 
 
 
@@ -247,7 +259,9 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
-            if (cashInHistoryModel!=null)
+            if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
+            } else if (cashInHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
                 etNoAcct.setText(cashInHistoryModel.getBenef_product_value_code());
@@ -256,7 +270,9 @@ public class BBSTransaksiAmount extends Fragment {
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
-            if (cashOutHistoryModel!=null)
+            if ( !noHpPengirim.equals("") ) {
+                etNoAcct.setText(noHpPengirim);
+            } else if (cashOutHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
                 etNoAcct.setText(cashOutHistoryModel.getMember_shop_phone());
@@ -444,6 +460,7 @@ public class BBSTransaksiAmount extends Fragment {
 
                     getFragmentManager().beginTransaction().replace(R.id.bbsTransaksiFragmentContent, newFrag, BBSTransaksiInformasi.TAG)
                             .addToBackStack(TAG).commit();
+//                    switchFragment(newFrag, "Tarik Tunai", true);
                     ToggleKeyboard.hide_keyboard(act);
                 }
                 else {
@@ -452,6 +469,14 @@ public class BBSTransaksiAmount extends Fragment {
             }
         }
     };
+
+    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+        if (getActivity() == null)
+            return;
+
+        BBSActivity fca = (BBSActivity ) getActivity();
+        fca.switchContent(i,name,isBackstack);
+    }
 
     private void setMember(List<BBSBankModel> bankMember) {
         aListMember.clear();
@@ -478,6 +503,8 @@ public class BBSTransaksiAmount extends Fragment {
                 hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("nobu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListMember.add(hm);
@@ -553,12 +580,7 @@ public class BBSTransaksiAmount extends Fragment {
                 inputForm.setVisibility(View.GONE);
             }
             setMember(listbankSource);
-            long countbankBenefATC = realmBBS.where(BBSAccountACTModel.class).count();
-            if(countbankBenefATC == 0){
-                inputForm.setVisibility(View.GONE);
-                emptyLayout.setVisibility(View.GONE);
-                emptyCashoutBenefLayout.setVisibility(View.VISIBLE);
-            }
+
         }
 
         if(comm == null) {
@@ -580,16 +602,16 @@ public class BBSTransaksiAmount extends Fragment {
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
         }
-        else if(Long.parseLong(etAmount.getText().toString()) < 1){
-            etAmount.requestFocus();
-            etAmount.setError(getString(R.string.payfriends_amount_zero));
-            return false;
-        }
+//        else if(Integer.parseInt(etAmount.getText().toString()) < 1){
+//            etAmount.requestFocus();
+//            etAmount.setError(getString(R.string.payfriends_amount_zero));
+//            return false;
+//        }
         if(actv_rekening_member.getText().toString().length()==0){
             actv_rekening_member.requestFocus();
             actv_rekening_member.setError(getString(R.string.rekening_member_error_message));
             return false;
-        }
+        }else actv_rekening_member.setError(null);
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                 if (etNoAcct.getText().toString().length() == 0) {

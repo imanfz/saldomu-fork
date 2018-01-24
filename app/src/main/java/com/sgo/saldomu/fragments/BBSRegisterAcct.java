@@ -205,7 +205,8 @@ public class BBSRegisterAcct extends Fragment {
                     ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
                             (getActivity(),android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
 
-                    city_textview_autocomplete.setThreshold(1);
+                    city_textview_autocomplete.setText("KOTA JAKARTA");
+//                    city_textview_autocomplete.setThreshold(1);
                     city_textview_autocomplete.setAdapter(city_adapter);
 
                     if (bundle.containsKey(DefineValue.BENEF_CITY)) {

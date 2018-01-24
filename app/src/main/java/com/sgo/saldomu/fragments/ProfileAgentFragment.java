@@ -3,7 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -16,11 +15,9 @@ import android.widget.TextView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.MyPicasso;
+import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.models.ShopDetail;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,24 +122,21 @@ public class ProfileAgentFragment extends Fragment
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-        Picasso mPic;
-        if(MyApiClient.PROD_FLAG_ADDRESS)
-            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-        else
-            mPic= Picasso.with(getActivity());
+//        Picasso mPic;
+//        if(MyApiClient.PROD_FLAG_ADDRESS)
+//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
+//        else
+//            mPic= Picasso.with(getActivity());
 
         if ( this.shopDetail.getUrlSmallProfilePicture() != null && !this.shopDetail.getUrlSmallProfilePicture().isEmpty() ) {
-            mPic.load(this.shopDetail.getUrlSmallProfilePicture())
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(agentProfilePic);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), shopDetail.getUrlSmallProfilePicture(),  roundedImage, agentProfilePic );
         } else {
-            mPic.load(R.drawable.user_unknown_menu)
-                    .error(roundedImage)
-                    .fit().centerInside()
-                    .placeholder(R.drawable.progress_animation)
-                    .transform(new RoundImageTransformation()).into(agentProfilePic);
+            GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, agentProfilePic);
+//            mPic.load(R.drawable.user_unknown_menu)
+//                    .error(roundedImage)
+//                    .fit().centerInside()
+//                    .placeholder(R.drawable.progress_animation)
+//                    .transform(new RoundImageTransformation()).into(agentProfilePic);
         }
         //int profile = getActivity().getResources().getIdentifier(agentProfilePicSession, "drawable", getActivity().getPackageName());
         //agentProfilePic.setImageResource(profile);

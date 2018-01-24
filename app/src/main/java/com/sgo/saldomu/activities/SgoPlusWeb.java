@@ -508,8 +508,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         else if(reportType.equals(DefineValue.BILLER)){
             args.putString(DefineValue.DENOM_DATA, mIntent.getStringExtra(DefineValue.DENOM_DATA));
             args.putInt(DefineValue.BUY_TYPE, mIntent.getIntExtra(DefineValue.BUY_TYPE, 0));
-            args.putString(DefineValue.DESC_FIELD, mIntent.getStringExtra(DefineValue.DESC_FIELD));
-            args.putString(DefineValue.DESC_VALUE, mIntent.getStringExtra(DefineValue.DESC_VALUE));
+            args.putString(DefineValue.DETAILS_BILLER, response.optString(DefineValue.DETAIL));
             args.putString(DefineValue.PAYMENT_NAME, mIntent.getStringExtra(DefineValue.PAYMENT_NAME));
             args.putString(DefineValue.DESTINATION_REMARK,mIntent.getStringExtra(DefineValue.DESTINATION_REMARK));
             args.putBoolean(DefineValue.IS_SHOW_DESCRIPTION, mIntent.getBooleanExtra(DefineValue.IS_SHOW_DESCRIPTION,false));
