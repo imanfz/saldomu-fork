@@ -313,9 +313,6 @@ public class MainPage extends BaseActivity {
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
             if (!notifDataNextLogin.equals("")) {
-                SecurePreferences.Editor mEditor = sp.edit();
-                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-                mEditor.apply();
 
                 changeActivityNextLogin(notifDataNextLogin);
 
@@ -335,6 +332,9 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX ) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
@@ -992,6 +992,10 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this,LoginActivity.class);
                 break;
         }
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         this.finish();
     }

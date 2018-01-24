@@ -104,7 +104,12 @@ public class BBSTransaksiAmount extends Fragment {
             type = bundle.getString(DefineValue.TYPE,"");
             defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
-            defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "");
+
+            defaultProductCode = "";
+            if(bundle.containsKey(DefineValue.PRODUCT_CODE)) {
+                defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "");
+            }
+
 
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
             {
@@ -288,7 +293,7 @@ public class BBSTransaksiAmount extends Fragment {
                 BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
                         equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
                         equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
-                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.SOURCE)
                         .findFirst();
 
                 if ( bbsBankModel != null ) {

@@ -67,7 +67,7 @@ public class BBSTransaksiPagerItem extends Fragment {
         args.putString(DefineValue.TYPE, type);
         args.putString(DefineValue.AMOUNT, defaultAmount);
         args.putString(DefineValue.KEY_CODE, noHpPengirim);
-        if ( !defaultProductCode.equals("") )
+        if ( defaultProductCode != null )
             args.putString(DefineValue.PRODUCT_CODE, defaultProductCode);
         newFrag.setArguments(args);
         getChildFragmentManager().beginTransaction().add(R.id.bbsTransaksiFragmentContent , newFrag, BBSTransaksiAmount.TAG).commit();

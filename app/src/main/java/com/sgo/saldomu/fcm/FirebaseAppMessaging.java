@@ -3,6 +3,7 @@ package com.sgo.saldomu.fcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
 /**
@@ -68,6 +70,21 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             break;
                     }
             }
+
+            if(remoteMessage.getData().containsKey(DefineValue.MODEL_NOTIF)) {
+                int modelNotif      = Integer.parseInt(remoteMessage.getData().get(DefineValue.MODEL_NOTIF));
+                String jsonOptions  = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
+
+                if ( modelNotif == MEMBER_RATING_TRX ) {
+                    Intent broadcast = new Intent();
+                    broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
+                    broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
+                    broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
+                    sendBroadcast(broadcast);
+                }
+            }
+
+
         }
 
         // Check if message contains a notification payload.
@@ -319,11 +336,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 intent.putExtras(bundle);
 
+                                String bundleToJSONString = bundleToJSON.getJson(bundle);
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+
                                 if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                    mEditor.apply();
+
 
                                 } else {
                                     stackBuilder.addParentStack(BbsMapViewByMemberActivity.class);
@@ -536,7 +555,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher_pin_only)
-                        .setContentTitle(notification.getBody())
+                        .setContentTitle(notification.getTitle())
                         .setContentText(msg.getString("msg", ""))
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)

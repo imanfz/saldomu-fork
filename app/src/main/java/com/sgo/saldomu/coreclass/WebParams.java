@@ -336,6 +336,7 @@ public class WebParams {
     public static String ID_RESULT = "id_result";
     public static String HOLD_ID = "hold_id";
     public static String CATEGORY_ID = "category_id";
+    public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
     public static String ICCID = "iccid";
     public static String SENT = "sent";

@@ -1156,4 +1156,5 @@
     <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
     <string name="bbs_setor_ke">Setor ke Rek.</string>
     <string name="bbs_tarik_dari">Tarik dari Rek.</string>
+    <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
 </resources>
