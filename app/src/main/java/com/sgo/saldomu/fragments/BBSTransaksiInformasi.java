@@ -104,7 +104,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
-            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token;
+            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -240,6 +240,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             bbs_informasi_form = v.findViewById(R.id.bbinformasi_input_layout);
             ViewStub stub = (ViewStub) v.findViewById(R.id.informasi_stub);
 
+            key_code = bundle.getString(DefineValue.KEY_CODE,"");
+
             tvTitle.setText(transaksi);
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
@@ -248,9 +250,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
                 etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
-                if(bundle.containsKey(DefineValue.KEY_CODE))
+                if(!key_code.equals(""))
                 {
-                    etNoHp.setText(bundle.getString(DefineValue.KEY_CODE));
+                    etNoHp.setText(key_code);
                 }
                 else{
                     if (cashInHistoryModel!=null)
@@ -483,6 +485,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 hm.put("flag", Integer.toString(R.drawable.logo_bca_bank_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("nobu"))
                 hm.put("flag", Integer.toString(R.drawable.logo_bank_nobu));
+            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("saldomu"))
+                hm.put("flag", Integer.toString(R.drawable.logo_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             aListAgent.add(hm);
@@ -519,6 +523,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             params.put(WebParams.BENEF_PRODUCT_TYPE, benef_product_type);
             params.put(WebParams.BENEF_PRODUCT_VALUE_CODE, no_benef);
             params.put(WebParams.BENEF_PRODUCT_VALUE_NAME, name_benef);
+            if (!key_code.equals("")) {
+                params.put(WebParams.CUST_ID, key_code);
+            }
             if (benef_product_code.equalsIgnoreCase("TCASH")) {
                 params.put(WebParams.BENEF_PRODUCT_VALUE_TOKEN, benef_product_value_token);
             }
@@ -543,7 +550,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") ) {
                             Timber.d("isi response sent insert C2A:"+response.toString());
-                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
+//                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
                             if(code.equals("0282"))
                             {
                                 TCASHValidation = true;

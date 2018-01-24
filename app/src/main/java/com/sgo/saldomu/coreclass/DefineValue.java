@@ -91,6 +91,8 @@ public class DefineValue {
     public static String MEMBER_CODE = "memberCode";
     public static String MEMBER_ID = "memberID";
     public static String MEMBER_NAME = "memberName";
+    public static String MEMBER_SHOP_PHONE = "memberShopPhone";
+    public static String MEMBER_SHOP_NAME = "memberShopName";
     public static String ACCESS_KEY = "accessKey";
     public static String TRANSACTION_TYPE = "transactionType";
     public static String TOPUP_TYPE = "topupType";

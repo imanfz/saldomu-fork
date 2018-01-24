@@ -469,13 +469,16 @@
     <string name="menuitem_title_refresh">Muat Ulang</string>
 
     <string name="report_item_text_trans_id">ID Transaksi :</string>
+    <string name="kode_otp">Kode Tarik Tunai :</string>
     <string name="report_item_text_date_time">Waktu dan Tanggal : </string>
     <string name="report_dialog_text_transaction_type">Tipe Transaksi</string>
     <string name="report_dialog_text_community">Komunitas</string>
     <string name="report_dialog_text_detail">Rincian</string>
+    <string name="report_dialog_token">Kode Tarik Tunai</string>
     <string name="report_dialog_text_type">Tipe</string>
     <string name="report_dialog_text_remark">Pesan</string>
     <string name="report_dialog_text_userid" >Nomor handphone</string>
+    <string name="report_dialog_text_userid_agen" >No. Handphone Agen</string>
     <string name="report_dialog_text_adminid">ID Admin</string>
     <string name="report_dialog_text_adminname">Nama Admin</string>
     <string name="report_dialog_text_status" translatable="false">Status</string>
@@ -853,12 +856,13 @@
     <string name="jumlah_transfer_hint">Jumlah transfer</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
+    <string name="bank_emoney_agen">Bank / E-Money Agen</string>
     <string name="rekening_bank_member">Rekening Member</string>
-    <string name="no_rekening_agen">No Bank / E-Money Agen</string>
+    <string name="no_rekening_agen">No. Bank / E-Money Agen</string>
     <string name="no_bank_emoney_sumber">No Bank / E-Money Sumber</string>
     <string name="nama_rekening_agen">Nama Agen</string>
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
-    <string name="no_tujuan">Nomor Rekening</string>
+    <string name="no_tujuan">Nomor Rekening Tujuan</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
     <string name="otp_hint">Masukkan kode OTP</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
@@ -869,7 +873,7 @@
     <string name="no_hp_pengirim_hint">Nomor Handphone Pelanggan</string>
     <string name="number_destination">No Rekening Tujuan</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
-    <string name="number_hp_destination">Nomor Handphone Tujuan</string>
+    <string name="number_hp_destination">No. Handphone Tujuan</string>
     <string name="number_hp_destination_hint">Nomor Handphone tujuan</string>
     <string name="remark_hint">Pesan (opsional)</string>
     <string name="cash_in">Setor Tunai</string>
@@ -941,7 +945,8 @@
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>
-    <string name="cashoutmember_agent_name">Agent</string>
+    <string name="cashoutmember_agent_name">Nama Agen</string>
+    <string name="cashoutmember_agent_no">No. Handphone Agen</string>
     <string name="cashoutmember_amount">Nominal</string>
     <string name="cashoutmember_fee">Biaya Admin</string>
     <string name="cashoutmember_total">Total Jumlah</string>

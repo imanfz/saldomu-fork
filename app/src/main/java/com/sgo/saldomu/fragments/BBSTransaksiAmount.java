@@ -654,10 +654,10 @@ public class BBSTransaksiAmount extends Fragment {
                     return false;
                 }
             }
-
-            if (etNoOTPC2A.getVisibility()==VISIBLE)
+            if (benef_product_code.equalsIgnoreCase("TCASH"))
             {
                 if (etNoOTPC2A.getText().toString().length() == 0) {
+                    etNoOTPC2A.requestFocus();
                     etNoOTPC2A.setError("Kode OTP dibutuhkan!");
                     return false;
                 }

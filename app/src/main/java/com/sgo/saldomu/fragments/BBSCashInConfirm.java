@@ -363,7 +363,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                         btnSubmit.setEnabled(true);
                         validasiNomor = true;
                         if(InetHandler.isNetworkAvailable(getActivity())){
-                            if(max_token_resend!=0)requestResendToken();
+                            requestResendToken();
                         }
                         else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
                         btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -611,7 +611,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             };
 
-            if(tx_bank_code.equals("114"))
+            if(tx_bank_code.equals("114") || tx_product_code.equalsIgnoreCase("TCASH") )
                 MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
             else
                 MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
@@ -652,7 +652,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
-                                    response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE));
+                                    response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
+                                    response.optString(WebParams.PRODUCT_NAME, ""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -735,7 +736,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
-                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type) {
+                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, userName);
@@ -775,6 +776,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         args.putString(DefineValue.TYPE_BENEF, benef_type);
         args.putString(DefineValue.NO_BENEF, benef_acct_no);
         args.putString(DefineValue.NAME_BENEF, benef_acct_name);
+        args.putString(DefineValue.PRODUCT_NAME, product_name);
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);

@@ -41,6 +41,8 @@ public class WebParams {
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
     public static String MEMBER_NAME = "member_name";
+    public static String MEMBER_SHOP_NO = "member_shop_phone";
+    public static String MEMBER_SHOP_NAME = "member_shop_name";
     public static String UNREGISTER_MEMBER = "unregister_member";
 
 
