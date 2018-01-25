@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.fragments.ClosedTypePickerFragment;
+import com.sgo.saldomu.receivers.FcmReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected SMSclass smsClass;
     protected boolean isActive;
 
+    private IntentFilter fcmFilter = new IntentFilter();
+    FcmReceiver fcmReceiver = new FcmReceiver();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
+        fcmFilter.addAction(DefineValue.INTENT_ACTION_FCM_DATA);
     }
 
     @Override
@@ -57,6 +63,20 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         isActive = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(fcmReceiver, fcmFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        if(fcmReceiver != null){
+            unregisterReceiver(fcmReceiver);
+        }
+        super.onPause();
     }
 
     @Override

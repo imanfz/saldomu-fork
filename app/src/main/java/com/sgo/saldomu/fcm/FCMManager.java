@@ -42,6 +42,7 @@ public class FCMManager {
     public final static int MEMBER_CONFIRM_CASHOUT_TRANSACTION      = 1005;
     public final static int SHOP_ACCEPT_TRX                         = 1006;
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
+    public final static int MEMBER_RATING_TRX                       = 1008;
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
 
     final private static String AGENT_TOPIC = "agent";
@@ -222,12 +223,12 @@ public class FCMManager {
 
                             i.putExtras(bundleNextLogin);
 
-                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+                            //if ( flagLogin.equals(DefineValue.STRING_NO) ) {
                                 String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
                                 SecurePreferences.Editor mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
-                            }
+                            //}
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
@@ -359,6 +360,7 @@ public class FCMManager {
     }
 
     public Intent checkingAction(int type){
+        Timber.d("isi index type2 "+ String.valueOf(type));
         Intent i;
         switch (type) {
             case OPEN_PLAYSTORE:

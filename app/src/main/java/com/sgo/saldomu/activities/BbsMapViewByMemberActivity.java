@@ -61,6 +61,7 @@ import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.models.ShopDetail;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -77,6 +78,7 @@ import timber.log.Timber;
 
 import static android.R.attr.lines;
 import static android.R.attr.value;
+import static com.sgo.saldomu.R.id.acMemberAcct;
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
@@ -166,6 +168,18 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             amount                  = sp.getString(DefineValue.AMOUNT, "");
         }
 
+        try {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put(DefineValue.MODEL_NOTIF, FCMManager.SHOP_ACCEPT_TRX);
+            jsonObj.put(DefineValue.BBS_TX_ID, txId);
+            jsonObj.put(DefineValue.CATEGORY_NAME, categoryName);
+            jsonObj.put(DefineValue.AMOUNT, amount);
+
+            SecurePreferences.Editor mEditor = sp.edit();
+            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, jsonObj.toString());
+            mEditor.apply();
+        } catch (Exception e) {
+        }
 
         //temporary only
         agentLatitude           = null;
@@ -553,6 +567,9 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                         setMapCamera();
                         handler.postDelayed(runnable2, timeDelayed);
+
+                    /*
+                    //remove redirection to rating page
                     } else if ( code.equals("9999") ) {
 
                         SecurePreferences.Editor mEditor = sp.edit();
@@ -565,6 +582,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         mEditor.putString(DefineValue.BBS_MAXIMUM_RATING, response.getString(WebParams.MAXIMUM_RATING));
                         mEditor.putString(DefineValue.BBS_DEFAULT_RATING, response.getString(WebParams.DEFAULT_RATING));
                         mEditor.apply();
+
+                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
 
                         Intent tempIntent = new Intent(getApplicationContext(), BBSActivity.class);
                         Bundle tempBundle = new Bundle();
@@ -579,10 +598,11 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         tempIntent.putExtras(tempBundle);
                         startActivity(tempIntent);
                         finish();
+*/
 
                     } else if ( code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
 
-
+                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
                         finish();
 
                     } else {
@@ -759,12 +779,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
+                        sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+
                         Intent intent = new Intent(getApplicationContext(), MainPage.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                        Toast.makeText(getApplicationContext(), getString(R.string.msg_notif_tidak_bisa_batal), Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

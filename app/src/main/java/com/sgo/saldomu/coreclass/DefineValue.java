@@ -484,6 +484,7 @@ public class DefineValue {
     public static String BBS_MODULE             = "bbs_module";
     public static String BBS_REVIEW             = "bbs_review";
     public static String BBS_SHOP_NAME          = "shop_name";
+    public static String BBS_MEMBER_WAITING_AGENT_APPROVAL  = "bbs_member_waiting_agent_approval";
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
     public static String URL_PROFILE_PICTURE    = "url_profile_picture";
@@ -496,6 +497,7 @@ public class DefineValue {
 
     public static String IS_SAME_PREVIOUS_USER  = "is_same_previous_user";
     public static String IS_MUST_UPDATE_BBS_DATA  = "is_must_update_bbs_data";
-
+    public static String INTENT_ACTION_FCM_DATA = "intent_action_fcm_data";
+    public static String FCM_OPTIONS            = "options";
 }
 

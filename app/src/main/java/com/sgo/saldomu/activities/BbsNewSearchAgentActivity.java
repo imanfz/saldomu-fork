@@ -116,7 +116,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private String categoryId, categoryName, bbsSchemeCode;
     private Intent intentData;
     ProgressDialog progdialog, progDialog;
-    private Boolean showHideLayoutNote = false;
+    private Boolean showHideLayoutNote = false, isZoomedAlready = false;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
@@ -169,19 +169,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         realmBBSMemberBank        = RealmManager.getRealmBBSMemberBank();
 
         sp              = CustomSecurePref.getInstance().getmSecurePrefs();
+        isZoomedAlready = false;
 
         progDialog = DefinedDialog.CreateProgressDialog(this);
         progDialog.dismiss();
 
         isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-
-        if ( !isAgent ) {
-            boolean isUpdatingDataMember = sp.getBoolean(DefineValue.IS_UPDATING_BBS_MEMBER_DATA,false);
-            if(isUpdatingDataMember)
-                progDialog.show();
-            else
-                checkAndRunServiceBBS();
-        }
 
         aListMember     = new ArrayList<>();
 
@@ -300,21 +293,18 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
         etJumlah.setAdapter(adapterDenom);
         etJumlah.setThreshold(1);
-        etJumlah.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                etJumlah.showDropDown();
-                return false;
-            }
-        });
+
 
         etJumlah.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final int DRAWABLE_RIGHT = 2;
 
+
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getRawX() >= (etJumlah.getRight() - etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                    int width       = etJumlah.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width();
+                    int maxWidth    = width + 20;
+                    if(event.getRawX() >= (etJumlah.getRight() - maxWidth)) {
                         //Toast.makeText(BbsNewSearchAgentActivity.this, "TESTING", Toast.LENGTH_SHORT).show();
 
                         if ( !showHideLayoutNote ) {
@@ -325,9 +315,13 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                             etNote.setVisibility(View.GONE);
                         }
 
-
+                        //etJumlah.clearListSelection();
                         return true;
+                    } else {
+                        etJumlah.showDropDown();
                     }
+                } else {
+                    //etJumlah.showDropDown();
                 }
                 return false;
             }
@@ -365,7 +359,21 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 if(idxValid == -1){
                     acMemberAcct.requestFocus();
-                    acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+                    //acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+
+                    AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCancelable(false);
+                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                    alertDialog.setMessage(getString(R.string.no_match_customer_acct_message));
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    acMemberAcct.requestFocus();
+                                }
+                            });
+                    alertDialog.show();
                     hasError = true;
                 }
 
@@ -419,12 +427,16 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     public void onConnected(@Nullable Bundle bundle) {
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
             if ( mLastLocation == null ){
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
             } else {
+
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
+
+                Timber.d("GPS TEST Onconnected : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
 
                 if (globalMap != null ) {
 
@@ -449,6 +461,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                             public void onFinish() {
                                 //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
                                 globalMap.getUiSettings().setAllGesturesEnabled(true);
+                                isZoomedAlready = true;
                             }
 
                             @Override
@@ -471,7 +484,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 //btnProses.setEnabled(true);
 
 
-                mGoogleApiClient.disconnect();
                 searchAgent();
             }
         } catch (SecurityException se) {
@@ -495,36 +507,38 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             longitude = location.getLongitude();
             latitude = location.getLatitude();
 
-            if (globalMap != null ) {
+            Timber.d("GPS TEST OnChanged : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
 
-                //disable map gesture untuk sementara sampai camera position selesai
-                globalMap.getUiSettings().setAllGesturesEnabled(true);
-                globalMap.getUiSettings().setMapToolbarEnabled(false);
-                globalMap.setIndoorEnabled(false);
-                globalMap.setMyLocationEnabled(false);
+            if (globalMap != null ) {
 
                 if ( latitude != null && longitude != null ) {
                     LatLng latLng = new LatLng(latitude, longitude);
                     globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
-                    //add camera position and configuration
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(latLng) // Center Set
-                            .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                            .build(); // Creates a CameraPosition from the builder
+                    isZoomedAlready = false;
+                    if ( !isZoomedAlready ) {
 
-                    globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                        @Override
-                        public void onFinish() {
-                            //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                            globalMap.getUiSettings().setAllGesturesEnabled(true);
-                        }
+                        //add camera position and configuration
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(latLng) // Center Set
+                                .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                                .build(); // Creates a CameraPosition from the builder
 
-                        @Override
-                        public void onCancel() {
-                        }
-                    });
+                        globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                            @Override
+                            public void onFinish() {
+                                //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                                globalMap.getUiSettings().setAllGesturesEnabled(true);
+                                isZoomedAlready = true;
+                            }
 
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+                    }
+
+                    if ( markerCurrent != null ) markerCurrent.remove();
 
                     MarkerOptions markerOptions = new MarkerOptions()
                             .position(latLng)
@@ -535,9 +549,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             }
 
-            mGoogleApiClient.disconnect();
-            this.getAddressByLatLng();
-            searchAgent();
+            //mGoogleApiClient.disconnect();
+
+            if ( shopDetails.size() == 0 ) {
+                this.getAddressByLatLng();
+                searchAgent();
+            }
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -561,7 +578,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         mLocationRequest.setInterval(DefineValue.AGENT_INTERVAL_LOCATION_REQUEST);
         mLocationRequest.setFastestInterval(DefineValue.AGENT_FASTEST_INTERVAL_LOCATION_REQUEST);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
+        //mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
+
     }
 
     /**
@@ -584,7 +602,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
     private void searchAgent() {
-        progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+        //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
         RequestParams params = new RequestParams();
         UUID rcUUID = UUID.randomUUID();
@@ -615,8 +633,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 Timber.d("Response New Search Agent:" + response.toString());
 
-                if ( progdialog.isShowing())
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing())
+                    //progdialog.dismiss();
 
                 try {
 
@@ -740,8 +758,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                 Timber.w("Error Koneksi Search Agent:" + throwable.toString());
 
-                if ( progdialog.isShowing())
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing())
+                    //progdialog.dismiss();
 
             }
 
@@ -1066,16 +1084,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     alertDialog.show();
                 }
                 break;
-        }
-    }
-
-    void checkAndRunServiceBBS(){
-        BBSDataManager bbsDataManager = new BBSDataManager();
-        if(!bbsDataManager.isDataUpdated()) {
-            progDialog = DefinedDialog.CreateProgressDialog(this);
-            progDialog.show();
-            bbsDataManager.runServiceUpdateData(getContext());
-            Timber.d("Run Service update data BBS");
         }
     }
 
