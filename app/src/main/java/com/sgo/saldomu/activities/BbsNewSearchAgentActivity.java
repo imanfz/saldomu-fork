@@ -350,31 +350,33 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                     hasError = true;
                 }
 
-                int idxValid =-1;
-                String nameAcct = acMemberAcct.getText().toString();
-                for(int i = 0 ; i < aListMember.size() ; i++) {
-                    if(nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
-                        idxValid = i;
-                }
+                if ( !hasError ) {
+                    int idxValid = -1;
+                    String nameAcct = acMemberAcct.getText().toString();
+                    for (int i = 0; i < aListMember.size(); i++) {
+                        if (nameAcct.equalsIgnoreCase(aListMember.get(i).get("txt")))
+                            idxValid = i;
+                    }
 
-                if(idxValid == -1){
-                    acMemberAcct.requestFocus();
-                    //acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
+                    if (idxValid == -1) {
+                        acMemberAcct.requestFocus();
+                        //acMemberAcct.setError(getString(R.string.no_match_customer_acct_message), null);
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
-                    alertDialog.setCanceledOnTouchOutside(false);
-                    alertDialog.setCancelable(false);
-                    alertDialog.setTitle(getString(R.string.alertbox_title_warning));
-                    alertDialog.setMessage(getString(R.string.no_match_customer_acct_message));
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    acMemberAcct.requestFocus();
-                                }
-                            });
-                    alertDialog.show();
-                    hasError = true;
+                        AlertDialog alertDialog = new AlertDialog.Builder(BbsNewSearchAgentActivity.this).create();
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.setCancelable(false);
+                        alertDialog.setTitle(getString(R.string.alertbox_title_warning));
+                        alertDialog.setMessage(getString(R.string.no_match_customer_acct_message));
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        acMemberAcct.requestFocus();
+                                    }
+                                });
+                        alertDialog.show();
+                        hasError = true;
+                    }
                 }
 
                 if ( !hasError ) {
@@ -426,8 +428,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
 
             if ( mLastLocation == null ){
 
@@ -575,8 +578,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
      * */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(DefineValue.AGENT_INTERVAL_LOCATION_REQUEST);
-        mLocationRequest.setFastestInterval(DefineValue.AGENT_FASTEST_INTERVAL_LOCATION_REQUEST);
+        mLocationRequest.setInterval(2*10000);
+        mLocationRequest.setFastestInterval(1*10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
 

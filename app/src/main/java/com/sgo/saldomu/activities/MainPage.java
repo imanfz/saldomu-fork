@@ -332,7 +332,7 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
-            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX ) {
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX ) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }
 
@@ -413,6 +413,18 @@ public class MainPage extends BaseActivity {
                     i.putExtras(bundle);
 
 
+                    break;
+                case FCMManager.MEMBER_RATING_TRX:
+                    i = new Intent(this, BBSActivity.class);
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSRATINGBYMEMBER);
+                    bundle.putString(DefineValue.BBS_TX_ID, jsonObj.getString(WebParams.TX_ID));
+                    bundle.putString(DefineValue.CATEGORY_NAME, jsonObj.getString(WebParams.CATEGORY_NAME));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(WebParams.AMOUNT));
+                    bundle.putString(DefineValue.URL_PROFILE_PICTURE, jsonObj.getString(WebParams.PROFILE_PICTURE));
+                    bundle.putString(DefineValue.BBS_SHOP_NAME, jsonObj.getString(WebParams.SHOP_NAME));
+                    bundle.putString(DefineValue.BBS_MAXIMUM_RATING, jsonObj.getString(WebParams.MAXIMUM_RATING));
+                    bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
+                    i.putExtras(bundle);
                     break;
                 default:
                     i = new Intent(this, MainPage.class);
@@ -992,9 +1004,6 @@ public class MainPage extends BaseActivity {
                 break;
         }
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         this.finish();
     }
