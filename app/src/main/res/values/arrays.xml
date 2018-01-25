@@ -271,5 +271,13 @@
         <!-- item>@string/setup_agent_open_hour</item -->
         <item>@string/setup_tutup_manual</item>
     </string-array>
-    
+
+    <string-array name="list_denom_amount">
+        <item>10000</item>
+        <item>20000</item>
+        <item>50000</item>
+        <item>100000</item>
+        <item>150000</item>
+        <item>200000</item>
+    </string-array>
 </resources>

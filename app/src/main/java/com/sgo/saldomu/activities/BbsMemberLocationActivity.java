@@ -11,7 +11,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -32,8 +31,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -42,8 +39,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -51,8 +46,7 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -60,7 +54,6 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -86,7 +79,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 
 public class BbsMemberLocationActivity extends BaseActivity implements OnMapReadyCallback,
@@ -108,7 +100,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
     MerchantCommunityList memberDetail;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
     List<Address> addressList = null;
-    CustomAutoCompleteTextView locationSearch;
+    CustomAutoCompleteTextViewWithRadioButton locationSearch;
     String searchLocationString;
     private int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
     private GoogleApiClient googleApiClient;
@@ -185,7 +177,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
         googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getApplicationContext(), R.layout.google_places_auto_complete_listview);
 
-        locationSearch = (CustomAutoCompleteTextView) findViewById(R.id.editText);
+        locationSearch = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.editText);
         locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         locationSearch.setOnItemClickListener(this);
         locationSearch.setOnEditorActionListener(this);
@@ -278,7 +270,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                     params.put(WebParams.RC_UUID, rcUUID);
                     params.put(WebParams.RC_DATETIME, dtime);
-                    params.put(WebParams.APP_ID, BuildConfig.AppID);
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, shopId);
@@ -294,7 +286,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     params.put(WebParams.ZIP_CODE, postalCode);
 
                     String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase()
-                            + BuildConfig.AppID + selectedLat + selectedLong));
+                            + BuildConfig.APP_ID + selectedLat + selectedLong));
 
                     params.put(WebParams.SIGNATURE, signature);
 
@@ -331,7 +323,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
                                         params2.put(WebParams.RC_UUID, rcUUID2);
                                         params2.put(WebParams.RC_DATETIME, dtime2);
-                                        params2.put(WebParams.APP_ID, BuildConfig.AppID);
+                                        params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
                                         params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                                         params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                                         params2.put(WebParams.SHOP_ID, shopId);
@@ -340,7 +332,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                                         params2.put(WebParams.FLAG_CLOSED_TYPE, DefineValue.CLOSED_TYPE_NONE);
 
 
-                                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+                                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID2 + dtime2 + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.APP_ID));
 
                                         params2.put(WebParams.SIGNATURE, signature);
 
@@ -594,7 +586,7 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     public void onMapSearch(View view) {
 
-        locationSearch = (CustomAutoCompleteTextView) findViewById(R.id.editText);
+        locationSearch = (CustomAutoCompleteTextViewWithRadioButton) findViewById(R.id.editText);
         locationSearch.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
         locationSearch.setOnItemClickListener(this);
         locationSearch.setOnEditorActionListener(this);

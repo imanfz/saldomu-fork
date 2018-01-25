@@ -158,7 +158,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
                             params.put(WebParams.RC_UUID, rcUUID);
                             params.put(WebParams.RC_DATETIME, dtime);
-                            params.put(WebParams.APP_ID, BuildConfig.AppID);
+                            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
                             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
                             params.put(WebParams.SHOP_ID, shopId);
@@ -168,7 +168,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                             progdialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
 
                             if (selectedType == 1) {
-                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID));
+                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.APP_ID));
                                 params.put(WebParams.SIGNATURE, signature);
 
                                 MyApiClient.updateCloseShopToday(getApplication(), params, new JsonHttpResponseHandler() {
@@ -250,7 +250,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                     }*/
                                 params.put(WebParams.SHOP_DATE, shopDate);
 
-                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
+                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.APP_ID + shopStatus));
 
                                 params.put(WebParams.SIGNATURE, signature);
 

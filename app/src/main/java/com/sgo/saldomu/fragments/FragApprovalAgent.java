@@ -93,7 +93,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote, tvAcctLabel, tvAcctName;
     RelativeLayout rlApproval;
     RatingBar rbMemberRating;
     Spinner spPilihan;
@@ -171,7 +171,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
         tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
-
+        tvAcctLabel             = (TextView) v.findViewById(R.id.tvAcctLabel);
+        tvAcctName              = (TextView) v.findViewById(R.id.tvAcctName);
         //rbMemberRating          = (RatingBar) v.findViewById(R.id.rbMemberRating);
         //ivPPMember              = (ImageView) v.findViewById(R.id.ivPPMember);
 
@@ -347,7 +348,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
             params3.put(WebParams.RC_UUID, rcUUID);
             params3.put(WebParams.RC_DATETIME, dtime);
-            params3.put(WebParams.APP_ID, BuildConfig.AppID);
+            params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
@@ -361,7 +362,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 params3.put(WebParams.LONGITUDE, currentLongitude);
             }
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
 
             params3.put(WebParams.SIGNATURE, signature);
 
@@ -393,7 +394,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                                 mEditor.apply();
 
                                 Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra(DefineValue.AOD_TX_ID, shopDetails.get(itemId).getTxId());
                                 startActivity(i);
                                 getActivity().finish();
                             } else {
@@ -695,13 +696,13 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
+        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + customerId ));
 
         params.put(WebParams.SIGNATURE, signature);
 
@@ -753,6 +754,13 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                         tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
+                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                        } else {
+                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                        }
+
+                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
                         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);

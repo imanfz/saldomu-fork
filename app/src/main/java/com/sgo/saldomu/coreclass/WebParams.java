@@ -59,6 +59,7 @@ public class WebParams {
     public static String PRODUCT_CODE = "product_code";
     public static String PAYMENT_REMARK = "payment_remark";
     public static String PRODUCT_H2H = "product_h2h";
+    public static String PRODUCT_DISPLAY = "product_display";
 
     public static String TX_ID = "tx_id";
     public static String PRODUCT_VALUE = "product_value";
@@ -337,6 +338,7 @@ public class WebParams {
     public static String ID_RESULT = "id_result";
     public static String HOLD_ID = "hold_id";
     public static String CATEGORY_ID = "category_id";
+    public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
     public static String ICCID = "iccid";
     public static String SENT = "sent";

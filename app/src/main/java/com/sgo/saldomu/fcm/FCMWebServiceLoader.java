@@ -52,10 +52,10 @@ public class FCMWebServiceLoader {
         String deviceID = DeviceUtils.getAndroidID();
         String token = FCMManager.getTokenFCM();
         RequestParams requestParams = MyApiClient.getSignatureWithParamsFCM(token,
-                deviceID, BuildConfig.AppID);
+                deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
         requestParams.put(WebParams.GCM_ID, token);
-        requestParams.put(WebParams.APP_ID, BuildConfig.AppID);
+        requestParams.put(WebParams.APP_ID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_NAME, DeviceUtils.getDeviceName());
         requestParams.put(WebParams.DEVICE_OS, DeviceUtils.getDeviceOS());
         requestParams.put(WebParams.DEVICE_API, DeviceUtils.getDeviceAPILevel());

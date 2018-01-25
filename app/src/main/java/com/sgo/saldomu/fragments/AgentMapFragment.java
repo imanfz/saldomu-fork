@@ -46,7 +46,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -99,7 +99,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private Double currentLongitude;
     private Marker lastCoordinateMarker;
     private BbsSearchAgentActivity mainBbsActivity;
-    private CustomAutoCompleteTextView searchLocationEditText;
+    private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
     List<Polyline> lines;
     Polyline line;

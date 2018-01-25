@@ -85,6 +85,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NavigationDrawMenu extends ListFragment{
 
+    public static final String TAG = "com.sgo.saldomu.fragments.NavigationDrawMenu";
     public static final int MHOME = 0;
     public static final int MTOPUP = 1;
     public static final int MPAYFRIENDS= 2;
@@ -673,7 +674,7 @@ public class NavigationDrawMenu extends ListFragment{
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
@@ -681,7 +682,7 @@ public class NavigationDrawMenu extends ListFragment{
             params.put(WebParams.SHOP_STATUS, shopStatus);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
 
             params.put(WebParams.SIGNATURE, signature);
 

@@ -380,7 +380,8 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
+        <receiver android:name=".receivers.FcmReceiver">
+        </receiver>
         <activity
             android:name=".activities.BbsNewSearchAgentActivity"
             android:configChanges="orientation"

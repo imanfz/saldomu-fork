@@ -42,7 +42,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,8 +50,6 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-import static android.view.View.VISIBLE;
 
 /**
  * Created by thinkpad on 4/20/2017.
@@ -63,7 +61,8 @@ public class BBSTransaksiAmount extends Fragment {
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
     private AutoCompleteTextView etAmount;
-    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim, benef_product_code, source_product_code;
+    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim,
+            benef_product_code, source_product_code,defaultProductCode;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -71,7 +70,7 @@ public class BBSTransaksiAmount extends Fragment {
     private String ATC = "ATC";
     private String SOURCE = "SOURCE";
     private String BENEF = "BENEF";
-    private CustomAutoCompleteTextView actv_rekening_member;
+    private CustomAutoCompleteTextViewWithIcon actv_rekening_member;
     private List<HashMap<String,String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
@@ -105,6 +104,11 @@ public class BBSTransaksiAmount extends Fragment {
             type = bundle.getString(DefineValue.TYPE,"");
             defaultAmount = bundle.getString(DefineValue.AMOUNT,"");
             noHpPengirim = bundle.getString(DefineValue.KEY_CODE,"");
+
+            defaultProductCode = "";
+            if(bundle.containsKey(DefineValue.PRODUCT_CODE)) {
+                defaultProductCode = bundle.getString(DefineValue.PRODUCT_CODE, "");
+            }
 
 
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
@@ -187,7 +191,7 @@ public class BBSTransaksiAmount extends Fragment {
             View cashin_layout = stub.inflate();
 
             nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
-            actv_rekening_member = (CustomAutoCompleteTextView) cashin_layout.findViewById(R.id.rekening_member_value);
+            actv_rekening_member = (CustomAutoCompleteTextViewWithIcon) cashin_layout.findViewById(R.id.rekening_member_value);
             etNoOTPC2A = (EditText) cashin_layout.findViewById(R.id.no_OTP);
             etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
             tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
@@ -197,8 +201,6 @@ public class BBSTransaksiAmount extends Fragment {
             spinwheelCity = (ImageView) cashin_layout.findViewById(R.id.spinning_wheel_bbscashin_city);
             frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
             frameAnimation.setRepeatCount(Animation.INFINITE);
-
-
 
             // Keys used in Hashmap
             String[] from = {"flag", "txt"};
@@ -237,7 +239,7 @@ public class BBSTransaksiAmount extends Fragment {
             stub.setLayoutResource(R.layout.bbs_cashout_amount);
             View cashout_layout = stub.inflate();
 
-            actv_rekening_member = (CustomAutoCompleteTextView) cashout_layout.findViewById(R.id.rekening_member_value);
+            actv_rekening_member = (CustomAutoCompleteTextViewWithIcon) cashout_layout.findViewById(R.id.rekening_member_value);
             etNoAcct = (EditText) cashout_layout.findViewById(R.id.no_tujuan_value);
 
 
@@ -262,8 +264,23 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in)))
         {
-            if ( !noHpPengirim.equals("") ) {
-                etNoAcct.setText(noHpPengirim);
+            if ( !defaultProductCode.equals("") ) {
+                BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
+                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.CTA).
+                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.BENEF)
+                        .findFirst();
+
+                if ( bbsBankModel != null ) {
+                    actv_rekening_member.setText(bbsBankModel.getProduct_name());
+                    if ( bbsBankModel.getProduct_display().equals(DefineValue.STRING_YES) ) {
+
+
+                        if ( !noHpPengirim.equals("") ) {
+                            etNoAcct.setText(noHpPengirim);
+                        }
+                    }
+                }
             } else if (cashInHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashInHistoryModel.getBenef_product_name());
@@ -273,8 +290,23 @@ public class BBSTransaksiAmount extends Fragment {
         }
         else if (transaksi.equalsIgnoreCase(getString(R.string.cash_out)))
         {
-            if ( !noHpPengirim.equals("") ) {
-                etNoAcct.setText(noHpPengirim);
+            if ( !defaultProductCode.equals("") ) {
+                BBSBankModel bbsBankModel = realmBBS.where(BBSBankModel.class).
+                        equalTo(BBSBankModel.SCHEME_CODE, DefineValue.ATC).
+                        equalTo(BBSBankModel.PRODUCT_CODE, defaultProductCode)
+                        .equalTo(BBSBankModel.COMM_TYPE, DefineValue.SOURCE)
+                        .findFirst();
+
+                if ( bbsBankModel != null ) {
+                    actv_rekening_member.setText(bbsBankModel.getProduct_name());
+                    if ( bbsBankModel.getProduct_display().equals(DefineValue.STRING_YES) ) {
+
+
+                        if ( !noHpPengirim.equals("") ) {
+                            etNoAcct.setText(noHpPengirim);
+                        }
+                    }
+                }
             } else if (cashOutHistoryModel!=null)
             {
                 actv_rekening_member.setText(cashOutHistoryModel.getSource_product_name());
@@ -386,12 +418,12 @@ public class BBSTransaksiAmount extends Fragment {
                         if(listbankBenef.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
                             nameLayout.setVisibility(View.GONE);
                         else
-                            nameLayout.setVisibility(VISIBLE);
+                            nameLayout.setVisibility(View.VISIBLE);
 
                         benef_product_code = listbankBenef.get(position).getProduct_code();
                         if(benef_product_code.equalsIgnoreCase("TCASH"))
                         {
-                            etNoOTPC2A.setVisibility(VISIBLE);
+                            etNoOTPC2A.setVisibility(View.VISIBLE);
                         }
                         else
                             etNoOTPC2A.setVisibility(View.GONE);
@@ -531,7 +563,7 @@ public class BBSTransaksiAmount extends Fragment {
 
     private void setBBSCity() {
         spBenefCity.setVisibility(View.GONE);
-        spinwheelCity.setVisibility(VISIBLE);
+        spinwheelCity.setVisibility(View.VISIBLE);
         spinwheelCity.startAnimation(frameAnimation);
 
         Thread proses = new Thread(){
@@ -561,7 +593,7 @@ public class BBSTransaksiAmount extends Fragment {
                     public void run() {
                         spinwheelCity.clearAnimation();
                         spinwheelCity.setVisibility(View.GONE);
-                        spBenefCity.setVisibility(VISIBLE);
+                        spBenefCity.setVisibility(View.VISIBLE);
 //                        adapter.notifyDataSetChanged();
                         city_adapter.notifyDataSetChanged();
 
@@ -593,7 +625,7 @@ public class BBSTransaksiAmount extends Fragment {
                     .equalTo(WebParams.COMM_TYPE,SOURCE).findAll();
             if(listbankSource == null){
                 Toast.makeText(getActivity(), getString(R.string.no_source_list_message), Toast.LENGTH_LONG).show();
-                emptyLayout.setVisibility(VISIBLE);
+                emptyLayout.setVisibility(View.VISIBLE);
                 inputForm.setVisibility(View.GONE);
             }
             setMember(listbankSource);
@@ -602,7 +634,7 @@ public class BBSTransaksiAmount extends Fragment {
 
         if(comm == null) {
             inputForm.setVisibility(View.GONE);
-            emptyLayout.setVisibility(VISIBLE);
+            emptyLayout.setVisibility(View.VISIBLE);
             if(schemeCode.equalsIgnoreCase(CTA))
                 Toast.makeText(getActivity(), getString(R.string.bbstransaction_toast_not_registered,
                         getString(R.string.cash_in)), Toast.LENGTH_LONG).show();
@@ -663,7 +695,7 @@ public class BBSTransaksiAmount extends Fragment {
                 }
             }
 
-            if (nameLayout.getVisibility() == VISIBLE) {
+            if (nameLayout.getVisibility() == View.VISIBLE) {
                 if (etNameAcct.getText().toString().length() == 0) {
                     etNameAcct.requestFocus();
                     etNameAcct.setError(getString(R.string.nama_rekening_validation));
@@ -671,7 +703,7 @@ public class BBSTransaksiAmount extends Fragment {
                 }
             }
 
-            if(cityLayout.getVisibility() == VISIBLE) {
+            if(cityLayout.getVisibility() == View.VISIBLE) {
                 String autocomplete_text = spBenefCity.getText().toString();
 
                 if (autocomplete_text.equals("")){
