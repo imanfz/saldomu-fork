@@ -111,7 +111,6 @@ public class MainPage extends BaseActivity {
     private final static int REQCODE_PLAY_SERVICE = 312;
 
     private static int AmountNotif = 0;
-    private final static int RC_READPHONESTATE = 5;
 
     private String flagLogin = DefineValue.STRING_NO;
     private String userID;
@@ -137,26 +136,14 @@ public class MainPage extends BaseActivity {
     private Bundle savedInstanceState;
     private SMSclass smSclass;
 
-    public static final int RC_LOCATION_PERM    = 500;
-
     private LevelClass levelClass;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Obtain the FirebaseAnalytics instance.
-//        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            startLocationService();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
@@ -178,7 +165,8 @@ public class MainPage extends BaseActivity {
                     });
                     builder.setCancelable(false);
                     devRootedDeviceAlertDialog = builder.create();
-                    devRootedDeviceAlertDialog.show();
+                    if(!isFinishing())
+                        devRootedDeviceAlertDialog.show();
                 }else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
@@ -191,65 +179,75 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    @AfterPermissionGranted(RC_LOCATION_PERM)
     private void startLocationService() {
         JobScheduleManager.getInstance(this).scheduleUploadLocationService();
     }
 
     private void initializeDashboard(){
-        if (checkNotificationNotif()) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
+        if(isHasAppPermission()) {
+            if (checkNotificationNotif()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type);
-            startActivity(intent);
-        } else if (checkNotificationAction() ) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+            } else if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-            Map<String, String> msgMap = new HashMap<String, String>();
-            Intent intentData = getIntent();
-            if (intentData.hasExtra("model_notif")) {
-                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-            }
-            if (intentData.hasExtra("options")) {
-                msgMap.put("options", intentData.getStringExtra("options"));
-            }
-            Timber.d("testing :" + msgMap.toString());
-
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type, msgMap);
-        }
-
-        if (!isLogin()) {
-            Bundle bundle = getIntent().getExtras();
-            if(bundle!=null) {
-                if(bundle.getString(DefineValue.MODEL_NOTIF) != null) {
-                    int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
-                    if (modelNotif==2)
-                    {
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
-                        mEditor.apply();
-                    }
-
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
                 }
-            }
-            openFirstScreen(FIRST_SCREEN_INTRO);
-        } else {
-            String[] perms = {Manifest.permission.READ_PHONE_STATE};
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
 
-            if (EasyPermissions.hasPermissions(this, perms)) {
-                initializeLogin();
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
+            }
+
+            if (!isLogin()) {
+                Bundle bundle = getIntent().getExtras();
+                if (bundle != null) {
+                    if (bundle.getString(DefineValue.MODEL_NOTIF) != null) {
+                        int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
+                        if (modelNotif == 2) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
+                            mEditor.apply();
+                        }
+
+                    }
+                }
+                openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
-                EasyPermissions.requestPermissions(this,
-                        getString(R.string.rational_readphonestate),
-                        RC_READPHONESTATE, perms);
+                initializeLogin();
             }
-
         }
     }
 
-    @AfterPermissionGranted(RC_READPHONESTATE)
+    @Override
+    public void onAccessFineLocationGranted() {
+        super.onAccessFineLocationGranted();
+        Timber.d("masuk AccessFineLocation");
+        startLocationService();
+    }
+
+    @Override
+    public void onReadPhoneStateGranted() {
+        super.onReadPhoneStateGranted();
+        initializeDashboard();
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        Toast.makeText(this,getString(R.string.cancel_permission),Toast.LENGTH_SHORT).show();
+        this.finish();
+    }
+
     void initializeLogin(){
         Boolean isSimSame = true;
         if (BuildConfig.FLAVOR.equals("production")){
@@ -332,7 +330,7 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
-            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX ) {
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX ) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }
 
@@ -413,6 +411,18 @@ public class MainPage extends BaseActivity {
                     i.putExtras(bundle);
 
 
+                    break;
+                case FCMManager.MEMBER_RATING_TRX:
+                    i = new Intent(this, BBSActivity.class);
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSRATINGBYMEMBER);
+                    bundle.putString(DefineValue.BBS_TX_ID, jsonObj.getString(WebParams.TX_ID));
+                    bundle.putString(DefineValue.CATEGORY_NAME, jsonObj.getString(WebParams.CATEGORY_NAME));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(WebParams.AMOUNT));
+                    bundle.putString(DefineValue.URL_PROFILE_PICTURE, jsonObj.getString(WebParams.PROFILE_PICTURE));
+                    bundle.putString(DefineValue.BBS_SHOP_NAME, jsonObj.getString(WebParams.SHOP_NAME));
+                    bundle.putString(DefineValue.BBS_MAXIMUM_RATING, jsonObj.getString(WebParams.MAXIMUM_RATING));
+                    bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
+                    i.putExtras(bundle);
                     break;
                 default:
                     i = new Intent(this, MainPage.class);
@@ -992,9 +1002,6 @@ public class MainPage extends BaseActivity {
                 break;
         }
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         this.finish();
     }
@@ -1434,12 +1441,4 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
 }

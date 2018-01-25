@@ -782,7 +782,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
 
                         Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         finish();
                     } else {
@@ -1088,8 +1087,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
     private void disabledBackPressed() {
         //kembali ke activity sebelumnya
 
+        String cancelMessage = getString(R.string.message_notif_cancel_trx);
+        String newCancelMessage = cancelMessage.replace("[CANCEL_FEE]", DefineValue.IDR + " " + CurrencyFormat.format(cancelFee));
+
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.alert_message_disabled_member_cancel_backpressed))
+        builder.setMessage(newCancelMessage)
                 .setCancelable(false)
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {

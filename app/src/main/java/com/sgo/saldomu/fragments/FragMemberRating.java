@@ -227,6 +227,8 @@ public class FragMemberRating extends Fragment {
                     mEditor.remove(DefineValue.BBS_SHOP_NAME);
                     mEditor.apply();
 
+                    sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if ( isCancel.equals(DefineValue.STRING_NO) ) {
                             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();

@@ -1018,6 +1018,9 @@ public class MyProfileNewActivity extends BaseActivity {
                 }
             );
 
+        dialognya.setCanceledOnTouchOutside(false);
+        dialognya.setCancelable(false);
+
         dialognya.show();
     }
 

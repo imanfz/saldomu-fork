@@ -331,7 +331,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             UUID uuid = MyApiClient.getUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
             String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
-            Timber.d("Webservice:"+webserviceScash);
             String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID + user_id, access_key);
 
             RequestParams paramsScash = new RequestParams();
@@ -345,11 +344,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsScash.put(WebParams.RC_UUID, uuid.toString());
             paramsScash.put(WebParams.RC_DTIME, dtime);
             paramsScash.put(WebParams.SIGNATURE, signatureScash);
-            Timber.d("Isi params transaction report:"+paramsScash.toString());
+
 
 
             String webserviceEspay = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_ESPAY);
-            Timber.d("Webservice:"+webserviceEspay);
             String signatureEspay = MyApiClient.getSignature(uuid, dtime, webserviceEspay, MyApiClient.COMM_ID + user_id, access_key);
 
             RequestParams paramsEspay = new RequestParams();
@@ -363,10 +361,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsEspay.put(WebParams.RC_UUID, uuid.toString());
             paramsEspay.put(WebParams.RC_DTIME, dtime);
             paramsEspay.put(WebParams.SIGNATURE, signatureEspay);
-            Timber.d("Isi params transaction report:"+paramsEspay.toString());
 
             String webserviceAsk = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_MONEY_REQUEST);
-            Timber.d("Webservice:"+webserviceAsk);
             String signatureAsk = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
 
             RequestParams paramsAsk = new RequestParams();
@@ -379,7 +375,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsAsk.put(WebParams.RC_UUID, uuid.toString());
             paramsAsk.put(WebParams.RC_DTIME, dtime);
             paramsAsk.put(WebParams.SIGNATURE, signatureAsk);
-            Timber.d("Isi params transaction report:"+paramsAsk.toString());
 
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -557,31 +552,41 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 }
 
                 private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if(isAdded()) {
+                        if (MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    bak_date_from = (Calendar) date_from.clone();
-                    bak_date_to = (Calendar) date_to.clone();
-                    mPtrFrame.refreshComplete();
-                    setLoadMore(false);
-                    lv_report.setVisibility(View.GONE);
-                    emptyLayout.setVisibility(View.VISIBLE);
-                    ClearDataAdapter();
-                    NotifyDataChange();
-
+                        bak_date_from = (Calendar) date_from.clone();
+                        bak_date_to = (Calendar) date_to.clone();
+                        mPtrFrame.refreshComplete();
+                        setLoadMore(false);
+                        lv_report.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                        ClearDataAdapter();
+                        NotifyDataChange();
+                    }
                     Timber.w("Error Koneksi get data report report:"+throwable.toString());
                 }
 
             };
 
-            if(report_type == REPORT_SCASH)
-                MyApiClient.sentGetTrxReport(getActivity(),paramsScash,deHandler);
-            else if(report_type == REPORT_ESPAY)
-                MyApiClient.sentReportEspay(getActivity(),paramsEspay,deHandler);
-            else if(report_type == REPORT_ASK)
-                MyApiClient.sentReportAsk(getActivity(),paramsAsk,deHandler);
+            if(report_type == REPORT_SCASH) {
+                Timber.d("Webservice:"+webserviceScash);
+                Timber.d("Isi params report scash:" + paramsScash.toString());
+                MyApiClient.sentGetTrxReport(getActivity(), paramsScash, deHandler);
+            }
+            else if(report_type == REPORT_ESPAY) {
+                Timber.d("Webservice:"+webserviceEspay);
+                Timber.d("Isi params report espay:"+paramsEspay.toString());
+                MyApiClient.sentReportEspay(getActivity(), paramsEspay, deHandler);
+            }
+            else if(report_type == REPORT_ASK) {
+                Timber.d("Webservice:"+webserviceAsk);
+                Timber.d("Isi params report ask:"+paramsAsk.toString());
+                MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
+            }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

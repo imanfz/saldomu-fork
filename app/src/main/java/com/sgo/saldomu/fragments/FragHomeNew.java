@@ -213,8 +213,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         if ( isAgent ) {
-            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-            GridHome.setAdapter(adapter);
+            if(isAdded()) {
+                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                GridHome.setAdapter(adapter);
+            }
         } else {
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
@@ -274,8 +276,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             }
 
                             //gridBbsCategoryAdapter.notifyDataSetChanged();
-                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
+                            if(isAdded()) {
+                                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                                GridHome.setAdapter(adapter);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -306,8 +310,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         Timber.w("Error Koneksi login:" + throwable.toString());
 
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
-                        GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                        GridHome.setAdapter(adapter);
+                        if(isAdded()) {
+                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                            GridHome.setAdapter(adapter);
+                        }
                     }
 
                 });
