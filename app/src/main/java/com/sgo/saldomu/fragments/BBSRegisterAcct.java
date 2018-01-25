@@ -303,6 +303,12 @@ public class BBSRegisterAcct extends Fragment {
 
 
     public boolean inputValidation(){
+        if(progBarBank.getVisibility() == View.VISIBLE)
+            return false;
+
+        if(listDataBank.size() == 0)
+            return false;
+
         if(etNoBenefAcct.getText().toString().length()==0){
             etNoBenefAcct.requestFocus();
             etNoBenefAcct.setError(getString(R.string.bbsreg_et_error_rekbenef));
