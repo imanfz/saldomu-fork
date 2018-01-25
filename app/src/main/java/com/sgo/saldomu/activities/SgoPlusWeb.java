@@ -533,6 +533,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 args.putString(DefineValue.BANK_BENEF, response.getString(WebParams.BENEF_BANK_NAME));
                 args.putString(DefineValue.NO_BENEF, response.getString(WebParams.BENEF_ACCT_NO));
                 args.putString(DefineValue.NAME_BENEF, response.getString(WebParams.BENEF_ACCT_NAME));
+                args.putString(DefineValue.PRODUCT_NAME, response.getString(WebParams.PRODUCT_NAME));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
