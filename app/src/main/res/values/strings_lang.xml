@@ -138,9 +138,6 @@
     <string name="pindialog_title">KODE PIN</string>
     <string name="pindialog_text_message">Masukkan kode PIN yang Anda gunakan untuk melanjutkan proses.</string>
     <string name="pindialog_edittext_hint">Kode PIN</string>
-
-    <string name="topuplist_ab_title">Topup Saldo</string>
-
     <string name="myprofilelist_ab_title">Profil Saya</string>
 
     <string name="sgoplus_ab_title">SGO +</string>

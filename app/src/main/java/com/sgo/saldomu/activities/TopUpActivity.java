@@ -75,7 +75,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
                 mFrag = new ListTopUp();
                 mArgs.putBoolean(DefineValue.IS_ACTIVITY_FULL,is_full_activity);
                 mArgs.putString("Toolbar", i.getStringExtra("Toolbar"));
-                setToolbarTitle(getString(R.string.topuplist_ab_title));
+                setToolbarTitle(getString(R.string.toolbar_title_topup));
             }
             else {
                 mFrag = new SgoPlus_input();
