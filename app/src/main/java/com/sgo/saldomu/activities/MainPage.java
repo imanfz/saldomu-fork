@@ -111,7 +111,6 @@ public class MainPage extends BaseActivity {
     private final static int REQCODE_PLAY_SERVICE = 312;
 
     private static int AmountNotif = 0;
-    private final static int RC_READPHONESTATE = 5;
 
     private String flagLogin = DefineValue.STRING_NO;
     private String userID;
@@ -137,26 +136,14 @@ public class MainPage extends BaseActivity {
     private Bundle savedInstanceState;
     private SMSclass smSclass;
 
-    public static final int RC_LOCATION_PERM    = 500;
-
     private LevelClass levelClass;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Obtain the FirebaseAnalytics instance.
-//        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            startLocationService();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
 
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
@@ -178,7 +165,8 @@ public class MainPage extends BaseActivity {
                     });
                     builder.setCancelable(false);
                     devRootedDeviceAlertDialog = builder.create();
-                    devRootedDeviceAlertDialog.show();
+                    if(!isFinishing())
+                        devRootedDeviceAlertDialog.show();
                 }else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
@@ -191,7 +179,6 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    @AfterPermissionGranted(RC_LOCATION_PERM)
     private void startLocationService() {
         JobScheduleManager.getInstance(this).scheduleUploadLocationService();
     }
@@ -236,20 +223,24 @@ public class MainPage extends BaseActivity {
             }
             openFirstScreen(FIRST_SCREEN_INTRO);
         } else {
-            String[] perms = {Manifest.permission.READ_PHONE_STATE};
-
-            if (EasyPermissions.hasPermissions(this, perms)) {
-                initializeLogin();
-            } else {
-                EasyPermissions.requestPermissions(this,
-                        getString(R.string.rational_readphonestate),
-                        RC_READPHONESTATE, perms);
-            }
-
+            initializeLogin();
         }
     }
 
-    @AfterPermissionGranted(RC_READPHONESTATE)
+    @Override
+    public void onAccessFineLocationGranted() {
+        super.onAccessFineLocationGranted();
+        Timber.d("masuk AccessFineLocation");
+        startLocationService();
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        Toast.makeText(this,getString(R.string.cancel_permission),Toast.LENGTH_SHORT).show();
+        this.finish();
+    }
+
     void initializeLogin(){
         Boolean isSimSame = true;
         if (BuildConfig.FLAVOR.equals("production")){
@@ -1443,12 +1434,4 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
 }

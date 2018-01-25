@@ -672,6 +672,7 @@
 
     <string name="share_title">Bagikan</string>
     <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
+    <string name="cancel_permission">Anda harus setuju dengan syarat untuk dapat menggunakan aplikasi.</string>
     <string name="failed_insert_realm">Gagal menyimpan data</string>
     <string name="list_contact_title">Daftar Kontak</string>
 
