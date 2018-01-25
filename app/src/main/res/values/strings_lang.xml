@@ -944,6 +944,7 @@
     <string name="cashoutmember_tx_id">ID Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>
     <string name="cashoutmember_agent_name">Nama Agen</string>
+    <string name="cashoutmember_bank_product">Bank Produk</string>
     <string name="cashoutmember_agent_no">No. Handphone Agen</string>
     <string name="cashoutmember_amount">Nominal</string>
     <string name="cashoutmember_fee">Biaya Admin</string>
