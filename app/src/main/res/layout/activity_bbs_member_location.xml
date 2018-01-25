@@ -28,7 +28,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true">
 
-            <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
+            <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:selectAllOnFocus="true"
                 android:hint="@string/search_location_hint_request_bbs_activity_label" >
 
-            </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
+            </com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton>
 
 
 

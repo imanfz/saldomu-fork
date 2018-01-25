@@ -227,6 +227,14 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         fca.switchActivity(i);
     }
 
+    private void SaveIMEIICCID(){
+        if (getActivity() == null)
+            return;
+
+        LoginActivity fca = (LoginActivity) getActivity();
+        fca.SaveImeiICCIDDevice();
+    }
+
     public void sentData(final String noHP){
         try{
                 progdialog.show();
@@ -503,6 +511,7 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
     public void changeActivity(Boolean login){
         if(login){
             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            SaveIMEIICCID();
             Fragment test = new Login();
             switchFragment(test,"Login",false);
         }
@@ -568,14 +577,8 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(code.equals("0002")) changeActivity(true);
-                else if(code.equals(WebParams.SUCCESS_CODE))
-                {
-                    getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    Fragment test = new Login();
-                    switchFragment(test,"Login",false);
-                    dialog.show();
-                }
+                if(code.equals(WebParams.SUCCESS_CODE) || code.equals("0002"))
+                    changeActivity(true);
 
                 dialog.dismiss();
             }

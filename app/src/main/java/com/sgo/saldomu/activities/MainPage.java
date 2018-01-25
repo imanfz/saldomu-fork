@@ -149,7 +149,6 @@ public class MainPage extends BaseActivity {
 //        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(this,sp);
 
         if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             startLocationService();
@@ -268,6 +267,7 @@ public class MainPage extends BaseActivity {
             if (savedInstanceState != null)
                 mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
+            levelClass = new LevelClass(this,sp);
             isForeground = true;
             agent = sp.getBoolean(DefineValue.IS_AGENT, false);
             utilsLoader = new UtilsLoader(this, sp);
@@ -313,9 +313,6 @@ public class MainPage extends BaseActivity {
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
             if (!notifDataNextLogin.equals("")) {
-                SecurePreferences.Editor mEditor = sp.edit();
-                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-                mEditor.apply();
 
                 changeActivityNextLogin(notifDataNextLogin);
 
@@ -335,6 +332,9 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX ) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
@@ -601,7 +601,6 @@ public class MainPage extends BaseActivity {
     }
 
     private void InitializeNavDrawer(){
-        FragmentManager mFragmentManager = getSupportFragmentManager();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
         mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
         mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
@@ -687,7 +686,8 @@ public class MainPage extends BaseActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
-        mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
+        mNavDrawer = new NavigationDrawMenu();
+        getSupportFragmentManager().beginTransaction().add(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
     }
 
 
@@ -756,8 +756,7 @@ public class MainPage extends BaseActivity {
 
                                 if(mNavDrawer != null && serviceReferenceBalance != null)
                                     serviceReferenceBalance.runBalance();
-//                                TurnOnGCM();
-//                                getBalance(true);
+
                                 initializeNavDrawer();
                                 CheckNotification();
 
@@ -908,11 +907,22 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-        }
-    }
+        }else {
 
+        }
+
+
+    }
+    /**
+     * Check jika bisa menjalankan ServiceUpdateData langsung
+     * Check jika MustUpdate, IsSameUser, dan IsUpdated
+     */
     void checkAndRunServiceBBS(){
-        BBSDataManager.checkAndRunService(this);
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(bbsDataManager.isValidToUpdate()) {
+            bbsDataManager.runServiceUpdateData(this);
+            Timber.d("Run Service update data BBS");
+        }
     }
 
     private void CheckNotification(){
@@ -981,6 +991,10 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this,LoginActivity.class);
                 break;
         }
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
         this.finish();
     }

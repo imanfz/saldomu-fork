@@ -160,7 +160,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         String  dtime           = DateTimeFormat.getCurrentDateTime();
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -168,7 +168,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                 DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.AppID + DefineValue.STRING_NO));
+                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.APP_ID + DefineValue.STRING_NO));
 
         params.put(WebParams.SIGNATURE, signature);
 
@@ -364,7 +364,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
                         params.put(WebParams.RC_UUID, rcUUID);
                         params.put(WebParams.RC_DATETIME, dtime);
-                        params.put(WebParams.APP_ID, BuildConfig.AppID);
+                        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                         params.put(WebParams.SHOP_ID, shopId);
@@ -457,7 +457,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
                         }
 
-                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.AppID));
+                        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId.toUpperCase() + shopId.toUpperCase() + BuildConfig.APP_ID));
 
                         params.put(WebParams.SIGNATURE, signature);
 

@@ -393,6 +393,7 @@ public class DefineValue {
     public static String IS_AGENT_SET_OPENHOUR  = "IsAgentSetOpenHour";
     public static String SHOP_AGENT_DATA    = "ShopAgentData";
     public static String IS_AGENT_APPROVE   = "IsAgentApprove";
+    public static String AOD_TX_ID          = "AodTxId";
     public static String BBS_TX_ID          = "BbsTxId";
     public static String BBS_MEMBER_ID      = "BbsMemberId";
     public static String BBS_SHOP_ID        = "BbsShopId";
@@ -425,11 +426,16 @@ public class DefineValue {
     public static String TUTORIAL_KONFIRMASI_CASHOUT_BBS              = "tutorialKonfirmasiCashOutBBS";
     public static String TUTORIAL_REGISTER_AGEN             = "tutorialRegisterAgen";
     public static String TUTORIAL_KELOLA_AGENT            = "tutorialKelolaAgent";
-    public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSData";
-    public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSData";
+    public static String UPDATE_TIME_BBS_CTA_DATA = "updateTimeBBSDataCTA";
+    public static String UPDATE_TIME_BBS_ATC_DATA = "updateTimeBBSDataATC";
     public static String IS_UPDATING_BBS_DATA = "isUpdatingBBSData";
     public static String IS_BBS_DATA_UPDATED = "IsBBSDataUpdated";
     public static String IS_SUCCESS = "isSuccess";
+
+    public static String UPDATE_TIME_BBS_MEMBER_CTA_DATA = "updateTimeBBSMemberCTAData";
+    public static String UPDATE_TIME_BBS_MEMBER_ATC_DATA = "updateTimeBBSMemberATCData";
+    public static String IS_UPDATING_BBS_MEMBER_DATA = "isUpdatingBBSMemberData";
+    public static String IS_BBS_MEMBER_DATA_UPDATED = "IsBBSMemberDataUpdated";
 
     public static String AGENT_NAME             = "agentName";
     public static String AGENT_SHOP_CLOSED      = "agentShopClosed";
@@ -482,9 +488,20 @@ public class DefineValue {
     public static String BBS_MODULE             = "bbs_module";
     public static String BBS_REVIEW             = "bbs_review";
     public static String BBS_SHOP_NAME          = "shop_name";
+    public static String BBS_MEMBER_WAITING_AGENT_APPROVAL  = "bbs_member_waiting_agent_approval";
     public static String BBS_MAXIMUM_RATING     = "bbs_maximum_rating";
     public static String BBS_DEFAULT_RATING     = "bbs_default_rating";
     public static String URL_PROFILE_PICTURE    = "url_profile_picture";
+    public static String BBS_SCHEME_CODE        = "bbs_scheme_code";
+
+    public static String SOURCE                 = "SOURCE";
+    public static String BENEF                  = "BENEF";
+    public static String BBS_PRODUCT_NAME       = "bbs_product_name";
+
+    public static String IS_SAME_PREVIOUS_USER  = "is_same_previous_user";
+    public static String IS_MUST_UPDATE_BBS_DATA  = "is_must_update_bbs_data";
+    public static String INTENT_ACTION_FCM_DATA = "intent_action_fcm_data";
+    public static String FCM_OPTIONS            = "options";
     public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
 }
 

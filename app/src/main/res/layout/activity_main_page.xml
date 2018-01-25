@@ -36,15 +36,14 @@
                 android:layout_gravity="start"
                 >
 
-
-            <fragment
-                    android:id="@+id/main_list_menu_fragment"
-                    android:layout_width="240dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left"
-                    android:layout="@layout/frag_navigation_draw_menu_main"
-                    class="com.sgo.saldomu.fragments.NavigationDrawMenu"
-                    tools:layout="@layout/frag_navigation_draw_menu_main"/>
+            <FrameLayout
+                android:id="@+id/left_menu_layout"
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
+                tools:layout="@layout/frag_navigation_draw_menu_main"
+                />
+            
             <View android:layout_width="20dp"
                   android:id="@+id/view_shadow"
                   android:layout_height="match_parent"

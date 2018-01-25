@@ -102,7 +102,7 @@ public class PickAndCameraUtil {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 String timeStamp = DateTimeFormat.getCurrentDateTime();
-                String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.AppID;
+                String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
 
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, imageFileName);
@@ -132,7 +132,7 @@ public class PickAndCameraUtil {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = DateTimeFormat.getCurrentDateTime();
-        String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.AppID;
+        String imageFileName = "JPEG_" + timeStamp + "_" + BuildConfig.APP_ID;
         File storageDir = mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */

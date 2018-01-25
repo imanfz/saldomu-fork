@@ -175,7 +175,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         String  dtime           = DateTimeFormat.getCurrentDateTime();
         params.put(WebParams.RC_UUID, rcUUID);
         params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -183,7 +183,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
                 DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.AppID + DefineValue.STRING_NO));
+                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.APP_ID + DefineValue.STRING_NO));
 
         params.put(WebParams.SIGNATURE, signature);
 
@@ -470,7 +470,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
             params2.put(WebParams.RC_UUID, rcUUID);
             params2.put(WebParams.RC_DATETIME, dtime);
-            params2.put(WebParams.APP_ID, BuildConfig.AppID);
+            params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params2.put(WebParams.SHOP_ID, shopId);
@@ -495,7 +495,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             params2.put(WebParams.SHOP_STATUS, shopStatus);
             params2.put(WebParams.SHOP_REMARK, "");
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.APP_ID + shopStatus));
 
             params2.put(WebParams.SIGNATURE, signature);
 

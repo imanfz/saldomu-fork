@@ -974,6 +974,7 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
+    <string name="no_match_customer_acct_message">Pilih rekening pelanggan yang tersedia</string>
     <string name="no_rekening_source_cashout">Nomor Rekening Pelanggan</string>
     <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
@@ -1003,7 +1004,8 @@
     <string name="bbs_setting">Pengaturan</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
+    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. \r\n\r\nSilahkan datangi lokasi agen terdekat untuk melakukan transaksi.\r\n\r\n
+    Apakah Anda ingin mencari agen terdekat lagi?</string>
     <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
     <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
     <string name="search"> Cari </string>
@@ -1161,4 +1163,7 @@
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
     <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
     <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
+    <string name="bbs_setor_ke">Setor ke Rek.</string>
+    <string name="bbs_tarik_dari">Tarik dari Rek.</string>
+    <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
 </resources>

@@ -222,13 +222,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, "");
 
             String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID));
+                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID));
 
             params.put(WebParams.SIGNATURE, signature);
 
@@ -254,6 +254,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     JSONObject object = categories.getJSONObject(i);
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
+                                    shopCategory.setSchemeCode(object.getString("scheme_code"));
                                     String tempCategory = object.getString("category_name").toLowerCase();
 
                                     String[] strArray = tempCategory.split(" ");
@@ -467,6 +468,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                             i.putExtra(DefineValue.AMOUNT, "");
+                            i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                             break;
                         }
@@ -692,7 +694,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
@@ -700,7 +702,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.SHOP_STATUS, shopStatus);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
 
             params.put(WebParams.SIGNATURE, signature);
 
