@@ -48,7 +48,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import io.realm.DynamicRealmObject;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -62,7 +61,8 @@ public class BBSTransaksiAmount extends Fragment {
     private View v, inputForm, emptyLayout, cityLayout, nameLayout;
     private TextView tvTitle;
     private AutoCompleteTextView etAmount;
-    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim, defaultProductCode;
+    private String transaksi,benef_product_type, type, defaultAmount, noHpPengirim,
+            benef_product_code, source_product_code,defaultProductCode;
     private Activity act;
     private Button btnProses, btnBack;
     private Realm realm, realmBBS;
@@ -74,7 +74,7 @@ public class BBSTransaksiAmount extends Fragment {
     private List<HashMap<String,String>> aListMember;
     private SimpleAdapter adapterMember;
     private List<BBSBankModel> listbankSource, listbankBenef;
-    private EditText etNoAcct, etNameAcct;
+    private EditText etNoAcct, etNameAcct, etNoOTPC2A;
     private TextView tvEgNo;
     private ImageView spinwheelCity;
     private AutoCompleteTextView spBenefCity;
@@ -192,6 +192,7 @@ public class BBSTransaksiAmount extends Fragment {
 
             nameLayout = cashin_layout.findViewById(R.id.bbs_cashin_name_layout);
             actv_rekening_member = (CustomAutoCompleteTextViewWithIcon) cashin_layout.findViewById(R.id.rekening_member_value);
+            etNoOTPC2A = (EditText) cashin_layout.findViewById(R.id.no_OTP);
             etNoAcct = (EditText) cashin_layout.findViewById(R.id.no_tujuan_value);
             tvEgNo = (TextView) cashin_layout.findViewById(R.id.tv_eg_no);
             etNameAcct = (EditText) cashin_layout.findViewById(R.id.name_value);
@@ -404,11 +405,12 @@ public class BBSTransaksiAmount extends Fragment {
                     if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                         benef_product_type = listbankBenef.get(position).getProduct_type();
                         if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                            cityLayout.setVisibility(View.GONE);
+
+//                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
                         } else {
-                            cityLayout.setVisibility(View.VISIBLE);
+//                            cityLayout.setVisibility(VISIBLE);
                             etNoAcct.setHint(R.string.number_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_acct));
                         }
@@ -417,10 +419,19 @@ public class BBSTransaksiAmount extends Fragment {
                             nameLayout.setVisibility(View.GONE);
                         else
                             nameLayout.setVisibility(View.VISIBLE);
+
+                        benef_product_code = listbankBenef.get(position).getProduct_code();
+                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        {
+                            etNoOTPC2A.setVisibility(View.VISIBLE);
+                        }
+                        else
+                            etNoOTPC2A.setVisibility(View.GONE);
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
-                            if (listbankSource.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
-                                etNoAcct.setHint(getString(R.string.user_id) + " " + getString(R.string.appname));
+                            source_product_code = listbankSource.get(position).getProduct_code();
+                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT))
+                                etNoAcct.setHint(getString(R.string.no_rekening_source_cashout) + " " + listbankSource.get(position).getProduct_name());
                             else
                                 etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
                         }
@@ -477,6 +488,10 @@ public class BBSTransaksiAmount extends Fragment {
                             String city_name = spBenefCity.getText().toString();
                             args.putString(DefineValue.ACCT_CITY_CODE, city_id);
                             args.putString(DefineValue.ACCT_CITY_NAME, city_name);
+                        }
+                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        {
+                            args.putString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, etNoOTPC2A.getText().toString());
                         }
                         if(type.equalsIgnoreCase(DefineValue.BBS_CASHIN)) {
                             if (!noHpPengirim.equals(""))
@@ -631,7 +646,7 @@ public class BBSTransaksiAmount extends Fragment {
     }
 
     private boolean inputValidation() {
-        if(etAmount.getText().toString().length()==0){
+        if (etAmount.getText().toString().length() == 0) {
             etAmount.requestFocus();
             etAmount.setError(getString(R.string.payfriends_amount_validation));
             return false;
@@ -641,6 +656,8 @@ public class BBSTransaksiAmount extends Fragment {
 //            etAmount.setError(getString(R.string.payfriends_amount_zero));
 //            return false;
 //        }
+
+
         if(actv_rekening_member.getText().toString().length()==0){
             actv_rekening_member.requestFocus();
             actv_rekening_member.setError(getString(R.string.rekening_member_error_message));
@@ -666,6 +683,14 @@ public class BBSTransaksiAmount extends Fragment {
                 } else if (etNoAcct.getText().toString().length() < 7) {
                     etNoAcct.requestFocus();
                     etNoAcct.setError(getString(R.string.no_rekening_validation));
+                    return false;
+                }
+            }
+            if (benef_product_code.equalsIgnoreCase("TCASH"))
+            {
+                if (etNoOTPC2A.getText().toString().length() == 0) {
+                    etNoOTPC2A.requestFocus();
+                    etNoOTPC2A.setError("Kode OTP dibutuhkan!");
                     return false;
                 }
             }

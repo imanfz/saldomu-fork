@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,17 +63,18 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private TextView tvTitle;
-    private View v, cityLayout, layout_btn_resend, layout_OTP;
+    private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
             tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination;
-    private EditText tokenValue;
+    private TableRow tbNameBenef;
+    private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
     private int max_token_resend;
-    private boolean isSMS = false, isIB = false, isPIN = false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
@@ -143,6 +145,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         btnResend = (Button) v.findViewById(R.id.btn_resend_token);
         tvNoDestination = (TextView) v.findViewById(R.id.bbscashin_confirm_text_no_destination);
         btnBack = (Button) v.findViewById(R.id.btn_back);
+        layoutTCASH = v.findViewById(R.id.layout_TCASH);
+        noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
+        tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -171,6 +176,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             no_hp_benef  = bundle.getString(DefineValue.NO_HP_BENEF);
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
+            TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF,"");
 
             if(!bundle.getString(DefineValue.MAX_RESEND).equals(""))
@@ -183,6 +189,10 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
             tvNameBenefAcct.setText(name_benef);
+            if (name_benef.isEmpty()|| name_benef==null || name_benef.equalsIgnoreCase(""))
+            {
+                tbNameBenef.setVisibility(View.GONE);
+            }
             tvNoBenefAcct.setText(no_benef);
             tvNoHp.setText(no_hp_benef);
             tvRemark.setText(remark);
@@ -194,13 +204,14 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                 if(benef_product_type.equalsIgnoreCase("EMO")) {
                     cityLayout.setVisibility(View.GONE);
+
                 }
                 else if(benef_product_type.equalsIgnoreCase("ACCT")) {
                     cityLayout.setVisibility(View.VISIBLE);
                 }
             }
             else if(source_product_h2h.equalsIgnoreCase("Y")) {
-                if(source_product_type.equalsIgnoreCase("EMO")) {
+                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH")) {
                     isPIN = true;
                     new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                         @Override
@@ -218,9 +229,19 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                         }
                     });
+//                    if(source_product_code.equalsIgnoreCase("TCASH"))
+//                    {
+//                        layout_OTP.setVisibility(View.VISIBLE);
+//                        layout_btn_resend.setVisibility(View.VISIBLE);
+//                        tokenValue.requestFocus();
+//                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_tcash) + " (" + max_token_resend + ")");
+//                        btnResend.setOnClickListener(resendListener);
+//                    } else {
+
+                        layout_OTP.setVisibility(View.GONE);
+                        layout_btn_resend.setVisibility(View.GONE);
+//                    }
                     cityLayout.setVisibility(View.GONE);
-                    layout_OTP.setVisibility(View.GONE);
-                    layout_btn_resend.setVisibility(View.GONE);
                 }
                 else if(source_product_type.equalsIgnoreCase("ACCT")) {
                     isSMS = true;
@@ -232,12 +253,24 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     btnResend.setOnClickListener(resendListener);
                     initializeSmsClass();
                 }
+                else if (tx_product_code.equalsIgnoreCase("TCASH"))
+                {
+                    if (TCASH_hp_validation)
+                    {
+                        isTCASH = true;
+                        layoutTCASH.setVisibility(View.VISIBLE);
+                        layout_OTP.setVisibility(View.GONE);
+                        layout_btn_resend.setVisibility(View.GONE);
+                    }
+                }
             }
 
             if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT))
                 tvNoDestination.setText(R.string.number_destination);
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
+
+
 
             btnBack.setOnClickListener(backListener);
             btnSubmit.setOnClickListener(submitListener);
@@ -320,6 +353,30 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 else if(isPIN) {
                     CallPINinput(attempt);
                     btnSubmit.setEnabled(true);
+                }
+                else if (isTCASH)
+                {
+                    btnSubmit.setEnabled(true);
+                    if (validasiNoHP())
+                    {
+                        noHpTCASH.setEnabled(false);
+                        btnSubmit.setEnabled(true);
+                        validasiNomor = true;
+                        if(InetHandler.isNetworkAvailable(getActivity())){
+                            requestResendToken();
+                        }
+                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                        btnSubmit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (inputValidation())
+                                {
+                                    sentInsertTransTopup(tokenValue.getText().toString());
+                                    btnSubmit.setEnabled(true);
+                                }
+                            }
+                        });
+                    }
                 }
                 else btnSubmit.setEnabled(true);
             }
@@ -418,6 +475,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                         }
                         progdialog.dismiss();
                     } catch (JSONException e) {
@@ -479,6 +537,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            if(noHpTCASH!=null)
+                params.put(WebParams.PRODUCT_VALUE, noHpTCASH.getText().toString());
 
             Timber.d("isi params resendTokenSGOL:"+params.toString());
 
@@ -492,6 +552,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             max_token_resend = max_token_resend - 1;
 
                             changeTextBtnSub();
+                            layout_OTP.setVisibility(View.VISIBLE);
                             Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
                             Timber.w("txid response resend tokenSGOL:"+response.toString());
                         }
@@ -551,7 +612,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             };
 
-            if(tx_bank_code.equals("114"))
+            if(tx_bank_code.equals("114") || tx_product_code.equalsIgnoreCase("TCASH") )
                 MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
             else
                 MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
@@ -592,7 +653,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
-                                    response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE));
+                                    response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
+                                    response.optString(WebParams.PRODUCT_NAME, ""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -675,7 +737,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
-                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type) {
+                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, userName);
@@ -715,6 +777,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         args.putString(DefineValue.TYPE_BENEF, benef_type);
         args.putString(DefineValue.NO_BENEF, benef_acct_no);
         args.putString(DefineValue.NAME_BENEF, benef_acct_name);
+        args.putString(DefineValue.PRODUCT_NAME, product_name);
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);
@@ -827,6 +890,18 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms)+" ("+max_token_resend+")");
             }
         });
+    }
+
+    public boolean validasiNoHP()
+    {
+        if (noHpTCASH.getText().toString().length()==0)
+        {
+            noHpTCASH.requestFocus();
+            noHpTCASH.setError("No. Handphone dibutuhkan!");
+            return false;
+        }
+        tokenValue.setVisibility(View.VISIBLE);
+        return true;
     }
 
     public boolean inputValidation(){

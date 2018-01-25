@@ -370,6 +370,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 input.setText("");
+                input.setError(null);
+                input.clearFocus();
                 view_pulsa.setVisibility(View.INVISIBLE);
                 view_bpjs.setVisibility(View.VISIBLE);
                 view_listrikPLN.setVisibility(View.INVISIBLE);
@@ -381,6 +383,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 input.setText("");
+                input.setError(null);
+                input.clearFocus();
                 view_pulsa.setVisibility(View.INVISIBLE);
                 view_bpjs.setVisibility(View.INVISIBLE);
                 view_listrikPLN.setVisibility(View.VISIBLE);

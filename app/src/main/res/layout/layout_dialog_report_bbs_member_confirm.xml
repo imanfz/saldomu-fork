@@ -6,9 +6,36 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:stretchColumns="1">
+
+    <LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        <TextView
+            android:text="@string/report_dialog_token"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="6dip"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:singleLine="true"
+            />
+        <TextView
+            android:id="@+id/dialog_reportbbs_token_value"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="6dip"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
     <TableRow>
         <TextView
-            android:text="@string/report_dialog_text_userid_agen"
+            android:text="@string/report_dialog_text_userid"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -30,7 +57,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/agent_name"
+            android:text="@string/biller_name"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -53,81 +80,14 @@
 
     <TableRow>
         <TextView
-            android:text="@string/rekening_bank_agent"
+            android:text="@string/bank_emoney_sumber"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="3dip" />
         <TextView
-            android:id="@+id/dialog_reportbs_bank_source_acc_name_value"
-            android:layout_weight="2"
-            android:layout_width="0dp"
-            android:gravity="right"
-            android:padding="3dip" />
-    </TableRow>
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/no_rekening_agen"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbbs_bank_source_acct_no_value"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/nama_rekening_agen"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbs_bank_source_acc_name_value"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/grey_300"/>
-
-    <TableRow>
-        <TextView
-            android:text="@string/bank_emoney_tujuan"
-            android:layout_span="2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="3dip" />
-        <TextView
-            android:id="@+id/dialog_reportbbs_benef_bank_value"
+            android:id="@+id/dialog_reportbbs_source_bank_value"
             android:layout_weight="2"
             android:layout_width="0dp"
             android:gravity="right"
@@ -142,15 +102,14 @@
 
     <TableRow>
         <TextView
-            android:id="@+id/tvNoDestination"
-            android:text="@string/no_tujuan"
+            android:text="@string/no_bank_emoney_sumber"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="3dip" />
         <TextView
-            android:id="@+id/dialog_reportbbs_bank_benef_acct_no_value"
+            android:id="@+id/dialog_reportbbs_bank_source_acct_no_value"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
             android:layout_width="0dp"
@@ -166,42 +125,19 @@
 
     <TableRow>
         <TextView
-            android:text="@string/nama_rekening_tujuan"
+            android:text="@string/nama_rekening_sumber"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="3dip" />
         <TextView
-            android:id="@+id/dialog_reportbs_bank_benef_acc_name_value"
+            android:id="@+id/dialog_reportbs_bank_source_acc_name_value"
             android:layout_weight="2"
             android:layout_width="0dp"
             android:gravity="right"
             android:padding="3dip" />
     </TableRow>
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/topup_token_bank_product"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbbs_product_name_value"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:maxLines="1"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
 
     <View
         android:layout_width="match_parent"

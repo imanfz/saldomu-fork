@@ -49,7 +49,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
     private SecurePreferences sp;
     private ProgressDialog progdialog;
     private View v, layout_OTP;
-    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle;
+    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle, tvKode;
     private EditText tokenValue;
     private Button btnSubmit;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
@@ -83,6 +83,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         tvBankBenef = (TextView) v.findViewById(R.id.bbscashout_value_benef);
         tvAmount = (TextView) v.findViewById(R.id.bbscashout_value_amount);
         tvRemark = (TextView) v.findViewById(R.id.bbscashout_value_remark);
+        tvKode = (TextView) v.findViewById(R.id.tv_kode);
         btnSubmit = (Button) v.findViewById(R.id.btn_submit);
         layout_OTP = v.findViewById(R.id.layout_OTP);
         tokenValue = (EditText) v.findViewById(R.id.bbscashout_value_token);
@@ -114,6 +115,10 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             }
             else {
                 tvUserIdTitle.setText(getString(R.string.no_rekening));
+            }
+            if(tx_product_code.equalsIgnoreCase("TCASH"))
+            {
+                tvKode.setText("Kode OTP");
             }
             tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
@@ -264,6 +269,8 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
 
                             String txstatus = response.getString(WebParams.TX_STATUS);
 
+                            Timber.d("Source_acct_no" +response.getString(WebParams.SOURCE_ACCT_NO));
+
                             showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
                                     txId, userId,response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
                                     response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
@@ -271,7 +278,8 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
-                                    response.optString(WebParams.BENEF_ACCT_NAME,""));
+                                    response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -354,7 +362,8 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
-                                        String benef_bank_name, String benef_acct_no, String benef_acct_name) {
+                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
+                                        String member_shop_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, userName);
@@ -393,6 +402,8 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         args.putString(DefineValue.BANK_BENEF, benef_bank_name);
         args.putString(DefineValue.NO_BENEF, benef_acct_no);
         args.putString(DefineValue.NAME_BENEF, benef_acct_name);
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
+        args.putString(DefineValue.MEMBER_SHOP_NAME, member_shop_name);
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);

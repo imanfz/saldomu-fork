@@ -16,6 +16,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.fragments.Login;
 import com.sgo.saldomu.fragments.Regist1;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -85,6 +86,15 @@ public class LoginActivity extends BaseActivity {
             fragmentTransaction.add(R.id.loginContent, newFrag,"login");
             fragmentTransaction.commit();
         }
+    }
+
+    public void SaveImeiICCIDDevice(){
+        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor edit = sp.edit();
+        SMSclass smSclass = new SMSclass(this);
+        edit.putString(DefineValue.DEIMEI, smSclass.getDeviceIMEI());
+        edit.putString(DefineValue.DEICCID, smSclass.getDeviceICCID());
+        edit.apply();
     }
 
     @Override

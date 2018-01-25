@@ -53,5 +53,7 @@
         android:textColor="@color/colorSecondaryDark"
         android:textStyle="italic"
         android:gravity="right"
-        android:text="(contoh: 08xxxxxxxx)"/>
+        android:text="(contoh: 08xxxxxxxx)" />
+
+
 </LinearLayout>

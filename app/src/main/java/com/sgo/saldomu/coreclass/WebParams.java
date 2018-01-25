@@ -41,6 +41,8 @@ public class WebParams {
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
     public static String MEMBER_NAME = "member_name";
+    public static String MEMBER_SHOP_NO = "member_shop_phone";
+    public static String MEMBER_SHOP_NAME = "member_shop_name";
     public static String UNREGISTER_MEMBER = "unregister_member";
 
 
@@ -392,6 +394,7 @@ public class WebParams {
     public static String BENEF_PRODUCT_TYPE= "benef_product_type";
     public static String BENEF_PRODUCT_VALUE_CODE= "benef_product_value_code";
     public static String BENEF_PRODUCT_VALUE_NAME= "benef_product_value_name";
+    public static String BENEF_PRODUCT_VALUE_TOKEN= "benef_product_value_token";
     public static String BENEF_ACCT_CITY= "benef_acct_city";
     public static String BANK_ACCOUNT= "bank_account";
     public static String BENEF_ACCT_TYPE= "benef_acct_type";
