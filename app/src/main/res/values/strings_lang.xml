@@ -906,7 +906,7 @@
     <string name="community_empty">Tidak ada daftar komunitas</string>
     <string name="remark">Pesan</string>
     <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
-    <string name="no_tcash">No. Handphone TCASH</string>
+    <string name="no_tcash">No. Handphone TCASH Agen</string>
     <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>

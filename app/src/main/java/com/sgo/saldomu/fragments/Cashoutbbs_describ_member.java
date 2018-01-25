@@ -63,7 +63,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 //    layout_button_transaction;
     SecurePreferences sp;
     String userID, accessKey, authType, amount, fee,total, ccyId, txId, product_h2h, comm_code,
-    product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id;
+    product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert;
     LinearLayout layoutOTP, layoutNoEmpty, layoutCode, layoutButton;
     RelativeLayout layoutEmpty;
@@ -418,6 +418,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 //                            if(isOTP) layoutOTP.setVisibility(View.GONE);
 //                            layoutButton.setVisibility(View.GONE);
 //                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
+                            otp_member = response.getString(WebParams.OTP_MEMBER);
 //                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
                             getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -589,7 +590,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
-                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), response.optString(WebParams.OTP_MEMBER,""));
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -657,7 +658,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                        String member_shop_name, String otp_member) {
+                                        String member_shop_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, userName);

@@ -361,6 +361,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     {
                         noHpTCASH.setEnabled(false);
                         btnSubmit.setEnabled(true);
+                        layout_btn_resend.setVisibility(View.GONE);
                         validasiNomor = true;
                         if(InetHandler.isNetworkAvailable(getActivity())){
                             requestResendToken();
@@ -373,6 +374,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                 {
                                     sentInsertTransTopup(tokenValue.getText().toString());
                                     btnSubmit.setEnabled(true);
+
                                 }
                             }
                         });
@@ -896,6 +898,11 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     {
         if (noHpTCASH.getText().toString().length()==0)
         {
+            noHpTCASH.requestFocus();
+            noHpTCASH.setError("No. Handphone dibutuhkan!");
+            return false;
+        }
+        else if(noHpTCASH.getText().toString().length()<5){
             noHpTCASH.requestFocus();
             noHpTCASH.setError("No. Handphone dibutuhkan!");
             return false;
