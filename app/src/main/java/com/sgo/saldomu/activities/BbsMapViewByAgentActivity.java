@@ -719,9 +719,13 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
                     int iDistance = distance.getInt("value");
 
-                    String parseDuration =  duration.getString("text");
-
-                    tvDurasi.setText(parseDuration);
+                    final String parseDuration =  duration.getString("text");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvDurasi.setText(parseDuration);
+                        }
+                    });
 
                     JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
                     String points = overviewPolyline.getString("points");
