@@ -30,7 +30,7 @@ import pub.devrel.easypermissions.EasyPermissions;
  Created by Lenovo Thinkpad on 12/21/2015.
  */
 public class Introduction extends AppIntro implements EasyPermissions.PermissionCallbacks{
-
+    private static final int RC_READPHONESTATE_GETACCOUNT_PERM = 500;
     private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
     private SMSclass smsclass;
@@ -78,8 +78,17 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             });
         }
 
+        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+                Manifest.permission.ACCESS_FINE_LOCATION};
 
-        InitializeSmsClass();
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            InitializeSmsClass();
+        } else {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.rational_readphonestate_readcontacts),
+                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
+        }
+
     }
 
     private void InitializeSmsClass(){
@@ -199,6 +208,10 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         switch(requestCode) {
+            case RC_READPHONESTATE_GETACCOUNT_PERM:
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                finish();
+                break;
             case RC_SENTSMS_PERM:
                 smsDialog.sentSms();
                 break;
@@ -208,6 +221,14 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         switch (requestCode) {
+            case RC_READPHONESTATE_GETACCOUNT_PERM:
+                for (int i = 0 ; i < perms.size() ; i++){
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
+                        InitializeSmsClass();
+                    }
+                }
+
+                break;
             case RC_SENTSMS_PERM:
                 smsDialog.dismiss();
                 smsDialog.reset();

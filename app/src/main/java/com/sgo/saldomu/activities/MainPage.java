@@ -184,46 +184,47 @@ public class MainPage extends BaseActivity {
     }
 
     private void initializeDashboard(){
-        if (checkNotificationNotif()) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
+        if(isHasAppPermission()) {
+            if (checkNotificationNotif()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type);
-            startActivity(intent);
-        } else if (checkNotificationAction() ) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+            } else if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-            Map<String, String> msgMap = new HashMap<String, String>();
-            Intent intentData = getIntent();
-            if (intentData.hasExtra("model_notif")) {
-                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-            }
-            if (intentData.hasExtra("options")) {
-                msgMap.put("options", intentData.getStringExtra("options"));
-            }
-            Timber.d("testing :" + msgMap.toString());
-
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type, msgMap);
-        }
-
-        if (!isLogin()) {
-            Bundle bundle = getIntent().getExtras();
-            if(bundle!=null) {
-                if(bundle.getString(DefineValue.MODEL_NOTIF) != null) {
-                    int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
-                    if (modelNotif==2)
-                    {
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
-                        mEditor.apply();
-                    }
-
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
                 }
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
+
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
             }
-            openFirstScreen(FIRST_SCREEN_INTRO);
-        } else {
-            initializeLogin();
+
+            if (!isLogin()) {
+                Bundle bundle = getIntent().getExtras();
+                if (bundle != null) {
+                    if (bundle.getString(DefineValue.MODEL_NOTIF) != null) {
+                        int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
+                        if (modelNotif == 2) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
+                            mEditor.apply();
+                        }
+
+                    }
+                }
+                openFirstScreen(FIRST_SCREEN_INTRO);
+            } else {
+                initializeLogin();
+            }
         }
     }
 
@@ -232,6 +233,12 @@ public class MainPage extends BaseActivity {
         super.onAccessFineLocationGranted();
         Timber.d("masuk AccessFineLocation");
         startLocationService();
+    }
+
+    @Override
+    public void onReadPhoneStateGranted() {
+        super.onReadPhoneStateGranted();
+        initializeDashboard();
     }
 
     @Override

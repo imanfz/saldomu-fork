@@ -1,6 +1,7 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,7 +33,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
-
+    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+            Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
 
@@ -77,14 +79,22 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     }
 
     private void checkPermission(){
-        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
-                Manifest.permission.ACCESS_FINE_LOCATION};
+        Timber.d("masuk check permission base activity");
 
-        if (!EasyPermissions.hasPermissions(this, perms)) {
+
+        if (!isHasAppPermission(this, perms)) {
             EasyPermissions.requestPermissions(this,
                     getString(R.string.rational_readphonestate_readcontacts),
                     RC_LOCATION_PERM, perms);
         }
+    }
+
+    private boolean isHasAppPermission(Context context, String... permissions){
+        return EasyPermissions.hasPermissions(context, permissions);
+    }
+
+    protected boolean isHasAppPermission(){
+        return isHasAppPermission(this,perms);
     }
 
     @Override
