@@ -404,6 +404,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         args.putString(DefineValue.NAME_BENEF, benef_acct_name);
         args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
         args.putString(DefineValue.MEMBER_SHOP_NAME, member_shop_name);
+        args.putString(DefineValue.PRODUCT_NAME, bankProduct);
 
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);

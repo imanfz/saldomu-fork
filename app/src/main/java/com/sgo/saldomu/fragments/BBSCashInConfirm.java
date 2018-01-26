@@ -368,6 +368,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     {
                         noHpTCASH.setEnabled(false);
                         btnSubmit.setEnabled(true);
+                        layout_OTP.setVisibility(View.VISIBLE);
                         layout_btn_resend.setVisibility(View.GONE);
                         validasiNomor = true;
 //                        if(InetHandler.isNetworkAvailable(getActivity())){

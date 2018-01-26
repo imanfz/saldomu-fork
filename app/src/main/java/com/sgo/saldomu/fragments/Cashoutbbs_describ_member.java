@@ -421,7 +421,6 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 //                            layoutButton.setVisibility(View.GONE);
 //                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
                             otp_member = response.getString(WebParams.OTP_MEMBER);
-//                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
                             getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -585,14 +584,14 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                             Timber.d("Source_acct_no" +response.getString(WebParams.SOURCE_ACCT_NO));
 
                             showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
-                                    txId, userId, otp_member, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
+                                    txId, userId, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
                                     response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
                                     txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
-                                    response.optString(WebParams.MEMBER_SHOP_NAME,""));
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), otp_member);
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
