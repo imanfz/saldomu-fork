@@ -60,6 +60,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
@@ -105,8 +106,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         AdapterView.OnItemClickListener,
         TextView.OnEditorActionListener,
         LocationListener,
-        OnMapReadyCallback,
-        EasyPermissions.PermissionCallbacks {
+        OnMapReadyCallback {
 
     SecurePreferences sp;
     Double latitude, longitude;
@@ -210,8 +210,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.agentMap);
         mapFrag.getMapAsync(this);
 
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
-        if (EasyPermissions.hasPermissions(this, perms)) {
+        if (isHasAppPermission()) {
             if ( !GlobalSetting.isLocationEnabled(this) ) {
                 showAlertEnabledGPS();
             } else {
@@ -219,8 +218,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             }
         } else {
             // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, perms);
+            //EasyPermissions.requestPermissions(this, getString(R.string.rationale_location), BaseActivity.RC_LOCATION_PERM, perms);
         }
 
 
@@ -428,66 +426,67 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         try {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if ( mGoogleApiClient != null) {
+
+                mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
+                if (mLastLocation == null) {
+
+                } else {
+                    LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                    latitude = mLastLocation.getLatitude();
+                    longitude = mLastLocation.getLongitude();
+
+                    Timber.d("GPS TEST Onconnected : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
+
+                    if (globalMap != null) {
+
+                        //disable map gesture untuk sementara sampai camera position selesai
+                        globalMap.getUiSettings().setAllGesturesEnabled(true);
+                        globalMap.getUiSettings().setMapToolbarEnabled(false);
+                        globalMap.setIndoorEnabled(false);
+                        globalMap.setMyLocationEnabled(false);
+
+                        if (latitude != null && longitude != null) {
+                            LatLng latLng = new LatLng(latitude, longitude);
+                            globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                            //add camera position and configuration
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(latLng) // Center Set
+                                    .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
+                                    .build(); // Creates a CameraPosition from the builder
+
+                            globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
+                                @Override
+                                public void onFinish() {
+                                    //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
+                                    globalMap.getUiSettings().setAllGesturesEnabled(true);
+                                    isZoomedAlready = true;
+                                }
+
+                                @Override
+                                public void onCancel() {
+                                }
+                            });
 
 
-            if ( mLastLocation == null ){
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
+                            markerCurrent = globalMap.addMarker(markerOptions);
 
-            } else {
-
-                latitude  = mLastLocation.getLatitude();
-                longitude = mLastLocation.getLongitude();
-
-                Timber.d("GPS TEST Onconnected : Latitude : " + String.valueOf(latitude) + ", Longitude : " + String.valueOf(longitude));
-
-                if (globalMap != null ) {
-
-                    //disable map gesture untuk sementara sampai camera position selesai
-                    globalMap.getUiSettings().setAllGesturesEnabled(true);
-                    globalMap.getUiSettings().setMapToolbarEnabled(false);
-                    globalMap.setIndoorEnabled(false);
-                    globalMap.setMyLocationEnabled(false);
-
-                    if ( latitude != null && longitude != null ) {
-                        LatLng latLng = new LatLng(latitude, longitude);
-                        globalMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-
-                        //add camera position and configuration
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(latLng) // Center Set
-                                .zoom(DefineValue.ZOOM_CAMERA_POSITION) // Zoom
-                                .build(); // Creates a CameraPosition from the builder
-
-                        globalMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), new GoogleMap.CancelableCallback() {
-                            @Override
-                            public void onFinish() {
-                                //mengaktifkan kembali gesture map yang sudah dimatikan sebelumnya
-                                globalMap.getUiSettings().setAllGesturesEnabled(true);
-                                isZoomedAlready = true;
-                            }
-
-                            @Override
-                            public void onCancel() {
-                            }
-                        });
-
-
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_location, 70, 90)));
-                        markerCurrent = globalMap.addMarker(markerOptions);
+                        }
 
                     }
 
+                    this.getAddressByLatLng();
+
+                    //btnProses.setEnabled(true);
+
+
+                    searchAgent();
                 }
-
-                this.getAddressByLatLng();
-
-                //btnProses.setEnabled(true);
-
-
-                searchAgent();
             }
         } catch (SecurityException se) {
             se.printStackTrace();
@@ -1043,6 +1042,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         }
     }
 
+    /*
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1055,7 +1055,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         switch(requestCode) {
             //case RC_LOCATION_PERM:
-            case RC_LOCATION_PERM:
+            case BaseActivity.RC_LOCATION_PERM:
+                Timber.d("Testing Permission Here");
                 if ( !GlobalSetting.isLocationEnabled(this) ) {
                     showAlertEnabledGPS();
                 } else {
@@ -1068,7 +1069,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         switch (requestCode) {
-            case RC_LOCATION_PERM:
+            case BaseActivity.RC_LOCATION_PERM:
                 if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
                 } else {
@@ -1089,6 +1090,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
                 break;
         }
     }
+*/
 
     @Override
     protected void onResume() {
@@ -1128,5 +1130,21 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     }
 
+    @Override
+    public void onAccessFineLocationGranted() {
+        super.onAccessFineLocationGranted();
 
+        Timber.d("BbsNewSearchAgent masuk AccessFineLocation");
+        if ( !GlobalSetting.isLocationEnabled(this) ) {
+            showAlertEnabledGPS();
+        } else {
+            runningApp();
+        }
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        finish();
+    }
 }
