@@ -83,27 +83,29 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                     if(flagLogin == null)
                         flagLogin = DefineValue.STRING_NO;
 
+                    try {
+                        JSONArray jsonObj = new JSONArray(jsonOptions);
+                        JSONObject jsonObj2 = jsonObj.getJSONObject(0);
+                        jsonObj2.put("model_notif", modelNotif);
+
+                        SecurePreferences.Editor mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,jsonObj2.toString());
+                        mEditor.apply();
+                    } catch (JSONException e) {
+                        Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
+                    }
+
                     if ( flagLogin.equals(DefineValue.STRING_YES) ) {
                         Intent broadcast = new Intent();
                         broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
                         broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
                         broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
                         sendBroadcast(broadcast);
-                    } else {
-                        try {
-                            JSONArray jsonObj = new JSONArray(jsonOptions);
-                            JSONObject jsonObj2 = jsonObj.getJSONObject(0);
-                            jsonObj2.put("model_notif", modelNotif);
-
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,jsonObj2.toString());
-                            mEditor.apply();
-                        } catch (JSONException e) {
-                            Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
-                        }
-
-
                     }
+
+
+
+
 
                 }
             }
@@ -325,12 +327,14 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         break;
                     case FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION:
 
-
+                        Timber.d("MASUK SINI FCM APP MESSAGING");
                         bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
 
                         if ( flagLogin.equals(DefineValue.STRING_YES) ) {
                             intent = new Intent(this, BBSActivity.class);
                             intent.putExtras(bundle);
+
+
 
                             stackBuilder.addParentStack(BBSActivity.class);
                             stackBuilder.addNextIntent(intent);
