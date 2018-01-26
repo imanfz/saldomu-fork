@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/abc_text_size_medium_material"
     android:visibility="gone"
@@ -7,31 +8,34 @@
     android:layout_height="wrap_content"
     android:stretchColumns="1">
 
-    <LinearLayout>
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
+
         <TextView
             android:text="@string/report_dialog_token"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="6dip"
             android:textStyle="bold"
-            android:textSize="12sp"
-            android:singleLine="true"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_small_material"
             />
         <TextView
             android:id="@+id/dialog_reportbbs_token_value"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:gravity="right"
+            tools:text="8382392"
+            android:gravity="center"
+            android:textColor="@color/amber_900"
             android:padding="6dip"
             android:textStyle="bold"
-            android:textSize="16sp"/>
-    </LinearLayout>
+            android:textSize="@dimen/text_size_medium_material"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:background="@color/grey_300"/>
 
     <TableRow>
         <TextView

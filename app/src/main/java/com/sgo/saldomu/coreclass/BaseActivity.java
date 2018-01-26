@@ -1,36 +1,44 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.fragments.ClosedTypePickerFragment;
+import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
+import timber.log.Timber;
 
 /*
   Created by Administrator on 11/24/2014.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks,PermissionResult {
+
+    protected static final int RC_LOCATION_PERM    = 2121;
 
     private Toolbar detoolbar;
     private TextView title_detoolbar;
     private ProgressBar deprogressbar;
     protected SMSclass smsClass;
     protected boolean isActive;
-
+    private String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+            Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
+
+    protected PermissionResult permissionResultInterface = this;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,8 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         isActive = true;
-
-
+        checkPermission();
     }
 
     @Override
@@ -69,6 +76,25 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(fcmReceiver, fcmFilter);
+    }
+
+    private void checkPermission(){
+        Timber.d("masuk check permission base activity");
+
+
+        if (!isHasAppPermission(this, perms)) {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.rational_readphonestate_readcontacts),
+                    RC_LOCATION_PERM, perms);
+        }
+    }
+
+    private boolean isHasAppPermission(Context context, String... permissions){
+        return EasyPermissions.hasPermissions(context, permissions);
+    }
+
+    protected boolean isHasAppPermission(){
+        return isHasAppPermission(this,perms);
     }
 
     @Override
@@ -115,5 +141,52 @@ public abstract class BaseActivity extends AppCompatActivity {
         return deprogressbar;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch (requestCode){
+            case RC_LOCATION_PERM :
+                for (int i = 0 ; i <perms.size() ; i ++){
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE))
+                        permissionResultInterface.onReadPhoneStateGranted();
+
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_CONTACTS))
+                        permissionResultInterface.onReadContactsGranted();
+
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION))
+                        permissionResultInterface.onAccessFineLocationGranted();
+                }
+        }
+    }
+
+    @Override
+    public void onReadPhoneStateGranted() {
+    }
+
+    @Override
+    public void onAccessFineLocationGranted() {
+    }
+
+    @Override
+    public void onReadContactsGranted() {
+    }
+
+    @Override
+    public void onDeny() {
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        switch (requestCode){
+            case RC_LOCATION_PERM :
+                if(perms.size() > 0){
+                    permissionResultInterface.onDeny();
+                }
+        }
+    }
 }

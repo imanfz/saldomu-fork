@@ -121,7 +121,7 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
         if(mArgs != null && !mArgs.isEmpty()) {
             is_full_activity = mArgs.getBoolean(DefineValue.IS_ACTIVITY_FULL, false);
             if(is_full_activity)
-                setActionBarTitle(getString(R.string.topuplist_ab_title));
+                setActionBarTitle(getString(R.string.toolbar_title_topup));
         }
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();

@@ -30,6 +30,7 @@ import com.sgo.saldomu.utils.UserUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static android.media.CamcorderProfile.get;
 import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
@@ -76,11 +78,33 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                 String jsonOptions  = remoteMessage.getData().get(DefineValue.FCM_OPTIONS);
 
                 if ( modelNotif == MEMBER_RATING_TRX ) {
-                    Intent broadcast = new Intent();
-                    broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
-                    broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
-                    broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
-                    sendBroadcast(broadcast);
+                    sp = CustomSecurePref.getInstance().getmSecurePrefs();
+                    String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+                    if(flagLogin == null)
+                        flagLogin = DefineValue.STRING_NO;
+
+                    if ( flagLogin.equals(DefineValue.STRING_YES) ) {
+                        Intent broadcast = new Intent();
+                        broadcast.setAction(DefineValue.INTENT_ACTION_FCM_DATA);
+                        broadcast.putExtra(DefineValue.MODEL_NOTIF, modelNotif);
+                        broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
+                        sendBroadcast(broadcast);
+                    } else {
+                        try {
+                            JSONArray jsonObj = new JSONArray(jsonOptions);
+                            JSONObject jsonObj2 = jsonObj.getJSONObject(0);
+                            jsonObj2.put("model_notif", modelNotif);
+
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,jsonObj2.toString());
+                            mEditor.apply();
+                        } catch (JSONException e) {
+                            Timber.d("JSONException FCM Messaging OptionData: " + e.getMessage());
+                        }
+
+
+                    }
+
                 }
             }
 

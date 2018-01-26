@@ -64,8 +64,8 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
     SecurePreferences sp;
     String userID, accessKey, authType, amount, fee,total, ccyId, txId, product_h2h, comm_code,
     product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
-    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert;
-    LinearLayout layoutOTP, layoutNoEmpty, layoutCode, layoutButton;
+    TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct;
+    LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
     Button btnOk, btnCancel, btnResend;
@@ -107,7 +107,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 
         layoutEmpty = (RelativeLayout) v.findViewById(R.id.bbscashoutmember_empty_layout);
         layoutNoEmpty = (LinearLayout) v.findViewById(R.id.bbscashoutmember_layout);
-        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
+//        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
         layoutButton = (LinearLayout) v.findViewById(R.id.bbscashoutmember_bottom_layout);
         tvTxId = (TextView) v.findViewById(R.id.bbscashoutmember_tx_id_value);
         tvAgent = (TextView) v.findViewById(R.id.bbscashoutmember_agent_value);
@@ -115,6 +115,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         tvFee = (TextView) v.findViewById(R.id.bbscashoutmember_fee_value);
         tvTotal = (TextView) v.findViewById(R.id.bbscashoutmember_total_value);
         tvCode = (TextView) v.findViewById(R.id.bbscashoutmember_code);
+        tvBankProduct = (TextView) v.findViewById(R.id.bbscashoutmember_bank_product_value);
         loading = (ProgressBar) v.findViewById(R.id.prgLoading);
         tvAlert = (TextView) v.findViewById(R.id.text_alert);
         layoutOTP = (LinearLayout) v.findViewById(R.id.bbscashoutmember_layout_OTP);
@@ -126,7 +127,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 
         layoutEmpty.setVisibility(View.VISIBLE);
         layoutNoEmpty.setVisibility(View.GONE);
-        layoutCode.setVisibility(View.GONE);
+//        layoutCode.setVisibility(View.GONE);
 
         handlerWS = new Handler();
         runnableWS = new Runnable() {
@@ -292,6 +293,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                             comm_id = response.getString(WebParams.COMM_ID);
                             tvTxId.setText(txId);
                             tvAgent.setText(response.getString(WebParams.MEMBER_NAME));
+                            tvBankProduct.setText(product_name);
                             tvAmount.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.TX_AMOUNT)));
                             tvFee.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.FEE_AMOUNT)));
                             tvTotal.setText(ccyId + ". " + CurrencyFormat.format(response.getString(WebParams.TOTAL_AMOUNT)));
@@ -583,7 +585,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                             Timber.d("Source_acct_no" +response.getString(WebParams.SOURCE_ACCT_NO));
 
                             showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
-                                    txId, userId, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
+                                    txId, userId, otp_member, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
                                     response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
                                     txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
@@ -658,7 +660,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                        String member_shop_name) {
+                                        String member_shop_name, String otp_member) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = new ReportBillerDialog();
         args.putString(DefineValue.USER_NAME, userName);
@@ -735,9 +737,10 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
     }
 
     public void setMemberOTP(String otp) {
-        layoutCode.setVisibility(View.VISIBLE);
-        layoutButton.setVisibility(View.GONE);
-        tvCode.setText(otp);
+//        layoutCode.setVisibility(View.VISIBLE);
+//        layoutButton.setVisibility(View.GONE);
+//        tvCode.setText(otp);
+        sentListMemberATC();
     }
 
     private void changeToSGOPlus(String _tx_id, String _product_code, String _product_name, String _bank_code,

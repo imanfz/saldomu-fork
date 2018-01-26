@@ -382,7 +382,7 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
 
         productname.setText(product_name);
         bankname.setText(bank_name);
-        titleAb = getString(R.string.topuplist_ab_title)+" - "+ bank_name;
+        titleAb = getString(R.string.toolbar_title_topup)+" - "+ bank_name;
 //            }
 
         setActionBarTitle(titleAb);
