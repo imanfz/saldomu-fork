@@ -34,6 +34,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     private static final int RC_SENTSMS_PERM = 502;
     private SMSDialog smsDialog;
     private SMSclass smsclass;
+    private String[] perms;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -78,7 +80,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             });
         }
 
-        String[] perms = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CONTACTS,
+        perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
         if (EasyPermissions.hasPermissions(this, perms)) {
@@ -145,6 +147,16 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     @Override
     protected void onResume() {
         super.onResume();
+        if (EasyPermissions.hasPermissions(this, perms))
+            checkIsSimExist();
+        else {
+            EasyPermissions.requestPermissions(this,
+                    getString(R.string.rational_readphonestate_readcontacts),
+                    RC_READPHONESTATE_GETACCOUNT_PERM, perms);
+        }
+    }
+
+    private void checkIsSimExist() {
         if(smsclass != null) {
             smsclass.isSimExists(new SMSclass.SMS_SIM_STATE() {
                 @Override
@@ -162,7 +174,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
     }
 
-    @Override
+        @Override
     public void onSkipPressed() {
         doAction();
     }
@@ -209,8 +221,11 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         switch(requestCode) {
             case RC_READPHONESTATE_GETACCOUNT_PERM:
-                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
-                finish();
+                for (int i = 0 ; i < perms.size() ; i++){
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
+                        InitializeSmsClass();
+                    }
+                }
                 break;
             case RC_SENTSMS_PERM:
                 smsDialog.sentSms();
@@ -222,12 +237,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         switch (requestCode) {
             case RC_READPHONESTATE_GETACCOUNT_PERM:
-                for (int i = 0 ; i < perms.size() ; i++){
-                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE)) {
-                        InitializeSmsClass();
-                    }
-                }
-
+                Toast.makeText(this, getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+                finish();
                 break;
             case RC_SENTSMS_PERM:
                 smsDialog.dismiss();
