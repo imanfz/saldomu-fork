@@ -130,7 +130,6 @@ public class MainPage extends BaseActivity {
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
-    private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
@@ -145,6 +144,11 @@ public class MainPage extends BaseActivity {
         this.savedInstanceState = savedInstanceState;
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
+        if(isHasAppPermission())
+            InitializeApp();
+    }
+
+    private void InitializeApp(){
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
                 if (BuildConfig.FLAVOR.equals("development")){
@@ -238,7 +242,7 @@ public class MainPage extends BaseActivity {
     @Override
     public void onReadPhoneStateGranted() {
         super.onReadPhoneStateGranted();
-        initializeDashboard();
+        InitializeApp();
     }
 
     @Override
@@ -268,7 +272,7 @@ public class MainPage extends BaseActivity {
             levelClass = new LevelClass(this,sp);
             isForeground = true;
             agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-            utilsLoader = new UtilsLoader(this, sp);
+            UtilsLoader utilsLoader = new UtilsLoader(this, sp);
             utilsLoader.getAppVersion();
             ActiveAndroid.initialize(this);
             progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
