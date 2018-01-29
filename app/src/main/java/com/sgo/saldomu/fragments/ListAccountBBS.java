@@ -118,6 +118,8 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
         View layout_empty = v.findViewById(R.id.empty_layout);
         layout_empty.findViewById(R.id.btnRefresh).setOnClickListener(this);
         lv.setEmptyView(layout_empty);
+        View footerView =  ((LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.footer_list_view, null, false);
+        lv.addFooterView(footerView);
 
 
         FloatingActionButton fab =

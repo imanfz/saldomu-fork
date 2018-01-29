@@ -368,6 +368,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     {
                         noHpTCASH.setEnabled(false);
                         btnSubmit.setEnabled(true);
+                        layout_OTP.setVisibility(View.VISIBLE);
+                        layout_btn_resend.setVisibility(View.GONE);
                         validasiNomor = true;
 //                        if(InetHandler.isNetworkAvailable(getActivity())){
 //                            requestResendToken();
@@ -380,6 +382,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                 {
                                     sentInsertTransTopup(tokenValue.getText().toString());
                                     btnSubmit.setEnabled(true);
+
                                 }
                             }
                         });
@@ -921,8 +924,12 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 return false;
             }
         }
-
-//        tokenValue.setVisibility(View.VISIBLE);
+        else if(noHpTCASH.getText().toString().length()<5){
+            noHpTCASH.requestFocus();
+            noHpTCASH.setError("No. Handphone dibutuhkan!");
+            return false;
+        }
+        tokenValue.setVisibility(View.VISIBLE);
         return true;
     }
 
