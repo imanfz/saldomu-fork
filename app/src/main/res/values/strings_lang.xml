@@ -1003,8 +1003,7 @@
     <string name="bbs_setting">Pengaturan</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. \r\n\r\nSilahkan datangi lokasi agen terdekat untuk melakukan transaksi.\r\n\r\n
-    Apakah Anda ingin mencari agen terdekat lagi?</string>
+    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. \r\n\r\nSilahkan datangi lokasi agen terdekat untuk melakukan transaksi.\r\n\r\nApakah Anda ingin mencari agen terdekat lagi?</string>
     <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
     <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
     <string name="search"> Cari </string>
