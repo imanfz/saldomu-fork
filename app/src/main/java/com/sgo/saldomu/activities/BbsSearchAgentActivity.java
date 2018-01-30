@@ -1217,7 +1217,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 alertDialog.setCancelable(false);
                                 alertDialog.setTitle(getString(R.string.alertbox_title_information));
                                 String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
-                                alertDialog.setMessage(tempMessage + " " + categoryName);
+                                alertDialog.setMessage(tempMessage);
 
                                 alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
                                         new DialogInterface.OnClickListener() {
