@@ -11,6 +11,7 @@ import io.realm.annotations.Required;
 public class bank_biller_model extends RealmObject{
 
     @PrimaryKey
+    @Required
     private String product_code;
     @Required
     private String bank_code;
