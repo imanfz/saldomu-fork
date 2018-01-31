@@ -701,7 +701,7 @@ public class MainPage extends BaseActivity {
 
         getDataListMember();
         mNavDrawer = new NavigationDrawMenu();
-        getSupportFragmentManager().beginTransaction().add(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
     }
 
 
