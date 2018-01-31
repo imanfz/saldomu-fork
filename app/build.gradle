@@ -83,7 +83,7 @@ android {
             buildConfigField "String", "REALM_APP_NAME", "\"com.sgo.saldomu.realm\""
             buildConfigField "long", "REALM_SCHEME_APP_VERSION", "0"
             buildConfigField "String", "REALM_BILLER_NAME", "\"saldomurealm.realm\""
-            buildConfigField "long", "REALM_SCHEME_BILLER_VERSION", "0"
+            buildConfigField "long", "REALM_SCHEME_BILLER_VERSION", "1"
             buildConfigField "String", "REALM_BBS_NAME", "\"saldomubbs.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "1"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""

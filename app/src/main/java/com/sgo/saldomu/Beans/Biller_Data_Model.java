@@ -22,6 +22,8 @@ public class Biller_Data_Model extends RealmObject {
     @Required
     private String item_id;
     @Required
+    private String manual_advice;
+    @Required
     private String callback_url;
 
     private RealmList<Denom_Data_Model> denom_data_models;
@@ -109,5 +111,13 @@ public class Biller_Data_Model extends RealmObject {
 
     public void setBank_biller_models(RealmList<bank_biller_model> bank_biller_models) {
         this.bank_biller_models = bank_biller_models;
+    }
+
+    public String getManual_advice() {
+        return manual_advice;
+    }
+
+    public void setManual_advice(String manual_advice) {
+        this.manual_advice = manual_advice;
     }
 }
