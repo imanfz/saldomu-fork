@@ -1219,7 +1219,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
                                 alertDialog.setMessage(tempMessage);
 
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
@@ -1251,7 +1251,28 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                             }
                                         });
+
+
+
+                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+
+                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                SecurePreferences.Editor mEditor = prefs.edit();
+                                                mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                mEditor.remove(DefineValue.BBS_TX_ID);
+                                                mEditor.remove(DefineValue.AMOUNT);
+                                                mEditor.apply();
+
+                                                finish();
+
+                                            }
+                                        });
                                 alertDialog.show();
+
+
                             } else {
                                 //alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
 

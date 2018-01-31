@@ -806,6 +806,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             List<Address> multiAddress = geocoder.getFromLocationName(searchLocationString, 1);
 
+            if ( mGoogleApiClient.isConnected() ) {
+                mGoogleApiClient.disconnect();
+            }
+
             if(multiAddress != null && !multiAddress.isEmpty() && multiAddress.size() > 0)
             {
 
