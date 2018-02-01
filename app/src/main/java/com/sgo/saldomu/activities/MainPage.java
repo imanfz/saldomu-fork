@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -13,9 +12,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,7 +38,6 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
@@ -78,11 +74,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
@@ -233,15 +226,8 @@ public class MainPage extends BaseActivity {
     }
 
     @Override
-    public void onAccessFineLocationGranted() {
-        super.onAccessFineLocationGranted();
-        Timber.d("masuk AccessFineLocation");
-        startLocationService();
-    }
-
-    @Override
-    public void onReadPhoneStateGranted() {
-        super.onReadPhoneStateGranted();
+    public void onGranted() {
+        super.onGranted();
         InitializeApp();
     }
 
@@ -263,11 +249,13 @@ public class MainPage extends BaseActivity {
 
         if(isSimSame) {
 
+            startLocationService();
+
             userID = sp.getString(DefineValue.USERID_PHONE, "");
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-            if (savedInstanceState != null)
-                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+//            if (savedInstanceState != null)
+//                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
             levelClass = new LevelClass(this,sp);
             isForeground = true;
@@ -701,7 +689,7 @@ public class MainPage extends BaseActivity {
 
         getDataListMember();
         mNavDrawer = new NavigationDrawMenu();
-        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
 
 
