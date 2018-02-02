@@ -67,7 +67,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
@@ -76,7 +76,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
     private int max_token_resend = MAX_TOKEN_RESENT;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false,
+                    isMandiriLKD=false, MandiriLKD_validation = false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
@@ -150,6 +151,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         layoutTCASH = v.findViewById(R.id.layout_TCASH);
         noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
         tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
+        tvNomor = (TextView) v.findViewById(R.id.tv_no_tcash);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -179,6 +181,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
+            MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF,"");
 
             if(!bundle.getString(DefineValue.MAX_RESEND).equals(""))
@@ -262,6 +265,22 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     if (TCASH_hp_validation)
                     {
                         layoutTCASH.setVisibility(View.VISIBLE);
+                        layout_OTP.setVisibility(View.GONE);
+                    }
+                    else {
+                        requestResendToken(true);
+                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
+                        btnResend.setOnClickListener(resendListener);
+                    }
+                }
+                else if (tx_product_code.equalsIgnoreCase("MANDIRILKD"))
+                {
+                    isMandiriLKD=true;
+                    layout_btn_resend.setVisibility(View.GONE);
+                    if (TCASH_hp_validation)
+                    {
+                        layoutTCASH.setVisibility(View.VISIBLE);
+                        tvNomor.setText("No. Rekening Agen");
                         layout_OTP.setVisibility(View.GONE);
                     }
                     else {
@@ -361,7 +380,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     CallPINinput(attempt);
                     btnSubmit.setEnabled(true);
                 }
-                else if (isTCASH)
+                else if (isTCASH || isMandiriLKD)
                 {
                     btnSubmit.setEnabled(true);
                     if (validasiNoHP())

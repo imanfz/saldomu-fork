@@ -116,7 +116,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             else {
                 tvUserIdTitle.setText(getString(R.string.no_rekening));
             }
-            if(tx_product_code.equalsIgnoreCase("TCASH"))
+            if(tx_product_code.equalsIgnoreCase("TCASH") || tx_product_code.equalsIgnoreCase("MANDIRILKD"))
             {
                 tvKode.setText("Kode OTP");
             }

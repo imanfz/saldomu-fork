@@ -404,8 +404,8 @@ public class BBSTransaksiAmount extends Fragment {
                     position = i;
                     if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                         benef_product_type = listbankBenef.get(position).getProduct_type();
-                        if (benef_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-
+                        benef_product_code = listbankBenef.get(position).getProduct_code();
+                        if (benef_product_type.equalsIgnoreCase(DefineValue.EMO) && !benef_product_code.equalsIgnoreCase("MANDIRILKD") ) {
 //                            cityLayout.setVisibility(View.GONE);
                             etNoAcct.setHint(R.string.number_hp_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_hp));
@@ -414,19 +414,18 @@ public class BBSTransaksiAmount extends Fragment {
                             etNoAcct.setHint(R.string.number_destination_hint);
                             tvEgNo.setText(getString(R.string.eg_no_acct));
                         }
-
                         if(listbankBenef.get(position).getBank_gateway().equalsIgnoreCase(DefineValue.STRING_YES))
                             nameLayout.setVisibility(View.GONE);
                         else
                             nameLayout.setVisibility(View.VISIBLE);
 
-                        benef_product_code = listbankBenef.get(position).getProduct_code();
-                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        if(benef_product_code.equalsIgnoreCase("TCASH") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                         {
                             etNoOTPC2A.setVisibility(View.VISIBLE);
                         }
                         else
                             etNoOTPC2A.setVisibility(View.GONE);
+
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             source_product_code = listbankSource.get(position).getProduct_code();
@@ -489,7 +488,7 @@ public class BBSTransaksiAmount extends Fragment {
                             args.putString(DefineValue.ACCT_CITY_CODE, city_id);
                             args.putString(DefineValue.ACCT_CITY_NAME, city_name);
                         }
-                        if(benef_product_code.equalsIgnoreCase("TCASH"))
+                        if(benef_product_code.equalsIgnoreCase("TCASH") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                         {
                             args.putString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, etNoOTPC2A.getText().toString());
                         }
@@ -686,7 +685,7 @@ public class BBSTransaksiAmount extends Fragment {
                     return false;
                 }
             }
-            if (benef_product_code.equalsIgnoreCase("TCASH"))
+            if (benef_product_code.equalsIgnoreCase("TCASH") || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
             {
                 if (etNoOTPC2A.getText().toString().length() == 0) {
                     etNoOTPC2A.requestFocus();

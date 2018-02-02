@@ -503,5 +503,6 @@ public class DefineValue {
     public static String INTENT_ACTION_FCM_DATA = "intent_action_fcm_data";
     public static String FCM_OPTIONS            = "options";
     public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
+    public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
 }
 
