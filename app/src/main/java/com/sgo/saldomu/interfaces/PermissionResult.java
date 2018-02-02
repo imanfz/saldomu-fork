@@ -9,4 +9,5 @@ public interface PermissionResult {
     void onAccessFineLocationGranted();
     void onReadContactsGranted();
     void onDeny();
+    void onGranted();
 }

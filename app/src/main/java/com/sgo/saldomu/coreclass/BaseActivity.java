@@ -161,6 +161,9 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
                     if(perms.get(i).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION))
                         permissionResultInterface.onAccessFineLocationGranted();
                 }
+
+                if(perms.size()>0)
+                    permissionResultInterface.onGranted();
         }
     }
 
@@ -178,6 +181,10 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     @Override
     public void onDeny() {
+    }
+
+    @Override
+    public void onGranted() {
     }
 
     @Override
