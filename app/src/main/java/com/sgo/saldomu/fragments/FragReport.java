@@ -3,10 +3,24 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -18,14 +32,18 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.ReportAskListAdapter;
 import com.sgo.saldomu.adapter.ReportListAdapter;
 import com.sgo.saldomu.adapter.ReportListEspayAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CollapseExpandAnimation;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
-import in.srain.cube.views.ptr.header.MaterialHeader;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +55,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
 import timber.log.Timber;
 
 /*
@@ -47,6 +69,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_ASK = 0x0299395;
     final static int REPORT_SCASH = 0x0299394;
     final static int REPORT_ESPAY = 0x0299393;
+    final static int REPORT_FEE = 0x0299396;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
     final private String ITEM_DESC_LISTRIK = "Listrik";
@@ -192,6 +215,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             lv_report.setAdapter(adapter);
         }
         else  if(report_type == REPORT_ASK){
+            ArrayList <ReportAskListModel> mData = new ArrayList<>();
+            ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(),R.layout.list_request_report_item,mData);
+            lv_report.setAdapter(adapter);
+        }
+        else  if(report_type == REPORT_FEE){
             ArrayList <ReportAskListModel> mData = new ArrayList<>();
             ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(),R.layout.list_request_report_item,mData);
             lv_report.setAdapter(adapter);
@@ -587,6 +615,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 Timber.d("Isi params report ask:"+paramsAsk.toString());
                 MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
             }
+//            else if(report_type == REPORT_FEE) {
+//                Timber.d("Webservice:"+webserviceAsk);
+//                Timber.d("Isi params report ask:"+paramsAsk.toString());
+//                MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
+//            }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
