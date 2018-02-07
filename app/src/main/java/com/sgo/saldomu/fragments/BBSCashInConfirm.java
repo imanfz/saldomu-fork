@@ -67,7 +67,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
@@ -152,6 +152,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
         tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
         tvNomor = (TextView) v.findViewById(R.id.tv_no_tcash);
+        tvOTP = (TextView) v.findViewById(R.id.tv_otp);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -216,7 +217,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             }
             else if(source_product_h2h.equalsIgnoreCase("Y")) {
-                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH")) {
+                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                     isPIN = true;
                     new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                         @Override
@@ -234,18 +235,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                         }
                     });
-//                    if(source_product_code.equalsIgnoreCase("TCASH"))
-//                    {
-//                        layout_OTP.setVisibility(View.VISIBLE);
-//                        layout_btn_resend.setVisibility(View.VISIBLE);
-//                        tokenValue.requestFocus();
-//                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_tcash) + " (" + max_token_resend + ")");
-//                        btnResend.setOnClickListener(resendListener);
-//                    } else {
-
-                        layout_OTP.setVisibility(View.GONE);
-                        layout_btn_resend.setVisibility(View.GONE);
-//                    }
+//
+                    layout_OTP.setVisibility(View.GONE);
+                    layout_btn_resend.setVisibility(View.GONE);
                     cityLayout.setVisibility(View.GONE);
                 }
                 else if(source_product_type.equalsIgnoreCase("ACCT")) {
@@ -277,7 +269,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 {
                     isMandiriLKD=true;
                     layout_btn_resend.setVisibility(View.GONE);
-                    if (TCASH_hp_validation)
+                    if (MandiriLKD_validation)
                     {
                         layoutTCASH.setVisibility(View.VISIBLE);
                         tvNomor.setText("No. Rekening Agen");
@@ -388,6 +380,10 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                         noHpTCASH.setEnabled(false);
                         btnSubmit.setEnabled(true);
                         layout_OTP.setVisibility(View.VISIBLE);
+                        if(tx_product_code.equalsIgnoreCase("TCASH"))
+                        {
+                            tvOTP.setText("Kode OTP TCASH");
+                        }
                         layout_btn_resend.setVisibility(View.GONE);
                         validasiNomor = true;
 //                        if(InetHandler.isNetworkAvailable(getActivity())){

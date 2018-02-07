@@ -421,6 +421,7 @@
                     android:text="@string/payfriends_text_otp"
                     android:textColor="@color/colorPrimaryDark"
                     android:textStyle="bold"
+                    android:id="@+id/tv_otp"
                     />
                 <EditText
                     android:id="@+id/bbscashin_confirm_value_otp"
