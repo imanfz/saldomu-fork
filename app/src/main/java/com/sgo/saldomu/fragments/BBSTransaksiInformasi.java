@@ -1012,7 +1012,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         if (source_product_code.equalsIgnoreCase("TCASH"))
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (source_product_code.equalsIgnoreCase("MANDIRLKD"))
+        if (source_product_code.equalsIgnoreCase("MANDIRILKD"))
             mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
         btnNext.setEnabled(true);
         cashInHistory();
