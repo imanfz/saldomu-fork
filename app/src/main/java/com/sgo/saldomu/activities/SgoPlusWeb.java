@@ -461,7 +461,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
-                                        JSONObject response) {
+                                        JSONObject response) throws JSONException {
 
         ReportBillerDialog dialog = ReportBillerDialog.newInstance();
         Bundle args = dialog.getArguments();
@@ -544,9 +544,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 setResult(MainPage.RESULT_BBS_STATUS, data);
             }
             else if(reportType.equals(DefineValue.BBS_MEMBER_OTP)) {
-                Intent intent = new Intent();
-                intent.putExtra(DefineValue.BBS_MEMBER_OTP, response.optString(WebParams.OTP_MEMBER,""));
-                setResult(MainPage.RESULT_BBS_MEMBER_OTP, intent);
+                args.putString(DefineValue.OTP_MEMBER, response.getString(WebParams.OTP_MEMBER));
             }
         }
 
