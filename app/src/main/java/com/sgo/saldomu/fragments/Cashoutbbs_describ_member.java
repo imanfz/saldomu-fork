@@ -100,6 +100,20 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
+        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+            getActivity().finish();
+        } else {
+            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            if (!notifDataNextLogin.equals("")) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
+        }
+
 //        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
 //        isPIN = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN);

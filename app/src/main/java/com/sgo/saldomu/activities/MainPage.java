@@ -322,7 +322,12 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
-            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX ) {
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX
+                    && modelNotif != FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT
+                    && modelNotif != FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_NOTIF_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_ACCEPT_TRX
+                    && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION ) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }
 

@@ -253,8 +253,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             createLocationRequest();
         }
 
+        Timber.d("GPS Test googleapiclient : " + mGoogleApiClient.toString());
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
+            Timber.d("GPS Test googleapiclient connect : " + mGoogleApiClient.toString());
         }
 
 
@@ -415,6 +417,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
             }
         });
+
     }
 
     @Override
@@ -496,11 +499,12 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     @Override
     public void onConnectionSuspended(int i) {
         mGoogleApiClient.connect();
+        Timber.d("GPS Test Connection Failed");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Timber.d("GPS Test Connection Failed");
     }
 
     @Override
@@ -589,9 +593,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
      * */
     private boolean checkPlayServices() {
 
-
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
+        Timber.d("GPS Test checkPlayServices : "+ String.valueOf(result));
         if(result != ConnectionResult.SUCCESS) {
             if(googleAPI.isUserResolvableError(result)) {
                 Toast.makeText(this, "GOOGLE API LOCATION CONNECTION FAILED", Toast.LENGTH_SHORT).show();
@@ -1151,4 +1155,6 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         super.onDeny();
         finish();
     }
+
+
 }

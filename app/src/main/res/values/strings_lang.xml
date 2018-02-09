@@ -1164,4 +1164,7 @@
     <string name="bbs_setor_ke">Setor ke Rek.</string>
     <string name="bbs_tarik_dari">Tarik dari Rek.</string>
     <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
+    <string name="canceled_trx_reason">ALASAN BATAL</string>
+    <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
+    <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
 </resources>

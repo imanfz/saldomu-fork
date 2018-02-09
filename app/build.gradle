@@ -149,6 +149,20 @@ dependencies {
     compile project(':SecurePref')
 
     //Android lib
+    //UI UX
+    
+
+    //Utilitize
+    //ORM
+    //Json Engine
+    //Network
+    //Realm
+    //Firebase
+    //Google Maps
+    //Testing Lib
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.google.code.findbugs'
+    })
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
@@ -157,7 +171,6 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-    //UI UX
     compile 'com.balysv:material-ripple:1.0.2'
     compile 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
     compile 'com.u1aryz:android-newpopupmenu-lib:1.0.1'
@@ -168,8 +181,6 @@ dependencies {
     compile 'com.gordonwong:material-sheet-fab:1.2'
     compile 'com.faber.circlestepview:library:1.0.0@aar'
     compile 'com.squareup:android-times-square:1.6.5@aar'
-
-    //Utilitize
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
     compile 'com.klinkerapps:android-chips:1.0.1@aar'
@@ -180,34 +191,24 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'joda-time:joda-time:2.9.3'
     compile 'pub.devrel:easypermissions:0.4.2'
-    //ORM
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    //Json Engine
     compile 'com.google.code.gson:gson:2.7'
-    //Network
     compile 'com.loopj.android:android-async-http:1.4.8'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
-    //Realm
     compile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.uphyca:stetho_realm:2.2.1'
     compile 'io.realm:android-adapters:2.0.0'
-    //Firebase
     compile 'com.google.firebase:firebase-core:11.2.0'
     compile 'com.google.firebase:firebase-crash:11.2.0'
     compile 'com.google.firebase:firebase-messaging:11.2.0'
     compile 'com.firebase:firebase-jobdispatcher:0.8.0'
-    //Google Maps
     compile 'com.google.android.gms:play-services-maps:11.2.0'
     compile 'com.google.android.gms:play-services-location:11.2.0'
     compile 'com.google.android.gms:play-services-places:11.2.0'
-    //Testing Lib
     testCompile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.google.code.findbugs'
-    })
     androidTestCompile 'com.android.support:support-annotations:25.3.1'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'

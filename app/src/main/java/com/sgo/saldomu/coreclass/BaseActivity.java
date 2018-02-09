@@ -2,6 +2,7 @@ package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
@@ -37,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
             Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
+    private SecurePreferences sp;
 
     protected PermissionResult permissionResultInterface = this;
 
@@ -158,8 +161,9 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
                     if(perms.get(i).equalsIgnoreCase(Manifest.permission.READ_CONTACTS))
                         permissionResultInterface.onReadContactsGranted();
 
-                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION))
+                    if(perms.get(i).equalsIgnoreCase(Manifest.permission.ACCESS_FINE_LOCATION)) {
                         permissionResultInterface.onAccessFineLocationGranted();
+                    }
                 }
 
                 if(perms.size()>0)
@@ -196,4 +200,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
                 }
         }
     }
+
+
+
 }
