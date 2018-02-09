@@ -577,8 +577,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
      * */
     protected void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(2*1000);
-        mLocationRequest.setFastestInterval(1*1000);
+        mLocationRequest.setInterval(2*10000);
+        mLocationRequest.setFastestInterval(1*10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         //mLocationRequest.setSmallestDisplacement(DefineValue.AGENT_DISPLACEMENT);
 
