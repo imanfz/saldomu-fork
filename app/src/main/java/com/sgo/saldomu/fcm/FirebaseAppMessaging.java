@@ -3,10 +3,12 @@ package com.sgo.saldomu.fcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -38,7 +40,6 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-import static android.media.CamcorderProfile.get;
 import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
@@ -580,14 +581,21 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         Timber.d("Debug 2: " + msg.toString());
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_pin_bw);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher_pin_only)
                         .setContentTitle(notification.getTitle())
                         .setContentText(msg.getString("msg", ""))
+                        .setSmallIcon(R.mipmap.ic_launcher_pin_only)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("msg", "")));
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setLargeIcon(largeIcon);
+        } else {
+            mBuilder.setSmallIcon(R.mipmap.ic_launcher_pin_only);
+        }
 
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(getApplicationContext(),1,new Intent(),PendingIntent.FLAG_CANCEL_CURRENT);
