@@ -18,11 +18,12 @@
             android:background="@color/colorPrimaryDark">
 
             <ImageView
-                android:background="@color/colorPrimaryDark"
-                android:layout_width="match_parent"
+                android:background="@color/yellow_700"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:src="@drawable/img_about"/>
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/about_saldomu"/>
 
 
             <ScrollView
@@ -38,20 +39,20 @@
 
                 <TextView android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:textColor="@color/colorPrimary"
+                          android:textColor="@color/colorSecondaryWhiteFixed"
                           android:textStyle="bold"
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:text="@string/about_apps"/>
 
                 <TextView android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:textColor="@color/colorSecondaryDark"
+                          android:textColor="@color/grey_400"
                           android:layout_marginBottom="10dp"
                           android:text="@string/about_apps_desc"/>
 
                 <TextView android:layout_width="match_parent"
                           android:layout_height="wrap_content"
-                          android:textColor="@color/colorPrimary"
+                          android:textColor="@color/colorSecondaryWhiteFixed"
                           android:textStyle="bold"
                           android:textSize="@dimen/abc_text_size_medium_material"
                           android:text="@string/about_apps_ver"/>
@@ -60,7 +61,7 @@
                           android:layout_width="match_parent"
                           android:layout_height="wrap_content"
                           android:layout_marginBottom="10dp"
-                          android:textColor="@color/colorSecondaryDark"
+                          android:textColor="@color/grey_400"
                           android:text="@string/about_apps_ver_detail"/>
 
                 <RelativeLayout
