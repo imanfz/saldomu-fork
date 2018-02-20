@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
@@ -79,13 +80,15 @@ public class AgentListArrayAdapter extends BaseAdapter
     {
         LinearLayout agentServiceList;
         TextView agentName;
-        TextView agentLastOnline;
-        TextView agentAddress;
+        //TextView agentLastOnline;
+        //TextView agentAddress;
         ImageView agentProfilePic;
         //ImageView agentRate;
         TextView agentDistance;
         //TextView agentAvailable;
         ImageView agentMapBtn;
+        TextView tvCountTrx;
+        RatingBar ratingBar;
     }
 
     @Override
@@ -127,12 +130,14 @@ public class AgentListArrayAdapter extends BaseAdapter
         //pengambilan ID component dari layout
         viewHolder.agentServiceList       = (LinearLayout) rootView.findViewById(R.id.agent_service_list);
         viewHolder.agentName       = (TextView)rootView.findViewById(R.id.agentName);
-        viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
-        viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
+        //viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
+        //viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
         viewHolder.agentProfilePic = (ImageView)rootView.findViewById(R.id.agentProfilePic);
         //viewHolder.agentRate = (ImageView)rootView.findViewById(R.id.agentRate);
         viewHolder.agentDistance   = (TextView)rootView.findViewById(R.id.agentDistance);
         //viewHolder.agentAvailable   = (TextView)rootView.findViewById(R.id.available);
+        viewHolder.tvCountTrx       = (TextView) rootView.findViewById(R.id.tvCountTrx);
+        viewHolder.ratingBar        = (RatingBar) rootView.findViewById(R.id.ratingBar);
 
         viewHolder.agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
         //viewHolder.agentMapBtn.setOnClickListener(this);
@@ -155,12 +160,18 @@ public class AgentListArrayAdapter extends BaseAdapter
         String agentDistance    = "N/A";
         String agentAvailable    = "N/A";
         String agentServiceList    = "N/A";
+        String countTrx         = "";
+        String score            = "0";
+        int numStars            = 0;
 
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
-            agentName = shopDetail.getShopName();
-            agentAddress = shopDetail.getShopAddress();
-            agentDistance = shopDetail.getCalculatedDistance();
+            agentName       = shopDetail.getShopName();
+            agentAddress    = shopDetail.getShopAddress();
+            agentDistance   = shopDetail.getCalculatedDistance();
+            countTrx        = shopDetail.getShopCount();
+            score           = shopDetail.getShopScore();
+            numStars        = shopDetail.getNumStars();
 
             if ( !shopDetail.getLastActivity().equals("") ) {
                 try {
@@ -178,9 +189,14 @@ public class AgentListArrayAdapter extends BaseAdapter
 
         //attach all data to view holder
         viewHolder.agentName.setText(agentName);
-        viewHolder.agentLastOnline.setText(agentLastOnline);
-        viewHolder.agentAddress.setText(agentAddress);
+        //viewHolder.agentLastOnline.setText(agentLastOnline);
+        //viewHolder.agentAddress.setText(agentAddress);
         viewHolder.agentDistance.setText(agentDistance);
+        viewHolder.tvCountTrx.setText(": " +countTrx);
+        viewHolder.ratingBar.setRating(Float.valueOf(score));
+        viewHolder.ratingBar.setNumStars(numStars);
+        viewHolder.ratingBar.setIsIndicator(true);
+        viewHolder.ratingBar.setFocusable(false);
 
         if(agentAvailable.equalsIgnoreCase("Y")) {
 

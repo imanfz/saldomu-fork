@@ -169,7 +169,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     };
 
     //FragmentManager fragment;
-
+    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
 
 
     @Override
@@ -257,6 +257,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 mEditor.putString(DefineValue.AMOUNT, amount);
                 mEditor.apply();
 
+                Timber.d("Masuk Sini runningApp()");
                 searchToko(currentLatitude, currentLongitude);
             }
         }
@@ -320,7 +321,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             FragCancelTrxRequest fragCancelTrxRequest = new FragCancelTrxRequest();
 
             Bundle bundle = new Bundle();
-
+            bundle.putString(DefineValue.CUST_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+            bundle.putString(DefineValue.TX_ID, sp.getString(DefineValue.BBS_TX_ID, ""));
 
             fragCancelTrxRequest.setArguments(bundle);
             fragCancelTrxRequest.setCancelable(false);
@@ -995,6 +997,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void searchToko(Double latitude, Double longitude) {
 
+        if (!EasyPermissions.hasPermissions(this, perms) || !GlobalSetting.isLocationEnabled(this)  ) {
+            return;
+        }
+
         sp   = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
@@ -1006,6 +1012,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             clicked                 = true;
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+
+            Timber.d("Masuk Sini");
 
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
@@ -1107,6 +1115,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
                                     shopDetail.setLastActivity(object.getString("shop_lastactivity"));
                                     shopDetail.setShopMobility(object.getString("shop_mobility"));
+                                    shopDetail.setShopScore(object.getString("shop_score"));
+                                    shopDetail.setShopCount(object.getString("shop_count"));
+                                    shopDetail.setNumStars(Integer.valueOf(response.getString(WebParams.MEMBER_MAX_RATING)));
                                     shopDetails.add(shopDetail);
                                 }
                             }
@@ -1391,15 +1402,16 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
+        AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
 
         switch (requestCode) {
             case RC_LOCATION_PERM:
                 // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
                 // This will display a dialog directing them to enable the permission in app settings.
-                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                } else {*/
+
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
@@ -1412,13 +1424,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 }
                             });
                     alertDialog.show();
-                }
+                //}
                 break;
             case RC_LOCATION_PHONE_SMS:
-                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                } else {*/
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
@@ -1431,9 +1442,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 }
                             });
                     alertDialog.show();
-                }
+                //}
                 break;
             case RC_SEND_SMS:
+                break;
+            default:
+                finish();
                 break;
         }
 
@@ -1462,11 +1476,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     @Override
     public void onSuccessCancelTrx(String txId) {
 
-    }
+        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor mEditor = prefs.edit();
+        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+        mEditor.remove(DefineValue.BBS_TX_ID);
+        mEditor.remove(DefineValue.AMOUNT);
 
-    @Override
-    public void onFailedCancelTrx(String txId) {
-
+        mEditor.apply();
+        finish();
     }
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {
@@ -1485,7 +1502,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         protected void onPostExecute(ArrayList<ShopDetail> result) {
             //shopDetails.clear();
             //shopDetails.addAll(result);
-            viewPager.getAdapter().notifyDataSetChanged();
+
+            if ( viewPager != null )
+                viewPager.getAdapter().notifyDataSetChanged();
         }
 
         @Override
@@ -1566,7 +1585,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @AfterPermissionGranted(RC_LOCATION_PHONE_SMS)
     private void methodRequiresTwoPermission() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
+
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
@@ -1582,6 +1601,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                Timber.d("Masuk Sini methodRequiresTwoPermission");
                 runningApp();
             }
 
@@ -1651,7 +1672,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
                     if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
-                        runningApp();
+                        if (EasyPermissions.hasPermissions(this, perms)) {
+                            Timber.d("Masuk Sini onActivityResult");
+                            runningApp();
+                        }
                     }
                 } else {
 
@@ -1927,5 +1951,21 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             super.onBackPressed();
     }*/
 
+    @Override
+    public void onAccessFineLocationGranted() {
+        super.onAccessFineLocationGranted();
 
+        Timber.d("BbsSearchAgent masuk AccessFineLocation");
+        if ( !GlobalSetting.isLocationEnabled(this) ) {
+            showAlertEnabledGPS();
+        } else {
+            //runningApp();
+        }
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        finish();
+    }
 }

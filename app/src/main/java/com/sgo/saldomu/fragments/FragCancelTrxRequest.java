@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -13,8 +14,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.HashMessage;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.DefinedDialog;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.UUID;
+
+import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,13 +54,13 @@ public class FragCancelTrxRequest extends DialogFragment {
     private String mParam2;
     private Button btnProses, btnCancel;
     private EditText etReason;
-    private String txId;
+    private String txId, userId;
 
-    private CancelTrxRequestListener cpl;
+    CancelTrxRequestListener cpl;
+    ProgressDialog progdialog;
 
     public interface CancelTrxRequestListener {
         public void onSuccessCancelTrx(String txId);
-        public void onFailedCancelTrx(String txId);
     }
 
     public FragCancelTrxRequest() {
@@ -71,8 +90,14 @@ public class FragCancelTrxRequest extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            txId = getArguments().getString(DefineValue.TX_ID);
+            userId = getArguments().getString(DefineValue.CUST_ID);
+        }
+
+        try {
+            cpl = (FragCancelTrxRequest.CancelTrxRequestListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Calling fragment must implement CancelTrxRequestListener interface");
         }
     }
 
@@ -88,7 +113,7 @@ public class FragCancelTrxRequest extends DialogFragment {
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String reason       = etReason.getText().toString();
+                String reason       = etReason.getText().toString().trim();
                 Boolean hasError    = false;
 
                 if ( reason.equals("") ) {
@@ -98,6 +123,79 @@ public class FragCancelTrxRequest extends DialogFragment {
 
                 if ( !hasError ) {
                     //call webservice
+
+                    progdialog              = DefinedDialog.CreateProgressDialog(getContext());
+
+                    RequestParams params    = new RequestParams();
+                    UUID rcUUID             = UUID.randomUUID();
+                    String  dtime           = DateTimeFormat.getCurrentDateTime();
+
+                    params.put(WebParams.RC_UUID, rcUUID);
+                    params.put(WebParams.RC_DATETIME, dtime);
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.TX_ID, txId);
+                    params.put(WebParams.CUST_ID, userId);
+                    params.put(WebParams.TX_REMARKS, reason);
+
+                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+                            DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + BuildConfig.APP_ID + userId));
+
+                    params.put(WebParams.SIGNATURE, signature);
+
+                    MyApiClient.cancelSearchAgent(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                            Timber.d("Response Cancel Search Agent:" + response.toString());
+
+                            if ( progdialog.isShowing())
+                                progdialog.dismiss();
+
+                            try {
+
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    cpl.onSuccessCancelTrx(txId);
+                                } else {
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                                getDialog().dismiss();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            if (MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            Timber.w("Error Cancel Search Agent:" + throwable.toString());
+
+                            if ( progdialog.isShowing() )
+                                progdialog.dismiss();
+
+                        }
+
+                    });
+
                 }
                 //getDialog().dismiss();
             }

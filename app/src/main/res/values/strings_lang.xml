@@ -995,7 +995,7 @@
     <string name="alertbox_title_warning">Peringatan</string>
     <string name="alertbox_title_information">Informasi</string>
     <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
-    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call untuk menggunakan aplikasi</string>
+    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call, akses lokasi dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Cari</string>

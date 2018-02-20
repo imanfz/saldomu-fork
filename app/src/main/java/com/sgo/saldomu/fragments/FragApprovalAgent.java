@@ -238,18 +238,10 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
                         flagTxStatus = DefineValue.STRING_ACCEPT;
 
-                        if ( shopDetails.size() > 1 ) {
-                            itemId  = spPilihan.getSelectedItemPosition();
-
-                        } else {
-                            itemId = 0;
-                        }
+                        itemId = 0;
 
                         if ( shopDetails.size() > 0 ) {
-                            shopId = shopDetails.get(itemId).getShopId();
-                            memberId = shopDetails.get(itemId).getMemberId();
                             gcmId = "";
-
                             updateTrxAgent();
                         }
                     }
@@ -755,6 +747,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
                         shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
 
+                        shopId  = response.getString(WebParams.SHOP_ID);
+                        memberId  = response.getString(WebParams.MEMBER_ID);
                         shopDetails.add(shopDetail);
 
                         tvCategoryName.setText(shopDetail.getCategoryName());

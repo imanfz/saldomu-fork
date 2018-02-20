@@ -519,7 +519,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         if ( sp.getString(DefineValue.USERID_PHONE, "").equals("") )
             return;
 
-        progdialog              = DefinedDialog.CreateProgressDialog(this, "");
+        //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         RequestParams params    = new RequestParams();
 
         isInquiryRoute          = false;
@@ -550,8 +550,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if ( progdialog.isShowing())
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing())
+                    //progdialog.dismiss();
 
                 try {
                     isRunning = false;
@@ -646,8 +646,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
             private void ifFailure(Throwable throwable) {
 
-                if ( progdialog.isShowing())
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing())
+                    //progdialog.dismiss();
 
                 if (MyApiClient.PROD_FAILURE_FLAG)
                     Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
