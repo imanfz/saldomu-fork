@@ -109,7 +109,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     SecurePreferences sp;
-    private Boolean TCASHValidation=false, MandiriLKDValidation=false;
+    private Boolean TCASHValidation=false, MandiriLKDValidation=false, code_success =false;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -580,7 +580,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                 }
                                 else
                                     MandiriLKDValidation=true;
-                            }
+                            }else code_success=true;
 
                             if(isSMSBanking) {
                                 if(smsDialog == null){
@@ -1010,10 +1010,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
-        if (source_product_code.equalsIgnoreCase("TCASH"))
+        if (TCASHValidation!=null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (source_product_code.equalsIgnoreCase("MANDIRILKD"))
+        if (MandiriLKDValidation!=null)
             mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
+        if (code_success!=null)
+            mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
         btnNext.setEnabled(true);
         cashInHistory();
 
