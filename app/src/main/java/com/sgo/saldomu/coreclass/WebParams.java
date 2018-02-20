@@ -490,4 +490,5 @@ public class WebParams {
     public static String DEFAULT_RATING = "default_rating";
     public static String RATING         = "rating";
     public static String PROFILE_PICTURE    = "profile_picture";
+    public static String OFFSET    = "offset";
 }
