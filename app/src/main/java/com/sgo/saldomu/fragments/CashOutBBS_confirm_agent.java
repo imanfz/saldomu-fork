@@ -111,7 +111,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
 
-            if(source_product_h2h.equalsIgnoreCase("Y")) {
+            if(source_product_h2h.equalsIgnoreCase("Y") && !tx_product_code.equalsIgnoreCase("MANDIRILKD") ) {
                 tvUserIdTitle.setText(getString(R.string.no_member));
             }
             else {

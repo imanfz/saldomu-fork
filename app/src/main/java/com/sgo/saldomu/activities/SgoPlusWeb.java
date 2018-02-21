@@ -281,7 +281,15 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                     txId, userId,totalAmount,fee,amount,
                                     txstatus,response.getString(WebParams.TX_REMARK),
                                     reportType,response);
-                        }else if(code.equals(WebParams.LOGOUT_CODE)){
+                        }
+//                        else if(code.equals("0288")){
+//                            Timber.d("isi error sent trx status bbs:"+response.toString());
+//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(SgoPlusWeb.this, code_msg, Toast.LENGTH_LONG).show();
+//                            tokenValue.setText("");
+//                            retryToken=true;
+//                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();

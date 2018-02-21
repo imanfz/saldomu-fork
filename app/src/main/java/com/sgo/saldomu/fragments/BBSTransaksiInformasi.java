@@ -1010,6 +1010,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
+        mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
         if (TCASHValidation!=null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         if (MandiriLKDValidation!=null)

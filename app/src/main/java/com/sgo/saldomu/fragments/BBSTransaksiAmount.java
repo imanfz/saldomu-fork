@@ -429,7 +429,7 @@ public class BBSTransaksiAmount extends Fragment {
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             source_product_code = listbankSource.get(position).getProduct_code();
-                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT))
+                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT) || source_product_code.equalsIgnoreCase("MANDIRILKD"))
                                 etNoAcct.setHint(getString(R.string.no_rekening_source_cashout) + " " + listbankSource.get(position).getProduct_name());
                             else
                                 etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());

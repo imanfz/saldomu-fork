@@ -517,7 +517,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tvNoDestination = (TextView) inflated.findViewById(R.id.tvNoDestination);
 
                     String benef_type = args.getString(DefineValue.TYPE_BENEF, "");
-                    if (benef_type.equalsIgnoreCase(DefineValue.ACCT))
+                    String benef_product_code = args.getString(DefineValue.BENEF_PRODUCT_CODE,"");
+                    if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                         tvNoDestination.setText(R.string.number_destination);
                     else
                         tvNoDestination.setText(R.string.number_hp_destination);

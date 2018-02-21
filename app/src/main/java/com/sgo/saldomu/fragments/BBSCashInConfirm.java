@@ -74,7 +74,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
-            no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
+            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status;
     private int max_token_resend = MAX_TOKEN_RESENT;
     private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false,
                     isMandiriLKD=false, MandiriLKD_validation = false, code_success = false;
@@ -176,6 +176,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             api_key = bundle.getString(DefineValue.API_KEY);
             comm_id = bundle.getString(DefineValue.COMMUNITY_ID );
             benef_product_name = bundle.getString(DefineValue.BANK_BENEF);
+            benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
             name_benef = bundle.getString(DefineValue.NAME_BENEF);
             no_benef =  bundle.getString(DefineValue.NO_BENEF);
             no_hp_benef  = bundle.getString(DefineValue.NO_HP_BENEF);
@@ -284,7 +285,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             }
 
-            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT))
+            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
                 tvNoDestination.setText(R.string.number_destination);
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
@@ -486,7 +487,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
-                        }else if(code.equals("0288")){
+                        }
+                        else if(code.equals("0288")){
                             Timber.d("isi error sent insertTrx:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
@@ -703,6 +705,12 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
                                     response.optString(WebParams.PRODUCT_NAME, ""));
+                        } else if(code.equals("0288")){
+                            Timber.d("isi error sent token di trxStatusBBS:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
