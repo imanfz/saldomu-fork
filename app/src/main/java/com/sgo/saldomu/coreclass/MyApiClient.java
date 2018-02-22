@@ -116,6 +116,7 @@ public class MyApiClient {
     private static String LINK_REQ_TOKEN_BILLER;
     private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
+    public static String LINK_RETRY_TOKEN;
     public static String LINK_UPLOAD_PROFILE_PIC;
     public static String LINK_UPLOAD_KTP;
     public static String LINK_LIST_BANK_BILLER;
@@ -262,6 +263,7 @@ public class MyApiClient {
         LINK_REQ_TOKEN_BILLER    = headaddressfinal + "RequestBiller/Invoke";
         LINK_CONFIRM_BILLER      = headaddressfinal + "ConfirmTokenBiller/Invoke";
         LINK_RESENT_TOKEN_BILLER = headaddressfinal + "ResendToken/Invoke";
+        LINK_RETRY_TOKEN = headaddressfinal + "RetryToken/Invoke";
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
@@ -1309,6 +1311,11 @@ public class MyApiClient {
     public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address update search agent service: %1$s ",LINK_BBS_NEW_SEARCH_AGENT);
         post(mContext,LINK_BBS_NEW_SEARCH_AGENT, params, responseHandler);
+    }
+
+    public static void sentRetryToken(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent retry token: %1$s ", LINK_RETRY_TOKEN);
+        post(mContext, LINK_RETRY_TOKEN, params, responseHandler);
     }
 
     public static void cancelSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

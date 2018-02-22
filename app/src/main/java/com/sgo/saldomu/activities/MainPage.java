@@ -95,6 +95,7 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_BBS = 11;
     public static final int RESULT_BBS_MEMBER_OTP = 12;
     public static final int RESULT_BBS_STATUS= 13;
+    public static final int RESULT_RETRY= 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;

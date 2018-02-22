@@ -67,21 +67,22 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
-            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination;
+            tvNameBenefAcct, tvNoHp, tvRemark, tvFee, tvTotal, tvNoDestination, tvNomor, tvOTP;
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
-            no_hp_benef, remark, source_product_name, total_amount, transaksi, tx_status;
+            no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status;
     private int max_token_resend = MAX_TOKEN_RESENT;
-    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false;
+    private boolean isSMS = false, isIB = false, isPIN = false, TCASH_hp_validation=false, isTCASH = false, validasiNomor=false,
+                    isMandiriLKD=false, MandiriLKD_validation = false, code_success = false;
     private int attempt;
     private int failed;
     private SMSclass smSclass;
     private ActionListener actionListener;
-    private Boolean finishTransaction = false;
+    private Boolean finishTransaction = false, retryToken=false;
 
     public interface ActionListener{
         void ChangeActivityFromCashInConfirm(Intent data);
@@ -150,6 +151,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         layoutTCASH = v.findViewById(R.id.layout_TCASH);
         noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
         tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
+        tvNomor = (TextView) v.findViewById(R.id.tv_no_tcash);
+        tvOTP = (TextView) v.findViewById(R.id.tv_otp);
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -173,12 +176,15 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             api_key = bundle.getString(DefineValue.API_KEY);
             comm_id = bundle.getString(DefineValue.COMMUNITY_ID );
             benef_product_name = bundle.getString(DefineValue.BANK_BENEF);
+            benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
             name_benef = bundle.getString(DefineValue.NAME_BENEF);
             no_benef =  bundle.getString(DefineValue.NO_BENEF);
             no_hp_benef  = bundle.getString(DefineValue.NO_HP_BENEF);
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             TCASH_hp_validation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
+            MandiriLKD_validation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
+            code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF,"");
 
             if(!bundle.getString(DefineValue.MAX_RESEND).equals(""))
@@ -213,7 +219,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             }
             else if(source_product_h2h.equalsIgnoreCase("Y")) {
-                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH")) {
+                if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                     isPIN = true;
                     new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
                         @Override
@@ -231,18 +237,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
 
                         }
                     });
-//                    if(source_product_code.equalsIgnoreCase("TCASH"))
-//                    {
-//                        layout_OTP.setVisibility(View.VISIBLE);
-//                        layout_btn_resend.setVisibility(View.VISIBLE);
-//                        tokenValue.requestFocus();
-//                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_tcash) + " (" + max_token_resend + ")");
-//                        btnResend.setOnClickListener(resendListener);
-//                    } else {
-
-                        layout_OTP.setVisibility(View.GONE);
-                        layout_btn_resend.setVisibility(View.GONE);
-//                    }
+//
+                    layout_OTP.setVisibility(View.GONE);
+                    layout_btn_resend.setVisibility(View.GONE);
                     cityLayout.setVisibility(View.GONE);
                 }
                 else if(source_product_type.equalsIgnoreCase("ACCT")) {
@@ -270,10 +267,31 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                         btnResend.setOnClickListener(resendListener);
                     }
                 }
+                else if (tx_product_code.equalsIgnoreCase("MANDIRILKD"))
+                {
+                    isMandiriLKD=true;
+                    layout_btn_resend.setVisibility(View.GONE);
+                    if (MandiriLKD_validation && noHpTCASH!=null)
+                    {
+                        layoutTCASH.setVisibility(View.VISIBLE);
+                        tvNomor.setText("No. Rekening Agen");
+                        layout_OTP.setVisibility(View.GONE);
+                    }
+                    else {
+                        requestResendToken(true);
+                        btnResend.setText(getString(R.string.reg2_btn_text_resend_token_sms) + " (" + max_token_resend + ")");
+                        btnResend.setOnClickListener(resendListener);
+                    }
+                }
             }
 
-            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT))
-                tvNoDestination.setText(R.string.number_destination);
+            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD")) {
+                if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+                {
+                    tvNoDestination.setText(R.string.no_rekening);
+                }else
+                    tvNoDestination.setText(R.string.number_destination);
+            }
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
 
@@ -361,32 +379,47 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     CallPINinput(attempt);
                     btnSubmit.setEnabled(true);
                 }
-                else if (isTCASH)
+                else if (isTCASH || isMandiriLKD)
                 {
                     btnSubmit.setEnabled(true);
-                    if (validasiNoHP())
+                    if (layoutTCASH.getVisibility()==View.VISIBLE)
                     {
-                        noHpTCASH.setEnabled(false);
-                        btnSubmit.setEnabled(true);
-                        layout_OTP.setVisibility(View.VISIBLE);
-                        layout_btn_resend.setVisibility(View.GONE);
-                        validasiNomor = true;
+                        if (validasiNoHP())
+                        {
+                            requestResendToken(true);
+                            noHpTCASH.setEnabled(false);
+                            btnSubmit.setEnabled(true);
+                            layout_OTP.setVisibility(View.VISIBLE);
+                            if(tx_product_code.equalsIgnoreCase("TCASH"))
+                            {
+                                tvOTP.setText("Kode OTP TCASH");
+                            }
+                            layout_btn_resend.setVisibility(View.GONE);
+                            validasiNomor = true;
 //                        if(InetHandler.isNetworkAvailable(getActivity())){
 //                            requestResendToken();
 //                        }
 //                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-                        btnSubmit.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (inputValidation())
-                                {
-                                    sentInsertTransTopup(tokenValue.getText().toString());
-                                    btnSubmit.setEnabled(true);
 
-                                }
+                        }
+
+                    }else sentInsertTransTopup(tokenValue.getText().toString());
+
+                    btnSubmit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (inputValidation())
+                            {
+                                if (retryToken)
+                                {
+                                    sentRetryToken();
+                                }else
+                                    sentInsertTransTopup(tokenValue.getText().toString());
+                                btnSubmit.setEnabled(true);
+
                             }
-                        });
-                    }
+                        }
+                    });
                 }
                 else btnSubmit.setEnabled(true);
             }
@@ -459,6 +492,13 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
+                        }
+                        else if(code.equals("0288")){
+                            Timber.d("isi error sent insertTrx:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
                         }
                         else {
                             btnSubmit.setEnabled(true);
@@ -670,6 +710,12 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
                                     response.optString(WebParams.PRODUCT_NAME, ""));
+                        } else if(code.equals("0288")){
+                            Timber.d("isi error sent token di trxStatusBBS:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -718,6 +764,92 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             });
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
+        }
+    }
+
+    private void sentRetryToken(){
+        try{
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog.show();
+
+            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RETRY_TOKEN,
+                    userID,accessKey);
+            params.put(WebParams.TX_ID, tx_id);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.COMM_ID, comm_id);
+            params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
+            params.put(WebParams.USER_ID, userID);
+
+            Timber.d("isi params sentRetryToken:" + params.toString());
+
+            MyApiClient.sentRetryToken(getActivity(),params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("isi response sentRetryToken:"+response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+
+                        }else if(code.equals("0288")){
+                            Timber.d("isi error sent retry token:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
+                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
+                            Timber.d("isi response autologout:"+response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(),message);
+                        }
+                        else {
+                            Timber.d("isi error sentRetryToken:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                        }
+                        progdialog.dismiss();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        btnSubmit.setEnabled(true);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    btnSubmit.setEnabled(true);
+                    Timber.w("Error Koneksi sentRetryToken:"+throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
         }
     }
 
@@ -916,20 +1048,11 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 return false;
             }
         }
-
-        if(layout_OTP.getVisibility() == View.VISIBLE) {
-            if (tokenValue.getText().toString().length() == 0) {
-                tokenValue.requestFocus();
-                tokenValue.setError(getString(R.string.regist2_validation_otp));
-                return false;
-            }
-        }
         else if(noHpTCASH.getText().toString().length()<5){
             noHpTCASH.requestFocus();
             noHpTCASH.setError("No. Handphone dibutuhkan!");
             return false;
         }
-        tokenValue.setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -960,6 +1083,20 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     public void setToStatus(String _tx_status) {
         finishTransaction = true;
         tx_status = _tx_status;
+    }
+
+    public void setToRetryTokenEspay() {
+        layout_OTP.setVisibility(View.VISIBLE);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (inputValidation())
+                {
+                    sentRetryToken();
+                }
+            }
+        });
+
     }
 
     @Override

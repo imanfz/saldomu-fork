@@ -281,7 +281,15 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                     txId, userId,totalAmount,fee,amount,
                                     txstatus,response.getString(WebParams.TX_REMARK),
                                     reportType,response);
-                        }else if(code.equals(WebParams.LOGOUT_CODE)){
+                        }
+                        else if(code.equals("0288")){
+                            Timber.d("isi error sent trx status bbs:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(SgoPlusWeb.this, code_msg, Toast.LENGTH_LONG).show();
+                            setResult(MainPage.RESULT_RETRY);
+                            finish();
+                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -461,7 +469,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
-                                        JSONObject response) {
+                                        JSONObject response) throws JSONException {
 
         ReportBillerDialog dialog = ReportBillerDialog.newInstance();
         Bundle args = dialog.getArguments();
@@ -544,9 +552,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 setResult(MainPage.RESULT_BBS_STATUS, data);
             }
             else if(reportType.equals(DefineValue.BBS_MEMBER_OTP)) {
-                Intent intent = new Intent();
-                intent.putExtra(DefineValue.BBS_MEMBER_OTP, response.optString(WebParams.OTP_MEMBER,""));
-                setResult(MainPage.RESULT_BBS_MEMBER_OTP, intent);
+                args.putString(DefineValue.OTP_MEMBER, response.getString(WebParams.OTP_MEMBER));
             }
         }
 

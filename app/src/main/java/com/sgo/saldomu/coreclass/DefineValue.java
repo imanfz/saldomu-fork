@@ -504,5 +504,7 @@ public class DefineValue {
     public static String INTENT_ACTION_LOCATION_DATA = "intent.action.location.data";
     public static String FCM_OPTIONS            = "options";
     public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
+    public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
+    public static String CODE_SUCCESS    = "code_success";
 }
 

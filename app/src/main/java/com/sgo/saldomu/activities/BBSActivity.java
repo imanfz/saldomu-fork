@@ -265,8 +265,20 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                         }
                     }
                 }
+            } else if(resultCode == MainPage.RESULT_RETRY){
+                if(mContent instanceof BBSTransaksiPager) {
+                    BBSTransaksiPager mFrag = (BBSTransaksiPager) mContent;
+                    Fragment confirmFrag =  mFrag.getConfirmFragment();
+                    if(confirmFrag instanceof BBSTransaksiPagerItem) {
+                        Fragment childFragment = ((BBSTransaksiPagerItem) confirmFrag).getChildFragment();
+                        if(childFragment instanceof BBSCashInConfirm) {
+                            BBSCashInConfirm cashInConfirm = (BBSCashInConfirm) childFragment;
+                            cashInConfirm.setToRetryTokenEspay();
+                        }
+                    }
+                }
 
-            } else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
+            }else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
                 this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
                 finish();
             }
