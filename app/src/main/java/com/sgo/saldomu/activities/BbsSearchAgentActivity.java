@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +74,7 @@ import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.AgentListFrameFragment;
 import com.sgo.saldomu.fragments.AgentMapFragment;
+import com.sgo.saldomu.fragments.FragCancelTrxRequest;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 
@@ -98,7 +101,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
-        EasyPermissions.PermissionCallbacks
+        EasyPermissions.PermissionCallbacks,
+        AgentListFragment.OnListAgentItemClick,
+        FragCancelTrxRequest.CancelTrxRequestListener
 {
 
     private int lastLocationResult   = AgentConstant.FALSE;
@@ -145,10 +150,13 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private final int RC_SEND_SMS = 504;
     private static final int RC_LOCATION_PHONE_SMS = 505;
     private static final int RC_GPS_REQUEST = 1;
+    private ImageView imgDelete;
 
     Boolean clicked = false;
-    ProgressDialog progdialog, progdialog2;
+    ProgressDialog progdialog, progdialog2, progdialog3;
     private Realm realm, realmBBSMemberBank;
+    Boolean isMapIconClicked = false;
+    int isMapIconPosition = 0;
 
     // Init
     private Handler handler = new Handler();
@@ -161,7 +169,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     };
 
     //FragmentManager fragment;
-
+    String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
 
 
     @Override
@@ -173,7 +181,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         intentData          = getIntent();
         sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
-        //fragment            = getSupportFragmentManager();
 
         categoryId          = intentData.getStringExtra(DefineValue.CATEGORY_ID);
         mobility            = intentData.getStringExtra(DefineValue.BBS_AGENT_MOBILITY);
@@ -208,81 +215,11 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         methodRequiresTwoPermission();
         locationIntent = new Intent(this, UpdateLocationService.class);
 
-        //btnProses               = (Button) findViewById(R.id.btnProses);
-        //btnProses.setEnabled(false);
-
-
-        /*llAmount                = (LinearLayout) findViewById(R.id.llAmount);
-        etJumlah                = (EditText) findViewById(R.id.etJumlah);
-        etJumlah.addTextChangedListener(jumlahChangeListener);
-        llAmount.requestFocus();
-
-        if ( !amount.equals("") ) {
-            etJumlah.setText(amount);
-        }*/
-
-        //btnProses               = (Button) findViewById(R.id.btnProses);
-        //btnProses.setEnabled(false);
-
-        //startService(locationIntent);
-
-
-        /*LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("UpdateLocationIntent"));*/
-
-
-//        txId                = "";
-
-        //mobility            = "Y";
         txId                = "";
 
-
-        /*
-        btnProses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Boolean hasError    = false;
-
-                if(etJumlah.getText().toString().length()==0){
-                    etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.sgoplus_validation_jumlahSGOplus));
-                    hasError = true;
-                }
-                else if(Long.parseLong(etJumlah.getText().toString()) < 1){
-                    etJumlah.requestFocus();
-                    etJumlah.setError(getString(R.string.payfriends_amount_zero));
-                    hasError = true;
-                }
-
-                if ( !hasError ) {
-                    amount = etJumlah.getText().toString();
-
-                    SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                    SecurePreferences.Editor mEditor = prefs.edit();
-                    mEditor.putString(DefineValue.BBS_TX_ID, "");
-                    mEditor.putString(DefineValue.AMOUNT, amount);
-                    mEditor.apply();
-
-                    searchToko(currentLatitude, currentLongitude);
-
-                    etJumlah.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-
-                }
-
-            }
-        });
-        */
-
-        gcmId               = "GCM-ID";
-
+        gcmId               = "";
 
         initializeToolbar(getString(R.string.search_agent) + " " + categoryName);
-
-
-
 
     }
 
@@ -299,6 +236,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setAdapter(tabPageAdapter);
 
+        imgDelete   = (ImageView) findViewById(R.id.imgCancel);
+
+        if ( mobility.equals(DefineValue.STRING_NO) ) {
+            imgDelete.setVisibility(View.INVISIBLE);
+        } else {
+            imgDelete.setOnClickListener(this);
+        }
+
 
 
         if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
@@ -312,6 +257,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 mEditor.putString(DefineValue.AMOUNT, amount);
                 mEditor.apply();
 
+                Timber.d("Masuk Sini runningApp()");
                 searchToko(currentLatitude, currentLongitude);
             }
         }
@@ -371,8 +317,19 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
+        if ( v.getId() == R.id.imgCancel ) {
+            FragCancelTrxRequest fragCancelTrxRequest = new FragCancelTrxRequest();
 
-    }
+            Bundle bundle = new Bundle();
+            bundle.putString(DefineValue.CUST_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+            bundle.putString(DefineValue.TX_ID, sp.getString(DefineValue.BBS_TX_ID, ""));
+
+            fragCancelTrxRequest.setArguments(bundle);
+            fragCancelTrxRequest.setCancelable(false);
+//            fragCancelTrxRequest.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.CustomDialog);
+            fragCancelTrxRequest.show(getSupportFragmentManager(),fragCancelTrxRequest.TAG  );
+        }
+     }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -1040,6 +997,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     private void searchToko(Double latitude, Double longitude) {
 
+        if (!EasyPermissions.hasPermissions(this, perms) || !GlobalSetting.isLocationEnabled(this)  ) {
+            return;
+        }
+
         sp   = CustomSecurePref.getInstance().getmSecurePrefs();
         txId = sp.getString(DefineValue.BBS_TX_ID, "");
 
@@ -1051,6 +1012,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
             clicked                 = true;
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+
+            Timber.d("Masuk Sini");
 
             RequestParams params = new RequestParams();
             UUID rcUUID = UUID.randomUUID();
@@ -1152,6 +1115,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                     shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
                                     shopDetail.setLastActivity(object.getString("shop_lastactivity"));
                                     shopDetail.setShopMobility(object.getString("shop_mobility"));
+                                    shopDetail.setShopScore(object.getString("shop_score"));
+                                    shopDetail.setShopCount(object.getString("shop_count"));
+                                    shopDetail.setNumStars(Integer.valueOf(response.getString(WebParams.MEMBER_MAX_RATING)));
                                     shopDetails.add(shopDetail);
                                 }
                             }
@@ -1359,11 +1325,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         this.currentLatitude = lastLatitude;
         this.currentLongitude   = lastLongitude;
         this.completeAddress    = newAddress;
-        //getCompleteLocationAddress2();
-        //searchToko(lastLatitude, lastLongitude);
     }
 
     public void onIconMapClick(int position) {
+        viewPager.setCurrentItem(0);
         if ( shopDetails.size() > 0 ) {
             for(int idx = 0; idx < shopDetails.size(); idx++) {
                 if ( position == idx ) {
@@ -1372,9 +1337,15 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     shopDetails.get(idx).setIsPolyline("0");
                 }
             }
+
+            isMapIconClicked = true;
+            isMapIconPosition = position;
         }
-        viewPager.setCurrentItem(0);
-        viewPager.getAdapter().notifyDataSetChanged();
+
+        viewPager.arrowScroll(View.FOCUS_LEFT);
+
+        //viewPager.getAdapter().notifyDataSetChanged();
+
     }
 
     @Override
@@ -1427,27 +1398,20 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
         }
 
-
-//        if(checkPlayServices())
-//        {
-//            buildGoogleApiClient();
-//            createLocationRequest();
-//        }
-//
-//        googleApiClient.connect();
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
+        AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
 
         switch (requestCode) {
             case RC_LOCATION_PERM:
                 // (Optional) Check whether the user denied any permissions and checked "NEVER ASK AGAIN."
                 // This will display a dialog directing them to enable the permission in app settings.
-                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                } else {*/
+
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
@@ -1460,13 +1424,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 }
                             });
                     alertDialog.show();
-                }
+                //}
                 break;
             case RC_LOCATION_PHONE_SMS:
-                if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+                /*if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
                     new AppSettingsDialog.Builder(this).build().show();
-                } else {
-                    AlertDialog alertDialog = new AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                } else {*/
                     alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.setCancelable(false);
                     alertDialog.setTitle(getString(R.string.alertbox_title_warning));
@@ -1479,12 +1442,48 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                                 }
                             });
                     alertDialog.show();
-                }
+                //}
                 break;
             case RC_SEND_SMS:
                 break;
+            default:
+                finish();
+                break;
         }
 
+    }
+
+    @Override
+    public void OnIconLocationClickListener(int position, ArrayList<ShopDetail> tempShopDetail) {
+
+
+        if ( shopDetails.size() > 0 ) {
+            for(int idx = 0; idx < shopDetails.size(); idx++) {
+                if ( position == idx ) {
+                    shopDetails.get(idx).setIsPolyline("1");
+                } else {
+                    shopDetails.get(idx).setIsPolyline("0");
+                }
+            }
+
+        }
+
+        viewPager.setCurrentItem(0);
+        viewPager.arrowScroll(View.FOCUS_LEFT);
+        tabPageAdapter.OnLocationClickListener(position, shopDetails);
+    }
+
+    @Override
+    public void onSuccessCancelTrx(String txId) {
+
+        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor mEditor = prefs.edit();
+        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+        mEditor.remove(DefineValue.BBS_TX_ID);
+        mEditor.remove(DefineValue.AMOUNT);
+
+        mEditor.apply();
+        finish();
     }
 
     private class GoogleMapRouteTask extends AsyncTask<Void, Void, ArrayList<ShopDetail>> {
@@ -1503,7 +1502,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         protected void onPostExecute(ArrayList<ShopDetail> result) {
             //shopDetails.clear();
             //shopDetails.addAll(result);
-            viewPager.getAdapter().notifyDataSetChanged();
+
+            if ( viewPager != null )
+                viewPager.getAdapter().notifyDataSetChanged();
         }
 
         @Override
@@ -1584,7 +1585,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     @AfterPermissionGranted(RC_LOCATION_PHONE_SMS)
     private void methodRequiresTwoPermission() {
-        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS};
+
         if (EasyPermissions.hasPermissions(this, perms)) {
             // Already have permission, do the thing
             // ...
@@ -1600,6 +1601,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                Timber.d("Masuk Sini methodRequiresTwoPermission");
                 runningApp();
             }
 
@@ -1669,7 +1672,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 if ( intentData.hasExtra(DefineValue.IS_AUTOSEARCH) ) {
                     if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
-                        runningApp();
+                        if (EasyPermissions.hasPermissions(this, perms)) {
+                            Timber.d("Masuk Sini onActivityResult");
+                            runningApp();
+                        }
                     }
                 } else {
 
@@ -1801,7 +1807,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                             }
                                         });
-                                alertDialog.show();
+
+
+                                if ( !isFinishing() )
+                                    alertDialog.show();
 
 
 //                                Intent intent = new Intent();
@@ -1942,5 +1951,21 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             super.onBackPressed();
     }*/
 
+    @Override
+    public void onAccessFineLocationGranted() {
+        super.onAccessFineLocationGranted();
 
+        Timber.d("BbsSearchAgent masuk AccessFineLocation");
+        if ( !GlobalSetting.isLocationEnabled(this) ) {
+            showAlertEnabledGPS();
+        } else {
+            //runningApp();
+        }
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        finish();
+    }
 }

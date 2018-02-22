@@ -53,6 +53,33 @@ public class ShopDetail {
     private String lastLogin;
     private String lastActivity;
     private String isMobility;
+    private String shopCount;
+    private String shopScore;
+    private int numStars;
+
+    public int getNumStars() {
+        return numStars;
+    }
+
+    public void setNumStars(int numStars) {
+        this.numStars = numStars;
+    }
+
+    public String getShopScore() {
+        return shopScore;
+    }
+
+    public void setShopScore(String shopScore) {
+        this.shopScore = shopScore;
+    }
+
+    public String getShopCount() {
+        return shopCount;
+    }
+
+    public void setShopCount(String shopCount) {
+        this.shopCount = shopCount;
+    }
 
     public String getMemberId() {
         return memberId;

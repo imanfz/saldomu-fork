@@ -478,7 +478,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         params.put(WebParams.LATITUDE, agentLatitude);
         params.put(WebParams.LONGITUDE, agentLongitude);
         //
-        progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.message_notif_agent_approval));
+        //progdialog              = DefinedDialog.CreateProgressDialog(this);
         String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + memberId + shopId ));
 
         handler.removeCallbacks(runnable2);
@@ -487,8 +487,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         MyApiClient.updateLocationAgent(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if ( progdialog.isShowing())
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing())
+                    //progdialog.dismiss();
 
                 try {
                     isRunning = false;
@@ -561,8 +561,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                             handler.postDelayed(runnable2, timeDelayed);
                         }
                     } else {
-                        if ( progdialog.isShowing())
-                            progdialog.dismiss();
+                        //if ( progdialog.isShowing())
+                            //progdialog.dismiss();
 
                         code = response.getString(WebParams.ERROR_MESSAGE);
                         Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
@@ -594,8 +594,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
                 else
                     Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                if ( progdialog.isShowing() )
-                    progdialog.dismiss();
+                //if ( progdialog.isShowing() )
+                    //progdialog.dismiss();
 
                 isRunning = false;
                 Timber.w("Error Koneksi login:" + throwable.toString());

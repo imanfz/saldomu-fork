@@ -501,6 +501,7 @@ public class DefineValue {
     public static String IS_SAME_PREVIOUS_USER  = "is_same_previous_user";
     public static String IS_MUST_UPDATE_BBS_DATA  = "is_must_update_bbs_data";
     public static String INTENT_ACTION_FCM_DATA = "intent_action_fcm_data";
+    public static String INTENT_ACTION_LOCATION_DATA = "intent.action.location.data";
     public static String FCM_OPTIONS            = "options";
     public static String TCASH_HP_VALIDATION    = "tcash_hp_validation";
 }

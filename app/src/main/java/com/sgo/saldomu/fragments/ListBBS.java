@@ -1,8 +1,10 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
@@ -36,6 +38,7 @@ import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -71,6 +74,7 @@ public class ListBBS extends Fragment {
     String shopStatus;
     ProgressDialog progdialog2;
     ProgressDialog progDialog;
+    private static final int RC_GPS_REQUEST = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -338,6 +342,7 @@ public class ListBBS extends Fragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             RequestParams params    = new RequestParams();
             shopStatus              = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice    = false;
 
             if (!isChecked) {
                 //buka
@@ -345,82 +350,125 @@ public class ListBBS extends Fragment {
 
             }
 
-            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    isCallWebservice    = true;
+                }
 
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            } else {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
+                    isCallWebservice    = true;
+                }
+            }
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
-            params.put(WebParams.SHOP_STATUS, shopStatus);
+            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                showAlertEnabledGPS();
+            } else {
+                if (isCallWebservice) {
+
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+                    UUID rcUUID = UUID.randomUUID();
+                    String dtime = DateTimeFormat.getCurrentDateTime();
+
+                    params.put(WebParams.RC_UUID, rcUUID);
+                    params.put(WebParams.RC_DATETIME, dtime);
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+                    params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+                    params.put(WebParams.SHOP_STATUS, shopStatus);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
+                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
 
-            params.put(WebParams.SIGNATURE, signature);
+                    params.put(WebParams.SIGNATURE, signature);
 
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
+                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                            progdialog2.dismiss();
 
-                    try {
+                            try {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    }
+
+                                    mEditor.apply();
+
+                                    getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                                } else {
+                                    setAgentDetailToUI();
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            mEditor.apply();
-
-                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-
-                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                        } else {
-                            setAgentDetailToUI();
-                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            progdialog2.dismiss();
+                            Timber.w("Error Koneksi login:" + throwable.toString());
+
+                        }
+                    });
                 }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-            });
+            }
         }
     };
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+
+                        swSettingOnline.setOnClickListener(null);
+                        swSettingOnline.setChecked(false);
+                        swSettingOnline.setOnCheckedChangeListener(switchListener);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 
