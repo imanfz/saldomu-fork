@@ -227,15 +227,8 @@ public class MainPage extends BaseActivity {
     }
 
     @Override
-    public void onAccessFineLocationGranted() {
-        super.onAccessFineLocationGranted();
-        Timber.d("masuk AccessFineLocation");
-        startLocationService();
-    }
-
-    @Override
-    public void onReadPhoneStateGranted() {
-        super.onReadPhoneStateGranted();
+    public void onGranted() {
+        super.onGranted();
         InitializeApp();
     }
 
@@ -257,11 +250,13 @@ public class MainPage extends BaseActivity {
 
         if(isSimSame) {
 
+            startLocationService();
+
             userID = sp.getString(DefineValue.USERID_PHONE, "");
             accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-            if (savedInstanceState != null)
-                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+//            if (savedInstanceState != null)
+//                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
             levelClass = new LevelClass(this,sp);
             isForeground = true;
@@ -328,7 +323,12 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
-            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX ) {
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX
+                    && modelNotif != FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT
+                    && modelNotif != FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_NOTIF_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_ACCEPT_TRX
+                    && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION ) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }
 
@@ -695,7 +695,7 @@ public class MainPage extends BaseActivity {
 
         getDataListMember();
         mNavDrawer = new NavigationDrawMenu();
-        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
 
 

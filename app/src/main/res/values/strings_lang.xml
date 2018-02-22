@@ -997,7 +997,7 @@
     <string name="alertbox_title_warning">Peringatan</string>
     <string name="alertbox_title_information">Informasi</string>
     <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
-    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call untuk menggunakan aplikasi</string>
+    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call, akses lokasi dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Cari</string>
@@ -1166,4 +1166,7 @@
     <string name="bbs_setor_ke">Setor ke Rek.</string>
     <string name="bbs_tarik_dari">Tarik dari Rek.</string>
     <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
+    <string name="canceled_trx_reason">ALASAN BATAL</string>
+    <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
+    <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
 </resources>

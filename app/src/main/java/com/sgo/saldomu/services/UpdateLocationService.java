@@ -83,7 +83,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.d("Location Service onConnected Started");
-        //startLocationUpdate();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -96,7 +96,11 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
-                updateLocation();
+                Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
+                if ( isAgent )
+                    updateLocation();
+
                 mGoogleApiClient.disconnect();
                 jobFinished(jobLocation, true);
 
@@ -128,7 +132,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
 
-        updateLocation();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
+        if ( isAgent )
+            updateLocation();
 
         mGoogleApiClient.disconnect();
         jobFinished(jobLocation, true);
