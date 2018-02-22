@@ -24,6 +24,7 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
     private Double currentLatitude;
     private Double currentLongitude;
     private String mobility, completeAddress;
+    private AgentListFragment.OnListAgentItemClick mOnListAgentItemClickMap;
 
     public TabSearchAgentAdapter(android.support.v4.app.FragmentManager fm, Context context, String[] menuItems, ArrayList<ShopDetail> shopDetails,
                                  Double currentLatitude, Double currentLongitude, String mobility, String completeAddress) {
@@ -60,17 +61,27 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
                 args.putString("completeAddress", completeAddress);
                 fragment = new AgentMapFragment();
                 fragment.setArguments(args);
+                try {
+                    mOnListAgentItemClickMap = (AgentListFragment.OnListAgentItemClick) fragment;
+                } catch(ClassCastException e) {
+
+                }
                 break;
             case 1:
                 Bundle args2 = new Bundle();
                 args2.putString("mobility", mobility);
                 fragment = new AgentListFragment();
                 fragment.setArguments(args2);
+
                 break;
             default:
                 fragment = null;
         }
         return fragment;
+    }
+
+    public void OnLocationClickListener(int position, ArrayList<ShopDetail> shopDetails) {
+        mOnListAgentItemClickMap.OnIconLocationClickListener(position, shopDetails);
     }
 
     @Override
@@ -86,7 +97,6 @@ public class TabSearchAgentAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        shopDetails.toString();
         if ( object instanceof AgentMapFragment ) {
             ((AgentMapFragment) object).updateView(shopDetails);
         } else if ( object instanceof AgentListFragment) {
