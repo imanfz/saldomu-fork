@@ -483,6 +483,7 @@
     <string name="report_dialog_text_remark_destination">ID Tujuan</string>
     <string name="report_filter_button_on">Filter Hidup</string>
     <string name="report_filter_button_off">Filter Mati</string>
+    <string name="report_transaction_type">Jenis Transaksi</string>
 
     <string name="header_monthly_limit">Batas Transaksi Bulanan</string>
     <string name="header_daily_limit">Batas Transaksi Harian</string>
@@ -857,7 +858,7 @@
     <string name="bank_emoney_agen">Bank / E-Money Agen</string>
     <string name="rekening_bank_member">Rekening Member</string>
     <string name="no_rekening_agen">No. Bank / E-Money Agen</string>
-    <string name="no_bank_emoney_sumber">No Bank / E-Money Sumber</string>
+    <string name="no_bank_emoney_sumber">No. Rekening Bank / E-Money Sumber</string>
     <string name="nama_rekening_agen">Nama Agen</string>
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
     <string name="no_tujuan">Nomor Rekening Tujuan</string>
@@ -908,7 +909,8 @@
     <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>
-    <string name="no_rekening">No Rekening</string>
+    <string name="no_rekening">No. Rekening</string>
+    <string name="nomor_rekening">Nomor Rekening</string>
     <string name="no_rekening_hint">Masukkan nomor rekening</string>
     <string name="required">Dibutuhkan !</string>
     <string name="smsclass_simcard_listener_absent_toast">Transaksi dibatalkan karena SIMCARD tidak terdeteksi</string>

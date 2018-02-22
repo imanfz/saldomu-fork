@@ -285,8 +285,13 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                 }
             }
 
-            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD"))
-                tvNoDestination.setText(R.string.number_destination);
+            if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD")) {
+                if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+                {
+                    tvNoDestination.setText(R.string.no_rekening);
+                }else
+                    tvNoDestination.setText(R.string.number_destination);
+            }
             else
                 tvNoDestination.setText(R.string.number_hp_destination);
 
@@ -771,7 +776,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     userID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
             params.put(WebParams.USER_ID, userID);
 
@@ -1078,6 +1083,20 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     public void setToStatus(String _tx_status) {
         finishTransaction = true;
         tx_status = _tx_status;
+    }
+
+    public void setToRetryTokenEspay() {
+        layout_OTP.setVisibility(View.VISIBLE);
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (inputValidation())
+                {
+                    sentRetryToken();
+                }
+            }
+        });
+
     }
 
     @Override

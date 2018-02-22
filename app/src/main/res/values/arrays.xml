@@ -100,7 +100,6 @@
         <item>Transaksi</item>
         <item>Transfer</item>
         <item>Permintaan</item>
-        <item>Fee</item>
     </string-array>
 
     <integer-array name="google_colors">

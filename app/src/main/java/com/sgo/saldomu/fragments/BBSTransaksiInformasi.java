@@ -523,9 +523,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
                     userID, accessKey);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
@@ -717,9 +717,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
                     userID, accessKey);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
@@ -1000,7 +1000,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
-        mArgs.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
         mArgs.putString(DefineValue.NAME_BENEF, _benef_acct_name);
         mArgs.putString(DefineValue.NO_BENEF, _benef_acct_no);
@@ -1078,7 +1078,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
-        mArgs.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
         mArgs.putString(DefineValue.USER_ID, no_source);
         mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());

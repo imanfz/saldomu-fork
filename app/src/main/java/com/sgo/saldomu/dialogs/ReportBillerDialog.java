@@ -537,7 +537,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-
+                TextView tv_transaction_type = (TextView) inflated.findViewById(R.id.tv_report_transaction_type);
                 TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_userid_value);
                 TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_membername_value);
                 TextView tv_source_bank_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbbs_source_bank_value);
@@ -556,11 +556,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_source_acc_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
                 if (type.equals(DefineValue.BBS_CASHIN))
                 {
+                    tv_transaction_type.setText("Setor Tunai");
 //                    tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
                     tv_benef_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
                     tv_benef_acc_name_value.setText(args.getString(DefineValue.NAME_BENEF));
                 }
                 if (type.equals(DefineValue.BBS_CASHOUT)) {
+                    tv_transaction_type.setText("Tarik Tunai");
 //                    tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
                     tv_source_bank_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));
