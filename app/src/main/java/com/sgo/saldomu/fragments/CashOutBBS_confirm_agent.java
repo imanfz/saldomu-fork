@@ -193,19 +193,20 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.d("isi response insertTrxSGOL:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0288")) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
                             getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
 
-                        }else if(code.equals("0288")){
-                            Timber.d("isi error insertTrxSGOL:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                            tokenValue.setText("");
-                            retryToken=true;
-                            btnSubmit.setEnabled(true);
                         }
+//                        else if(code.equals("0288")){
+//                            Timber.d("isi error insertTrxSGOL:"+response.toString());
+//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+//                            tokenValue.setText("");
+//                            retryToken=true;
+//                            btnSubmit.setEnabled(true);
+//                        }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -381,7 +382,16 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
                                     response.optString(WebParams.MEMBER_SHOP_NAME,""));
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
+                        }
+//                        else if(code.equals("0288")){
+//                            Timber.d("isi error trx status bbs:"+response.toString());
+//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+//                            tokenValue.setText("");
+//                            retryToken=true;
+//                            btnSubmit.setEnabled(true);
+//                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();

@@ -493,19 +493,27 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }
-                        else if(code.equals("0288")){
+//                        else if(code.equals("0288")){
+//                            Timber.d("isi error sent insertTrx:"+response.toString());
+//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+//                            tokenValue.setText("");
+//                            retryToken=true;
+//                        }
+                        else if(code.equals("0061")){
                             Timber.d("isi error sent insertTrx:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                             tokenValue.setText("");
-                            retryToken=true;
+                            btnSubmit.setEnabled(true);
                         }
                         else {
                             btnSubmit.setEnabled(true);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             if(isPIN){
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                                if(message.equals("PIN tidak sesuai")) {
+                                //pin tidak sesuai errorcode 0097
+                                if(code.equals("0097")) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
 
                                     attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
@@ -517,7 +525,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                                 }
                                 else {
-                                    onOkButton();
+                                    getActivity().setResult(MainPage.RESULT_BALANCE);
+                                    getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+//                                    onOkButton();
                                 }
                             }
                             else if(isSMS){
