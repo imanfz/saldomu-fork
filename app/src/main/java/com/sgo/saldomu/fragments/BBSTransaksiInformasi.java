@@ -109,7 +109,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
     SecurePreferences sp;
-    private Boolean TCASHValidation=false, MandiriLKDValidation=false;
+    private Boolean TCASHValidation=false, MandiriLKDValidation=false, code_success =false;
 
     public interface ActionListener{
         void ChangeActivityFromCashInput(Intent data);
@@ -523,9 +523,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
                     userID, accessKey);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
@@ -580,7 +580,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                                 }
                                 else
                                     MandiriLKDValidation=true;
-                            }
+                            }else code_success=true;
 
                             if(isSMSBanking) {
                                 if(smsDialog == null){
@@ -717,9 +717,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
                     userID, accessKey);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
@@ -1000,7 +1000,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
-        mArgs.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
         mArgs.putString(DefineValue.NAME_BENEF, _benef_acct_name);
         mArgs.putString(DefineValue.NO_BENEF, _benef_acct_no);
@@ -1010,10 +1010,13 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
-        if (source_product_code.equalsIgnoreCase("TCASH"))
+        mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
+        if (TCASHValidation!=null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (source_product_code.equalsIgnoreCase("MANDIRLKD"))
+        if (MandiriLKDValidation!=null)
             mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
+        if (code_success!=null)
+            mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
         btnNext.setEnabled(true);
         cashInHistory();
 
@@ -1075,7 +1078,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
-        mArgs.putString(DefineValue.COMMUNITY_ID, MyApiClient.COMM_ID);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
         mArgs.putString(DefineValue.USER_ID, no_source);
         mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());

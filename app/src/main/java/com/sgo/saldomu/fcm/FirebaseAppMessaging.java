@@ -3,10 +3,12 @@ package com.sgo.saldomu.fcm;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -38,7 +40,6 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-import static android.media.CamcorderProfile.get;
 import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
@@ -158,6 +159,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         Intent intent   = null;
         FCMManager fcmManager = new FCMManager(this);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        String bundleToJSONString = null;
+        SecurePreferences.Editor mEditor = null;
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if(flagLogin == null)
@@ -217,8 +220,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 intent.putExtras(bundle);
 
                                 if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    bundleToJSONString = bundleToJSON.getJson(bundle);
+                                    mEditor = sp.edit();
                                     mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                     mEditor.apply();
 
@@ -245,6 +248,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         intent = new Intent(this, BBSActivity.class);
                         intent.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
 
+                        bundleToJSONString = bundleToJSON.getJson(bundle);
+                        mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
+
                         if ( flagLogin.equals(DefineValue.STRING_YES) ) {
                             stackBuilder.addParentStack(BBSActivity.class);
                             stackBuilder.addNextIntent(intent);
@@ -254,12 +262,9 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                             1,
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     );
-                        } else {
-                            String bundleToJSONString = bundleToJSON.getJson(bundle);
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                            mEditor.apply();
                         }
+
+
                         break;
                     case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
                         intent = new Intent(this, BbsSearchAgentActivity.class);
@@ -285,8 +290,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 intent.putExtras(bundle);
 
                                 if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    bundleToJSONString = bundleToJSON.getJson(bundle);
+                                    mEditor = sp.edit();
                                     mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                     mEditor.apply();
 
@@ -319,8 +324,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     );
                         } else {
-                            String bundleToJSONString = bundleToJSON.getJson(bundle);
-                            SecurePreferences.Editor mEditor = sp.edit();
+                            bundleToJSONString = bundleToJSON.getJson(bundle);
+                            mEditor = sp.edit();
                             mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                             mEditor.apply();
                         }
@@ -329,6 +334,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                         Timber.d("MASUK SINI FCM APP MESSAGING");
                         bundle.putInt(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+
+                        bundleToJSONString = bundleToJSON.getJson(bundle);
+                        mEditor = sp.edit();
+                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                        mEditor.apply();
 
                         if ( flagLogin.equals(DefineValue.STRING_YES) ) {
                             intent = new Intent(this, BBSActivity.class);
@@ -344,11 +354,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                             1,
                                             PendingIntent.FLAG_UPDATE_CURRENT
                                     );
-                        } else {
-                            String bundleToJSONString = bundleToJSON.getJson(bundle);
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                            mEditor.apply();
                         }
                         break;
                     case FCMManager.SHOP_ACCEPT_TRX:
@@ -364,8 +369,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 intent.putExtras(bundle);
 
-                                String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                SecurePreferences.Editor mEditor = sp.edit();
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
 
@@ -415,11 +420,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 intent = new Intent(this, BBSActivity.class);
                                 intent.putExtras(bundle);
 
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+
                                 if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                    mEditor.apply();
+
                                 } else {
                                     stackBuilder.addParentStack(BBSActivity.class);
                                     stackBuilder.addNextIntent(intent);
@@ -477,11 +484,12 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 intent = new Intent(this, BBSActivity.class);
                                 intent.putExtras(bundle);
 
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+
                                 if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                    String bundleToJSONString = bundleToJSON.getJson(bundle);
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                    mEditor.apply();
 
                                 } else {
                                     stackBuilder.addParentStack(BBSActivity.class);
@@ -580,14 +588,21 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         Timber.d("Debug 2: " + msg.toString());
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_pin_bw);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher_pin_only)
                         .setContentTitle(notification.getTitle())
                         .setContentText(msg.getString("msg", ""))
+                        .setSmallIcon(R.mipmap.ic_launcher_pin_only)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("msg", "")));
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setLargeIcon(largeIcon);
+        } else {
+            mBuilder.setSmallIcon(R.mipmap.ic_launcher_pin_only);
+        }
 
         if (contentIntent == null) {
             contentIntent = PendingIntent.getActivity(getApplicationContext(),1,new Intent(),PendingIntent.FLAG_CANCEL_CURRENT);

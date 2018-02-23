@@ -12,8 +12,10 @@ import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
@@ -56,7 +58,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public static final int BBSMYORDERS         = 11;
     public static final int BBSONPROGRESSAGENT  = 12;
 
-
+    private SecurePreferences sp;
     FragmentManager fragmentManager;
     Fragment mContent;
     FloatingActionButton fab;
@@ -65,6 +67,16 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         InitializeToolbar();
+        Timber.d("Flag Login BbsActivity ");
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
+
+        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+            finish();
+        }
 
         if (findViewById(R.id.bbs_content) != null) {
             if (savedInstanceState != null) {
@@ -253,8 +265,20 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
                         }
                     }
                 }
+            } else if(resultCode == MainPage.RESULT_RETRY){
+                if(mContent instanceof BBSTransaksiPager) {
+                    BBSTransaksiPager mFrag = (BBSTransaksiPager) mContent;
+                    Fragment confirmFrag =  mFrag.getConfirmFragment();
+                    if(confirmFrag instanceof BBSTransaksiPagerItem) {
+                        Fragment childFragment = ((BBSTransaksiPagerItem) confirmFrag).getChildFragment();
+                        if(childFragment instanceof BBSCashInConfirm) {
+                            BBSCashInConfirm cashInConfirm = (BBSCashInConfirm) childFragment;
+                            cashInConfirm.setToRetryTokenEspay();
+                        }
+                    }
+                }
 
-            } else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
+            }else if ( resultCode == MainPage.RESULT_REFRESH_NAVDRAW ) {
                 this.setResult(MainPage.RESULT_REFRESH_NAVDRAW);
                 finish();
             }

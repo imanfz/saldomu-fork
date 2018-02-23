@@ -135,6 +135,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("Flag Login Approvalagent ");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -151,14 +152,29 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         txId                    = "";
         flagApprove             = DefineValue.STRING_NO;
         customerId              = sp.getString(DefineValue.USERID_PHONE, "");
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.frag_approval_agent, container, false);
 
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
+        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+            getActivity().finish();
+        } else {
+            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            if (!notifDataNextLogin.equals("")) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
+        }
 
         btnApprove              = (Button) v.findViewById(R.id.btnApprove);
         //btnReject               = (Button) v.findViewById(R.id.btnReject);
@@ -222,18 +238,10 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
                         flagTxStatus = DefineValue.STRING_ACCEPT;
 
-                        if ( shopDetails.size() > 1 ) {
-                            itemId  = spPilihan.getSelectedItemPosition();
-
-                        } else {
-                            itemId = 0;
-                        }
+                        itemId = 0;
 
                         if ( shopDetails.size() > 0 ) {
-                            shopId = shopDetails.get(itemId).getShopId();
-                            memberId = shopDetails.get(itemId).getMemberId();
                             gcmId = "";
-
                             updateTrxAgent();
                         }
                     }
@@ -739,6 +747,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
                         shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
 
+                        shopId  = response.getString(WebParams.SHOP_ID);
+                        memberId  = response.getString(WebParams.MEMBER_ID);
                         shopDetails.add(shopDetail);
 
                         tvCategoryName.setText(shopDetail.getCategoryName());
