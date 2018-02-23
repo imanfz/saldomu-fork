@@ -535,7 +535,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     getFragmentManager().popBackStack();
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            }
+                            }else
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                         }
                         progdialog.dismiss();
