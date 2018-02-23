@@ -420,6 +420,7 @@ public class WebParams {
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
     public static String BBS_NOTE = "note";
+    public static String BBS_NAME = "bbs_name";
     public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
@@ -490,6 +491,7 @@ public class WebParams {
     public static String DEFAULT_RATING = "default_rating";
     public static String RATING         = "rating";
     public static String PROFILE_PICTURE    = "profile_picture";
+    public static String OFFSET    = "offset";
     public static String TX_REMARKS = "tx_remarks";
     public static String MEMBER_MAX_RATING  = "member_max_rating";
 }

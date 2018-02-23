@@ -102,6 +102,13 @@
         <item>Permintaan</item>
     </string-array>
 
+    <string-array name="report_list_agen">
+        <item>Transaksi</item>
+        <item>Transfer</item>
+        <item>Permintaan</item>
+        <item>Fee</item>
+    </string-array>
+
     <integer-array name="google_colors">
         <item>@color/red_700</item>
         <item>@color/blue_700</item>
