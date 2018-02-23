@@ -419,6 +419,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsFee.put(WebParams.CUST_ID,sp.getString(DefineValue.CUST_ID,""));
             paramsFee.put(WebParams.RC_UUID, uuid.toString());
             paramsFee.put(WebParams.RC_DTIME, dtime);
+            paramsFee.put(WebParams.USER_ID, user_id);
             paramsFee.put(WebParams.SIGNATURE, signatureFee);
 
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
@@ -527,11 +528,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     ReportListCommFeeModel mTempData;
                                     for(int i = 0 ; i <arrayData.length() ; i++){
                                         mObj = arrayData.getJSONObject(i);
-                                        mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.DATE_TIME, ""),
-                                                mObj.optString(WebParams.TYPE,""),
+                                        mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.CREATED, ""),
+                                                mObj.optString(WebParams.BBS_NAME,""),
+                                                mObj.optString(WebParams.COMM_NAME,""),
                                                 mObj.optString(WebParams.CCY_ID,""),
                                                 mObj.optString(WebParams.AMOUNT,""),
-                                                mObj.optString(WebParams.DESCRIPTION,""),
                                                 mObj.optString(WebParams.STATUS,""));
                                         AddNewData(mTempData);
                                     }
@@ -648,7 +649,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             }
             else if(report_type == REPORT_FEE) {
                 Timber.d("Webservice:"+webserviceFee);
-                Timber.d("Isi params report comm fee:"+paramsAsk.toString());
+                Timber.d("Isi params report comm fee:"+paramsFee.toString());
                 MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
             }
         }catch (Exception e){

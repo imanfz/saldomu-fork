@@ -420,6 +420,7 @@ public class WebParams {
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
     public static String BBS_NOTE = "note";
+    public static String BBS_NAME = "bbs_name";
     public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
