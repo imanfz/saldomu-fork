@@ -3,10 +3,24 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -16,16 +30,22 @@ import com.sgo.saldomu.Beans.ReportListEspayModel;
 import com.sgo.saldomu.Beans.ReportListModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.ReportAskListAdapter;
+import com.sgo.saldomu.adapter.ReportCommFeeAdapter;
 import com.sgo.saldomu.adapter.ReportListAdapter;
 import com.sgo.saldomu.adapter.ReportListEspayAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CollapseExpandAnimation;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.models.ReportListCommFeeModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
-import in.srain.cube.views.ptr.header.MaterialHeader;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +57,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
 import timber.log.Timber;
 
 /*
@@ -47,6 +71,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final static int REPORT_ASK = 0x0299395;
     final static int REPORT_SCASH = 0x0299394;
     final static int REPORT_ESPAY = 0x0299393;
+    final static int REPORT_FEE = 0x0299396;
     private final String DATEFROM = "tagFrom";
     private final String DATETO = "tagTo";
     final private String ITEM_DESC_LISTRIK = "Listrik";
@@ -194,6 +219,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         else  if(report_type == REPORT_ASK){
             ArrayList <ReportAskListModel> mData = new ArrayList<>();
             ReportAskListAdapter adapter = new ReportAskListAdapter(getActivity(),R.layout.list_request_report_item,mData);
+            lv_report.setAdapter(adapter);
+        }
+        else  if(report_type == REPORT_FEE){
+            ArrayList <ReportListCommFeeModel> mData = new ArrayList<>();
+            ReportCommFeeAdapter adapter = new ReportCommFeeAdapter(getActivity(),R.layout.list_report_comm_fee,mData);
             lv_report.setAdapter(adapter);
         }
         setLoadMore(false);
@@ -376,6 +406,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsAsk.put(WebParams.RC_DTIME, dtime);
             paramsAsk.put(WebParams.SIGNATURE, signatureAsk);
 
+            String webserviceFee = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_COMM_FEE);
+            String signatureFee = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
+
+            RequestParams paramsFee = new RequestParams();
+            paramsFee.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
+            paramsFee.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
+            paramsFee.put(WebParams.PAGE, _page);
+            paramsFee.put(WebParams.DATE_FROM, _date_from);
+            paramsFee.put(WebParams.DATE_TO, _date_to);
+            paramsFee.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET,""));
+            paramsFee.put(WebParams.CUST_ID,sp.getString(DefineValue.CUST_ID,""));
+            paramsFee.put(WebParams.RC_UUID, uuid.toString());
+            paramsFee.put(WebParams.RC_DTIME, dtime);
+            paramsFee.put(WebParams.USER_ID, user_id);
+            paramsFee.put(WebParams.SIGNATURE, signatureFee);
+
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -474,6 +520,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                                 mObj.optString(WebParams.TO_ALIAS,""),
                                                 mObj.optString(WebParams.STATUS,""),
                                                 mObj.optString(WebParams.REASON,""));
+                                        AddNewData(mTempData);
+                                    }
+                                }
+                                else if(report_type == REPORT_FEE){
+                                    Timber.d("Isi response report comm fee:"+response.toString());
+                                    ReportListCommFeeModel mTempData;
+                                    for(int i = 0 ; i <arrayData.length() ; i++){
+                                        mObj = arrayData.getJSONObject(i);
+                                        mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.CREATED, ""),
+                                                mObj.optString(WebParams.BBS_NAME,""),
+                                                mObj.optString(WebParams.COMM_NAME,""),
+                                                mObj.optString(WebParams.CCY_ID,""),
+                                                mObj.optString(WebParams.AMOUNT,""),
+                                                mObj.optString(WebParams.STATUS,""));
                                         AddNewData(mTempData);
                                     }
                                 }
@@ -587,6 +647,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 Timber.d("Isi params report ask:"+paramsAsk.toString());
                 MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
             }
+            else if(report_type == REPORT_FEE) {
+                Timber.d("Webservice:"+webserviceFee);
+                Timber.d("Isi params report comm fee:"+paramsFee.toString());
+                MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
+            }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -621,6 +686,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             ReportAskListAdapter ya = (ReportAskListAdapter) getUniAdapter();
             ya.notifyDataSetChanged();
         }
+        else if(report_type == REPORT_FEE){
+            ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
+            ya.notifyDataSetChanged();
+        }
     }
 
     private void AddNewData(Object ok){
@@ -637,6 +706,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         else if(report_type == REPORT_ASK){
             ReportAskListAdapter ya = (ReportAskListAdapter) getUniAdapter();
             ReportAskListModel obj = (ReportAskListModel) ok;
+            ya.add(obj);
+        }
+        else if(report_type == REPORT_FEE){
+            ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
+            ReportListCommFeeModel obj = (ReportListCommFeeModel) ok;
             ya.add(obj);
         }
     }

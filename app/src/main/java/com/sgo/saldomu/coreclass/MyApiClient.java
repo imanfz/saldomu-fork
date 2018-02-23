@@ -180,6 +180,7 @@ public class MyApiClient {
 	public static String LINK_LOGOUT;
     private static String LINK_CREATE_PIN_PASS;
     public static String LINK_REPORT_MONEY_REQUEST;
+    public static String LINK_REPORT_COMM_FEE;
     public static String LINK_ASK4MONEY_REJECT;
 
     private static String LINK_INQUIRY_CUST;
@@ -322,6 +323,7 @@ public class MyApiClient {
 		LINK_LOGOUT             = headaddressfinal + "ServiceLogout/SignOut";
         LINK_CREATE_PIN_PASS    = headaddressfinal + "CreatePinPass/Invoke";
         LINK_REPORT_MONEY_REQUEST = headaddressfinal + "ReportMoneyReq/Retrieve";
+        LINK_REPORT_COMM_FEE    = headaddressfinal + "ReportCommFee/Retrieve";
         LINK_ASK4MONEY_REJECT   = headaddressfinal + "Ask4Money/Decline";
 
         LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
@@ -949,6 +951,11 @@ public class MyApiClient {
     public static void sentReportAsk(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent report ask: %1$s ",LINK_REPORT_MONEY_REQUEST);
         post(mContext,LINK_REPORT_MONEY_REQUEST, params, responseHandler);
+    }
+
+    public static void sentReportCommFee(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent report comm fee: %1$s ",LINK_REPORT_COMM_FEE);
+        post(mContext,LINK_REPORT_COMM_FEE, params, responseHandler);
     }
 
     public static void sentAsk4MoneyReject(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
