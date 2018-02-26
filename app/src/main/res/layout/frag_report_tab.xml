@@ -7,7 +7,7 @@
     <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/report_tabs"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             app:tabGravity="fill"
             app:tabMode="fixed"
             />
