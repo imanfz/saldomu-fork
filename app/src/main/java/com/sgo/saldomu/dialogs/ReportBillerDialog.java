@@ -556,13 +556,13 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_source_acc_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
                 if (type.equals(DefineValue.BBS_CASHIN))
                 {
-                    tv_transaction_type.setText("Setor Tunai");
+                    tv_transaction_type.setText(getString(R.string.cash_in));
 //                    tv_benef_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
                     tv_benef_acc_no_value.setText(args.getString(DefineValue.NO_BENEF));
                     tv_benef_acc_name_value.setText(args.getString(DefineValue.NAME_BENEF));
                 }
                 if (type.equals(DefineValue.BBS_CASHOUT)) {
-                    tv_transaction_type.setText("Tarik Tunai");
+                    tv_transaction_type.setText(getString(R.string.cash_out));
 //                    tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
                     tv_source_bank_name_value.setText(args.getString(DefineValue.PRODUCT_NAME));
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_PHONE));

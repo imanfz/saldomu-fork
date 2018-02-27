@@ -175,12 +175,12 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, token);
             params.put(WebParams.USER_ID, userID);
@@ -213,10 +213,19 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }
-                        else {
+                        else if(code.equals("0061")){
                             btnSubmit.setEnabled(true);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                        }
+                        else {
+//                            btnSubmit.setEnabled(true);
+//                            String message = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
                         }
                         progdialog.dismiss();
                     } catch (JSONException e) {
@@ -265,11 +274,11 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RETRY_TOKEN,
+            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_RETRY_TOKEN,
                     userID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
             params.put(WebParams.USER_ID, userID);
 
@@ -292,6 +301,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                             tokenValue.setText("");
                             retryToken=true;
+                            btnSubmit.setEnabled(true);
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
@@ -351,7 +361,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
                     userId,accessKey);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -383,14 +393,14 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
                                     response.optString(WebParams.MEMBER_SHOP_NAME,""));
                         }
-//                        else if(code.equals("0288")){
-//                            Timber.d("isi error trx status bbs:"+response.toString());
-//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-//                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-//                            tokenValue.setText("");
-//                            retryToken=true;
-//                            btnSubmit.setEnabled(true);
-//                        }
+                        else if(code.equals("0288")){
+                            Timber.d("isi error trx status bbs:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
+                            btnSubmit.setEnabled(true);
+                        }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
