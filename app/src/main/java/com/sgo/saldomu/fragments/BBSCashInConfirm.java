@@ -376,7 +376,18 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                     changeToSGOPlus(tx_id,tx_product_code, tx_product_name,tx_bank_code, amount, fee, total_amount, tx_bank_name);
                 }
                 else if(isPIN) {
-                    CallPINinput(attempt);
+                    if (layout_OTP.getVisibility()==View.VISIBLE)
+                    {
+                        if (inputValidation()) {
+                            if (retryToken) {
+                                sentRetryToken();
+                            }
+                        }
+                    }
+                    else {
+                        CallPINinput(attempt);
+                        btnSubmit.setEnabled(true);
+                    }
                     btnSubmit.setEnabled(true);
                 }
                 else if (isTCASH || isMandiriLKD)
@@ -536,7 +547,11 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                 code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }else
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            {
+                                getActivity().setResult(MainPage.RESULT_BALANCE);
+                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+                            }
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                         }
                         progdialog.dismiss();
                     } catch (JSONException e) {
@@ -724,6 +739,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                             Timber.d("isi error sent token di trxStatusBBS:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            layout_OTP.setVisibility(View.VISIBLE);
                             tokenValue.setText("");
                             retryToken=true;
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
