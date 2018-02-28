@@ -467,7 +467,7 @@
 
     <string name="report_item_text_trans_id">ID Transaksi :</string>
     <string name="kode_otp">Kode Tarik Tunai :</string>
-    <string name="report_item_text_date_time">Waktu dan Tanggal : </string>
+    <string name="report_item_text_date_time">Tanggal dan Waktu : </string>
     <string name="report_dialog_text_transaction_type">Tipe Transaksi</string>
     <string name="report_dialog_text_community">Komunitas</string>
     <string name="report_dialog_text_detail">Rincian</string>
