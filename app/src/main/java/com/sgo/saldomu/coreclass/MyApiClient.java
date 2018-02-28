@@ -372,7 +372,7 @@ public class MyApiClient {
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
-        String googleMapsKey = getmContext().getString(R.string.google_maps_key);
+        String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";

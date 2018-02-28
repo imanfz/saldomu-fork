@@ -228,6 +228,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
             currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
             currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+
         }
 
         menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
@@ -258,7 +259,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 mEditor.apply();
 
                 Timber.d("Masuk Sini runningApp()");
-                searchToko(currentLatitude, currentLongitude);
+                //searchToko(currentLatitude, currentLongitude);
+                getCompleteLocationAddress();
             }
         }
 
@@ -353,7 +355,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 Timber.d("Location Found" + lastLocation.toString());
                 //viewPager.getAdapter().notifyDataSetChanged();
-                getCompleteLocationAddress();
+                //getCompleteLocationAddress();
                 //searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
                 googleApiClient.disconnect();
                 //LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
@@ -392,7 +394,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         }
 
         //viewPager.getAdapter().notifyDataSetChanged();
-        getCompleteLocationAddress();
+        //getCompleteLocationAddress();
 
         if ( mobility.equals(DefineValue.STRING_NO) ) {
             //searchToko(currentLatitude, currentLongitude);
@@ -561,6 +563,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             completeAddress += provinceName;
                         }
 
+                        searchToko(currentLatitude, currentLongitude);
 
                     }
 
