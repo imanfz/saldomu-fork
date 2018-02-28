@@ -483,9 +483,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
                     }
 
-                    this.getAddressByLatLng();
+                    //this.getAddressByLatLng();
 
-                    //btnProses.setEnabled(true);
+                    btnProses.setEnabled(true);
 
 
                     searchAgent();
@@ -556,9 +556,9 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
             }
 
             //mGoogleApiClient.disconnect();
-
+            btnProses.setEnabled(true);
             if ( shopDetails.size() == 0 ) {
-                this.getAddressByLatLng();
+                //this.getAddressByLatLng();
                 searchAgent();
             }
         } catch ( Exception e ) {
