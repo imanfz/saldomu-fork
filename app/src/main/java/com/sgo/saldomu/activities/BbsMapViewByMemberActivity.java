@@ -613,7 +613,7 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
                         finish();
 */
 
-                    } else if ( code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
+                    } else if ( code.equals("0001") || code.equals("0012") || code.equals("0003") || code.equals("0005") ) {
 
                         sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
                         finish();
