@@ -1382,7 +1382,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         mEditor.putString(DefineValue.AMOUNT, amount);
                         mEditor.apply();
 
-                        searchToko(currentLatitude, currentLongitude);
+                        //searchToko(currentLatitude, currentLongitude);
+                        getCompleteLocationAddress();
                     }
                 } else {
 
