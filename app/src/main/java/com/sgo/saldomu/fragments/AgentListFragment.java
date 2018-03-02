@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -39,9 +40,24 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private AgentListArrayAdapter agentListArrayAdapter;
     private String mobility;
+    private OnListAgentItemClick mOnListAgentItemClick;
+
+    public interface OnListAgentItemClick {
+        public void OnIconLocationClickListener(int position, ArrayList<ShopDetail> shopDetails);
+    }
 
     public AgentListFragment() {
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mOnListAgentItemClick = (OnListAgentItemClick) context;
+        } catch(ClassCastException e) {
+
+        }
     }
 
     /**
@@ -104,7 +120,7 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
 
         //if ( shopDetails.size() > 0 )
         //{
-            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview, this.shopDetails);
+            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview, this.shopDetails, mOnListAgentItemClick);
             //agentListArrayAdapter.setAgentList(agentLocation);
             listView.setAdapter(agentListArrayAdapter);
 
@@ -112,18 +128,6 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
             listView.setOnItemClickListener(this);
         //}
 
-        //jika data agent is available, maka proses
-        /*if(agentLocation != null && agentLocation.length() != 0)
-        {
-            String[] listArray = getListArray();
-
-            agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview, shopDetails);
-            //agentListArrayAdapter.setAgentList(agentLocation);
-            listView.setAdapter(agentListArrayAdapter);
-
-            //set listener for list view
-            listView.setOnItemClickListener(this);
-        }*/
     }
 
     //implements AdapterView.OnItemClickListener
@@ -131,7 +135,8 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
 
-        if ( mobility.equals(DefineValue.STRING_NO) ) {
+
+        if (mobility.equals(DefineValue.STRING_NO)) {
 
             //show fragment dialog for agent detail
             FragmentManager fragmentManager = getFragmentManager();
@@ -141,6 +146,7 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
             agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
 
         }
+
     }
 
     private void getAgentLocationSharedPreferences()
@@ -178,14 +184,9 @@ public class AgentListFragment extends Fragment implements AdapterView.OnItemCli
         if ( shopDetails.size() > 0 ) {
             this.shopDetails.addAll(shopDetails);
         }
-        //agentListArrayAdapter = new AgentListArrayAdapter(activity, R.layout.agent_list_listview, shopDetails);
-        //agentListArrayAdapter.setAgentList(agentLocation);
-        //listView.setAdapter(agentListArrayAdapter);
 
-        //set listener for list view
-        //listView.setOnItemClickListener(this);
         agentListArrayAdapter.notifyDataSetChanged();
-        //setAdapterToListView();
+
     }
 
 

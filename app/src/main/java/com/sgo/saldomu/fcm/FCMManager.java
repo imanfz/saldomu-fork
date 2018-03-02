@@ -87,6 +87,7 @@ public class FCMManager {
         Timber.d("isi index type "+ String.valueOf(type));
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        SecurePreferences.Editor mEditor = null;
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if(flagLogin == null)
@@ -102,6 +103,8 @@ public class FCMManager {
 
             int modelNotif = Integer.parseInt(msg.getString("model_notif"));
             bundleNextLogin.putInt("model_notif", modelNotif);
+
+            String bundleToJSONString = "";
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
@@ -125,8 +128,8 @@ public class FCMManager {
                             i.putExtras(bundleNextLogin);
 
                             if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                SecurePreferences.Editor mEditor = sp.edit();
+                                bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
                             }
@@ -143,13 +146,10 @@ public class FCMManager {
                     i = new Intent(mContext, BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
 
-                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                        mEditor.apply();
-
-                    }
+                    bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.apply();
 
                     break;
                 case FCMManager.AGENT_LOCATION_KEY_REJECT_TRANSACTION:
@@ -176,8 +176,8 @@ public class FCMManager {
                             i.putExtras(bundleNextLogin);
 
                             if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                SecurePreferences.Editor mEditor = sp.edit();
+                                bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
                             }
@@ -202,12 +202,10 @@ public class FCMManager {
                     i = new Intent(mContext, BBSActivity.class);
                     i.putExtras(bundleNextLogin);
 
-                    if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                        String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                        mEditor.apply();
-                    }
+                    bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                    mEditor = sp.edit();
+                    mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                    mEditor.apply();
 
                     break;
                 case FCMManager.SHOP_ACCEPT_TRX:
@@ -224,8 +222,8 @@ public class FCMManager {
                             i.putExtras(bundleNextLogin);
 
                             //if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                SecurePreferences.Editor mEditor = sp.edit();
+                                bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                                mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
                             //}
@@ -264,13 +262,11 @@ public class FCMManager {
                             i = new Intent(mContext, BBSActivity.class);
                             i.putExtras(bundleNextLogin);
 
+                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
 
-                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
-                            }
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.apply();
+
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());
                         }
@@ -308,12 +304,12 @@ public class FCMManager {
                             i = new Intent(mContext, BBSActivity.class);
                             i.putExtras(bundleNextLogin);
 
-                            if ( flagLogin.equals(DefineValue.STRING_NO) ) {
-                                String bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                                mEditor.apply();
-                            }
+
+                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                            mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.apply();
+
 
                         } catch (JSONException e) {
                             Timber.d("JSONException: "+e.getMessage());

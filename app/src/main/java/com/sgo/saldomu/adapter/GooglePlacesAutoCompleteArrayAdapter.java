@@ -40,7 +40,7 @@ public class GooglePlacesAutoCompleteArrayAdapter extends ArrayAdapter implement
     {
         super(context, textViewResourceId);
         this.context  = context;
-        apiKey          = context.getString(R.string.google_maps_key);
+        apiKey          = context.getString(R.string.google_maps_key_ws);
     }
 
     @Override

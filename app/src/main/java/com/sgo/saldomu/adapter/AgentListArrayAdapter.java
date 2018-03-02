@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.sgo.saldomu.R;
@@ -22,6 +24,7 @@ import com.sgo.saldomu.coreclass.AgentConstant;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.models.ShopDetail;
 
 import org.json.JSONArray;
@@ -31,10 +34,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import timber.log.Timber;
+
+import static android.media.CamcorderProfile.get;
+
 /**
  * Created by Lenovo Thinkpad on 12/5/2016.
  */
-public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickListener
+public class AgentListArrayAdapter extends BaseAdapter
 {
     int layoutResourceId;
     Context context;
@@ -43,8 +50,13 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
     private ImageView agentMapBtn;
     private ArrayList<ShopDetail> shopDetails = new ArrayList<>();
     private BbsSearchAgentActivity bbsSearchAgentActivity;
+    int[] shopDetailsClicks;
+    View rootView;
+    private AgentListFragment.OnListAgentItemClick mOnListAgentItemClick;
 
-    public AgentListArrayAdapter(Context context, int layoutResourceId, ArrayList<ShopDetail> shopDetails)
+    public AgentListArrayAdapter(Context context, int layoutResourceId,
+                                 ArrayList<ShopDetail> shopDetails,
+                                 AgentListFragment.OnListAgentItemClick mOnListAgentItemClick)
     {
         //super(context, layoutResourceId, shopDetails);
         this.layoutResourceId = layoutResourceId;
@@ -56,6 +68,7 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         //get data agent from session
         getAgentLocationSharedPreferences();
         bbsSearchAgentActivity = (BbsSearchAgentActivity) context;
+        this.mOnListAgentItemClick = mOnListAgentItemClick;
     }
 
     /*public void setAgentList(JSONArray agent)
@@ -67,13 +80,15 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
     {
         LinearLayout agentServiceList;
         TextView agentName;
-        TextView agentLastOnline;
-        TextView agentAddress;
+        //TextView agentLastOnline;
+        //TextView agentAddress;
         ImageView agentProfilePic;
         //ImageView agentRate;
         TextView agentDistance;
         //TextView agentAvailable;
         ImageView agentMapBtn;
+        TextView tvCountTrx;
+        RatingBar ratingBar;
     }
 
     @Override
@@ -94,8 +109,8 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
     @Override
     public View getView(final int position, View convertView, ViewGroup parent)
     {
-        View rootView = convertView;
-        ViewHolder viewHolder;
+        rootView = convertView;
+        final ViewHolder viewHolder;
 
         if(rootView == null)
         {
@@ -115,15 +130,26 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         //pengambilan ID component dari layout
         viewHolder.agentServiceList       = (LinearLayout) rootView.findViewById(R.id.agent_service_list);
         viewHolder.agentName       = (TextView)rootView.findViewById(R.id.agentName);
-        viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
-        viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
+        //viewHolder.agentLastOnline = (TextView)rootView.findViewById(R.id.agentLastOnline);
+        //viewHolder.agentAddress    = (TextView)rootView.findViewById(R.id.agentAddress);
         viewHolder.agentProfilePic = (ImageView)rootView.findViewById(R.id.agentProfilePic);
         //viewHolder.agentRate = (ImageView)rootView.findViewById(R.id.agentRate);
         viewHolder.agentDistance   = (TextView)rootView.findViewById(R.id.agentDistance);
         //viewHolder.agentAvailable   = (TextView)rootView.findViewById(R.id.available);
+        viewHolder.tvCountTrx       = (TextView) rootView.findViewById(R.id.tvCountTrx);
+        viewHolder.ratingBar        = (RatingBar) rootView.findViewById(R.id.ratingBar);
 
-        viewHolder.agentMapBtn = (ImageView)rootView.findViewById(R.id.agentMapBtn);
-        viewHolder.agentMapBtn.setOnClickListener(this);
+        viewHolder.agentMapBtn = (ImageView) rootView.findViewById(R.id.agentMapBtn);
+        //viewHolder.agentMapBtn.setOnClickListener(this);
+        //viewHolder.agentMapBtn.setOnClickListener(imgClickListener);
+        viewHolder.agentMapBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mOnListAgentItemClick.OnIconLocationClickListener(position, shopDetails);
+
+            }
+        });
 
         //set default value
         String agentName        = "N/A";
@@ -134,20 +160,18 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         String agentDistance    = "N/A";
         String agentAvailable    = "N/A";
         String agentServiceList    = "N/A";
+        String countTrx         = "";
+        String score            = "0";
+        int numStars            = 0;
 
-        /*if ( shopDetails.size() > 0 )
-        {
-
-            agentName = shopDetails.get(position).getMemberName();
-            agentAddress = shopDetails.get(position).getShopAddress();
-            agentDistance = shopDetails.get(position).getCalculatedDistance();
-
-        }*/
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
-            agentName = shopDetail.getShopName();
-            agentAddress = shopDetail.getShopAddress();
-            agentDistance = shopDetail.getCalculatedDistance();
+            agentName       = shopDetail.getShopName();
+            agentAddress    = shopDetail.getShopAddress();
+            agentDistance   = shopDetail.getCalculatedDistance();
+            countTrx        = shopDetail.getShopCount();
+            score           = shopDetail.getShopScore();
+            numStars        = shopDetail.getNumStars();
 
             if ( !shopDetail.getLastActivity().equals("") ) {
                 try {
@@ -165,87 +189,49 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
 
         //attach all data to view holder
         viewHolder.agentName.setText(agentName);
-        viewHolder.agentLastOnline.setText(agentLastOnline);
-        viewHolder.agentAddress.setText(agentAddress);
+        //viewHolder.agentLastOnline.setText(agentLastOnline);
+        //viewHolder.agentAddress.setText(agentAddress);
         viewHolder.agentDistance.setText(agentDistance);
+        viewHolder.tvCountTrx.setText(": " +countTrx);
+        viewHolder.ratingBar.setRating(Float.valueOf(score));
+        viewHolder.ratingBar.setNumStars(numStars);
+        viewHolder.ratingBar.setIsIndicator(true);
+        viewHolder.ratingBar.setFocusable(false);
 
         if(agentAvailable.equalsIgnoreCase("Y")) {
 
-            /*viewHolder.agentAvailable.setText("Available");
-            viewHolder.agentAvailable.setTextColor(Color.WHITE);
-            viewHolder.agentAvailable.setBackgroundColor(Color.GREEN);*/
+
         }
         else
         {
 
-            /*viewHolder.agentAvailable.setText("Not Available");
-            viewHolder.agentAvailable.setTextColor(Color.WHITE);
-            viewHolder.agentAvailable.setBackgroundColor(Color.RED);*/
         }
-
-            /*ImageLoader imageLoader = ImageLoader.getInstance();
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
-            ImageLoader.getInstance().init(config);
-            imageLoader.displayImage(agentProfilePic, viewHolder.agentProfilePic);*/
-
-        //int profile = context.getResources().getIdentifier(agentProfilePic, "drawable", context.getPackageName());
 
         Bitmap bm = BitmapFactory.decodeResource(context.getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
-
-
-//        if(MyApiClient.PROD_FLAG_ADDRESS)
-//            mPic = MyPicasso.getUnsafeImageLoader(context);
-//        else
-//            mPic= Picasso.with(context);
 
         if ( shopDetails.size() > 0 ) {
             ShopDetail shopDetail = (ShopDetail) getItem(position);
             if (shopDetail.getUrlSmallProfilePicture() != null && !shopDetail.getUrlSmallProfilePicture().isEmpty()) {
                 GlideManager.sharedInstance().initializeGlide(context, shopDetail.getUrlSmallProfilePicture(), roundedImage, viewHolder.agentProfilePic);
-//                mPic.load(shopDetail.getUrlSmallProfilePicture())
-//                        .error(roundedImage)
-//                        .fit().centerInside()
-//                        .placeholder(R.drawable.progress_animation)
-//                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
             } else {
                 GlideManager.sharedInstance().initializeGlide(context, R.drawable.user_unknown_menu, roundedImage, viewHolder.agentProfilePic);
-//                mPic.load(R.drawable.user_unknown_menu)
-//                        .error(roundedImage)
-//                        .fit().centerInside()
-//                        .placeholder(R.drawable.progress_animation)
-//                        .transform(new RoundImageTransformation()).into(viewHolder.agentProfilePic);
             }
         }
 
-        //int profile = context.getResources().getIdentifier("R.drawable.user_unknown_menu", "drawable", context.getPackageName());
-        //viewHolder.agentProfilePic.setImageResource(R.drawable.user_unknown_menu);
-/*
-        int rate = context.getResources().getIdentifier(agentRate, "drawable", context.getPackageName());
-        viewHolder.agentRate.setImageResource(rate);
-*/
-
-        viewHolder.agentMapBtn.setOnClickListener(new View.OnClickListener() {
+        /*viewHolder.agentMapBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                viewHolder.agentMapBtn.setOnClickListener(null);
+                //ViewHolder vhViewHolder = (ViewHolder) rootView.getTag();
+                //vhViewHolder.agentMapBtn.setOnClickListener(null);
                 bbsSearchAgentActivity.onIconMapClick(position);
+
+
+
             }
-        });
-
-        /*List<String> items = Arrays.asList(agentServiceList.split("\\s*,\\s*"));
-
-        for(int y = 0; y < items.size(); y++)
-        {
-//            List<AgentService> itemList = new Select().all().from(AgentService.class).where("agent_no = ?", y).execute();
-
-            TextView services = new TextView(context);
-            services.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
-            services.setText(items.get(y) + " : YES");
-            services.setTypeface(null, Typeface.BOLD);
-            services.setPadding(4, 0, 4, 0);
-            viewHolder.agentServiceList.addView(services);
-        }*/
-
+        });*/
 
         //apply semua modifikasi ke layout
         rootView.setTag(viewHolder);
@@ -272,55 +258,5 @@ public class AgentListArrayAdapter extends BaseAdapter implements View.OnClickLi
         }
     }
 
-    //implements View.OnClickListener
-    @Override
-    public void onClick(View view)
-    {
-        if(view.getId() == agentMapBtn.getId())
-        {
-            //get object listview from view layput
-            View parentRow = (View) view.getParent(); //up 1 level to parent relative layout
-            View parentRow2 = (View) parentRow.getParent(); //up 1 level again to parent linear layout
-            ListView listView = (ListView) parentRow2.getParent(); //up 1 level again to parent list view
 
-            //get position on item list when button clicked
-
-
-            int position = listView.getPositionForView(parentRow2);
-
-            if ( this.context instanceof MainPage ) {
-                //bbsSearchAgentActivity.onIconMapClick(position);
-            } else if ( this.context instanceof BbsSearchAgentActivity ) {
-                //bbsSearchAgentActivity.onIconMapClick(position);
-                //((BbsSearchAgentActivity) this.context).dataUpdated();
-                //AgentListFragment agentListFragment
-            }
-
-            //(BbsSearchAgentActivity getActivity()).
-            //create fragment
-            /*AgentMapFragment agentMapBbsFragment  = new AgentMapFragment();
-            agentMapBbsFragment.setSingleAgent(position);
-            //((Activity)context).getFragmentManager()
-            ((AppCompatActivity)context).getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.listContent, agentMapBbsFragment).commit();
-*/
-            //update title in action bar
-            /*try
-            {
-                JSONObject object = agentLocation.getJSONObject(position);
-                //((AppCompatActivity)context).getSupportActionBar().setTitle(object.getString("name"));
-                //get object activity
-                MainAgentActivity mainBbsActivity = (MainAgentActivity)context;
-                mainBbsActivity.initializeToolbar(object.getString("name"));
-            }
-            catch (JSONException ex)
-            {
-                ex.printStackTrace();
-            }*/
-
-        }
-
-    }
 }

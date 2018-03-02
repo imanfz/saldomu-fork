@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BBSTransaksiPagerAdapter;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 /**
@@ -27,6 +29,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     private ImageView[] dots;
     private LinearLayout pager_indicator;
     private BBSTransaksiPagerAdapter mAdapter;
+    SecurePreferences sp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +61,22 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
+        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+            getActivity().finish();
+        } else {
+            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            if (!notifDataNextLogin.equals("")) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
+        }
+
         Bundle bundle = getArguments();
         if(bundle != null){
             String type = bundle.getString(DefineValue.TYPE,"");

@@ -56,6 +56,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             tx_id, amount, share_type, comm_id, benef_product_name,
             userId_source, remark, source_product_name, transaksi;
+    private Boolean retryToken=false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             remark = bundle.getString(DefineValue.REMARK);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
 
-            if(source_product_h2h.equalsIgnoreCase("Y")) {
+            if(source_product_h2h.equalsIgnoreCase("Y") && !tx_product_code.equalsIgnoreCase("MANDIRILKD") ) {
                 tvUserIdTitle.setText(getString(R.string.no_member));
             }
             else {
@@ -153,10 +154,17 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         public void onClick(View view) {
             if(InetHandler.isNetworkAvailable(getActivity())){
                 btnSubmit.setEnabled(false);
-                if(inputValidation())
-                    sentInsertTransTopup(tokenValue.getText().toString());
-                else
-                    btnSubmit.setEnabled(true);
+                if (retryToken)
+                {
+                    if(inputValidation())
+                        sentRetryToken();
+                }else {
+                    if(inputValidation())
+                        sentInsertTransTopup(tokenValue.getText().toString());
+                    else
+                        btnSubmit.setEnabled(true);
+                }
+
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
@@ -167,12 +175,12 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, token);
             params.put(WebParams.USER_ID, userID);
@@ -185,22 +193,39 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.d("isi response insertTrxSGOL:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0288")) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
                             getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
 
                         }
+//                        else if(code.equals("0288")){
+//                            Timber.d("isi error insertTrxSGOL:"+response.toString());
+//                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+//                            tokenValue.setText("");
+//                            retryToken=true;
+//                            btnSubmit.setEnabled(true);
+//                        }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }
-                        else {
+                        else if(code.equals("0061")){
                             btnSubmit.setEnabled(true);
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                        }
+                        else {
+//                            btnSubmit.setEnabled(true);
+//                            String message = response.getString(WebParams.ERROR_MESSAGE);
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
                         }
                         progdialog.dismiss();
                     } catch (JSONException e) {
@@ -244,12 +269,99 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         }
     }
 
+    private void sentRetryToken(){
+        try{
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog.show();
+
+            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_RETRY_TOKEN,
+                    userID,accessKey);
+            params.put(WebParams.TX_ID, tx_id);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.COMM_ID, comm_id);
+            params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
+            params.put(WebParams.USER_ID, userID);
+
+            Timber.d("isi params sentRetryToken:" + params.toString());
+
+            MyApiClient.sentRetryToken(getActivity(),params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("isi response sentRetryToken:"+response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+
+                        }else if(code.equals("0288")){
+                            Timber.d("isi error sent retry token:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
+                            btnSubmit.setEnabled(true);
+                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
+                            Timber.d("isi response autologout:"+response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(),message);
+                        }
+                        else {
+                            Timber.d("isi error sentRetryToken:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                        }
+                        progdialog.dismiss();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        btnSubmit.setEnabled(true);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    btnSubmit.setEnabled(true);
+                    Timber.w("Error Koneksi sentRetryToken:"+throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
     public void getTrxStatusBBS(final String userName, final String txId, final String userId){
         try{
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
+            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
                     userId,accessKey);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -280,7 +392,16 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
                                     response.optString(WebParams.MEMBER_SHOP_NAME,""));
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
+                        }
+                        else if(code.equals("0288")){
+                            Timber.d("isi error trx status bbs:"+response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            tokenValue.setText("");
+                            retryToken=true;
+                            btnSubmit.setEnabled(true);
+                        }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();

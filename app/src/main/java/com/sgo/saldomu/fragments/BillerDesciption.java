@@ -246,8 +246,8 @@ public class BillerDesciption extends Fragment {
 
             for (int i = 0; i < mListBankBiller.size(); i++) {
                 if (mListBankBiller.get(i).getProduct_code().equals(DefineValue.SCASH)) {
-//                    paymentData.add(getString(R.string.appname));
-                    tempDataPaymentName.add(getString(R.string.appname));
+                    paymentData.add(getString(R.string.appname));
+//                    tempDataPaymentName.add(getString(R.string.appname));
                     mListBankBiller.get(i).setProduct_name(getString(R.string.appname));
                 } else {
                     tempDataPaymentName.add(mListBankBiller.get(i).getProduct_name());

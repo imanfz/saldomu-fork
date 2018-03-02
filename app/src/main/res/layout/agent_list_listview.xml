@@ -65,6 +65,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
+                android:text="@string/amount_count_trx"
+                android:textSize="13sp"
+                style="@style/LastOnlineLabelAgentProfileBbs" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCountTrx"
+                style="@style/LastOnlineAgentProfileBbs" />
+
+            <!-- TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
                 android:text="@string/last_trx_agent_label"
                 android:textSize="13sp"
                 style="@style/LastOnlineLabelAgentProfileBbs" />
@@ -73,23 +87,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/agentLastOnline"
-                style="@style/LastOnlineAgentProfileBbs" />
+                style="@style/LastOnlineAgentProfileBbs" / -->
 
         </LinearLayout>
 
 
         <LinearLayout
             android:orientation="vertical"
+            android:gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="75dp" >
 
             <LinearLayout
                 android:orientation="horizontal"
+                android:layout_gravity="left"
+                android:gravity="left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/customRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:numStars="5"
+                    android:stepSize="0.5" />
+
+                <!-- ImageView
                     android:scaleType="fitXY"
                     style="@style/AddressIconAgentProfileBbs" />
 
@@ -97,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/agentAddress"
-                    style="@style/AddressAgentProfileBbs" />
+                    style="@style/AddressAgentProfileBbs" / -->
 
             </LinearLayout>
 

@@ -29,7 +29,7 @@
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
                 android:layout_weight="1"
-                android:text="Cash In by Agent"
+                android:text="@string/cash_in"
                 android:textColor="@color/grey_1000w"
                 android:textSize="@dimen/abc_text_size_medium_material"
                 android:textStyle="bold" />

@@ -14,9 +14,9 @@ class BillerRealMigration implements RealmMigration {
         RealmSchema schema = realm.getSchema();
 
         if (oldVersion == 0) {
-            RealmObjectSchema account_collection_model = schema.get("Account_Collection_Model");
-            account_collection_model.setNullable("comm_id",true);
-            oldVersion++;
+//            RealmObjectSchema account_collection_model = schema.get("Account_Collection_Model");
+//            account_collection_model.setNullable("comm_id",true);
+//            oldVersion++;
         }
     }
 }

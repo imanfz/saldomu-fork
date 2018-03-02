@@ -116,6 +116,7 @@ public class MyApiClient {
     private static String LINK_REQ_TOKEN_BILLER;
     private static String LINK_CONFIRM_BILLER;
     public static String LINK_RESENT_TOKEN_BILLER;
+    public static String LINK_RETRY_TOKEN;
     public static String LINK_UPLOAD_PROFILE_PIC;
     public static String LINK_UPLOAD_KTP;
     public static String LINK_LIST_BANK_BILLER;
@@ -263,6 +264,7 @@ public class MyApiClient {
         LINK_REQ_TOKEN_BILLER    = headaddressfinal + "RequestBiller/Invoke";
         LINK_CONFIRM_BILLER      = headaddressfinal + "ConfirmTokenBiller/Invoke";
         LINK_RESENT_TOKEN_BILLER = headaddressfinal + "ResendToken/Invoke";
+        LINK_RETRY_TOKEN = headaddressfinal + "RetryToken/Invoke";
         LINK_LIST_BANK_BILLER    = headaddressfinal + "BankBiller/Retrieve";
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
@@ -370,7 +372,7 @@ public class MyApiClient {
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
-        String googleMapsKey = getmContext().getString(R.string.google_maps_key);
+        String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
@@ -434,6 +436,7 @@ public class MyApiClient {
     public static String LINK_CONFIRM_TRANSACTION_BY_AGENT = headaodaddressfinal + "Transaction/Confirmtransactionbyagent";
     public static String LINK_TRX_ONPROGRESS_BY_AGENT = headaodaddressfinal + "Report/Onprogressagent";
     public static String LINK_UPDATE_FEEDBACK = headaodaddressfinal + "Transaction/Updatefeedback";
+    public static String LINK_CANCEL_SEARCH_AGENT = headaodaddressfinal + "Transaction/Cancelsearchagent";
 
     private static final int TIMEOUT = 600000; // 200 x 1000 = 3 menit
     public static String FLAG_OTP = "N";
@@ -1315,6 +1318,17 @@ public class MyApiClient {
     public static void NewSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address update search agent service: %1$s ",LINK_BBS_NEW_SEARCH_AGENT);
         post(mContext,LINK_BBS_NEW_SEARCH_AGENT, params, responseHandler);
+    }
+
+    public static void sentRetryToken(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent retry token: %1$s ", LINK_RETRY_TOKEN);
+        post(mContext, LINK_RETRY_TOKEN, params, responseHandler);
+    }
+
+    public static void cancelSearchAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+
+        Timber.wtf("address cancel search agent: %1$s ", LINK_CANCEL_SEARCH_AGENT);
+        post(mContext,LINK_CANCEL_SEARCH_AGENT, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------

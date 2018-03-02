@@ -382,6 +382,16 @@
         </service>
         <receiver android:name=".receivers.FcmReceiver">
         </receiver>
+        <receiver
+            android:name=".receivers.LocationProviderChangedReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.location.PROVIDERS_CHANGED" />
+                <action android:name="com.sgo.saldomu.INTENT_ACTION_LOCATION_DATA" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".activities.BbsNewSearchAgentActivity"
             android:configChanges="orientation"

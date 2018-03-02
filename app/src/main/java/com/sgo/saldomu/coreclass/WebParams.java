@@ -492,4 +492,6 @@ public class WebParams {
     public static String RATING         = "rating";
     public static String PROFILE_PICTURE    = "profile_picture";
     public static String OFFSET    = "offset";
+    public static String TX_REMARKS = "tx_remarks";
+    public static String MEMBER_MAX_RATING  = "member_max_rating";
 }
