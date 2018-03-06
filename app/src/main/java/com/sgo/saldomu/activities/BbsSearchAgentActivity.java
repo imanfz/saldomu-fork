@@ -127,7 +127,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private String errorDesc, gcmId;
     private Address searchLocation;
 
-    private boolean backStatus = false;
+    private boolean backStatus = false, isAllowed = false, isCalled = false;
     private LocationRequest mLocationRequest;
 
     Intent locationIntent;
@@ -223,7 +223,37 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
     }
 
+    public void initializeApp() {
+        try {
+            if (checkPlayServices()) {
+                buildGoogleApiClient();
+                createLocationRequest();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
+            currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
+            currentLongitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LONGITUDE, 0.0);
+
+        }
+
+        menuItems           = getResources().getStringArray(R.array.list_tab_bbs_search_agent);
+        tabPageAdapter      = new TabSearchAgentAdapter(getSupportFragmentManager(), getApplicationContext(), menuItems, shopDetails, currentLatitude, currentLongitude, mobility, completeAddress);
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(tabPageAdapter);
+    }
+
     public void runningApp() {
+
+        if ( isCalled ) {
+            return;
+        } else {
+            isCalled = true;
+        }
 
         if ( intentData.hasExtra(DefineValue.LAST_CURRENT_LATITUDE) ) {
             currentLatitude = intentData.getDoubleExtra(DefineValue.LAST_CURRENT_LATITUDE, 0.0);
@@ -260,6 +290,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                 Timber.d("Masuk Sini runningApp()");
                 //searchToko(currentLatitude, currentLongitude);
+
                 getCompleteLocationAddress();
             }
         }
@@ -358,6 +389,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 //getCompleteLocationAddress();
                 //searchToko(lastLocation.getLatitude(), lastLocation.getLongitude());
                 googleApiClient.disconnect();
+
                 //LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
             }
         } catch (SecurityException se) {
@@ -563,7 +595,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             completeAddress += provinceName;
                         }
 
-                        searchToko(currentLatitude, currentLongitude);
+                        if ( isAllowed )
+                            searchToko(currentLatitude, currentLongitude);
 
                     }
 
@@ -1258,7 +1291,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                         }
 
-                        //viewPager.getAdapter().notifyDataSetChanged();
                         new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
 
                     } catch (JSONException e) {
@@ -1382,8 +1414,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                         mEditor.putString(DefineValue.AMOUNT, amount);
                         mEditor.apply();
 
-                        //searchToko(currentLatitude, currentLongitude);
-                        getCompleteLocationAddress();
+                        searchToko(currentLatitude, currentLongitude);
+
+
                     }
                 } else {
 
@@ -1596,6 +1629,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             if ( !GlobalSetting.isLocationEnabled(this) ) {
                 showAlertEnabledGPS();
             } else {
+
+                isAllowed = true;
                 try {
                     if (checkPlayServices()) {
                         buildGoogleApiClient();
@@ -1607,7 +1642,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                 }
 
                 Timber.d("Masuk Sini methodRequiresTwoPermission");
-                runningApp();
+
             }
 
         } else {
@@ -1615,6 +1650,8 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_location_phone_sms),
                     RC_LOCATION_PHONE_SMS, perms);
         }
+
+        runningApp();
     }
 
     @Override
@@ -1678,6 +1715,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     if (intentData.getStringExtra(DefineValue.IS_AUTOSEARCH).equals(DefineValue.STRING_YES) ) {
                         if (EasyPermissions.hasPermissions(this, perms)) {
                             Timber.d("Masuk Sini onActivityResult");
+                            isAllowed = true;
                             runningApp();
                         }
                     }
