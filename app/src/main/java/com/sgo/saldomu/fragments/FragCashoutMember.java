@@ -50,8 +50,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
-
 import timber.log.Timber;
 
 /**
@@ -708,7 +706,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
 
     private void showReportBillerDialog(String datetime, String txStatus, String txRemark) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userID);
         args.putString(DefineValue.DATE_TIME, datetime);

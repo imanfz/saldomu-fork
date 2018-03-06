@@ -402,7 +402,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
                                         String txRemark, String _amount) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
         args.putString(DefineValue.DATE_TIME, date);
         args.putString(DefineValue.TX_ID, txId);

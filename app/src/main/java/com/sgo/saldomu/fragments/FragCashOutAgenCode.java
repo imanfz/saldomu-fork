@@ -242,7 +242,7 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
 
     private void showReportBillerDialog(String datetime, String txStatus, String txRemark) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, tx_id);
         args.putString(DefineValue.USERID_PHONE, userid);
         args.putString(DefineValue.DATE_TIME, datetime);

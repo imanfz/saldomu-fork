@@ -888,7 +888,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.STATUS, status);
         args.putString(DefineValue.REASON, reason);
 
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         dialog.setArguments(args);
         dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
@@ -948,7 +948,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     }
 
     private void showBillerDialog(Bundle args, String txStatus, String txRemark){
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
         Boolean txStat = false;
         if (txStatus.equals(DefineValue.SUCCESS)){

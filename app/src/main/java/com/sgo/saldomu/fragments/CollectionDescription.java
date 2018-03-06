@@ -568,7 +568,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     private void showReportBillerDialog(String userName,String date, String userId,String _bank_name, String _product_name,
                                         String _tx_id,String _remark,String txStatus,String txRemark, String _amount) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.USERID_PHONE, userId);
