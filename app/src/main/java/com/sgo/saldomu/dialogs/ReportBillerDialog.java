@@ -62,15 +62,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         void onOkButton();
     }
 
-    public static ReportBillerDialog newInstance() {
+    public static ReportBillerDialog newInstance(OnDialogOkCallback listener) {
         ReportBillerDialog f = new ReportBillerDialog();
         Bundle bundle = new Bundle();
         bundle.putBoolean(DefineValue.IS_ACTIVE,true);
+        f.callback = listener;
         f.setArguments(bundle);
         return f;
     }
-
-
     public ReportBillerDialog() {
         // Empty constructor required for DialogFragment
     }
@@ -81,14 +80,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         this.isActivity = getArguments().getBoolean(DefineValue.IS_ACTIVE,false);
 
-        try {
-            if (isActivity)
-                callback = (OnDialogOkCallback) getActivity();
-            else
-                callback = (OnDialogOkCallback) getTargetFragment();
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
-        }
+//        try {
+//            if (isActivity)
+//                callback = (OnDialogOkCallback) getActivity();
+//            else
+//                callback = (OnDialogOkCallback) getTargetFragment();
+//        } catch (ClassCastException e) {
+//            throw new ClassCastException("Calling fragment must implement DialogClickListener interface");
+//        }
 
         if (viewToBitmap == null)
             viewToBitmap = new ViewToBitmap(getContext());

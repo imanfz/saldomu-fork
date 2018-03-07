@@ -471,7 +471,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
                                         JSONObject response) throws JSONException {
 
-        ReportBillerDialog dialog = ReportBillerDialog.newInstance();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         Bundle args = dialog.getArguments();
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME,date);

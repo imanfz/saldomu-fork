@@ -535,7 +535,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     private void showReportBillerDialog(String userName, String date,String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME, date);
         args.putString(DefineValue.TX_ID, txId);
@@ -572,7 +572,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

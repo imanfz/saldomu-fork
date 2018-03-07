@@ -2,13 +2,11 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +26,15 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.BaseActivityOTP;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ErrorDefinition;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
@@ -274,7 +280,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                                         String _accName, String _nominal, String _fee,String _totalAmount) {
 
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME,_name);
         args.putString(DefineValue.DATE_TIME,_date);
         args.putString(DefineValue.USERID_PHONE,_userId);
@@ -288,7 +294,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 

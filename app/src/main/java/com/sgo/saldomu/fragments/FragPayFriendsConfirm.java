@@ -355,7 +355,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                                         String fee,String totalAmount, String message, String errorRecipients) {
 
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME,name);
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.TX_ID,txId);
@@ -370,7 +370,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 

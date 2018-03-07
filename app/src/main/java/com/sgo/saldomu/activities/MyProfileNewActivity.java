@@ -260,7 +260,7 @@ public class MyProfileNewActivity extends BaseActivity {
         {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
-            tv_verified_member.setText("Data Verfied Member Sudah Terverifikasi");
+            tv_verified_member.setText("Data Verified Member Sudah Terverifikasi");
             dataVerifiedMember.setVisibility(View.GONE);
             cameraKTP.setEnabled(false);
             selfieKTP.setEnabled(false);
