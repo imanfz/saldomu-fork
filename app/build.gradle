@@ -26,13 +26,13 @@ android {
             storeFile file('saldomu-key.jks')
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.sgo.saldomu"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -47,8 +47,12 @@ android {
     android {
         useLibrary 'org.apache.http.legacy'
     }
+
+    flavorDimensions "mode"
+
     productFlavors {
         development {
+            dimension "mode"
             applicationId "com.sgo.saldomudev"
             resValue "string", "appname", "DEV Saldomu"
             resValue "string", "dbname", "DevSaldomu.db"
@@ -75,6 +79,7 @@ android {
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
         production {
+            dimension "mode"
             applicationId "com.sgo.saldomu"
             resValue "string", "appname", "Saldomu"
             resValue "string", "dbname", "saldomu.db"
@@ -98,8 +103,8 @@ android {
             buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 9
-            versionName "1.7"
+            versionCode = 10
+            versionName "1.8"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
@@ -122,20 +127,15 @@ android {
         } else {
             fileName = "Saldomu"
         }
-        variant.outputs.each { output ->
-            def apk = output.outputFile;
+        variant.outputs.all { output ->
             def newName = fileName + "-${variant.mergedFlavor.versionName}"
             if (variant.buildType.name.contains("release")) {
-//                newName += "-${variant.buildType.versionNameSuffix}"
                 newName += "- release"
             } else {
                 newName += "- debug"
             }
 
-//            if (output.zipAlign) {
-//                output.zipAlign.outputFile = new File((File) apk.parentFile, newName + '.apk');
-//            }
-            output.packageApplication.outputFile = new File((File) apk.parentFile, newName + ".apk")
+            outputFileName = newName+".apk"
         }
     }
 }
@@ -150,7 +150,7 @@ dependencies {
 
     //Android lib
     //UI UX
-    
+
 
     //Utilitize
     //ORM
@@ -163,12 +163,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.google.code.findbugs'
     })
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:customtabs:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:cardview-v7:26.0.2'
+    compile 'com.android.support:customtabs:26.0.2'
+    compile 'com.android.support:recyclerview-v7:26.0.2'
+    compile 'com.android.support:appcompat-v7:26.0.2'
+    compile 'com.android.support:support-v4:26.0.2'
+    compile 'com.android.support:design:26.0.2'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile 'com.balysv:material-ripple:1.0.2'
@@ -183,7 +183,7 @@ dependencies {
     compile 'com.squareup:android-times-square:1.6.5@aar'
     compile 'in.srain.cube:ultra-ptr:1.0.11'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
-    compile 'com.klinkerapps:android-chips:1.0.1@aar'
+    compile 'com.klinkerapps:android-chips:1.3.0@aar'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
     compile 'commons-codec:commons-codec:1.10'
@@ -212,5 +212,7 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:25.3.1'
     androidTestCompile 'com.android.support.test:runner:0.5'
     androidTestCompile 'com.android.support.test:rules:0.5'
+
+    compile 'com.android.support:multidex:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

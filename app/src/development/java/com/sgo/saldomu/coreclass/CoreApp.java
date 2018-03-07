@@ -12,9 +12,7 @@ import android.support.multidex.MultiDex;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
-
 import com.facebook.stetho.Stetho;
-
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.securepreferences.SecurePreferences;
@@ -28,7 +26,6 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ErrorActivity;
-import com.sgo.saldomu.fcm.GooglePlayUtils;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -64,7 +61,7 @@ public class CoreApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //MultiDex.install(this);
+
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
@@ -158,6 +155,8 @@ public class CoreApp extends Application {
             }
         },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
     }
+
+
 
     private void deleteBundledRealmFile(String outFileName) {
         File file = new File(this.getFilesDir(), outFileName);

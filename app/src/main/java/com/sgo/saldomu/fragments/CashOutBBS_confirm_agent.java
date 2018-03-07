@@ -486,7 +486,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
                                         String member_shop_name) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME, date);
         args.putString(DefineValue.TX_ID, txId);
@@ -528,7 +528,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         args.putString(DefineValue.PRODUCT_NAME, bankProduct);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
