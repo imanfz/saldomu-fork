@@ -736,7 +736,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this, 0);
+//        dialog.setTargetFragment(this, 0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

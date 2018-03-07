@@ -953,7 +953,7 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         args.putString(DefineValue.PRODUCT_NAME, product_name);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

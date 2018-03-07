@@ -439,7 +439,7 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this, 0);
+//        dialog.setTargetFragment(this, 0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

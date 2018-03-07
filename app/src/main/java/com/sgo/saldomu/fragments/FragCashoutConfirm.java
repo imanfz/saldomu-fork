@@ -294,7 +294,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 

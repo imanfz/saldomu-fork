@@ -970,7 +970,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
 
     }

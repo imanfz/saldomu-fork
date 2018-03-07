@@ -717,7 +717,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         args.putString(DefineValue.OTP_MEMBER, otp_member);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

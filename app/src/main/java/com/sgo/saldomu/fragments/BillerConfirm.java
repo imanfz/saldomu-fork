@@ -855,7 +855,7 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         }
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this, 0);
+//        dialog.setTargetFragment(this, 0);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
         ft.add(dialog, ReportBillerDialog.TAG);
         ft.commitAllowingStateLoss();

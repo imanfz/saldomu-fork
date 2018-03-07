@@ -370,7 +370,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 

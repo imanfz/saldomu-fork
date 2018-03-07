@@ -572,7 +572,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
