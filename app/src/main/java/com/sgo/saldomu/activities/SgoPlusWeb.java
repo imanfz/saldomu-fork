@@ -91,7 +91,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
         //if(MyApiClient.PROD_FAILURE_FLAG && topUpType.equals(CoreApp.PULSA))masterDomainSGOplus = prodDomainSGOPlus;
         if(MyApiClient.IS_PROD){
-            if(bankCode.equals("008"))masterDomainSGOplus = prodDomainSGOPlusMandiri;
+            if(bankCode.equals("008"))masterDomainSGOplus = prodDomainSGOPlus;
             else masterDomainSGOplus = prodDomainSGOPlus;
         }
         else masterDomainSGOplus = devDomainSGOPlus;
