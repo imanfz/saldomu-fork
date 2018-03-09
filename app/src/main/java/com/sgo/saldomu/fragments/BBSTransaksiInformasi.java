@@ -52,6 +52,7 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.ConfirmationDialog;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
@@ -76,7 +77,7 @@ import timber.log.Timber;
  * Created by thinkpad on 4/21/2017.
  */
 
-public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.PermissionCallbacks {
+public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.PermissionCallbacks, ConfirmationDialog.clickListener {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
     private static final int RC_READ_PHONE_STATE = 122;
@@ -395,20 +396,20 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                         if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
                             initializeSmsClass();
                             if (isSimExist)
-                                SubmitAction();
+                                SubmitAction(true);
                         } else {
                             // Ask for one permission
                             EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_phone_state),
                                     RC_READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
                         }
                     } else {
-                        SubmitAction();
+                        SubmitAction(true);
                     }
                 }
                 else {
 //                    btnNext.setEnabled(false);
                     if (inputValidation()) {
-                        sentInsertA2C();
+                        SubmitAction(false);
                     }
                     else btnNext.setEnabled(true);
                 }
@@ -417,10 +418,29 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         }
     };
 
-    private void SubmitAction(){
+    private void SubmitAction(boolean isCashin){
 //        btnNext.setEnabled(false);
         if (inputValidation()) {
-            sentInsertC2A();
+            ConfirmationDialog dialog;
+            if (isCashin){
+                dialog = ConfirmationDialog.newDialog(this
+                        , amount
+                        , benef_product_name
+                        , source_product_name
+                        , etNoHp.getText().toString()
+                        , etRemark.getText().toString());
+            }else {
+                dialog = ConfirmationDialog.newDialog(this
+                        , amount
+                        , source_product_name
+                        , benef_product_name
+                        , no_source
+                        , etRemark.getText().toString());
+            }
+
+            dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
+
+
         }
         else
             btnNext.setEnabled(true);
@@ -1239,7 +1259,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         if(requestCode == RC_READ_PHONE_STATE){
             initializeSmsClass();
             if(isSimExist)
-                SubmitAction();
+                SubmitAction(true);
         }
         else if(requestCode == RC_SEND_SMS ){
             smsDialog.sentSms();
@@ -1283,6 +1303,14 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             }
         }
         return true;
+    }
+
+    @Override
+    public void onOK() {
+        if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            sentInsertC2A();
+        }else
+            sentInsertA2C();
     }
 
     @Override
