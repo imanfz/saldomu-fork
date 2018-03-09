@@ -157,6 +157,95 @@ public class UtilsLoader {
         }
     }
 
+    public void getDataPoin(Boolean is_auto,final OnLoadDataListener mListener){
+        try{
+            String member_id = sp.getString(DefineValue.MEMBER_ID, "");
+            String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
+            if(!member_id.isEmpty() && !access_key.isEmpty()) {
+                RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PROD_UNIK, MyApiClient.LINK_POIN,
+                        sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
+                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PROD_UNIK);
+
+                Timber.d("isi params get Poin Loader:" + params.toString());
+                if (!member_id.isEmpty()) {
+                    MyApiClient.getPoin(getmActivity(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("Isi response getPoin Loader:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.v("masuk sini new balance poin caller Loader");
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.BALANCE_POIN, response.optString(WebParams.BALANCE, ""));
+                                    mEditor.apply();
+
+                                    mListener.onSuccess(true);
+                                    Intent i = new Intent(BalanceService.INTENT_ACTION_POIN);
+                                    LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    if (getmActivity().isFinishing()) {
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getmActivity(), message);
+                                    }
+                                }else if (code.equals("0003"))
+                                {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.BALANCE_POIN, "0");
+                                    mEditor.apply();
+
+                                    mListener.onSuccess(true);
+                                    Intent i = new Intent(BalanceService.INTENT_ACTION_POIN);
+                                    LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
+                                }
+                                else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(DefineValue.ERROR, code);
+                                    bundle.putString(DefineValue.ERROR_CODE, response.getString(WebParams.ERROR_CODE));
+                                    mListener.onFail(bundle);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            failure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            failure(throwable);
+                        }
+
+                        private void failure(Throwable throwable) {
+                            Timber.w("Error Koneksi get Saldo Loader:" + throwable.toString());
+                            mListener.onFailure(throwable.toString());
+                        }
+                    });
+                }
+            }
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
     public void getFailedPIN(String user_id , final OnLoadDataListener mListener){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GET_FAILED_PIN,

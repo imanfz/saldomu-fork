@@ -171,6 +171,7 @@
     <string name="showcase">Check out the\nNotification Action View</string>
     <string name="header_menu_balance">Saldo : </string>
     <string name="balance">Saldo</string>
+    <string name="point">Poin</string>
 
     <string name="menu_group_title_main_menu">Menu Utama</string>
     <string name="menu_item_title_home">Beranda</string>
@@ -1169,4 +1170,11 @@
     <string name="canceled_trx_reason">ALASAN BATAL</string>
     <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
     <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
+
+    <string name="toolbar_title_askbyqr">Minta Uang > Kode QR</string>
+    <string name="generate_qr_code_text">Silakan scan kode QR di bawah dengan menggunakan smartphone Anda</string>
+    <string name="generate_qr_code">Buat Kode QR</string>
+    <string name="toolbar_title_payfriendbyqr">Bayar Teman > Scan Kode QR</string>
+    <string name="alert_scan_qr_code">Kode QR Tidak Sesuai</string>
+    <string name="scan_qr_code_text">Silakan Scan Kode QR \n Pada Area Yang Disediakan</string>
 </resources>

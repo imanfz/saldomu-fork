@@ -195,6 +195,7 @@
                         android:nextFocusDown="@+id/askformoney_value_amount"
                         android:hint="@string/askformoney_hint_recipients"
                         android:textSize="@dimen/abc_text_size_medium_material"
+                        android:drawableRight="@drawable/qr_icon"
                         android:minHeight="58dp"/>
             </LinearLayout>
 

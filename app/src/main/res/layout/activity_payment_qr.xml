@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true">
+
+    <include android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main"/>
+
+        <cn.bingoogolapple.qrcode.zbar.ZBarView
+            android:id="@+id/zbarview"
+            android:layout_below="@id/main_toolbar"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            app:qrcv_animTime="1000"
+            app:qrcv_borderColor="@android:color/white"
+            app:qrcv_borderSize="1dp"
+            app:qrcv_cornerColor="@color/colorPrimaryDark"
+            app:qrcv_cornerLength="20dp"
+            app:qrcv_cornerSize="3dp"
+            app:qrcv_isShowDefaultScanLineDrawable="true"
+            app:qrcv_maskColor="@color/black"
+            app:qrcv_rectWidth="300dp"
+            app:qrcv_scanLineColor="@color/colorPrimaryDark"
+            app:qrcv_topOffset="90dp" />
+
+        <include layout="@layout/view_control" />
+</RelativeLayout>

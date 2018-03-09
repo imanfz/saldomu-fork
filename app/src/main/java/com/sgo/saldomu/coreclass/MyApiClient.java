@@ -233,6 +233,8 @@ public class MyApiClient {
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
+    public static String LINK_POIN;
+
     public void InitializeAddress(){
         LINK_REGISTRASI          = headaddressfinal + "RegisterCustomer/Invoke";
         LINK_REG_STEP1           = headaddressfinal + "RegStep1/Invoke";
@@ -246,6 +248,7 @@ public class MyApiClient {
         LINK_RESEND_TOKEN_SGOL   = headaddressfinal + "InquiryResendToken/Invoke";
         LINK_INSERT_TRANS_TOPUP  = headaddressfinal + "InsertTrx/Invoke";
         LINK_SALDO               = headaddressfinal + "Balance/Retrieve";
+        LINK_POIN                = headaddressfinal + "BalanceNew/Retrieve";
         //LINK_BANK_LIST           = headaddressfinal + "BankList/Retrieve";
         LINK_BANK_LIST           = headaddressfinal + "BankMember/Retrieve";
         LINK_REQ_TOKEN_REGIST    = headaddressfinal + "ResendTokenCust/Invoke";
@@ -446,6 +449,10 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
 
+
+    public static String COMM_ID_UNIK_DEV = "EMOEDIKK21451880774SHE7L";  //unik dev untuk Mandiri Ecash
+    public static String COMM_ID_PROD_UNIK = "EMOEDIKK1450692888Y4AYU";   //unik prod untuk Mandiri Ecash
+
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
 
@@ -641,6 +648,11 @@ public class MyApiClient {
     public static void getSaldo(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Saldo: %1$s ",LINK_SALDO);
         post(mContext,LINK_SALDO, params, responseHandler);
+    }
+
+    public static void getPoin(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Get Poin: %1$s ",LINK_POIN);
+        post(mContext,LINK_POIN, params, responseHandler);
     }
 
     public static void getBankList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

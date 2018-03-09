@@ -196,7 +196,9 @@
                         android:digits="abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                         android:hint="@string/payfriends_hint_recipients"
                         android:textSize="@dimen/abc_text_size_medium_material"
-                        android:minHeight="58dp"/>
+                        android:minHeight="58dp"
+                        android:drawableRight="@drawable/qr_icon"/>
+
             </LinearLayout>
 
             <LinearLayout android:layout_width="match_parent"

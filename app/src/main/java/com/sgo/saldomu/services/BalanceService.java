@@ -24,6 +24,7 @@ import timber.log.Timber;
 public class BalanceService extends Service {
 
     public static final String INTENT_ACTION_BALANCE = "com.sgo.saldomu.INTENT_ACTION_BALANCE";
+    public static final String INTENT_ACTION_POIN = "com.sgo.saldomu.INTENT_ACTION_POIN";
 
     private final IBinder testBinder = new MyLocalBinder();
     private boolean isServiceDestroyed;
@@ -60,6 +61,22 @@ public class BalanceService extends Service {
                 @Override
                 public void onSuccess(Object deData) {
                     Timber.d("runBalance service onsuccess");
+                }
+
+                @Override
+                public void onFail(Bundle message) {
+
+                }
+
+                @Override
+                public void onFailure(String message) {
+
+                }
+            });
+            mBl.getDataPoin(true,new OnLoadDataListener() {
+                @Override
+                public void onSuccess(Object deData) {
+                    Timber.d("runDataPoin service onsuccess");
                 }
 
                 @Override

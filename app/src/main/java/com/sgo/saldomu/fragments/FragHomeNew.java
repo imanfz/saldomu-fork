@@ -44,6 +44,7 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.PoinFormat;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -70,7 +71,7 @@ import timber.log.Timber;
 public class FragHomeNew extends BaseFragmentMainPage {
     GridView GridHome;
     Button btn_beli;
-    TextView tv_saldo;
+    TextView tv_saldo, tv_poin;
     EditText input;
     TextView tv_pulsa;
     TextView tv_bpjs;
@@ -131,6 +132,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+        filter.addAction(BalanceService.INTENT_ACTION_POIN);
 
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
     }
@@ -142,6 +144,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         v = inflater.inflate(R.layout.frag_home_new, container, false);
         GridHome=(GridView)v.findViewById(R.id.grid);
         tv_saldo = (TextView)v.findViewById(R.id.tv_saldo);
+        tv_poin = (TextView)v.findViewById(R.id.tv_poin);
         swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
         llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
         return v;
@@ -505,6 +508,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
 
         RefreshSaldo();
+        RefreshPoin();
         if(levelClass != null)
             levelClass.refreshData();
     }
@@ -612,6 +616,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
         tv_saldo.setText(CurrencyFormat.format(balance));
     }
 
+    private void RefreshPoin(){
+        String balance_poin = sp.getString(DefineValue.BALANCE_POIN,"0");
+        tv_poin.setText(PoinFormat.format(balance_poin));
+    }
+
 
     @Override
     protected int getInflateFragmentLayout() {
@@ -640,6 +649,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         public void onReceive(Context context, Intent intent) {
             Timber.d("receiver service balance");
             RefreshSaldo();
+            RefreshPoin();
 
             String action = intent.getAction();
             if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {

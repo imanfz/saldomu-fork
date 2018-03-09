@@ -1,19 +1,24 @@
 package com.sgo.saldomu.fragments;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.util.Rfc822Tokenizer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -37,10 +42,13 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.AskForMoneyQRActivity;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.EasyPermissionInit;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -57,38 +65,44 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
  * Created by thinkpad on 3/17/2015.
  */
-public class FragAskForMoney extends Fragment {
+public class FragAskForMoney extends Fragment implements InformationDialog.OnDialogOkCallback, EasyPermissions.PermissionCallbacks{
 
-    private View v;
-    private ImageView imgProfile;
-    private ImageView imgRecipients;
-    private TextView txtName;
-    private TextView txtNumberRecipients;
-    private RecipientEditTextView phoneRetv;
-    private Spinner sp_privacy;
-    private Button btnRequestMoney;
-    private EditText etAmount;
-    private EditText etMessage;
-    private String _memberId;
-    private String _userid;
-    private String accessKey;
-    private ProgressDialog progdialog;
-
-    private int privacy;
-    private int max_member_trans;
+    View v;
+    ImageView imgProfile, imgRecipients;
+    TextView txtName,txtNumberRecipients;
+    RecipientEditTextView phoneRetv;
+    Spinner sp_privacy;
+    Button btnRequestMoney;
+    EditText etAmount, etMessage;
+    String _memberId, _userid,accessKey;
+    ProgressDialog progdialog;
+    Boolean isFacebook = false;
+    int privacy,max_member_trans;
     private InformationDialog dialogI;
+    SecurePreferences sp;
+    DrawableRecipientChip[] chips;
+    int memberLevel;
 
-    private SecurePreferences sp;
-    private DrawableRecipientChip[] chips;
-    private int memberLevel;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,8 +110,8 @@ public class FragAskForMoney extends Fragment {
         v = inflater.inflate(R.layout.frag_ask_for_money, container, false);
         return v;
     }
-	
-	@Override
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
@@ -128,6 +142,25 @@ public class FragAskForMoney extends Fragment {
         imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
         txtName = (TextView) v.findViewById(R.id.txtName);
         phoneRetv = (RecipientEditTextView) v.findViewById(R.id.phone_retv);
+
+        phoneRetv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+//                final int DRAWABLE_LEFT = 0;
+//                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+//                final int DRAWABLE_BOTTOM = 3;
+
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getRawX() >= (phoneRetv.getRight() - phoneRetv.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        Intent i = new Intent(getActivity(), AskForMoneyQRActivity.class);
+                        switchActivity(i);
+                    }
+                }
+                return false;
+            }
+        });
+
         etAmount = (EditText) v.findViewById(R.id.askformoney_value_amount);
         etAmount.addTextChangedListener(jumlahChangeListener);
         etMessage = (EditText) v.findViewById(R.id.askformoney_value_message);
@@ -153,9 +186,15 @@ public class FragAskForMoney extends Fragment {
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
 
         phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, getActivity().getApplicationContext());
-        phoneRetv.setAdapter(adapter);
+
+        String[] perms = {Manifest.permission.READ_CONTACTS};
+        if (EasyPermissionInit.sharedInstance().initEasyPermission(this, perms
+                , DefineValue.PERMISSIONS_READ_CONTACTS
+                , getString(R.string.cancel_permission_read_contacts)))
+            setBaseRecipAdapter();
+
         phoneRetv.dismissDropDownOnItemSelected(true);
+        phoneRetv.setThreshold(1);
 
         btnRequestMoney.setOnClickListener(btnRequestMoneyListener);
 
@@ -186,11 +225,33 @@ public class FragAskForMoney extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Timber.d("on Text Change:"+s.toString());
+                boolean retval = s.toString().contains("@");
+
+                if(retval)
+                {
+                    Timber.d("denny benarrrr");
+
+                    phoneRetv.setTokenizer(new Rfc822Tokenizer());
+                    final BaseRecipientAdapter adapter =new BaseRecipientAdapter(getActivity().getApplicationContext());
+                    phoneRetv.setAdapter(adapter);
+                    phoneRetv.dismissDropDownOnItemSelected(true);
+                    phoneRetv.setThreshold(1);
+                }
+                else
+                {
+                    phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+                    final BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, getActivity().getApplicationContext());
+                    phoneRetv.setAdapter(adapter);
+                    phoneRetv.dismissDropDownOnItemSelected(true);
+                    phoneRetv.setThreshold(1);
+                }
+
                 if (phoneRetv.hasFocus()) {
                     if (phoneRetv.getSortedRecipients().length == 0) {
                         txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
                     } else {
-                        txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+                        txtNumberRecipients.setTextColor(getResources().getColor(R.color.grey_1000b));
                     }
                     txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
                 }
@@ -206,9 +267,9 @@ public class FragAskForMoney extends Fragment {
         if(bundle != null) {
             final String name = bundle.getString("name");
             final String phone = bundle.getString("phone");
-			
-            //phoneRetv.submitItem(name, phone);
-			phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+
+            phoneRetv.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     phoneRetv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -216,17 +277,37 @@ public class FragAskForMoney extends Fragment {
                 }
 
             });
-            txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            txtNumberRecipients.setTextColor(getResources().getColor(R.color.grey_1000b));
             txtNumberRecipients.setText(String.valueOf(phoneRetv.getSortedRecipients().length));
         }
 
-        dialogI = InformationDialog.newInstance(6);
-        dialogI.setTargetFragment(this,0);
+        dialogI = InformationDialog.newInstance(this,6);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        if (requestCode == DefineValue.PERMISSIONS_READ_CONTACTS) {
+            setBaseRecipAdapter();
+        }
+    }
 
-    private TextWatcher jumlahChangeListener = new TextWatcher() {
+    private void setBaseRecipAdapter(){
+        BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, getActivity().getApplicationContext());
+        phoneRetv.setAdapter(adapter);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
+    }
+
+    TextWatcher jumlahChangeListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -250,11 +331,16 @@ public class FragAskForMoney extends Fragment {
         }
     };
 
-    private void setNumberRecipients(){
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void setNumberRecipients(){
         if (phoneRetv.getSortedRecipients().length == 0) {
             txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
         } else {
-            txtNumberRecipients.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+            txtNumberRecipients.setTextColor(getResources().getColor(R.color.grey_1000b));
         }
 
         if(phoneRetv.length() == 0)
@@ -292,6 +378,11 @@ public class FragAskForMoney extends Fragment {
         }
     };
 
+    @Override
+    public void onOkButton() {
+
+    }
+
     private class TempObjectData{
 
         private String send_to;
@@ -308,7 +399,7 @@ public class FragAskForMoney extends Fragment {
 
     }
 
-    private Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
+    Button.OnClickListener btnRequestMoneyListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (InetHandler.isNetworkAvailable(getActivity())) {
@@ -363,14 +454,14 @@ public class FragAskForMoney extends Fragment {
         }
     };
 
-    private boolean isAlpha(String name) {
+    public boolean isAlpha(String name) {
         Pattern p = Pattern.compile("[a-zA-Z]");
         Matcher m = p.matcher(name);
         return m.find();
     }
 
 
-    private void sentData(final String _message, final String _data){
+    public void sentData(final String _message, final String _data){
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -410,7 +501,7 @@ public class FragAskForMoney extends Fragment {
                                     }
                                 }
                                 amount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(mArrayData.getJSONObject(0).getString(WebParams.AMOUNT));
-                                messageDialog = getString(R.string.askfriends_dialog_text_recipient)+" : "+recipient_name+"\n"+
+                                messageDialog = getString(R.string.askformoney_text_recipients)+" : "+recipient_name+"\n"+
                                         getString(R.string.askfriends_dialog_text_amount)+" : "+amount+"\n"+
                                         getString(R.string.askfriends_dialog_text_desc)+" : "+_message+"\n";
                             } catch (JSONException e) {
@@ -471,7 +562,7 @@ public class FragAskForMoney extends Fragment {
         }
     }
 
-    private void preDialog(final String _message, final String _data){
+    void preDialog(final String _message, final String _data){
         String message = getString(R.string.askfriends_predialog_msg1)+" "+chips.length+" "+getString(R.string.askfriends_predialog_msg2);
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.askfriends_predialog_title))
@@ -490,7 +581,7 @@ public class FragAskForMoney extends Fragment {
     }
 
 
-    private void showDialog(String messageDialog) {
+    void showDialog(String messageDialog) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -533,7 +624,7 @@ public class FragAskForMoney extends Fragment {
         dialog.show();
     }
 
-    private boolean inputValidation(){
+    public boolean inputValidation(){
         if(phoneRetv.getText().toString().length()==0){
             phoneRetv.requestFocus();
             phoneRetv.setError(getString(R.string.payfriends_recipients_validation));
@@ -559,7 +650,7 @@ public class FragAskForMoney extends Fragment {
         return true;
     }
 
-    private void setImageProfPic(){
+    public void setImageProfPic(){
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
@@ -572,11 +663,7 @@ public class FragAskForMoney extends Fragment {
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
 
-//        Picasso mPic;
-//        if(MyApiClient.PROD_FLAG_ADDRESS)
-//            mPic = MyPicasso.getUnsafeImageLoader(getActivity());
-//        else
-//            mPic= Picasso.with(getActivity());
+
 
         if(_url_profpic != null && _url_profpic.isEmpty()){
             GlideManager.sharedInstance().initializeGlide(getActivity(), R.drawable.user_unknown_menu, roundedImage, imgProfile);
@@ -588,5 +675,13 @@ public class FragAskForMoney extends Fragment {
         }
     }
 
+    private void switchActivity(Intent mIntent){
+        if (getActivity() == null)
+            return;
+
+        /*MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);*/
+        getActivity().startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+    }
 }
 

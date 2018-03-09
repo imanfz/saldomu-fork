@@ -1436,6 +1436,10 @@ public class MainPage extends BaseActivity {
         switchActivity(i, ACTIVITY_RESULT);
     }
 
+    public void setTitleFragment(String title){
+        setActionBarTitle(title);
+    }
+
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }

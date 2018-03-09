@@ -507,5 +507,14 @@ public class DefineValue {
     public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
     public static String OFFSET    = "offset";
     public static String CODE_SUCCESS    = "code_success";
+
+    public static String NAME_RECIPIENT = "nameRecipient";
+
+    public static final int PERMISSIONS_REQ_CAMERA = 124;
+    public static final int PERMISSIONS_READ_CONTACTS = 126;
+    public static final int PERMISSIONS_REQ_WRITEEXTERNALSTORAGE = 123;
+
+
+    public static String BALANCE_POIN= "balancePoin";
 }
 
