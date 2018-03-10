@@ -302,11 +302,19 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
                     String fee="",va="";
 
                     for (int j = 0 ; j < listProduct.length() ; j++){
+
+                        String product_name_temp = listProduct.getJSONObject(j).getString(WebParams.PRODUCT_NAME);
+
+                        if (listProduct.getJSONObject(j).getString(WebParams.PRODUCT_CODE).equalsIgnoreCase("CREDITCARD"))
+                        {
+                            product_name_temp = "DEBIT CARD MANDIRI";
+                        }
+
                         //siapin listDataBank
                         listBankModel listBankModel = new listBankModel(bankCode,
                                 listProduct.getJSONObject(j).getString(WebParams.BANK_NAME),
                                 listProduct.getJSONObject(j).getString(WebParams.PRODUCT_CODE),
-                                listProduct.getJSONObject(j).getString(WebParams.PRODUCT_NAME),
+                                product_name_temp,
                                 listProduct.getJSONObject(j).getString(WebParams.PRODUCT_TYPE),
                                 listProduct.getJSONObject(j).getString(WebParams.PRODUCT_H2H));
 

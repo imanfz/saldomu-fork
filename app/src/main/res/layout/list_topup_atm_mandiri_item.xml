@@ -9,12 +9,13 @@
             android:layout_height="wrap_content"/>
 
         <LinearLayout android:id="@+id/list_atm"
-            android:layout_below="@id/title_atm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            >
+            android:layout_below="@+id/title_atm"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <LinearLayout android:layout_width="wrap_content"
                 android:orientation="horizontal"
@@ -101,13 +102,14 @@
                 </RelativeLayout>
 
                 <TextView
+                    android:id="@+id/textView10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_small_material"
-                    android:textColor="@color/colorSecondaryDark"
-                    android:text="@string/listatm_topup_mandiri_3"
                     android:layout_gravity="center"
-                    android:maxEms="12"/>
+                    android:maxEms="12"
+                    android:text="@string/listatm_topup_mandiri_3"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:textSize="@dimen/text_size_small_material" />
             </LinearLayout>
 
             <LinearLayout android:layout_width="wrap_content"
