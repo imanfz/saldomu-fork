@@ -3,7 +3,14 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,13 +39,20 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
+import com.sgo.saldomu.utils.P25BambooPrinter.FontDefine;
+import com.sgo.saldomu.utils.P25BambooPrinter.P25ConnectionException;
+import com.sgo.saldomu.utils.P25BambooPrinter.P25Connector;
+import com.sgo.saldomu.utils.P25BambooPrinter.PocketPos;
+import com.sgo.saldomu.utils.P25BambooPrinter.Printer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -50,13 +64,21 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
     private OnDialogOkCallback callback;
     private Boolean isActivity = false;
-    private String trx_id;
+    private String trx_id, type;
     private ViewToBitmap viewToBitmap;
     private LinearLayout contentInvoice;
     private ImageView saveimage;
     private ImageView shareimage, printimage;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+    //this is bluetooth function
+    private P25Connector mConnector;
+    private BluetoothAdapter mBluetoothAdapter;
+    private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
+    private ProgressDialog mProgressDlg;
+    private ProgressDialog mConnectingDlg;
+
+    Bundle args;
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -92,6 +114,127 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         if (viewToBitmap == null)
             viewToBitmap = new ViewToBitmap(getContext());
+
+        initializeBluetoothPrinter();
+        connect();
+    }
+
+    private void initializeBluetoothPrinter() {
+        //Initizalize the bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter == null) {
+            showUnsupported();
+        } else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                showDisabled();
+            } else {
+                showEnabled();
+
+                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+
+                if (pairedDevices != null) {
+                    mDeviceList.addAll(pairedDevices);
+                }
+            }
+
+            mProgressDlg 	= new ProgressDialog(getActivity());
+
+            mProgressDlg.setMessage("Scanning...");
+            mProgressDlg.setCancelable(false);
+            mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+
+                    mBluetoothAdapter.cancelDiscovery();
+                }
+            });
+
+            mConnectingDlg 	= new ProgressDialog(getActivity());
+
+            mConnectingDlg.setMessage("Connecting...");
+            mConnectingDlg.setCancelable(false);
+
+            mConnector 		= new P25Connector(new P25Connector.P25ConnectionListener() {
+
+                @Override
+                public void onStartConnecting() {
+                    mConnectingDlg.show();
+                }
+
+                @Override
+                public void onConnectionSuccess() {
+                    mConnectingDlg.dismiss();
+
+                    showConnected();
+                }
+
+                @Override
+                public void onConnectionFailed(String error) {
+                    mConnectingDlg.dismiss();
+                }
+
+                @Override
+                public void onConnectionCancelled() {
+                    mConnectingDlg.dismiss();
+                }
+
+                @Override
+                public void onDisconnected() {
+                    showDisonnected();
+                }
+            });
+        }
+
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+        getActivity().registerReceiver(mReceiver, filter);
+    }
+
+    private String[] getArray(ArrayList<BluetoothDevice> data) {
+        String[] list = new String[0];
+
+        if (data == null) return list;
+
+        int size	= data.size();
+        list		= new String[size];
+
+        for (int i = 0; i < size; i++) {
+            list[i] = data.get(i).getName();
+        }
+
+        return list;
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showDisabled() {
+        showToast("Bluetooth disabled");
+    }
+
+    private void showEnabled() {
+        showToast("Bluetooth enabled");
+    }
+
+    private void showUnsupported() {
+        showToast("Bluetooth is unsupported by this device");
+    }
+
+    private void showConnected() {
+        showToast("Connected");
+    }
+
+    private void showDisonnected() {
+        showToast("Disconnected");
     }
 
     @Override
@@ -106,10 +249,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = (ViewStub) view.findViewById(R.id.stub);
 
-        Bundle args = getArguments();
+        args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
-        String type = args.getString(DefineValue.REPORT_TYPE);
+        type = args.getString(DefineValue.REPORT_TYPE);
 
         TextView tv_date_value = (TextView) view.findViewById(R.id.dialog_reportbiller_date_time);
         TextView tv_txid_value = (TextView) view.findViewById(R.id.dialog_reportbiller_tx_id);
@@ -658,10 +801,94 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         return view;
     }
 
-    public void doPrint()
-    {
-
+    public void doPrint() {
+        printStruk();
     }
+
+    private void connect() {
+        if (mDeviceList == null || mDeviceList.size() == 0) {
+            return;
+        }
+
+        //get the first connected device
+        BluetoothDevice device = mDeviceList.get(0);
+
+        if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+            try {
+                createBond(device);
+            } catch (Exception e) {
+                showToast("Failed to pair device");
+
+                return;
+            }
+        }
+
+        try {
+            if (!mConnector.isConnected()) {
+                mConnector.connect(device);
+            } else {
+                mConnector.disconnect();
+
+                showDisonnected();
+            }
+        } catch (P25ConnectionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createBond(BluetoothDevice device) throws Exception {
+
+        try {
+            Class<?> cl 	= Class.forName("android.bluetooth.BluetoothDevice");
+            Class<?>[] par 	= {};
+
+            Method method 	= cl.getMethod("createBond", par);
+
+            method.invoke(device);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            throw e;
+        }
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                final int state 	= intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+
+                if (state == BluetoothAdapter.STATE_ON) {
+                    showEnabled();
+                } else if (state == BluetoothAdapter.STATE_OFF) {
+                    showDisabled();
+                }
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                mDeviceList = new ArrayList<BluetoothDevice>();
+
+                mProgressDlg.show();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                mProgressDlg.dismiss();
+
+            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                mDeviceList.add(device);
+
+                showToast("Found device " + device.getName());
+            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
+
+                if (state == BluetoothDevice.BOND_BONDED) {
+                    showToast("Paired");
+
+                    connect();
+                }
+            }
+        }
+    };
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
         String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -752,4 +979,130 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         this.dismiss();
         callback.onOkButton();
     }
+
+    @Override
+    public void onPause() {
+        if (mBluetoothAdapter != null) {
+            if (mBluetoothAdapter.isDiscovering()) {
+                mBluetoothAdapter.cancelDiscovery();
+            }
+        }
+
+        if (mConnector != null) {
+            try {
+                mConnector.disconnect();
+            } catch (P25ConnectionException e) {
+                e.printStackTrace();
+            }
+        }
+
+        super.onPause();
+    }
+
+    private void printStruk() {
+        String titleStr, remark;
+//        StringBuilder remark	= new StringBuilder();
+        StringBuilder contentSb	= new StringBuilder();
+
+        titleStr = "Saldomu" +"\n\n";
+
+        remark = args.getString(DefineValue.TRX_MESSAGE) +"\n";
+
+        contentSb.append("Tanggal dan \n");
+        contentSb.append("Waktu : "  +args.getString(DefineValue.DATE_TIME) +"\n");
+
+//        if (type.equals(DefineValue.BILLER)) {
+//
+//
+//        }
+
+
+//        contentSb.append("IDPEL     : 435353535435353" + "\n");
+//        contentSb.append("NAMA      : LORENSIUS WLT" + "\n");
+//        contentSb.append("TRF/DAYA  : 50/12244 VA" + "\n");
+//        contentSb.append("BL/TH     : 02/14" + "\n");
+//        contentSb.append("ST/MTR    : 0293232" + "\n");
+//        contentSb.append("RP TAG    : Rp. 100.000" + "\n");
+//        contentSb.append("JPA REF   :" + "\n");
+
+//        StringBuilder content2Sb = new StringBuilder();
+
+//        content2Sb.append("ADM BANK  : Rp. 1.600" + "\n");
+//        content2Sb.append("RP BAYAR  : Rp. 101.600,00" + "\n");
+//
+//        String jpaRef	= "XXXX-XXXX-XXXX-XXXX" + "\n";
+//        String message	= "PLN menyatakan struk ini sebagai bukti pembayaran yang sah." + "\n";
+//        String message2	= "Rincian tagihan dapat diakses di www.pln.co.id Informasi Hubungi Call Center: "
+//                + "123 Atau Hub PLN Terdekat: 444" + "\n";
+
+        long milis		= System.currentTimeMillis();
+//        String date		= DateUtil.timeMilisToString(milis, "dd-MM-yy / HH:mm")  + "\n\n";
+
+        byte[] titleByte	= Printer.printfont(titleStr, FontDefine.FONT_32PX,FontDefine.Align_CENTER,
+                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+
+        byte[] titleByte1	= Printer.printfont(remark, FontDefine.FONT_24PX,FontDefine.Align_CENTER,
+                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+
+        byte[] content1Byte	= Printer.printfont(contentSb.toString(), FontDefine.FONT_24PX,FontDefine.Align_LEFT,
+                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+
+//        byte[] refByte		= Printer.printfont(jpaRef, FontDefine.FONT_24PX,FontDefine.Align_CENTER,  (byte)0x1A,
+//                PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] messageByte	= Printer.printfont(message, FontDefine.FONT_24PX,FontDefine.Align_CENTER,  (byte)0x1A,
+//                PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] content2Byte	= Printer.printfont(content2Sb.toString(), FontDefine.FONT_24PX,FontDefine.Align_LEFT,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] message2Byte	= Printer.printfont(message2, FontDefine.FONT_24PX,FontDefine.Align_CENTER,  (byte)0x1A,
+//                PocketPos.LANGUAGE_ENGLISH);
+
+//        byte[] dateByte		= Printer.printfont(date, FontDefine.FONT_24PX,FontDefine.Align_LEFT, (byte)0x1A,
+//                PocketPos.LANGUAGE_ENGLISH);
+
+        byte[] totalByte	= new byte[titleByte.length + titleByte1.length + content1Byte.length];
+
+//        byte[] totalByte	= new byte[titleByte.length + content1Byte.length + refByte.length + messageByte.length +
+//                content2Byte.length + message2Byte.length + dateByte.length];
+
+
+        int offset = 0;
+        System.arraycopy(titleByte, 0, totalByte, offset, titleByte.length);
+        offset += titleByte.length;
+
+        System.arraycopy(titleByte, 0, totalByte, offset, titleByte.length);
+        offset += titleByte.length;
+
+        System.arraycopy(content1Byte, 0, totalByte, offset, content1Byte.length);
+        offset += content1Byte.length;
+
+//        System.arraycopy(refByte, 0, totalByte, offset, refByte.length);
+//        offset += refByte.length;
+//
+//        System.arraycopy(messageByte, 0, totalByte, offset, messageByte.length);
+//        offset += messageByte.length;
+//
+//        System.arraycopy(content2Byte, 0, totalByte, offset, content2Byte.length);
+//        offset += content2Byte.length;
+//
+//        System.arraycopy(message2Byte, 0, totalByte, offset, message2Byte.length);
+//        offset += message2Byte.length;
+//
+//        System.arraycopy(dateByte, 0, totalByte, offset, dateByte.length);
+
+        byte[] senddata = PocketPos.FramePack(PocketPos.FRAME_TOF_PRINT, totalByte, 0, totalByte.length);
+
+        sendData(senddata);
+    }
+
+    private void sendData(byte[] bytes) {
+        try {
+            mConnector.sendData(bytes);
+        } catch (P25ConnectionException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
