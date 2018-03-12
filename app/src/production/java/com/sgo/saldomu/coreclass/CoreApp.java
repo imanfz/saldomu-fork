@@ -125,7 +125,7 @@ public class CoreApp extends Application {
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
 
-        registerReceiver(new BroadcastReceiver() {
+        /*registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -153,7 +153,7 @@ public class CoreApp extends Application {
                 }
             }
         },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
-
+        */
     }
 
     private void deleteBundledRealmFile(String outFileName) {

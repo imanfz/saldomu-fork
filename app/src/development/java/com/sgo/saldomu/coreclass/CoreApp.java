@@ -1,5 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
@@ -128,7 +130,7 @@ public class CoreApp extends Application {
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
 
-        registerReceiver(new BroadcastReceiver() {
+        /*registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -153,7 +155,7 @@ public class CoreApp extends Application {
                     }
                 }
             }
-        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
+        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );*/
     }
 
 
