@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -82,6 +83,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private View v;
     private LinearLayout layout_filter;
+    private TableLayout layout_summary;
     private int height;
     private String OrifromDate;
     private String OritoDate;
@@ -137,6 +139,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         emptyLayout = getV().findViewById(R.id.empty_layout);
         emptyLayout.setVisibility(View.GONE);
         btn_refresh = (Button) emptyLayout.findViewById(R.id.btnRefresh);
+        layout_summary = (TableLayout) getV().findViewById(R.id.table_summary);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
@@ -225,6 +228,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             ArrayList <ReportListCommFeeModel> mData = new ArrayList<>();
             ReportCommFeeAdapter adapter = new ReportCommFeeAdapter(getActivity(),R.layout.list_report_comm_fee,mData);
             lv_report.setAdapter(adapter);
+            layout_summary.setVisibility(View.VISIBLE);
+
         }
         setLoadMore(false);
         if(getUniAdapter() == null ||!getUniAdapter().isEmpty()){
