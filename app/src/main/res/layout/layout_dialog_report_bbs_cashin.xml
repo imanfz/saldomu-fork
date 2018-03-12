@@ -147,10 +147,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:padding="3dip" />
+
         <TextView
             android:id="@+id/dialog_reportbbs_benef_bank_value"
-            android:layout_weight="2"
             android:layout_width="0dp"
+            android:layout_weight="2"
             android:gravity="right"
             android:padding="3dip" />
     </TableRow>
@@ -161,20 +162,24 @@
         android:layout_margin="8dp"
         android:background="@color/grey_300"/>
 
-    <TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/tvNoDestination"
-            android:text="@string/no_tujuan"
-            android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_span="2"
             android:layout_weight="1"
-            android:padding="3dip" />
+            android:padding="3dip"
+            android:text="@string/number_destination" />
+
         <TextView
             android:id="@+id/dialog_reportbbs_bank_benef_acct_no_value"
+            android:layout_width="0dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
-            android:layout_width="0dp"
             android:gravity="right"
             android:padding="3dip" />
     </TableRow>
