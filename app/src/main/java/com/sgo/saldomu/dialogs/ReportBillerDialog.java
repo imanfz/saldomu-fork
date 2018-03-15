@@ -649,7 +649,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             String filename = separated[0];
 
             if(isShareImage){
-                viewToBitmap.shareIntentApp(contentInvoice, filename);
+                viewToBitmap.shareIntentApp(getActivity(), contentInvoice, filename);
             }
             else {
                 if (viewToBitmap.Convert(contentInvoice, filename))

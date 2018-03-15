@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 
 import com.sgo.saldomu.R;
@@ -83,7 +85,7 @@ public class ViewToBitmap {
         return path;
     }
 
-    public boolean shareIntentApp(View view,String _filename){
+    public boolean shareIntentApp(Context context, View view,String _filename){
         String path = Convert(view,_filename,true);
 
         if(path == null)
@@ -95,7 +97,11 @@ public class ViewToBitmap {
             i.putExtra(android.content.Intent.EXTRA_SUBJECT,context.getString(R.string.appname));
 
             File bitmapFile = new File(path);
-            Uri myUri = Uri.fromFile(bitmapFile);
+            Uri myUri;
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                myUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", bitmapFile);
+            }else myUri = Uri.fromFile(bitmapFile);
+
             i.putExtra(Intent.EXTRA_STREAM, myUri);
             context.startActivity(Intent.createChooser(i, context.getString(R.string.share_title)));
         }
