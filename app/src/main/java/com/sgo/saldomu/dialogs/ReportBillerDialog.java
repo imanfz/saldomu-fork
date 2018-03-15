@@ -103,7 +103,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
-        ViewStub stub = (ViewStub) view.findViewById(R.id.stub);
+        ViewStub stub = view.findViewById(R.id.stub);
 
         Bundle args = getArguments();
         Timber.d("isi args report:" + args.toString());

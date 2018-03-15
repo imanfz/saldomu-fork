@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -29,6 +28,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.ReportAskListModel;
 import com.sgo.saldomu.Beans.ReportListEspayModel;
 import com.sgo.saldomu.Beans.ReportListModel;
+import com.sgo.saldomu.Beans.SummaryReportFeeModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.ReportAskListAdapter;
 import com.sgo.saldomu.adapter.ReportCommFeeAdapter;
@@ -80,10 +80,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     final private String ITEM_DESC_NON= "PLN Non-Taglis";
     final private String ITEM_DESC_BPJS= "BPJS";
 
+    private TextView tv_date_from,tv_date_to, sumTotalTrx
+            , sumRelAmount, sumRelTrx, sumUnrelTrx, sumUnrelAmount;
 
     private View v;
-    private LinearLayout layout_filter;
-    private TableLayout layout_summary;
+    private LinearLayout layout_filter, layout_summary;
     private int height;
     private String OrifromDate;
     private String OritoDate;
@@ -92,8 +93,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private ToggleButton filter_btn;
     private ImageView spining_progress;
     private MaterialRippleLayout btn_loadmore;
-    private TextView tv_date_from;
-    private TextView tv_date_to ;
+
     private ProgressDialog out;
     private ListAdapter UniAdapter = null;
     private SecurePreferences sp;
@@ -108,6 +108,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private PtrFrameLayout mPtrFrame;
     private View emptyLayout;
 
+    SummaryReportFeeModel SummaryFeeModel;
 
     public static FragReport newInstance(int _report_type) {
         FragReport mFrag = new FragReport();
@@ -125,21 +126,21 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        layout_filter = (LinearLayout) getV().findViewById(R.id.layout_filter);
-        lv_report = (ListView) getV().findViewById(android.R.id.list);
-        tv_date_from =  (TextView) getV().findViewById(R.id.filter_date_from);
-        tv_date_to =  (TextView) getV().findViewById(R.id.filter_date_to);
+        layout_filter = getV().findViewById(R.id.layout_filter);
+        lv_report = getV().findViewById(android.R.id.list);
+        tv_date_from =  getV().findViewById(R.id.filter_date_from);
+        tv_date_to =  getV().findViewById(R.id.filter_date_to);
         layout_filter.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         height = layout_filter.getMeasuredHeight();
-        filter_btn = (ToggleButton) getV().findViewById(R.id.filter_toggle_btn);
+        filter_btn = getV().findViewById(R.id.filter_toggle_btn);
         footerLayout = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.footer_loadmore, lv_report, false);
         footerLayout.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.MATCH_PARENT, ListView.LayoutParams.WRAP_CONTENT));
-        spining_progress = (ImageView) footerLayout.findViewById(R.id.image_spinning_wheel);
-        btn_loadmore = (MaterialRippleLayout) footerLayout.findViewById(R.id.btn_loadmore);
+        spining_progress = footerLayout.findViewById(R.id.image_spinning_wheel);
+        btn_loadmore = footerLayout.findViewById(R.id.btn_loadmore);
         emptyLayout = getV().findViewById(R.id.empty_layout);
         emptyLayout.setVisibility(View.GONE);
-        btn_refresh = (Button) emptyLayout.findViewById(R.id.btnRefresh);
-        layout_summary = (TableLayout) getV().findViewById(R.id.table_summary);
+        btn_refresh = emptyLayout.findViewById(R.id.btnRefresh);
+        layout_summary = getV().findViewById(R.id.table_summary);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
@@ -147,6 +148,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         OrifromDate = DateTimeFormat.getCurrentDateMinus(6);
         OritoDate = DateTimeFormat.getCurrentDate();
         page = 1;
+
+        SummaryFeeModel = new SummaryReportFeeModel();
 
         filter_btn.setOnClickListener(filterBtnListener);
 
@@ -227,9 +230,12 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         else  if(report_type == REPORT_FEE){
             ArrayList <ReportListCommFeeModel> mData = new ArrayList<>();
             ReportCommFeeAdapter adapter = new ReportCommFeeAdapter(getActivity(),R.layout.list_report_comm_fee,mData);
+            sumTotalTrx = getV().findViewById(R.id.tv_total_transaction);
+            sumRelAmount = getV().findViewById(R.id.tv_amount_released);
+            sumRelTrx = getV().findViewById(R.id.tv_tx_released);
+            sumUnrelAmount = getV().findViewById(R.id.tv_amount_unreleased);
+            sumUnrelTrx = getV().findViewById(R.id.tv_tx_unreleased);
             lv_report.setAdapter(adapter);
-            layout_summary.setVisibility(View.VISIBLE);
-
         }
         setLoadMore(false);
         if(getUniAdapter() == null ||!getUniAdapter().isEmpty()){
@@ -241,7 +247,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         lv_report.setOnItemClickListener(reportItemListener);
 
-        mPtrFrame = (PtrFrameLayout) getV().findViewById(R.id.rotate_header_list_view_frame);
+        mPtrFrame = getV().findViewById(R.id.rotate_header_list_view_frame);
 
         final MaterialHeader header = new MaterialHeader(getActivity());
         int[] colors = getResources().getIntArray(R.array.google_colors);
@@ -531,16 +537,21 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 else if(report_type == REPORT_FEE){
                                     Timber.d("Isi response report comm fee:"+response.toString());
                                     ReportListCommFeeModel mTempData;
-                                    for(int i = 0 ; i <arrayData.length() ; i++){
+                                    SummaryFeeModel = new SummaryReportFeeModel();
+                                    SummaryFeeModel.setTotal_transaction(arrayData.length());
+                                    for(int i = 0 ; i <arrayData.length() ; i++) {
                                         mObj = arrayData.getJSONObject(i);
                                         mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.CREATED, ""),
-                                                mObj.optString(WebParams.BBS_NAME,""),
-                                                mObj.optString(WebParams.COMM_NAME,""),
-                                                mObj.optString(WebParams.CCY_ID,""),
-                                                mObj.optString(WebParams.AMOUNT,""),
-                                                mObj.optString(WebParams.STATUS,""));
+                                                mObj.optString(WebParams.BBS_NAME, ""),
+                                                mObj.optString(WebParams.COMM_NAME, ""),
+                                                mObj.optString(WebParams.CCY_ID, ""),
+                                                mObj.optString(WebParams.AMOUNT, ""),
+                                                mObj.optString(WebParams.STATUS, ""));
                                         AddNewData(mTempData);
+                                        getSummaryFee(SummaryFeeModel, mObj);
                                     }
+                                    setSummarytoView(SummaryFeeModel);
+
                                 }
 
                                 int _page = response.optInt(WebParams.NEXT,0);
@@ -662,6 +673,28 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         }
     }
 
+    private void getSummaryFee(SummaryReportFeeModel obj, JSONObject res){
+        String a = res.optString(WebParams.AMOUNT);
+        if (res.optString(WebParams.STATUS).equalsIgnoreCase("Released")){
+            obj.setReleased_trx(obj.getReleased_trx() + 1);
+            obj.setReleased_amount(obj.getReleased_amount() + Integer.valueOf(a));
+        }else if (res.optString(WebParams.STATUS).equalsIgnoreCase("Unreleased")){
+            obj.setUnreleased_trx(obj.getUnreleased_trx() + 1);
+            obj.setUnreleased_amount(obj.getUnreleased_amount() + Integer.valueOf(a));
+        }
+    }
+
+
+
+    private void setSummarytoView(SummaryReportFeeModel obj){
+        sumTotalTrx.setText(String.valueOf(obj.getTotal_transaction()));
+        sumUnrelTrx.setText(String.valueOf(obj.getUnreleased_trx()));
+        sumUnrelAmount.setText(CurrencyFormat.format(String.valueOf(obj.getUnreleased_amount())));
+        sumRelTrx.setText(String.valueOf(obj.getReleased_trx()));
+        sumRelAmount.setText(CurrencyFormat.format(String.valueOf(obj.getReleased_amount())));
+
+        layout_summary.setVisibility(View.VISIBLE);
+    }
 
     private void ClearDataAdapter(){
         if(report_type == REPORT_SCASH){
