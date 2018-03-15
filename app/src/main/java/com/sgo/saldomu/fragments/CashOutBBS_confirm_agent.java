@@ -43,7 +43,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
 
     public final static String TAG = "com.sgo.saldomu.fragments.CashOutBBS_confirm_agent";
     private SecurePreferences sp;
@@ -73,22 +73,22 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
+        CircleStepView mCircleStepView = (v.findViewById(R.id.circle_step_view));
         mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi));
         mCircleStepView.setCurrentCircleIndex(2, false);
 
-        TextView tvTitle = (TextView) v.findViewById(R.id.tv_title);
-        tvSourceAcct = (TextView) v.findViewById(R.id.bbscashout_value_source);
-        tvUserIdTitle = (TextView) v.findViewById(R.id.tv_user_id);
-        tvUserIdSource = (TextView) v.findViewById(R.id.bbscashout_value_user_id);
-        tvBankBenef = (TextView) v.findViewById(R.id.bbscashout_value_benef);
-        tvAmount = (TextView) v.findViewById(R.id.bbscashout_value_amount);
-        tvRemark = (TextView) v.findViewById(R.id.bbscashout_value_remark);
-        tvKode = (TextView) v.findViewById(R.id.tv_kode);
-        btnSubmit = (Button) v.findViewById(R.id.btn_submit);
+        TextView tvTitle = v.findViewById(R.id.tv_title);
+        tvSourceAcct = v.findViewById(R.id.bbscashout_value_source);
+        tvUserIdTitle = v.findViewById(R.id.tv_user_id);
+        tvUserIdSource = v.findViewById(R.id.bbscashout_value_user_id);
+        tvBankBenef = v.findViewById(R.id.bbscashout_value_benef);
+        tvAmount = v.findViewById(R.id.bbscashout_value_amount);
+        tvRemark = v.findViewById(R.id.bbscashout_value_remark);
+        tvKode = v.findViewById(R.id.tv_kode);
+        btnSubmit = v.findViewById(R.id.btn_submit);
         layout_OTP = v.findViewById(R.id.layout_OTP);
-        tokenValue = (EditText) v.findViewById(R.id.bbscashout_value_token);
-        Button btnBack = (Button) v.findViewById(R.id.btn_back);
+        tokenValue = v.findViewById(R.id.bbscashout_value_token);
+        Button btnBack = v.findViewById(R.id.btn_back);
 
         Bundle bundle = getArguments();
         if(bundle != null) {

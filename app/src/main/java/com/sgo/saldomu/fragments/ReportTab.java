@@ -72,10 +72,9 @@ public class ReportTab extends Fragment {
             mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
             mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
 
-            tabs = (TabPageIndicator) getCurrentView().findViewById(R.id.report_tabs);
-            pager = (ViewPager) getCurrentView().findViewById(R.id.report_pager);
+            tabs = getCurrentView().findViewById(R.id.report_tabs);
+            pager = getCurrentView().findViewById(R.id.report_pager);
             adapternya = new ReportTabAdapter(getChildFragmentManager(), getActivity(), mList, titles);
-            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);
             tabs.setViewPager(pager);
