@@ -61,6 +61,7 @@ import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.interfaces.PermissionResult;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
@@ -84,6 +85,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -609,6 +612,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void searchAgent() {
         //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+
+        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId, BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
 
         RequestParams params = new RequestParams();
         UUID rcUUID = UUID.randomUUID();
