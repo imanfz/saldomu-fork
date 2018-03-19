@@ -507,5 +507,6 @@ public class DefineValue {
     public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
     public static String OFFSET    = "offset";
     public static String CODE_SUCCESS    = "code_success";
+    public static String NO_HP_MEMBER_LOCATION = "noHPMemberLocation";
 }
 
