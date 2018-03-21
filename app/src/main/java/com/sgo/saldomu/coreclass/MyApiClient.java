@@ -188,6 +188,7 @@ public class MyApiClient {
 	
 	public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
+    public static String LINK_REJECT_CONFIRM_CASHOUT;
     private static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
@@ -331,6 +332,7 @@ public class MyApiClient {
 		
 		LINK_REQUEST_CASHOUT    = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT    = headaddressfinal + "ConfirmCashout/Invoke";
+        LINK_REJECT_CONFIRM_CASHOUT = headaddressfinal + "Rejectatc/Retrieve";
         LINK_HELP_PIN           = headaddressfinal + "HelpPIN/Retrieve";
 
         LINK_INQUIRY_WITHDRAW    = headaddressfinal + "InquiryWithdraw/Retrieve";
@@ -981,6 +983,11 @@ public class MyApiClient {
     public static void sentConfCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent confirm cashout: %1$s ",LINK_CONFIRM_CASHOUT);
         post(mContext,LINK_CONFIRM_CASHOUT, params, responseHandler);
+    }
+
+    public static void sentRejectConfirmCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent reject confirm cashout: %1$s ",LINK_REJECT_CONFIRM_CASHOUT);
+        post(mContext,LINK_REJECT_CONFIRM_CASHOUT, params, responseHandler);
     }
 
     public static void sentInqWithdraw(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
