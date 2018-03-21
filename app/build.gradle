@@ -74,6 +74,9 @@ android {
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
 
+            buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
+            buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
+
             versionCode = 1
             versionName "1.0"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
@@ -101,6 +104,9 @@ android {
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
+
+            buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
+            buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
 
             signingConfig signingConfigs.prodKey
             versionCode = 10
