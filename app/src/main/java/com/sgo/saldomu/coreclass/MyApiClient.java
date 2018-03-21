@@ -81,7 +81,7 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"hpku/";
+    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"saldomu/";
 
     public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"agentlocation/";
     public static String urlMNotif              = BuildConfig.URL_MNOTIF;
@@ -560,7 +560,8 @@ public class MyApiClient {
     }
 
     private static String getBasicAuth() {
-        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
+//        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
+        String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
         return encode.replace('+','-').replace('/','_');
