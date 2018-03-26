@@ -198,7 +198,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                         startActivityForResult(i, MainPage.REQUEST_FINISH);
                     } else if (isOTP) {
                         if (inputValidation()) {
-                            OTPMemberATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
+                            OTPMemberATC(tokenValue.getText().toString(), txId);
                         }
                     } else {
                         Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
@@ -405,11 +405,13 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            String extraSign = _tx_id+_token+comm_code;
+
             RequestParams params;
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_OTP_MEMBER_A2C,
-                    userID, accessKey);
+                    userID, accessKey, extraSign);
 
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, Md5.hashMd5(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);

@@ -176,8 +176,10 @@ public class BBSConfirmAcct extends Fragment {
 
     private void sentConfirmAcct(final String commCode, final String memberCode, final String txId, final String tokenId){
         try{
+            String extraSign = txId+tokenId+commCode+memberCode;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_CONFIRM_ACCT,
-                    userID,accessKey);
+                    userID,accessKey, extraSign);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.TX_ID, txId);

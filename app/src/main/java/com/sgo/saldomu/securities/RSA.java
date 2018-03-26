@@ -2,6 +2,7 @@ package com.sgo.saldomu.securities;
 
 import android.util.Base64;
 
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 
 import java.io.ByteArrayOutputStream;
@@ -21,9 +22,11 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class RSA {
 
-    public static String opensslEncrypt(String data, String strKey, String strIv) {
+    public static String opensslEncrypt(String data) {
 
         String encryptedValue   = "";
+        String strKey = BuildConfig.OPENSSL_ENCRYPT_KEY;
+        String strIv = BuildConfig.OPENSSL_ENCRYPT_IV;
 
         try {
             Cipher ciper = Cipher.getInstance("AES/CBC/PKCS5Padding");

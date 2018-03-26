@@ -81,7 +81,7 @@ public class HelpFragment extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_HELP_LIST,
                     ownerId,accessKey);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

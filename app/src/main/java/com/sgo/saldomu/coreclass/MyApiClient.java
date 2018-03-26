@@ -90,7 +90,7 @@ public class MyApiClient {
 
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
-    private static String LINK_LOGIN;
+    public static String LINK_LOGIN;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -160,7 +160,7 @@ public class MyApiClient {
     private static String LINK_COMM_ESPAY;
 
 	private static String LINK_APP_VERSION;
-    private static String LINK_HELP_LIST;
+    public static String LINK_HELP_LIST;
 
     public static String LINK_INQUIRY_MOBILE;
     public static String LINK_REQUEST_TOKEN_SB;
@@ -458,7 +458,7 @@ public class MyApiClient {
         return UUID.randomUUID();
     }
 
-    public static String getWebserviceName(String link){
+    public static String getWebserviceNames(String link){
         StringTokenizer tokens = new StringTokenizer(link, "/");
         int index = 0;
         while(index<3) {
@@ -467,18 +467,51 @@ public class MyApiClient {
         }
         return tokens.nextToken();
     }
+
+    public static String getWebserviceName(String link){
+        String tes = link.substring(link.indexOf("saldomu"));
+        return tes;
+    }
+
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
         String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
         String hash = SHA.SHA256(apinya,msgnya);
         return hash;
     }
 
-    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key){
+    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya
+            , String extraSignature){
+        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
+        String hash = SHA.SHA256(apinya,msgnya);
+        return hash;
+    }
+
+    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
 
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
+//        Timber.d("isi access_key :" + access_key);
+//
+//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+
+        String hash = SHA.SHA256(access_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key
+            , String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
@@ -549,8 +582,7 @@ public class MyApiClient {
         return getInstance().asyncHttpClient_google;
     }
 
-    public static AsyncHttpClient getClient()
-    {
+    public static AsyncHttpClient getClient() {
         // Return the synchronous HTTP client when the thread is not prepared
         if (Looper.myLooper() == null) {
             return getInstance().syncHttpClient;

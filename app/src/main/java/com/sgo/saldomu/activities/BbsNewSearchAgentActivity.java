@@ -613,7 +613,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private void searchAgent() {
         //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
-        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId, BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
+//        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId, BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
+        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId);
 
         RequestParams params = new RequestParams();
         UUID rcUUID = UUID.randomUUID();

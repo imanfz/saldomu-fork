@@ -376,7 +376,7 @@ public class BBSRegisterAcct extends Fragment {
     private void retreiveBank(String comm_code){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_REG_ACCT,
-                    userID,accessKey);
+                    userID,accessKey, comm_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
@@ -454,8 +454,10 @@ public class BBSRegisterAcct extends Fragment {
     private void sentReqAcct(final String commCode, final String memberCode, final String benefAcctType, final String benefBankCode,
                              final String benefAcctNo, final String benefAcctCity, final String benefAcctName){
         try{
+            String extraSign = commCode+memberCode+benefAcctType+benefBankCode+benefAcctNo;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_REQ_ACCT,
-                    userID,accessKey);
+                    userID,accessKey, extraSign);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.BENEF_ACCT_TYPE, benefAcctType);

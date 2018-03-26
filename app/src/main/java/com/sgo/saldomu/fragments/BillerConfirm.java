@@ -134,14 +134,14 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        tv_id_cust = (TextView) v.findViewById(R.id.billertoken_biller_id_value);
-        tv_item_name_value = (TextView) v.findViewById(R.id.billertoken_item_name_value);
-        tv_payment_name = (TextView) v.findViewById(R.id.billertoken_item_payment_value);
-        tv_amount_value = (TextView) v.findViewById(R.id.billertoken_amount_value);
-        tv_fee_value = (TextView) v.findViewById(R.id.billertoken_fee_value);
-        tv_total_amount_value = (TextView) v.findViewById(R.id.billertoken_total_amount_value);
-        btn_submit = (Button) v.findViewById(R.id.billertoken_btn_verification);
-        btn_cancel = (Button) v.findViewById(R.id.billertoken_btn_cancel);
+        tv_id_cust =  v.findViewById(R.id.billertoken_biller_id_value);
+        tv_item_name_value =  v.findViewById(R.id.billertoken_item_name_value);
+        tv_payment_name = v.findViewById(R.id.billertoken_item_payment_value);
+        tv_amount_value = v.findViewById(R.id.billertoken_amount_value);
+        tv_fee_value = v.findViewById(R.id.billertoken_fee_value);
+        tv_total_amount_value = v.findViewById(R.id.billertoken_total_amount_value);
+        btn_submit = v.findViewById(R.id.billertoken_btn_verification);
+        btn_cancel = v.findViewById(R.id.billertoken_btn_cancel);
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);

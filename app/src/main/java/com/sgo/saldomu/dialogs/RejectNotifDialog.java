@@ -114,7 +114,8 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
             String dtime = DateTimeFormat.getCurrentDateTime();
             String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_ASK4MONEY_REJECT);
             Timber.d("Webservice:"+webservice);
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, MyApiClient.COMM_ID + _userId, _accessKey);
+            String extraSignature = req_id+trx_id+from;
+            String signature = MyApiClient.getSignature(uuid, dtime, webservice, MyApiClient.COMM_ID + _userId, _accessKey, extraSignature);
 
             RequestParams params = new RequestParams();
             params.put(WebParams.USER_ID, _userId);
