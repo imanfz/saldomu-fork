@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -40,6 +41,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
+import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -54,6 +56,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -221,7 +225,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                getActivity().finish();
+                                sentRejectConfirmCashout();
                             }
                         })
                         .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
@@ -485,6 +489,89 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                         progdialog.dismiss();
 
                     Timber.w("Error Koneksi sent otp member ATC:" + throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    public void sentRejectConfirmCashout(){
+        try{
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog.show();
+
+            RequestParams params = new RequestParams();
+            UUID rcUUID = UUID.randomUUID();
+
+            String dtime = DateTimeFormat.getCurrentDateTime();
+
+            params.put(WebParams.RC_UUID, rcUUID);
+            params.put(WebParams.RC_DTIME, dtime);
+
+            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.TX_ID, txId);
+
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + comm_code + userID));
+
+            params.put(WebParams.SIGNATURE, signature);
+
+            Timber.d("isi params sent reject confirm cashout:"+params.toString());
+
+            MyApiClient.sentRejectConfirmCashout(getActivity(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    progdialog.dismiss();
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals(WebParams.NO_DATA_CODE) ) {
+                            Timber.d("isi response reject confirm cashout:" + response.toString());
+                            getActivity().finish();
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:" + response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(), message);
+                        } else {
+                            Timber.d("isi error reject confirm cashout:" + response.toString());
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    if (progdialog.isShowing())
+                        progdialog.dismiss();
+
+                    Timber.w("Error Koneksi reject confirm cashout:" + throwable.toString());
                 }
             });
         }catch (Exception e){
