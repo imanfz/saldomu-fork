@@ -286,6 +286,7 @@
     <string name="evoucher_edithint_nohp" translatable="false">ex. 08138255xxxx</string>
 
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
+    <string name="sgoplusweb_ab_title_saldomu" translatable="false">Saldomu</string>
 
     <string name="forgetpass_dialog_title">Lupa Password</string>
     <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>

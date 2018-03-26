@@ -601,7 +601,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.appname));
+        setActionBarTitle(getString(R.string.sgoplusweb_ab_title));
     }
 
     @Override
