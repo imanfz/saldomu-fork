@@ -2,13 +2,13 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginLeft="@dimen/text_size_small_material"
     android:layout_marginTop="@dimen/text_size_small_material"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:stretchColumns="1">
     <TableRow>
         <TextView
-                android:text="@string/report_dialog_text_detail"
+                android:text="@string/report_transaction_type"
                 android:layout_weight="1"
                 android:padding="12dip"
                 />
@@ -29,36 +29,34 @@
 
     <TableRow>
         <TextView
-                android:text="@string/report_dialog_text_type"
-                android:layout_weight="0"
-                android:padding="12dip" />
+            android:text="@string/report_dialog_text_userid"
+            android:layout_weight="0"
+            android:padding="12dip" />
         <TextView
-                android:id="@+id/dialog_report_trans_type_value"
-                android:text="Out"
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:gravity="right"
-                android:padding="3dip" />
+            android:id="@+id/dialog_report_trans_user_id"
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
     </TableRow>
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
 
     <TableRow>
         <TextView
-                android:text="@string/description"
-                android:layout_weight="0"
-                android:padding="12dip" />
+            android:text="Nama"
+            android:layout_weight="0"
+            android:padding="12dip" />
         <TextView
-                android:id="@+id/dialog_report_trans_description_value"
-                android:text="KARTUKREDITYES - KARTU KREDIT 2"
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:gravity="right"
-                android:padding="3dip" />
+            android:id="@+id/dialog_report_trans_user_name"
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
     </TableRow>
 
     <View   android:id="@+id/lineAlias"
@@ -69,7 +67,7 @@
 
     <TableRow android:id="@+id/trAlias">
         <TextView
-                android:text="@string/contact_alias"
+                android:text="Tujuan"
                 android:layout_weight="0"
                 android:padding="12dip" />
         <TextView
@@ -79,6 +77,26 @@
                 android:layout_width="wrap_content"
                 android:gravity="right"
                 android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/report_dialog_text_remark"
+            android:layout_weight="0"
+            android:padding="12dip" />
+        <TextView
+            android:id="@+id/dialog_report_trans_remark_value"
+            android:text="bayar lawakan"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
     </TableRow>
 
     <View
@@ -102,23 +120,43 @@
     </TableRow>
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
 
     <TableRow>
         <TextView
-                android:text="@string/report_dialog_text_remark"
-                android:layout_weight="0"
-                android:padding="12dip" />
+            android:text="@string/payfriends_text_fee"
+            android:layout_weight="0"
+            android:padding="12dip" />
         <TextView
-                android:id="@+id/dialog_report_trans_remark_value"
-                android:text="bayar lawakan"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:gravity="right"
-                android:padding="3dip" />
+            android:id="@+id/dialog_report_trans_admin_fee"
+            android:text="Rp. 200000"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/total"
+            android:layout_weight="0"
+            android:padding="12dip" />
+        <TextView
+            android:id="@+id/dialog_report_trans_total"
+            android:text="Rp. 200000"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
     </TableRow>
 
 </TableLayout>

@@ -84,6 +84,7 @@ public class DefineValue {
     public static String COMMUNITY_LENGTH = "communityLength";
     public static String BUSS_SCHEME_NAME = "bussSchemeName";
     public static String BUSS_SCHEME_CODE = "bussSchemeCode";
+    public static String BILLER_DETAIL = "billerDetail";
     public static String COMMUNITY_ID = "communityID";
     public static String COMMUNITY_CODE = "communityCode";
     public static String COMMUNITY_NAME = "communityName";
@@ -92,6 +93,7 @@ public class DefineValue {
     public static String MEMBER_ID = "memberID";
     public static String MEMBER_NAME = "memberName";
     public static String MEMBER_SHOP_PHONE = "memberShopPhone";
+    public static String MEMBER_SHOP_NO = "memberShopNo";
     public static String MEMBER_SHOP_NAME = "memberShopName";
     public static String ACCESS_KEY = "accessKey";
     public static String TRANSACTION_TYPE = "transactionType";
@@ -507,5 +509,8 @@ public class DefineValue {
     public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
     public static String OFFSET    = "offset";
     public static String CODE_SUCCESS    = "code_success";
+    public static String MEMBER_PHONE    = "member_phone";
+    public static String TO_ALIAS    = "to_alias";
+    public static String IS_REPORT    = "is_report";
 }
 

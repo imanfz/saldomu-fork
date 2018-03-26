@@ -391,7 +391,8 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
-                                    response.optString(WebParams.MEMBER_SHOP_NAME,""));
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), response.optString(WebParams.BUSS_SCHEME_CODE),
+                                    response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_SHOP_NO),""));
                         }
                         else if(code.equals("0288")){
                             Timber.d("isi error trx status bbs:"+response.toString());
@@ -484,7 +485,7 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                        String member_shop_name) {
+                                        String member_shop_name, String buss_scheme_code, String buss_scheme_name, String member_shop_no) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -526,6 +527,9 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
         args.putString(DefineValue.MEMBER_SHOP_NAME, member_shop_name);
         args.putString(DefineValue.PRODUCT_NAME, bankProduct);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.MEMBER_SHOP_NO, member_shop_no);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
