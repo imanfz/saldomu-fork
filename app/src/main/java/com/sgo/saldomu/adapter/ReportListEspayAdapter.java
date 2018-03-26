@@ -48,7 +48,7 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
             holder.tv_ccy = (TextView)row.findViewById(R.id.text_ccyID);
             holder.tv_amount = (TextView)row.findViewById(R.id.text_amount);
             holder.tv_desc = (TextView)row.findViewById(R.id.text_description);
-            holder.tv_remark = (TextView)row.findViewById(R.id.text_remark);
+//            holder.tv_remark = (TextView)row.findViewById(R.id.text_remark);
             holder.tv_tx_status = (TextView)row.findViewById(R.id.text_tx_status);
             holder.tv_product_name = (TextView)row.findViewById(R.id.text_product_name);
 
@@ -71,8 +71,8 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         holder.tv_amount.setText(CurrencyFormat.format(total));
         if(!itemnya.getDescription().equals("")) holder.tv_desc.setText(itemnya.getDescription());
         else holder.tv_desc.setVisibility(View.GONE);
-        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());
-        else holder.tv_remark.setVisibility(View.GONE);
+//        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());
+//        else holder.tv_remark.setVisibility(View.GONE);
         holder.tv_tx_status.setText(itemnya.getTx_status());
         holder.tv_product_name.setText(itemnya.getProduct_name());
         if(itemnya.getProduct_name().equalsIgnoreCase("UNIK"))

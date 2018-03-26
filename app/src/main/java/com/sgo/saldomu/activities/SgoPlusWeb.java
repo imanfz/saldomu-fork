@@ -280,7 +280,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
                                     txId, userId,totalAmount,fee,amount,
                                     txstatus,response.getString(WebParams.TX_REMARK),
-                                    reportType,response);
+                                    reportType, response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response);
                         }
                         else if(code.equals("0288")){
                             Timber.d("isi error sent trx status bbs:"+response.toString());
@@ -299,7 +299,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             String msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(code.equals("0003")){
                                 showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response);
+                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,
+                                        response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response);
                             }
                             else
                                 showDialog(msg);
@@ -380,7 +381,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             String txstatus = response.getString(WebParams.TX_STATUS);
                             showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,totalAmount,fee,amount,
                                     txstatus,response.getString(WebParams.TX_REMARK),
-                                    reportType,response);
+                                    reportType,response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response);
                         }else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+ response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -391,7 +392,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                             String msg = response.getString(WebParams.ERROR_MESSAGE);
                             if(code.equals("0003")){
                                 showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response);
+                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response);
                             }
                             else
                                 showDialog(msg);
@@ -469,6 +470,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType,
+                                        String buss_scheme_code, String buss_scheme_name,
                                         JSONObject response) throws JSONException {
 
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -477,6 +479,8 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.TX_ID,txId);
         args.putString(DefineValue.REPORT_TYPE, reportType);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
         args.putString(DefineValue.USERID_PHONE, userId);
 
         args.putString(DefineValue.FEE,MyApiClient.CCY_VALUE+". "+ CurrencyFormat.format(fee));
@@ -516,6 +520,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         else if(reportType.equals(DefineValue.BILLER)){
             args.putString(DefineValue.DENOM_DATA, mIntent.getStringExtra(DefineValue.DENOM_DATA));
             args.putInt(DefineValue.BUY_TYPE, mIntent.getIntExtra(DefineValue.BUY_TYPE, 0));
+            args.putString(DefineValue.DETAILS_BILLER, response.optString(DefineValue.DETAIL));
             args.putString(DefineValue.DETAILS_BILLER, response.optString(DefineValue.DETAIL));
             args.putString(DefineValue.PAYMENT_NAME, mIntent.getStringExtra(DefineValue.PAYMENT_NAME));
             args.putString(DefineValue.DESTINATION_REMARK,mIntent.getStringExtra(DefineValue.DESTINATION_REMARK));
@@ -596,7 +601,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
     private void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.sgoplusweb_ab_title));
+        setActionBarTitle(getString(R.string.appname));
     }
 
     @Override
