@@ -681,7 +681,8 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                             String txstatus = response.getString(WebParams.TX_STATUS);
                             showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
                                     sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response);
+                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.BILLER_DETAIL),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -797,7 +798,8 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount, JSONObject response) {
+                                        String txRemark, String _amount, JSONObject response, String biller_detail,
+                                        String buss_scheme_code, String buss_scheme_name, String product_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -853,6 +855,11 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
                 args.putString(DefineValue.REPORT_TYPE, DefineValue.BILLER_BPJS);
             args.putString(DefineValue.BILLER_TYPE,biller_type_code);
         }
+
+        args.putString(DefineValue.BILLER_DETAIL,biller_detail);
+        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
+        args.putString(DefineValue.PRODUCT_NAME,product_name);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this, 0);

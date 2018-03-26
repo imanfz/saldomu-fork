@@ -734,7 +734,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
                                     response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
-                                    response.optString(WebParams.PRODUCT_NAME, ""));
+                                    response.optString(WebParams.PRODUCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals("0288")){
                             Timber.d("isi error sent token di trxStatusBBS:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -910,7 +911,8 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                         String source_bank_name, String source_acct_no, String source_acct_name,
-                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name) {
+                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name,
+                                        String member_shop_phone, String buss_scheme_code, String buss_scheme_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -951,6 +953,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
         args.putString(DefineValue.NO_BENEF, benef_acct_no);
         args.putString(DefineValue.NAME_BENEF, benef_acct_name);
         args.putString(DefineValue.PRODUCT_NAME, product_name);
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

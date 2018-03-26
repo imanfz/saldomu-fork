@@ -18,11 +18,12 @@ public class ReportListEspayModel {
     private String product_name;
     private String tx_status;
     private String type_desc;
+    private String buss_scheme_code;
 
 
     public ReportListEspayModel(String _datetime, String _buss_scheme_name,  String _comm_name, String _ccy_id, String _amount,
                               String _admin_fee, String _description, String _remark, String _tx_id, String _comm_id,
-                              String _bank_name, String _product_name, String _tx_status){
+                              String _bank_name, String _product_name, String _tx_status, String _buss_scheme_code){
     this.setDatetime(_datetime);
     this.setBuss_scheme_name(_buss_scheme_name);
     this.setComm_name(_comm_name);
@@ -37,6 +38,7 @@ public class ReportListEspayModel {
     this.setProduct_name(_product_name);
     this.setTx_status(_tx_status);
         this.setType_desc("");
+        this.setBuss_scheme_code(_buss_scheme_code);
     }
 
 
@@ -151,4 +153,8 @@ public class ReportListEspayModel {
     public void setType_desc(String type_desc) {
         this.type_desc = type_desc;
     }
+
+    public String getBuss_scheme_code() {return buss_scheme_code;}
+
+    public void setBuss_scheme_code(String buss_scheme_code) {this.buss_scheme_code = buss_scheme_code;}
 }
