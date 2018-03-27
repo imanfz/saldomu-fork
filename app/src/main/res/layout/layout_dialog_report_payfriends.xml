@@ -83,17 +83,6 @@
                 android:padding="3dip" />
         </TableRow>
 
-        <TableLayout android:id="@+id/transfer_data_layout_table"
-            android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:stretchColumns="1">
-
-
-        </TableLayout>
-
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -101,6 +90,13 @@
             android:background="@color/grey_300"/>
 
 
+        <TableLayout android:id="@+id/transfer_data_layout_table"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:stretchColumns="1">
+        </TableLayout>
 
         <TableRow>
             <TextView

@@ -191,15 +191,16 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 noHPMemberLocation = bundle.getString(DefineValue.NO_HP_MEMBER_LOCATION, "");
             }
 
+            benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE, "");
+
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
                 cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
 
-                benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
-                benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
-                benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
-                benef_product_value_token = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN);
+                benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME, "");
+                benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE,"");
+                benef_product_value_token = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, "");
                 if (cashInHistoryModel!=null)
                 {
                     source_product_code=(cashInHistoryModel.getSource_product_code());
@@ -220,12 +221,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
 
-                source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
-                source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
-                source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
-                source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
-                source_product_value_token = bundle.getString(DefineValue.SOURCE_PRODUCT_VALUE_TOKEN);
-                no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
+                source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE, "");
+                source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE,"");
+                source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H,"");
+                source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME,"");
+                source_product_value_token = bundle.getString(DefineValue.SOURCE_PRODUCT_VALUE_TOKEN,"");
+                no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO,"");
 
                 setBankDataBenef();
                 if (cashOutHistoryModel!=null)
@@ -417,7 +418,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     if (inputValidation()) {
                         SubmitAction(false);
                     }
-                    else btnNext.setEnabled(true);
+                     btnNext.setEnabled(false);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -452,7 +453,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
 
         }
         else
-            btnNext.setEnabled(true);
+            btnNext.setEnabled(false);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {
