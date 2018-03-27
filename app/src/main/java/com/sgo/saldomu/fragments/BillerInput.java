@@ -7,14 +7,20 @@ import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
@@ -99,6 +105,7 @@ public class BillerInput extends Fragment {
     private ArrayAdapter<String> adapterDenom;
     private ArrayAdapter<String> adapterMonth;
     private String selectedMonth;
+    private LinearLayout layout_warn_pln;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,6 +137,7 @@ public class BillerInput extends Fragment {
         tv_month = (TextView) v.findViewById(R.id.billerinput_text_month);
         spinWheelMonth = (ImageView) v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
+        layout_warn_pln = (LinearLayout) v.findViewById(R.id.layout_warn_pln);
         if(args.containsKey(DefineValue.BILLER_ID_NUMBER))
         {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));
@@ -234,6 +242,7 @@ public class BillerInput extends Fragment {
             buy_type = _buy_type[0];
             buy_code = BillerActivity.PURCHASE_TYPE;
             tv_payment_remark.setText(getString(R.string.billerinput_text_payment_remark_Listrik));
+            layout_warn_pln.setVisibility(View.VISIBLE);
             et_payment_remark.setKeyListener(DigitsKeyListener.getInstance(digitsListener));
         }
         else if(biller_type_code.equals(billerType[2])){

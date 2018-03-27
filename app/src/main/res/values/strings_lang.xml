@@ -955,6 +955,7 @@
     <string name="nominal_text">Nominal</string>
     <string name="jumlah_text">Jumlah</string>
     <string name="total">Total</string>
+    <string name="pln_warn">Demi kenyamanan bersama, sebaiknya tidak melakukan transaksi antara pukul 23.59 - 00.59. Karena transaksi tidak dapat diproses. </string>
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>

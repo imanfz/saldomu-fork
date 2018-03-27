@@ -61,7 +61,7 @@ public class ReportAskListAdapter extends ArrayAdapter<ReportAskListModel> {
         ReportAskListModel itemnya = data.get(position);
 
         holder.tv_date.setText(DateTimeFormat.formatToID(itemnya.getDatetime()));
-        holder.tv_type.setText(itemnya.getDetail());
+        holder.tv_type.setText("Minta Saldo");
         holder.tv_desc.setText(itemnya.getDescription());
         holder.tv_ccy.setText(itemnya.getCcyID());
         holder.tv_amount.setText(CurrencyFormat.format(itemnya.getAmount()));

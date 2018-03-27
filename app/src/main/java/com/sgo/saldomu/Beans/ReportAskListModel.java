@@ -20,7 +20,7 @@ public class ReportAskListModel {
 
     public ReportAskListModel(String _datetime, String _type, String _ccyID, String _amount, String _trxID, String _description,
                               String _remark, String _detail, String _alias, String _status, String _reason, String _buss_scheme_code,
-                              String _buss_scheme_name){
+                              String _buss_scheme_name) {
         this.setDatetime(_datetime);
         this.setType(_type);
         this.setCcyID(_ccyID);
@@ -124,11 +124,19 @@ public class ReportAskListModel {
         this.type = type;
     }
 
-    public String getBuss_scheme_code() {return buss_scheme_code;}
+    public String getBuss_scheme_code() {
+        return buss_scheme_code;
+    }
 
-    public void setBuss_scheme_code(String buss_scheme_code) {this.buss_scheme_code = buss_scheme_code;}
+    public void setBuss_scheme_code(String buss_scheme_code) {
+        this.buss_scheme_code = buss_scheme_code;
+    }
 
-    public String getBuss_scheme_name() {return buss_scheme_name;}
+    public String getBuss_scheme_name() {
+        return buss_scheme_name;
+    }
 
-    public void setBuss_scheme_name(String buss_scheme_name) {this.buss_scheme_name = buss_scheme_name;}
+    public void setBuss_scheme_name(String buss_scheme_name) {
+        this.buss_scheme_name = buss_scheme_name;
+    }
 }

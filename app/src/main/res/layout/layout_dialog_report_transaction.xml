@@ -66,17 +66,20 @@
             android:background="@color/grey_300"/>
 
     <TableRow android:id="@+id/trAlias">
+
         <TextView
-                android:text="Tujuan"
-                android:layout_weight="0"
-                android:padding="12dip" />
+            android:id="@+id/tv_no_alias"
+            android:layout_weight="0"
+            android:padding="12dip"
+            android:text="No. Tujuan" />
+
         <TextView
-                android:id="@+id/dialog_report_trans_alias_value"
-                android:text="Alias"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:gravity="right"
-                android:padding="3dip" />
+            android:id="@+id/dialog_report_trans_alias_no"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="3dip"
+            android:text="Alias" />
     </TableRow>
 
     <View
@@ -84,6 +87,28 @@
         android:layout_height="1dp"
         android:layout_margin="8dp"
         android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="Nama Tujuan"
+            android:layout_weight="0"
+            android:padding="12dip"
+            android:id="@+id/tv_nama_alias"/>
+        <TextView
+            android:id="@+id/dialog_report_trans_alias_name"
+            android:text="bayar lawakan"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"
+        android:id="@+id/view_alias"/>
 
     <TableRow>
         <TextView
