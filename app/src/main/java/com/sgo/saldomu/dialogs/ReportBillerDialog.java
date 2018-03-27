@@ -5,7 +5,6 @@ package com.sgo.saldomu.dialogs;/*
 import android.Manifest;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,13 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -34,6 +29,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.ViewToBitmap;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -223,8 +219,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
                 } else if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
-                    String source_product_type = args.getString(DefineValue.PRODUCT_TYPE, "");
-                    String source_product_code = args.getString(DefineValue.PRODUCT_CODE, "");
 
                     stub.setLayoutResource(R.layout.layout_dialog_report_bbs_cashout);
                     View inflated = stub.inflate();
@@ -437,7 +431,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 tv_message.setText(args.getString(DefineValue.MESSAGE));
 
-                createTableDesc(args.getString(DefineValue.TRANSFER_DATA, ""), mTableLayout, type);
+                createTablePayFriend(args.getString(DefineValue.TRANSFER_DATA, ""), mTableLayout);
 
                 if (args.getString(DefineValue.RECIPIENTS_ERROR) != null) {
                     LinearLayout mLayoutFailed = (LinearLayout) inflated.findViewById(R.id.dialog_reportpayfriends_failed_layout);
@@ -472,24 +466,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_trans_remark_sub.setVisibility(View.VISIBLE);
                     tv_trans_remark_sub.setText(transRemark);
                 }
-
-//                if (buss_scheme_code.equals("IR")) {
-//                    tv_alias.setVisibility(View.GONE);
-//                    tv_tujuan.setVisibility(View.GONE);
-//                    v_alias.setVisibility(View.GONE);
-//                }
-
                 String detail = args.getString(DefineValue.BUSS_SCHEME_NAME, "");
-//                    if (detail.equalsIgnoreCase(DefineValue.CASH_OUT)) {
-//                        trAlias.setVisibility(View.GONE);
-//                        lineAlias.setVisibility(View.GONE);
-//                    } else {
-//                        trAlias.setVisibility(View.VISIBLE);
-//                        lineAlias.setVisibility(View.VISIBLE);
-//                tv_alias.setText(args.getString(DefineValue.CONTACT_ALIAS, ""));
-//                    }
-
-
                 tv_no_tujuan.setText(args.getString(DefineValue.PAYMENT_PHONE,""));
                 tv_nama_tujuan.setText(args.getString(DefineValue.PAYMENT_NAME,""));
                 tv_user_id.setText(args.getString(DefineValue.MEMBER_PHONE, ""));
@@ -533,14 +510,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
                 String detail = args.getString(DefineValue.BUSS_SCHEME_NAME, "");
-//                    if (detail.equalsIgnoreCase(DefineValue.CASH_OUT)) {
-//                        trAlias.setVisibility(View.GONE);
-//                        lineAlias.setVisibility(View.GONE);
-//                    } else {
-//                        trAlias.setVisibility(View.VISIBLE);
-////                        lineAlias.setVisibility(View.VISIBLE);
-//                tv_alias.setText(args.getString(DefineValue.CONTACT_ALIAS, ""));
-//                    }
 
                 tv_no.setText("No. Sumber");
                 tv_nama.setText("Nama Sumber");
@@ -1007,6 +976,70 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
+    public void createTablePayFriend(String jsonData, TableLayout mTableLayout)
+    {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonData);
+            TextView detail_field;
+            TextView detail_value;
+            TableRow layout_table_row;
+            String value="";
+
+            Iterator keys = jsonObject.keys();
+            List<String> tempList = new ArrayList<>();
+
+            while (keys.hasNext()) {
+                String temp = (String) keys.next();
+                tempList.add(temp);
+            }
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT, 8.0f);
+            rowParams.setMargins(6, 6, 6, 6);
+            TableRow.LayoutParams rowParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            rowParams2.setMargins(6, 6, 6, 6);
+
+            for (int i = 0; i < tempList.size(); i++) {
+
+                JSONArray itemArray=new JSONArray(jsonObject.optString(tempList.get(i)));
+                for (int j = 0; j < itemArray.length(); j++) {
+                    value+=itemArray.getString(j)+"\n";
+                    Timber.d("json"+ j+"="+value);
+                }
+
+                detail_field = new TextView(getActivity());
+                detail_field.setGravity(Gravity.LEFT);
+                detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_field.setLayoutParams(rowParams2);
+                detail_field.setTextColor(Color.parseColor("#000000"));
+                detail_value = new TextView(getActivity());
+                detail_value.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                detail_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_value.setLayoutParams(rowParams);
+                detail_value.setPadding(6, 9, 3, 9);
+//                detail_value.setTypeface(Typeface.DEFAULT_BOLD);
+                detail_value.setTextColor(Color.parseColor("#000000"));
+                View line = new View(getActivity()) ;
+                line.setLayoutParams(new LinearLayout.LayoutParams((ViewGroup.LayoutParams.MATCH_PARENT),1));
+                line.setBackgroundColor(Color.parseColor("#e0e0e0"));
+                line.setPadding(8, 3,3,3);
+                layout_table_row = new TableRow(getActivity());
+                layout_table_row.setLayoutParams(tableParams);
+                layout_table_row.addView(detail_field);
+                layout_table_row.addView(detail_value);
+                detail_field.setText(tempList.get(i));
+                detail_value.setText(value);
+                mTableLayout.addView(layout_table_row);
+                mTableLayout.addView(line);
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+    }
 
     private void createTableDesc(String jsonData, TableLayout mTableLayout, String billerType) {
         try {
