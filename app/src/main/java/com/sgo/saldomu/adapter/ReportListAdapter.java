@@ -58,8 +58,8 @@ public class ReportListAdapter extends ArrayAdapter<ReportListModel>{
         ReportListModel itemnya = data.get(position);
 
         holder.tv_date.setText(itemnya.getDatetime());
-        holder.tv_type.setText(itemnya.getDetail());
-        holder.tv_desc.setText(itemnya.getDescription());
+        holder.tv_type.setText(itemnya.getBuss_scheme_name());
+        holder.tv_desc.setText(itemnya.getAlias());
         holder.tv_ccy.setText(itemnya.getCcyID());
         holder.tv_amount.setText(CurrencyFormat.format(itemnya.getAmount()));
         holder.tv_remark.setText(itemnya.getRemark());

@@ -148,6 +148,29 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:visibility="gone"
+            android:id="@+id/layout_warn_pln">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Keterangan : "
+                android:textColor="@color/red_A700"
+                android:textStyle="italic"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pln_warn"
+                android:textColor="@color/red_A700"
+                android:textStyle="italic"/>
+        </LinearLayout>
+
+
+
     </LinearLayout>
 
     <com.balysv.materialripple.MaterialRippleLayout

@@ -352,7 +352,8 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId, String recipients,String amountEach, String amount,
-                                        String fee,String totalAmount, String message, String errorRecipients) {
+                                        String fee,String totalAmount, String message, String errorRecipients, String buss_scheme_code,
+                                        String buss_scheme_name, String transfer_data) {
 
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -368,6 +369,9 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         args.putString(DefineValue.MESSAGE,message);
         args.putString(DefineValue.RECIPIENTS_ERROR,errorRecipients);
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.TRANSFER_DATA, transfer_data);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
@@ -498,8 +502,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
                                             MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
                                             MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
                                             _message,
-                                            _recipient_error
-                                    );
+                                            _recipient_error, response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA));
                                 }
                             }
                             else showDialog(error_msg);

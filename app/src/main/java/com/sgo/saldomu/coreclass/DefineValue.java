@@ -514,7 +514,9 @@ public class DefineValue {
 
     public static String MEMBER_PHONE    = "member_phone";
     public static String TO_ALIAS    = "to_alias";
+    public static String TRANSFER_DATA    = "transfer_data";
     public static String IS_REPORT    = "is_report";
-
+    public static String PAYMENT_PHONE   = "payment_phone";
+    public static String IS_MEMBER_CTA    = "is_member_cta";
 }
 
