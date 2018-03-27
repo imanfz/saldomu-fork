@@ -19,25 +19,30 @@ public class ConfirmationDialog extends DialogFragment {
     View v;
     clickListener listener;
     Button okButton, cancelButton;
-    TextView fromTextview, toTextview, destinationTextview, remarkTextview, amountTextview;
+    View nameLayout, notifPelangganLayout;
+    TextView fromTextview, toTextview, destinationTextview, remarkTextview, amountTextview,
+    nameTextview, notifPelangganTextview;
 
-    String amount, fromUserID, toUserID, destinationUserID, remark;
+    String amount, fromUserID, toUserID, destinationUserID, remark, transaksi, name, notifPelanggan;
 
     Bundle bundle;
 
-    public static ConfirmationDialog newDialog(clickListener listener
+    public static ConfirmationDialog newDialog(clickListener listener, String transaksi
             , String amount
             , String fromUserID
             , String toUserID
             , String destinationUserID
-            , String remark){
+            , String remark, String name, String notifPelanggan){
         ConfirmationDialog dialog = new ConfirmationDialog();
+        dialog.transaksi = transaksi;
         dialog.listener = listener;
         dialog.amount = amount;
         dialog.fromUserID = fromUserID;
         dialog.toUserID = toUserID;
         dialog.destinationUserID = destinationUserID;
         dialog.remark = remark;
+        dialog.name = name;
+        dialog.notifPelanggan = notifPelanggan;
         return dialog;
     }
 
@@ -57,6 +62,7 @@ public class ConfirmationDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.confirmation_dialog_layout, container, false);
 
+        getDialog().setTitle(getString(R.string.confirmation) + " " + transaksi);
         okButton = v.findViewById(R.id.confirmation_dialog_ok_button);
         cancelButton = v.findViewById(R.id.confirmation_dialog_back_button);
         amountTextview = v.findViewById(R.id.confirmation_dialog_amount);
@@ -64,6 +70,10 @@ public class ConfirmationDialog extends DialogFragment {
         toTextview = v.findViewById(R.id.confirmation_dialog_to);
         destinationTextview = v.findViewById(R.id.confirmation_dialog_value_user_id);
         remarkTextview = v.findViewById(R.id.confirmation_dialog_remark);
+        nameTextview = v.findViewById(R.id.confirmation_dialog_value_name);
+        notifPelangganTextview = v.findViewById(R.id.confirmation_dialog_value_notif_pengguna);
+        nameLayout = v.findViewById(R.id.name_layout);
+        notifPelangganLayout = v.findViewById(R.id.notif_pelanggan_layout);
 
         return v;
     }
@@ -75,7 +85,18 @@ public class ConfirmationDialog extends DialogFragment {
         amountTextview.setText(amount);
         fromTextview.setText(fromUserID);
         toTextview.setText(toUserID);
-        destinationTextview.setText(destinationUserID);
+
+        if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
+            notifPelangganLayout.setVisibility(View.VISIBLE);
+            notifPelangganTextview.setText(notifPelanggan);
+            if(!name.equals("")){
+                nameLayout.setVisibility(View.VISIBLE);
+                nameTextview.setText(name);
+            }
+            destinationTextview.setText(destinationUserID);
+        }
+        else
+            destinationTextview.setText(destinationUserID);
         remarkTextview.setText(remark);
 
         okButton.setOnClickListener(new View.OnClickListener() {

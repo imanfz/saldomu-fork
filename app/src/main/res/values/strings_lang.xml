@@ -1183,4 +1183,5 @@
     <string name="canceled_trx_reason">ALASAN BATAL</string>
     <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
     <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
+    <string name="notif_pelanggan">Notif Pelanggan</string>
 </resources>
