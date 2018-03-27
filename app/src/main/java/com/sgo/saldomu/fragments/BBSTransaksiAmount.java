@@ -491,7 +491,12 @@ public class BBSTransaksiAmount extends Fragment {
                         args.putString(DefineValue.BENEF_PRODUCT_TYPE, listbankBenef.get(position).getProduct_type());
                         args.putString(DefineValue.BENEF_PRODUCT_NAME, listbankBenef.get(position).getProduct_name());
                         args.putString(DefineValue.NO_BENEF, etNoAcct.getText().toString());
-                        args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
+                        if (nameLayout.getVisibility() == View.VISIBLE) {
+                            args.putString(DefineValue.NAME_BENEF, etNameAcct.getText().toString());
+                        }
+                        else {
+                            args.putString(DefineValue.NAME_BENEF, "");
+                        }
                         if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
                             String city_id = list_bbs_cities.get(CityAutocompletePos).getCity_id();
                             String city_name = spBenefCity.getText().toString();

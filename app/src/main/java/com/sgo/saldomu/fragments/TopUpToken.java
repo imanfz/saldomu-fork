@@ -452,7 +452,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                             String txstatus = response.getString(WebParams.TX_STATUS);
 
                             showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,bankName,bankProduct,fee,amount,
-                                    txstatus,response.getString(WebParams.TX_REMARK));
+                                    txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
+                                    response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -533,7 +534,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     }
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId, String bankName, String bankProduct,
-                                        String fee, String amount, String txStatus, String txRemark) {
+                                        String fee, String amount, String txStatus, String txRemark, String buss_scheme_code,
+                                        String buss_scheme_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -570,6 +572,9 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

@@ -689,10 +689,11 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                                     response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
                                     txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
                                     response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
-                                    response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
+                                    response.optString(WebParams.MEMBER_SHOP_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
                                     response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
                                     response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
-                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), otp_member);
+                                    response.optString(WebParams.MEMBER_SHOP_NAME,""), otp_member, response.optString(WebParams.BUSS_SCHEME_CODE),
+                                    response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE),""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -758,9 +759,9 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 
     private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
                                         String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
-                                        String source_bank_name, String source_acct_no, String source_acct_name,
+                                        String source_bank_name, String member_shop_no, String source_acct_name,
                                         String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                        String member_shop_name, String otp_member) {
+                                        String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -794,7 +795,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
         args.putString(DefineValue.MEMBER_NAME, member_name);
         args.putString(DefineValue.SOURCE_ACCT, source_bank_name);
-        args.putString(DefineValue.SOURCE_ACCT_NO, source_acct_no);
+        args.putString(DefineValue.MEMBER_SHOP_NO, member_shop_no);
         args.putString(DefineValue.SOURCE_ACCT_NAME, source_acct_name);
         args.putString(DefineValue.BANK_BENEF, benef_bank_name);
         args.putString(DefineValue.NO_BENEF, benef_acct_no);
@@ -802,6 +803,9 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
         args.putString(DefineValue.MEMBER_SHOP_NAME, member_shop_name);
         args.putString(DefineValue.OTP_MEMBER, otp_member);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.MEMBER_PHONE, member_phone);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

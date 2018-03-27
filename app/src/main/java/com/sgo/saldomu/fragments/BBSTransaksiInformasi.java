@@ -430,18 +430,21 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             ConfirmationDialog dialog;
             if (isCashin){
                 dialog = ConfirmationDialog.newDialog(this
+                        , transaksi
                         , amount
                         , benef_product_name
                         , source_product_name
-                        , etNoHp.getText().toString()
-                        , etRemark.getText().toString());
+                        , no_benef
+                        , etRemark.getText().toString(), name_benef,
+                        etNoHp.getText().toString());
             }else {
                 dialog = ConfirmationDialog.newDialog(this
+                        , transaksi
                         , amount
                         , source_product_name
                         , benef_product_name
                         , no_source
-                        , etRemark.getText().toString());
+                        , etRemark.getText().toString(),"","");
             }
 
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
