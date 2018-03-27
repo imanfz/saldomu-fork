@@ -105,7 +105,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
-            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code;
+            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code,
+            noHPMemberLocation = "";
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -185,6 +186,11 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             member_code = bundle.getString(DefineValue.MEMBER_CODE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
+
+            if ( bundle.containsKey(DefineValue.NO_HP_MEMBER_LOCATION) ) {
+                noHPMemberLocation = bundle.getString(DefineValue.NO_HP_MEMBER_LOCATION, "");
+            }
+
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
@@ -763,6 +769,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             if ( !aodTxId.equals("")) {
                 params.put(WebParams.TX_ID, aodTxId);
             }
+
+            params.put(WebParams.CUSTOMER_ID, noHPMemberLocation);
 
             Log.d("params insert a2c", params.toString());
             MyApiClient.sentGlobalBBSInsertA2C(getActivity(),params, new JsonHttpResponseHandler(){
