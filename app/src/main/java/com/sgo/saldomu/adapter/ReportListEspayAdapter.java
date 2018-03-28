@@ -69,7 +69,11 @@ public class ReportListEspayAdapter extends ArrayAdapter<ReportListEspayModel>{
         Double total = Double.parseDouble(itemnya.getAmount()) + Double.parseDouble(itemnya.getAdmin_fee());
 
         holder.tv_amount.setText(CurrencyFormat.format(total));
-        if(!itemnya.getDescription().equals("")) holder.tv_desc.setText(itemnya.getDescription());
+        if(!itemnya.getDescription().equals(""))
+        {
+            holder.tv_desc.setVisibility(View.VISIBLE);
+            holder.tv_desc.setText(itemnya.getDescription());
+        }
         else holder.tv_desc.setVisibility(View.GONE);
 //        if(!itemnya.getRemark().equals("")) holder.tv_remark.setText(itemnya.getRemark());
 //        else holder.tv_remark.setVisibility(View.GONE);

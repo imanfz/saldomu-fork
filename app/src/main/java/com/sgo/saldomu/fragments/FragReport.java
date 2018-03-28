@@ -507,15 +507,15 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                                 mObj.optString(WebParams.TX_STATUS,""),
                                                 mObj.optString(WebParams.BUSS_SCHEME_CODE));
 
-                                        if(mTempData.getDescription().contains(ITEM_DESC_PLN)||
-                                                mTempData.getDescription().contains(ITEM_DESC_LISTRIK)||
-                                                mTempData.getDescription().contains(ITEM_DESC_NON)){
-                                            mTempData.setType_desc(ITEM_DESC_PLN);
-                                        }
-
-                                        if(mTempData.getDescription().contains(ITEM_DESC_BPJS)){
-                                            mTempData.setType_desc(ITEM_DESC_BPJS);
-                                        }
+//                                        if(mTempData.getDescription().contains(ITEM_DESC_PLN)||
+//                                                mTempData.getDescription().contains(ITEM_DESC_LISTRIK)||
+//                                                mTempData.getDescription().contains(ITEM_DESC_NON)){
+//                                            mTempData.setType_desc(ITEM_DESC_PLN);
+//                                        }
+//
+//                                        if(mTempData.getDescription().contains(ITEM_DESC_BPJS)){
+//                                            mTempData.setType_desc(ITEM_DESC_BPJS);
+//                                        }
 
                                         AddNewData(mTempData);
                                     }
