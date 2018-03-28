@@ -10,9 +10,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ToggleButton;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.ReportTabAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -53,6 +55,8 @@ public class ReportTab extends Fragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
+        ToggleFAB(false);
+
         if (savedInstanceState == null) {
             final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                     .getDisplayMetrics());
@@ -84,6 +88,20 @@ public class ReportTab extends Fragment {
         }
     }
 
+    private void ToggleFAB(Boolean isShow){
+        if (getActivity() == null)
+            return;
+
+        if(getActivity() instanceof MainPage) {
+            MainPage fca = (MainPage) getActivity();
+            if(fca.materialSheetFab != null) {
+                if (isShow)
+                    fca.materialSheetFab.showFab();
+                else
+                    fca.materialSheetFab.hideSheetThenFab();
+            }
+        }
+    }
 
     private View getCurrentView() {
         return currentView;

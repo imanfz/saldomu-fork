@@ -89,6 +89,7 @@
             android:textSize="10sp"
             android:text="@string/milik_pelanggan"
             android:textStyle="italic"
+            android:id="@+id/tv_milik_kiri"
             />
 
         <TextView
@@ -100,7 +101,8 @@
             android:layout_gravity="center_horizontal"
             android:textSize="10sp"
             android:text="@string/milik_agen"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:id="@+id/tv_milik_kanan"/>
     </LinearLayout>
 
     <TableLayout
