@@ -21,7 +21,7 @@ public class ConfirmationDialog extends DialogFragment {
     Button okButton, cancelButton;
     View nameLayout, notifPelangganLayout;
     TextView fromTextview, toTextview, destinationTextview, remarkTextview, amountTextview,
-    nameTextview, notifPelangganTextview;
+    nameTextview, notifPelangganTextview, tv_left, tv_right;
 
     String amount, fromUserID, toUserID, destinationUserID, remark, transaksi, name, notifPelanggan;
 
@@ -74,6 +74,8 @@ public class ConfirmationDialog extends DialogFragment {
         notifPelangganTextview = v.findViewById(R.id.confirmation_dialog_value_notif_pengguna);
         nameLayout = v.findViewById(R.id.name_layout);
         notifPelangganLayout = v.findViewById(R.id.notif_pelanggan_layout);
+        tv_left = v.findViewById(R.id.tv_milik_kiri);
+        tv_right = v.findViewById(R.id.tv_milik_kanan);
 
         return v;
     }
@@ -94,6 +96,8 @@ public class ConfirmationDialog extends DialogFragment {
                 nameTextview.setText(name);
             }
             destinationTextview.setText(destinationUserID);
+            tv_left.setText("Milik Agen");
+            tv_right.setText("Milik Pelanggan");
         }
         else
             destinationTextview.setText(destinationUserID);

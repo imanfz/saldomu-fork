@@ -433,8 +433,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 dialog = ConfirmationDialog.newDialog(this
                         , transaksi
                         , amount
-                        , benef_product_name
                         , source_product_name
+                        , benef_product_name
                         , no_benef
                         , etRemark.getText().toString(), name_benef,
                         etNoHp.getText().toString());
