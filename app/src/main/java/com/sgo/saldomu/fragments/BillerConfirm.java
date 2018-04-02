@@ -443,6 +443,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             final Bundle args = getArguments();
 
+            extraSignature = tx_id+args.getString(DefineValue.BILLER_COMM_CODE)+product_code+tokenValue;
+
             final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.BILLER_COMM_ID),MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userPhoneID,accessKey);
 

@@ -474,7 +474,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             extraSignature = tx_id+comm_code+tx_product_code+token;
 
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userPhoneID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
