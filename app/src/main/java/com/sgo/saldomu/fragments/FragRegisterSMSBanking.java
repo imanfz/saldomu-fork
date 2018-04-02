@@ -130,10 +130,12 @@ public class FragRegisterSMSBanking extends Fragment {
             else
                 progdialog.show();
 
+            String memberID = sp.getString(DefineValue.MEMBER_ID,"");
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BANK_SMS_REGIST,
-                    userID,accessKey);
+                    userID,accessKey, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_SMS);
             params.put(WebParams.USER_ID, userID);
 

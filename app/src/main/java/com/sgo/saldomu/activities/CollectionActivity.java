@@ -10,6 +10,7 @@ import android.view.Menu;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.fragments.ListCollectionPayment;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 

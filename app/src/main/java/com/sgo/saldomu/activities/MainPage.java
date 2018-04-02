@@ -37,7 +37,7 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
@@ -737,7 +737,7 @@ public class MainPage extends BaseActivity {
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_LIST_MEMBER,
-                    userID,accessKey);
+                    userID,accessKey, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userID);

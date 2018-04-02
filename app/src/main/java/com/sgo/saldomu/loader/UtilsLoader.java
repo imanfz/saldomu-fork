@@ -66,8 +66,11 @@ public class UtilsLoader {
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
             String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
             if(!member_id.isEmpty() && !access_key.isEmpty()) {
+                String extraSign = member_id;
+
                 RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
-                        sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,""));
+                        sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,"")
+                        , extraSign);
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

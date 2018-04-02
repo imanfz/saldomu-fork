@@ -2,6 +2,7 @@ package com.sgo.saldomu.coreclass;
 
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.securities.SHA;
 
 import java.util.UUID;
 
@@ -22,12 +23,16 @@ public class AgentLocationApiClient {
     private String signature;
     private String defaultSignature;
     private String categoryID;
+    private String userID;
+    private String secretKey;
 
     private RequestParams requestParams;
 
 
-    public AgentLocationApiClient() {
-        requestParams   = new RequestParams();
+    public AgentLocationApiClient(String webServicePath) {
+        this.webServicePath = webServicePath;
+        String servicePath  = MyApiClient.getWebserviceName(this.webServicePath);
+        requestParams       = new RequestParams();
 
         rcUUID          = UUID.randomUUID();
         rcDateTime      = DateTimeFormat.getCurrentDateTime();
@@ -40,13 +45,16 @@ public class AgentLocationApiClient {
         requestParams.put(WebParams.APP_ID, appID);
         requestParams.put(WebParams.SENDER_ID, senderID);
         requestParams.put(WebParams.RECEIVER_ID, receiverID);
+
+        defaultSignature    = rcUUID + rcDateTime + appID + servicePath + MyApiClient.COMM_ID + userID;
     }
 
     public RequestParams webServiceSearchAgent() {
-        webServicePath = MyApiClient.getWebserviceName(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT);
-        signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + rcDateTime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryID
-                + latitude + longitude));
+        webServicePath  = MyApiClient.getWebserviceName(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT);
+        signature       = SHA.SHA256(secretKey,defaultSignature + categoryID + latitude + longitude);
+
+        requestParams.put(WebParams.SIGNATURE, signature);
+
         return requestParams;
     }
 
@@ -95,6 +103,7 @@ public class AgentLocationApiClient {
     }
 
     public void setLatitude(Double latitude) {
+        requestParams.put(WebParams.LATITUDE, latitude);
         this.latitude = latitude;
     }
 
@@ -103,6 +112,7 @@ public class AgentLocationApiClient {
     }
 
     public void setLongitude(Double longitude) {
+        requestParams.put(WebParams.LONGITUDE, longitude);
         this.longitude = longitude;
     }
 
@@ -135,6 +145,23 @@ public class AgentLocationApiClient {
     }
 
     public void setCategoryID(String categoryID) {
+        requestParams.put(WebParams.CATEGORY_ID, categoryID);
         this.categoryID = categoryID;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
     }
 }

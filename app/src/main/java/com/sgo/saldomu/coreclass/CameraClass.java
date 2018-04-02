@@ -13,6 +13,7 @@ import android.view.View;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.io.File;
 import java.util.Date;

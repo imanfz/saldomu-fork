@@ -191,7 +191,7 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
                 RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BANK_LIST,
-                        userID,accessKey);
+                        userID,accessKey, memberID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.MEMBER_ID, memberID );
                 params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);

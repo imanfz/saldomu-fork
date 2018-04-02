@@ -35,6 +35,7 @@ import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.securities.AES;
+import com.sgo.saldomu.securities.RSA;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -140,6 +141,10 @@ public class Login extends Fragment implements View.OnClickListener {
 
     private void sentData(){
         try{
+            String comm_id = MyApiClient.COMM_ID;
+//            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
+//                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
+
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
             btnRegister.setEnabled(false);
@@ -150,10 +155,13 @@ public class Login extends Fragment implements View.OnClickListener {
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
 
+//            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_LOGIN,
+//                    "add647f3d560bcb65fc0cb15d7b66615", userIDfinale, encrypted_password);
             RequestParams params = new RequestParams();
             params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID,userIDfinale);
             params.put(WebParams.PASSWORD_LOGIN, AES.aes_encrypt(passLoginValue.getText().toString(), userIDfinale));
+//            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
             params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
