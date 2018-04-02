@@ -44,6 +44,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -60,17 +61,13 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkCallback {
+public class ListTopUp extends BaseFragment implements InformationDialog.OnDialogOkCallback {
 
     private final String DEFAULT_OTHER_BANK_CODE = "013"; //bank code permata
     View v,nodata_view, layout_list_view;
     LinearLayout maxtopup_layout;
     TextView tv_textNoData, max_topup_holder;
     Button btn_noData;
-    SecurePreferences sp;
-    String userID;
-    String accessKey;
-    String memberID;
     EasyAdapter adapter;
     Boolean is_full_activity = false;
     LevelClass levelClass;
@@ -101,16 +98,12 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
 
         nodata_view = v.findViewById(R.id.layout_no_data);
         nodata_view.setVisibility(View.GONE);
-        tv_textNoData = (TextView) nodata_view.findViewById(R.id.txt_alert);
+        tv_textNoData = nodata_view.findViewById(R.id.txt_alert);
         tv_textNoData.setText(getString(R.string.no_data));
-        btn_noData = (Button) nodata_view.findViewById(R.id.btnRefresh);
+        btn_noData =  nodata_view.findViewById(R.id.btnRefresh);
         layout_list_view = v.findViewById(R.id.layout_list);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        memberID = sp.getString(DefineValue.MEMBER_ID, "");
-        max_topup_holder = (TextView) v.findViewById(R.id.max_topup_textview);
-        maxtopup_layout = (LinearLayout) v.findViewById(R.id.maxtopup_layout);
+        max_topup_holder = v.findViewById(R.id.max_topup_textview);
+        maxtopup_layout = v.findViewById(R.id.maxtopup_layout);
         if (!sp.getBoolean(DefineValue.IS_AGENT, true)){
             max_topup_holder.setText("Max Topup: "+parseMaxTopupValue(sp.getString(DefineValue.BALANCE_MAX_TOPUP, "")));
         }else
@@ -191,11 +184,11 @@ public class ListTopUp extends Fragment implements InformationDialog.OnDialogOkC
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
                 RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BANK_LIST,
-                        userID,accessKey, memberID);
+                        userPhoneID,accessKey, memberIDLogin);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-                params.put(WebParams.MEMBER_ID, memberID );
+                params.put(WebParams.MEMBER_ID, memberIDLogin );
                 params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
-                params.put(WebParams.USER_ID, userID);
+                params.put(WebParams.USER_ID, userPhoneID);
 
                 Timber.d("isi params get BankList:" + params.toString());
 

@@ -27,6 +27,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,9 +43,8 @@ import timber.log.Timber;
 /*
   Created by Administrator on 6/12/2015.
  */
-public class CollectionInput extends Fragment {
+public class CollectionInput extends BaseFragment {
 
-    private SecurePreferences sp;
     private List<String> listProductName;
     private HashMap<String,String> listBankProduct;
     private List<listBankModel> listDB;
@@ -56,8 +57,6 @@ public class CollectionInput extends Fragment {
     private EditText et_remark;
     private String topupType;
     private String nama_bank;
-    private String userID;
-    private String accessKey;
     private Bundle args;
     private ProgressDialog progdialog;
     private ArrayAdapter<String> adapter3;
@@ -77,22 +76,18 @@ public class CollectionInput extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-
         args = getArguments();
         topupType = args.getString(DefineValue.TRANSACTION_TYPE);
         String dataJson = args.getString(DefineValue.BANKLIST_DATA);
 
-        spin_namaBank = (Spinner) v.findViewById(R.id.spinner_nameBank);
-        spin_produkBank = (Spinner) v.findViewById(R.id.spinner_productBank);
-        et_amount = (EditText) v.findViewById(R.id.collectinput_jumlah_value);
-        et_remark = (EditText) v.findViewById(R.id.collectinput_remark_value);
-        btn_subSGO = (Button) v.findViewById(R.id.btn_submit_sgoplus_input);
-        spinWheelBankName = (ImageView) v.findViewById(R.id.spinning_wheel_bank_name);
-        spinWheelBankProduct = (ImageView) v.findViewById(R.id.spinning_wheel_bank_product);
-        sp_privacy = (Spinner) v.findViewById(R.id.privacy_spinner);
+        spin_namaBank = v.findViewById(R.id.spinner_nameBank);
+        spin_produkBank = v.findViewById(R.id.spinner_productBank);
+        et_amount = v.findViewById(R.id.collectinput_jumlah_value);
+        et_remark = v.findViewById(R.id.collectinput_remark_value);
+        btn_subSGO = v.findViewById(R.id.btn_submit_sgoplus_input);
+        spinWheelBankName = v.findViewById(R.id.spinning_wheel_bank_name);
+        spinWheelBankProduct = v.findViewById(R.id.spinning_wheel_bank_product);
+        sp_privacy = v.findViewById(R.id.privacy_spinner);
 
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
@@ -261,8 +256,8 @@ public class CollectionInput extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID, userID);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.BANK_CODE, _bank_code);
@@ -380,12 +375,14 @@ public class CollectionInput extends Fragment {
                                   final String _fee, final String auth_type){
         try{
 
+            extraSignature = _tx_id+ args.getString(DefineValue.COMMUNITY_CODE, "")+_product_code;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE, ""));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
 
@@ -491,9 +488,9 @@ public class CollectionInput extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         final LevelClass levelClass = new LevelClass(getActivity());
 
@@ -536,9 +533,9 @@ public class CollectionInput extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));

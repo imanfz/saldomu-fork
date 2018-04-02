@@ -21,6 +21,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
@@ -40,14 +41,11 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/30/2015.
  */
-public class BillerActivityRF extends Fragment{
+public class BillerActivityRF extends BaseFragment{
 
     public static final String BILLERACTIV_TAG = "billerActivRF";
 
     View v;
-    private String userID;
-    private String accessKey;
-    private SecurePreferences sp;
     private Boolean isBillerDataExe;
     private Boolean isDenomExe;
     private Realm realm;
@@ -149,9 +147,6 @@ public class BillerActivityRF extends Fragment{
         isBillerDataExe = false;
         isDenomExe = false;
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         Queing = new ArrayList<>();
         realm = Realm.getInstance(RealmManager.BillerConfiguration);
 
@@ -218,16 +213,12 @@ public class BillerActivityRF extends Fragment{
 
     private void getBiller(final String _biller_type_code, final Boolean withDenom){
         try{
-            sp = CustomSecurePref.getInstance().getmSecurePrefs();
-            userID = sp.getString(DefineValue.USERID_PHONE, "");
-            accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
-
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BILLER,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             //params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.BILLER_TYPE, _biller_type_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get biller list merchantnya:" + params.toString());
@@ -447,7 +438,7 @@ public class BillerActivityRF extends Fragment{
     private void getDenom(final String _comm_id, final String _comm_name){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_DENOM_RETAIL,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE,""));
 

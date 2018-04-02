@@ -22,6 +22,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +34,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 12/10/2014.
  */
-public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
+public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
 
     private String txID;
     private String productCode;
@@ -45,8 +47,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     private String topupType;
     private String fee;
     private String shareType;
-    private String userID;
-    private String accessKey;
     private int max_length_token = 6;
     private EditText tokenValue;
     private TextView mBankName;
@@ -65,9 +65,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     private int max_token_resend = 3;
     private View v;
     private View layout_btn_resend;
-    private SecurePreferences sp;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,9 +78,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
         Bundle args = getArguments();
         topupType = args.getString(DefineValue.TOPUP_TYPE, "");
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         txID = args.getString(DefineValue.TX_ID,"");
         productCode = args.getString(DefineValue.PRODUCT_CODE,"");
@@ -233,14 +227,14 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             progdialog.show();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, tokenValue.getText());
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
@@ -253,7 +247,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
-                            getTrxStatus(sp.getString(DefineValue.USER_NAME, ""),  txID,userID,
+                            getTrxStatus(sp.getString(DefineValue.USER_NAME, ""),  txID,userPhoneID,
                                     bankName, productName, fee, jumlahnya);
 
                         }
@@ -325,18 +319,20 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txID+commCode+productCode;
+
             RequestParams params;
             if(bankCode.equals("114"))
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, commCode);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params resendTokenSGOL:"+params.toString());

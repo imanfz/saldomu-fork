@@ -66,14 +66,10 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int SELFIE_TYPE = 2;
     private final int TTD_TYPE = 3;
 
-
-    private SecurePreferences sp;
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
     EditText et_nama, et_noHp, et_email;
-    private String userID;
-    private String accessKey;
     private ProgressBar pb1, pb2, pb3;
     private ImageButton cameraKTP, selfieKTP, cameraTTD;
     private Button btn1, btn2;
@@ -171,10 +167,7 @@ public class MyProfileNewActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         Intent intent    = getIntent();
@@ -539,9 +532,9 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey);
+                    userPhoneID,accessKey, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.EMAIL,et_email.getText().toString());
             params.put(WebParams.FULL_NAME,et_nama.getText().toString());
@@ -885,7 +878,7 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_respon_reject_ttd.setVisibility(View.GONE);
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
-                userID,accessKey);
+                userPhoneID,accessKey);
         try {
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.USER_IMAGES, photoFile);
@@ -1042,7 +1035,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog.show();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
-                    userID, accessKey);
+                    userPhoneID, accessKey, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.CUST_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_ID_TYPE, "");
@@ -1052,7 +1045,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_BIRTH_PLACE, "");
             params.put(WebParams.CUST_MOTHER_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.IS_REGISTER, "Y");
 
 //            final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
@@ -1158,8 +1151,8 @@ public class MyProfileNewActivity extends BaseActivity {
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID, userID);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 

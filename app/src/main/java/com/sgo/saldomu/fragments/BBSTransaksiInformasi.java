@@ -57,6 +57,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
+import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
 
 import org.apache.http.Header;
@@ -77,7 +78,7 @@ import timber.log.Timber;
  * Created by thinkpad on 4/21/2017.
  */
 
-public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.PermissionCallbacks, ConfirmationDialog.clickListener {
+public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissions.PermissionCallbacks, ConfirmationDialog.clickListener {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
     private static final int RC_READ_PHONE_STATE = 122;
@@ -102,7 +103,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private SMSDialog smsDialog;
     private Boolean isSMSBanking = false, isSimExist = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
-    private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
+    private String comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
             transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code,
@@ -110,7 +111,6 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
-    SecurePreferences sp;
     private Boolean TCASHValidation=false, MandiriLKDValidation=false, code_success =false;
 
     public interface ActionListener{
@@ -121,9 +121,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
         realmBBS = Realm.getInstance(RealmManager.BBSConfiguration);
         realmBBS.addChangeListener(new RealmChangeListener<Realm>() {
             @Override
@@ -237,16 +235,16 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 }
             }
 
-            CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
+            CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
             mCircleStepView.setTextBelowCircle("", getString(R.string.informasi), "");
             mCircleStepView.setCurrentCircleIndex(1, false);
 
-            tvTitle = (TextView) v.findViewById(R.id.tv_title);
-            btnNext = (Button) v.findViewById(R.id.proses_btn);
-            btnBack = (Button) v.findViewById(R.id.back_btn);
+            tvTitle = v.findViewById(R.id.tv_title);
+            btnNext = v.findViewById(R.id.proses_btn);
+            btnBack = v.findViewById(R.id.back_btn);
             emptyCashoutBenefLayout = v.findViewById(R.id.empty_cashout_benef_layout);
             bbs_informasi_form = v.findViewById(R.id.bbinformasi_input_layout);
-            ViewStub stub = (ViewStub) v.findViewById(R.id.informasi_stub);
+            ViewStub stub = v.findViewById(R.id.informasi_stub);
 
             key_code = bundle.getString(DefineValue.KEY_CODE,"");
 
@@ -254,9 +252,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             if (transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 stub.setLayoutResource(R.layout.bbs_cashin_informasi);
                 View cashin_layout = stub.inflate();
-                actv_rekening_cta = (CustomAutoCompleteTextViewWithIcon) cashin_layout.findViewById(R.id.rekening_agen_value);
-                etNoHp = (EditText) cashin_layout.findViewById(R.id.no_hp_pengirim_value);
-                etRemark = (EditText) cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
+                actv_rekening_cta = cashin_layout.findViewById(R.id.rekening_agen_value);
+                etNoHp = cashin_layout.findViewById(R.id.no_hp_pengirim_value);
+                etRemark = cashin_layout.findViewById(R.id.message_value);// Keys used in Hashmap
 
                 if(!key_code.equals(""))
                 {
@@ -289,9 +287,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             } else {
                 stub.setLayoutResource(R.layout.bbs_cashout_informasi);
                 View cashout_layout = stub.inflate();
-                sp_rekening_act = (Spinner) cashout_layout.findViewById(R.id.rekening_agen_value);
-                etRemark = (EditText) cashout_layout.findViewById(R.id.message_value);
-                etOTP = (EditText) cashout_layout.findViewById(R.id.no_OTP_cashout);
+                sp_rekening_act = cashout_layout.findViewById(R.id.rekening_agen_value);
+                etRemark = cashout_layout.findViewById(R.id.message_value);
+                etOTP = cashout_layout.findViewById(R.id.no_OTP_cashout);
 
 
                 String[] from = {"flag", "txt"};
@@ -397,6 +395,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         public void onClick(View v) {
             if(InetHandler.isNetworkAvailable(getActivity())) {
                 isSMSBanking = source_product_code.equalsIgnoreCase(MANDIRISMS);
+
+                extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                        +MyApiClient.CCY_VALUE+amount;
 
                 if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                     if (isSMSBanking) {
@@ -554,9 +555,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
-                    userID, accessKey);
+                    userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
             params.put(WebParams.SOURCE_PRODUCT_CODE, source_product_code);
@@ -747,10 +748,13 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                    +MyApiClient.CCY_VALUE+amount;
+
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
-                    userID, accessKey);
+                    userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MEMBER_CODE, member_code);
             params.put(WebParams.SOURCE_PRODUCT_CODE, source_product_code);
@@ -855,14 +859,16 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = _tx_id+comm_code+_product_code;
+
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
             if (source_product_code.equalsIgnoreCase("TCASH") || source_product_code.equalsIgnoreCase("MANDIRILKD"))
                 params.put(WebParams.PRODUCT_VALUE,"");
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, comm_id);
 
             if(isSMSBanking)
@@ -990,9 +996,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
@@ -1163,9 +1169,9 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));

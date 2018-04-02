@@ -51,6 +51,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -61,12 +62,11 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-public class Cashoutbbs_describ_member extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class Cashoutbbs_describ_member extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
 //    layout_button_transaction;
-    SecurePreferences sp;
-    String userID, accessKey, authType, amount, fee,total, ccyId, txId, product_h2h, comm_code,
+    String authType, amount, fee,total, ccyId, txId, product_h2h, comm_code,
     product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
@@ -101,9 +101,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
 
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
         if(flagLogin == null)
@@ -123,23 +121,23 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 //        isPIN = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN);
 //        isOTP = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP);
 
-        layoutEmpty = (RelativeLayout) v.findViewById(R.id.bbscashoutmember_empty_layout);
-        layoutNoEmpty = (LinearLayout) v.findViewById(R.id.bbscashoutmember_layout);
+        layoutEmpty = v.findViewById(R.id.bbscashoutmember_empty_layout);
+        layoutNoEmpty = v.findViewById(R.id.bbscashoutmember_layout);
 //        layoutCode = (LinearLayout) v.findViewById(R.id.bbscashoutmember_code_layout);
-        layoutButton = (LinearLayout) v.findViewById(R.id.bbscashoutmember_bottom_layout);
-        tvTxId = (TextView) v.findViewById(R.id.bbscashoutmember_tx_id_value);
-        tvAgent = (TextView) v.findViewById(R.id.bbscashoutmember_agent_value);
-        tvAmount = (TextView) v.findViewById(R.id.bbscashoutmember_amount_value);
-        tvFee = (TextView) v.findViewById(R.id.bbscashoutmember_fee_value);
-        tvTotal = (TextView) v.findViewById(R.id.bbscashoutmember_total_value);
-        tvCode = (TextView) v.findViewById(R.id.bbscashoutmember_code);
-        tvBankProduct = (TextView) v.findViewById(R.id.bbscashoutmember_bank_product_value);
-        loading = (ProgressBar) v.findViewById(R.id.prgLoading);
-        tvAlert = (TextView) v.findViewById(R.id.text_alert);
-        layoutOTP = (LinearLayout) v.findViewById(R.id.bbscashoutmember_layout_OTP);
-        tokenValue = (EditText) v.findViewById(R.id.bbscashoutmember_value_otp);
-        btnOk = (Button) v.findViewById(R.id.bbscashoutmember_btn_ok);
-        btnCancel = (Button) v.findViewById(R.id.bbscashoutmember_btn_cancel);
+        layoutButton = v.findViewById(R.id.bbscashoutmember_bottom_layout);
+        tvTxId = v.findViewById(R.id.bbscashoutmember_tx_id_value);
+        tvAgent = v.findViewById(R.id.bbscashoutmember_agent_value);
+        tvAmount = v.findViewById(R.id.bbscashoutmember_amount_value);
+        tvFee = v.findViewById(R.id.bbscashoutmember_fee_value);
+        tvTotal = v.findViewById(R.id.bbscashoutmember_total_value);
+        tvCode = v.findViewById(R.id.bbscashoutmember_code);
+        tvBankProduct = v.findViewById(R.id.bbscashoutmember_bank_product_value);
+        loading = v.findViewById(R.id.prgLoading);
+        tvAlert = v.findViewById(R.id.text_alert);
+        layoutOTP = v.findViewById(R.id.bbscashoutmember_layout_OTP);
+        tokenValue = v.findViewById(R.id.bbscashoutmember_value_otp);
+        btnOk = v.findViewById(R.id.bbscashoutmember_btn_ok);
+        btnCancel = v.findViewById(R.id.bbscashoutmember_btn_cancel);
 //        btn_proses_transaction = (Button) v.findViewById(R.id.btn_verification);
 //        layout_button_transaction = v.findViewById(R.id.layout_button_check_transaction);
 
@@ -281,9 +279,9 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         try {
             RequestParams params;
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_LIST_MEMBER_A2C,
-                    userID, accessKey);
-            params.put(WebParams.USER_ID, userID);
-            params.put(WebParams.CUSTOMER_ID, userID);
+                    userPhoneID, accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.CUSTOMER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params sent list member atc:" + params.toString());
@@ -375,7 +373,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         if(_product_h2h.equalsIgnoreCase("Y")) {
             if (isOTP) {
                 layoutOTP.setVisibility(View.VISIBLE);
-                btnResend = (Button) v.findViewById(R.id.btn_resend_token);
+                btnResend = v.findViewById(R.id.btn_resend_token);
 
                 View layout_resendbtn = v.findViewById(R.id.layout_btn_resend);
                 layout_resendbtn.setVisibility(View.VISIBLE);
@@ -384,7 +382,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
                 changeTextBtnSub();
             } else {
                 layoutOTP.setVisibility(View.GONE);
-                new UtilsLoader(getActivity(), sp).getFailedPIN(userID, new OnLoadDataListener() { //get pin attempt
+                new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { //get pin attempt
                     @Override
                     public void onSuccess(Object deData) {
                         pin_attempt = (int) deData;
@@ -409,17 +407,17 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            String extraSign = _tx_id+_token+comm_code;
+            extraSignature = _tx_id+_token+comm_code;
 
             RequestParams params;
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_OTP_MEMBER_A2C,
-                    userID, accessKey, extraSign);
+                    userPhoneID, accessKey, extraSignature);
 
             params.put(WebParams.TOKEN_ID, Md5.hashMd5(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
-            params.put(WebParams.CUSTOMER_ID,userID);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.CUSTOMER_ID,userPhoneID);
             params.put(WebParams.COMM_CODE,comm_code);
             params.put(WebParams.SENDER_ID,"GOMOBILE");
             params.put(WebParams.RECEIVER_ID,"GOWORLD");
@@ -441,7 +439,7 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
 //                            layoutButton.setVisibility(View.GONE);
 //                            tvCode.setText(response.getString(WebParams.OTP_MEMBER));
                             otp_member = response.getString(WebParams.OTP_MEMBER);
-                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userID);
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""), txId, userPhoneID);
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
@@ -511,11 +509,11 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
             params.put(WebParams.RC_UUID, rcUUID);
             params.put(WebParams.RC_DTIME, dtime);
 
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, txId);
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + comm_code + userID));
+            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + comm_code + userPhoneID));
 
             params.put(WebParams.SIGNATURE, signature);
 
@@ -587,9 +585,9 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_LKD,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID,_data);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params sent resend token:"+params.toString());
@@ -823,9 +821,9 @@ public class Cashoutbbs_describ_member extends Fragment implements ReportBillerD
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

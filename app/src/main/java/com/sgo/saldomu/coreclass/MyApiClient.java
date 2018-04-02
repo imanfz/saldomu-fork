@@ -483,7 +483,7 @@ public class MyApiClient {
 
     public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya
             , String extraSignature){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
+        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID+extraSignature;
         String hash = SHA.SHA256(apinya,msgnya);
         return hash;
     }

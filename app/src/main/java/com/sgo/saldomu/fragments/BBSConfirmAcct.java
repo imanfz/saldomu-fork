@@ -28,6 +28,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -38,10 +39,9 @@ import io.realm.Realm;
 import timber.log.Timber;
 
 
-public class BBSConfirmAcct extends Fragment {
+public class BBSConfirmAcct extends BaseFragment {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSConfirmAcct";
     private final static String TYPE_ACCT = "ACCT";
-    private String userID,accessKey;
     private EditText etPassword;
     private ActionListener actionListener;
     private ProgressDialog progdialog;
@@ -61,9 +61,6 @@ public class BBSConfirmAcct extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         Bundle bundle = getArguments();
         isUpdate = bundle.getBoolean(DefineValue.IS_UPDATE,false);
@@ -176,16 +173,16 @@ public class BBSConfirmAcct extends Fragment {
 
     private void sentConfirmAcct(final String commCode, final String memberCode, final String txId, final String tokenId){
         try{
-            String extraSign = txId+tokenId+commCode+memberCode;
+            extraSignature = txId+tokenId+commCode+memberCode;
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_CONFIRM_ACCT,
-                    userID,accessKey, extraSign);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.TOKEN_ID, Md5.hashMd5(tokenId));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params confirmAcct:" + params.toString());
 
             progdialog.show();
