@@ -1,4 +1,4 @@
-package com.sgo.saldomu.coreclass;
+package com.sgo.saldomu.widgets;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
 
@@ -44,6 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     protected SecurePreferences sp;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String extraSignature="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

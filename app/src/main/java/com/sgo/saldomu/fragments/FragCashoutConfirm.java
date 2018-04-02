@@ -41,6 +41,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -52,19 +53,17 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 11/20/2015.
  */
-public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback, CashoutActivity.GetSMSOTP {
+public class FragCashoutConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback, CashoutActivity.GetSMSOTP {
 
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashoutConfirm";
 
-
     View v;
-    SecurePreferences sp;
     LinearLayout layoutOTP;
     TextView txtTxId, txtBankName, txtAccno, txtAccName, txtCurrency, txtNominal, txtFee, txtTotal;
     EditText tokenValue;
     Button btnProcess;
     ProgressDialog progdialog;
-    String name, userID, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
+    String name, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
     boolean isPIN, isOTP;
     int pin_attempt=-1;
     private TransactionResult mListener;
@@ -73,33 +72,30 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         String authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
         name = sp.getString(DefineValue.USER_NAME,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         isPIN = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN);
 
         isOTP = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP);
 
-        txtTxId = (TextView) v.findViewById(R.id.cashout_value_tx_id);
-        txtBankName = (TextView) v.findViewById(R.id.cashout_value_bank_name);
-        txtAccno = (TextView) v.findViewById(R.id.cashout_value_bank_acc_no);
-        txtAccName = (TextView) v.findViewById(R.id.cashout_value_bank_acc_name);
-        txtCurrency = (TextView) v.findViewById(R.id.cashout_value_ccy);
-        txtNominal  = (TextView) v.findViewById(R.id.cashout_value_nominal);
-        txtFee = (TextView) v.findViewById(R.id.cashout_value_fee);
-        txtTotal = (TextView) v.findViewById(R.id.cashout_value_total);
-        layoutOTP = (LinearLayout) v.findViewById(R.id.cashout_layout_OTP);
-        tokenValue = (EditText) v.findViewById(R.id.cashout_value_otp);
-        btnProcess = (Button) v.findViewById(R.id.cashoutconfirm_btn_process);
+        txtTxId = v.findViewById(R.id.cashout_value_tx_id);
+        txtBankName = v.findViewById(R.id.cashout_value_bank_name);
+        txtAccno = v.findViewById(R.id.cashout_value_bank_acc_no);
+        txtAccName = v.findViewById(R.id.cashout_value_bank_acc_name);
+        txtCurrency = v.findViewById(R.id.cashout_value_ccy);
+        txtNominal  =  v.findViewById(R.id.cashout_value_nominal);
+        txtFee = v.findViewById(R.id.cashout_value_fee);
+        txtTotal = v.findViewById(R.id.cashout_value_total);
+        layoutOTP = v.findViewById(R.id.cashout_layout_OTP);
+        tokenValue = v.findViewById(R.id.cashout_value_otp);
+        btnProcess = v.findViewById(R.id.cashoutconfirm_btn_process);
         btnProcess.setOnClickListener(btnProcessListener);
 
         if(isOTP) layoutOTP.setVisibility(View.VISIBLE);
         else {
             layoutOTP.setVisibility(View.GONE);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     pin_attempt = (int) deData;
@@ -189,11 +185,13 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txId+userPhoneID;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_CASHOUT,
-                    userID, accessKey);
+                    userPhoneID, accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.TOKEN_ID, _token);
 
             MyApiClient.sentConfCashout(getActivity(),params, new JsonHttpResponseHandler(){
@@ -205,7 +203,7 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response confirm cashout:"+response.toString());
-                            showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userID, txId, bankName, accNo,
+                            showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
                                     accName, ccyId + " " + CurrencyFormat.format(nominal),
                                     ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
                                     response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));

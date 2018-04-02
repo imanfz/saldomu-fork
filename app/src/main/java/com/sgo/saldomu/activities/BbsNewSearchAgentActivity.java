@@ -1,14 +1,10 @@
 package com.sgo.saldomu.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -18,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -58,9 +53,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
-import com.sgo.saldomu.coreclass.BBSDataManager;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.interfaces.PermissionResult;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
@@ -85,8 +78,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,15 +85,10 @@ import java.util.Locale;
 import java.util.UUID;
 
 import io.realm.Realm;
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
-import static com.sgo.saldomu.coreclass.DefineValue.ATC;
-import static com.sgo.saldomu.coreclass.DefineValue.BENEF;
 import static com.sgo.saldomu.coreclass.DefineValue.CTA;
-import static com.sgo.saldomu.utils.BbsUtil.mappingProductCodeIcons;
 
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,

@@ -11,11 +11,8 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -147,8 +144,10 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
+            extraSignature = memberIDLogin+currentPin+newPin;
+
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHANGE_PIN,
-                    userPhoneID, accessKey);
+                    userPhoneID, accessKey, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.OLD_PIN, Md5.hashMd5(currentPin));
