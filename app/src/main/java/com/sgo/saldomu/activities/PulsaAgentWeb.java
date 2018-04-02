@@ -221,8 +221,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
 
+            extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);

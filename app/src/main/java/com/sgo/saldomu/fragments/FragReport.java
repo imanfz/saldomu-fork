@@ -815,7 +815,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             }
 
 
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key);
+            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key, _tx_id);
 
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, _comm_id);

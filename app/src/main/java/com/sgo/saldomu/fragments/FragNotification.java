@@ -5,13 +5,18 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -20,11 +25,17 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.adapter.NotificationListAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.DividerItemDecoration;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,11 +46,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 import timber.log.Timber;
 /*
   Created by thinkpad on 3/19/2015.
  */
-public class FragNotification extends Fragment {
+public class FragNotification extends BaseFragment {
 
 
 
@@ -291,9 +304,9 @@ public class FragNotification extends Fragment {
 
     private void sentReadNotif(String _notif_id, final int position){
         try{
-
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BANK_BILLER,
-                    _userid,accessKey);
+            extraSignature = _notif_id;
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_READ,
+                    _userid,accessKey, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.NOTIF_ID_READ,_notif_id);
             params.put(WebParams.MEMBER_ID, _memberId);
