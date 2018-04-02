@@ -58,6 +58,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
+import com.sgo.saldomu.coreclass.AgentLocationApiClient;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.interfaces.PermissionResult;
@@ -612,6 +613,13 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void searchAgent() {
         //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+
+        AgentLocationApiClient agentLocationApiClient = new AgentLocationApiClient();
+        agentLocationApiClient.setLatitude(latitude);
+        agentLocationApiClient.setLongitude(longitude);
+        agentLocationApiClient.setCategoryID(categoryId);
+        agentLocationApiClient.setRadius(DefineValue.MAX_RADIUS_SEARCH_AGENT);
+        RequestParams rqParams = agentLocationApiClient.webServiceSearchAgent();
 
         String encryptedCategoryId  = RSA.opensslEncrypt(categoryId, BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
 
