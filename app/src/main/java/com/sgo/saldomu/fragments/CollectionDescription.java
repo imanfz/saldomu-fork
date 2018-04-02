@@ -39,6 +39,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -50,9 +51,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 6/12/2015.
  */
-public class CollectionDescription extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
-
-    private SecurePreferences sp;
+public class CollectionDescription extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     private String txID;
     private String productCode;
@@ -68,8 +67,6 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     private String fee;
     private String shareType;
     private String topuptype;
-    private String userID;
-    private String accessKey;
     private Button btnSubmit;
     private Button btnCancel;
     private Button btnResend;
@@ -91,12 +88,8 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-
-        btnSubmit = (Button) v.findViewById(R.id.collectdesc_btn_verification);
-        btnCancel = (Button) v.findViewById(R.id.collectdesc_btn_cancel);
+        btnSubmit = v.findViewById(R.id.collectdesc_btn_verification);
+        btnCancel = v.findViewById(R.id.collectdesc_btn_cancel);
 
         btnSubmit.setOnClickListener(submitListener);
         btnCancel.setOnClickListener(cancelListener);
@@ -130,10 +123,10 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             View layout_token = v.findViewById(R.id.input_token_layout);
             View layout_btn_resend = v.findViewById(R.id.layout_btn_resend);
             layout_btn_resend.setVisibility(View.VISIBLE);
-            btnResend = (Button) v.findViewById(R.id.collectdesc_btn_resend_token);
+            btnResend = v.findViewById(R.id.collectdesc_btn_resend_token);
             btnResend.setOnClickListener(resendListener);
             layout_token.setVisibility(View.VISIBLE);
-            et_token = (EditText) v.findViewById(R.id.token_value);
+            et_token = v.findViewById(R.id.token_value);
             et_token.requestFocus();
             max_length_token = 6;
             changeTextBtnSub();
@@ -145,7 +138,7 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         }
 
         if(isPIN){
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int)deData;
@@ -163,12 +156,12 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             });
         }
 
-        TextView tv_bank_name = (TextView) v.findViewById(R.id.collectdesc_bank_name);
-        TextView tv_product_name = (TextView) v.findViewById(R.id.collectdesc_bank_product);
-        TextView tv_amount = (TextView) v.findViewById(R.id.collectdesc_amount);
-        TextView tv_fee = (TextView) v.findViewById(R.id.collectdesc_bank_fee);
-        TextView tv_total_fee = (TextView) v.findViewById(R.id.collectdesc_bank_total_fee);
-        TextView tv_remark = (TextView) v.findViewById(R.id.collectdesc_remark_value);
+        TextView tv_bank_name = v.findViewById(R.id.collectdesc_bank_name);
+        TextView tv_product_name = v.findViewById(R.id.collectdesc_bank_product);
+        TextView tv_amount = v.findViewById(R.id.collectdesc_amount);
+        TextView tv_fee = v.findViewById(R.id.collectdesc_bank_fee);
+        TextView tv_total_fee = v.findViewById(R.id.collectdesc_bank_total_fee);
+        TextView tv_remark = v.findViewById(R.id.collectdesc_remark_value);
 
         tv_bank_name.setText(bankName);
         tv_product_name.setText(productName);
@@ -263,14 +256,14 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             final Bundle args = getArguments();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.COMMUNITY_ID),MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE));
             params.put(WebParams.COMM_ID, args.getString(DefineValue.COMMUNITY_ID));
             params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
             params.put(WebParams.PRODUCT_VALUE, tokenValue);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrx Collection:"+params.toString());
 
@@ -357,19 +350,21 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txID+getArguments().getString(DefineValue.COMMUNITY_CODE)+productCode;
+
             RequestParams params;
 
             if(bankCode.equals("114"))
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, getArguments().getString(DefineValue.COMMUNITY_CODE));
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params resendToken Collection:"+params.toString());
@@ -462,13 +457,13 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TYPE, DefineValue.TOPUP_ACL_TYPE);
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
@@ -616,9 +611,9 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

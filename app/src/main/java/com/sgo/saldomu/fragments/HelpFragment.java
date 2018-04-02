@@ -23,6 +23,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -36,13 +37,10 @@ import timber.log.Timber;
 /*
  Created by thinkpad on 6/9/2015.
  */
-public class HelpFragment extends Fragment {
+public class HelpFragment extends BaseFragment {
 
-    private SecurePreferences sp;
     private View v;
     private Activity act;
-    private String ownerId;
-    private String accessKey;
 
     private ArrayList<HelpModel> listHelp;
     private HelpAdapter mAdapter;
@@ -63,12 +61,9 @@ public class HelpFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         act = getActivity();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        ownerId = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         listHelp = new ArrayList<>();
-        ListView mListView = (ListView) v.findViewById(R.id.lvHelpCenter);
+        ListView mListView = v.findViewById(R.id.lvHelpCenter);
 
         getHelpList();
 
@@ -82,8 +77,8 @@ public class HelpFragment extends Fragment {
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_HELP_LIST,
-                    ownerId,accessKey);
-            params.put(WebParams.USER_ID, ownerId);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
