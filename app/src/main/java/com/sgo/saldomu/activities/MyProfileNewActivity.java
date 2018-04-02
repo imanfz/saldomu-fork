@@ -26,8 +26,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
@@ -37,6 +35,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -530,9 +529,9 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog = DefinedDialog.CreateProgressDialog(MyProfileNewActivity.this, "");
             else
                 progdialog.show();
-
+            String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userPhoneID,accessKey, memberIDLogin);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
@@ -877,8 +876,10 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_respon_reject_selfie.setVisibility(View.GONE);
         tv_respon_reject_ttd.setVisibility(View.GONE);
 
+        extraSignature = String.valueOf(flag);
+
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
-                userPhoneID,accessKey);
+                userPhoneID,accessKey,extraSignature);
         try {
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.USER_IMAGES, photoFile);

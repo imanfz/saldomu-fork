@@ -32,9 +32,11 @@ public class UserProfileHandler {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         String userID = sp.getString(DefineValue.USERID_PHONE, "");
         String memberID = sp.getString(DefineValue.MEMBER_ID, "");
+
         if(! userID.isEmpty() && !memberID.isEmpty()) {
             try {
-                RequestParams params = new RequestParams();
+                String extraSignature = memberID;
+                RequestParams params = new RequestParams(extraSignature);
                 params.put(WebParams.USER_ID, userID);
                 params.put(WebParams.MEMBER_ID, memberID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -444,9 +443,11 @@ public class FragPayFriends extends BaseFragment {
                         userPhoneID,accessKey, memberIDLogin);
             }
             else
+            {
+                extraSignature = memberIDLogin;
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
-                        userPhoneID,accessKey);
-
+                        userPhoneID,accessKey, extraSignature);
+            }
 
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.MEMBER_REMARK, _message);

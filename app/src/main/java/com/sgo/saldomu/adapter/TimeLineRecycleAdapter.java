@@ -285,8 +285,9 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
     private void addLike(final String post_id, String from_id, final String jumlahLike) {
         try {
+            String extraSignature = post_id + from_id;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
-                    user_id,accessKey);
+                    user_id,accessKey,extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
@@ -363,9 +364,9 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
     private void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
         try {
 
-
+            String extraSignature = post_id + like_id + to;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
-                    user_id,accessKey);
+                    user_id,accessKey, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);

@@ -255,8 +255,10 @@ public class CollectionInput extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = _comm_id + _product_code + MyApiClient.CCY_VALUE + _amount;
+
             RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION,
-                    userPhoneID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
