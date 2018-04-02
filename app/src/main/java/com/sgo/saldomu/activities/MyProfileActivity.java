@@ -542,8 +542,9 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
             tempCountry = spinner_country.getSelectedItem().toString();
             tempHobby = spinner_hobby.getSelectedItem().toString();
 
+            String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.SOCIAL_ID,et_socialID.getText().toString());

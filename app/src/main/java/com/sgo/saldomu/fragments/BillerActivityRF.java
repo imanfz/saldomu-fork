@@ -2,7 +2,6 @@ package com.sgo.saldomu.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,6 +20,7 @@ import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
@@ -40,7 +40,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/30/2015.
  */
-public class BillerActivityRF extends Fragment{
+public class BillerActivityRF extends BaseFragment{
 
     public static final String BILLERACTIV_TAG = "billerActivRF";
 

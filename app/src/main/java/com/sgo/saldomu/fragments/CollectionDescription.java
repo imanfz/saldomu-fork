@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 6/12/2015.
  */
-public class CollectionDescription extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class CollectionDescription extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     private SecurePreferences sp;
 
@@ -461,8 +461,9 @@ public class CollectionDescription extends Fragment implements ReportBillerDialo
     private void getTrxStatus(final String txId, String comm_id, final String _amount){
         try{
 
+            extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TYPE, DefineValue.TOPUP_ACL_TYPE);

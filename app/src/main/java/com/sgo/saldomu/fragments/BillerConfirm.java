@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.telephony.SmsMessage;
@@ -55,6 +54,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -70,7 +70,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 3/5/2015.
  */
-public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class BillerConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
 
     public final static String TAG = "BILLER_CONFIRM";
@@ -651,8 +651,9 @@ public class BillerConfirm extends Fragment implements ReportBillerDialog.OnDial
     private void getTrxStatus(final String txId, String comm_id, final String _amount){
         try{
 
+            extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);

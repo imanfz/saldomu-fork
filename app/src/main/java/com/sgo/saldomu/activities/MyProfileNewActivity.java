@@ -537,9 +537,9 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog = DefinedDialog.CreateProgressDialog(MyProfileNewActivity.this, "");
             else
                 progdialog.show();
-
+            String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
@@ -884,8 +884,10 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_respon_reject_selfie.setVisibility(View.GONE);
         tv_respon_reject_ttd.setVisibility(View.GONE);
 
+        extraSignature = String.valueOf(flag);
+
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
-                userID,accessKey);
+                userID,accessKey,extraSignature);
         try {
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.USER_IMAGES, photoFile);

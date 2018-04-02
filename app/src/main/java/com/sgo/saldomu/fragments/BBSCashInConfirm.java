@@ -46,6 +46,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -58,7 +59,7 @@ import timber.log.Timber;
  * Created by thinkpad on 2/1/2017.
  */
 
-public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSCashInConfirm";
     private static final int MAX_TOKEN_RESENT = 3;
 
@@ -706,8 +707,9 @@ public class BBSCashInConfirm extends Fragment implements ReportBillerDialog.OnD
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
 
+            extraSignature = txId + comm_code;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey);
+                    userId,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, comm_code);

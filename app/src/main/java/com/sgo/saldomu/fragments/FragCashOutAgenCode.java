@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -38,7 +38,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgenCode";
 
@@ -136,8 +136,9 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = tx_id + MyApiClient.COMM_ID;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userid,accesskey);
+                    userid,accesskey,extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

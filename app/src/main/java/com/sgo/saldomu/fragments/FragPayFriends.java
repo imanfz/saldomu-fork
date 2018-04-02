@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -53,6 +52,7 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -69,7 +69,7 @@ import timber.log.Timber;
 /*
   Created by thinkpad on 3/11/2015.
  */
-public class FragPayFriends extends Fragment {
+public class FragPayFriends extends BaseFragment {
 
     private boolean isNotification = false;
     private InformationDialog dialogI;
@@ -452,9 +452,11 @@ public class FragPayFriends extends Fragment {
                         userID,accessKey);
             }
             else
+            {
+                extraSignature = _memberId;
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
-                        userID,accessKey);
-
+                        userID,accessKey, extraSignature);
+            }
 
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.MEMBER_REMARK, _message);

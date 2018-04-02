@@ -127,7 +127,7 @@ public class MyApiClient {
 
     public static String LINK_ASKFORMONEY_SUBMIT;
     public static String LINK_NOTIF_RETRIEVE;
-    private static String LINK_NOTIF_READ;
+    public static String LINK_NOTIF_READ;
 
     public static String LINK_REQ_TOKEN_P2P_NOTIF;
     public static String LINK_CONFIRM_TRANS_P2P_NOTIF;
@@ -507,6 +507,25 @@ public class MyApiClient {
         return params;
     }
 
+    public static RequestParams getSignatureWithParams(String commID, String linknya, String access_key ){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID ;
+//        Timber.d("isi access_key :" + access_key);
+//
+//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+
+        String hash = SHA.SHA256(access_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key
             , String extraSignature){
 
@@ -517,6 +536,22 @@ public class MyApiClient {
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+
+        String hash = SHA.SHA256(access_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParams1(String commID, String linknya, String access_key, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
 
         String hash = SHA.SHA256(access_key,msgnya);
 

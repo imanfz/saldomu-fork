@@ -27,6 +27,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +43,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 6/12/2015.
  */
-public class CollectionInput extends Fragment {
+public class CollectionInput extends BaseFragment {
 
     private SecurePreferences sp;
     private List<String> listProductName;
@@ -56,8 +58,6 @@ public class CollectionInput extends Fragment {
     private EditText et_remark;
     private String topupType;
     private String nama_bank;
-    private String userID;
-    private String accessKey;
     private Bundle args;
     private ProgressDialog progdialog;
     private ArrayAdapter<String> adapter3;
@@ -76,10 +76,6 @@ public class CollectionInput extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         args = getArguments();
         topupType = args.getString(DefineValue.TRANSACTION_TYPE);
@@ -260,9 +256,11 @@ public class CollectionInput extends Fragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = _comm_id + _product_code + MyApiClient.CCY_VALUE + _amount;
+
             RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID, userID);
+                    userPhoneID,accessKey, extraSignature);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.BANK_CODE, _bank_code);
@@ -381,11 +379,11 @@ public class CollectionInput extends Fragment {
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE, ""));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
 
