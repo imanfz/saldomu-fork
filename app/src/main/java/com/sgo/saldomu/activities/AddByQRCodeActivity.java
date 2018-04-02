@@ -33,7 +33,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.friendModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.Contents;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
