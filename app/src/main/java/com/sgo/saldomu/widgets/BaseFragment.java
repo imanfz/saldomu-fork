@@ -12,7 +12,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
  * Created by LENOVO on 02/04/2018.
  */
 
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     protected SecurePreferences sp;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
