@@ -41,7 +41,8 @@ public class WebParams {
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
     public static String MEMBER_NAME = "member_name";
-    public static String MEMBER_SHOP_NO = "member_shop_phone";
+    public static String MEMBER_SHOP_NO = "member_shop_no";
+    public static String MEMBER_SHOP_PHONE = "member_shop_phone";
     public static String MEMBER_SHOP_NAME = "member_shop_name";
     public static String UNREGISTER_MEMBER = "unregister_member";
 
@@ -58,6 +59,9 @@ public class WebParams {
     public static String PRODUCT_TYPE = "product_type";
     public static String PRODUCT_CODE = "product_code";
     public static String PAYMENT_REMARK = "payment_remark";
+    public static String PAYMENT_BANK = "payment_bank";
+    public static String PAYMENT_PHONE = "payment_phone";
+    public static String PAYMENT_NAME= "payment_name";
     public static String PRODUCT_H2H = "product_h2h";
     public static String PRODUCT_DISPLAY = "product_display";
 
@@ -100,6 +104,7 @@ public class WebParams {
 
     public static String BILLER_TYPE = "biller_type";
     public static String BILLER_DATA = "biller_data";
+    public static String BILLER_DETAIL = "biller_detail";
     public static String BILLER_ID = "biller_id";
     public static String BILLER_CODE = "biller_code";
     public static String BILLER_NAME = "biller_name";
@@ -400,7 +405,6 @@ public class WebParams {
     public static String BENEF_ACCT_TYPE= "benef_acct_type";
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String BENEF_PRODUCT_VALUE_CITY= "benef_product_value_city";
-    public static String MEMBER_SHOP_PHONE= "member_shop_phone";
     public static String TX_PRODUCT_CODE= "tx_product_code";
     public static String TX_BANK_CODE= "tx_bank_code";
     public static String TX_BANK_NAME= "tx_bank_name";
@@ -494,4 +498,7 @@ public class WebParams {
     public static String OFFSET    = "offset";
     public static String TX_REMARKS = "tx_remarks";
     public static String MEMBER_MAX_RATING  = "member_max_rating";
+    public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
+    public static String TX_DESCRIPTION  = "tx_description";
+    public static String TRANSFER_DATA  = "transfer_data";
 }

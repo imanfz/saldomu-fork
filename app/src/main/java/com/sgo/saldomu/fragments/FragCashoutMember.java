@@ -649,7 +649,8 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
                         String message = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             showReportBillerDialog( DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""));
+                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
 
@@ -704,7 +705,8 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
         }
     }
 
-    private void showReportBillerDialog(String datetime, String txStatus, String txRemark) {
+    private void showReportBillerDialog(String datetime, String txStatus, String txRemark, String buss_scheme_code,
+                                        String buss_scheme_name) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, txId);
@@ -734,6 +736,9 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this, 0);

@@ -74,12 +74,13 @@
 
     <TableRow>
         <TextView
-            android:text="@string/rekening_bank_agent"
+            android:text="@string/produk_agent"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="3dip" />
+            android:padding="3dip"
+            android:id="@+id/tv_produk_agen"/>
         <TextView
             android:id="@+id/dialog_reportbs_bank_source_acc_name_value"
             android:layout_weight="2"
@@ -88,50 +89,28 @@
             android:padding="3dip" />
     </TableRow>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"
+        android:id="@+id/view_produkAgen"/>
 
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/no_rekening_agen"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbbs_bank_source_acct_no_value"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/nama_rekening_agen"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbs_bank_source_acc_name_value"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
+    <TableRow>
+        <TextView
+            android:text="@string/number_hp_member"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbs_member_shop_phone"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
 
     <View
         android:layout_width="match_parent"
@@ -141,7 +120,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/bank_emoney_tujuan"
+            android:text="@string/produk_pelanggan"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -179,15 +158,19 @@
             android:padding="3dip" />
     </TableRow>
 
+
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="8dp"
         android:background="@color/grey_300"/>
 
+
+
     <TableRow>
         <TextView
-            android:text="@string/nama_rekening_tujuan"
+            android:text="@string/nama_rek_tujuan"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -232,7 +215,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/nominal_text"
+            android:text="@string/jumlah_text"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -278,7 +261,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/cashout_total_text"
+            android:text="@string/total"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

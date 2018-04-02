@@ -2,7 +2,7 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/abc_text_size_medium_material"
-    android:visibility="gone"
+    android:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:stretchColumns="1">
@@ -74,7 +74,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/bank_emoney_agen"
+            android:text="@string/produk_agent"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -88,51 +88,6 @@
             android:padding="3dip" />
     </TableRow>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/no_bank_emoney_sumber"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbbs_bank_benef_acct_no_value"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_margin="8dp"-->
-        <!--android:background="@color/grey_300"/>-->
-
-    <!--<TableRow>-->
-        <!--<TextView-->
-            <!--android:text="@string/no_bank_emoney_sumber"-->
-            <!--android:layout_span="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:padding="3dip" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/dialog_reportbs_bank_benef_acc_name_value"-->
-            <!--android:layout_weight="2"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:gravity="right"-->
-            <!--android:padding="3dip" />-->
-    <!--</TableRow>-->
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -141,7 +96,30 @@
 
     <TableRow>
         <TextView
-            android:text="@string/bank_emoney_sumber"
+            android:text="@string/number_hp_member"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_source_phone"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+
+    <TableRow>
+        <TextView
+            android:text="@string/produk_pelanggan"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -163,7 +141,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/no_bank_emoney_sumber"
+            android:text="@string/no_sumber"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -186,7 +164,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/nama_rekening_sumber"
+            android:text="@string/nama_sumber"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -231,7 +209,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/nominal_text"
+            android:text="@string/jumlah_text"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -277,7 +255,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/cashout_total_text"
+            android:text="@string/total"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

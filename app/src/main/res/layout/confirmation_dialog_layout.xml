@@ -6,6 +6,16 @@
     android:orientation="vertical"
     android:background="@color/white">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/red"
+        android:textStyle="italic|bold"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/konfirmasi_alert_text"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,6 +89,7 @@
             android:textSize="10sp"
             android:text="@string/milik_pelanggan"
             android:textStyle="italic"
+            android:id="@+id/tv_milik_kiri"
             />
 
         <TextView
@@ -90,7 +101,8 @@
             android:layout_gravity="center_horizontal"
             android:textSize="10sp"
             android:text="@string/milik_agen"
-            android:textStyle="italic"/>
+            android:textStyle="italic"
+            android:id="@+id/tv_milik_kanan"/>
     </LinearLayout>
 
     <TableLayout
@@ -119,6 +131,47 @@
         </TableRow>
 
         <TableRow
+            android:id="@+id/name_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/confirmation_dialog_name"
+                android:layout_weight="1"
+                android:text="@string/nama_rekening_tujuan_hint"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_value_name"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/notif_pelanggan_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/confirmation_dialog_notif_pengguna"
+                android:layout_weight="1"
+                android:text="@string/notif_pelanggan"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_value_notif_pengguna"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+        <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -136,6 +189,8 @@
                 android:textSize="@dimen/sheet_item_textsize"
                 android:textColor="@color/colorSecondaryDark"/>
         </TableRow>
+
+
 
     </TableLayout>
 

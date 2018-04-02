@@ -104,14 +104,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center_vertical"/>
 
-        <TextView
-                android:id="@+id/text_remark"
-                android:layout_marginLeft="8dp"
-                android:layout_marginBottom="4dp"
-                android:text="6281286220044"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left|center_vertical"/>
+        <!--<TextView-->
+                <!--android:id="@+id/text_remark"-->
+                <!--android:layout_marginLeft="8dp"-->
+                <!--android:layout_marginBottom="4dp"-->
+                <!--android:text="6281286220044"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="left|center_vertical"/>-->
 
         <TextView
                 android:id="@+id/text_product_name"

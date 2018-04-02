@@ -105,7 +105,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
     private String userID, accessKey, comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
-            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code;
+            transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code,
+            noHPMemberLocation = "";
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -185,15 +186,21 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             member_code = bundle.getString(DefineValue.MEMBER_CODE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
+
+            if ( bundle.containsKey(DefineValue.NO_HP_MEMBER_LOCATION) ) {
+                noHPMemberLocation = bundle.getString(DefineValue.NO_HP_MEMBER_LOCATION, "");
+            }
+
+            benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE, "");
+
             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                 String cashIn = sp.getString(DefineValue.CASH_IN_HISTORY_TEMP, "");
                 Gson gson = new Gson();
                 cashInHistoryModel = gson.fromJson(cashIn, CashInHistoryModel.class);
 
-                benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
-                benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME);
-                benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE);
-                benef_product_value_token = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN);
+                benef_product_name = bundle.getString(DefineValue.BENEF_PRODUCT_NAME, "");
+                benef_product_type = bundle.getString(DefineValue.BENEF_PRODUCT_TYPE,"");
+                benef_product_value_token = bundle.getString(DefineValue.BENEF_PRODUCT_VALUE_TOKEN, "");
                 if (cashInHistoryModel!=null)
                 {
                     source_product_code=(cashInHistoryModel.getSource_product_code());
@@ -214,12 +221,12 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                 Gson gson1 = new Gson();
                 cashOutHistoryModel = gson1.fromJson(cashOut, CashOutHistoryModel.class);
 
-                source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE);
-                source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE);
-                source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H);
-                source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME);
-                source_product_value_token = bundle.getString(DefineValue.SOURCE_PRODUCT_VALUE_TOKEN);
-                no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO);
+                source_product_code = bundle.getString(DefineValue.SOURCE_PRODUCT_CODE, "");
+                source_product_type = bundle.getString(DefineValue.SOURCE_PRODUCT_TYPE,"");
+                source_product_h2h = bundle.getString(DefineValue.SOURCE_PRODUCT_H2H,"");
+                source_product_name = bundle.getString(DefineValue.SOURCE_PRODUCT_NAME,"");
+                source_product_value_token = bundle.getString(DefineValue.SOURCE_PRODUCT_VALUE_TOKEN,"");
+                no_source = bundle.getString(DefineValue.SOURCE_ACCT_NO,"");
 
                 setBankDataBenef();
                 if (cashOutHistoryModel!=null)
@@ -411,7 +418,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     if (inputValidation()) {
                         SubmitAction(false);
                     }
-                    else btnNext.setEnabled(true);
+                     btnNext.setEnabled(false);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -424,18 +431,21 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             ConfirmationDialog dialog;
             if (isCashin){
                 dialog = ConfirmationDialog.newDialog(this
+                        , transaksi
                         , amount
-                        , benef_product_name
                         , source_product_name
-                        , etNoHp.getText().toString()
-                        , etRemark.getText().toString());
+                        , benef_product_name
+                        , no_benef
+                        , etRemark.getText().toString(), name_benef,
+                        etNoHp.getText().toString());
             }else {
                 dialog = ConfirmationDialog.newDialog(this
+                        , transaksi
                         , amount
                         , source_product_name
                         , benef_product_name
                         , no_source
-                        , etRemark.getText().toString());
+                        , etRemark.getText().toString(),"","");
             }
 
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
@@ -443,7 +453,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
 
         }
         else
-            btnNext.setEnabled(true);
+            btnNext.setEnabled(false);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {
@@ -760,6 +770,8 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             if ( !aodTxId.equals("")) {
                 params.put(WebParams.TX_ID, aodTxId);
             }
+
+            params.put(WebParams.CUSTOMER_ID, noHPMemberLocation);
 
             Log.d("params insert a2c", params.toString());
             MyApiClient.sentGlobalBBSInsertA2C(getActivity(),params, new JsonHttpResponseHandler(){
