@@ -38,7 +38,6 @@ import timber.log.Timber;
  */
 public class ChangePIN extends BaseActivity implements PinFragment.Listener {
 
-    private SecurePreferences sp;
     private ProgressDialog progdialog;
     private String currentPin;
     private String newPin;
@@ -46,10 +45,7 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
     private Fragment insertPin;
     private Fragment createPin;
     private TextView tv_title;
-    private String memberID;
-    private String commID;
-    private String userID;
-    private String accessKey;
+
     private PinFragmentConfiguration configNew;
     private PinFragmentConfiguration configCurrent;
 
@@ -57,17 +53,11 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        memberID = sp.getString(DefineValue.MEMBER_ID,"");
-        commID = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
-
         InitializeToolbar();
 
         View v = this.findViewById(android.R.id.content);
         assert v != null;
-        tv_title = (TextView) v.findViewById(R.id.pin_title);
+        tv_title = v.findViewById(R.id.pin_title);
         tv_title.setText(getResources().getString(R.string.changepin_text_currentpin));
 
         configNew = new PinFragmentConfiguration(this)
@@ -157,14 +147,14 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commID, MyApiClient.LINK_CHANGE_PIN,
-                    userID, accessKey);
-            params.put(WebParams.MEMBER_ID, memberID);
-            params.put(WebParams.COMM_ID, commID);
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHANGE_PIN,
+                    userPhoneID, accessKey);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.OLD_PIN, Md5.hashMd5(currentPin));
             params.put(WebParams.NEW_PIN, Md5.hashMd5(newPin));
             params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(confirmPin));
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params change pin:" + params.toString());
 
