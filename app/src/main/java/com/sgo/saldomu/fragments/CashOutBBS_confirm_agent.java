@@ -35,6 +35,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -43,7 +44,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
+public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
 
     public final static String TAG = "com.sgo.saldomu.fragments.CashOutBBS_confirm_agent";
     private SecurePreferences sp;
@@ -365,9 +366,9 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         try{
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
-
+            extraSignature = txId + comm_code;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey);
+                    userId,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, comm_code);

@@ -373,11 +373,13 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
             String user_id = sp.getString(DefineValue.USERID_PHONE,"");
             String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
+            String member_id = sp.getString(DefineValue.MEMBER_ID,"");
 
             UUID uuid = MyApiClient.getUUID();
             String dtime = DateTimeFormat.getCurrentDateTime();
             String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
-            String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID + user_id, access_key);
+            String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID
+                    + user_id, access_key+ member_id);
 
             RequestParams paramsScash = new RequestParams();
             paramsScash.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
@@ -813,7 +815,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             }
 
 
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key);
+            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key, _tx_id);
 
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, _comm_id);

@@ -43,11 +43,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private CheckBox cb_show_pass;
     private Button btn_submit_changepass;
     private Button btn_batal_changepass;
-    private SecurePreferences sp;
     private ProgressDialog progdialog;
-    private String userID;
-    private String accessKey;
-    private String member_id;
     private boolean is_first_time;
     private int lenght_auth_min, validIdx;
     private PasswordValidator mPassValid;
@@ -58,11 +54,6 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        member_id = sp.getString(DefineValue.MEMBER_ID,"");
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST))
@@ -160,15 +151,15 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            String extraSignature = member_id+et_pass_current.getText().toString()+et_pass_new.getText().toString();
+            extraSignature = memberIDLogin+et_pass_current.getText().toString()+et_pass_new.getText().toString();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
-                    userID,accessKey, extraSignature);
-            params.put(WebParams.USER_ID,userID);
+                    userPhoneID,accessKey, extraSignature);
+            params.put(WebParams.USER_ID,userPhoneID);
             params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(et_pass_current.getText().toString()));
             params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(et_pass_new.getText().toString()));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID, member_id);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
 
             Timber.d("isi params Change Password:" + params.toString());
 

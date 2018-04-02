@@ -26,6 +26,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +38,7 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 9/15/2015.
  */
-public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
+public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
     private View v;
     private TextView tv_operator_value;
     private TextView tv_nominal_value;
@@ -323,8 +325,9 @@ public class PulsaAgentConfirm extends Fragment implements ReportBillerDialog.On
     private void getTrxStatus(final String txId, String comm_id){
         try{
 
+            extraSignature = tx_id + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);

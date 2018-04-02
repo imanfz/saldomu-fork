@@ -76,6 +76,7 @@ android {
 
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
+            buildConfigField 'String', "SECRET_KEY", "\"add647f3d560bcb65fc0cb15d7b66615 \""
 
             versionCode = 1
             versionName "1.0"
@@ -107,6 +108,7 @@ android {
 
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
+            buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f  \""
 
             signingConfig signingConfigs.prodKey
             versionCode = 13

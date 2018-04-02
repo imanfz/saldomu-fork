@@ -134,6 +134,7 @@ public class UpdateBBSData extends IntentService {
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.SCHEME_CODE,schemeCode);
             params.put(WebParams.CUST_ID,userID);
+            params.put(WebParams.USER_ID,userID);
 
             Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
 
