@@ -109,8 +109,8 @@ android {
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 10
-            versionName "1.8"
+            versionCode = 13
+            versionName "2.0"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }

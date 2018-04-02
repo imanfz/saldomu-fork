@@ -955,6 +955,7 @@
     <string name="nominal_text">Nominal</string>
     <string name="jumlah_text">Jumlah</string>
     <string name="total">Total</string>
+    <string name="pln_warn">Demi kenyamanan bersama, sebaiknya tidak melakukan transaksi antara pukul 23.59 - 00.59. Karena transaksi tidak dapat diproses. </string>
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>
@@ -1127,7 +1128,7 @@
 
     <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
     <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
-    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan UNIK : 88476</string>
+    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan ESPAY : 89208</string>
     <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
     <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
@@ -1182,4 +1183,5 @@
     <string name="canceled_trx_reason">ALASAN BATAL</string>
     <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
     <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
+    <string name="notif_pelanggan">Notif Pelanggan</string>
 </resources>

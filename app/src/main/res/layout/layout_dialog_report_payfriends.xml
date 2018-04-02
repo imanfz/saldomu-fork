@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_marginLeft="@dimen/padding_small"
     android:layout_marginTop="@dimen/text_size_medium_material"
-    android:visibility="visible"
+    android:visibility="gone"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -89,29 +89,14 @@
             android:layout_margin="8dp"
             android:background="@color/grey_300"/>
 
-        <TableRow>
-            <TextView
-                android:text="@string/payfriends_text_recipients"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:padding="3dip" />
-            <TextView
-                android:id="@+id/dialog_reportpayfriends_recipients_value"
-                android:text="Yuddistira kiki wonggo asjd"
-                android:layout_weight="2"
-                android:layout_gravity="center_vertical"
-                android:layout_width="0dp"
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
 
-        <View
+        <TableLayout android:id="@+id/transfer_data_layout_table"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:stretchColumns="1">
+        </TableLayout>
 
         <TableRow>
             <TextView
@@ -132,6 +117,32 @@
                 android:padding="3dip"
                 android:maxLines="1" />
         </TableRow>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:background="@color/grey_300"/>
+
+        <TableRow>
+            <TextView
+                android:text="@string/payfriends_text_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:padding="3dip" />
+            <TextView
+                android:id="@+id/dialog_reportpayfriends_message_value"
+                android:text="Rp. 200000"
+                android:layout_weight="2"
+                android:maxLength="30"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="right"
+                android:padding="3dip" />
+        </TableRow>
+
 
         <View
             android:layout_width="match_parent"
@@ -191,7 +202,7 @@
 
         <TableRow>
             <TextView
-                android:text="@string/payfriends_text_total_amount"
+                android:text="@string/total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -208,30 +219,6 @@
                 android:maxLines="1" />
         </TableRow>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="8dp"
-            android:background="@color/grey_300"/>
-
-        <TableRow>
-            <TextView
-                android:text="@string/payfriends_text_message"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:padding="3dip" />
-            <TextView
-                android:id="@+id/dialog_reportpayfriends_message_value"
-                android:text="Rp. 200000"
-                android:layout_weight="2"
-                android:maxLength="30"
-                android:layout_width="0dp"
-                android:layout_gravity="center_vertical"
-                android:gravity="right"
-                android:padding="3dip" />
-        </TableRow>
 
     </TableLayout>
 

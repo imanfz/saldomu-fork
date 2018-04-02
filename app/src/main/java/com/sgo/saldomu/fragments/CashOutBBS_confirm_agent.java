@@ -213,6 +213,11 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(),message);
                         }
+                        else if(code.equals("0049")){
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            getActivity().finish();
+                        }
                         else if(code.equals("0061")){
                             btnSubmit.setEnabled(true);
                             String message = response.getString(WebParams.ERROR_MESSAGE);

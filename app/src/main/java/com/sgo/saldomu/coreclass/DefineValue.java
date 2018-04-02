@@ -509,8 +509,14 @@ public class DefineValue {
     public static String MANDIRI_LKD_VALIDATION    = "mandirilkd_validation";
     public static String OFFSET    = "offset";
     public static String CODE_SUCCESS    = "code_success";
+
+    public static String NO_HP_MEMBER_LOCATION = "noHPMemberLocation";
+
     public static String MEMBER_PHONE    = "member_phone";
     public static String TO_ALIAS    = "to_alias";
+    public static String TRANSFER_DATA    = "transfer_data";
     public static String IS_REPORT    = "is_report";
+    public static String PAYMENT_PHONE   = "payment_phone";
+    public static String IS_MEMBER_CTA    = "is_member_cta";
 }
 

@@ -59,6 +59,9 @@ public class WebParams {
     public static String PRODUCT_TYPE = "product_type";
     public static String PRODUCT_CODE = "product_code";
     public static String PAYMENT_REMARK = "payment_remark";
+    public static String PAYMENT_BANK = "payment_bank";
+    public static String PAYMENT_PHONE = "payment_phone";
+    public static String PAYMENT_NAME= "payment_name";
     public static String PRODUCT_H2H = "product_h2h";
     public static String PRODUCT_DISPLAY = "product_display";
 
@@ -495,7 +498,7 @@ public class WebParams {
     public static String OFFSET    = "offset";
     public static String TX_REMARKS = "tx_remarks";
     public static String MEMBER_MAX_RATING  = "member_max_rating";
-    public static String PAYMENT_NAME  = "payment_name";
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
+    public static String TRANSFER_DATA  = "transfer_data";
 }
