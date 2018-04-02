@@ -108,9 +108,6 @@ public class MainPage extends BaseActivity {
     private static int AmountNotif = 0;
 
     private String flagLogin = DefineValue.STRING_NO;
-    private String userID;
-    private String accessKey;
-    private SecurePreferences sp;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
     private DrawerLayout mDrawerLayout;
@@ -137,7 +134,6 @@ public class MainPage extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         this.savedInstanceState = savedInstanceState;
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         if(isHasAppPermission())
             InitializeApp();
@@ -253,9 +249,6 @@ public class MainPage extends BaseActivity {
 
             startLocationService();
 
-            userID = sp.getString(DefineValue.USERID_PHONE, "");
-            accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
-
 //            if (savedInstanceState != null)
 //                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
@@ -269,7 +262,7 @@ public class MainPage extends BaseActivity {
             progdialog.show();
             InitializeNavDrawer();
             setupFab();
-            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
 
@@ -737,10 +730,10 @@ public class MainPage extends BaseActivity {
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_LIST_MEMBER,
-                    userID,accessKey, MyApiClient.COMM_ID_PULSA);
+                    userPhoneID,accessKey, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.CUST_ID, cust_id);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
 
             Timber.d("isi params listmember mainpage:" + params.toString());
@@ -1070,7 +1063,7 @@ public class MainPage extends BaseActivity {
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
+        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userPhoneID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
 
@@ -1096,9 +1089,9 @@ public class MainPage extends BaseActivity {
             }
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LOGOUT,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
 
             Timber.d("isi params logout:"+params.toString());

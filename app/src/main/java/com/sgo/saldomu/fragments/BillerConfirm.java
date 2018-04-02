@@ -91,8 +91,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private String product_code;
     private String product_payment_type;
     private String biller_name;
-    private String userID;
-    private String accessKey;
     private String biller_type_code;
     private TextView tv_item_name_value;
     private TextView tv_amount_value;
@@ -118,7 +116,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     private ProgressDialog progdialog;
     private ImageView mIconArrow;
     private TableLayout mTableLayout;
-    private SecurePreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -130,9 +127,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         tv_id_cust =  v.findViewById(R.id.billertoken_biller_id_value);
         tv_item_name_value =  v.findViewById(R.id.billertoken_item_name_value);
@@ -225,7 +219,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             }
             else {
                 isPIN = true;
-                new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+                new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                     @Override
                     public void onSuccess(Object deData) {
                         attempt = (int)deData;
@@ -449,7 +443,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             final Bundle args = getArguments();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.BILLER_COMM_ID),MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
@@ -457,7 +451,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, tokenValue);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
 
@@ -550,19 +544,20 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = tx_id+getArguments().getString(DefineValue.BILLER_COMM_CODE)+product_code;
 
             RequestParams params;
             if(bank_code.equals("114"))
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, getArguments().getString(DefineValue.BILLER_COMM_CODE));
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params resendTokenSGOL:"+params.toString());
 
@@ -653,7 +648,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey, extraSignature);
+                    userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -663,7 +658,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                 params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             if(isPLN){
                 params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
             }

@@ -63,7 +63,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public final static String TAG = "com.sgo.saldomu.fragments.BBSCashInConfirm";
     private static final int MAX_TOKEN_RESENT = 3;
 
-    private SecurePreferences sp;
     private ProgressDialog progdialog;
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
@@ -72,7 +71,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private TableRow tbNameBenef;
     private EditText tokenValue, noHpTCASH;
     private Button btnSubmit, btnResend, btnBack;
-    private String userID, accessKey, comm_code, tx_product_code, source_product_type,
+    private String comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, tx_id, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status;
@@ -122,9 +121,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
         mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
@@ -222,7 +218,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             else if(source_product_h2h.equalsIgnoreCase("Y")) {
                 if(source_product_type.equalsIgnoreCase("EMO") && !tx_product_code.equalsIgnoreCase("TCASH") && !tx_product_code.equalsIgnoreCase("MANDIRILKD")) {
                     isPIN = true;
-                    new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+                    new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                         @Override
                         public void onSuccess(Object deData) {
                             attempt = (int)deData;
@@ -475,15 +471,17 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = tx_id+comm_code+tx_product_code+token;
+
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             params.put(WebParams.PRODUCT_VALUE, token);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
 
@@ -496,7 +494,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
-                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
 
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -538,7 +536,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                                 }
                                 else {
                                     getActivity().setResult(MainPage.RESULT_BALANCE);
-                                    getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+                                    getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
 //                                    onOkButton();
                                 }
                             }
@@ -550,7 +548,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             }else
                             {
                                 getActivity().setResult(MainPage.RESULT_BALANCE);
-                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
                             }
 //                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                         }
@@ -601,18 +599,20 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = tx_id+comm_code+tx_product_code;
+
             RequestParams params;
             if(isRequestOTP)
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             if(noHpTCASH!=null)
                 params.put(WebParams.PRODUCT_VALUE, noHpTCASH.getText().toString());
@@ -801,13 +801,15 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = tx_id+comm_id+tokenValue.getText().toString();
+
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RETRY_TOKEN,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());
 
@@ -820,7 +822,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
-                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userID);
+                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
 
                         }else if(code.equals("0288")){
                             Timber.d("isi error sent retry token:"+response.toString());

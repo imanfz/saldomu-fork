@@ -544,9 +544,9 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
 
             String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey, extraSignature);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.SOCIAL_ID,et_socialID.getText().toString());
             params.put(WebParams.USER_ID,userID);
             params.put(WebParams.EMAIL,et_email.getText().toString());
