@@ -35,6 +35,7 @@ import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.GridHome;
+import com.sgo.saldomu.coreclass.AgentLocationApiClient;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -225,25 +226,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 GridHome.setAdapter(adapter);
             }
         } else {
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, "");
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID));
-
-            params.put(WebParams.SIGNATURE, signature);
+            AgentLocationApiClient agentLocationApiClient = new AgentLocationApiClient(MyApiClient.LINK_CATEGORY_LIST, sp.getString(DefineValue.USERID_PHONE, ""));
+            agentLocationApiClient.setSecretKey(sp.getString(DefineValue.ACCESS_KEY,""));
+            sp.getString(DefineValue.ACCESS_KEY,"");
+            RequestParams rqParams = agentLocationApiClient.webServiceCategoryRetrieve();
 
             if(this.isVisible()) {
                 progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
+                MyApiClient.getCategoryList(getActivity().getApplicationContext(), rqParams, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 

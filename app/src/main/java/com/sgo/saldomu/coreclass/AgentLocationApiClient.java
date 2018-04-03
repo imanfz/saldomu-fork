@@ -25,11 +25,13 @@ public class AgentLocationApiClient {
     private String categoryID;
     private String userID;
     private String secretKey;
+    private String productCode;
+    private String productType;
 
     private RequestParams requestParams;
 
 
-    public AgentLocationApiClient(String webServicePath) {
+    public AgentLocationApiClient(String webServicePath, String userID) {
         this.webServicePath = webServicePath;
         String servicePath  = MyApiClient.getWebserviceName(this.webServicePath);
         requestParams       = new RequestParams();
@@ -39,6 +41,7 @@ public class AgentLocationApiClient {
         appID           = BuildConfig.APP_ID;
         senderID        = DefineValue.BBS_SENDER_ID;
         receiverID      = DefineValue.BBS_RECEIVER_ID;
+        this.setUserID(userID);
 
         requestParams.put(WebParams.RC_UUID, rcUUID);
         requestParams.put(WebParams.RC_DTIME, rcDateTime);
@@ -50,11 +53,27 @@ public class AgentLocationApiClient {
     }
 
     public RequestParams webServiceSearchAgent() {
-        webServicePath  = MyApiClient.getWebserviceName(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT);
         signature       = SHA.SHA256(secretKey,defaultSignature + categoryID + latitude + longitude);
+        requestParams.put(WebParams.SIGNATURE, signature);
+        return requestParams;
+    }
+
+    public RequestParams webServiceCategoryRetrieve() {
+        signature       = SHA.SHA256(secretKey,defaultSignature);
+        requestParams.put(WebParams.SIGNATURE, signature);
+        return requestParams;
+    }
+
+    public RequestParams webServiceAgentRetrieve() {
+        signature       = SHA.SHA256(secretKey,defaultSignature + categoryID + productType + productCode);
+        requestParams.put(WebParams.SIGNATURE, signature);
+        return requestParams;
+    }
+
+    public RequestParams webServiceUpdateLocation() {
+        signature       = SHA.SHA256(secretKey,defaultSignature + latitude + longitude);
 
         requestParams.put(WebParams.SIGNATURE, signature);
-
         return requestParams;
     }
 
@@ -164,5 +183,23 @@ public class AgentLocationApiClient {
 
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        requestParams.put(WebParams.PRODUCT_CODE, productCode);
+        this.productCode = productCode;
+    }
+
+    public String getProductType() {
+        return productType;
+    }
+
+    public void setProductType(String productType) {
+        requestParams.put(WebParams.PRODUCT_TYPE, productType);
+        this.productType = productType;
     }
 }

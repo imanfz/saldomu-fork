@@ -605,12 +605,11 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private void searchAgent() {
         //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
-        AgentLocationApiClient agentLocationApiClient = new AgentLocationApiClient(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT);
+        AgentLocationApiClient agentLocationApiClient = new AgentLocationApiClient(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT, sp.getString(DefineValue.USERID_PHONE, ""));
         agentLocationApiClient.setLatitude(latitude);
         agentLocationApiClient.setLongitude(longitude);
         agentLocationApiClient.setCategoryID(categoryId);
         agentLocationApiClient.setRadius(DefineValue.MAX_RADIUS_SEARCH_AGENT);
-        agentLocationApiClient.setUserID(sp.getString(DefineValue.USERID_PHONE, ""));
         agentLocationApiClient.setSecretKey(sp.getString(DefineValue.ACCESS_KEY,""));
         RequestParams rqParams = agentLocationApiClient.webServiceSearchAgent();
 
