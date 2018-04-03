@@ -791,7 +791,7 @@ public class NavigationDrawMenu extends ListFragment{
             accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         if(userID == null)
-            userID = sp.getString(DefineValue.USER_ID,"");
+            userID = sp.getString(DefineValue.USERID_PHONE,"");
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
                 userID,accessKey);
@@ -813,7 +813,7 @@ public class NavigationDrawMenu extends ListFragment{
                     progdialog2.dismiss();
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
-                    Timber.d("response Listbank:" + response.toString());
+                    Timber.d("response upload profile picture:" + response.toString());
                     if (error_code.equalsIgnoreCase("0000")) {
                         SecurePreferences.Editor mEditor = sp.edit();
 

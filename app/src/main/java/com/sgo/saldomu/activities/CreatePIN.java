@@ -7,19 +7,25 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.PinSaver;
 import com.venmo.android.pin.util.PinHelper;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,11 +142,13 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
 //            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
 //                    userID,accessKey);
-            RequestParams params = new RequestParams();
+            extraSignature = memberID + userID + mValuePin;
+            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, commID);
-            params.put(WebParams.PIN, Md5.hashMd5(mValuePin));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(confirmPin));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params create pin:"+params.toString());
