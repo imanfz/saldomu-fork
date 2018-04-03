@@ -11,6 +11,7 @@ import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.Beans.bank_biller_model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -211,8 +212,8 @@ public class BillerActivityRF extends BaseFragment{
     private void getBiller(final String _biller_type_code, final Boolean withDenom){
         try{
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BILLER,
-                    userPhoneID,accessKey);
+            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BILLER,
+                    BuildConfig.SECRET_KEY, _biller_type_code);
             //params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.BILLER_TYPE, _biller_type_code);
             params.put(WebParams.USER_ID, userPhoneID);

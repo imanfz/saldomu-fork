@@ -104,7 +104,7 @@ public class MyApiClient {
     public static String LINK_TOPUP_PULSA_RETAIL;
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
-    private static String LINK_FORGOT_PASSWORD;
+    public static String LINK_FORGOT_PASSWORD;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
@@ -146,7 +146,7 @@ public class MyApiClient {
     public static String LINK_ADD_LIKE;
     public static String LINK_REMOVE_LIKE;
 
-    private static String LINK_CREATE_PIN;
+    public static String LINK_CREATE_PIN;
     public static String LINK_CHANGE_PIN;
 
     public static String LINK_INQUIRY_BILLER;
@@ -194,7 +194,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
     public static String LINK_DELTRX_WITHDRAW;
-    private static String LINK_CREATE_PASS;
+    public static String LINK_CREATE_PASS;
     public static String LINK_GET_FAILED_PIN;
     private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
@@ -546,14 +546,13 @@ public class MyApiClient {
         return params;
     }
 
-    public static RequestParams getSignatureWithParams1(String commID, String linknya, String access_key, String extraSignature){
+    public static RequestParams getSignatureWithParams1(String commID, String linknya, String secret_key, String extraSignature){
 
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
-
-        String hash = SHA.SHA256(access_key,msgnya);
+        String hash = SHA.SHA256(secret_key,msgnya);
 
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
