@@ -41,7 +41,7 @@ public class AgentLocationApiClient {
         receiverID      = DefineValue.BBS_RECEIVER_ID;
 
         requestParams.put(WebParams.RC_UUID, rcUUID);
-        requestParams.put(WebParams.RC_DATETIME, rcDateTime);
+        requestParams.put(WebParams.RC_DTIME, rcDateTime);
         requestParams.put(WebParams.APP_ID, appID);
         requestParams.put(WebParams.SENDER_ID, senderID);
         requestParams.put(WebParams.RECEIVER_ID, receiverID);
@@ -154,6 +154,7 @@ public class AgentLocationApiClient {
     }
 
     public void setUserID(String userID) {
+        requestParams.put(WebParams.USER_ID, userID);
         this.userID = userID;
     }
 
