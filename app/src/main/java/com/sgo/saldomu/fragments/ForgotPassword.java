@@ -21,6 +21,9 @@ import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +34,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/21/2015.
  */
-public class ForgotPassword extends Fragment {
+public class ForgotPassword extends BaseFragment {
 
     private View v;
     private EditText et_user_id;
@@ -152,10 +155,12 @@ public class ForgotPassword extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = new RequestParams();
+            extraSignature = userIDfinale + value_pin;
+            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
+                    BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, value_pin);
+            params.put(WebParams.PIN, RSA.opensslEncrypt(value_pin));
             params.put(WebParams.IS_EMAIL, is_email);
             params.put(WebParams.IS_SMS, is_sms);
 

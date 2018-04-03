@@ -212,7 +212,7 @@ public class BillerActivityRF extends BaseFragment{
         try{
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BILLER,
-                    userPhoneID,accessKey);
+                    userPhoneID,accessKey, memberIDLogin);
             //params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.BILLER_TYPE, _biller_type_code);
             params.put(WebParams.USER_ID, userPhoneID);
