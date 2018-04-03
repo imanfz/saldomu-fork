@@ -260,7 +260,9 @@ public class SMSDialog extends Dialog {
             Timber.d("idx fail = " + String.valueOf(idx_fail));
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
                 if (!isStop) {
-                    RequestParams params = new RequestParams();
+                    String extraSignature = ICCIDDevice + imeiDevice;
+                    RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
+                            BuildConfig.SECRET_KEY, extraSignature );
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);

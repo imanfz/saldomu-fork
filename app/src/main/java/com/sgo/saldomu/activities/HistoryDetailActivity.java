@@ -459,7 +459,7 @@ public class HistoryDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
 
-            extraSignature = post_id + from_id + comment_id;
+            extraSignature = post_id + comment_id + to;
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_COMMENT,
                     _ownerID,accessKey, extraSignature);

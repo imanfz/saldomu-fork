@@ -206,30 +206,30 @@ public class MyProfileNewActivity extends BaseActivity {
         View v = this.findViewById(android.R.id.content);
 
         assert v != null;
-        dataMemberBasic = (LinearLayout) findViewById(R.id.data_member_basic);
-        dataVerifiedMember = (LinearLayout) findViewById(R.id.data_verified_member);
-        layoutKTP = (RelativeLayout) findViewById(R.id.layout_foto_ktp);
-        layoutSelfie = (RelativeLayout) findViewById(R.id.layout_selfie);
-        layoutTTD = (RelativeLayout) findViewById(R.id.layout_ttd);
-        pb1 = (ProgressBar) v.findViewById(R.id.pb1_myprofileactivity);
-        pb2 = (ProgressBar) v.findViewById(R.id.pb2_myprofileactivity);
-        pb3 = (ProgressBar) v.findViewById(R.id.pb3_myprofileactivity);
-        tv_pb1 = (TextView) v.findViewById(R.id.tv_pb1_myprofileactivity);
-        tv_pb2 = (TextView) v.findViewById(R.id.tv_pb2_myprofileactivity);
-        tv_pb3 = (TextView) v.findViewById(R.id.tv_pb3_myprofileactivity);
-        tv_dob = (TextView) v.findViewById(R.id.myprofile_value_dob);
-        tv_verified_member = (TextView) v.findViewById(R.id.group_title2);
-        tv_respon_reject_KTP = (TextView) v.findViewById(R.id.tv_respon_reject_ktp);
-        tv_respon_reject_selfie = (TextView) v.findViewById(R.id.tv_respon_reject_selfie);
-        tv_respon_reject_ttd = (TextView) v.findViewById(R.id.tv_respon_reject_ttd);
-        et_noHp = (EditText) v.findViewById(R.id.myprofile_value_hp);
-        et_nama = (EditText) v.findViewById(R.id.myprofile_value_name);
-        et_email = (EditText) v.findViewById(R.id.myprofile_value_email);
-        cameraKTP = (ImageButton) v.findViewById(R.id.camera_ktp_paspor);
-        selfieKTP = (ImageButton) v.findViewById(R.id.camera_selfie_ktp_paspor);
-        cameraTTD = (ImageButton) v.findViewById(R.id.camera_ttd);
-        btn1 = (Button) v.findViewById(R.id.button1);
-        btn2 = (Button) v.findViewById(R.id.button2);
+        dataMemberBasic = findViewById(R.id.data_member_basic);
+        dataVerifiedMember = findViewById(R.id.data_verified_member);
+        layoutKTP = findViewById(R.id.layout_foto_ktp);
+        layoutSelfie = findViewById(R.id.layout_selfie);
+        layoutTTD = findViewById(R.id.layout_ttd);
+        pb1 = v.findViewById(R.id.pb1_myprofileactivity);
+        pb2 = v.findViewById(R.id.pb2_myprofileactivity);
+        pb3 = v.findViewById(R.id.pb3_myprofileactivity);
+        tv_pb1 = v.findViewById(R.id.tv_pb1_myprofileactivity);
+        tv_pb2 = v.findViewById(R.id.tv_pb2_myprofileactivity);
+        tv_pb3 = v.findViewById(R.id.tv_pb3_myprofileactivity);
+        tv_dob = v.findViewById(R.id.myprofile_value_dob);
+        tv_verified_member = v.findViewById(R.id.group_title2);
+        tv_respon_reject_KTP = v.findViewById(R.id.tv_respon_reject_ktp);
+        tv_respon_reject_selfie = v.findViewById(R.id.tv_respon_reject_selfie);
+        tv_respon_reject_ttd = v.findViewById(R.id.tv_respon_reject_ttd);
+        et_noHp = v.findViewById(R.id.myprofile_value_hp);
+        et_nama = v.findViewById(R.id.myprofile_value_name);
+        et_email = v.findViewById(R.id.myprofile_value_email);
+        cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
+        selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
+        cameraTTD = v.findViewById(R.id.camera_ttd);
+        btn1 = v.findViewById(R.id.button1);
+        btn2 = v.findViewById(R.id.button2);
         levelClass = new LevelClass(this,sp);
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
@@ -1058,7 +1058,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //            else
 //                gender = gender_value[1];
             params.put(WebParams.CUST_GENDER,"");
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USER_ID,""));
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params execute customer:" + params.toString());
