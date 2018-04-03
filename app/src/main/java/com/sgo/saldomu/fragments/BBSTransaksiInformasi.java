@@ -1325,6 +1325,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     @Override
     public void onOK() {
+        extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                +MyApiClient.CCY_VALUE+amount;
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             sentInsertC2A();
         }else
