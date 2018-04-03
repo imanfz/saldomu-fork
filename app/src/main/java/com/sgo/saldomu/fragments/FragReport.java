@@ -379,7 +379,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             String dtime = DateTimeFormat.getCurrentDateTime();
             String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
             String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID
-                    + user_id, access_key+ member_id);
+                    + user_id , access_key, member_id);
 
             RequestParams paramsScash = new RequestParams();
             paramsScash.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
