@@ -156,7 +156,7 @@ public class ForgotPassword extends BaseFragment {
             progdialog.show();
 
             extraSignature = userIDfinale + value_pin;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
                     BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

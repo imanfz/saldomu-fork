@@ -128,12 +128,9 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendCreatePin() {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
-
-//            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
-//                    userID,accessKey);
             extraSignature = memberIDLogin + userPhoneID + mValuePin;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
-                    BuildConfig.SECRET_KEY, extraSignature );
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));

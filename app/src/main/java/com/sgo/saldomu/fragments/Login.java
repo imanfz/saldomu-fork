@@ -158,7 +158,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 //            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_LOGIN,
 //                    "add647f3d560bcb65fc0cb15d7b66615", userIDfinale, encrypted_password);
             extraSignature = userIDfinale + passLoginValue.getText().toString();
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
                     BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID,userIDfinale);
