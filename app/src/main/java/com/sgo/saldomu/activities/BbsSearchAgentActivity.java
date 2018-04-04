@@ -47,14 +47,10 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.adapter.TabSearchAgentAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.coreclass.AgentLocationApiClient;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -68,6 +64,7 @@ import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.FragCancelTrxRequest;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -79,7 +76,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -1039,15 +1035,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             clicked                 = true;
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
-            AgentLocationApiClient agentLocationApiClient = new AgentLocationApiClient(MyApiClient.LINK_SEARCH_TOKO, sp.getString(DefineValue.USERID_PHONE, ""));
-            agentLocationApiClient.setLatitude(latitude);
-            agentLocationApiClient.setLongitude(longitude);
-            agentLocationApiClient.setCategoryID(categoryId);
-            agentLocationApiClient.setRadius(DefineValue.MAX_RADIUS_SEARCH_AGENT);
-            agentLocationApiClient.setSecretKey(sp.getString(DefineValue.ACCESS_KEY,""));
-            agentLocationApiClient.setProductCode(bbsProductCode);
-            agentLocationApiClient.setProductType(bbsProductType);
-            RequestParams rqParams = agentLocationApiClient.webServiceAgentRetrieve();
+            String extraSignature = categoryId + bbsProductType + bbsProductCode;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SEARCH_TOKO,
+                    userPhoneID, accessKey, extraSignature);
 
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
@@ -1055,30 +1045,45 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             mEditor.putDouble(DefineValue.LAST_LONGITUDE, longitude);
             mEditor.apply();
 
-            rqParams.put(WebParams.BBS_MOBILITY, mobility);
-            rqParams.put(WebParams.BBS_NOTE, bbsNote);
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+            params.put(WebParams.CATEGORY_ID, categoryId);
+            params.put(WebParams.LATITUDE, latitude);
+            params.put(WebParams.LONGITUDE, longitude);
+            params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
+            params.put(WebParams.BBS_MOBILITY, mobility);
+            params.put(WebParams.BBS_NOTE, bbsNote);
+            params.put(WebParams.USER_ID, userPhoneID);
 
-            rqParams.put(WebParams.PRODUCT_NAME, bbsProductName);
-            rqParams.put(WebParams.PRODUCT_DISPLAY, bbsProductDisplay);
+            params.put(WebParams.PRODUCT_CODE, bbsProductCode);
+            params.put(WebParams.PRODUCT_NAME, bbsProductName);
+            params.put(WebParams.PRODUCT_TYPE, bbsProductType);
+            params.put(WebParams.PRODUCT_DISPLAY, bbsProductDisplay);
 
             if (mobility.equals(DefineValue.STRING_YES)) {
-                rqParams.put(WebParams.KEY_VALUE, gcmId);
-                rqParams.put(WebParams.KEY_CCY, DefineValue.IDR);
-                rqParams.put(WebParams.KEY_CODE, sp.getString(DefineValue.USERID_PHONE, ""));
-                rqParams.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-                rqParams.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
-                rqParams.put(WebParams.KEY_ADDRESS, completeAddress);
+                params.put(WebParams.KEY_VALUE, gcmId);
+                params.put(WebParams.KEY_CCY, DefineValue.IDR);
+                params.put(WebParams.KEY_CODE, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.KEY_NAME, sp.getString(DefineValue.CUST_NAME, ""));
+                params.put(WebParams.KEY_ADDRESS, completeAddress);
                 //            params.put(WebParams.KEY_DISTRICT, districtName);
                 //            params.put(WebParams.KEY_PROVINCE, provinceName);
                 //            params.put(WebParams.KEY_COUNTRY, countryName);
-                rqParams.put(WebParams.KEY_AMOUNT, amount);
-                rqParams.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+                params.put(WebParams.KEY_AMOUNT, amount);
+                params.put(WebParams.KEY_EMAIL, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
                 //Start
                 handler.postDelayed(runnable, timeDelayed);
             }
 
-            MyApiClient.searchToko(getApplicationContext(), rqParams, new JsonHttpResponseHandler() {
+            //Timber.d("Current Latitude: " + currentLatitude.toString() + ", Current Longitude: " + currentLongitude.toString());
+            //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
+            //currentLatitude = latitude;
+            //currentLongitude = longitude;
+
+            MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     //llHeaderProgress.setVisibility(View.GONE);
@@ -1712,23 +1717,17 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private void checkTransactionMember() {
         if ( !txId.equals("") ) {
 
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            String extraSignature = txId;
+            RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
+                    userPhoneID, accessKey, extraSignature);
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.KEY_VALUE, gcmId);
-            params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-            params.put(WebParams.SIGNATURE, signature);
+            params.put(WebParams.KEY_PHONE, userPhoneID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             MyApiClient.checkTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
                 @Override

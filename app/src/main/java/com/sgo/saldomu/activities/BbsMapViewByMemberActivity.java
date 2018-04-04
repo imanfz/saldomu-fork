@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,7 +43,6 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -56,6 +54,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -508,15 +508,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             return;
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        RequestParams params    = new RequestParams();
+        String extraSignature = txId + memberLatitude + memberLongitude;
+        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
+                userPhoneID, accessKey, extraSignature);
 
         isInquiryRoute          = false;
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -524,16 +521,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         //params.put(WebParams.SHOP_ID, shopId);
         //params.put(WebParams.MEMBER_ID, memberId);
 
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.KEY_PHONE, userPhoneID);
         params.put(WebParams.KEY_VALUE, gcmId);
         params.put(WebParams.LATITUDE, memberLatitude);
         params.put(WebParams.LONGITUDE, memberLongitude);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         handler.removeCallbacks(runnable2);
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
 
-        params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
@@ -751,24 +746,18 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private void cancelTransactionMember() {
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
+        String extraSignature = txId + sp.getString(DefineValue.MEMBER_ID, "");
+        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER,
+                userPhoneID, accessKey, extraSignature);
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.KEY_VALUE, gcmId);
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.KEY_PHONE, userPhoneID);
         params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         MyApiClient.cancelTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
             @Override
