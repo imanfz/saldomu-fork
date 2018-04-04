@@ -43,6 +43,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -333,7 +334,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             params.put(WebParams.PRODUCT_CODE, listDataAccount.get(position).getProduct_code());
             params.put(WebParams.PRODUCT_TYPE, listDataAccount.get(position).getProduct_type());
             params.put(WebParams.BENEF_ACCT_NO, listDataAccount.get(position).getAccount_no());
-            params.put(WebParams.TOKEN_ID, Md5.hashMd5(tokenId));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenId));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params deleteAccountList:" + params.toString());

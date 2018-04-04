@@ -546,7 +546,7 @@ public class MyApiClient {
         return params;
     }
 
-    public static RequestParams getSignatureWithParams1(String commID, String linknya, String secret_key, String extraSignature){
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature){
 
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();

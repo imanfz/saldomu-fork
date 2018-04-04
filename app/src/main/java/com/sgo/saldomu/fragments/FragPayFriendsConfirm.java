@@ -31,6 +31,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -412,13 +413,13 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             if(isNotification) {
 
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF,
-                        userPhoneID, accessKey, extraSignature);
+                        userPhoneID, accessKey, _token);
             }else {
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TRANS_P2P,
                         userPhoneID, accessKey, extraSignature);
             }
 
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATA, _data);

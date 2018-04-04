@@ -28,6 +28,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -180,7 +181,7 @@ public class BBSConfirmAcct extends BaseFragment {
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.TX_ID, txId);
-            params.put(WebParams.TOKEN_ID, Md5.hashMd5(tokenId));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenId));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params confirmAcct:" + params.toString());
