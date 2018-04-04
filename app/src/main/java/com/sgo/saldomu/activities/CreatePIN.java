@@ -38,13 +38,8 @@ import timber.log.Timber;
  */
 public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
-    private SecurePreferences sp;
     private String mValuePin;
-    private String memberID;
-    private String commID;
     private String confirmPin;
-    private String userID;
-    private String accessKey;
     private Boolean isRegist=false;
 
     private ProgressDialog mProg;
@@ -52,12 +47,6 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        memberID = sp.getString(DefineValue.MEMBER_ID,"");
-        commID = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         Intent i = getIntent();
         isRegist = i.getBooleanExtra(DefineValue.REGISTRATION, false);
@@ -139,17 +128,14 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendCreatePin() {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
-
-//            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
-//                    userID,accessKey);
-            extraSignature = memberID + userID + mValuePin;
+            extraSignature = memberIDLogin + userPhoneID + mValuePin;
             RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
-                    BuildConfig.SECRET_KEY, extraSignature );
-            params.put(WebParams.MEMBER_ID, memberID);
-            params.put(WebParams.COMM_ID, commID);
+                    BuildConfig.SECRET_KEY, extraSignature);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params create pin:"+params.toString());
 

@@ -37,6 +37,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -215,7 +216,7 @@ public class FragCashOutAgen extends BaseFragment {
                         btn_batal.setEnabled(false);
                         if (isOTP) {
                             btnResend.setEnabled(false);
-                            sentReqCodeWithdraw(Md5.hashMd5(et_otp.getText().toString()));
+                            sentReqCodeWithdraw(RSA.opensslEncrypt(et_otp.getText().toString()));
                         } else
                             CallPINinput(-1);
                     }

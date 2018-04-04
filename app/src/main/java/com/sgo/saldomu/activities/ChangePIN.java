@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -150,9 +151,9 @@ public class ChangePIN extends BaseActivity implements PinFragment.Listener {
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, commIDLogin);
-            params.put(WebParams.OLD_PIN, Md5.hashMd5(currentPin));
-            params.put(WebParams.NEW_PIN, Md5.hashMd5(newPin));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(confirmPin));
+            params.put(WebParams.OLD_PIN, RSA.opensslEncrypt(currentPin));
+            params.put(WebParams.NEW_PIN, RSA.opensslEncrypt(newPin));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params change pin:" + params.toString());
