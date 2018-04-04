@@ -43,6 +43,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -185,7 +186,7 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
                 }
                 else if(isOTP) {
                     if (inputValidation()) {
-                        inquiryTokenATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
+                        inquiryTokenATC(RSA.opensslEncrypt(tokenValue.getText().toString()), txId);
                     }
                 }
                 else {

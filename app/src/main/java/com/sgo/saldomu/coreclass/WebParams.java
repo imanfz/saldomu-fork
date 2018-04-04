@@ -41,6 +41,7 @@ public class WebParams {
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
     public static String MEMBER_NAME = "member_name";
+    public static String MEMBER_CUST_NAME = "member_cust_name";
     public static String MEMBER_SHOP_NO = "member_shop_no";
     public static String MEMBER_SHOP_PHONE = "member_shop_phone";
     public static String MEMBER_SHOP_NAME = "member_shop_name";
@@ -135,6 +136,7 @@ public class WebParams {
     public static String DATA_TRANSFER = "data_transfer";
     public static String MEMBER_NAME_TO = "member_name_to";
     public static String MEMBER_PHONE = "member_phone";
+    public static String MEMBER_CUST_PHONE = "member_cust_id";
     public static String MEMBER_STATUS = "member_status";
 
     public static String FEE = "fee";
@@ -260,6 +262,7 @@ public class WebParams {
     public static String SETTINGS = "settings";
     public static String MAX_MEMBER_TRANSFER = "max_member_transfer";
     public static String ADMIN_FEE = "admin_fee";
+    public static String TX_FEE = "tx_fee";
     public static String ADMINFEE ="ADMIN FEE";
 
     public static String ACCOUNT_DATA = "account_data";

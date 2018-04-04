@@ -54,6 +54,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -444,15 +445,15 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             extraSignature = tx_id+args.getString(DefineValue.BILLER_COMM_CODE)+product_code+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.BILLER_COMM_ID),MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userPhoneID,accessKey);
+            final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.BILLER_COMM_ID)
+                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.BILLER_COMM_CODE));
             params.put(WebParams.COMM_ID, args.getString(DefineValue.BILLER_COMM_ID));
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, tokenValue);
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());

@@ -46,6 +46,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -473,14 +474,14 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_code+tx_product_code+token;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userPhoneID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, token);
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(token));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());

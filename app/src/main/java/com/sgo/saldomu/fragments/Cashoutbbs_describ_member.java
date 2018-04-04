@@ -49,6 +49,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -411,7 +412,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_OTP_MEMBER_A2C,
                     userPhoneID, accessKey, extraSignature);
 
-            params.put(WebParams.TOKEN_ID, Md5.hashMd5(_token));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
