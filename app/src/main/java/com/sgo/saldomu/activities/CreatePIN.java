@@ -143,7 +143,7 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 //            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
 //                    userID,accessKey);
             extraSignature = memberID + userID + mValuePin;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
                     BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, commID);

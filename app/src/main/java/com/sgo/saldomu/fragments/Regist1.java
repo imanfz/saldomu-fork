@@ -39,7 +39,6 @@ import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -247,7 +246,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             emailValue.setEnabled(false);
 
             extraSignature = noHP;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_REG_STEP1,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_REG_STEP1,
                     BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE, noHP);
@@ -353,7 +352,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = noHPValid + pass;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
                     BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, RSA.opensslEncrypt(pass));
@@ -438,7 +437,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = memberID + noHPValid + data.getStringExtra(DefineValue.PIN_VALUE);
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
                     BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);

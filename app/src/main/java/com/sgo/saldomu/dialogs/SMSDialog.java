@@ -261,7 +261,7 @@ public class SMSDialog extends Dialog {
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
                 if (!isStop) {
                     String extraSignature = ICCIDDevice + imeiDevice;
-                    RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
+                    RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
                             BuildConfig.SECRET_KEY, extraSignature );
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);

@@ -462,7 +462,7 @@ public class Regist3 extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = custID + pass;
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
                     BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
@@ -542,7 +542,7 @@ public class Regist3 extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = memberID + custID + data.getStringExtra(DefineValue.PIN_VALUE);
-            RequestParams params = MyApiClient.getSignatureWithParams1(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
                     BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.USER_ID, custID);
             params.put(WebParams.MEMBER_ID, memberID);
