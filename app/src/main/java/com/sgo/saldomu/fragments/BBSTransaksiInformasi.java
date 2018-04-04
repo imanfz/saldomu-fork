@@ -554,7 +554,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -748,10 +748,10 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
-                    +MyApiClient.CCY_VALUE+amount;
+//            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+//                    +MyApiClient.CCY_VALUE+amount;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -861,7 +861,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
             extraSignature = _tx_id+comm_code+_product_code;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_REQ_TOKEN_SGOL,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_REQ_TOKEN_SGOL,
                     userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);
@@ -1325,6 +1325,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     @Override
     public void onOK() {
+        extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                +MyApiClient.CCY_VALUE+amount;
         if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
             sentInsertC2A();
         }else

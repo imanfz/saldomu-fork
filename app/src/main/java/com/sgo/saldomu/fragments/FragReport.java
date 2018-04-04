@@ -814,8 +814,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 }
             }
 
+            String extraSignature = _tx_id + _comm_id;
 
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key, _tx_id);
+            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key
+                    , extraSignature);
 
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, _comm_id);
@@ -987,7 +989,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             {
                 showReportEMODialog(response.optString(WebParams.MEMBER_NAME),DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
                         response.optString(WebParams.TX_ID), response.optString(WebParams.MEMBER_PHONE),response.optString(WebParams.PRODUCT_NAME),
-                        response.optString(WebParams.ADMIN_FEE),response.optString(WebParams.TX_AMOUNT),
+                        response.optString(WebParams.TX_FEE, "0"),response.optString(WebParams.TX_AMOUNT),
                         response.optString(WebParams.TX_STATUS),response.optString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
                         response.optString(WebParams.BUSS_SCHEME_NAME));
 

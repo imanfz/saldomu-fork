@@ -39,6 +39,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -243,6 +244,8 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txID+commCode+productCode+tokenValue;
+
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userPhoneID,accessKey);
             params.put(WebParams.TX_ID, txID);
@@ -250,7 +253,7 @@ public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDia
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, tokenValue.getText());
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue.getText().toString()));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());

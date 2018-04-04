@@ -35,6 +35,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -176,14 +177,16 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = tx_id+comm_code+tx_product_code+tokenValue;
+
             final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, token);
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(token));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
