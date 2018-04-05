@@ -110,7 +110,7 @@ public class MyApiClient {
     public static String LINK_USER_CONTACT_UPDATE;
 
     public static String LINK_PROD_TOPUP_RETAIL;
-    private static String LINK_GET_BILLER_TYPE;
+    public static String LINK_GET_BILLER_TYPE;
     public static String LINK_LIST_BILLER;
     public static String LINK_DENOM_RETAIL;
     private static String LINK_REQ_TOKEN_BILLER;
@@ -159,7 +159,7 @@ public class MyApiClient {
     public static String LINK_COMM_ACCOUNT_COLLECTION;
     private static String LINK_COMM_ESPAY;
 
-	private static String LINK_APP_VERSION;
+	public static String LINK_APP_VERSION;
     public static String LINK_HELP_LIST;
 
     public static String LINK_INQUIRY_MOBILE;
@@ -552,6 +552,21 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
+        String hash = SHA.SHA256(secret_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID;
         String hash = SHA.SHA256(secret_key,msgnya);
 
         RequestParams params = new RequestParams();
@@ -1405,33 +1420,37 @@ public class MyApiClient {
         post(mContext,LINK_CANCEL_SEARCH_AGENT, params, responseHandler);
     }
 
+    public static void getAppVersion(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address app version: %1$s ", LINK_APP_VERSION);
+        post(mContext,LINK_APP_VERSION, params, responseHandler);
+    }
+
+    public static void getBillerType(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
-    public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
-        get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
-    }
+
 
     public static void getAllBank(Context mContext, AsyncHttpResponseHandler responseHandler) {
         get(mContext,LINK_GET_ALL_BANK, responseHandler);
     }
 
-    public static void getAppVersion(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        get(mContext,LINK_APP_VERSION, responseHandler);
-    }
 	
 	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN: %1$s ",LINK_HELP_PIN);
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
-    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+    public static void getBBSCity(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
         if(isSync)
-            getSync(mContext,LINK_BBS_CITY,responseHandler);
+            postSync(mContext,LINK_BBS_CITY, params, responseHandler);
         else
-            get(mContext,LINK_BBS_CITY, responseHandler);
+            post(mContext,LINK_BBS_CITY, params, responseHandler);
     }
 
 
