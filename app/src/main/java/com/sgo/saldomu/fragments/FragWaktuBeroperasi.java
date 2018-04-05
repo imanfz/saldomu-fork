@@ -151,22 +151,17 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
+        String extraSignature = DefineValue.STRING_NO;
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                extraSignature);
+
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, DefineValue.STRING_NO);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.APP_ID + DefineValue.STRING_NO));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
         MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override

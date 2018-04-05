@@ -83,7 +83,7 @@ public class MyApiClient {
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
     public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"saldomu/";
 
-    public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"agentlocation/";
+    public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"saldomu/agentlocation/";
     public static String urlMNotif              = BuildConfig.URL_MNOTIF;
 
     //Link webservices Signature

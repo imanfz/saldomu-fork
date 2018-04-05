@@ -47,13 +47,10 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.adapter.TabSearchAgentAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -67,6 +64,7 @@ import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.FragCancelTrxRequest;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -78,7 +76,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -1038,11 +1035,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             clicked                 = true;
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
-            Timber.d("Masuk Sini");
-
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            String extraSignature = categoryId + bbsProductType + bbsProductCode;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SEARCH_TOKO,
+                    userPhoneID, accessKey, extraSignature);
 
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
@@ -1050,8 +1045,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             mEditor.putDouble(DefineValue.LAST_LONGITUDE, longitude);
             mEditor.apply();
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -1061,6 +1054,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
             params.put(WebParams.BBS_MOBILITY, mobility);
             params.put(WebParams.BBS_NOTE, bbsNote);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             params.put(WebParams.PRODUCT_CODE, bbsProductCode);
             params.put(WebParams.PRODUCT_NAME, bbsProductName);
@@ -1088,12 +1082,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
             //currentLatitude = latitude;
             //currentLongitude = longitude;
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryId
-                    + latitude + longitude));
-
-            params.put(WebParams.SIGNATURE, signature);
 
             MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
                 @Override
@@ -1729,23 +1717,17 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     private void checkTransactionMember() {
         if ( !txId.equals("") ) {
 
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            String extraSignature = txId;
+            RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
+                    userPhoneID, accessKey, extraSignature);
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.KEY_VALUE, gcmId);
-            params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-            params.put(WebParams.SIGNATURE, signature);
+            params.put(WebParams.KEY_PHONE, userPhoneID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             MyApiClient.checkTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
                 @Override
