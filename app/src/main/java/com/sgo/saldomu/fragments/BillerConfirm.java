@@ -195,11 +195,11 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         if(!is_sgo_plus){
             merchant_type = args.getString(DefineValue.AUTHENTICATION_TYPE,"");
             if(merchant_type.equals(DefineValue.AUTH_TYPE_OTP)||product_payment_type.equals(DefineValue.BANKLIST_TYPE_SMS)){
-                LinearLayout layoutOTP = (LinearLayout) v.findViewById(R.id.layout_token);
+                LinearLayout layoutOTP = v.findViewById(R.id.layout_token);
                 layoutOTP.setVisibility(View.VISIBLE);
                 View layout_btn_resend = v.findViewById(R.id.layout_btn_resend);
-                btn_resend = (Button) v.findViewById(R.id.billertoken_btn_resend);
-                et_token_value = (EditText) layoutOTP.findViewById(R.id.billertoken_token_value);
+                btn_resend = v.findViewById(R.id.billertoken_btn_resend);
+                et_token_value = layoutOTP.findViewById(R.id.billertoken_token_value);
                 int max_length_token;
                 if(product_payment_type.equals(DefineValue.BANKLIST_TYPE_SMS)){
                     if(bank_code.equals("114"))
@@ -242,7 +242,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         if(buy_code == BillerActivity.PURCHASE_TYPE){
             View layout_biller_name = v.findViewById(R.id.billertoken_layout_biller_name);
             layout_biller_name.setVisibility(View.VISIBLE);
-            TextView tv_biller_name_value = (TextView) layout_biller_name.findViewById(R.id.billertoken_biller_name_value);
+            TextView tv_biller_name_value = layout_biller_name.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
         }
 
@@ -250,9 +250,9 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             try {
                 View layout_detail_payment = v.findViewById(R.id.billertoken_layout_payment);
                 layout_detail_payment.setVisibility(View.VISIBLE);
-                RelativeLayout mDescLayout = (RelativeLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_deskripsi);
-                mTableLayout = (TableLayout) layout_detail_payment.findViewById(R.id.billertoken_layout_table);
-                mIconArrow = (ImageView) layout_detail_payment.findViewById(R.id.billertoken_arrow_desc);
+                RelativeLayout mDescLayout = layout_detail_payment.findViewById(R.id.billertoken_layout_deskripsi);
+                mTableLayout = layout_detail_payment.findViewById(R.id.billertoken_layout_table);
+                mIconArrow = layout_detail_payment.findViewById(R.id.billertoken_arrow_desc);
                 mDescLayout.setOnClickListener(descriptionClickListener);
                 mIconArrow.setOnClickListener(descriptionClickListener);
 
@@ -311,7 +311,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         if(is_input_amount){
             View amount_desire_layout = v.findViewById(R.id.billertoken_amount_desired_layout);
             amount_desire_layout.setVisibility(View.VISIBLE);
-            TextView tv_desired_amount = (TextView) amount_desire_layout.findViewById(R.id.billertoken_desired_amount_value);
+            TextView tv_desired_amount = amount_desire_layout.findViewById(R.id.billertoken_desired_amount_value);
             amount_desire = args.getString(DefineValue.AMOUNT_DESIRED, "");
             tv_desired_amount.setText(ccy_id+". "+CurrencyFormat.format(amount_desire));
         }
@@ -445,8 +445,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             extraSignature = tx_id+args.getString(DefineValue.BILLER_COMM_CODE)+product_code+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.BILLER_COMM_ID)
-                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey);
+            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin
+                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
@@ -555,7 +555,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
                         userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userPhoneID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
@@ -650,7 +650,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
                     userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
@@ -876,9 +876,9 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

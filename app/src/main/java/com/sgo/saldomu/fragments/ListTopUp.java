@@ -123,7 +123,7 @@ public class ListTopUp extends BaseFragment implements InformationDialog.OnDialo
 
         levelClass = new LevelClass(getActivity(),sp);
         levelClass.refreshData();
-        expand_lv = (ExpandableListView) v.findViewById(R.id.expandableListView);
+        expand_lv = v.findViewById(R.id.expandableListView);
         expand_lv.setAdapter(expand_lv_adapter);
 
         if(isAdded()) {

@@ -471,7 +471,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
             }
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -266,6 +266,7 @@ public class MainPage extends BaseActivity {
 
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
 
+
             if (checkNotificationAction()) {
                 int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
@@ -603,11 +604,11 @@ public class MainPage extends BaseActivity {
     }
 
     private void InitializeNavDrawer(){
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
-        mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
-        mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
+        mDrawerLayout = findViewById(R.id.main_drawer);
+        mLeftDrawerRelativeLayout = findViewById(R.id.left_drawer);
+        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
-        mOuterRelativeContent = (RelativeLayout) findViewById(R.id.outer_layout_content);
+        mOuterRelativeContent = findViewById(R.id.outer_layout_content);
         findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -726,12 +727,10 @@ public class MainPage extends BaseActivity {
 
         try{
 
-            String comm_id = sp.getString(DefineValue.COMMUNITY_ID,"");
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_LIST_MEMBER,
-                    userPhoneID,accessKey, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.COMM_ID, comm_id);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
@@ -1088,11 +1087,9 @@ public class MainPage extends BaseActivity {
                 progdialog.show();
             }
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LOGOUT,
-                    userPhoneID,accessKey);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-
 
             Timber.d("isi params logout:"+params.toString());
 

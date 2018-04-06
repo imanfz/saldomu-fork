@@ -72,9 +72,9 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = infalInflater.inflate(R.layout.list_topup_group_item, parent,false);
-            tri_img = (ImageView) v.findViewById(R.id.triangle);
-            logo_img = (ImageView) v.findViewById(R.id.logo);
-            group_title = (TextView) v.findViewById(R.id.group_title);
+            tri_img = v.findViewById(R.id.triangle);
+            logo_img = v.findViewById(R.id.logo);
+            group_title = v.findViewById(R.id.group_title);
             v_divider = v.findViewById(R.id.divider);
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.addView(tri_img);
@@ -178,18 +178,18 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             holder.addView(v_divider);
 
             if(itemType == OTHER_ATM_VIEW){
-                TextView tvPinAccount =(TextView) layout_view_child.findViewById(R.id.pin_account);
-                TextView tv_fee = (TextView) layout_view_child.findViewById(R.id.fee_deskripsi);
+                TextView tvPinAccount = layout_view_child.findViewById(R.id.pin_account);
+                TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
                 holder.addView(tvPinAccount);
                 holder.addView(tv_fee);
             }
             else{
                 childItemLayout =layout_view_child.findViewById(R.id.child_item_layout);
-                title_child =(TextView) layout_view_child.findViewById(R.id.title_child);
-                indicator =(ImageView) layout_view_child.findViewById(R.id.child_indicator);
+                title_child = layout_view_child.findViewById(R.id.title_child);
+                indicator = layout_view_child.findViewById(R.id.child_indicator);
 
                 if(itemType == ATM_VIEW){
-                    TextView tv_fee = (TextView) layout_view_child.findViewById(R.id.fee_deskripsi);
+                    TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
                     holder.addView(tv_fee);
                 }
 
@@ -236,8 +236,8 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                     title_child.setTextColor(mContext.getResources().getColor(R.color.black));
                 }
 
-                TextView tvTitleATM = (TextView) layoutAtm.findViewById(R.id.title_atm);
-                TextView tvPinAccount = (TextView) layoutAtm.findViewById(R.id.pin_account);
+                TextView tvTitleATM = layoutAtm.findViewById(R.id.title_atm);
+                TextView tvPinAccount = layoutAtm.findViewById(R.id.pin_account);
                 tvTitleATM.setText(childDataBank.getBankName());
                 tvPinAccount.setText(childDataWrapper.getNoVa());
                 if(childDataWrapper.getFee() == null)
