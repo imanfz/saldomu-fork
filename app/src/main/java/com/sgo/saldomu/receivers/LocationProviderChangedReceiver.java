@@ -3,33 +3,22 @@ package com.sgo.saldomu.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
-import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.services.AgentShopService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-import java.util.UUID;
-
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
@@ -79,25 +68,20 @@ public class LocationProviderChangedReceiver extends BroadcastReceiver {
                 }
 
                 if ( isCallWebService ) {
-                    RequestParams params    = new RequestParams();
+
+                    String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+                    RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                            sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+
                     String shopStatus       = DefineValue.SHOP_OPEN;
 
-                    UUID rcUUID = UUID.randomUUID();
-                    String dtime = DateTimeFormat.getCurrentDateTime();
-
-                    params.put(WebParams.RC_UUID, rcUUID);
-                    params.put(WebParams.RC_DATETIME, dtime);
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
                     params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
                     params.put(WebParams.SHOP_STATUS, newShopClosed);
-
-
-                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + newShopClosed));
-
-                    params.put(WebParams.SIGNATURE, signature);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
                     MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
                         @Override

@@ -53,17 +53,10 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
-import com.sgo.saldomu.widgets.BaseActivity;
-import com.sgo.saldomu.securities.RSA;
-import com.sgo.saldomu.utils.BbsUtil;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -71,6 +64,10 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.utils.BbsUtil;
+import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -82,7 +79,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import io.realm.Realm;
 import timber.log.Timber;
@@ -597,17 +593,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
     private void searchAgent() {
-        //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+        String extraSignature = categoryId + latitude + longitude;
+        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
+                userPhoneID, accessKey, extraSignature);
 
-//        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId, BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
-        String encryptedCategoryId  = RSA.opensslEncrypt(categoryId);
-
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        final String dtime = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -615,12 +604,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LATITUDE, latitude);
         params.put(WebParams.LONGITUDE, longitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryId
-                + latitude + longitude));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
