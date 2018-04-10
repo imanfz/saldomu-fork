@@ -41,6 +41,7 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -185,14 +186,13 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = txId+userPhoneID;
+            extraSignature = txId+_token;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_CASHOUT,
-                    userPhoneID, accessKey, extraSignature);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_CASHOUT, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
 
             MyApiClient.sentConfCashout(getActivity(),params, new JsonHttpResponseHandler(){
                 @Override

@@ -175,10 +175,9 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = tx_id+comm_code+tx_product_code+tokenValue;
+            extraSignature = tx_id+comm_code+tx_product_code+token;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey, extraSignature);
+            final RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
@@ -286,7 +285,7 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenValue.getText().toString()));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());

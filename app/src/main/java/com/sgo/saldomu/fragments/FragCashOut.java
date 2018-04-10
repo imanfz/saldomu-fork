@@ -218,8 +218,7 @@ public class FragCashOut extends BaseFragment {
 
             extraSignature = memberIDLogin+bankCode+_acctNo+MyApiClient.CCY_VALUE+_amount;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQUEST_CASHOUT,
-                    userPhoneID,accessKey);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_REQUEST_CASHOUT, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);

@@ -155,7 +155,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         is_expanded = ((BankHeaderTopUp)getGroup(groupPosition)).getExpanded();
         int itemType = getChildType(groupPosition,childPosition);
         View layout_view_child = convertView;
-        View v_divider,childItemLayout, layoutAtm ;
+        View v_divider,childItemLayout, layoutAtm;
         ImageView indicator;
         TextView title_child;
         childItemLayout = convertView;

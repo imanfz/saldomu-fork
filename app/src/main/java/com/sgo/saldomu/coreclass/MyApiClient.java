@@ -477,29 +477,7 @@ public class MyApiClient {
     }
 
     public static String getWebserviceName(String link){
-        String tes = link.substring(link.indexOf("saldomu"));
-        return tes;
-    }
-
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
-    }
-
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya, String extraSignature){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID+extraSignature;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
-    }
-
-    public static String getSignature(String WebServiceName, String CommId, String noID, String apinya, String extraSignature){
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+WebServiceName+CommId+noID+extraSignature;
-        String hash = SHA.SHA256(apinya,msgnya);
-        Log.d("getSignature", "link:" + WebServiceName + " plain text: "+msgnya+" . hashed: "+hash);
-        return hash;
+        return link.substring(link.indexOf("saldomu"));
     }
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
@@ -508,25 +486,6 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
-//
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
-
-        String hash = SHA.SHA256(access_key,msgnya);
-
-        RequestParams params = new RequestParams();
-        params.put(WebParams.RC_UUID, uuidnya);
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-        return params;
-    }
-
-    public static RequestParams getSignatureWithParams(String commID, String linknya, String access_key ){
-
-        String webServiceName = getWebserviceName(linknya);
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID ;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);

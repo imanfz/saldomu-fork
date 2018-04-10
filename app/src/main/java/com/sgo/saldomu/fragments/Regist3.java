@@ -464,11 +464,11 @@ public class Regist3 extends BaseFragment {
 
             extraSignature = custID + pass;
             RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
-                    BuildConfig.SECRET_KEY, extraSignature );
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
-            params.put(WebParams.TOKEN_ID, token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(token));
             params.put(WebParams.CUST_ID, custID);
 
             Timber.d("params create pass:"+params.toString());
