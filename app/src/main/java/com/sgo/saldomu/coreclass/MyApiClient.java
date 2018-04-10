@@ -486,9 +486,9 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
+        Timber.d("isi access_key :" + access_key);
 //
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
 
@@ -533,9 +533,8 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
-//        Timber.d("isi access_key :" + access_key);
-//
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+        Timber.d("isi access_key :" + getAccessKey());
+        Timber.d("isisnya signature :"+  webServiceName +" / "+getCommIdLogin()+" / " +getCommIdLogin());
 
         String hash = SHA.SHA256(getAccessKey(),msgnya);
 
@@ -552,7 +551,7 @@ public class MyApiClient {
     private String getUserPhoneId(){
         return getInstance().sp.getString(DefineValue.USERID_PHONE,"");
     }
-    private String getAccessKey(){
+    public String getAccessKey(){
         return getInstance().sp.getString(DefineValue.ACCESS_KEY,"");
     }
 
