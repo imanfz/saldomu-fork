@@ -2,6 +2,7 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -9,8 +10,10 @@ import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fragments.Login;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
@@ -36,6 +39,7 @@ public class MyApiClient {
     private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
     private AsyncHttpClient asyncHttpClientUnstrusted;
+    private SecurePreferences sp;
 
     private Context getmContext() {
         return mContext;
@@ -53,7 +57,7 @@ public class MyApiClient {
         this.setmContext(_context);
     }
 
-    private static MyApiClient getInstance() {
+    public static MyApiClient getInstance() {
         return singleton;
     }
 
@@ -68,9 +72,11 @@ public class MyApiClient {
             singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClientUnstrusted.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.sp = CustomSecurePref.getInstance().getmSecurePrefs();
         }
         return singleton;
     }
+
     public static Boolean PROD_FAILURE_FLAG = true;
     public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
@@ -471,21 +477,7 @@ public class MyApiClient {
     }
 
     public static String getWebserviceName(String link){
-        String tes = link.substring(link.indexOf("saldomu"));
-        return tes;
-    }
-
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
-    }
-
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya
-            , String extraSignature){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID+extraSignature;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
+        return link.substring(link.indexOf("saldomu"));
     }
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
@@ -494,25 +486,6 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
-//
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
-
-        String hash = SHA.SHA256(access_key,msgnya);
-
-        RequestParams params = new RequestParams();
-        params.put(WebParams.RC_UUID, uuidnya);
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-        return params;
-    }
-
-    public static RequestParams getSignatureWithParams(String commID, String linknya, String access_key ){
-
-        String webServiceName = getWebserviceName(linknya);
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID ;
 //        Timber.d("isi access_key :" + access_key);
 //
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
@@ -544,6 +517,43 @@ public class MyApiClient {
         params.put(WebParams.RC_DTIME, dtime);
         params.put(WebParams.SIGNATURE, hash);
         return params;
+    }
+
+    public RequestParams getSignatureWithParams(String linknya, String extraSignature){
+        return CreateParams(linknya,extraSignature);
+    }
+
+    public RequestParams getSignatureWithParams(String linknya){
+        return CreateParams(linknya, "");
+    }
+
+    private RequestParams CreateParams(String linknya, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
+//        Timber.d("isi access_key :" + access_key);
+//
+//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+
+        String hash = SHA.SHA256(getAccessKey(),msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    private String getCommIdLogin(){
+        return getInstance().sp.getString(DefineValue.COMMUNITY_ID,"");
+    }
+    private String getUserPhoneId(){
+        return getInstance().sp.getString(DefineValue.USERID_PHONE,"");
+    }
+    private String getAccessKey(){
+        return getInstance().sp.getString(DefineValue.ACCESS_KEY,"");
     }
 
     public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature){

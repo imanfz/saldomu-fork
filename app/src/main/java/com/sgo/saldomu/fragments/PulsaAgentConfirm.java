@@ -237,7 +237,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
             extraSignature = tx_id+comm_code+product_code+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);

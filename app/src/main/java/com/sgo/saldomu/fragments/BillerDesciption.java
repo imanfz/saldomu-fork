@@ -442,10 +442,10 @@ public class BillerDesciption extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = commIDLogin+item_id+cust_id;
+            extraSignature = biller_comm_id+item_id+cust_id;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_INQUIRY_BILLER,
-                    userPhoneID,accessKey);
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INQUIRY_BILLER,
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
@@ -579,8 +579,8 @@ public class BillerDesciption extends BaseFragment {
 
             extraSignature = tx_id+item_id+biller_comm_id+product_code;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_PAYMENT_BILLER,
-                    userPhoneID,accessKey);
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_PAYMENT_BILLER,
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id );
 

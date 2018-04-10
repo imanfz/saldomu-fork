@@ -354,7 +354,7 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_TOKEN_ATC,
                     userID, accessKey);
 
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);

@@ -253,9 +253,9 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
 
             final Bundle args = getArguments();
 
-            extraSignature = txID+args.getString(DefineValue.COMMUNITY_ID)+productCode+tokenValue;
+            extraSignature = txID+args.getString(DefineValue.COMMUNITY_CODE)+productCode+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(args.getString(DefineValue.COMMUNITY_ID)
+            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin
                     ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);

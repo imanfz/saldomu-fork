@@ -804,12 +804,11 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_id+tokenValue.getText().toString();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RETRY_TOKEN,
-                    userPhoneID,accessKey, extraSignature);
+            final RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_RETRY_TOKEN, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenValue.getText().toString()));
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());
