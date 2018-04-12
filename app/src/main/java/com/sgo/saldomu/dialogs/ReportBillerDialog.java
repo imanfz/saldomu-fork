@@ -52,6 +52,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private LinearLayout contentInvoice;
     private ImageView saveimage;
     private ImageView shareimage;
+    private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
 
@@ -916,7 +917,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         contentInvoice = (LinearLayout) view.findViewById(R.id.rlid);
         saveimage = (ImageView) view.findViewById(R.id.img_download);
-        shareimage = (ImageView) view.findViewById(R.id.img_share);
+        shareimage = (ImageView) view.findViewById(R.id.img_print);
 
         saveimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -946,7 +947,27 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             }
         });
 
+        printStruk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                printStruk.setEnabled(false);
+                printStruk.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        printStruk.setEnabled(true);
+                    }
+                }, 4000);
+
+                doPrint();
+            }
+        });
+
         return view;
+    }
+
+    private void doPrint()
+    {
+        
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
