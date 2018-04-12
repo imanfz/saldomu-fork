@@ -74,6 +74,9 @@ android {
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
 
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
+            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
+
             versionCode = 1
             versionName "1.0"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
@@ -101,6 +104,9 @@ android {
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
+
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
+            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
 
             signingConfig signingConfigs.prodKey
             versionCode = 13
