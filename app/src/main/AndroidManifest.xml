@@ -309,7 +309,7 @@
                 />
         </activity>
 
-        <activity android:name=".BluetoothPrinter.BTDeviceList"/>
+        <activity android:name=".BluetoothPrinter.DeviceList"/>
 
         <service
             android:name=".services.AgentShopService"

@@ -26,21 +26,18 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
-public class BTDeviceList extends ListActivity {
+public class DeviceList extends ListActivity {
 
-    static public final int REQUEST_CONNECT_BT = 0x2300;
-
-    static private final int REQUEST_ENABLE_BT = 0x1000;
-
+    static public final int REQUEST_CONNECT_BT = 0*2300;
+    static private final int REQUEST_ENABLE_BT = 0*1000;
     static private BluetoothAdapter mBluetoothAdapter = null;
-
     static private ArrayAdapter<String> mArrayAdapter = null;
 
     static private ArrayAdapter<BluetoothDevice> btDevices = null;
 
     private static final UUID SPP_UUID = UUID
             .fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
-// UUID.fromString(“00001101-0000-1000-8000-00805F9B34FB”);
+    // UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     static private BluetoothSocket mbtSocket = null;
 
@@ -48,7 +45,7 @@ public class BTDeviceList extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        setTitle(“Bluetooth Devices”);
+        setTitle("Bluetooth Devices");
 
         try {
             if (initDevicesList() != 0) {
@@ -94,19 +91,18 @@ public class BTDeviceList extends ListActivity {
             }
 
             finalize();
-
         } catch (Exception ex) {
         } catch (Throwable e) {
         }
 
     }
     private int initDevicesList() {
-
         flushData();
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
-            Toast.makeText(getApplicationContext(),"Bluetooth not supported!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),
+                    "Bluetooth not supported!!", Toast.LENGTH_LONG).show();
             return -1;
         }
 
@@ -115,7 +111,7 @@ public class BTDeviceList extends ListActivity {
         }
 
         mArrayAdapter = new ArrayAdapter<String>(getApplicationContext(),
-                android.R.layout.simple_list_item_1);
+                R.layout.layout_list);
 
         setListAdapter(mArrayAdapter);
 
@@ -165,13 +161,11 @@ public class BTDeviceList extends ListActivity {
 
                 break;
         }
-
         mBluetoothAdapter.startDiscovery();
 
     }
 
     private final BroadcastReceiver mBTReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -182,7 +176,7 @@ public class BTDeviceList extends ListActivity {
                 try {
                     if (btDevices == null) {
                         btDevices = new ArrayAdapter<BluetoothDevice>(
-                                getApplicationContext(), R.id.text1);
+                                getApplicationContext(), R.layout.layout_list);
                     }
 
                     if (btDevices.getPosition(device) < 0) {
@@ -192,7 +186,7 @@ public class BTDeviceList extends ListActivity {
                         mArrayAdapter.notifyDataSetInvalidated();
                     }
                 } catch (Exception ex) {
-// ex.fillInStackTrace();
+                    ex.fillInStackTrace();
                 }
             }
         }
@@ -214,7 +208,7 @@ public class BTDeviceList extends ListActivity {
         Toast.makeText(
                 getApplicationContext(),
                 "Connecting to " + btDevices.getItem(position).getName() + ","
-        + btDevices.getItem(position).getAddress(),
+                        + btDevices.getItem(position).getAddress(),
                 Toast.LENGTH_SHORT).show();
 
         Thread connectThread = new Thread(new Runnable() {
@@ -235,7 +229,7 @@ public class BTDeviceList extends ListActivity {
                     try {
                         mbtSocket.close();
                     } catch (IOException e) {
-// e.printStackTrace();
+                        e.printStackTrace();
                     }
                     mbtSocket = null;
                     return;
@@ -276,12 +270,6 @@ public class BTDeviceList extends ListActivity {
     }
 
     @Override
-    public void onDestroy() {
-        unregisterReceiver(mBTReceiver);
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
 
@@ -293,4 +281,16 @@ public class BTDeviceList extends ListActivity {
 
         return true;
     }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        try {
+            unregisterReceiver(mBTReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

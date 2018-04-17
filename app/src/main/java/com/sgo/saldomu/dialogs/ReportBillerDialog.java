@@ -26,7 +26,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgo.saldomu.BluetoothPrinter.BTDeviceList;
+import com.sgo.saldomu.BluetoothPrinter.DeviceList;
+import com.sgo.saldomu.BluetoothPrinter.PrinterCommands;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
@@ -63,7 +64,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
-    private static OutputStream btoutputstream;
+    private static OutputStream outputStream;
+
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -968,51 +970,76 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     }
                 }, 4000);
 
-                connect();
+                doPrint();
             }
         });
 
         return view;
     }
 
-    private void connect(){
-        if(btsocket == null){
-            Intent BTIntent = new Intent(getContext(), BTDeviceList.class);
-            this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
 
+    private void doPrint()
+    {
+        if(btsocket == null){
+            Intent BTIntent = new Intent(getActivity(), DeviceList.class);
+            this.startActivityForResult(BTIntent, DeviceList.REQUEST_CONNECT_BT);
         }
         else{
-
             OutputStream opstream = null;
             try {
                 opstream = btsocket.getOutputStream();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            btoutputstream = opstream;
-            doPrint();
+            outputStream = opstream;
+
+            //print command
+            try {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                outputStream = btsocket.getOutputStream();
+                byte[] printformat = new byte[]{0x1B,0x21,0x03};
+                outputStream.write(printformat);
+
+                printText(leftRightAlign("Qty: Name" , "Price "));
+                printText(leftRightAlign("Total" , "2,0000/="));
+                printNewLine();
+                printNewLine();
+                printNewLine();
+
+                outputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void doPrint()
-    {
+    private String leftRightAlign(String str1, String str2) {
+        String ans = str1 +str2;
+        if(ans.length() <31){
+            int n = (31 - str1.length() + str2.length());
+            ans = str1 + new String(new char[n]).replace("\0", " ") + str2;
+        }
+        return ans;
+    }
+
+    //print new line
+    private void printNewLine() {
         try {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            outputStream.write(PrinterCommands.FEED_LINE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-            btoutputstream = btsocket.getOutputStream();
-
-            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
-            btoutputstream.write(printformat);
-            String msg = "Halo";
-            btoutputstream.write(msg.getBytes());
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.write(0x0D);
-            btoutputstream.flush();
+    //print text
+    private void printText(String msg) {
+        try {
+            // Print normal text
+            outputStream.write(msg.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -1184,7 +1211,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         super.onDestroy();
         try {
             if(btsocket!= null){
-                btoutputstream.close();
+                outputStream.close();
                 btsocket.close();
                 btsocket = null;
             }
@@ -1193,11 +1220,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            btsocket = BTDeviceList.getSocket();
+            btsocket = DeviceList.getSocket();
             if(btsocket != null){
                 doPrint();
             }
@@ -1206,5 +1234,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             e.printStackTrace();
         }
     }
+
 }
 
