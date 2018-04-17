@@ -3,7 +3,9 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.Manifest;
+import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sgo.saldomu.BluetoothPrinter.BTDeviceList;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
@@ -33,6 +36,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +60,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    byte FONT_TYPE;
+    private static BluetoothSocket btsocket;
+    private static OutputStream btoutputstream;
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -917,7 +926,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         contentInvoice = (LinearLayout) view.findViewById(R.id.rlid);
         saveimage = (ImageView) view.findViewById(R.id.img_download);
-        shareimage = (ImageView) view.findViewById(R.id.img_print);
+        shareimage = (ImageView) view.findViewById(R.id.img_share);
+        printStruk = (ImageView) view.findViewById(R.id.img_print);
 
         saveimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -958,16 +968,54 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     }
                 }, 4000);
 
-                doPrint();
+                connect();
             }
         });
 
         return view;
     }
 
+    private void connect(){
+        if(btsocket == null){
+            Intent BTIntent = new Intent(getContext(), BTDeviceList.class);
+            this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
+
+        }
+        else{
+
+            OutputStream opstream = null;
+            try {
+                opstream = btsocket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            btoutputstream = opstream;
+            doPrint();
+        }
+    }
+
     private void doPrint()
     {
-        
+        try {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            btoutputstream = btsocket.getOutputStream();
+
+            byte[] printformat = { 0x1B, 0x21, FONT_TYPE };
+            btoutputstream.write(printformat);
+            String msg = "Halo";
+            btoutputstream.write(msg.getBytes());
+            btoutputstream.write(0x0D);
+            btoutputstream.write(0x0D);
+            btoutputstream.write(0x0D);
+            btoutputstream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
@@ -1130,4 +1178,33 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         this.dismiss();
         callback.onOkButton();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        try {
+            if(btsocket!= null){
+                btoutputstream.close();
+                btsocket.close();
+                btsocket = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            btsocket = BTDeviceList.getSocket();
+            if(btsocket != null){
+                doPrint();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+

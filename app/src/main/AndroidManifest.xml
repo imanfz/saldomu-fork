@@ -17,6 +17,8 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <application
         android:name=".coreclass.CoreApp"
         android:allowBackup="false"
@@ -306,6 +308,8 @@
                 android:value=".activities.MainPage"
                 />
         </activity>
+
+        <activity android:name=".BluetoothPrinter.BTDeviceList"/>
 
         <service
             android:name=".services.AgentShopService"
