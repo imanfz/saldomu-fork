@@ -3,14 +3,25 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,8 +37,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgo.saldomu.BluetoothPrinter.DeviceList;
 import com.sgo.saldomu.BluetoothPrinter.PrinterCommands;
+import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
+import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
@@ -39,6 +51,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +79,34 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private static BluetoothSocket btsocket;
     private static OutputStream outputStream;
 
+    private BluetoothAdapter mBluetoothAdapter = null;
+    // Member object for the services
+    private BluetoothService mService = null;
+    private BluetoothDevice btDevice = null;
+
+    private int maxRetry    = 10;
+    private int countRetry  = 0;
+    private int timeDelayed = 3000;
+    // Init
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if ( mService != null && btDevice != null) {
+                //mService.stop();
+                //mService = new BluetoothService(getContext(), mHandler);
+                mService.connect(btDevice);
+                countRetry++;
+            }
+            Log.d("Run Thread : ", "printbluetooth");
+
+            //yessi, dibawah ini tuk cek max try berapa kali
+            //if ( countRetry < maxRetry )
+                handler.postDelayed(this, timeDelayed);
+        }
+    };
+
+
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -89,6 +130,15 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
 
         this.isActivity = getArguments().getBoolean(DefineValue.IS_ACTIVE, false);
+
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(getContext(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        }
 
 //        try {
 //            if (isActivity)
@@ -980,9 +1030,36 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
     private void doPrint()
     {
-        if(btsocket == null){
-            Intent BTIntent = new Intent(getActivity(), DeviceList.class);
-            this.startActivityForResult(BTIntent, DeviceList.REQUEST_CONNECT_BT);
+        if ( mService == null ) {
+            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+        } else {
+            if ( mService.getState() != BluetoothService.STATE_CONNECTED ) {
+                Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+                this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+                //mService.start();
+                //Log.d("arg1 - none:", "");
+            } else {
+                String message2 = "Yessi is doing research device doprint \n\n";
+                Log.d("arg1 - device-name t:", message2);
+
+                SendDataString(message2);
+            }
+        }
+
+        /*if ( mService == null ) {
+            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+        } else {
+            if ( mService.getState() != BluetoothService.STATE_CONNECTED ) {
+                Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+                this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+            }
+        }*/
+
+        /*if(btsocket == null){
+            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
         }
         else{
             OutputStream opstream = null;
@@ -1014,7 +1091,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     private String leftRightAlign(String str1, String str2) {
@@ -1209,7 +1286,12 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     @Override
     public void onDestroy() {
         super.onDestroy();
-        try {
+        if (runnable != null)
+            handler.removeCallbacks(runnable);
+        // Stop the Bluetooth services
+        if (mService != null)
+            mService.stop();
+        /*try {
             if(btsocket!= null){
                 outputStream.close();
                 btsocket.close();
@@ -1217,14 +1299,54 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        try {
+
+            Log.d(TAG, "onActivityResult Select Printer " + requestCode +"--"+ resultCode);
+
+        switch (requestCode) {
+            case DevicesList.REQUEST_CONNECT_DEVICE:{
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get the device MAC address
+                    String address = data.getExtras().getString(
+                            DevicesList.EXTRA_DEVICE_ADDRESS);
+                    // Get the BLuetoothDevice object
+                    if (BluetoothAdapter.checkBluetoothAddress(address)) {
+                        btDevice = mBluetoothAdapter.getRemoteDevice(address);
+                        // Attempt to connect to the device
+                        mService.connect(btDevice);
+
+                        handler.postDelayed(runnable, timeDelayed);
+
+                    }
+
+
+                }
+                break;
+            }
+            case DevicesList.REQUEST_ENABLE_BT:{
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    mService = new BluetoothService(getContext(), mHandler);
+                } else {
+                    // User did not enable Bluetooth or an error occured
+                    Log.d(TAG, "BT not enabled");
+                    //Toast.makeText(this, R.string.bt_not_enabled_leaving,
+                            //Toast.LENGTH_SHORT).show();
+                    getActivity().finish();
+                }
+                break;
+            }
+
+
+        }
+        /*try {
             btsocket = DeviceList.getSocket();
             if(btsocket != null){
                 doPrint();
@@ -1232,8 +1354,117 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         } catch (Exception e) {
             e.printStackTrace();
+        }*/
+    }
+
+
+    @Override
+    public synchronized void onResume() {
+        super.onResume();
+
+        if (mService != null) {
+
+            if (mService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth services
+                mService.start();
+            }
         }
     }
 
+    @Override
+    public synchronized void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // If Bluetooth is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(
+                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
+            // Otherwise, setup the session
+        } else {
+            if (mService == null)
+                mService = new BluetoothService(getContext(), mHandler);//监听
+        }
+    }
+
+    /****************************************************************************************************/
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case DevicesList.MESSAGE_STATE_CHANGE:
+                    String message = "Yessi is doing research \n\n";
+                    Log.d("arg1:", String.valueOf(msg.arg1));
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            Log.d("arg - connected:", String.valueOf(msg.arg1));
+                            if (runnable!=null)
+                                handler.removeCallbacks(runnable);
+                            SendDataString(message);
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+
+                            break;
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+
+                            break;
+                    }
+                    break;
+                case DevicesList.MESSAGE_WRITE:
+
+                    break;
+                case DevicesList.MESSAGE_READ:
+
+                    break;
+                case DevicesList.MESSAGE_DEVICE_NAME:
+                    String message2 = "Yessi is doing research device \n\n";
+                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
+                    if (runnable!=null)
+                        handler.removeCallbacks(runnable);
+                    SendDataString(message2);
+                    break;
+                case DevicesList.MESSAGE_TOAST:
+
+                    break;
+                case DevicesList.MESSAGE_CONNECTION_LOST:    //蓝牙已断开连接
+
+                    break;
+                case DevicesList.MESSAGE_UNABLE_CONNECT:     //无法连接设备
+                    Toast.makeText(getContext(), "Unable to connect device",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    /*****************************************************************************************************/
+	/*
+	 * SendDataString
+	 */
+    private void SendDataString(String data) {
+
+        if (mService.getState() != BluetoothService.STATE_CONNECTED) {
+            Log.d("Servi State Bluetooth :", String.valueOf(mService.getState()) );
+            Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+        if (data.length() > 0) {
+            try {
+                mService.write(data.getBytes("GBK"));
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }
 
