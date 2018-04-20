@@ -101,7 +101,7 @@ public class BillerDesciption extends Fragment {
     private String value_item_data;
     private TextView tv_biller_name_value;
     private TextView tv_item_name_value;
-    private TextView tv_amount_value;
+    private TextView tv_amount_value, tv_total_value;
     private TextView tv_id_cust;
     private EditText et_desired_amount;
     private Button btn_submit;
@@ -143,6 +143,7 @@ public class BillerDesciption extends Fragment {
 
         tv_item_name_value = (TextView) v.findViewById(R.id.billertoken_item_name_value);
         tv_amount_value = (TextView) v.findViewById(R.id.billertoken_amount_value);
+        tv_total_value = (TextView) v.findViewById(R.id.billertoken_total_value);
         btn_submit = (Button) v.findViewById(R.id.billertoken_btn_verification);
         btn_cancel = (Button) v.findViewById(R.id.billertoken_btn_cancel);
         layout_biller_name = v.findViewById(R.id.billertoken_layout_biller_name);
@@ -226,14 +227,19 @@ public class BillerDesciption extends Fragment {
             }
         }
 
-        if(isPLN){
+//        if(isPLN){
             View layout_fee = v.findViewById(R.id.billertoken_fee_layout);
+            View layout_total = v.findViewById(R.id.billertoken_total_layout);
             ((TextView)(layout_fee.findViewById(R.id.billertoken_fee_value))).setText(ccy_id + ". " +CurrencyFormat.format(fee));
             layout_fee.setVisibility(View.VISIBLE);
+            ((TextView)(layout_total.findViewById(R.id.billertoken_total_value))).setText(ccy_id + ". " +CurrencyFormat.format(amount));
+            layout_total.setVisibility(View.VISIBLE);
             double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
             String deAmount = String.valueOf(mAmount);
             tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(deAmount));
-            }
+            tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
+//            }
+
         paymentData = new ArrayList<>();
         adapterPaymentOptions = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, paymentData);
         adapterPaymentOptions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -485,8 +491,8 @@ public class BillerDesciption extends Fragment {
                             amount = response.getString(WebParams.AMOUNT);
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
                             description =  response.getString(WebParams.DESCRIPTION);
-                            if(isPLN && response.has(WebParams.ADMINFEE)) {
-                                fee = response.optString(WebParams.ADMINFEE, "");
+                            if(isPLN && response.has(WebParams.ADMIN_FEE)) {
+                                fee = response.optString(WebParams.ADMIN_FEE, "");
                             }
 
                             if(isAdded())
