@@ -10,12 +10,8 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -1037,8 +1033,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             if ( mService.getState() != BluetoothService.STATE_CONNECTED ) {
                 Intent BTIntent = new Intent(getActivity(), DevicesList.class);
                 this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
-                //mService.start();
-                //Log.d("arg1 - none:", "");
             } else {
                 String message2 = "Yessi is doing research device doprint \n\n";
                 Log.d("arg1 - device-name t:", message2);
@@ -1047,51 +1041,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             }
         }
 
-        /*if ( mService == null ) {
-            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
-            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
-        } else {
-            if ( mService.getState() != BluetoothService.STATE_CONNECTED ) {
-                Intent BTIntent = new Intent(getActivity(), DevicesList.class);
-                this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
-            }
-        }*/
-
-        /*if(btsocket == null){
-            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
-            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
-        }
-        else{
-            OutputStream opstream = null;
-            try {
-                opstream = btsocket.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            outputStream = opstream;
-
-            //print command
-            try {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                outputStream = btsocket.getOutputStream();
-                byte[] printformat = new byte[]{0x1B,0x21,0x03};
-                outputStream.write(printformat);
-
-                printText(leftRightAlign("Qty: Name" , "Price "));
-                printText(leftRightAlign("Total" , "2,0000/="));
-                printNewLine();
-                printNewLine();
-                printNewLine();
-
-                outputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     private String leftRightAlign(String str1, String str2) {
@@ -1291,15 +1240,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         // Stop the Bluetooth services
         if (mService != null)
             mService.stop();
-        /*try {
-            if(btsocket!= null){
-                outputStream.close();
-                btsocket.close();
-                btsocket = null;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
     }
 
 
@@ -1346,15 +1287,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
 
         }
-        /*try {
-            btsocket = DeviceList.getSocket();
-            if(btsocket != null){
-                doPrint();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -1425,6 +1357,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     break;
                 case DevicesList.MESSAGE_DEVICE_NAME:
+                    
                     String message2 = "Yessi is doing research device \n\n";
                     Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
                     if (runnable!=null)
@@ -1465,6 +1398,16 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 e.printStackTrace();
             }
         }
+    }
+
+    private void SendDataByte(byte[] data) {
+
+        if (mService.getState() != BluetoothService.STATE_CONNECTED) {
+            Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+        mService.write(data);
     }
 }
 
