@@ -123,7 +123,7 @@ public class BillerDesciption extends Fragment {
     private List<bank_biller_model> mListBankBiller;
     private Realm realm;
     Boolean isPLN = false;
-    String fee ="0";
+    String fee ="0", deAmount;
 
 
     @Override
@@ -235,7 +235,7 @@ public class BillerDesciption extends Fragment {
             ((TextView)(layout_total.findViewById(R.id.billertoken_total_value))).setText(ccy_id + ". " +CurrencyFormat.format(amount));
             layout_total.setVisibility(View.VISIBLE);
             double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
-            String deAmount = String.valueOf(mAmount);
+            deAmount = String.valueOf(mAmount);
             tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(deAmount));
             tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
 //            }
@@ -620,7 +620,7 @@ public class BillerDesciption extends Fragment {
                             Timber.d("isi response payment biller:"+response.toString());
 
                             if(!isPLN)
-                                fee = response.getString(WebParams.FEE);
+                                fee = response.getString(WebParams.ADMIN_FEE);
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),
                                         bank_code,product_code,-1);
@@ -919,7 +919,7 @@ public class BillerDesciption extends Fragment {
         mArgs.putBoolean(DefineValue.IS_SHOW_DESCRIPTION,isShowDescription);
         mArgs.putString(DefineValue.TX_ID,tx_id);
         mArgs.putString(DefineValue.CCY_ID,ccy_id);
-        mArgs.putString(DefineValue.AMOUNT, amount);
+        mArgs.putString(DefineValue.AMOUNT, deAmount);
         mArgs.putString(DefineValue.ITEM_NAME,item_name);
         mArgs.putString(DefineValue.BILLER_COMM_ID,biller_comm_id);
         mArgs.putString(DefineValue.BILLER_NAME,biller_name);
