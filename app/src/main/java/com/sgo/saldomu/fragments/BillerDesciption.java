@@ -491,7 +491,7 @@ public class BillerDesciption extends Fragment {
                             amount = response.getString(WebParams.AMOUNT);
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
                             description =  response.getString(WebParams.DESCRIPTION);
-//                            if(isPLN && response.has(WebParams.ADMIN_FEE)) {
+//                            if(isPLN ) {
                                 fee = response.optString(WebParams.ADMIN_FEE, "");
 //                            }
 
@@ -619,8 +619,8 @@ public class BillerDesciption extends Fragment {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response payment biller:"+response.toString());
 
-                            if(!isPLN)
-                                fee = response.getString(WebParams.ADMIN_FEE);
+//                            if(!isPLN)
+//                                fee = response.getString(WebParams.FEE);
                             if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
                                 changeToConfirmBiller(fee, response.optString(WebParams.MERCHANT_TYPE, ""),
                                         bank_code,product_code,-1);
@@ -933,7 +933,7 @@ public class BillerDesciption extends Fragment {
         mArgs.putString(DefineValue.ITEM_ID,item_id);
         mArgs.putString(DefineValue.FEE, fee);
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
+        mArgs.putString(DefineValue.TOTAL_AMOUNT, amount);
         mArgs.putString(DefineValue.PRODUCT_PAYMENT_TYPE, mTempBank.getProduct_type());
         mArgs.putString(DefineValue.BILLER_TYPE, biller_type_code);
 
