@@ -491,9 +491,9 @@ public class BillerDesciption extends Fragment {
                             amount = response.getString(WebParams.AMOUNT);
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
                             description =  response.getString(WebParams.DESCRIPTION);
-                            if(isPLN && response.has(WebParams.ADMIN_FEE)) {
+//                            if(isPLN && response.has(WebParams.ADMIN_FEE)) {
                                 fee = response.optString(WebParams.ADMIN_FEE, "");
-                            }
+//                            }
 
                             if(isAdded())
                                 initializeLayout();
