@@ -33,7 +33,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.sgo.saldomu.BluetoothPrinter.PrinterCommands;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
@@ -45,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -70,6 +68,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    Bundle args;
 
     byte FONT_TYPE;
     private static BluetoothSocket btsocket;
@@ -161,7 +161,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = view.findViewById(R.id.stub);
 
-        Bundle args = getArguments();
+        args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
         String type = args.getString(DefineValue.REPORT_TYPE);
@@ -1016,7 +1016,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     }
                 }, 4000);
 
-                doPrint();
+                connect();
             }
         });
 
@@ -1024,7 +1024,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     }
 
 
-    private void doPrint()
+    private void connect()
     {
         if ( mService == null ) {
             Intent BTIntent = new Intent(getActivity(), DevicesList.class);
@@ -1034,41 +1034,228 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 Intent BTIntent = new Intent(getActivity(), DevicesList.class);
                 this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
             } else {
-                String message2 = "Yessi is doing research device doprint \n\n";
-                Log.d("arg1 - device-name t:", message2);
-
-                SendDataString(message2);
+                printStruk();
             }
         }
-
     }
 
-    private String leftRightAlign(String str1, String str2) {
-        String ans = str1 +str2;
-        if(ans.length() <31){
-            int n = (31 - str1.length() + str2.length());
-            ans = str1 + new String(new char[n]).replace("\0", " ") + str2;
-        }
-        return ans;
-    }
+    private void printStruk() {
+        String titleStr, remark;
+        StringBuilder code_cashout	= new StringBuilder();
+        StringBuilder contentSb	= new StringBuilder();
+        StringBuilder content2Sb = new StringBuilder();
 
-    //print new line
-    private void printNewLine() {
-        try {
-            outputStream.write(PrinterCommands.FEED_LINE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+        titleStr = "Saldomu" +"\n";
 
-    //print text
-    private void printText(String msg) {
-        try {
-            // Print normal text
-            outputStream.write(msg.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        remark = args.getString(DefineValue.TRX_MESSAGE) +"\n";
+
+        contentSb.append("Tanggal dan \n");
+        contentSb.append("Waktu      : "  +args.getString(DefineValue.DATE_TIME) +"\n");
+        contentSb.append("ID Transaksi : "  +args.getString(DefineValue.TX_ID) +"\n\n");
+
+
+
+//        if (type.equals(DefineValue.BILLER)) {
+//            content2Sb.append("Nomor Handphone  : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Keterangan Tujuan: " +args.getString(DefineValue.DESTINATION_REMARK) +"\n");
+//            content2Sb.append("Denom Retail  : " +args.getString(DefineValue.DENOM_DATA) +"\n");
+//            content2Sb.append("Pilih Pembayaran : " +args.getString(DefineValue.PAYMENT_NAME)+"\n");
+//            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah  : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.PAYFRIENDS)) {
+//            content2Sb.append("Nomor Handphone  : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Penerima      : " +args.getString(DefineValue.RECIPIENTS) +"\n");
+//            content2Sb.append("Jumlah untuk tiap \n");
+//            content2Sb.append("penerima      : " +args.getString(DefineValue.AMOUNT_EACH) +"\n");
+//            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah  : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+//            content2Sb.append("Pesan         : " +args.getString(DefineValue.MESSAGE)+"\n\n\n");
+//        } else if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
+//            content2Sb.append("Nomor Handphone  :" +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Nama Bank     : " +args.getString(DefineValue.BANK_NAME) +"\n");
+//            content2Sb.append("Produk Bank Tujuan:" +args.getString(DefineValue.BANK_PRODUCT) +"\n");
+//            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah  : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+//            if (type.equals(DefineValue.COLLECTION)) {
+//                content2Sb.append("Pesan         : " +args.getString(DefineValue.REMARK) +"\n\n\n");
+//            }
+//            else content2Sb.append("\n\n");
+//        } else if (type.equals(DefineValue.TRANSACTION)) {
+//            content2Sb.append("Rincian      : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Tipe         : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Deskripsi    : " +args.getString(DefineValue.DESCRIPTION) +"\n");
+//            if (!detail.equalsIgnoreCase(DefineValue.CASH_OUT)) {
+//                content2Sb.append("Alias         : " +args.getString(DefineValue.CONTACT_ALIAS) +"\n");
+//            }
+//            content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Pesan        : " +args.getString(DefineValue.REMARK) +"\n\n\n");
+//        }else if (type.equals(DefineValue.TRANSACTION_ESPAY)) {
+//            content2Sb.append("Tipe Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+//            content2Sb.append("Komunitas    : " +args.getString(DefineValue.COMMUNITY_NAME) +"\n");
+//            content2Sb.append("Nama Bank    : " +args.getString(DefineValue.BANK_NAME) +"\n");
+//            if(args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("UNIK")) {
+//                content2Sb.append("Produk Bank Tujuan: " +getContext().getString(R.string.appname) + "\n");
+//            }else
+//            {
+//                content2Sb.append("Produk Bank Tujuan: " +args.getString(DefineValue.PRODUCT_NAME) + "\n");
+//            }
+//            content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.PULSA_AGENT)) {
+//            content2Sb.append("Nomor Handphone  : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama         : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Nama Operator    : " +args.getString(DefineValue.OPERATOR_NAME) +"\n");
+//            content2Sb.append("Nominal Voucher  : " +args.getString(DefineValue.DENOM_DATA) +"\n");
+//            content2Sb.append("Keterangan Tujuan: " +args.getString(DefineValue.DESTINATION_REMARK) +"\n");
+//            content2Sb.append("Pilih Pembayaran : " +args.getString(DefineValue.PAYMENT_NAME)+"\n");
+//            content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.REQUEST)) {
+//            content2Sb.append("Rincian      : " +args.getString(DefineValue.DETAIL) +"\n");
+//            content2Sb.append("Tipe         : " +args.getString(DefineValue.TYPE) +"\n");
+//            content2Sb.append("Deskripsi    : " +args.getString(DefineValue.DESCRIPTION) +"\n");
+//            content2Sb.append("Nama Alias   : " +args.getString(DefineValue.CONTACT_ALIAS) +"\n");
+//            content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Pesan        : " +args.getString(DefineValue.REMARK) +"\n");
+//            content2Sb.append("Status       : " +args.getString(DefineValue.STATUS) +"\n");
+//            content2Sb.append("Alasan       : " +args.getString(DefineValue.REASON) +"\n\n\n");
+//        }else if (type.equals(DefineValue.CASHOUT)) {
+//            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Nama Bank     : " +args.getString(DefineValue.BANK_NAME) +"\n");
+//            content2Sb.append("No. Rekening \n Tujuan        : " +args.getString(DefineValue.ACCOUNT_NUMBER) +"\n");
+//            content2Sb.append("Nama Penerima : " +args.getString(DefineValue.ACCT_NAME) +"\n");
+//            content2Sb.append("Nominal       : " +args.getString(DefineValue.NOMINAL) +"\n");
+//            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah  : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.CASHOUT_TUNAI)) {
+//            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama Admin   : " +args.getString(DefineValue.NAME_ADMIN) +"\n");
+//            content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.BBS_CASHIN)) {
+//            content2Sb.append("Jenis Transaksi  : Setor Tunai\n");
+//            content2Sb.append("No. Handphone \n");
+//            content2Sb.append("Agen         : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama Agen    : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Agen         : " +args.getString(DefineValue.PRODUCT_NAME) +"\n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Tujuan       : " +args.getString(DefineValue.BANK_BENEF) +"\n");
+//            if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD")){
+//                content2Sb.append("No. Rekening \n");
+//                content2Sb.append("Tujuan       : " +args.getString(DefineValue.NO_BENEF) +"\n");
+//            }
+//            else{
+//                content2Sb.append("No. Handphone\n");
+//                content2Sb.append("Tujuan       : " +args.getString(DefineValue.NO_BENEF) +"\n");
+//            }
+//            content2Sb.append("Nama Pemilik \n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Tujuan       : " +args.getString(DefineValue.NAME_BENEF) +"\n");
+//            content2Sb.append("Nominal      : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }else if (type.equals(DefineValue.BBS_CASHOUT)){
+//            content2Sb.append("Jenis Transaksi  : Tarik Tunai\n");
+//            content2Sb.append("No. Handphone \n");
+//            content2Sb.append("Agen         : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+//            content2Sb.append("Nama Agen    : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Agen         : " +args.getString(DefineValue.BANK_BENEF) +"\n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Sumber       : " +args.getString(DefineValue.PRODUCT_NAME) +"\n");
+//            if (benef_type.equalsIgnoreCase(DefineValue.ACCT) || benef_product_code.equalsIgnoreCase("MANDIRILKD")){
+//                content2Sb.append("No. Rekening \n");
+//                content2Sb.append("Sumber       : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+//            }
+//            else{
+//                content2Sb.append("No. Handphone\n");
+//                content2Sb.append("Sumber       : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+//            }
+//            content2Sb.append("Nama Pemilik \n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Sumber       : " +args.getString(DefineValue.MEMBER_SHOP_NAME) +"\n");
+//            content2Sb.append("Nominal      : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        } else if (type.equals(DefineValue.BILLER_PLN)||type.equals(DefineValue.BILLER_BPJS)) {
+//            content2Sb.append(args.getString(DefineValue.DETAILS_BILLER) +"\n");
+//        }else if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
+//            code_cashout.append("Kode Tarik Tunai \n");
+//            code_cashout.append(args.getString(DefineValue.OTP_MEMBER)+"\n");
+//
+//            content2Sb.append("No. Handphone: " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+//            content2Sb.append("Nama         : " +args.getString(DefineValue.MEMBER_SHOP_NAME) +"\n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Sumber       : " +args.getString(DefineValue.SOURCE_ACCT) +"\n");
+//            content2Sb.append("No. Rekening \n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Sumber       : " +args.getString(DefineValue.SOURCE_ACCT_NO) +"\n");
+//            content2Sb.append("Nama Pemilik \n");
+//            content2Sb.append("Bank / E-Money \n");
+//            content2Sb.append("Sumber       : " +args.getString(DefineValue.SOURCE_ACCT_NAME) +"\n");
+//            content2Sb.append("Nominal      : " +args.getString(DefineValue.AMOUNT) +"\n");
+//            content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+//            content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+//        }
+//
+//
+//        byte[] titleByte	= Printer.printfont(titleStr, FontDefine.FONT_48PX,FontDefine.Align_CENTER,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] titleByte1	= Printer.printfont(remark, FontDefine.FONT_32PX,FontDefine.Align_CENTER,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] titleByte2	= Printer.printfont(code_cashout.toString(), FontDefine.FONT_32PX,FontDefine.Align_CENTER,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] content1Byte	= Printer.printfont(contentSb.toString(), FontDefine.FONT_24PX,FontDefine.Align_LEFT,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] content2Byte	= Printer.printfont(content2Sb.toString(), FontDefine.FONT_24PX,FontDefine.Align_LEFT,
+//                (byte)0x1A, PocketPos.LANGUAGE_ENGLISH);
+//
+//        byte[] totalByte;
+//
+//        if(type.equalsIgnoreCase(DefineValue.BBS_MEMBER_OTP))
+//        {
+//            totalByte	= new byte[titleByte.length + titleByte1.length + titleByte2.length + content1Byte.length + content2Byte.length];
+//
+//        }else
+//        {
+//            totalByte	= new byte[titleByte.length + titleByte1.length  + content1Byte.length + content2Byte.length];
+//        }
+//        int offset = 0;
+//        System.arraycopy(titleByte, 0, totalByte, offset, titleByte.length);
+//        offset += titleByte.length;
+//
+//        System.arraycopy(titleByte1, 0, totalByte, offset, titleByte1.length);
+//        offset += titleByte1.length;
+//
+//        if(type.equalsIgnoreCase(DefineValue.BBS_MEMBER_OTP))
+//        {
+//            System.arraycopy(titleByte2, 0, totalByte, offset, titleByte2.length);
+//            offset += titleByte2.length;
+//        }
+//
+//        System.arraycopy(content1Byte, 0, totalByte, offset, content1Byte.length);
+//        offset += content1Byte.length;
+//
+//        System.arraycopy(content2Byte, 0, totalByte, offset, content2Byte.length);
+//
+//        byte[] senddata = PocketPos.FramePack(PocketPos.FRAME_TOF_PRINT, totalByte, 0, totalByte.length);
+
+        SendDataString(contentSb.toString());
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
@@ -1332,14 +1519,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case DevicesList.MESSAGE_STATE_CHANGE:
-                    String message = "Yessi is doing research \n\n";
-                    Log.d("arg1:", String.valueOf(msg.arg1));
+//                    String message = "Yessi is doing research \n\n";
+//                    Log.d("arg1:", String.valueOf(msg.arg1));
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             Log.d("arg - connected:", String.valueOf(msg.arg1));
                             if (runnable!=null)
                                 handler.removeCallbacks(runnable);
-                            SendDataString(message);
+                            printStruk();
                             break;
                         case BluetoothService.STATE_CONNECTING:
 
@@ -1357,12 +1544,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                     break;
                 case DevicesList.MESSAGE_DEVICE_NAME:
-                    
-                    String message2 = "Yessi is doing research device \n\n";
-                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
+//                    String message2 = "Yessi is doing research device \n\n";
+//                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
                     if (runnable!=null)
                         handler.removeCallbacks(runnable);
-                    SendDataString(message2);
+                    printStruk();
                     break;
                 case DevicesList.MESSAGE_TOAST:
 
