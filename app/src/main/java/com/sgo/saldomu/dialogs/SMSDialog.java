@@ -24,6 +24,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -250,8 +251,12 @@ public class SMSDialog extends Dialog {
 
     public void sentSms() {
         if (!isStop) {
-            Timber.d("jalanin sentSMSVerify");
-            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
+            String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
+            Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
+            Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
+
+            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
         }
     }
 
