@@ -187,7 +187,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/cashout_total_text"
+            android:text="@string/total"
             android:layout_span="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
