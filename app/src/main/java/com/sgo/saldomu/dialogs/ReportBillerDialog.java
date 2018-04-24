@@ -53,14 +53,15 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class ReportBillerDialog extends DialogFragment implements View.OnClickListener {
+public class ReportBillerDialog extends DialogFragment implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     public static final String TAG = "reportBiller Dialog";
     private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE = 102;
+    private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT = 112;
 
     private OnDialogOkCallback callback;
     private Boolean isActivity = false;
-    private String trx_id;
+    private String trx_id, buss_scheme_code, type, imgFilename;
     private ViewToBitmap viewToBitmap;
     private LinearLayout contentInvoice;
     private ImageView saveimage;
@@ -102,6 +103,22 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         }
     };
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT:
+                connect();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
 
 
     public interface OnDialogOkCallback {
@@ -164,8 +181,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
-        String type = args.getString(DefineValue.REPORT_TYPE);
-        String buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
+        type = args.getString(DefineValue.REPORT_TYPE);
+        buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
 
         LinearLayout layout_txId = (LinearLayout) view.findViewById(R.id.layout_tx_id);
         TextView tv_date_value = (TextView) view.findViewById(R.id.dialog_reportbiller_date_time);
@@ -1016,13 +1033,31 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     }
                 }, 4000);
 
-                connect();
+                String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    String[] separated  = trx_id.split("\n");
+                    imgFilename         = separated[0];
+
+                    connect();
+
+                } else {
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
+                            RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
+                }
+
             }
         });
 
         return view;
     }
 
+    private void printStrukImage() {
+        if (viewToBitmap.ConvertToPrint(contentInvoice, imgFilename, mService)) {
+
+        } else {
+            Toast.makeText(getContext(), getContext().getString(R.string.failed_save_gallery), Toast.LENGTH_LONG).show();
+        }
+    }
 
     private void connect()
     {
@@ -1034,7 +1069,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 Intent BTIntent = new Intent(getActivity(), DevicesList.class);
                 this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
             } else {
-                printStruk();
+                //printStruk();
+                printStrukImage();
             }
         }
     }
@@ -1051,9 +1087,31 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
         contentSb.append("Tanggal dan \n");
         contentSb.append("Waktu      : "  +args.getString(DefineValue.DATE_TIME) +"\n");
-        contentSb.append("ID Transaksi : "  +args.getString(DefineValue.TX_ID) +"\n\n");
+
+        if (!buss_scheme_code.equalsIgnoreCase("P2P"))
+            contentSb.append("ID Transaksi : "  +args.getString(DefineValue.TX_ID) +"\n\n");
+
+        if (buss_scheme_code.equalsIgnoreCase("CTA")) {
+            if (type.equals(DefineValue.BBS_CASHIN)) {
+                content2Sb.append("Jenis Transaksi  : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("No. Handphone \n");
+                content2Sb.append("Agen         : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+                content2Sb.append("Nama Agen    : " +args.getString(DefineValue.USER_NAME) +"\n");
+                if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == false) {
+                    content2Sb.append("Produk Agen  : " +args.getString(DefineValue.PRODUCT_NAME) +"\n");
+                }
+                content2Sb.append("No. Handphone\n");
+                content2Sb.append("Pelanggan    : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+                content2Sb.append("Produk Pelanggan : " +args.getString(DefineValue.BANK_BENEF) +"\n");
+                content2Sb.append("No. Tujuan   : " +args.getString(DefineValue.NO_BENEF) +"\n");
+                content2Sb.append("Nama Tujuan  : " +args.getString(DefineValue.NAME_BENEF) +"\n");
+                content2Sb.append("Nominal      : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total Jumlah : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
 
 
+            }
+        }
 
 //        if (type.equals(DefineValue.BILLER)) {
 //            content2Sb.append("Nomor Handphone  : " +args.getString(DefineValue.USERID_PHONE) +"\n");
@@ -1255,7 +1313,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 //
 //        byte[] senddata = PocketPos.FramePack(PocketPos.FRAME_TOF_PRINT, totalByte, 0, totalByte.length);
 
+        SendDataString(titleStr);
+        SendDataString(remark);
         SendDataString(contentSb.toString());
+        SendDataString(content2Sb.toString());
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
@@ -1520,20 +1581,26 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             switch (msg.what) {
                 case DevicesList.MESSAGE_STATE_CHANGE:
 //                    String message = "Yessi is doing research \n\n";
-//                    Log.d("arg1:", String.valueOf(msg.arg1));
+                    Log.d("arg1:", String.valueOf(msg.arg1));
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             Log.d("arg - connected:", String.valueOf(msg.arg1));
                             if (runnable!=null)
                                 handler.removeCallbacks(runnable);
-                            printStruk();
+                            printStrukImage();
                             break;
                         case BluetoothService.STATE_CONNECTING:
-
+                            if ( countRetry > maxRetry ) {
+                                //toast ke user, minta restart bluetooth hp dan printer
+                                handler.removeCallbacks(runnable);
+                            }
                             break;
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
-
+                            if ( countRetry > maxRetry ) {
+                                //toast ke user, minta restart bluetooth hp dan printer
+                                handler.removeCallbacks(runnable);
+                            }
                             break;
                     }
                     break;
@@ -1545,10 +1612,10 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     break;
                 case DevicesList.MESSAGE_DEVICE_NAME:
 //                    String message2 = "Yessi is doing research device \n\n";
-//                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
+                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
                     if (runnable!=null)
                         handler.removeCallbacks(runnable);
-                    printStruk();
+                    //printStruk();
                     break;
                 case DevicesList.MESSAGE_TOAST:
 
