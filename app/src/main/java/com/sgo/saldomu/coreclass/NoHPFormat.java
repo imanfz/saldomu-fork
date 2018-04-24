@@ -2,7 +2,29 @@ package com.sgo.saldomu.coreclass;/*
   Created by Administrator on 7/14/2015.
  */
 
+import com.sgo.saldomu.BuildConfig;
+
 public class NoHPFormat {
+
+    public static String getMNC(String iccid) {
+        return iccid.substring(4, 6);
+    }
+
+    public static String getSMSVerifyDestination(String mobileNetworkCode) {
+        String mobileDestination = "";
+        switch(mobileNetworkCode) {
+            case "11":  //XL, AXIS
+                mobileDestination = BuildConfig.SMS_CENTER_XL;
+                break;
+            case "10":  //TELKOMSEL
+            case "89":  //TRI
+            case "01":  //INDOSAT
+            default:
+                mobileDestination = BuildConfig.SMS_CENTER_TSEL;
+                break;
+        }
+        return mobileDestination;
+    }
 
   public static String formatTo62(String noHP){
       String result;
