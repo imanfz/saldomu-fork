@@ -21,15 +21,12 @@ import com.sgo.saldomu.BluetoothPrinter.zj.PrintPicture;
 import com.sgo.saldomu.BluetoothPrinter.zj.PrinterCommand;
 import com.sgo.saldomu.R;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import timber.log.Timber;
-import zj.com.customize.sdk.Other;
 
 /**
  * Created by yuddistirakiki on 6/28/16.
@@ -162,7 +159,7 @@ public class ViewToBitmap {
 
                 }
 
-
+            f.delete();
 
             if(isCache)
                 Timber.d(context.getString(R.string.success_saved_gallery));
