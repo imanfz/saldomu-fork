@@ -684,6 +684,8 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     String[] separated  = trx_id.split("\n");
                     imgFilename         = separated[0];
 
+                    countRetry = 0;
+
                     connect();
 
                 } else {
