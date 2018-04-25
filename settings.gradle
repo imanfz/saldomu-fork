@@ -1,2 +1,2 @@
-include ':app', 'PinMaster', 'PinnedSectionList', ':SecurePref', ':btsdk', ':zixng'
+include ':app', 'PinMaster', 'PinnedSectionList', ':SecurePref', ':btsdk'
 include ':VPI'

@@ -44,6 +44,12 @@ android {
 
     }
 
+    dexOptions {
+        //incremental = true;
+        preDexLibraries = false
+        javaMaxHeapSize "4g"
+    }
+
     android {
         useLibrary 'org.apache.http.legacy'
     }
@@ -217,6 +223,5 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     compile 'com.android.support:multidex:1.0.1'
     implementation project(':btsdk')
-    implementation project(':zixng')
 }
 apply plugin: 'com.google.gms.google-services'

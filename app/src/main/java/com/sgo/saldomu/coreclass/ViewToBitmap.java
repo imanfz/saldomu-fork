@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
 import com.sgo.saldomu.BluetoothPrinter.zj.Command;
 import com.sgo.saldomu.BluetoothPrinter.zj.PrintPicture;
-import com.sgo.saldomu.BluetoothPrinter.zj.PrinterCommand;
 import com.sgo.saldomu.R;
 
 import java.io.File;
@@ -154,8 +153,8 @@ public class ViewToBitmap {
                     SendDataByte(Command.ESC_Init);
                     SendDataByte(Command.LF);
                     SendDataByte(data);
-                    SendDataByte(PrinterCommand.POS_Set_PrtAndFeedPaper(20));
-                    SendDataByte(PrinterCommand.POS_Set_Cut(1));
+//                    SendDataByte(PrinterCommand.POS_Set_PrtAndFeedPaper(20));
+//                    SendDataByte(PrinterCommand.POS_Set_Cut(1));
 
                 }
 
