@@ -36,8 +36,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
-import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.Beans.bank_biller_model;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
@@ -49,7 +49,6 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
@@ -292,14 +291,14 @@ public class BillerDesciption extends Fragment {
             List<String> tempList = new ArrayList<>();
 
             //jika BPJS sorting fieldnya sesuai format
-            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
-                tempList = JsonSorting.BPJSInquirySortingField();
-            }
-            else {
+//            if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+//                tempList = JsonSorting.BPJSInquirySortingField();
+//            }
+//            else {
                 while (keys.hasNext()) {
                     tempList.add((String) keys.next());
                 }
-            }
+//            }
 //            Collections.sort(tempList);
 
             TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
