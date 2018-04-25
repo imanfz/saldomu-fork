@@ -80,8 +80,8 @@ android {
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
 
-            buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
-            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6282333800085\""
+            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282333800085\""
 
             versionCode = 1
             versionName "1.0"
