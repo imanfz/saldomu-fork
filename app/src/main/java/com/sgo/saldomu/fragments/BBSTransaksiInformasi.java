@@ -418,7 +418,7 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
                     if (inputValidation()) {
                         SubmitAction(false);
                     }
-                     btnNext.setEnabled(false);
+//                     btnNext.setEnabled(false);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -449,8 +449,6 @@ public class BBSTransaksiInformasi extends Fragment implements EasyPermissions.P
             }
 
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
-
-
         }
         else
             btnNext.setEnabled(false);
