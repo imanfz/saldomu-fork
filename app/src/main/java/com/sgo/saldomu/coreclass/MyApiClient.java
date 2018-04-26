@@ -507,7 +507,7 @@ public class MyApiClient {
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
 //        Timber.d("isi access_key :" + access_key);
-//
+
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
@@ -534,9 +534,28 @@ public class MyApiClient {
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
         Timber.d("isi access_key :" + getAccessKey());
-        Timber.d("isisnya signature :"+  webServiceName +" / "+getCommIdLogin()+" / " +getCommIdLogin());
+        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
 
         String hash = SHA.SHA256(getAccessKey(),msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    private RequestParams CreateParams(String commid, String userid, String accesskey
+            , String linknya, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userid+extraSignature;
+        Timber.d("isi access_key :" + getAccessKey());
+        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
+
+        String hash = SHA.SHA256(accesskey,msgnya);
 
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
