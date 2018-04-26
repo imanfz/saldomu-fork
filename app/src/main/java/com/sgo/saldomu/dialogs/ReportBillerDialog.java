@@ -1080,7 +1080,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     Log.d(TAG, "BT not enabled");
                     //Toast.makeText(this, R.string.bt_not_enabled_leaving,
                             //Toast.LENGTH_SHORT).show();
-                    getActivity().finish();
+                    //getActivity().finish();
                 }
                 break;
             }
