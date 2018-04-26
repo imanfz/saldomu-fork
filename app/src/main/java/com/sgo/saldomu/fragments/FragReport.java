@@ -715,6 +715,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         else if(report_type == REPORT_ASK) {
             ReportAskListAdapter ya = (ReportAskListAdapter) getUniAdapter();
             ya.clear();
+        }else if(report_type == REPORT_FEE) {
+            ReportCommFeeAdapter ya = (ReportCommFeeAdapter) getUniAdapter();
+            ya.clear();
         }
     }
 
