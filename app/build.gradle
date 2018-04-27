@@ -110,8 +110,8 @@ android {
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 14
-            versionName "2.0"
+            versionCode = 15
+            versionName "2.1"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
