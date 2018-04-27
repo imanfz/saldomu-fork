@@ -204,8 +204,7 @@ public class BillerDesciption extends Fragment {
         if (is_display_amount) {
             amount_layout.setVisibility(View.VISIBLE);
         }
-
-
+        int buy_type2 = buy_type;
         if (buy_type == BillerActivity.PURCHASE_TYPE) {
             tv_biller_name_value = (TextView) v.findViewById(R.id.billertoken_biller_name_value);
             tv_biller_name_value.setText(biller_name);
@@ -235,7 +234,7 @@ public class BillerDesciption extends Fragment {
             layout_total.setVisibility(View.VISIBLE);
             double mAmount = Double.parseDouble(amount) - Double.parseDouble(fee);
             deAmount = String.valueOf(mAmount);
-            tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(deAmount));
+            tv_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(mAmount));
             tv_total_value.setText(ccy_id + ". " + CurrencyFormat.format(amount));
 //            }
 
@@ -482,7 +481,7 @@ public class BillerDesciption extends Fragment {
                             item_name =  response.getString(WebParams.DENOM_ITEM_NAME);
                             description =  response.getString(WebParams.DESCRIPTION);
 //                            if(isPLN ) {
-                                fee = response.optString(WebParams.ADMIN_FEE, "");
+                                fee = response.optString(WebParams.ADMIN_FEE, "0");
 //                            }
 
                             if(isAdded())
