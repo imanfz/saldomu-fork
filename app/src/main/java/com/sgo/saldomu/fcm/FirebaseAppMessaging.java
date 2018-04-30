@@ -184,8 +184,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 //        backIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        SharedPreferences sp;
 //        Editor editor;
-//
-
 
 
         if ( msg.containsKey("model_notif") && msg.getString("model_notif") != null ) {

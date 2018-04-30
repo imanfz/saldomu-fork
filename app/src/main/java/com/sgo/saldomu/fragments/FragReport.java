@@ -391,8 +391,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //            String webserviceEspay = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_ESPAY);
 //            String signatureEspay = MyApiClient.getSignature(uuid, dtime, webserviceEspay, MyApiClient.COMM_ID + user_id, access_key);
 
-            RequestParams paramsEspay = MyApiClient.getInstance()
-                    .getSignatureWithParams(MyApiClient.LINK_REPORT_ESPAY);
+            RequestParams paramsEspay = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_REPORT_ESPAY,
+                    user_id, MyApiClient.getInstance().getAccessKey());
+
+//            RequestParams paramsEspay = MyApiClient.getInstance()
+//                    .getSignatureWithParams(MyApiClient.LINK_REPORT_ESPAY);
             paramsEspay.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             paramsEspay.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             paramsEspay.put(WebParams.PAGE, _page);

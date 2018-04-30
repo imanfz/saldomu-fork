@@ -729,7 +729,8 @@ public class MainPage extends BaseActivity {
 
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
+                    , MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -892,7 +893,11 @@ public class MainPage extends BaseActivity {
                         Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                     if(progdialog.isShowing())
                         progdialog.dismiss();
-                    sentLogout();
+
+                    if (BuildConfig.FLAVOR.equals("development")){
+                        Logout(FIRST_SCREEN_LOGIN);
+                    }else
+                        sentLogout();
 //                    finish();
                     Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());
                 }

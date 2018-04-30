@@ -54,8 +54,6 @@ import timber.log.Timber;
  */
 public class FragNotification extends BaseFragment {
 
-
-
     private View v;
 
     private final LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -96,7 +94,7 @@ public class FragNotification extends BaseFragment {
 
         empty_layout = v.findViewById(R.id.empty_layout);
         empty_layout.setVisibility(View.GONE);
-        Button btn_refresh = (Button) empty_layout.findViewById(R.id.btnRefresh);
+        Button btn_refresh = empty_layout.findViewById(R.id.btnRefresh);
         btn_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +102,7 @@ public class FragNotification extends BaseFragment {
             }
         });
 
-        mPtr = (PtrFrameLayout) v.findViewById(R.id.rotate_header_list_view_frame);
+        mPtr = v.findViewById(R.id.rotate_header_list_view_frame);
         mPtr.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
@@ -118,7 +116,7 @@ public class FragNotification extends BaseFragment {
             }
         });
 
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.notification_recycle_list);
+        mRecyclerView = v.findViewById(R.id.notification_recycle_list);
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLayoutManager);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getActivity(), null);

@@ -412,11 +412,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             RequestParams params;
             if(isNotification) {
 
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF,
-                        userPhoneID, accessKey, _token);
+                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
             }else {
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TRANS_P2P,
-                        userPhoneID, accessKey, extraSignature);
+                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
             }
 
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
