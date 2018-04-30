@@ -56,6 +56,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -73,7 +74,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 5/21/2015.
  */
-public class BillerDesciption extends Fragment {
+public class BillerDesciption extends BaseFragment {
 
     public final static int REQUEST_BillerInqReq = 22 ;
     public final static String TAG = "BILLER_DESCRIPTION";
@@ -94,8 +95,6 @@ public class BillerDesciption extends Fragment {
     private String payment_name;
     private String shareType;
     private String callback_url;
-    private String userID;
-    private String accessKey;
     private String biller_type_code;
     private String value_item_data;
     private TextView tv_biller_name_value;
@@ -115,7 +114,6 @@ public class BillerDesciption extends Fragment {
     private TableLayout mTableLayout;
     private listBankModel mTempBank;
     private Spinner spin_payment_options;
-    private SecurePreferences sp;
     private List<String> paymentData;
     private ArrayAdapter<String> adapterPaymentOptions;
     private Biller_Data_Model mBillerData;
@@ -135,10 +133,6 @@ public class BillerDesciption extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         tv_item_name_value = (TextView) v.findViewById(R.id.billertoken_item_name_value);
         tv_amount_value = (TextView) v.findViewById(R.id.billertoken_amount_value);
@@ -452,12 +446,14 @@ public class BillerDesciption extends Fragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_INQUIRY_BILLER,
-                    userID,accessKey);
+            extraSignature = biller_comm_id+item_id+cust_id;
+
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INQUIRY_BILLER,
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
             params.put(WebParams.COMM_ID, biller_comm_id);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_REMARK,MyApiClient.COMM_ID);
 
             Timber.d("isi params sent inquiry biller:"+params.toString());
@@ -576,8 +572,10 @@ public class BillerDesciption extends Fragment {
             final String bank_code = mTempBank.getBank_code();
             final String product_code = mTempBank.getProduct_code();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(biller_comm_id,MyApiClient.LINK_PAYMENT_BILLER,
-                    userID,accessKey);
+            extraSignature = tx_id+item_id+biller_comm_id+product_code;
+
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_PAYMENT_BILLER,
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id );
 
@@ -596,7 +594,7 @@ public class BillerDesciption extends Fragment {
 
             params.put(WebParams.PRODUCT_H2H,mTempBank.getProduct_h2h());
             params.put(WebParams.PRODUCT_TYPE,mTempBank.getProduct_type());
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sent payment biller:"+params.toString());
 
@@ -693,12 +691,14 @@ public class BillerDesciption extends Fragment {
                                   final String merchant_type, final String _bank_code, final int _attempt){
         try{
 
+            extraSignature = tx_id+_comm_code+_product_code;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, _comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params regtoken Sgo+:"+params.toString());

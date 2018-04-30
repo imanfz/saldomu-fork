@@ -1,14 +1,10 @@
 package com.sgo.saldomu.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
@@ -18,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -58,18 +53,10 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
-import com.sgo.saldomu.coreclass.BBSDataManager;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.interfaces.PermissionResult;
-import com.sgo.saldomu.utils.BbsUtil;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
-import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -77,6 +64,10 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.utils.BbsUtil;
+import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -88,18 +79,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import io.realm.Realm;
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.activeandroid.Cache.getContext;
-import static com.sgo.saldomu.coreclass.DefineValue.ATC;
-import static com.sgo.saldomu.coreclass.DefineValue.BENEF;
 import static com.sgo.saldomu.coreclass.DefineValue.CTA;
-import static com.sgo.saldomu.utils.BbsUtil.mappingProductCodeIcons;
 
 public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -608,14 +593,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     }
 
     private void searchAgent() {
-        //progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
+        String extraSignature = categoryId + latitude + longitude;
+        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
+                userPhoneID, accessKey, extraSignature);
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        final String dtime = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -623,12 +604,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         params.put(WebParams.LATITUDE, latitude);
         params.put(WebParams.LONGITUDE, longitude);
         params.put(WebParams.RADIUS, DefineValue.MAX_RADIUS_SEARCH_AGENT);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + categoryId
-                + latitude + longitude));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);

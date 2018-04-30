@@ -1,5 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.location.Address;
@@ -33,6 +34,7 @@ public class DeviceUtils {
         return Build.MODEL;
     }
 
+    @SuppressLint("HardwareIds")
     public static String getAndroidID(){
         return Settings.Secure.getString(CoreApp.getAppContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);

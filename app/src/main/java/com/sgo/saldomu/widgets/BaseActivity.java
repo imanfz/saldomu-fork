@@ -1,4 +1,4 @@
-package com.sgo.saldomu.coreclass;
+package com.sgo.saldomu.widgets;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.interfaces.PermissionResult;
 import com.sgo.saldomu.receivers.FcmReceiver;
 
@@ -39,19 +42,29 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
             Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private IntentFilter fcmFilter = new IntentFilter();
     FcmReceiver fcmReceiver = new FcmReceiver();
-    private SecurePreferences sp;
 
     protected PermissionResult permissionResultInterface = this;
+
+    protected SecurePreferences sp;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
+    protected String extraSignature="";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
 
-        detoolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        deprogressbar = (ProgressBar) findViewById(R.id.main_toolbar_progress_spinner);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        title_detoolbar = (TextView) findViewById(R.id.main_toolbar_title);
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
+        detoolbar = findViewById(R.id.main_toolbar);
+        deprogressbar = findViewById(R.id.main_toolbar_progress_spinner);
+
+        title_detoolbar = findViewById(R.id.main_toolbar_title);
         if (detoolbar != null) {
             setSupportActionBar(detoolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

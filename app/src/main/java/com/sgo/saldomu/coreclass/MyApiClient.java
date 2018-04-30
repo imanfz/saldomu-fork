@@ -2,6 +2,7 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -9,8 +10,10 @@ import com.loopj.android.http.MySSLSocketFactory;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.fragments.Login;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
@@ -36,6 +39,7 @@ public class MyApiClient {
     private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
     private AsyncHttpClient asyncHttpClientUnstrusted;
+    private SecurePreferences sp;
 
     private Context getmContext() {
         return mContext;
@@ -53,7 +57,7 @@ public class MyApiClient {
         this.setmContext(_context);
     }
 
-    private static MyApiClient getInstance() {
+    public static MyApiClient getInstance() {
         return singleton;
     }
 
@@ -68,9 +72,11 @@ public class MyApiClient {
             singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClientUnstrusted.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+            singleton.sp = CustomSecurePref.getInstance().getmSecurePrefs();
         }
         return singleton;
     }
+
     public static Boolean PROD_FAILURE_FLAG = true;
     public static Boolean IS_PROD = BuildConfig.IS_PROD_DOMAIN;
     public static Boolean PROD_FLAG_ADDRESS = BuildConfig.IS_PROD_DOMAIN;
@@ -81,16 +87,16 @@ public class MyApiClient {
 
 //    public static final String headaddressDEV = "http://116.90.162.173:18080/akardaya/";
 //    public static final String headaddressPROD = "https://mobile.goworld.asia/akardaya2/";
-    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"hpku/";
+    public static String headaddressfinal = BuildConfig.HEAD_ADDRESSS+"saldomu/";
 
-    public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"agentlocation/";
+    public static String headaodaddressfinal    = BuildConfig.HEAD_ADDRESSS+"saldomu/agentlocation/";
     public static String urlMNotif              = BuildConfig.URL_MNOTIF;
 
     //Link webservices Signature
 
     private static String LINK_REGISTRASI;
     private static String LINK_VALID_REGISTRASI;
-    private static String LINK_LOGIN;
+    public static String LINK_LOGIN;
     public static String LINK_VALID_TOPUP;
     public static String LINK_LIST_MEMBER;
     public static String LINK_REQ_TOKEN_SGOL;
@@ -104,13 +110,13 @@ public class MyApiClient {
     public static String LINK_TOPUP_PULSA_RETAIL;
     public static String LINK_UPDATE_PROFILE;
     public static String LINK_CHANGE_PASSWORD;
-    private static String LINK_FORGOT_PASSWORD;
+    public static String LINK_FORGOT_PASSWORD;
     public static String LINK_MEMBER_PULSA;
     public static String LINK_USER_CONTACT_INSERT;
     public static String LINK_USER_CONTACT_UPDATE;
 
     public static String LINK_PROD_TOPUP_RETAIL;
-    private static String LINK_GET_BILLER_TYPE;
+    public static String LINK_GET_BILLER_TYPE;
     public static String LINK_LIST_BILLER;
     public static String LINK_DENOM_RETAIL;
     private static String LINK_REQ_TOKEN_BILLER;
@@ -127,7 +133,7 @@ public class MyApiClient {
 
     public static String LINK_ASKFORMONEY_SUBMIT;
     public static String LINK_NOTIF_RETRIEVE;
-    private static String LINK_NOTIF_READ;
+    public static String LINK_NOTIF_READ;
 
     public static String LINK_REQ_TOKEN_P2P_NOTIF;
     public static String LINK_CONFIRM_TRANS_P2P_NOTIF;
@@ -146,7 +152,7 @@ public class MyApiClient {
     public static String LINK_ADD_LIKE;
     public static String LINK_REMOVE_LIKE;
 
-    private static String LINK_CREATE_PIN;
+    public static String LINK_CREATE_PIN;
     public static String LINK_CHANGE_PIN;
 
     public static String LINK_INQUIRY_BILLER;
@@ -159,8 +165,8 @@ public class MyApiClient {
     public static String LINK_COMM_ACCOUNT_COLLECTION;
     private static String LINK_COMM_ESPAY;
 
-	private static String LINK_APP_VERSION;
-    private static String LINK_HELP_LIST;
+	public static String LINK_APP_VERSION;
+    public static String LINK_HELP_LIST;
 
     public static String LINK_INQUIRY_MOBILE;
     public static String LINK_REQUEST_TOKEN_SB;
@@ -194,7 +200,7 @@ public class MyApiClient {
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
     public static String LINK_DELTRX_WITHDRAW;
-    private static String LINK_CREATE_PASS;
+    public static String LINK_CREATE_PASS;
     public static String LINK_GET_FAILED_PIN;
     private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
@@ -460,7 +466,7 @@ public class MyApiClient {
         return UUID.randomUUID();
     }
 
-    public static String getWebserviceName(String link){
+    public static String getWebserviceNames(String link){
         StringTokenizer tokens = new StringTokenizer(link, "/");
         int index = 0;
         while(index<3) {
@@ -469,23 +475,127 @@ public class MyApiClient {
         }
         return tokens.nextToken();
     }
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
+
+    public static String getWebserviceName(String link){
+        return link.substring(link.indexOf("saldomu"));
     }
 
-    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key){
+    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
 
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
+        Timber.d("isi access_key :" + access_key);
 //
+        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+
+        String hash = SHA.SHA256(access_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key
+            , String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
+//        Timber.d("isi access_key :" + access_key);
+
 //        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public RequestParams getSignatureWithParams(String linknya, String extraSignature){
+        return CreateParams(linknya,extraSignature);
+    }
+
+    public RequestParams getSignatureWithParams(String linknya){
+        return CreateParams(linknya, "");
+    }
+
+    private RequestParams CreateParams(String linknya, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
+        Timber.d("isi access_key :" + getAccessKey());
+        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
+
+        String hash = SHA.SHA256(getAccessKey(),msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    private RequestParams CreateParams(String commid, String userid, String accesskey
+            , String linknya, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userid+extraSignature;
+        Timber.d("isi access_key :" + getAccessKey());
+        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
+
+        String hash = SHA.SHA256(accesskey,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    private String getCommIdLogin(){
+        return getInstance().sp.getString(DefineValue.COMMUNITY_ID,"");
+    }
+    private String getUserPhoneId(){
+        return getInstance().sp.getString(DefineValue.USERID_PHONE,"");
+    }
+    public String getAccessKey(){
+        return getInstance().sp.getString(DefineValue.ACCESS_KEY,"");
+    }
+
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
+        String hash = SHA.SHA256(secret_key,msgnya);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID;
+        String hash = SHA.SHA256(secret_key,msgnya);
 
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
@@ -551,8 +661,7 @@ public class MyApiClient {
         return getInstance().asyncHttpClient_google;
     }
 
-    public static AsyncHttpClient getClient()
-    {
+    public static AsyncHttpClient getClient() {
         // Return the synchronous HTTP client when the thread is not prepared
         if (Looper.myLooper() == null) {
             return getInstance().syncHttpClient;
@@ -562,7 +671,8 @@ public class MyApiClient {
     }
 
     private static String getBasicAuth() {
-        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
+//        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
+        String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
         return encode.replace('+','-').replace('/','_');
@@ -1338,33 +1448,37 @@ public class MyApiClient {
         post(mContext,LINK_CANCEL_SEARCH_AGENT, params, responseHandler);
     }
 
+    public static void getAppVersion(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address app version: %1$s ", LINK_APP_VERSION);
+        post(mContext,LINK_APP_VERSION, params, responseHandler);
+    }
+
+    public static void getBillerType(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
-    public static void getBillerType(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
-        get(mContext, LINK_GET_BILLER_TYPE, responseHandler);
-    }
+
 
     public static void getAllBank(Context mContext, AsyncHttpResponseHandler responseHandler) {
         get(mContext,LINK_GET_ALL_BANK, responseHandler);
     }
 
-    public static void getAppVersion(Context mContext, AsyncHttpResponseHandler responseHandler) {
-        get(mContext,LINK_APP_VERSION, responseHandler);
-    }
 	
 	public static void getHelpPIN(Context mContext, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getHelpPIN: %1$s ",LINK_HELP_PIN);
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
-    public static void getBBSCity(Context mContext, Boolean isSync, AsyncHttpResponseHandler responseHandler) {
+    public static void getBBSCity(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
         if(isSync)
-            getSync(mContext,LINK_BBS_CITY,responseHandler);
+            postSync(mContext,LINK_BBS_CITY, params, responseHandler);
         else
-            get(mContext,LINK_BBS_CITY, responseHandler);
+            post(mContext,LINK_BBS_CITY, params, responseHandler);
     }
 
 

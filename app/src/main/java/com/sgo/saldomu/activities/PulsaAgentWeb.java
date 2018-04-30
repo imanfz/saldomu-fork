@@ -22,6 +22,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -219,8 +221,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
 
+            extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);

@@ -12,6 +12,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -88,8 +89,10 @@ public class ListBuyRF extends Fragment{
 
     private void getBiller(){
         try{
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_GET_BILLER_TYPE,
+                    BuildConfig.SECRET_KEY);
 
-            MyApiClient.getBillerType(getActivity(),new JsonHttpResponseHandler() {
+            MyApiClient.getBillerType(getActivity(), params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

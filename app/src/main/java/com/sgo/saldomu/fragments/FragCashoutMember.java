@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,6 +43,8 @@ import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -56,7 +57,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 8/25/2017.
  */
 
-public class FragCashoutMember extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragCashoutMember extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     View v, layout_button_transaction;
     SecurePreferences sp;
     String userID, accessKey, memberID, authType, amount, fee,total, ccyId, txId;
@@ -185,7 +186,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
                 }
                 else if(isOTP) {
                     if (inputValidation()) {
-                        inquiryTokenATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
+                        inquiryTokenATC(RSA.opensslEncrypt(tokenValue.getText().toString()), txId);
                     }
                 }
                 else {
@@ -353,7 +354,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_TOKEN_ATC,
                     userID, accessKey);
 
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
@@ -627,8 +628,9 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = txId + MyApiClient.COMM_ID;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

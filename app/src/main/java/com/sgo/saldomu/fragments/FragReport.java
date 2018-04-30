@@ -372,14 +372,14 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             }
 
             String user_id = sp.getString(DefineValue.USERID_PHONE,"");
-            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
+            String member_id = sp.getString(DefineValue.MEMBER_ID,"");
 
-            UUID uuid = MyApiClient.getUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
-            String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
-            String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID + user_id, access_key);
+//            String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
+//            String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID
+//                    + user_id , access_key, member_id);
 
-            RequestParams paramsScash = new RequestParams();
+            RequestParams paramsScash = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_TRANSACTION_REPORT, member_id);
             paramsScash.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             paramsScash.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             paramsScash.put(WebParams.PAGE, _page);
@@ -387,14 +387,15 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsScash.put(WebParams.DATE_TO, _date_to);
             paramsScash.put(WebParams.CUST_ID,sp.getString(DefineValue.CUST_ID,""));
             paramsScash.put(WebParams.USER_ID, user_id);
-            paramsScash.put(WebParams.RC_UUID, uuid.toString());
-            paramsScash.put(WebParams.RC_DTIME, dtime);
-            paramsScash.put(WebParams.SIGNATURE, signatureScash);
 
-            String webserviceEspay = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_ESPAY);
-            String signatureEspay = MyApiClient.getSignature(uuid, dtime, webserviceEspay, MyApiClient.COMM_ID + user_id, access_key);
+//            String webserviceEspay = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_ESPAY);
+//            String signatureEspay = MyApiClient.getSignature(uuid, dtime, webserviceEspay, MyApiClient.COMM_ID + user_id, access_key);
 
-            RequestParams paramsEspay = new RequestParams();
+            RequestParams paramsEspay = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_REPORT_ESPAY,
+                    user_id, MyApiClient.getInstance().getAccessKey());
+
+//            RequestParams paramsEspay = MyApiClient.getInstance()
+//                    .getSignatureWithParams(MyApiClient.LINK_REPORT_ESPAY);
             paramsEspay.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             paramsEspay.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             paramsEspay.put(WebParams.PAGE, _page);
@@ -402,28 +403,24 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsEspay.put(WebParams.DATE_TO, _date_to);
             paramsEspay.put(WebParams.CUST_ID,sp.getString(DefineValue.CUST_ID,""));
             paramsEspay.put(WebParams.USER_ID, user_id);
-            paramsEspay.put(WebParams.RC_UUID, uuid.toString());
-            paramsEspay.put(WebParams.RC_DTIME, dtime);
-            paramsEspay.put(WebParams.SIGNATURE, signatureEspay);
 
-            String webserviceAsk = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_MONEY_REQUEST);
-            String signatureAsk = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
+//            String webserviceAsk = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_MONEY_REQUEST);
+//            String signatureAsk = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
 
-            RequestParams paramsAsk = new RequestParams();
+            RequestParams paramsAsk = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_REPORT_MONEY_REQUEST);
             paramsAsk.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             paramsAsk.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             paramsAsk.put(WebParams.PAGE, _page);
             paramsAsk.put(WebParams.DATE_FROM, _date_from);
             paramsAsk.put(WebParams.DATE_TO, _date_to);
             paramsAsk.put(WebParams.USER_ID, user_id);
-            paramsAsk.put(WebParams.RC_UUID, uuid.toString());
-            paramsAsk.put(WebParams.RC_DTIME, dtime);
-            paramsAsk.put(WebParams.SIGNATURE, signatureAsk);
 
-            String webserviceFee = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_COMM_FEE);
-            String signatureFee = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
+//            String webserviceFee = MyApiClient.getWebserviceName(MyApiClient.LINK_REPORT_COMM_FEE);
+//            String signatureFee = MyApiClient.getSignature(uuid, dtime, webserviceAsk, MyApiClient.COMM_ID + user_id, access_key);
 
-            RequestParams paramsFee = new RequestParams();
+            RequestParams paramsFee = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_REPORT_COMM_FEE);
             paramsFee.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
             paramsFee.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             paramsFee.put(WebParams.PAGE, _page);
@@ -431,10 +428,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsFee.put(WebParams.DATE_TO, _date_to);
             paramsFee.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET,""));
             paramsFee.put(WebParams.CUST_ID,sp.getString(DefineValue.CUST_ID,""));
-            paramsFee.put(WebParams.RC_UUID, uuid.toString());
-            paramsFee.put(WebParams.RC_DTIME, dtime);
             paramsFee.put(WebParams.USER_ID, user_id);
-            paramsFee.put(WebParams.SIGNATURE, signatureFee);
 
             JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -656,22 +650,22 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             };
 
             if(report_type == REPORT_SCASH) {
-                Timber.d("Webservice:"+webserviceScash);
+//                Timber.d("Webservice:"+webserviceScash);
                 Timber.d("Isi params report scash:" + paramsScash.toString());
                 MyApiClient.sentGetTrxReport(getActivity(), paramsScash, deHandler);
             }
             else if(report_type == REPORT_ESPAY) {
-                Timber.d("Webservice:"+webserviceEspay);
+//                Timber.d("Webservice:"+webserviceEspay);
                 Timber.d("Isi params report espay:"+paramsEspay.toString());
                 MyApiClient.sentReportEspay(getActivity(), paramsEspay, deHandler);
             }
             else if(report_type == REPORT_ASK) {
-                Timber.d("Webservice:"+webserviceAsk);
+//                Timber.d("Webservice:"+webserviceAsk);
                 Timber.d("Isi params report ask:"+paramsAsk.toString());
                 MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
             }
             else if(report_type == REPORT_FEE) {
-                Timber.d("Webservice:"+webserviceFee);
+//                Timber.d("Webservice:"+webserviceFee);
                 Timber.d("Isi params report comm fee:"+paramsFee.toString());
                 MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
             }
@@ -787,43 +781,40 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             out = DefinedDialog.CreateProgressDialog(getActivity(), null);
             out.show();
 
-            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
-            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
-
-            UUID uuid = MyApiClient.getUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
-            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_GET_TRX_STATUS);
-            Timber.d("Webservice:"+webservice);
+//            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_GET_TRX_STATUS);
+//            Timber.d("Webservice:"+webservice);
 
             String _tx_id = "";
             String _comm_id ="";
-            RequestParams params = new RequestParams();
+            String tx_type=DefineValue.EMO;
+            boolean isdetail=false;
 
             if(report_type == REPORT_SCASH) {
                 ReportListModel mobj = (ReportListModel) _object;
                 _tx_id = mobj.getTrxId();
                 _comm_id = mobj.getCommId();
-                params.put(WebParams.TX_TYPE, DefineValue.EMO);
             }
             else if(report_type == REPORT_ESPAY) {
                 ReportListEspayModel mobj = (ReportListEspayModel) _object;
                 _tx_id = mobj.getTx_id();
                 _comm_id = mobj.getComm_id();
-                params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
+                tx_type = DefineValue.ESPAY;
                 if(mobj.getType_desc().equals(ITEM_DESC_PLN)||mobj.getType_desc().equals(ITEM_DESC_BPJS)){
-                    params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
+                    isdetail = true;
                 }
             }
 
+            String extraSignature = _tx_id + _comm_id;
 
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, _comm_id + user_id, access_key);
+            RequestParams params = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE,""));
-            params.put(WebParams.RC_UUID, uuid.toString());
-            params.put(WebParams.RC_DTIME, dtime);
-            params.put(WebParams.SIGNATURE, signature);
+            params.put(WebParams.TX_TYPE, tx_type);
+            if (isdetail)
+                params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
             MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
@@ -988,7 +979,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             {
                 showReportEMODialog(response.optString(WebParams.MEMBER_NAME),DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
                         response.optString(WebParams.TX_ID), response.optString(WebParams.MEMBER_PHONE),response.optString(WebParams.PRODUCT_NAME),
-                        response.optString(WebParams.ADMIN_FEE),response.optString(WebParams.TX_AMOUNT),
+                        response.optString(WebParams.TX_FEE, "0"),response.optString(WebParams.TX_AMOUNT),
                         response.optString(WebParams.TX_STATUS),response.optString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
                         response.optString(WebParams.BUSS_SCHEME_NAME));
 
