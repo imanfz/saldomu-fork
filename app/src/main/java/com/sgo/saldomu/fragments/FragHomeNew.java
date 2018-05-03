@@ -34,6 +34,7 @@ import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.RtclandingActivity;
 import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -460,6 +461,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }else if (menuItemName.equals(getString(R.string.title_cash_out_member)) ) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                }else if (menuItemName.equals(getString(R.string.menu_item_title_call_rtc)) ) {
+                    Intent i = new Intent(getActivity(), RtclandingActivity.class);
+                    //i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
                 else

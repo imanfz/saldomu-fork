@@ -7,6 +7,15 @@ android {
         jumboMode true
     }
 
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     packagingOptions {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/NOTICE.txt'
@@ -28,7 +37,9 @@ android {
     }
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
-
+    dataBinding {
+        enabled true
+    }
     defaultConfig {
         applicationId "com.sgo.saldomu"
         minSdkVersion 16
@@ -37,7 +48,7 @@ android {
         versionName "1.0"
 
         // Enabling multidex support.
-        multiDexEnabled true
+        multiDexEnabled = true
         buildConfigField 'String', "flavorDev", "\"development\""
         buildConfigField 'String ', "flavorProd", "\"production\""
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -146,7 +157,7 @@ android {
                 newName += "- debug"
             }
 
-            outputFileName = newName+".apk"
+            outputFileName = newName + ".apk"
         }
     }
 }
@@ -171,12 +182,12 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.google.code.findbugs'
     })
-    compile 'com.android.support:cardview-v7:26.0.2'
-    compile 'com.android.support:customtabs:26.0.2'
-    compile 'com.android.support:recyclerview-v7:26.0.2'
-    compile 'com.android.support:appcompat-v7:26.0.2'
-    compile 'com.android.support:support-v4:26.0.2'
-    compile 'com.android.support:design:26.0.2'
+    compile 'com.android.support:cardview-v7:27.1.0'
+    compile 'com.android.support:customtabs:27.1.0'
+    compile 'com.android.support:recyclerview-v7:27.1.0'
+    compile 'com.android.support:appcompat-v7:27.1.0'
+    compile 'com.android.support:support-v4:27.1.0'
+    compile 'com.android.support:design:27.1.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
     compile 'com.balysv:material-ripple:1.0.2'
@@ -222,5 +233,15 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     compile 'com.android.support:multidex:1.0.1'
     implementation project(':btsdk')
+
+    implementation 'com.myhexaville:smart-image-picker:1.0.4'
+
+    implementation('io.socket:socket.io-client:1.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
+    compile files('libs/autobanh.jar')
+    compile files('libs/base_java.jar')
+    compile files('libs/libjingle_peerconnection.jar')
 }
 apply plugin: 'com.google.gms.google-services'

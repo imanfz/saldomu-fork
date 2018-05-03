@@ -227,6 +227,7 @@
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_buy</item>
         <item>@string/menu_item_title_report</item>
+        <item>@string/menu_item_title_call_rtc</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_agent">
         <item>@string/cash_in</item>
@@ -246,6 +247,7 @@
         <item>@drawable/ic_bayarteman1</item>
         <item>@drawable/ic_mintauang</item>
         <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_agent">
@@ -287,4 +289,62 @@
         <item>150000</item>
         <item>200000</item>
     </string-array>
+
+
+    <string-array name="videoResolutions">
+        <item>Default</item>
+        <item>4K (3840 x 2160)</item>
+        <item>Full HD (1920 x 1080)</item>
+        <item>HD (1280 x 720)</item>
+        <item>VGA (640 x 480)</item>
+        <item>QVGA (320 x 240)</item>
+    </string-array>
+
+    <string-array name="videoResolutionsValues">
+        <item>Default</item>
+        <item>3840 x 2160</item>
+        <item>1920 x 1080</item>
+        <item>1280 x 720</item>
+        <item>640 x 480</item>
+        <item>320 x 240</item>
+    </string-array>
+
+    <string-array name="cameraFps">
+        <item>Default</item>
+        <item>30 fps</item>
+        <item>15 fps</item>
+    </string-array>
+
+    <string-array name="startBitrate">
+        <item>Default</item>
+        <item>Manual</item>
+    </string-array>
+
+    <string-array name="videoCodecs">
+        <item>VP8</item>
+        <item>VP9</item>
+        <item>H264</item>
+    </string-array>
+
+    <string-array name="audioCodecs">
+        <item>OPUS</item>
+        <item>ISAC</item>
+    </string-array>
+
+    <string-array name="speakerphone">
+        <item>Auto (proximity sensor)</item>
+        <item>Enabled</item>
+        <item>Disabled</item>
+    </string-array>
+
+    <string-array name="speakerphoneValues">
+        <item>auto</item>
+        <item>true</item>
+        <item>false</item>
+    </string-array>
+
+    <string-array name="roomListContextMenu">
+        <item>Remove favorite</item>
+    </string-array>
+
 </resources>
