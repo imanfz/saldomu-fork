@@ -20,7 +20,6 @@ import com.sgo.saldomu.app_rtc.web_rtc.PeerConnectionClient.PeerConnectionParame
 import com.sgo.saldomu.app_rtc.web_rtc.WebSocketRTCClient;
 import com.sgo.saldomu.app_rtc.call.OnCallEvents;
 import com.sgo.saldomu.databinding.ActivityRtccallingBinding;
-import com.sgo.saldomu.databinding.ActivityRtclandingBinding;
 
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
@@ -62,7 +61,7 @@ import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FIT;
  */
 public class RtccallingActivity extends AppCompatActivity
         implements AppRTCClient.SignalingEvents, PeerConnectionClient.PeerConnectionEvents, OnCallEvents {
-    private static final String LOG_TAG = "CallActivity";
+    private static final String LOG_TAG = "RtccallingActivity";
 
     private PeerConnectionClient peerConnectionClient;
     private AppRTCClient appRtcClient;
