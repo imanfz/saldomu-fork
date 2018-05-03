@@ -434,8 +434,7 @@
         <!-- android:authorities="${applicationId}.provider" -->
         <activity android:name=".activities.RtclandingActivity" />
         <activity android:name=".activities.RtccallingActivity" />
-        <activity android:name=".activities.MediaStreamActivity" />
-        <activity android:name=".activities.CameraRenderActivity"></activity>
+
     </application>
 
 </manifest>
