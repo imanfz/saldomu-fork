@@ -220,6 +220,13 @@
     </integer-array>
 
 
+    <string-array name="list_menu_scadm">
+        <item>@string/scadm_join</item>
+        <item>@string/scadm_topup</item>
+        <item>@string/scadm_denom</item>
+    </string-array>
+
+
 
     <string-array name="list_menu_frag_new_home">
         <item>@string/newhome_title_topup</item>
@@ -239,8 +246,13 @@
         <!--<item>@string/menu_item_search_agent_cta</item>-->
         <!--<item>@string/menu_item_search_agent_atc</item>-->
         <item>@string/title_cash_out_member</item>
-
     </string-array>
+
+    <integer-array name="list_menu_icon_frag_scadm">
+        <item>@drawable/ic_bayarteman1</item>
+        <item>@drawable/ic_tambahsaldo</item>
+        <item>@drawable/ic_belanja</item>
+    </integer-array>
 
     <integer-array name="list_menu_icon_frag_new_home">
         <item>@drawable/ic_tambahsaldo</item>

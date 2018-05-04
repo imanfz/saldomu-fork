@@ -37,7 +37,7 @@ public class GridMenuSCADM extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 0;
+        return text.size();
     }
 
     @Override
@@ -56,12 +56,12 @@ public class GridMenuSCADM extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null) {
-            grid = inflater.inflate(R.layout.grid_home, null);
+            grid = inflater.inflate(R.layout.grid_scadm, null);
             textView = grid.findViewById(R.id.grid_text);
             imageView = grid.findViewById(R.id.grid_image);
 
         } else {
-            grid = (View) convertView;
+            grid = convertView;
         }
         textView.setText(text.get(position));
         imageView.setImageResource(icons[position]);

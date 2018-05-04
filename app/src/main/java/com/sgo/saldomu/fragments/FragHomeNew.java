@@ -541,7 +541,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } else {
             totalIdx    += shopCategories.size();
             totalIdx    += taNotAgent.length();
-
         }
 
         int[] data        = new int[totalIdx];
