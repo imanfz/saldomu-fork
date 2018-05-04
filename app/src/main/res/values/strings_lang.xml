@@ -184,6 +184,7 @@
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
+    <string name="menu_item_title_scadm">SCADM</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>

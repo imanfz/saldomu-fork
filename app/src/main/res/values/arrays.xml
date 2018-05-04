@@ -227,6 +227,7 @@
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_buy</item>
         <item>@string/menu_item_title_report</item>
+        <item>@string/menu_item_title_scadm</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_agent">
         <item>@string/cash_in</item>
@@ -246,6 +247,7 @@
         <item>@drawable/ic_bayarteman1</item>
         <item>@drawable/ic_mintauang</item>
         <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_agent">
