@@ -553,8 +553,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                             try {
 
                                 JSONObject jsnObject = new JSONObject(msg.getString("options"));
-                                //JSONArray jsonOptions = new JSONArray(msg.getString("options"));
-                                String roomId = jsnObject.getString("room_id");
+                                String roomId = jsnObject.getString(DefineValue.ROOM_ID);
 
                                 bundle.putString(EXTRA_ROOMID, roomId);
 
@@ -562,6 +561,8 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 mEditor = sp.edit();
                                 mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
                                 mEditor.apply();
+
+                                Timber.d("notif login - firebaseappmessaging");
 
                                 intent = new Intent(this, RtccallingActivity.class);
                                 intent.putExtra(EXTRA_ROOMID, roomId);

@@ -326,7 +326,6 @@ public class MainPage extends BaseActivity {
                     && modelNotif != FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION
                     && modelNotif != FCMManager.SHOP_NOTIF_TRANSACTION
                     && modelNotif != FCMManager.SHOP_ACCEPT_TRX
-                    && modelNotif != FCMManager.TESTING_CALL_RTC
                     && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION ) {
                 sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
             }

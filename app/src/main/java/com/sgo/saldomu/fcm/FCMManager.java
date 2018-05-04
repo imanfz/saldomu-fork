@@ -22,6 +22,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -353,18 +354,28 @@ public class FCMManager {
                 case TESTING_CALL_RTC:
                     if (msg.containsKey("options") && msg.getString("options") != null) {
                         try {
-                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
-                            String roomId = jsonOptions.getJSONObject(0).getString("room_id");
+                            JSONObject jsnObject = new JSONObject(msg.getString("options"));
+                            String roomId = jsnObject.getString(DefineValue.ROOM_ID);
 
                             bundleNextLogin.putString(EXTRA_ROOMID, roomId);
 
-                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
-                            mEditor = sp.edit();
-                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
-                            mEditor.apply();
+                            Timber.d("notif bg login - firebaseappmessaging");
 
-                            i = new Intent(mContext, RtccallingActivity.class);
-                            i.putExtra(EXTRA_ROOMID, roomId);
+                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+
+                            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+                            if (!notifDataNextLogin.equals(bundleToJSONString)) {
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+
+
+                                i = new Intent(mContext, RtccallingActivity.class);
+                                i.putExtra(EXTRA_ROOMID, roomId);
+                            }
+
+
+
 
                         }
                         catch (JSONException e)
