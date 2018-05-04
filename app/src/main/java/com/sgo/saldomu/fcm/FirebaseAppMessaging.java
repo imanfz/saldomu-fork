@@ -23,6 +23,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.RtccallingActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -40,6 +41,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.sgo.saldomu.app_rtc.util.Constants.EXTRA_ROOMID;
 import static com.sgo.saldomu.fcm.FCMManager.MEMBER_RATING_TRX;
 import static com.sgo.saldomu.fcm.FCMManager.SYNC_BBS_DATA;
 
@@ -528,6 +530,43 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                                 intent = new Intent(this, MyProfileNewActivity.class);
 
                                 stackBuilder.addParentStack(MyProfileNewActivity.class);
+                                stackBuilder.addNextIntent(intent);
+
+                                contentIntent =
+                                        stackBuilder.getPendingIntent(
+                                                1,
+                                                PendingIntent.FLAG_UPDATE_CURRENT
+                                        );
+
+                            }
+                            catch (JSONException e)
+                            {
+                                Timber.d("JSONException: " + e.getMessage());
+                            }
+
+
+                        }
+                        break;
+                    case FCMManager.TESTING_CALL_RTC:
+
+                        if (msg.containsKey("options") && msg.getString("options") != null) {
+                            try {
+
+                                JSONObject jsnObject = new JSONObject(msg.getString("options"));
+                                //JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                                String roomId = jsnObject.getString("room_id");
+
+                                bundle.putString(EXTRA_ROOMID, roomId);
+
+                                bundleToJSONString = bundleToJSON.getJson(bundle);
+                                mEditor = sp.edit();
+                                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                                mEditor.apply();
+
+                                intent = new Intent(this, RtccallingActivity.class);
+                                intent.putExtra(EXTRA_ROOMID, roomId);
+
+                                stackBuilder.addParentStack(RtccallingActivity.class);
                                 stackBuilder.addNextIntent(intent);
 
                                 contentIntent =

@@ -15,6 +15,7 @@ import com.sgo.saldomu.activities.BbsMemberLocationActivity;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.RtccallingActivity;
 import com.sgo.saldomu.coreclass.BundleToJSON;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -25,6 +26,8 @@ import org.json.JSONException;
 import java.util.Map;
 
 import timber.log.Timber;
+
+import static com.sgo.saldomu.app_rtc.util.Constants.EXTRA_ROOMID;
 
 /**
  * Created by yuddistirakiki on 8/21/17.
@@ -43,6 +46,7 @@ public class FCMManager {
     public final static int SHOP_ACCEPT_TRX                         = 1006;
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
     public final static int MEMBER_RATING_TRX                       = 1008;
+    public final static int TESTING_CALL_RTC                        = 1009;
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
 
     final private static String AGENT_TOPIC = "agent";
@@ -345,6 +349,30 @@ public class FCMManager {
                             Timber.d("JSONException: " + e.getMessage());
                         }
                     }
+                    break;
+                case TESTING_CALL_RTC:
+                    if (msg.containsKey("options") && msg.getString("options") != null) {
+                        try {
+                            JSONArray jsonOptions = new JSONArray(msg.getString("options"));
+                            String roomId = jsonOptions.getJSONObject(0).getString("room_id");
+
+                            bundleNextLogin.putString(EXTRA_ROOMID, roomId);
+
+                            bundleToJSONString = bundleToJSON.getJson(bundleNextLogin);
+                            mEditor = sp.edit();
+                            mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN,bundleToJSONString);
+                            mEditor.apply();
+
+                            i = new Intent(mContext, RtccallingActivity.class);
+                            i.putExtra(EXTRA_ROOMID, roomId);
+
+                        }
+                        catch (JSONException e)
+                        {
+                            Timber.d("JSONException: " + e.getMessage());
+                        }
+                    }
+
                     break;
                 default:
                     i = new Intent(mContext, MainPage.class);
