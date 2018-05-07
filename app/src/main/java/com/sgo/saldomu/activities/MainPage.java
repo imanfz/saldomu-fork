@@ -79,6 +79,8 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static com.sgo.saldomu.app_rtc.util.Constants.EXTRA_ROOMID;
+
 /**
  Created by Administrator on 7/11/2014.
  */
@@ -298,6 +300,7 @@ public class MainPage extends BaseActivity {
             }
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            Timber.d("notif Login :" + notifDataNextLogin);
             if (!notifDataNextLogin.equals("")) {
 
                 changeActivityNextLogin(notifDataNextLogin);
@@ -415,6 +418,11 @@ public class MainPage extends BaseActivity {
                     bundle.putString(DefineValue.BBS_SHOP_NAME, jsonObj.getString(WebParams.SHOP_NAME));
                     bundle.putString(DefineValue.BBS_MAXIMUM_RATING, jsonObj.getString(WebParams.MAXIMUM_RATING));
                     bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
+                    i.putExtras(bundle);
+                    break;
+                case FCMManager.TESTING_CALL_RTC:
+                    i = new Intent(this, RtccallingActivity.class);
+                    bundle.putString(EXTRA_ROOMID, jsonObj.getString(EXTRA_ROOMID));
                     i.putExtras(bundle);
                     break;
                 default:

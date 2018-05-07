@@ -433,7 +433,8 @@
         </provider>
         <!-- android:authorities="${applicationId}.provider" -->
         <activity android:name=".activities.RtclandingActivity" />
-        <activity android:name=".activities.RtccallingActivity"></activity>
+        <activity android:name=".activities.RtccallingActivity" />
+
     </application>
 
 </manifest>
