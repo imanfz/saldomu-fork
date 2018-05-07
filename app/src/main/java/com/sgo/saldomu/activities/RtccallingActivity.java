@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
 
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.app_rtc.web_rtc.AppRTCAudioManager;
 import com.sgo.saldomu.app_rtc.web_rtc.AppRTCClient;
@@ -19,6 +20,8 @@ import com.sgo.saldomu.app_rtc.web_rtc.PeerConnectionClient;
 import com.sgo.saldomu.app_rtc.web_rtc.PeerConnectionClient.PeerConnectionParameters;
 import com.sgo.saldomu.app_rtc.web_rtc.WebSocketRTCClient;
 import com.sgo.saldomu.app_rtc.call.OnCallEvents;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.databinding.ActivityRtccallingBinding;
 
 import org.webrtc.Camera1Enumerator;
@@ -35,6 +38,8 @@ import org.webrtc.VideoRenderer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 import static com.sgo.saldomu.app_rtc.util.Constants.CAPTURE_PERMISSION_REQUEST_CODE;
 import static com.sgo.saldomu.app_rtc.util.Constants.EXTRA_ROOMID;
@@ -81,6 +86,7 @@ public class RtccallingActivity extends AppCompatActivity
     private boolean micEnabled = true;
 
     private ActivityRtccallingBinding binding;
+    SecurePreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,12 @@ public class RtccallingActivity extends AppCompatActivity
         binding.remoteVideoView.setEnableHardwareScaler(true);
         updateVideoView();
 
+        sp                  = CustomSecurePref.getInstance().getmSecurePrefs();
+        String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+        if (!notifDataNextLogin.equals("")) {
+            sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+        }
+
         // Get Intent parameters.
         final Intent intent = getIntent();
         String roomId = intent.getStringExtra(EXTRA_ROOMID);
@@ -114,6 +126,8 @@ public class RtccallingActivity extends AppCompatActivity
             finish();
             return;
         }
+
+
 
         // If capturing format is not specified for screencapture, use screen resolution.
         peerConnectionParameters = PeerConnectionParameters.createDefault();

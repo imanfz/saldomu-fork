@@ -370,7 +370,7 @@ public class FCMManager {
                                 mEditor.apply();
 
 
-                                i = new Intent(mContext, RtccallingActivity.class);
+                                i = new Intent(mContext, MainPage.class);
                                 i.putExtra(EXTRA_ROOMID, roomId);
                             }
 

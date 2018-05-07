@@ -564,10 +564,10 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
                                 Timber.d("notif login - firebaseappmessaging");
 
-                                intent = new Intent(this, RtccallingActivity.class);
+                                intent = new Intent(this, MainPage.class);
                                 intent.putExtra(EXTRA_ROOMID, roomId);
 
-                                stackBuilder.addParentStack(RtccallingActivity.class);
+                                stackBuilder.addParentStack(MainPage.class);
                                 stackBuilder.addNextIntent(intent);
 
                                 contentIntent =
