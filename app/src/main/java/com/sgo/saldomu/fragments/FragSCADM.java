@@ -14,7 +14,9 @@ import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ListJoinCommunitySCADM;
+import com.sgo.saldomu.activities.ListDenomSCADMActivity;
+import com.sgo.saldomu.activities.ListJoinCommunitySCADMActivity;
+import com.sgo.saldomu.activities.ListTopUpSCADMActivity;
 import com.sgo.saldomu.adapter.GridMenuSCADM;
 
 import java.util.ArrayList;
@@ -57,14 +59,16 @@ public class FragSCADM extends Fragment {
 
                 if (menuItemName.equalsIgnoreCase("Join"))
                 {
-                    intent = new Intent(getActivity(), ListJoinCommunitySCADM.class);
+                    intent = new Intent(getActivity(), ListJoinCommunitySCADMActivity.class);
                     startActivity(intent);
                 }else  if (menuItemName.equalsIgnoreCase("Top Up"))
                 {
-
+                    intent = new Intent(getActivity(), ListTopUpSCADMActivity.class);
+                    startActivity(intent);
                 }else
                 {
-
+                    intent = new Intent(getActivity(), ListDenomSCADMActivity.class);
+                    startActivity(intent);
                 }
             }
         });

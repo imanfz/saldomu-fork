@@ -4,14 +4,15 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.SCADMModel;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.ListSCADMAdapter;
+import com.sgo.saldomu.adapter.ListBankSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -29,16 +30,16 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 /**
- * Created by Lenovo Thinkpad on 5/8/2018.
+ * Created by Lenovo Thinkpad on 5/14/2018.
  */
 
-public class ListJoinCommunitySCADM extends BaseActivity {
+public class ListDenomSCADMActivity extends BaseActivity {
     SecurePreferences sp;
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
-    private ListSCADMAdapter listSCADMAdapter;
+    private ListBankSCADMAdapter listBankSCADMAdapter;
     private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-    private ArrayList<SCADMModel> scadmModelArrayList = new ArrayList<>();
+    private ArrayList<listBankModel> scadmListBankModelArrayList = new ArrayList<>();
 
     @Override
     protected int getLayoutResource() {
@@ -48,18 +49,19 @@ public class ListJoinCommunitySCADM extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         recyclerView = findViewById(R.id.recyclerView);
 
         InitializeToolbar();
         initializeAdapter();
 
-        getListCommunity();
+        getListBank();
     }
 
     private void initializeAdapter() {
-        listSCADMAdapter = new ListSCADMAdapter();
-        recyclerView.setAdapter(listSCADMAdapter);
+        listBankSCADMAdapter = new ListBankSCADMAdapter();
+        recyclerView.setAdapter(listBankSCADMAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
@@ -68,30 +70,59 @@ public class ListJoinCommunitySCADM extends BaseActivity {
         setActionBarTitle(getString(R.string.scadm_join));
     }
 
-    public void getListCommunity() {
+    @Override
+    public void onBackPressed() {
+        Timber.d("masuk onBackPressed");
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Timber.d("masuk onOptions");
+        this.finish();
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void getListBank() {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_COMMUNITY_SCADM,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_SCADM,
                     userPhoneID, accessKey);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params get list community scadm:" + params.toString());
+            Timber.d("isi params get list bank denom scadm:" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("isi response get list bank denom scadm:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response get list community scadm:" + response.toString());
 
+                            JSONArray mArrayListBank = new JSONArray(response.getString(WebParams.BANK));
 
+                            for (int i = 0; i < mArrayListBank.length(); i++) {
+                                String bank_code = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_CODE);
+                                String bank_name = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_NAME);
+                                String product_code = mArrayListBank.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
+                                String product_name = mArrayListBank.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
+                                String bank_gateway = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_GATEWAY);
 
+                                listBankModel listBankModel = new listBankModel();
+                                listBankModel.setBank_code(bank_code);
+                                listBankModel.setBank_name(bank_name);
+                                listBankModel.setProduct_code(product_code);
+                                listBankModel.setProduct_name(product_name);
+                                listBankModel.setBank_gateway(bank_gateway);
 
-                            listSCADMAdapter.updateData(scadmModelArrayList);
+                                scadmListBankModelArrayList.add(listBankModel);
+                            }
+
+                            listBankSCADMAdapter.updateDataBank(scadmListBankModelArrayList);
 
 //                            if(isAdded())
 //                                initializeLayout();
@@ -102,12 +133,12 @@ public class ListJoinCommunitySCADM extends BaseActivity {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ListJoinCommunitySCADM.this, message);
+                            test.showDialoginActivity(ListDenomSCADMActivity.this, message);
                         } else {
-                            Timber.d("Error isi responce get list community scadm:" + response.toString());
+                            Timber.d("Error isi responce get list bank denom scadm:" + response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
-                            Toast.makeText(ListJoinCommunitySCADM.this, code, Toast.LENGTH_LONG).show();
+                            Toast.makeText(ListDenomSCADMActivity.this, code, Toast.LENGTH_LONG).show();
                             finish();
                         }
                         if (progdialog.isShowing())
@@ -115,7 +146,7 @@ public class ListJoinCommunitySCADM extends BaseActivity {
 
                     } catch (JSONException e) {
                         progdialog.dismiss();
-                        Toast.makeText(ListJoinCommunitySCADM.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ListDenomSCADMActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }
@@ -140,14 +171,14 @@ public class ListJoinCommunitySCADM extends BaseActivity {
 
                 private void failure(Throwable throwable) {
                     if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ListJoinCommunitySCADM.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ListDenomSCADMActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(ListJoinCommunitySCADM.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ListDenomSCADMActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi get list community scadm:" + throwable.toString());
+                    Timber.w("Error Koneksi get list bank denom scadm:" + throwable.toString());
                 }
 
                 @Override
@@ -165,17 +196,12 @@ public class ListJoinCommunitySCADM extends BaseActivity {
                 }
             };
 
-            MyApiClient.getListCommunitySCADM(ListJoinCommunitySCADM.this, params, mHandler);
+            MyApiClient.getListBankSCADM(ListDenomSCADMActivity.this, params, mHandler);
 //            if(!isAdded())
             //MyApiClient.getClient().cancelRequests(get);
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 }

@@ -4,24 +4,22 @@ package com.sgo.saldomu.Beans;
  * Created by Lenovo Thinkpad on 5/13/2018.
  */
 
-public class SCADMModel {
+public class SCADMCommunityModel {
     private String comm_id;
 
     private String comm_name;
 
     private String comm_code;
 
-    private String api_key;
-
     private String member_code;
 
-    private String member_id;
+    private String member_name;
 
     public String getComm_id() {
         return comm_id;
     }
 
-    public SCADMModel() {
+    public SCADMCommunityModel() {
     }
 
     public void setComm_id(String comm_id) {
@@ -44,14 +42,6 @@ public class SCADMModel {
         this.comm_code = comm_code;
     }
 
-    public String getApi_key() {
-        return api_key;
-    }
-
-    public void setApi_key(String api_key) {
-        this.api_key = api_key;
-    }
-
     public String getMember_code() {
         return member_code;
     }
@@ -60,11 +50,11 @@ public class SCADMModel {
         this.member_code = member_code;
     }
 
-    public String getMember_id() {
-        return member_id;
+    public String getMember_name() {
+        return member_name;
     }
 
-    public void setMember_id(String member_id) {
-        this.member_id = member_id;
+    public void setMember_name(String member_name) {
+        this.member_name = member_name;
     }
 }

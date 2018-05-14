@@ -309,7 +309,6 @@
                 />
         </activity>
 
-        <activity android:name=".BluetoothPrinter.DeviceList"/>
         <activity android:name=".BluetoothPrinter.zj.DevicesList"/>
 
         <service
@@ -323,7 +322,19 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name=".activities.ListJoinCommunitySCADM"
+            android:name=".activities.ListJoinCommunitySCADMActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ListTopUpSCADMActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:configChanges="screenSize|keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".activities.ListDenomSCADMActivity"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:configChanges="screenSize|keyboardHidden|orientation"
             android:screenOrientation="portrait" />

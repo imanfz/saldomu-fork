@@ -504,4 +504,5 @@ public class WebParams {
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
+    public static String BANK  = "bank";
 }
