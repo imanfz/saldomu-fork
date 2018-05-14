@@ -2,7 +2,6 @@ package com.sgo.saldomu.coreclass;
 
 import android.content.Context;
 import android.os.Looper;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -13,7 +12,6 @@ import com.loopj.android.http.SyncHttpClient;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.fragments.Login;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
@@ -237,6 +235,7 @@ public class MyApiClient {
     public static String LINK_REG_STEP1;
     public static String LINK_REG_STEP2;
     public static String LINK_REG_STEP3;
+    public static String LINK_GET_LIST_COMMUNITY_SCADM;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -378,6 +377,7 @@ public class MyApiClient {
         LINK_INQUIRY_TOKEN_ATC  = headaddressfinal + "InquiryTokenATC/Retrieve";
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
+        LINK_GET_LIST_COMMUNITY_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveAll";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
@@ -1458,6 +1458,19 @@ public class MyApiClient {
         post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
     }
 
+    public static void getBBSCity(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
+        if(isSync)
+            postSync(mContext,LINK_BBS_CITY, params, responseHandler);
+        else
+            post(mContext,LINK_BBS_CITY, params, responseHandler);
+    }
+
+    public static void getListCommunitySCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Community SCADM: %1$s ",LINK_GET_LIST_COMMUNITY_SCADM);
+        post(mContext, LINK_GET_LIST_COMMUNITY_SCADM, params, responseHandler);
+    }
+
     //get Data------------------------------------------------------------------------------------------
 
 
@@ -1473,13 +1486,7 @@ public class MyApiClient {
         get(mContext,LINK_HELP_PIN, responseHandler);
     }
 
-    public static void getBBSCity(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address getBBSCity: %1$s ",LINK_BBS_CITY);
-        if(isSync)
-            postSync(mContext,LINK_BBS_CITY, params, responseHandler);
-        else
-            post(mContext,LINK_BBS_CITY, params, responseHandler);
-    }
+
 
 
     public static void getGoogleAPICoordinateByAddress(Context mContext, String address, AsyncHttpResponseHandler responseHandler) {

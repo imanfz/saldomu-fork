@@ -1,5 +1,6 @@
 package com.sgo.saldomu.fragments;
 
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ListJoinCommunitySCADM;
 import com.sgo.saldomu.adapter.GridMenuSCADM;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class FragSCADM extends Fragment {
     GridView GridSCADM;
     View v;
     SecurePreferences sp;
+    Intent intent;
 
     @Nullable
     @Override
@@ -54,7 +57,8 @@ public class FragSCADM extends Fragment {
 
                 if (menuItemName.equalsIgnoreCase("Join"))
                 {
-
+                    intent = new Intent(getActivity(), ListJoinCommunitySCADM.class);
+                    startActivity(intent);
                 }else  if (menuItemName.equalsIgnoreCase("Top Up"))
                 {
 
@@ -91,6 +95,5 @@ public class FragSCADM extends Fragment {
 
         return data;
     }
-
 
 }
