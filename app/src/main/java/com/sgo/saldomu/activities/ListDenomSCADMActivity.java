@@ -10,9 +10,9 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.listBankModel;
+import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.ListBankSCADMAdapter;
+import com.sgo.saldomu.adapter.ListSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -37,13 +37,13 @@ public class ListDenomSCADMActivity extends BaseActivity {
     SecurePreferences sp;
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
-    private ListBankSCADMAdapter listBankSCADMAdapter;
+    private ListSCADMAdapter listSCADMAdapter;
     private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-    private ArrayList<listBankModel> scadmListBankModelArrayList = new ArrayList<>();
+    private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
 
     @Override
     protected int getLayoutResource() {
-        return R.layout.list_join_community_scadm;
+        return R.layout.activity_list_join_community_scadm;
     }
 
     @Override
@@ -60,14 +60,14 @@ public class ListDenomSCADMActivity extends BaseActivity {
     }
 
     private void initializeAdapter() {
-        listBankSCADMAdapter = new ListBankSCADMAdapter();
-        recyclerView.setAdapter(listBankSCADMAdapter);
+        listSCADMAdapter = new ListSCADMAdapter(scadmCommunityModelArrayList,this);
+        recyclerView.setAdapter(listSCADMAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.scadm_join));
+        setActionBarTitle(getString(R.string.scadm_denom));
     }
 
     @Override
@@ -93,36 +93,36 @@ public class ListDenomSCADMActivity extends BaseActivity {
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params get list bank denom scadm:" + params.toString());
+            Timber.d("isi params get list denom scadm:" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response get list bank denom scadm:" + response.toString());
+                        Timber.d("isi response get list denom scadm:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            JSONArray mArrayListBank = new JSONArray(response.getString(WebParams.BANK));
+                            JSONArray mArrayCommunity = new JSONArray(response.getString(WebParams.COMMUNITY));
 
-                            for (int i = 0; i < mArrayListBank.length(); i++) {
-                                String bank_code = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_CODE);
-                                String bank_name = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_NAME);
-                                String product_code = mArrayListBank.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
-                                String product_name = mArrayListBank.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
-                                String bank_gateway = mArrayListBank.getJSONObject(i).getString(WebParams.BANK_GATEWAY);
+                            for (int i = 0; i < mArrayCommunity.length(); i++) {
+                                String comm_id = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_ID);
+                                String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
+                                String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
+                                String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
+                                String member_name = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_NAME);
 
-                                listBankModel listBankModel = new listBankModel();
-                                listBankModel.setBank_code(bank_code);
-                                listBankModel.setBank_name(bank_name);
-                                listBankModel.setProduct_code(product_code);
-                                listBankModel.setProduct_name(product_name);
-                                listBankModel.setBank_gateway(bank_gateway);
+                                SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
+                                scadmCommunityModel.setComm_id(comm_id);
+                                scadmCommunityModel.setComm_code(comm_code);
+                                scadmCommunityModel.setComm_name(comm_name);
+                                scadmCommunityModel.setMember_code(member_code);
+                                scadmCommunityModel.setMember_name(member_name);
 
-                                scadmListBankModelArrayList.add(listBankModel);
+                                scadmCommunityModelArrayList.add(scadmCommunityModel);
                             }
 
-                            listBankSCADMAdapter.updateDataBank(scadmListBankModelArrayList);
+                            listSCADMAdapter.updateData(scadmCommunityModelArrayList);
 
 //                            if(isAdded())
 //                                initializeLayout();
@@ -135,7 +135,7 @@ public class ListDenomSCADMActivity extends BaseActivity {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(ListDenomSCADMActivity.this, message);
                         } else {
-                            Timber.d("Error isi responce get list bank denom scadm:" + response.toString());
+                            Timber.d("Error isi responce get list denom scadm:" + response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
                             Toast.makeText(ListDenomSCADMActivity.this, code, Toast.LENGTH_LONG).show();
@@ -178,7 +178,7 @@ public class ListDenomSCADMActivity extends BaseActivity {
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi get list bank denom scadm:" + throwable.toString());
+                    Timber.w("Error Koneksi get list denom scadm:" + throwable.toString());
                 }
 
                 @Override

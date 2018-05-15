@@ -17,7 +17,7 @@ public class listBankModel {
   }
 
   public listBankModel(String _bank_code, String _bank_name, String _product_code, String _product_name,
-                       String _product_type, String _product_h2h, String _bank_gateway){
+                       String _product_type, String _product_h2h){
     super();
     this.setBank_code(_bank_code);
     this.setBank_name(_bank_name);
@@ -25,7 +25,6 @@ public class listBankModel {
     this.setProduct_name(_product_name);
     this.setProduct_type(_product_type);
     this.setProduct_h2h(_product_h2h);
-    this.setBank_gateway(_bank_gateway);
   }
 
   public String getBank_name() {
