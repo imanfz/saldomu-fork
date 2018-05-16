@@ -4,33 +4,31 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
+import com.sgo.saldomu.adapter.ListSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import timber.log.Timber;
 
@@ -38,21 +36,20 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/15/2018.
  */
 
-public class FragJoinCommunitySCADM extends BaseFragment {
+public class FragListCommunitySCADM extends Fragment {
     View v;
     SecurePreferences sp;
-    String comm_name, comm_code, member_code, member_name;
-    TextView community_name;
-    EditText et_member_code;
-    Button btn_next;
     private ProgressDialog progdialog;
+    private RecyclerView recyclerView;
+    private ListSCADMAdapter listSCADMAdapter;
+    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+    private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
-
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_join_community, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.frag_list_community_scadm, container, false);
         return v;
     }
 
@@ -60,65 +57,68 @@ public class FragJoinCommunitySCADM extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        recyclerView = v.findViewById(R.id.recyclerView);
 
         memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
-        Bundle bundle = getArguments();
-        comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
-        bundle.getString(DefineValue.MEMBER_NAME);
+        initializeAdapter();
 
-        community_name = v.findViewById(R.id.community_name);
-        et_member_code = v.findViewById(R.id.member_code);
-        btn_next = v.findViewById(R.id.btn_next);
+        getListCommunity();
 
-        community_name.setText(comm_name);
-
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (et_member_code.getText().toString() != null || !et_member_code.getText().toString().equalsIgnoreCase(""))
-                    nextlistener();
-            }
-        });
     }
 
-    public void nextlistener() {
-        et_member_code.setEnabled(false);
-        sentPreviewJoinCommunitySCADM();
+    private void initializeAdapter() {
+        listSCADMAdapter = new ListSCADMAdapter(scadmCommunityModelArrayList,getActivity());
+        recyclerView.setAdapter(listSCADMAdapter);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
-    public void sentPreviewJoinCommunitySCADM() {
+    public void getListCommunity() {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = commIDLogin + et_member_code.getText().toString();
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM,
-                    userPhoneID, accessKey, extraSignature);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_CODE, et_member_code.getText().toString());
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_COMMUNITY_SCADM,
+                    userPhoneID, accessKey);
+            params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params sent preview join community scadm:" + params.toString());
+            Timber.d("isi params get list community scadm:" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response sent preview join community scadm:" + response.toString());
+                        Timber.d("isi response get list community scadm:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            comm_name = response.getString(WebParams.COMM_NAME);
-                            comm_code = response.getString(WebParams.COMM_CODE);
-                            member_code = response.getString(WebParams.MEMBER_CODE);
-                            member_name = response.getString(WebParams.MEMBER_NAME);
+                            JSONArray mArrayCommunity = new JSONArray(response.getString(WebParams.COMMUNITY));
+
+                            for (int i = 0; i < mArrayCommunity.length(); i++) {
+                                String comm_id = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_ID);
+                                String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
+                                String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
+                                String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
+                                String member_name = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_NAME);
+
+                                SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
+                                scadmCommunityModel.setComm_id(comm_id);
+                                scadmCommunityModel.setComm_code(comm_code);
+                                scadmCommunityModel.setComm_name(comm_name);
+                                scadmCommunityModel.setMember_code(member_code);
+                                scadmCommunityModel.setMember_name(member_name);
+
+                                scadmCommunityModelArrayList.add(scadmCommunityModel);
+                            }
+
+                            listSCADMAdapter.updateData(scadmCommunityModelArrayList);
+
 
                             progdialog.dismiss();
-
-                            changeToConfirm();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
@@ -126,7 +126,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
                         } else {
-                            Timber.d("Error isi response sent preview join community scadm:" + response.toString());
+                            Timber.d("Error isi response get list community scadm:" + response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -169,12 +169,14 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi sent preview join community scadm:" + throwable.toString());
+                    Timber.w("Error Koneksi get list community scadm:" + throwable.toString());
                 }
 
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
+//                    if(!isAdded())
+//                        MyApiClient.CancelRequestWS(getActivity(), true);
                 }
 
                 @Override
@@ -185,42 +187,12 @@ public class FragJoinCommunitySCADM extends BaseFragment {
                 }
             };
 
-            MyApiClient.sentPreviewJoinCommunitySCADM(getActivity(), params, mHandler);
+            MyApiClient.getListCommunitySCADM(getActivity(), params, mHandler);
+////            if(!isAdded())
+//            //MyApiClient.getClient().cancelRequests(get);
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
-    }
-
-    public void changeToConfirm() {
-        Bundle bundle = new Bundle();
-        bundle.putString(DefineValue.COMMUNITY_NAME, comm_name);
-        bundle.getString(DefineValue.MEMBER_CODE, member_code);
-        bundle.getString(DefineValue.MEMBER_NAME, member_name);
-        Fragment mFrag = new FragJoinCommunityConfirm();
-        mFrag.setArguments(bundle);
-
-        JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) getActivity();
-        ftf.switchContent(mFrag, "Konfirmasi Gabung Komunitas", true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

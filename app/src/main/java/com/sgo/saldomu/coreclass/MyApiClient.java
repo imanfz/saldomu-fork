@@ -236,6 +236,8 @@ public class MyApiClient {
     public static String LINK_REG_STEP2;
     public static String LINK_REG_STEP3;
     public static String LINK_GET_LIST_COMMUNITY_SCADM;
+    public static String LINK_GET_PREVIEW_COMMUNITY_SCADM;
+    public static String LINK_CONFIRM_COMMUNITY_SCADM;
     public static String LINK_GET_LIST_BANK_SCADM;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
@@ -380,6 +382,8 @@ public class MyApiClient {
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_GET_LIST_COMMUNITY_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveAll";
         LINK_GET_LIST_BANK_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveTopup";
+        LINK_GET_PREVIEW_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Preview";
+        LINK_CONFIRM_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
@@ -1473,10 +1477,22 @@ public class MyApiClient {
         post(mContext, LINK_GET_LIST_COMMUNITY_SCADM, params, responseHandler);
     }
 
+    public static void sentPreviewJoinCommunitySCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address preview join Community SCADM: %1$s ",LINK_GET_PREVIEW_COMMUNITY_SCADM);
+        post(mContext, LINK_GET_PREVIEW_COMMUNITY_SCADM, params, responseHandler);
+    }
+
+    public static void confirmJoinCommunitySCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm join Community SCADM: %1$s ",LINK_CONFIRM_COMMUNITY_SCADM);
+        post(mContext, LINK_CONFIRM_COMMUNITY_SCADM, params, responseHandler);
+    }
+
     public static void getListBankSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address List Bank SCADM: %1$s ",LINK_GET_LIST_BANK_SCADM);
         post(mContext, LINK_GET_LIST_BANK_SCADM, params, responseHandler);
     }
+
+
 
     //get Data------------------------------------------------------------------------------------------
 

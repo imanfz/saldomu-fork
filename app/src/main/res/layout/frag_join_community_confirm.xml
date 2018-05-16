@@ -16,7 +16,8 @@
             android:layout_weight="2"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/community" />
+            android:text="@string/community"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/community_name"
@@ -25,7 +26,8 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="left"
-            android:padding="3dip" />
+            android:padding="3dip"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -40,16 +42,18 @@
             android:layout_weight="2"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/member_code" />
+            android:text="@string/member_code"
+            android:textSize="18sp"/>
 
-        <EditText
+        <TextView
             android:id="@+id/member_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="left"
-            android:padding="3dip" />
+            android:padding="3dip"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -64,7 +68,8 @@
             android:layout_weight="2"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/member_name" />
+            android:text="@string/member_name"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/member_name"
@@ -73,14 +78,15 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="left"
-            android:padding="3dip" />
+            android:padding="3dip"
+            android:textSize="18sp"/>
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:gravity="center_vertical"
         android:text="@string/next" />
 </LinearLayout>

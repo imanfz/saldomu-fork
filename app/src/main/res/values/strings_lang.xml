@@ -1211,7 +1211,7 @@
     <string name="camer">No pictures</string>
     <string name="msg_error">Input errors, please check!</string>
 
-    <string name="scadm_join">Join</string>
-    <string name="scadm_topup">Top Up</string>
-    <string name="scadm_denom">Denom</string>
+    <string name="scadm_join">Gabung Komunitas SCADM</string>
+    <string name="scadm_topup">Tambah Saldo Komunitas SCADM</string>
+    <string name="scadm_denom">Denom SCADM</string>
 </resources>

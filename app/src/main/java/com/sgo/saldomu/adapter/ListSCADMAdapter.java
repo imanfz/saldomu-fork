@@ -1,6 +1,6 @@
 package com.sgo.saldomu.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -13,8 +13,7 @@ import android.widget.Toast;
 
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.BBSActivity;
-import com.sgo.saldomu.activities.ListJoinCommunitySCADMActivity;
+import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.fragments.FragJoinCommunitySCADM;
 
@@ -25,12 +24,14 @@ import java.util.ArrayList;
  */
 
 public class ListSCADMAdapter extends RecyclerView.Adapter<ListSCADMAdapter.ViewHolder> {
-    private final Context mContext;
+    private final Activity mContext;
+
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
 
-    public ListSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Context mContext) {
+    public ListSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
+//        this.frameLayout = frameLayout;
     }
 
     @Override
@@ -49,19 +50,22 @@ public class ListSCADMAdapter extends RecyclerView.Adapter<ListSCADMAdapter.View
                 Toast.makeText(mContext,"on click position"+position, Toast.LENGTH_SHORT).show();
                 Bundle bundle=new Bundle();
                 bundle.putString(DefineValue.COMMUNITY_NAME, scadmCommunityModelArrayList.get(position).getComm_name());
+                bundle.putString(DefineValue.MEMBER_NAME, scadmCommunityModelArrayList.get(position).getMember_name());
                 Fragment mFrag = new FragJoinCommunitySCADM();
                 mFrag.setArguments(bundle);
+
+//                mContext.getFragmentManager().beginTransaction().replace(frameLayout, mFrag,"FragJoinCommunitySCADM" );
+
+                if(mContext == null){
+                    return;
+                }
+                JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
+                ftf.switchContent(mFrag,"Gabung Komunitas",true);
             }
         });
     }
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
-        if (this == null)
-            return;
 
-        ListJoinCommunitySCADMActivity fca = (ListJoinCommunitySCADMActivity) ;
-        fca.switchContent(i,name,isBackstack);
-    }
 
     @Override
     public int getItemCount() {
