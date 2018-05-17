@@ -19,7 +19,7 @@
             android:textSize="18sp"
             />
         <TextView
-            android:id="@+id/community_code"
+            android:id="@+id/tv_community_code"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/community_name"
+            android:id="@+id/tv_community_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -72,7 +72,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/member_code"
+            android:id="@+id/tv_member_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -95,11 +95,65 @@
             android:layout_weight="1.5"
             android:gravity="left"
             android:padding="3dip"
-            android:text="@string/member_name"
+            android:text="@string/bank_product"
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/member_name"
+            android:id="@+id/tv_bank_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:padding="3dip"
+            android:text="@string/jumlah"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_jumlah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:padding="3dip"
+            android:text="@string/remark"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_pesan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

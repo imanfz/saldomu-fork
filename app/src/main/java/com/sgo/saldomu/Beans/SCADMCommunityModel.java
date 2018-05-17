@@ -13,7 +13,9 @@ public class SCADMCommunityModel {
 
     private String member_code;
 
-    private String member_name;
+    private String member_id_scadm;
+
+    private String type;
 
     public String getComm_id() {
         return comm_id;
@@ -50,11 +52,19 @@ public class SCADMCommunityModel {
         this.member_code = member_code;
     }
 
-    public String getMember_name() {
-        return member_name;
+    public String getMember_id_scadm() {
+        return member_id_scadm;
     }
 
-    public void setMember_name(String member_name) {
-        this.member_name = member_name;
+    public void setMember_id_scadm(String member_id_scadm) {
+        this.member_id_scadm = member_id_scadm;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

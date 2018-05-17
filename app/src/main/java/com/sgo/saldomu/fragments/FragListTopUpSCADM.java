@@ -1,10 +1,13 @@
-package com.sgo.saldomu.activities;
+package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -12,15 +15,15 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.ListSCADMAdapter;
+import com.sgo.saldomu.adapter.ListTopUpSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,77 +33,68 @@ import java.util.ArrayList;
 import timber.log.Timber;
 
 /**
- * Created by Lenovo Thinkpad on 5/14/2018.
+ * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class ListTopUpSCADMActivity extends BaseActivity {
+public class FragListTopUpSCADM extends BaseFragment {
+    View v;
     SecurePreferences sp;
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
-    private ListSCADMAdapter listSCADMAdapter;
-    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+    private ListTopUpSCADMAdapter listTopUpSCADMAdapter;
+    private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
 
+    @Nullable
     @Override
-    protected int getLayoutResource() {
-        return R.layout.activity_list_join_community_scadm;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        v = inflater.inflate(R.layout.frag_list_topup_scadm, container, false);
+        return v;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = v.findViewById(R.id.recyclerView);
 
-        InitializeToolbar();
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
         initializeAdapter();
 
-        getListBankTopUp();
+        getListCommunity();
+
     }
 
     private void initializeAdapter() {
-        listSCADMAdapter = new ListSCADMAdapter(scadmCommunityModelArrayList, this);
-        recyclerView.setAdapter(listSCADMAdapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        listTopUpSCADMAdapter = new ListTopUpSCADMAdapter(scadmCommunityModelArrayList,getActivity());
+        recyclerView.setAdapter(listTopUpSCADMAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
 
-    public void InitializeToolbar() {
-        setActionBarIcon(R.drawable.ic_arrow_left);
-        setActionBarTitle(getString(R.string.scadm_topup));
-    }
-
-    @Override
-    public void onBackPressed() {
-        Timber.d("masuk onBackPressed");
-        super.onBackPressed();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Timber.d("masuk onOptions");
-        this.finish();
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void getListBankTopUp(){
+    public void getListCommunity() {
         try {
 
-            progdialog = DefinedDialog.CreateProgressDialog(this, "");
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_SCADM,
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_COMMUNITY_TOPUP_SCADM,
                     userPhoneID, accessKey);
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params get list topup scadm:" + params.toString());
+            Timber.d("isi params get list community topup scadm:" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response get list topup scadm:" + response.toString());
-                        if (!code.equals(WebParams.SUCCESS_CODE)) {
+                        Timber.d("isi response get list community topup scadm:" + response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
 
                             JSONArray mArrayCommunity = new JSONArray(response.getString(WebParams.COMMUNITY));
 
@@ -109,82 +103,78 @@ public class ListTopUpSCADMActivity extends BaseActivity {
                                 String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
                                 String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
                                 String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
-                                String member_name = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_NAME);
+                                String member_id_scadm = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_ID_SCADM);
 
                                 SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
                                 scadmCommunityModel.setComm_id(comm_id);
                                 scadmCommunityModel.setComm_code(comm_code);
                                 scadmCommunityModel.setComm_name(comm_name);
                                 scadmCommunityModel.setMember_code(member_code);
-                                scadmCommunityModel.setMember_name(member_name);
+                                scadmCommunityModel.setMember_id_scadm(member_id_scadm);
 
                                 scadmCommunityModelArrayList.add(scadmCommunityModel);
                             }
 
-                            listSCADMAdapter.updateData(scadmCommunityModelArrayList);
+                            listTopUpSCADMAdapter.updateData(scadmCommunityModelArrayList);
 
-//                            if(isAdded())
-//                                initializeLayout();
-//                            else
+
                             progdialog.dismiss();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ListTopUpSCADMActivity.this, message);
+                            test.showDialoginActivity(getActivity(), message);
                         } else {
-                            Timber.d("Error isi responce get list topup scadm:" + response.toString());
+                            Timber.d("Error isi response get list community topup scadm:" + response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
-                            Toast.makeText(ListTopUpSCADMActivity.this, code, Toast.LENGTH_LONG).show();
-                            finish();
+                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            getActivity().finish();
                         }
                         if (progdialog.isShowing())
                             progdialog.dismiss();
 
                     } catch (JSONException e) {
                         progdialog.dismiss();
-                        Toast.makeText(ListTopUpSCADMActivity.this, getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
                         e.printStackTrace();
                     }
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
                     failure(throwable);
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONArray errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     failure(throwable);
                 }
 
                 @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
                     super.onFailure(statusCode, headers, throwable, errorResponse);
                     failure(throwable);
                 }
 
                 private void failure(Throwable throwable) {
                     if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ListTopUpSCADMActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(ListTopUpSCADMActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi get list topup scadm:" + throwable.toString());
+                    Timber.w("Error Koneksi get list community topup scadm:" + throwable.toString());
                 }
 
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
-//                    if(!isAdded())
-//                        MyApiClient.CancelRequestWS(getActivity(), true);
                 }
 
                 @Override
@@ -195,9 +185,7 @@ public class ListTopUpSCADMActivity extends BaseActivity {
                 }
             };
 
-            MyApiClient.getListBankSCADM(ListTopUpSCADMActivity.this, params, mHandler);
-//            if(!isAdded())
-            //MyApiClient.getClient().cancelRequests(get);
+            MyApiClient.setLinkGetListCommunityTopupSCADM(getActivity(), params, mHandler);
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());

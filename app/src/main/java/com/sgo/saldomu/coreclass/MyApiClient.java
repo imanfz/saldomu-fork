@@ -235,10 +235,16 @@ public class MyApiClient {
     public static String LINK_REG_STEP1;
     public static String LINK_REG_STEP2;
     public static String LINK_REG_STEP3;
+    //list community scadm
     public static String LINK_GET_LIST_COMMUNITY_SCADM;
+    public static String LINK_GET_LIST_COMMUNITY_TOPUP_SCADM;
+    public static String LINK_GET_LIST_COMMUNITY_DENOM_SCADM;
+    //menu join di scadm
     public static String LINK_GET_PREVIEW_COMMUNITY_SCADM;
     public static String LINK_CONFIRM_COMMUNITY_SCADM;
-    public static String LINK_GET_LIST_BANK_SCADM;
+    //list bank scadm, untuk spinner produk bank
+    public static String LINK_GET_LIST_BANK_TOPUP_SCADM;
+    public static String LINK_GET_LIST_BANK_DENOM_SCADM;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -381,9 +387,12 @@ public class MyApiClient {
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_GET_LIST_COMMUNITY_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveAll";
-        LINK_GET_LIST_BANK_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveTopup";
+        LINK_GET_LIST_COMMUNITY_TOPUP_SCADM        = headaddressfinal + "scadm/ListCommunity/RetrieveTopup";
+        LINK_GET_LIST_COMMUNITY_DENOM_SCADM        = headaddressfinal + "scadm/ListCommunity/RetrieveDenom";
         LINK_GET_PREVIEW_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Preview";
         LINK_CONFIRM_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Save";
+        LINK_GET_LIST_BANK_TOPUP_SCADM = headaddressfinal +"scadm/ListBank/Topup";
+        LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
@@ -521,7 +530,8 @@ public class MyApiClient {
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
+//        params.put(WebParams.SIGNATURE, hash);
+        params.put(WebParams.SIGNATURE, "TESTING ACAI");
         return params;
     }
 
@@ -1477,6 +1487,16 @@ public class MyApiClient {
         post(mContext, LINK_GET_LIST_COMMUNITY_SCADM, params, responseHandler);
     }
 
+    public static void setLinkGetListCommunityTopupSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Community Topup SCADM: %1$s ",LINK_GET_LIST_COMMUNITY_TOPUP_SCADM);
+        post(mContext, LINK_GET_LIST_COMMUNITY_TOPUP_SCADM, params, responseHandler);
+    }
+
+    public static void setLinkGetListCommunityDenomSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Community Denom SCADM: %1$s ",LINK_GET_LIST_COMMUNITY_DENOM_SCADM);
+        post(mContext, LINK_GET_LIST_COMMUNITY_DENOM_SCADM, params, responseHandler);
+    }
+
     public static void sentPreviewJoinCommunitySCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address preview join Community SCADM: %1$s ",LINK_GET_PREVIEW_COMMUNITY_SCADM);
         post(mContext, LINK_GET_PREVIEW_COMMUNITY_SCADM, params, responseHandler);
@@ -1487,12 +1507,15 @@ public class MyApiClient {
         post(mContext, LINK_CONFIRM_COMMUNITY_SCADM, params, responseHandler);
     }
 
-    public static void getListBankSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address List Bank SCADM: %1$s ",LINK_GET_LIST_BANK_SCADM);
-        post(mContext, LINK_GET_LIST_BANK_SCADM, params, responseHandler);
+    public static void getListBankTopupSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Bank Topup SCADM: %1$s ",LINK_GET_LIST_BANK_TOPUP_SCADM);
+        post(mContext, LINK_GET_LIST_BANK_TOPUP_SCADM, params, responseHandler);
     }
 
-
+    public static void getListBankDenomSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_LIST_BANK_DENOM_SCADM);
+        post(mContext, LINK_GET_LIST_BANK_DENOM_SCADM, params, responseHandler);
+    }
 
     //get Data------------------------------------------------------------------------------------------
 

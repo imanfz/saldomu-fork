@@ -9,63 +9,58 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.fragments.FragJoinCommunitySCADM;
 
 import java.util.ArrayList;
 
 /**
- * Created by Lenovo Thinkpad on 5/13/2018.
+ * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class ListSCADMAdapter extends RecyclerView.Adapter<ListSCADMAdapter.ViewHolder> {
+public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAdapter.ViewHolder> {
     private final Activity mContext;
-
+    Fragment mFrag;
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
 
-    public ListSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
+    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
 //        this.frameLayout = frameLayout;
     }
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_scadm, parent, false));
+    public ListDenomSCADMAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new ListDenomSCADMAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_topup_denom_scadm, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
+        holder.memberCode.setText(scadmCommunityModelArrayList.get(position).getMember_code());
         holder.view.setVisibility(View.VISIBLE);
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext,"on click position"+position, Toast.LENGTH_SHORT).show();
                 Bundle bundle=new Bundle();
-                bundle.putString(DefineValue.COMMUNITY_NAME, scadmCommunityModelArrayList.get(position).getComm_name());
-                bundle.putString(DefineValue.MEMBER_NAME, scadmCommunityModelArrayList.get(position).getMember_name());
-                Fragment mFrag = new FragJoinCommunitySCADM();
-                mFrag.setArguments(bundle);
+                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
 
-//                mContext.getFragmentManager().beginTransaction().replace(frameLayout, mFrag,"FragJoinCommunitySCADM" );
+                JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
+
+//                    mFrag = new FragTopUpSCADM();
+//                    ftf.switchContent(mFrag,"Tambah Saldo SCADM",true);
+
+                mFrag.setArguments(bundle);
 
                 if(mContext == null){
                     return;
                 }
-                JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
-                ftf.switchContent(mFrag,"Gabung Komunitas",true);
             }
         });
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -78,7 +73,7 @@ public class ListSCADMAdapter extends RecyclerView.Adapter<ListSCADMAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView communityName, communityCode;
+        TextView communityName, memberCode, communityCode;
         View view;
         LinearLayout layout;
 
@@ -86,9 +81,10 @@ public class ListSCADMAdapter extends RecyclerView.Adapter<ListSCADMAdapter.View
             super(itemView);
             communityName = itemView.findViewById(R.id.community_name);
             communityCode = itemView.findViewById(R.id.community_code);
+            memberCode = itemView.findViewById(R.id.member_code);
             view = itemView.findViewById(R.id.view_list_scadm);
             layout = itemView.findViewById(R.id.layout1);
-            
+
         }
     }
 }

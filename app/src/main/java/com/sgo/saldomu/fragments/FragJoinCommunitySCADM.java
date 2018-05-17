@@ -41,8 +41,8 @@ import timber.log.Timber;
 public class FragJoinCommunitySCADM extends BaseFragment {
     View v;
     SecurePreferences sp;
-    String comm_name, comm_code, member_code, member_name;
-    TextView community_name;
+    String comm_name, comm_code, member_code, member_name, comm_id_scadm;
+    TextView community_name, community_code;
     EditText et_member_code;
     Button btn_next;
     private ProgressDialog progdialog;
@@ -68,19 +68,25 @@ public class FragJoinCommunitySCADM extends BaseFragment {
 
         Bundle bundle = getArguments();
         comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
-        bundle.getString(DefineValue.MEMBER_NAME);
+        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
+        comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
 
         community_name = v.findViewById(R.id.community_name);
+        community_code = v.findViewById(R.id.community_code);
         et_member_code = v.findViewById(R.id.member_code);
         btn_next = v.findViewById(R.id.btn_next);
 
         community_name.setText(comm_name);
+        community_code.setText(comm_code);
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (et_member_code.getText().toString() != null || !et_member_code.getText().toString().equalsIgnoreCase(""))
-                    nextlistener();
+                if (et_member_code.getText().toString() == null || et_member_code.getText().toString().equalsIgnoreCase(""))
+                {
+                    et_member_code.requestFocus();
+                    et_member_code.setError("Kode Member harus diisi!");
+                }else nextlistener();
             }
         });
     }
@@ -98,7 +104,8 @@ public class FragJoinCommunitySCADM extends BaseFragment {
             extraSignature = commIDLogin + et_member_code.getText().toString();
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM,
                     userPhoneID, accessKey, extraSignature);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.COMM_ID_SCADM, comm_id_scadm);
             params.put(WebParams.MEMBER_CODE, et_member_code.getText().toString());
 
             Timber.d("isi params sent preview join community scadm:" + params.toString());
@@ -168,7 +175,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
 
                     if (progdialog.isShowing())
                         progdialog.dismiss();
-                    getFragmentManager().popBackStack();
+                    getActivity().finish();
                     Timber.w("Error Koneksi sent preview join community scadm:" + throwable.toString());
                 }
 
@@ -195,8 +202,11 @@ public class FragJoinCommunitySCADM extends BaseFragment {
     public void changeToConfirm() {
         Bundle bundle = new Bundle();
         bundle.putString(DefineValue.COMMUNITY_NAME, comm_name);
-        bundle.getString(DefineValue.MEMBER_CODE, member_code);
-        bundle.getString(DefineValue.MEMBER_NAME, member_name);
+        bundle.putString(DefineValue.COMMUNITY_CODE, comm_code);
+        bundle.putString(DefineValue.COMM_ID_SCADM, comm_id_scadm);
+        bundle.putString(DefineValue.MEMBER_CODE, member_code);
+        bundle.putString(DefineValue.MEMBER_NAME, member_name);
+        bundle.putString(DefineValue.COMM_ID_SCADM, member_name);
         Fragment mFrag = new FragJoinCommunityConfirm();
         mFrag.setArguments(bundle);
 

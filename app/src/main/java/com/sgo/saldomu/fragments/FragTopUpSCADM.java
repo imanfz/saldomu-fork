@@ -1,22 +1,22 @@
 package com.sgo.saldomu.fragments;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -30,33 +30,40 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import timber.log.Timber;
 
 /**
- * Created by Lenovo Thinkpad on 5/16/2018.
+ * Created by Lenovo Thinkpad on 5/17/2018.
  */
 
-public class FragJoinCommunityConfirm extends BaseFragment {
+public class FragTopUpSCADM extends BaseFragment {
     View v;
     SecurePreferences sp;
-    TextView community_name, tvmember_code, tvmember_name, community_code;
+    Spinner spinner_bank_product;
+    EditText et_jumlah, et_pesan;
     Button btn_next;
-    String comm_name, member_code, member_name, comm_id_scadm, comm_code;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     private ProgressDialog progdialog;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm;
+    String comm_name, member_code, bank_code, bank_name, product_code, product_name, bank_gateway, comm_code;
+    private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
+    private ArrayList<String> spinnerContentStrings = new ArrayList<>();
+    private ArrayAdapter<String> arrayAdapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.frag_join_community_confirm, container, false);
+        v = inflater.inflate(R.layout.frag_topup_scadm, container, false);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
+
         memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
@@ -65,53 +72,95 @@ public class FragJoinCommunityConfirm extends BaseFragment {
         Bundle bundle = getArguments();
         comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
         comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
-        comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
         member_code = bundle.getString(DefineValue.MEMBER_CODE);
-        member_name = bundle.getString(DefineValue.MEMBER_NAME);
+        member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
 
-        community_name = v.findViewById(R.id.community_name);
-        community_code = v.findViewById(R.id.community_code);
-        tvmember_code = v.findViewById(R.id.member_code);
-        tvmember_name = v.findViewById(R.id.member_name);
+        spinner_bank_product = v.findViewById(R.id.spinner_bank_produk);
+        et_jumlah = v.findViewById(R.id.et_jumlah);
+        et_pesan = v.findViewById(R.id.et_remark);
         btn_next = v.findViewById(R.id.btn_next);
-
-        community_name.setText(comm_name);
-        community_code.setText(comm_code);
-        tvmember_code.setText(member_code);
-        tvmember_name.setText(member_name);
+        initiateAdapterAndSpinner();
+        getListBank();
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                confirmJoinCommunity();
+                if (et_jumlah==null || et_jumlah.getText().toString().isEmpty())
+                {
+                    et_jumlah.requestFocus();
+                    et_jumlah.setError("Jumlah harus diisi!");
+                }
+                else changeToConfirmTopup();
             }
         });
     }
 
-    public void confirmJoinCommunity()
+    public void initiateAdapterAndSpinner() {
+        //fill your custom layout
+        arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item);
+        //fill your custom layout
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_bank_product.setAdapter(arrayAdapter);
+
+        spinner_bank_product.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    public void  getListBank()
     {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-
-            extraSignature = commIDLogin + member_code;
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_COMMUNITY_SCADM,
-                    userPhoneID, accessKey, extraSignature);
+            extraSignature = memberIDLogin;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM,
+                    userPhoneID, accessKey, memberIDLogin);
+            params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.COMM_ID, comm_id_scadm);
-            params.put(WebParams.MEMBER_CODE, member_code);
+            params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
 
-            Timber.d("isi params confirm join community scadm:" + params.toString());
+            Timber.d("isi params get list bank topup scadm:" + params.toString());
 
             JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response confirm join community scadm:" + response.toString());
+                        Timber.d("isi response get list community scadm:" + response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            successDialog();
+                            JSONArray mArrayBank = new JSONArray(response.getString(WebParams.BANK));
+
+                            for (int i = 0; i < mArrayBank.length(); i++) {
+                                bank_code = mArrayBank.getJSONObject(i).getString(WebParams.BANK_CODE);
+                                bank_name = mArrayBank.getJSONObject(i).getString(WebParams.BANK_NAME);
+                                product_code = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
+                                product_name = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
+                                bank_gateway = mArrayBank.getJSONObject(i).getString(WebParams.BANK_GATEWAY);
+
+                                listBankModel listBankModel = new listBankModel();
+                                listBankModel.setBank_code(bank_code);
+                                listBankModel.setBank_name(bank_name);
+                                listBankModel.setProduct_code(product_code);
+                                listBankModel.setProduct_name(product_name);
+                                listBankModel.setBank_gateway(bank_gateway);
+
+                                scadmListBankTopUp.add(listBankModel);
+                                spinnerContentStrings.add(product_name);
+
+                                arrayAdapter.addAll(spinnerContentStrings);
+                                arrayAdapter.notifyDataSetChanged();
+                            }
+
+                            progdialog.dismiss();
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
@@ -119,7 +168,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
                         } else {
-                            Timber.d("Error isi response confirm join community scadm:" + response.toString());
+                            Timber.d("Error isi response get list bank topup scadm:" + response.toString());
                             code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
                             Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -162,7 +211,7 @@ public class FragJoinCommunityConfirm extends BaseFragment {
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi confirm join community scadm:" + throwable.toString());
+                    Timber.w("Error Koneksi get list bank topup scadm:" + throwable.toString());
                 }
 
                 @Override
@@ -178,47 +227,20 @@ public class FragJoinCommunityConfirm extends BaseFragment {
                 }
             };
 
-            MyApiClient.confirmJoinCommunitySCADM(getActivity(), params, mHandler);
+            MyApiClient.getListBankTopupSCADM(getActivity(), params, mHandler);
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void successDialog()
+    public void changeToConfirmTopup()
     {
-        Dialog dialognya = DefinedDialog.MessageDialog(getActivity(),"Sukses!", "Selamat, anda berhasil bergabung dalam komunitas!",
-                new DefinedDialog.DialogButtonListener() {
-                    @Override
-                    public void onClickButton(View v, boolean isLongClick) {
-                        getActivity().finish();
-                    }
-                }
-        );
-
-        dialognya.setCanceledOnTouchOutside(false);
-        dialognya.setCancelable(false);
-
-        dialognya.show();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getFragmentManager().popBackStack();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString(DefineValue.COMMUNITY_CODE,"");
+        bundle1.putString(DefineValue.COMMUNITY_NAME,"");
+        bundle1.putString(DefineValue.MEMBER_CODE,"");
+        bundle1.putString(DefineValue.MEMBER_CODE,et_jumlah.getText().toString());
+        bundle1.putString(DefineValue.REMARK,et_pesan.getText().toString());
     }
 }

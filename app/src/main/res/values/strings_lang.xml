@@ -1214,4 +1214,5 @@
     <string name="scadm_join">Gabung Komunitas SCADM</string>
     <string name="scadm_topup">Tambah Saldo Komunitas SCADM</string>
     <string name="scadm_denom">Denom SCADM</string>
+    <string name="bank_product">Produk Bank</string>
 </resources>

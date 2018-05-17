@@ -1,33 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/margin_10dp">
-        <TextView
-            android:text="Kode Komunitas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:gravity="left"
-            android:layout_gravity="center_vertical"
-            android:padding="3dip"
-            android:textSize="18sp"
-            />
-        <TextView
-            android:id="@+id/community_code"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="left"
-            android:padding="3dip"
-            android:textSize="18sp"/>
-    </LinearLayout>
+    android:orientation="vertical"
+    android:visibility="visible">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="2"
             android:gravity="left"
             android:padding="3dip"
             android:text="@string/community"
@@ -65,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="2"
             android:gravity="left"
             android:padding="3dip"
             android:text="@string/member_code"
@@ -81,25 +58,23 @@
             android:padding="3dip"
             android:textSize="18sp"/>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_margin="@dimen/margin_10dp">
-
         <TextView
+            android:text="Produk Bank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1.5"
+            android:layout_weight="2"
             android:gravity="left"
+            android:layout_gravity="center_vertical"
             android:padding="3dip"
-            android:text="@string/member_name"
-            android:textSize="18sp"/>
-
+            android:textSize="18sp"
+            />
         <TextView
-            android:id="@+id/member_name"
+            android:id="@+id/bank_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -108,12 +83,63 @@
             android:padding="3dip"
             android:textSize="18sp"/>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+        <TextView
+            android:text="@string/jumlah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/tv_jumlah"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+        <TextView
+            android:text="Pesan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/tv_remark"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/btn_next"
+        android:layout_margin="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/next"
+        android:id="@+id/btn_next"
         android:layout_gravity="center"
-        android:gravity="center_vertical"
-        android:text="@string/next" />
+        android:gravity="center_vertical"/>
 </LinearLayout>

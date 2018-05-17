@@ -16,7 +16,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.adapter.ListSCADMAdapter;
+import com.sgo.saldomu.adapter.ListJoinSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
@@ -41,7 +41,7 @@ public class FragListCommunitySCADM extends Fragment {
     SecurePreferences sp;
     private ProgressDialog progdialog;
     private RecyclerView recyclerView;
-    private ListSCADMAdapter listSCADMAdapter;
+    private ListJoinSCADMAdapter listJoinSCADMAdapter;
     private LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList = new ArrayList<>();
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
@@ -71,9 +71,9 @@ public class FragListCommunitySCADM extends Fragment {
     }
 
     private void initializeAdapter() {
-        listSCADMAdapter = new ListSCADMAdapter(scadmCommunityModelArrayList,getActivity());
-        recyclerView.setAdapter(listSCADMAdapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        listJoinSCADMAdapter = new ListJoinSCADMAdapter(scadmCommunityModelArrayList,getActivity());
+        recyclerView.setAdapter(listJoinSCADMAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
 
     public void getListCommunity() {
@@ -103,19 +103,19 @@ public class FragListCommunitySCADM extends Fragment {
                                 String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
                                 String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
                                 String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
-                                String member_name = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_NAME);
+                                String member_id = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_ID);
 
                                 SCADMCommunityModel scadmCommunityModel = new SCADMCommunityModel();
                                 scadmCommunityModel.setComm_id(comm_id);
                                 scadmCommunityModel.setComm_code(comm_code);
                                 scadmCommunityModel.setComm_name(comm_name);
                                 scadmCommunityModel.setMember_code(member_code);
-                                scadmCommunityModel.setMember_name(member_name);
+                                scadmCommunityModel.setMember_id_scadm(member_id);
 
                                 scadmCommunityModelArrayList.add(scadmCommunityModel);
                             }
 
-                            listSCADMAdapter.updateData(scadmCommunityModelArrayList);
+                            listJoinSCADMAdapter.updateData(scadmCommunityModelArrayList);
 
 
                             progdialog.dismiss();
@@ -168,15 +168,13 @@ public class FragListCommunitySCADM extends Fragment {
 
                     if (progdialog.isShowing())
                         progdialog.dismiss();
-                    getFragmentManager().popBackStack();
+                    getActivity().finish();
                     Timber.w("Error Koneksi get list community scadm:" + throwable.toString());
                 }
 
                 @Override
                 public void onProgress(long bytesWritten, long totalSize) {
                     super.onProgress(bytesWritten, totalSize);
-//                    if(!isAdded())
-//                        MyApiClient.CancelRequestWS(getActivity(), true);
                 }
 
                 @Override
@@ -188,8 +186,6 @@ public class FragListCommunitySCADM extends Fragment {
             };
 
             MyApiClient.getListCommunitySCADM(getActivity(), params, mHandler);
-////            if(!isAdded())
-//            //MyApiClient.getClient().cancelRequests(get);
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
