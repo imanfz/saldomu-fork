@@ -8,7 +8,12 @@ import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -22,15 +27,17 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
-import in.srain.cube.views.ptr.header.StoreHouseHeader;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.StoreHouseHeader;
 import timber.log.Timber;
 
 /*
@@ -59,8 +66,8 @@ public class RightSideDrawMenu extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _ownerID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         ptrFrameLayout = (PtrFrameLayout) getActivity().findViewById(R.id.promo_ptr_frame);
         ListView lvPromo = (ListView) getActivity().findViewById(R.id.lvPromo);
@@ -128,16 +135,16 @@ public class RightSideDrawMenu extends Fragment {
 
     }
 
-    public void autoRefreshList(){
-        if(ptrFrameLayout != null)
+    public void autoRefreshList() {
+        if (ptrFrameLayout != null)
             ptrFrameLayout.autoRefresh();
     }
 
     private void getPromoList() {
         try {
 
-            RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_PROMO_LIST,
-                    _ownerID,accessKey);
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_PROMO_LIST,
+                    _ownerID, accessKey);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PAGE, Integer.toString(page));
             params.put(WebParams.COUNT, count);
@@ -145,16 +152,16 @@ public class RightSideDrawMenu extends Fragment {
 
             Timber.d("isi params get promo list:" + params.toString());
 
-            MyApiClient.getPromoList(getActivity(),params, new JsonHttpResponseHandler() {
+            MyApiClient.getPromoList(getActivity(), params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
 
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params promo list:"+response.toString());
+                            Timber.d("isi params promo list:" + response.toString());
                             String count = response.getString(WebParams.COUNT);
-                            if(!count.equals("0")) {
+                            if (!count.equals("0")) {
                                 JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
 
                                 for (int i = 0; i < mArrayPromo.length(); i++) {
@@ -194,12 +201,11 @@ public class RightSideDrawMenu extends Fragment {
 
                                 promoAdapter.notifyDataSetChanged();
                             }
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout", response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
+                            test.showDialoginMain(getActivity(), message);
                         }
 
                     } catch (JSONException e) {
@@ -225,27 +231,26 @@ public class RightSideDrawMenu extends Fragment {
                     failure(throwable);
                 }
 
-                private void failure(Throwable throwable){
-                    if(getActivity() != null) {
+                private void failure(Throwable throwable) {
+                    if (getActivity() != null) {
                         if (MyApiClient.PROD_FAILURE_FLAG)
                             Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
                     }
-                    Timber.w("Error Koneksi promo list promo righside:"+throwable.toString());
+                    Timber.w("Error Koneksi promo list promo righside:" + throwable.toString());
                 }
             });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void switchActivity(Intent mIntent){
+    private void switchActivity(Intent mIntent) {
         if (getActivity() == null)
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 }

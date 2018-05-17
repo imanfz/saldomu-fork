@@ -116,3 +116,4 @@
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
+-dontwarn com.zj.command.**

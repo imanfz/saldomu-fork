@@ -44,6 +44,7 @@ android {
 
     }
 
+
     android {
         useLibrary 'org.apache.http.legacy'
     }
@@ -73,7 +74,8 @@ android {
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
-
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6282333800085\""
+            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282333800085\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"add647f3d560bcb65fc0cb15d7b66615\""
@@ -105,7 +107,8 @@ android {
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
-
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
+            buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
@@ -158,8 +161,6 @@ dependencies {
 
     //Android lib
     //UI UX
-
-
     //Utilitize
     //ORM
     //Json Engine
@@ -223,5 +224,6 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.1'
     implementation 'com.scottyab:aes-crypto:0.0.4'
+    implementation project(':btsdk')
 }
 apply plugin: 'com.google.gms.google-services'

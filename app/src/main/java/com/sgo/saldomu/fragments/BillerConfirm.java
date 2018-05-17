@@ -46,7 +46,6 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.JsonSorting;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -268,14 +267,14 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
 
                 //jika BPJS sorting fieldnya sesuai format
-                if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
-                    tempList = JsonSorting.BPJSInquirySortingField();
-                }
-                else {
+//                if(biller_type_code.equalsIgnoreCase(DefineValue.BILLER_TYPE_BPJS)) {
+//                    tempList = JsonSorting.BPJSInquirySortingField();
+//                }
+//                else {
                     while (keys.hasNext()) {
                         tempList.add((String) keys.next());
                     }
-                }
+//                }
 
                 TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
                         TableLayout.LayoutParams.WRAP_CONTENT);

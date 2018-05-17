@@ -419,7 +419,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     if (inputValidation()) {
                         SubmitAction(false);
                     }
-                     btnNext.setEnabled(false);
+//                     btnNext.setEnabled(false);
                 }
             }
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
@@ -450,8 +450,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             }
 
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
-
-
         }
         else
             btnNext.setEnabled(false);

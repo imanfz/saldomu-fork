@@ -3,12 +3,21 @@ package com.sgo.saldomu.dialogs;/*
  */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,6 +33,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sgo.saldomu.BluetoothPrinter.zj.BluetoothService;
+import com.sgo.saldomu.BluetoothPrinter.zj.DevicesList;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonSorting;
@@ -33,6 +44,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,20 +53,74 @@ import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
-public class ReportBillerDialog extends DialogFragment implements View.OnClickListener {
+public class ReportBillerDialog extends DialogFragment implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
 
     public static final String TAG = "reportBiller Dialog";
     private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE = 102;
+    private static final int RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT = 112;
 
     private OnDialogOkCallback callback;
     private Boolean isActivity = false;
-    private String trx_id;
+    private String trx_id, buss_scheme_code, type, imgFilename;
     private ViewToBitmap viewToBitmap;
     private LinearLayout contentInvoice;
+    private TableLayout mTableLayout;
     private ImageView saveimage;
     private ImageView shareimage;
+    private ImageView printStruk;
     private static final int recCodeShareImage = 11;
     private static final int recCodeSaveImage = 12;
+
+    Bundle args;
+
+    byte FONT_TYPE;
+    private static BluetoothSocket btsocket;
+    private static OutputStream outputStream;
+
+    private BluetoothAdapter mBluetoothAdapter = null;
+    // Member object for the services
+    private BluetoothService mService = null;
+    private BluetoothDevice btDevice = null;
+
+    private int maxRetry    = 10;
+    private int countRetry  = 0;
+    private int timeDelayed = 3000;
+    // Init
+    private Handler handler = new Handler();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if ( mService != null && btDevice != null) {
+                //mService.stop();
+                //mService = new BluetoothService(getContext(), mHandler);
+                mService.connect(btDevice);
+                countRetry++;
+            }
+            Log.d("Run Thread : ", "printbluetooth");
+
+            //yessi, dibawah ini tuk cek max try berapa kali
+            //if ( countRetry < maxRetry )
+                handler.postDelayed(this, timeDelayed);
+        }
+    };
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch(requestCode) {
+            //case RC_LOCATION_PERM:
+            case RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT:
+                connect();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+    }
+
 
     public interface OnDialogOkCallback {
         void onOkButton();
@@ -77,6 +144,15 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
 
         this.isActivity = getArguments().getBoolean(DefineValue.IS_ACTIVE, false);
+
+        // Get local Bluetooth adapter
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        // If the adapter is null, then Bluetooth is not supported
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(getContext(), "Bluetooth is not available", Toast.LENGTH_LONG).show();
+            getActivity().finish();
+        }
 
 //        try {
 //            if (isActivity)
@@ -103,11 +179,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         View view = inflater.inflate(R.layout.dialog_report_biller, container);
         ViewStub stub = view.findViewById(R.id.stub);
 
-        Bundle args = getArguments();
+        args = getArguments();
         Timber.d("isi args report:" + args.toString());
 
-        String type = args.getString(DefineValue.REPORT_TYPE);
-        String buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
+        type = args.getString(DefineValue.REPORT_TYPE);
+        buss_scheme_code = args.getString(DefineValue.BUSS_SCHEME_CODE);
 
         LinearLayout layout_txId = (LinearLayout) view.findViewById(R.id.layout_tx_id);
         TextView tv_date_value = (TextView) view.findViewById(R.id.dialog_reportbiller_date_time);
@@ -311,11 +387,9 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_name_value);
                     TextView tv_denom_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_denomretail_value);
                     TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_amount_value);
-                    TextView tv_denom_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_text_denom);
                     TextView tv_payment_options_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
                     TextView tv_fee_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_fee_value);
                     TextView tv_total_amount_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
-//                        TextView tv_dest_remark_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_dest_remark_value);
 
                     TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
                     mTableLayout.setVisibility(View.VISIBLE);
@@ -328,7 +402,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_payment_options_text.setText(args.getString(DefineValue.PRODUCT_NAME));
                     tv_fee_text.setText(args.getString(DefineValue.FEE));
                     tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-//                        tv_dest_remark_text.setText(args.getString(DefineValue.DESTINATION_REMARK));
                     Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
                     createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type);
@@ -417,7 +490,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_message = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_message_value);
                 TextView tv_report_type = (TextView) inflated.findViewById(R.id.dialog_report_type);
 
-                TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.transfer_data_layout_table);
+                mTableLayout = (TableLayout) inflated.findViewById(R.id.transfer_data_layout_table);
                 mTableLayout.setVisibility(View.VISIBLE);
 
                 inflated.setVisibility(View.VISIBLE);
@@ -555,358 +628,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             }
         }
 
-
-
-//        if (type != null) {
-//            if (type.equals(DefineValue.BILLER_PLN) || type.equals(DefineValue.BILLER_BPJS)) {
-////                View mLayout = view.findViewById(R.id.report_biller_pln);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_biller_pln);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-//
-//                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
-//                    if (!isSuccess) {
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//                    TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
-//                    String source = args.getString(DefineValue.DETAILS_BILLER, "");
-//                    Timber.d("isi source : \n", source);
-//                    if (!source.isEmpty() && !source.equalsIgnoreCase("")) {
-//                        source = source.replace("customer_id", getString(R.string.customer_id));
-//                        createTableDesc(source, mTableLayout, type);
-//                    }
-//            } else if (type.equals(DefineValue.BILLER)) {
-////                View mLayout = view.findViewById(R.id.report_biller);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_biller);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_userid_value);
-//                    TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_name_value);
-//                    TextView tv_denom_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_denomretail_value);
-//                    TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportbiller_amount_value);
-//                    TextView tv_denom_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_text_denom);
-//                    TextView tv_payment_options_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_payment_options_value);
-//                    TextView tv_fee_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_fee_value);
-//                    TextView tv_total_amount_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_total_amount_value);
-//                    TextView tv_dest_remark_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_dest_remark_value);
-//
-//
-//                    tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
-//                    tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-//                    tv_denom_value.setText(args.getString(DefineValue.DENOM_DATA));
-//                    tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
-//                    tv_payment_options_text.setText(args.getString(DefineValue.PAYMENT_NAME));
-//                    tv_fee_text.setText(args.getString(DefineValue.FEE));
-//                    tv_total_amount_text.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-////                    tv_dest_remark_text.setText(args.getString(DefineValue.DESTINATION_REMARK));
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-//
-//                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
-//                    if (!isSuccess) {
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//
-//                    Boolean isShowDescription = args.getBoolean(DefineValue.IS_SHOW_DESCRIPTION, false);
-//
-//                    if (isShowDescription) {
-//                        tv_denom_text.setText(getString(R.string.billertoken_text_item_name));
-//                        View desclayout = inflated.findViewById(R.id.dialog_reportbiller_layout_desc);
-//                        RelativeLayout mDescLayout = (RelativeLayout) inflated.findViewById(R.id.billertoken_layout_deskripsi);
-//
-//                        if (!args.getString(DefineValue.DETAILS_BILLER, "").isEmpty()) {
-//                            mDescLayout.setVisibility(View.VISIBLE);
-//                            desclayout.setVisibility(View.VISIBLE);
-//                            final TableLayout mTableLayout = (TableLayout) inflated.findViewById(R.id.billertoken_layout_table);
-//                            final ImageView mIconArrow = (ImageView) inflated.findViewById(R.id.billertoken_arrow_desc);
-//
-//                            View.OnClickListener descriptionClickListener = new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    Animation mRotate = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_arrow);
-//                                    mRotate.setInterpolator(new LinearInterpolator());
-//                                    mRotate.setAnimationListener(new Animation.AnimationListener() {
-//                                        @Override
-//                                        public void onAnimationStart(Animation animation) {
-//
-//                                        }
-//
-//                                        @Override
-//                                        public void onAnimationEnd(Animation animation) {
-//                                            mIconArrow.invalidate();
-//                                            if (mTableLayout.getVisibility() == View.VISIBLE) {
-//                                                mIconArrow.setImageResource(R.drawable.ic_circle_arrow_down);
-//                                                mTableLayout.setVisibility(View.GONE);
-//                                            } else {
-//                                                mIconArrow.setImageResource(R.drawable.ic_circle_arrow);
-//                                                mTableLayout.setVisibility(View.VISIBLE);
-//                                            }
-//                                            mIconArrow.invalidate();
-//                                        }
-//
-//                                        @Override
-//                                        public void onAnimationRepeat(Animation animation) {
-//
-//                                        }
-//                                    });
-//                                    mIconArrow.startAnimation(mRotate);
-//                                }
-//                            };
-//
-//                            mDescLayout.setOnClickListener(descriptionClickListener);
-//                            mIconArrow.setOnClickListener(descriptionClickListener);
-//
-//                            createTableDesc(args.getString(DefineValue.DETAILS_BILLER, ""), mTableLayout, type);
-//                        }
-//
-//                        Timber.d("isi Amount desired:" + args.getString(DefineValue.AMOUNT_DESIRED));
-//
-//                        if (!args.getString(DefineValue.AMOUNT_DESIRED, "").isEmpty()) {
-//                            View inputAmountLayout = inflated.findViewById(R.id.dialog_reportbiller_amount_desired_layout);
-//                            inputAmountLayout.setVisibility(View.VISIBLE);
-//                            TextView _desired_amount = (TextView) inputAmountLayout.findViewById(R.id.dialog_reportbiller_amount_desired_value);
-//                            _desired_amount.setText(args.getString(DefineValue.AMOUNT_DESIRED));
-//                        }
-//                    }
-//
-//                } else
-//                  if (type.equals(DefineValue.PAYFRIENDS)) {
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_payfriends);
-//                    View inflated = stub.inflate();
-////                LinearLayout mLayout = (LinearLayout) view.findViewById(R.id.report_payfriends);
-//                    TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_userid_value);
-//                    TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_name_value);
-//                    TextView tv_recipients_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_recipients_value);
-//                    TextView tv_amount_each_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_amount_each_value);
-//                    TextView tv_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_amount_value);
-//                    TextView tv_fee_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_fee_value);
-//                    TextView tv_total_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_totalamount_value);
-//                    TextView tv_message = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_message_value);
-//
-//                    inflated.setVisibility(View.VISIBLE);
-//                    tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
-//                    tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-//                    tv_recipients_value.setText(args.getString(DefineValue.RECIPIENTS));
-//                    tv_amount_each_value.setText(args.getString(DefineValue.AMOUNT_EACH));
-//                    tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
-//                    tv_fee_value.setText(args.getString(DefineValue.FEE));
-//                    tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-//                    tv_message.setText(args.getString(DefineValue.MESSAGE));
-//
-//                    if (args.getString(DefineValue.RECIPIENTS_ERROR) != null) {
-//                        LinearLayout mLayoutFailed = (LinearLayout) inflated.findViewById(R.id.dialog_reportpayfriends_failed_layout);
-//                        TextView tv_error_recipient_value = (TextView) inflated.findViewById(R.id.dialog_reportpayfriends_errorrecipient_value);
-//                        mLayoutFailed.setVisibility(View.VISIBLE);
-//                        tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
-//                    }
-//                } else
-//                  if (type.equals(DefineValue.TRANSACTION)) {
-////                View report_layout = view.findViewById(R.id.report_dialog);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    LinearLayout trAlias = (TableRow) inflated.findViewById(R.id.trAlias);
-//                    View lineAlias = inflated.findViewById(R.id.lineAlias);
-//                    TextView tv_detail = (TextView) inflated.findViewById(R.id.dialog_report_trans_detail_value);
-//                    TextView tv_userid = (TextView) inflated.findViewById(R.id.dialog_report_trans_user_id);
-//                    TextView tv_username = (TextView) inflated.findViewById(R.id.dialog_report_trans_user_name);
-//                    TextView tv_alias = (TextView) inflated.findViewById(R.id.dialog_report_trans_alias_value);
-//                    TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_trans_amount_value);
-//                    TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_trans_remark_value);
-//                    TextView tv_admin_fee = (TextView) inflated.findViewById(R.id.dialog_report_trans_admin_fee);
-//                    TextView tv_total = (TextView) inflated.findViewById(R.id.dialog_report_trans_total);
-//
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-//
-//                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
-//                    if (!isSuccess) {
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//
-//                    String detail = args.getString(DefineValue.DETAIL, "");
-//                    if (detail.equalsIgnoreCase(DefineValue.CASH_OUT)) {
-//                        trAlias.setVisibility(View.GONE);
-//                        lineAlias.setVisibility(View.GONE);
-//                    } else {
-//                        trAlias.setVisibility(View.VISIBLE);
-//                        lineAlias.setVisibility(View.VISIBLE);
-//                        tv_alias.setText(args.getString(DefineValue.CONTACT_ALIAS, ""));
-//                    }
-//
-////                    tv_type.setText(args.getString(DefineValue.TYPE, ""));
-////                    tv_desc.setText(args.getString(DefineValue.DESCRIPTION, ""));
-//                    tv_amount.setText(args.getString(DefineValue.AMOUNT, ""));
-//                    tv_remark.setText(args.getString(DefineValue.REMARK, ""));
-//
-//                    tv_detail.setText(detail);
-//                }
-//                else if (type.equals(DefineValue.TRANSACTION_ESPAY)) {
-////                View report_layout = view.findViewById(R.id.report_dialog_espay);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_espay_transaction);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_buss_scheme_name = (TextView) inflated.findViewById(R.id.dialog_report_buss_scheme_name_value);
-//                    TextView tv_comm_name = (TextView) inflated.findViewById(R.id.dialog_report_community_value);
-//                    TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_trans_amount_value);
-//                    TextView tv_fee = (TextView) inflated.findViewById(R.id.dialog_report_fee_value);
-//                    TextView tv_total_amount = (TextView) inflated.findViewById(R.id.dialog_report_total_amount_value);
-//                    TextView tv_desc = (TextView) inflated.findViewById(R.id.dialog_report_trans_description_value);
-//                    TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_trans_remark_value);
-//                    TextView tv_bank_name = (TextView) inflated.findViewById(R.id.dialog_report_bank_name_value);
-//                    TextView tv_product_name = (TextView) inflated.findViewById(R.id.dialog_report_product_name_value);
-//
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-//
-//                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
-//                    if (!isSuccess) {
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//
-//                    tv_buss_scheme_name.setText(args.getString(DefineValue.BUSS_SCHEME_NAME, ""));
-//                    tv_comm_name.setText(args.getString(DefineValue.COMMUNITY_NAME, ""));
-//                    tv_amount.setText(args.getString(DefineValue.AMOUNT, ""));
-//                    tv_fee.setText(args.getString(DefineValue.FEE, ""));
-//                    tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT, ""));
-//                    tv_desc.setText(args.getString(DefineValue.DESCRIPTION, ""));
-//                    tv_remark.setText(args.getString(DefineValue.REMARK, ""));
-//                    tv_bank_name.setText(args.getString(DefineValue.BANK_NAME, ""));
-//                    tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
-//
-//                    if (args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("UNIK")) {
-//                        tv_product_name.setText(getContext().getString(R.string.appname));
-//                    } else {
-//                        tv_product_name.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
-//                    }
-//                } else if (type.equals(DefineValue.PULSA_AGENT)) {
-////                View mLayout = view.findViewById(R.id.report_dialog_dap);
-//                    stub.setLayoutResource(R.layout.layout_dialog_dap);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_useerid_value = (TextView) view.findViewById(R.id.dialog_report_userid_value);
-//                    TextView tv_name_value = (TextView) view.findViewById(R.id.dialog_report_name_value);
-//                    TextView tv_operator_value = (TextView) view.findViewById(R.id.dialog_report_operator_value);
-//                    TextView tv_nominal_value = (TextView) view.findViewById(R.id.dialog_report_nominal_value);
-//                    TextView tv_amount_value = (TextView) view.findViewById(R.id.dialog_report_amount_value);
-//                    TextView tv_payment_options_text = (TextView) view.findViewById(R.id.dialog_report_payment_options_value);
-//                    TextView tv_fee_value = (TextView) view.findViewById(R.id.dialog_reportdap_fee_value);
-//                    TextView tv_total_amount_value = (TextView) view.findViewById(R.id.dialog_reportdap_total_amount_value);
-//                    TextView tv_dest_remark_text = (TextView) inflated.findViewById(R.id.dialog_reportbiller_dest_remark_value);
-//
-//
-//                    tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
-//                    tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-//                    tv_operator_value.setText(args.getString(DefineValue.OPERATOR_NAME));
-//                    tv_nominal_value.setText(args.getString(DefineValue.DENOM_DATA));
-//                    tv_amount_value.setText(args.getString(DefineValue.AMOUNT));
-//                    tv_payment_options_text.setText(args.getString(DefineValue.PAYMENT_NAME));
-//                    tv_fee_value.setText(args.getString(DefineValue.FEE));
-//                    tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-//                    tv_dest_remark_text.setText(args.getString(DefineValue.DESTINATION_REMARK));
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
-//
-//                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
-//                    if (!isSuccess) {
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//                    if (args.getString(DefineValue.PRODUCT_NAME).equalsIgnoreCase("UNIK")) {
-//                        tv_payment_options_text.setText(getContext().getString(R.string.appname));
-//                    } else {
-//                        tv_payment_options_text.setText(args.getString(DefineValue.PRODUCT_NAME, ""));
-//                    }
-//
-//                } else if (type.equals(DefineValue.REQUEST)) {
-////                View report_layout = view.findViewById(R.id.report_dialog_request);
-//                    stub.setLayoutResource(R.layout.layout_dialog_request);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_detail = (TextView) inflated.findViewById(R.id.dialog_report_req_detail_value);
-//                    TextView tv_type = (TextView) inflated.findViewById(R.id.dialog_report_req_type_value);
-//                    TextView tv_desc = (TextView) inflated.findViewById(R.id.dialog_report_req_description_value);
-//                    TextView tv_alias = (TextView) inflated.findViewById(R.id.dialog_report_req_alias_value);
-//                    TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_req_amount_value);
-//                    TextView tv_remark = (TextView) inflated.findViewById(R.id.dialog_report_req_remark_value);
-//                    TextView tv_status = (TextView) inflated.findViewById(R.id.dialog_report_req_status_value);
-//                    TextView tv_reason = (TextView) inflated.findViewById(R.id.dialog_report_req_reason_value);
-//
-//
-//                    String detail = args.getString(DefineValue.DETAIL);
-//
-//                    tv_trans_remark.setText(getString(R.string.request));
-//                    tv_type.setText(args.getString(DefineValue.TYPE, ""));
-//                    tv_desc.setText(args.getString(DefineValue.DESCRIPTION, ""));
-//                    tv_alias.setText(args.getString(DefineValue.CONTACT_ALIAS, ""));
-//                    tv_amount.setText(args.getString(DefineValue.AMOUNT, ""));
-//                    tv_remark.setText(args.getString(DefineValue.REMARK, ""));
-//                    tv_detail.setText(detail);
-//                    tv_status.setText(args.getString(DefineValue.STATUS, ""));
-//                    tv_reason.setText(args.getString(DefineValue.REASON, ""));
-//                } else if (type.equals(DefineValue.CASHOUT)) {
-////                View report_layout = view.findViewById(R.id.report_cashout);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_cashout);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_userid_value);
-//                    TextView tv_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_name_value);
-//                    TextView tv_bank_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_name_value);
-//                    TextView tv_bank_acc_no_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_acc_no_value);
-//                    TextView tv_bank_acc_name_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_bank_acc_name_value);
-//                    TextView tv_nominal_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_nominal_value);
-//                    TextView tv_fee_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_fee_value);
-//                    TextView tv_total_amount_value = (TextView) inflated.findViewById(R.id.dialog_reportcashout_totalamount_value);
-//
-//                    tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
-//                    tv_name_value.setText(args.getString(DefineValue.USER_NAME));
-//                    tv_bank_name_value.setText(args.getString(DefineValue.BANK_NAME));
-//                    tv_bank_acc_no_value.setText(args.getString(DefineValue.ACCOUNT_NUMBER));
-//                    tv_bank_acc_name_value.setText(args.getString(DefineValue.ACCT_NAME));
-//                    tv_nominal_value.setText(args.getString(DefineValue.NOMINAL));
-//                    tv_fee_value.setText(args.getString(DefineValue.FEE));
-//                    tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-//                } else if (type.equals(DefineValue.CASHOUT_TUNAI)) {
-////                View report_layout = view.findViewById(R.id.report_cashout_tunai);
-//                    stub.setLayoutResource(R.layout.layout_dialog_report_cashouttunai);
-//                    View inflated = stub.inflate();
-//                    inflated.setVisibility(View.VISIBLE);
-//
-//                    TextView tv_useerid_value = (TextView) inflated.findViewById(R.id.dialog_report_userid_value);
-//                    TextView tv_nameadmin_value = (TextView) inflated.findViewById(R.id.dialog_report_adminname_value);
-//                    TextView tv_amount = (TextView) inflated.findViewById(R.id.dialog_report_amount_value);
-//                    TextView tv_fee = (TextView) inflated.findViewById(R.id.dialog_report_fee_value);
-//                    TextView tv_totalamount = (TextView) inflated.findViewById(R.id.dialog_report_total_amount_value);
-//
-//                    tv_useerid_value.setText(args.getString(DefineValue.USERID_PHONE));
-//                    tv_nameadmin_value.setText(args.getString(DefineValue.NAME_ADMIN));
-//                    tv_amount.setText(args.getString(DefineValue.AMOUNT));
-//                    tv_fee.setText(args.getString(DefineValue.FEE));
-//                    tv_totalamount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
-//
-//                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS, false);
-//                    if (!isSuccess) {
-//                        tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE, ""));
-//                        String transRemark = args.getString(DefineValue.TRX_REMARK);
-//                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
-//                        tv_trans_remark_sub.setText(transRemark);
-//                    }
-//                }
-//        }
-
         Button btn_ok = (Button) view.findViewById(R.id.dialog_reportbiller_btn_ok);
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -917,6 +638,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         contentInvoice = (LinearLayout) view.findViewById(R.id.rlid);
         saveimage = (ImageView) view.findViewById(R.id.img_download);
         shareimage = (ImageView) view.findViewById(R.id.img_share);
+        printStruk = (ImageView) view.findViewById(R.id.img_print);
 
         saveimage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -946,7 +668,207 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
             }
         });
 
+        printStruk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                printStruk.setEnabled(false);
+                printStruk.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        printStruk.setEnabled(true);
+                    }
+                }, 4000);
+
+                String perms = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+                if (EasyPermissions.hasPermissions(getContext(), perms)) {
+                    String[] separated  = trx_id.split("\n");
+                    imgFilename         = separated[0];
+
+                    countRetry = 0;
+
+                    connect();
+
+                } else {
+                    EasyPermissions.requestPermissions(getActivity(), getString(R.string.rationale_save_image_permission),
+                            RC_REQUEST_WRITE_EXTERNAL_STORAGE_AND_PRINT, perms);
+                }
+
+            }
+        });
+
         return view;
+    }
+
+    private void printStrukImage() {
+        if (viewToBitmap.ConvertToPrint(contentInvoice, imgFilename, mService)) {
+
+        } else {
+            Toast.makeText(getContext(), getContext().getString(R.string.failed_save_gallery), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void connect()
+    {
+        if ( mService == null ) {
+            Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+            this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+        } else {
+            if ( mService.getState() != BluetoothService.STATE_CONNECTED ) {
+                Intent BTIntent = new Intent(getActivity(), DevicesList.class);
+                this.startActivityForResult(BTIntent, DevicesList.REQUEST_CONNECT_DEVICE);
+            } else {
+                //printStruk();
+                printStrukImage();
+            }
+        }
+    }
+
+    private void printStruk() {
+        String titleStr, remark;
+        StringBuilder contentSb	= new StringBuilder();
+        StringBuilder content2Sb = new StringBuilder();
+
+        titleStr = "        Saldomu" +"\n";
+
+        remark =    args.getString(DefineValue.TRX_MESSAGE) +"\n";
+
+        contentSb.append("Tanggal dan \n");
+        contentSb.append("Waktu      : "  +args.getString(DefineValue.DATE_TIME) +"\n");
+        if (!buss_scheme_code.equalsIgnoreCase("P2P"))
+            contentSb.append("ID Transaksi : "  +args.getString(DefineValue.TX_ID) +"\n\n");
+
+        if (buss_scheme_code.equalsIgnoreCase("CTA")) {
+            if (type.equals(DefineValue.BBS_CASHIN)) {
+
+                content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("No. Handphone \n");
+                content2Sb.append("Agen         : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+                content2Sb.append("Nama Agen    : " +args.getString(DefineValue.USER_NAME) +"\n");
+                if (args.getBoolean(DefineValue.IS_MEMBER_CTA) == false) {
+                    content2Sb.append("Produk Agen  : " +args.getString(DefineValue.PRODUCT_NAME) +"\n");
+                }
+                content2Sb.append("No. Handphone\n");
+                content2Sb.append("Pelanggan    : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+                content2Sb.append("Produk Pelanggan : " +args.getString(DefineValue.BANK_BENEF) +"\n");
+                content2Sb.append("No. Tujuan   : " +args.getString(DefineValue.NO_BENEF) +"\n");
+                content2Sb.append("Nama Tujuan  : " +args.getString(DefineValue.NAME_BENEF) +"\n");
+                content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total        : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+            }
+        }else if (buss_scheme_code.equalsIgnoreCase("ATC")) {
+            if (type.equals(DefineValue.BBS_MEMBER_OTP)) {
+
+                if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
+                    content2Sb.append("         Kode Tarik Tunai\n");
+                    content2Sb.append(              args.getString(DefineValue.OTP_MEMBER) +"\n");
+                }
+                content2Sb.append("Jenis Transaksi: " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("No. Handphone \n");
+                content2Sb.append("Agen         : " +args.getString(DefineValue.MEMBER_PHONE) +"\n");
+                content2Sb.append("Nama Agen    : " +args.getString(DefineValue.MEMBER_NAME) +"\n");
+                content2Sb.append("No. Handphone\n");
+                content2Sb.append("Pelanggan    : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+                content2Sb.append("Produk Pelanggan : " +args.getString(DefineValue.SOURCE_ACCT) +"\n");
+                content2Sb.append("No. Sumber   : " +args.getString(DefineValue.MEMBER_SHOP_NO) +"\n");
+                content2Sb.append("Nama Sumber  : " +args.getString(DefineValue.SOURCE_ACCT_NAME) +"\n");
+                content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total        : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+
+            } else if (type.equalsIgnoreCase(DefineValue.BBS_CASHOUT)) {
+                content2Sb.append("Jenis Transaksi: " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("No. Handphone \n");
+                content2Sb.append("Agen         : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+                content2Sb.append("Nama Agen    : " +args.getString(DefineValue.USER_NAME) +"\n");
+                content2Sb.append("Produk Agen  : " +args.getString(DefineValue.BANK_BENEF) +"\n");
+                content2Sb.append("No. Handphone\n");
+                content2Sb.append("Pelanggan    : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+                content2Sb.append("Produk Pelanggan : " +args.getString(DefineValue.PRODUCT_NAME) +"\n");
+                content2Sb.append("No. Sumber   : " +args.getString(DefineValue.MEMBER_SHOP_NO) +"\n");
+                content2Sb.append("Nama Sumber  : " +args.getString(DefineValue.MEMBER_SHOP_NAME) +"\n");
+                content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total        : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+            }
+        }else if (buss_scheme_code.equalsIgnoreCase("EMO")) {
+            if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
+                content2Sb.append("Jenis Transaksi: " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("Nomor Handphone  :" +args.getString(DefineValue.USERID_PHONE) +"\n");
+                content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+                content2Sb.append("Produk Bank   : " +args.getString(DefineValue.BANK_PRODUCT) +"\n");
+                content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total         : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+                if (type.equals(DefineValue.COLLECTION)) {
+                    content2Sb.append("Pesan         : " +args.getString(DefineValue.REMARK) +"\n\n\n");
+                }
+                else content2Sb.append("\n\n");
+                }
+        }else if (buss_scheme_code.equalsIgnoreCase("BIL")) {
+            if (type.equals(DefineValue.BILLER) || type.equals(DefineValue.BILLER_BPJS) || type.equals(DefineValue.BILLER_PLN)) {
+                content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+                content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+                content2Sb.append("Nama         : " +args.getString(DefineValue.USER_NAME) +"\n");
+                content2Sb.append("Kategori     : " +args.getString(DefineValue.DESTINATION_REMARK) +"\n");
+//                if ((args.getString(DefineValue.BILLER_DETAIL)).equalsIgnoreCase(""))
+//                {
+//                    content2Sb.append(createTableDesc(args.getString(DefineValue.BILLER_DETAIL, ""), mTableLayout, type));
+//                }
+                content2Sb.append("Produk Bank  : " +args.getString(DefineValue.DENOM_DATA) +"\n");
+                content2Sb.append("Jumlah       : " +args.getString(DefineValue.AMOUNT) +"\n");
+                content2Sb.append("Biaya Admin  : " +args.getString(DefineValue.FEE) +"\n");
+                content2Sb.append("Total        : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n\n\n");
+            }
+        }else if (buss_scheme_code.equals("P2P") || type.equals(DefineValue.PAYFRIENDS)) {
+            content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.USERID_PHONE) +"\n");
+            content2Sb.append("Nama          : " +args.getString(DefineValue.USER_NAME) +"\n");
+//            content2Sb.append(createTablePayFriend(args.getString(DefineValue.TRANSFER_DATA, ""), mTableLayout, type););
+            content2Sb.append("Jumlah untuk tiap \n");
+            content2Sb.append("penerima      : " +args.getString(DefineValue.AMOUNT_EACH) +"\n");
+            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+            content2Sb.append("Total         : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+            content2Sb.append("Pesan         : " +args.getString(DefineValue.MESSAGE)+"\n\n\n");
+
+        } else if (buss_scheme_code.equals("OR")) {
+            content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.MEMBER_PHONE) +"\n");
+            content2Sb.append("Nama          : " +args.getString(DefineValue.MEMBER_NAME) +"\n");
+            content2Sb.append("No. Tujuan    : " +args.getString(DefineValue.PAYMENT_PHONE) +"\n");
+            content2Sb.append("Nama Tujuan   : " +args.getString(DefineValue.PAYMENT_NAME) +"\n");
+            content2Sb.append("Pesan         : " +args.getString(DefineValue.REMARK) +"\n");
+            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+            content2Sb.append("Total         : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+        }else if (buss_scheme_code.equals("IR")) {
+            content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.MEMBER_PHONE) +"\n");
+            content2Sb.append("Nama          : " +args.getString(DefineValue.MEMBER_NAME) +"\n");
+            content2Sb.append("No. Sumber    : " +args.getString(DefineValue.PAYMENT_PHONE) +"\n");
+            content2Sb.append("Nama Sumber   : " +args.getString(DefineValue.PAYMENT_NAME) +"\n");
+            content2Sb.append("Pesan         : " +args.getString(DefineValue.REMARK) +"\n");
+            content2Sb.append("Jumlah        : " +args.getString(DefineValue.AMOUNT) +"\n");
+            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+            content2Sb.append("Total         : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+        } else if (buss_scheme_code.equals("OC") || type.equals(DefineValue.CASHOUT)) {
+            content2Sb.append("Jenis Transaksi : " +args.getString(DefineValue.BUSS_SCHEME_NAME) +"\n");
+            content2Sb.append("Nomor Handphone : " +args.getString(DefineValue.MEMBER_PHONE) +"\n");
+            content2Sb.append("Nama          : " +args.getString(DefineValue.MEMBER_NAME) +"\n");
+            content2Sb.append("Nama Bank     : " +args.getString(DefineValue.MEMBER_NAME) +"\n");
+            content2Sb.append("No. Rekening\n");
+            content2Sb.append("Tujuan        : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+            content2Sb.append("Nama Penerima : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+            content2Sb.append("Nominal       : " +args.getString(DefineValue.MEMBER_SHOP_PHONE) +"\n");
+            content2Sb.append("Biaya Admin   : " +args.getString(DefineValue.FEE) +"\n");
+            content2Sb.append("Total         : " +args.getString(DefineValue.TOTAL_AMOUNT) +"\n");
+        }
+
+        SendDataString(titleStr);
+        SendDataString(remark);
+        SendDataString(contentSb.toString());
+        SendDataString(content2Sb.toString());
     }
 
     private void reqPermissionSaveorShareImage(Boolean isShareImage){
@@ -1109,4 +1031,181 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         this.dismiss();
         callback.onOkButton();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (runnable != null)
+            handler.removeCallbacks(runnable);
+        // Stop the Bluetooth services
+        if (mService != null)
+            mService.stop();
+
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            Log.d(TAG, "onActivityResult Select Printer " + requestCode +"--"+ resultCode);
+
+        switch (requestCode) {
+            case DevicesList.REQUEST_CONNECT_DEVICE:{
+                // When DeviceListActivity returns with a device to connect
+                if (resultCode == Activity.RESULT_OK) {
+                    // Get the device MAC address
+                    String address = data.getExtras().getString(
+                            DevicesList.EXTRA_DEVICE_ADDRESS);
+                    // Get the BLuetoothDevice object
+                    if (BluetoothAdapter.checkBluetoothAddress(address)) {
+                        btDevice = mBluetoothAdapter.getRemoteDevice(address);
+                        // Attempt to connect to the device
+                        mService.connect(btDevice);
+
+                        handler.postDelayed(runnable, timeDelayed);
+
+                    }
+
+
+                }
+                break;
+            }
+            case DevicesList.REQUEST_ENABLE_BT:{
+                // When the request to enable Bluetooth returns
+                if (resultCode == Activity.RESULT_OK) {
+                    mService = new BluetoothService(getContext(), mHandler);
+                } else {
+                    // User did not enable Bluetooth or an error occured
+                    Log.d(TAG, "BT not enabled");
+                    //Toast.makeText(this, R.string.bt_not_enabled_leaving,
+                            //Toast.LENGTH_SHORT).show();
+                    //getActivity().finish();
+                }
+                break;
+            }
+
+
+        }
+    }
+
+
+    @Override
+    public synchronized void onResume() {
+        super.onResume();
+
+        if (mService != null) {
+
+            if (mService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth services
+                mService.start();
+            }
+        }
+    }
+
+    @Override
+    public synchronized void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // If Bluetooth is not on, request that it be enabled.
+        // setupChat() will then be called during onActivityResult
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableIntent = new Intent(
+                    BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableIntent, DevicesList.REQUEST_ENABLE_BT);
+            // Otherwise, setup the session
+        } else {
+            if (mService == null)
+                mService = new BluetoothService(getContext(), mHandler);//监听
+        }
+    }
+
+    /****************************************************************************************************/
+    @SuppressLint("HandlerLeak")
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case DevicesList.MESSAGE_STATE_CHANGE:
+//                    String message = "Yessi is doing research \n\n";
+                    Log.d("arg1:", String.valueOf(msg.arg1));
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                            Log.d("arg - connected:", String.valueOf(msg.arg1));
+                            if (runnable!=null)
+                                handler.removeCallbacks(runnable);
+                            printStrukImage();
+                            break;
+                        case BluetoothService.STATE_CONNECTING:
+                            if ( countRetry > maxRetry ) {
+                                //toast ke user, minta restart bluetooth hp dan printer
+                                handler.removeCallbacks(runnable);
+                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG);
+                            }
+                            break;
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+                            if ( countRetry > maxRetry ) {
+                                //toast ke user, minta restart bluetooth hp dan printer
+                                handler.removeCallbacks(runnable);
+                                Toast.makeText(getContext(), "Restart bluetooth Handphone dan Printer Anda", Toast.LENGTH_LONG);
+                            }
+                            break;
+                    }
+                    break;
+                case DevicesList.MESSAGE_WRITE:
+
+                    break;
+                case DevicesList.MESSAGE_READ:
+
+                    break;
+                case DevicesList.MESSAGE_DEVICE_NAME:
+//                    String message2 = "Yessi is doing research device \n\n";
+                    Log.d("arg1 - device-name:", String.valueOf(msg.arg1));
+                    if (runnable!=null)
+                        handler.removeCallbacks(runnable);
+                    break;
+                case DevicesList.MESSAGE_TOAST:
+
+                    break;
+                case DevicesList.MESSAGE_CONNECTION_LOST:    //蓝牙已断开连接
+
+                    break;
+                case DevicesList.MESSAGE_UNABLE_CONNECT:     //无法连接设备
+                    Toast.makeText(getContext(), "Unable to connect device",
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    /*****************************************************************************************************/
+	/*
+	 * SendDataString
+	 */
+    private void SendDataString(String data) {
+
+        if (mService.getState() != BluetoothService.STATE_CONNECTED) {
+            Log.d("Srvc State Bluetooth :", String.valueOf(mService.getState()) );
+            Toast.makeText(getContext(), R.string.not_connected, Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+        if (data.length() > 0) {
+            try {
+                mService.write(data.getBytes("GBK"));
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }
+
