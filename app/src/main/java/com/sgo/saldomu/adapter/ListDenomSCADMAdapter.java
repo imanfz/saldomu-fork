@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
                 Bundle bundle=new Bundle();
                 bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
 
-                JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) mContext;
+                DenomSCADMActivity ftf = (DenomSCADMActivity) mContext;
 
 //                    mFrag = new FragTopUpSCADM();
 //                    ftf.switchContent(mFrag,"Tambah Saldo SCADM",true);
