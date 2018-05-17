@@ -116,6 +116,7 @@ public class NavigationDrawMenu extends ListFragment{
     public static final int MBBSATC         = 25;
 
     public static final int MTARIKDANA = 26;
+    public static final int MSCADM = 27;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -514,6 +515,10 @@ public class NavigationDrawMenu extends ListFragment{
                     newFragment = new ListCashOut();
                     switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
                 }
+                break;
+            case MSCADM:
+                newFragment = new FragSCADM();
+                switchFragment(newFragment, getString(R.string.menu_item_title_scadm));
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();

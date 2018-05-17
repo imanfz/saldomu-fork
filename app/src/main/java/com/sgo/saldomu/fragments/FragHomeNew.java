@@ -417,6 +417,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchMenu(NavigationDrawMenu.MBUY, null);
                 } else if ( menuItemName.equals(getString(R.string.menu_item_title_report)) ) {
                     switchMenu(NavigationDrawMenu.MREPORT, null);
+                }else if ( menuItemName.equals(getString(R.string.menu_item_title_scadm)) ) {
+                    switchMenu(NavigationDrawMenu.MSCADM, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_search_agent)) ) {
                     Bundle bundle = new Bundle();
                     switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
@@ -539,7 +541,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } else {
             totalIdx    += shopCategories.size();
             totalIdx    += taNotAgent.length();
-
         }
 
         int[] data        = new int[totalIdx];

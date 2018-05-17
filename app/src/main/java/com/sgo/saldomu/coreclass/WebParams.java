@@ -14,6 +14,7 @@ public class WebParams {
     public static String DATE_TIME= "datetime";
 
     public static String COMM_ID= "comm_id";
+    public static String COMM_ID_SCADM= "comm_id_scadm";
     public static String CUST_NAME = "cust_name";
     public static String CUST_ID = "cust_id";
     public static String COMM_CODE = "comm_code";
@@ -40,6 +41,7 @@ public class WebParams {
 
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
+    public static String MEMBER_ID_SCADM = "member_id_scadm";
     public static String MEMBER_NAME = "member_name";
     public static String MEMBER_CUST_NAME = "member_cust_name";
     public static String MEMBER_SHOP_NO = "member_shop_no";
@@ -504,4 +506,5 @@ public class WebParams {
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
+    public static String BANK  = "bank";
 }
