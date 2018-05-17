@@ -530,8 +530,8 @@ public class MyApiClient {
         RequestParams params = new RequestParams();
         params.put(WebParams.RC_UUID, uuidnya);
         params.put(WebParams.RC_DTIME, dtime);
-//        params.put(WebParams.SIGNATURE, hash);
-        params.put(WebParams.SIGNATURE, "TESTING ACAI");
+        params.put(WebParams.SIGNATURE, hash);
+//        params.put(WebParams.SIGNATURE, "TESTING ACAI");
         return params;
     }
 
