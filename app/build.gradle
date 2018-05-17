@@ -26,13 +26,13 @@ android {
             storeFile file('saldomu-key.jks')
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId "com.sgo.saldomu"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
 
@@ -111,8 +111,8 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 13
-            versionName "2.0"
+            versionCode = 16
+            versionName "2.1"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }
@@ -149,12 +149,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //module dependencies
-    compile project(':PinMaster')
-    compile project(':PinnedSectionList')
-    compile project(':VPI')
-    compile project(':SecurePref')
+    implementation project(':PinMaster')
+    implementation project(':PinnedSectionList')
+    implementation project(':VPI')
+    implementation project(':SecurePref')
 
     //Android lib
     //UI UX
@@ -168,59 +168,60 @@ dependencies {
     //Firebase
     //Google Maps
     //Testing Lib
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.google.code.findbugs'
     })
-    compile 'com.android.support:cardview-v7:26.0.2'
-    compile 'com.android.support:customtabs:26.0.2'
-    compile 'com.android.support:recyclerview-v7:26.0.2'
-    compile 'com.android.support:appcompat-v7:26.0.2'
-    compile 'com.android.support:support-v4:26.0.2'
-    compile 'com.android.support:design:26.0.2'
-    compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta3'
-    compile 'com.balysv:material-ripple:1.0.2'
-    compile 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
-    compile 'com.u1aryz:android-newpopupmenu-lib:1.0.1'
-    compile 'com.wdullaer:materialdatetimepicker:1.5.4'
-    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
-    compile 'com.github.paolorotolo:appintro:3.4.0'
-    compile 'com.txusballesteros:FitChart:1.0'
-    compile 'com.gordonwong:material-sheet-fab:1.2'
-    compile 'com.faber.circlestepview:library:1.0.0@aar'
-    compile 'com.squareup:android-times-square:1.6.5@aar'
-    compile 'in.srain.cube:ultra-ptr:1.0.11'
-    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
-    compile 'com.klinkerapps:android-chips:1.3.0@aar'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
-    compile 'commons-codec:commons-codec:1.10'
-    compile 'com.jakewharton.timber:timber:4.1.0'
-    compile 'commons-io:commons-io:2.4'
-    compile 'joda-time:joda-time:2.9.3'
-    compile 'pub.devrel:easypermissions:0.4.2'
-    compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.loopj.android:android-async-http:1.4.8'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
-    compile 'com.facebook.stetho:stetho:1.5.0'
-    compile 'com.uphyca:stetho_realm:2.2.1'
-    compile 'io.realm:android-adapters:2.0.0'
-    compile 'com.google.firebase:firebase-core:11.2.0'
-    compile 'com.google.firebase:firebase-crash:11.2.0'
-    compile 'com.google.firebase:firebase-messaging:11.2.0'
-    compile 'com.firebase:firebase-jobdispatcher:0.8.0'
-    compile 'com.google.android.gms:play-services-maps:11.2.0'
-    compile 'com.google.android.gms:play-services-location:11.2.0'
-    compile 'com.google.android.gms:play-services-places:11.2.0'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
-    androidTestCompile 'com.android.support:support-annotations:25.3.1'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.balysv:material-ripple:1.0.2'
+    implementation 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
+    implementation 'com.u1aryz:android-newpopupmenu-lib:1.0.1'
+    implementation 'com.wdullaer:materialdatetimepicker:1.5.4'
+    implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.0'
+    implementation 'com.github.paolorotolo:appintro:3.4.0'
+    implementation 'com.txusballesteros:FitChart:1.0'
+    implementation 'com.gordonwong:material-sheet-fab:1.2'
+    implementation 'com.faber.circlestepview:library:1.0.0@aar'
+    implementation 'com.squareup:android-times-square:1.6.5@aar'
+    implementation 'in.srain.cube:ultra-ptr:1.0.11'
+    implementation 'com.dlazaro66.qrcodereaderview:qrcodereaderview:1.0.0'
+    implementation 'com.klinkerapps:android-chips:1.3.0@aar'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'org.ocpsoft.prettytime:prettytime:4.0.1.Final'
+    implementation 'commons-codec:commons-codec:1.10'
+    implementation 'com.jakewharton.timber:timber:4.5.1'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'joda-time:joda-time:2.9.3'
+    implementation 'pub.devrel:easypermissions:1.2.0'
+    implementation 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.loopj.android:android-async-http:1.4.8'
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation 'com.uphyca:stetho_realm:2.2.1'
+    implementation 'io.realm:android-adapters:2.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.google.firebase:firebase-crash:15.0.2'
+    implementation 'com.google.firebase:firebase-messaging:15.0.2'
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.0'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-places:15.0.1'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.mockito:mockito-core:2.18.0'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
 
-    compile 'com.android.support:multidex:1.0.1'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.scottyab:aes-crypto:0.0.4'
 }
 apply plugin: 'com.google.gms.google-services'

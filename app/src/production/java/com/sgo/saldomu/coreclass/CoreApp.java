@@ -57,7 +57,6 @@ public class CoreApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        MultiDex.install(this);
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
@@ -154,6 +153,12 @@ public class CoreApp extends Application {
             }
         },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
         */
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void deleteBundledRealmFile(String outFileName) {
