@@ -259,6 +259,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             imgDelete.setVisibility(View.INVISIBLE);
         } else {
             imgDelete.setOnClickListener(this);
+            imgDelete.setVisibility(View.INVISIBLE);
         }
 
 
@@ -1138,6 +1139,9 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                             //tabPageAdapter.notifyDataSetChanged();
 
                             if (mobility.equals(DefineValue.STRING_YES)) {
+
+                                imgDelete.setVisibility(View.VISIBLE);
+
                                 //popup
                                 android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
                                 alertDialog.setCanceledOnTouchOutside(false);

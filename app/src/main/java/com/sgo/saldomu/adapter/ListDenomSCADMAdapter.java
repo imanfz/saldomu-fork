@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.DenomSCADMActivity;
-import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.util.ArrayList;

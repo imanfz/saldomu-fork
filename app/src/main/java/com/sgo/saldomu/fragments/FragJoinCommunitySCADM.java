@@ -101,7 +101,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = commIDLogin + et_member_code.getText().toString();
+            extraSignature = comm_id_scadm + et_member_code.getText().toString();
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_PREVIEW_COMMUNITY_SCADM,
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -120,6 +120,7 @@ public class FragJoinCommunitySCADM extends BaseFragment {
 
                             comm_name = response.getString(WebParams.COMM_NAME);
                             comm_code = response.getString(WebParams.COMM_CODE);
+                            comm_id_scadm = response.getString(WebParams.COMM_ID);
                             member_code = response.getString(WebParams.MEMBER_CODE);
                             member_name = response.getString(WebParams.MEMBER_NAME);
 
@@ -206,7 +207,6 @@ public class FragJoinCommunitySCADM extends BaseFragment {
         bundle.putString(DefineValue.COMM_ID_SCADM, comm_id_scadm);
         bundle.putString(DefineValue.MEMBER_CODE, member_code);
         bundle.putString(DefineValue.MEMBER_NAME, member_name);
-        bundle.putString(DefineValue.COMM_ID_SCADM, member_name);
         Fragment mFrag = new FragJoinCommunityConfirm();
         mFrag.setArguments(bundle);
 
