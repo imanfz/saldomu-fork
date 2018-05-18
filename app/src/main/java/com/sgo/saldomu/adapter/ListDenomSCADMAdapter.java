@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,13 +33,14 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
         this.mContext = mContext;
 //        this.frameLayout = frameLayout;
     }
+    @NonNull
     @Override
     public ListDenomSCADMAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ListDenomSCADMAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_topup_denom_scadm, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
         holder.memberCode.setText(scadmCommunityModelArrayList.get(position).getMember_code());
