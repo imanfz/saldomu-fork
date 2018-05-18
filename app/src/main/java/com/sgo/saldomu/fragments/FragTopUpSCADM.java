@@ -45,7 +45,7 @@ public class FragTopUpSCADM extends BaseFragment {
     EditText et_jumlah, et_pesan;
     Button btn_next;
     private ProgressDialog progdialog;
-    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm;
+    protected String memberIDLogin, commIDLogin, userPhoneID, accessKey, member_id_scadm, comm_id_scadm;
     String comm_name, member_code, bank_code, bank_name, product_code, product_name, bank_gateway, comm_code;
     private ArrayList<listBankModel> scadmListBankTopUp = new ArrayList<>();
     private ArrayList<String> spinnerContentStrings = new ArrayList<>();
@@ -72,6 +72,8 @@ public class FragTopUpSCADM extends BaseFragment {
         Bundle bundle = getArguments();
         comm_name = bundle.getString(DefineValue.COMMUNITY_NAME);
         comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
+        comm_id_scadm = bundle.getString(DefineValue.COMM_ID_SCADM);
+        comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
         member_code = bundle.getString(DefineValue.MEMBER_CODE);
         member_id_scadm = bundle.getString(DefineValue.MEMBER_ID_SCADM);
 
@@ -90,7 +92,8 @@ public class FragTopUpSCADM extends BaseFragment {
                     et_jumlah.requestFocus();
                     et_jumlah.setError("Jumlah harus diisi!");
                 }
-                else changeToConfirmTopup();
+
+                changeToConfirmTopup();
             }
         });
     }
@@ -120,10 +123,9 @@ public class FragTopUpSCADM extends BaseFragment {
         try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            extraSignature = memberIDLogin;
+            extraSignature = member_id_scadm;
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM,
-                    userPhoneID, accessKey, memberIDLogin);
-            params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
+                    userPhoneID, accessKey, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
 
@@ -242,5 +244,11 @@ public class FragTopUpSCADM extends BaseFragment {
         bundle1.putString(DefineValue.MEMBER_CODE,"");
         bundle1.putString(DefineValue.MEMBER_CODE,et_jumlah.getText().toString());
         bundle1.putString(DefineValue.REMARK,et_pesan.getText().toString());
+        bundle1.putString(DefineValue.PRODUCT_NAME,spinnerContentStrings.get(spinner_bank_product.getSelectedItemPosition()));
+//        Fragment mFrag = new FragTo();
+//        mFrag.setArguments(bundle1);
+//
+//        JoinCommunitySCADMActivity ftf = (JoinCommunitySCADMActivity) getActivity();
+//        ftf.switchContent(mFrag, "Konfirmasi Gabung Komunitas", true);
     }
 }

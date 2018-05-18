@@ -94,11 +94,11 @@ public class FragJoinCommunityConfirm extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = commIDLogin + member_code;
+            extraSignature = comm_id_scadm + member_code;
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_COMMUNITY_SCADM,
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.COMM_ID, comm_id_scadm);
+            params.put(WebParams.COMM_ID_SCADM, comm_id_scadm);
             params.put(WebParams.MEMBER_CODE, member_code);
 
             Timber.d("isi params confirm join community scadm:" + params.toString());

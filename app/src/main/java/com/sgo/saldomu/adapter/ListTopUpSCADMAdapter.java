@@ -50,6 +50,7 @@ public class ListTopUpSCADMAdapter extends RecyclerView.Adapter<ListTopUpSCADMAd
 
                 Bundle bundle = new Bundle();
                 bundle.putString(DefineValue.COMMUNITY_NAME,scadmCommunityModelArrayList.get(position).getComm_name());
+                bundle.putString(DefineValue.COMM_ID_SCADM,scadmCommunityModelArrayList.get(position).getComm_id());
                 bundle.putString(DefineValue.COMMUNITY_CODE,scadmCommunityModelArrayList.get(position).getComm_code());
                 bundle.putString(DefineValue.MEMBER_CODE,scadmCommunityModelArrayList.get(position).getMember_code());
                 bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
