@@ -56,7 +56,7 @@ public class FragCancelTrxRequest extends DialogFragment {
     ProgressDialog progdialog;
 
     public interface CancelTrxRequestListener {
-        public void onSuccessCancelTrx(String txId);
+        void onSuccessCancelTrx(String txId);
     }
 
     public FragCancelTrxRequest() {
@@ -104,9 +104,9 @@ public class FragCancelTrxRequest extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_cancel_trx_request, container, false);
 
-        btnProses   = (Button) v.findViewById(R.id.btnProses);
-        btnCancel   = (Button) v.findViewById(R.id.btnCancel);
-        etReason    = (EditText) v.findViewById(R.id.etReason);
+        btnProses   = v.findViewById(R.id.btnProses);
+        btnCancel   = v.findViewById(R.id.btnCancel);
+        etReason    = v.findViewById(R.id.etReason);
 
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
