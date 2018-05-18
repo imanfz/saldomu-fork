@@ -3,12 +3,12 @@ import com.android.builder.core.BuilderConstants
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -23,13 +23,13 @@ android.libraryVariants.all { variant ->
     def name = variant.buildType.name
     if (!name.equals(BuilderConstants.DEBUG)) {
         def task = project.tasks.create "jar${name.capitalize()}", Jar
-        task.dependsOn variant.javaCompile
-        task.from variant.javaCompile.destinationDir
-        artifacts.add('archives', task);
+        task.dependsOn variant.getJavaCompiler()
+        task.from variant.getJavaCompiler().destinationDir
+        artifacts.add('archives', task)
     }
 }
 
 dependencies {
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
+    androidTestImplementation 'com.jayway.android.robotium:robotium-solo:5.2.1'
 }
 
