@@ -10,6 +10,7 @@ public class listBankModel {
   private String product_name;
   private String product_type;
   private String product_h2h;
+  private String bank_gateway;
 
   public listBankModel(){
     super();
@@ -73,4 +74,8 @@ public class listBankModel {
   public void setProduct_h2h(String product_h2h) {
     this.product_h2h = product_h2h;
   }
+
+  public String getBank_gateway() {    return bank_gateway;  }
+
+  public void setBank_gateway(String bank_gateway) {    this.bank_gateway = bank_gateway;  }
 }

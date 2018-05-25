@@ -34,7 +34,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;

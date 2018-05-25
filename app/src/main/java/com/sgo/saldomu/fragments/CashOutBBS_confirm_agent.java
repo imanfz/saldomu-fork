@@ -35,6 +35,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -43,10 +45,9 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
+public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
 
     public final static String TAG = "com.sgo.saldomu.fragments.CashOutBBS_confirm_agent";
-    private SecurePreferences sp;
     private ProgressDialog progdialog;
     private View v, layout_OTP;
     private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle, tvKode;
@@ -69,7 +70,6 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
@@ -175,14 +175,15 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+            extraSignature = tx_id+comm_code+tx_product_code+token;
+
+            final RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, token);
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(token));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
@@ -279,12 +280,12 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_RETRY_TOKEN,
+            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_RETRY_TOKEN,
                     userID,accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
-            params.put(WebParams.TOKEN_ID, tokenValue.getText().toString());
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenValue.getText().toString()));
             params.put(WebParams.USER_ID, userID);
 
             Timber.d("isi params sentRetryToken:" + params.toString());
@@ -365,9 +366,9 @@ public class CashOutBBS_confirm_agent extends Fragment implements ReportBillerDi
         try{
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
-
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey);
+            extraSignature = txId + comm_code;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_TRX_STATUS_BBS,
+                    userId,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, comm_code);

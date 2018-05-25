@@ -19,6 +19,8 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.Validator;
@@ -26,8 +28,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.NoSuchAlgorithmException;
 
 import timber.log.Timber;
 
@@ -51,7 +51,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         View v = this.findViewById(android.R.id.content);
         if (v != null) {
-            tv_attempt = (TextView) v.findViewById(R.id.pin_tries_value);
+            tv_attempt = v.findViewById(R.id.pin_tries_value);
         }
         Timber.d("masuk UtilsLoader");
         String userId  = sp.getString(DefineValue.USERID_PHONE,"");
@@ -78,7 +78,7 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
         InitializeToolbar();
 
-        final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, true);
+        final Boolean is_md5 = getIntent().getBooleanExtra(DefineValue.IS_MD5, false);
         IsForgotPassword = getIntent().getBooleanExtra(DefineValue.IS_FORGOT_PASSWORD,false);
         final int attempt = getIntent().getIntExtra(DefineValue.ATTEMPT,0);
 
@@ -95,9 +95,9 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
                         valuePin = input;
                         SecurePreferences.Editor mEditor = sp.edit();
                         Intent i = new Intent();
-                        mEditor.putString(DefineValue.PIN_CODE, Md5.hashMd5(input));
+                        mEditor.putString(DefineValue.PIN_CODE, RSA.opensslEncrypt(input));
                         if(is_md5)
-                            i.putExtra(DefineValue.PIN_VALUE,Md5.hashMd5(input));
+                            i.putExtra(DefineValue.PIN_VALUE,RSA.opensslEncrypt(input));
                         else
                             i.putExtra(DefineValue.PIN_VALUE,input);
                         mEditor.apply();
@@ -179,10 +179,10 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOK = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        ProgressBar progDialog = (ProgressBar)dialog.findViewById(R.id.progressBarDialogNotif);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        ProgressBar progDialog = dialog.findViewById(R.id.progressBarDialogNotif);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
 
 
         Title.setText(getResources().getString(R.string.forgotpin));

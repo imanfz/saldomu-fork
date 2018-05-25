@@ -43,6 +43,8 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -56,7 +58,7 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 
-public class ListAccountBBS extends Fragment implements View.OnClickListener {
+public class ListAccountBBS extends BaseFragment implements View.OnClickListener {
 
     public final static String TAG = "com.sgo.saldomu.fragments.ListAccountBBS";
 
@@ -65,15 +67,12 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     private ListAccountBBSAdapter listAccountBBSAdapter;
     private BBSCommModel dataComm;
     private RealmResults<BBSAccountACTModel> listDataAccount;
-    private String userID;
-    private String accessKey;
     private ArrayAdapter<String> adapterDataComm;
     private Spinner spinCommunity;
     private ProgressDialog progressDialog;
     private AlertDialog alertDialogDelete;
     private ActionListener actionListener;
     private TextView tvCommName;
-    SecurePreferences sp;
     Realm realm;
 
     public interface ActionListener{
@@ -84,9 +83,6 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         progressDialog = DefinedDialog.CreateProgressDialog(getContext(),"");
         progressDialog.dismiss();
@@ -326,17 +322,21 @@ public class ListAccountBBS extends Fragment implements View.OnClickListener {
     private void deleteBBSAccount(final int position, String tokenId){
         try{
             progressDialog.show();
+
+            extraSignature = dataComm.getComm_code()+dataComm.getMember_code()+
+                    listDataAccount.get(position).getProduct_type()+ listDataAccount.get(position).getProduct_code()
+                    + listDataAccount.get(position).getAccount_no();
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
 
             params.put(WebParams.COMM_CODE, dataComm.getComm_code());
             params.put(WebParams.MEMBER_CODE, dataComm.getMember_code());
             params.put(WebParams.PRODUCT_CODE, listDataAccount.get(position).getProduct_code());
             params.put(WebParams.PRODUCT_TYPE, listDataAccount.get(position).getProduct_type());
             params.put(WebParams.BENEF_ACCT_NO, listDataAccount.get(position).getAccount_no());
-            params.put(WebParams.TOKEN_ID, Md5.hashMd5(tokenId));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenId));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params deleteAccountList:" + params.toString());
 
             MyApiClient.sentBBSBankAccountDelete(getActivity(), params, new JsonHttpResponseHandler() {

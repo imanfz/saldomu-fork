@@ -2,30 +2,24 @@ package com.sgo.saldomu.activities;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -44,14 +38,11 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -63,6 +54,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fcm.FCMManager;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,11 +68,6 @@ import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
-
-import static android.R.attr.lines;
-import static android.R.attr.value;
-import static com.sgo.saldomu.R.id.acMemberAcct;
-import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
 
 public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleApiClient.ConnectionCallbacks,
@@ -520,15 +508,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             return;
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        RequestParams params    = new RequestParams();
+        String extraSignature = txId + memberLatitude + memberLongitude;
+        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
+                userPhoneID, accessKey, extraSignature);
 
         isInquiryRoute          = false;
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -536,16 +521,14 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
         //params.put(WebParams.SHOP_ID, shopId);
         //params.put(WebParams.MEMBER_ID, memberId);
 
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.KEY_PHONE, userPhoneID);
         params.put(WebParams.KEY_VALUE, gcmId);
         params.put(WebParams.LATITUDE, memberLatitude);
         params.put(WebParams.LONGITUDE, memberLongitude);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         handler.removeCallbacks(runnable2);
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "") ));
 
-        params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationMember(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
@@ -763,24 +746,18 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private void cancelTransactionMember() {
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
+        String extraSignature = txId + sp.getString(DefineValue.MEMBER_ID, "");
+        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER,
+                userPhoneID, accessKey, extraSignature);
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.KEY_VALUE, gcmId);
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+        params.put(WebParams.KEY_PHONE, userPhoneID);
         params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, userPhoneID);
 
         MyApiClient.cancelTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
             @Override

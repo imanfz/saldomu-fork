@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,18 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -45,10 +39,8 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -60,14 +52,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
 import timber.log.Timber;
-
-import static com.sgo.saldomu.R.id.swSettingOnline;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -233,22 +220,17 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         flagApprove             = DefineValue.STRING_BOTH;
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
+        String extraSignature = flagApprove;
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                extraSignature);
+
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, flagApprove);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.APP_ID + flagApprove));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
         MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
@@ -571,7 +553,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            RequestParams params    = new RequestParams();
+
             shopStatus              = DefineValue.SHOP_OPEN;
             Boolean isCallWebservice    = false;
 
@@ -592,6 +574,11 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                 }
             }
 
+            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+
+
             if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                 showAlertEnabledGPS();
             } else {
@@ -599,22 +586,14 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
                     progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-                    UUID rcUUID = UUID.randomUUID();
-                    String dtime = DateTimeFormat.getCurrentDateTime();
 
-                    params.put(WebParams.RC_UUID, rcUUID);
-                    params.put(WebParams.RC_DATETIME, dtime);
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
                     params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
                     params.put(WebParams.SHOP_STATUS, shopStatus);
-
-
-                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.APP_ID + shopStatus));
-
-                    params.put(WebParams.SIGNATURE, signature);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
                     MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
                         @Override

@@ -33,7 +33,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -542,10 +542,11 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
             tempCountry = spinner_country.getSelectedItem().toString();
             tempHobby = spinner_hobby.getSelectedItem().toString();
 
+            String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.SOCIAL_ID,et_socialID.getText().toString());
             params.put(WebParams.USER_ID,userID);
             params.put(WebParams.EMAIL,et_email.getText().toString());

@@ -31,6 +31,9 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,19 +47,15 @@ import timber.log.Timber;
 /*
  Created by thinkpad on 3/12/2015.
  */
-public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     private static String TAG_FRAGPAYFRIENDCONFIRM = "com.sgo.mdevcash.fragments.FragPayfriendsConfirm";
 
     private String dataJson;
     private String dataName;
     private String message;
-    private String memberID;
     private String txID;
     private String dataMapper;
-    private String userID;
-    private String accessKey;
-    private SecurePreferences sp;
     private Boolean isNotification = false;
     private double amountEach;
     private double totalAmount;
@@ -112,31 +111,28 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        imgProfile = (ImageView) v.findViewById(R.id.img_profile);
-        imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
-        txtNumberRecipients = (TextView) v.findViewById(R.id.payfriends_value_number_recipients);
-        txtName = (TextView) v.findViewById(R.id.txtName);
-        listRecipient = (ListView) v.findViewById(R.id.list_recipient);
+        imgProfile = v.findViewById(R.id.img_profile);
+        imgRecipients = v.findViewById(R.id.img_recipients);
+        txtNumberRecipients = v.findViewById(R.id.payfriends_value_number_recipients);
+        txtName = v.findViewById(R.id.txtName);
+        listRecipient = v.findViewById(R.id.list_recipient);
 
-        txtMessage = (TextView) v.findViewById(R.id.payfriends_confirm_value_message);
-        etOTP = (EditText) v.findViewById(R.id.payfriends_value_otp);
-        btnSubmit = (Button) v.findViewById(R.id.btn_submit_payfriends);
-        btnCancel = (Button) v.findViewById(R.id.btn_cancel_payfriends);
-        layoutOTP = (LinearLayout) v.findViewById(R.id.layout_OTP);
-        TextView tv_amount_each = (TextView) v.findViewById(R.id.payfriends_confirm_value_amount_each);
-        TextView tv_amount = (TextView) v.findViewById(R.id.payfriends_confirm_value_amount);
-        TextView tv_fee = (TextView) v.findViewById(R.id.payfriends_confirm_value_fee);
-        TextView tv_total_amount = (TextView) v.findViewById(R.id.payfriends_confirm_value_total_amount);
+        txtMessage = v.findViewById(R.id.payfriends_confirm_value_message);
+        etOTP = v.findViewById(R.id.payfriends_value_otp);
+        btnSubmit = v.findViewById(R.id.btn_submit_payfriends);
+        btnCancel = v.findViewById(R.id.btn_cancel_payfriends);
+        layoutOTP = v.findViewById(R.id.layout_OTP);
+        TextView tv_amount_each = v.findViewById(R.id.payfriends_confirm_value_amount_each);
+        TextView tv_amount = v.findViewById(R.id.payfriends_confirm_value_amount);
+        TextView tv_fee = v.findViewById(R.id.payfriends_confirm_value_fee);
+        TextView tv_total_amount = v.findViewById(R.id.payfriends_confirm_value_total_amount);
 
         if(authType.equalsIgnoreCase("PIN")) {
             layoutOTP.setVisibility(View.GONE);
             btnSubmit.setText(R.string.proses);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { // get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { // get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int) deData;
@@ -155,7 +151,7 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         }
         else if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
             layoutOTP.setVisibility(View.VISIBLE);
-            btnResend = (Button) v.findViewById(R.id.btn_resend_token);
+            btnResend = v.findViewById(R.id.btn_resend_token);
 
             View layout_resendbtn = v.findViewById(R.id.layout_btn_resend);
             layout_resendbtn.setVisibility(View.VISIBLE);
@@ -260,7 +256,6 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             RoundImageTransformation roundedImageRecipients = new RoundImageTransformation(bmRecipients);
             imgRecipients.setImageDrawable(roundedImageRecipients);
 
-            memberID = sp.getString(DefineValue.MEMBER_ID,"");
 
             setImageProfPic();
 
@@ -413,20 +408,20 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
-
+            extraSignature = memberIDLogin+_token;
             RequestParams params;
-            if(isNotification)
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF,
-                        userID,accessKey);
-            else
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CONFIRM_TRANS_P2P,
-                        userID,accessKey);
+            if(isNotification) {
 
-            params.put(WebParams.TOKEN_ID, _token);
-            params.put(WebParams.MEMBER_ID, memberID);
+                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+            }else {
+                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
+            }
+
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATA, _data);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.DATA_MAPPER, dataMapper);
             Timber.d("isi params sent confirm token p2p:"+params.toString());
 
@@ -604,10 +599,10 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESENT_TOKEN_P2P,
-                    userID,accessKey);
-            params.put(WebParams.MEMBER_ID,memberID);
+                    userPhoneID,accessKey);
+            params.put(WebParams.MEMBER_ID,memberIDLogin);
             params.put(WebParams.DATA,_data);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params sent resend token p2p:"+params.toString());
@@ -690,9 +685,9 @@ public class FragPayFriendsConfirm extends Fragment implements ReportBillerDialo
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

@@ -456,10 +456,12 @@ public class DefineValue {
     public static String TAGIHAN = "tagihan";
     public static final String BankJatim = "114";
     public static final String BankBCA = "014";
+    public static final String BankDanamon = "011";
     public static final String BankMandiri = "008";
     public static final String BankMaspion = "157";
     public static final String BankPermata = "013";
     public static final String BankBII = "016";
+    public static final String BankCIMB = "022";
     public static final String BankUOB = "058";
     public static final String BankBRI = "002";
     public static final String BankBNI = "009";
@@ -518,5 +520,8 @@ public class DefineValue {
     public static String IS_REPORT    = "is_report";
     public static String PAYMENT_PHONE   = "payment_phone";
     public static String IS_MEMBER_CTA    = "is_member_cta";
+    public static String COMM_ID_SCADM   = "comm_id_scadm";
+    public static String MEMBER_ID_SCADM   = "member_id_scadm";
+    public static String BANK_GATEWAY   = "bank_gateway";
 }
 
