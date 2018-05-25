@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -104,5 +105,21 @@ public class TopUpSCADMActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public void setResultActivity(int result){
+        setResult(MainPage.RESULT_BALANCE);
+    }
+
+    public void switchActivity(Intent mIntent, int j) {
+        switch (j){
+            case MainPage.ACTIVITY_RESULT:
+                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                this.setResult(MainPage.RESULT_BALANCE);
+                break;
+            case 2:
+                break;
+        }
+        ToggleKeyboard.hide_keyboard(this);
     }
 }

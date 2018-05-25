@@ -53,6 +53,18 @@
         layout="@layout/list_topup_atm_bri_item"
         android:visibility="gone"
         />
+    <include android:id="@+id/layout_atm_danamon"
+        layout="@layout/list_topup_atm_danamon_item"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_bii"
+        layout="@layout/list_topup_maybank_item"
+        android:visibility="gone"
+        />
+    <include android:id="@+id/layout_atm_cimb"
+        layout="@layout/list_topup_atm_cimb_item"
+        android:visibility="gone"
+        />
     <include android:id="@+id/layout_atm"
         layout="@layout/list_topup_atm_item"
         android:visibility="gone"
