@@ -43,7 +43,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RootUtil;
@@ -894,9 +894,9 @@ public class MainPage extends BaseActivity {
                     if(progdialog.isShowing())
                         progdialog.dismiss();
 
-                    if (BuildConfig.FLAVOR.equals("development")){
-                        Logout(FIRST_SCREEN_LOGIN);
-                    }else
+//                    if (BuildConfig.FLAVOR.equals("development")){
+//                        Logout(FIRST_SCREEN_LOGIN);
+//                    }else
                         sentLogout();
 //                    finish();
                     Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());

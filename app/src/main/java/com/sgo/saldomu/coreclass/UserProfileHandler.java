@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 
 import org.apache.http.Header;

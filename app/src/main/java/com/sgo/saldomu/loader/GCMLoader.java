@@ -2,7 +2,7 @@ package com.sgo.saldomu.loader;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import org.apache.http.Header;
 import org.json.JSONObject;

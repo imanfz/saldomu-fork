@@ -23,6 +23,7 @@ import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.widgets.BaseActivity;

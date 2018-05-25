@@ -1,7 +1,7 @@
 package com.sgo.saldomu.Beans;
 
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.util.ArrayList;
 

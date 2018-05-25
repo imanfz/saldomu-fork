@@ -26,12 +26,19 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
     private final Activity mContext;
     Fragment mFrag;
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
+    listener listener;
 
-    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
+    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext, listener _listener) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
+        listener = _listener;
 //        this.frameLayout = frameLayout;
     }
+
+    public interface listener{
+        void onClick(SCADMCommunityModel item);
+    }
+
     @NonNull
     @Override
     public ListDenomSCADMAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,19 +54,8 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle=new Bundle();
-                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
 
-                DenomSCADMActivity ftf = (DenomSCADMActivity) mContext;
-
-//                    mFrag = new FragTopUpSCADM();
-//                    ftf.switchContent(mFrag,"Tambah Saldo SCADM",true);
-
-                mFrag.setArguments(bundle);
-
-                if(mContext == null){
-                    return;
-                }
+                listener.onClick(scadmCommunityModelArrayList.get(position));
             }
         });
     }
