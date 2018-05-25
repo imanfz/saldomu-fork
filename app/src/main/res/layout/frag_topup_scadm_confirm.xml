@@ -15,7 +15,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:padding="3dip"
+            android:text="Kode Komunitas"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/community_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1.5"
             android:gravity="left"
             android:padding="3dip"
             android:text="@string/community"
@@ -42,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="left"
             android:padding="3dip"
             android:text="@string/member_code"
@@ -67,7 +93,7 @@
             android:text="Produk Bank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="left"
             android:layout_gravity="center_vertical"
             android:padding="3dip"
@@ -92,7 +118,7 @@
             android:text="@string/jumlah"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="left"
             android:layout_gravity="center_vertical"
             android:padding="3dip"
@@ -112,12 +138,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+        <TextView
+            android:text="@string/fee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/tv_admin_fee"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/margin_10dp">
+        <TextView
+            android:text="@string/total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            android:textSize="18sp"
+            />
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="10dp">
         <TextView
             android:text="Pesan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:gravity="left"
             android:layout_gravity="center_vertical"
             android:padding="3dip"
@@ -125,6 +201,34 @@
             />
         <TextView
             android:id="@+id/tv_remark"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:padding="3dip"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:id="@+id/layout_otp"
+        android:visibility="gone">
+        <TextView
+            android:text="Kode OTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="left"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            android:textSize="18sp"
+            />
+        <EditText
+            android:id="@+id/et_otp"
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

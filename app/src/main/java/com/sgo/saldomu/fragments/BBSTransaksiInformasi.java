@@ -451,8 +451,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
         }
-        else
-            btnNext.setEnabled(false);
+//        else
+//            btnNext.setEnabled(false);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {

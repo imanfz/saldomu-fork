@@ -64,6 +64,8 @@ public class FragListCommunitySCADM extends Fragment {
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
+        scadmCommunityModelArrayList.clear();
+
         initializeAdapter();
 
         getListCommunity();

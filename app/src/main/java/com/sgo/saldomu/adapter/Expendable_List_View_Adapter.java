@@ -111,7 +111,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                 logoId = R.drawable.logo_bank_permata;
                 break;
             case DefineValue.BankBII:
-                logoId = R.drawable.logo_bank_bii;
+                logoId = R.drawable.logo_maybank;
                 break;
             case DefineValue.BankUOB:
                 logoId = R.drawable.logo_bank_uob_small;
@@ -121,6 +121,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                 break;
             case DefineValue.BankBNI:
                 logoId = R.drawable.logo_bank_bni;
+                break;
+            case DefineValue.BankDanamon:
+                logoId = R.drawable.danamon_small;
+                break;
+            case DefineValue.BankCIMB:
+                logoId = R.drawable.cimb_small;
                 break;
         }
 
@@ -272,6 +278,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             else if (childDataBank.getProductCode().equals(DefineValue.PRODUCT_BCA_MOBILEBANK))
                 return R.id.layout_atm_bca_mbca;
         }
+        else if (bankCode.equals(DefineValue.BankDanamon))
+            return R.id.layout_atm_danamon;
+        else if (bankCode.equals(DefineValue.BankBII))
+            return R.id.layout_atm_bii;
+        else if (bankCode.equals(DefineValue.BankCIMB))
+            return R.id.layout_atm_cimb;
         return R.id.layout_atm;
     }
 

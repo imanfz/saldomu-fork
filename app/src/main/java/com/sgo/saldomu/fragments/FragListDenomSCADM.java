@@ -66,6 +66,8 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
+        scadmCommunityModelArrayList.clear();
+
         initializeAdapter();
 
         getListCommunity();
