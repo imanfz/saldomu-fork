@@ -334,7 +334,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_fee_value.setText(args.getString(DefineValue.FEE));
                     tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
                 }
-            } else if (buss_scheme_code.equalsIgnoreCase("EMO")) {
+            } else if (buss_scheme_code.equalsIgnoreCase("EMO") || buss_scheme_code.equalsIgnoreCase("TOP")) {
                 if (type.equals(DefineValue.TOPUP) || type.equals(DefineValue.COLLECTION)) {
                     stub.setLayoutResource(R.layout.layout_dialog_report_topup);
                     View inflated = stub.inflate();

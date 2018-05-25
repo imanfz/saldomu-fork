@@ -244,6 +244,7 @@ public class MyApiClient {
     public static String LINK_CONFIRM_COMMUNITY_SCADM;
     //list bank scadm, untuk spinner produk bank
     public static String LINK_GET_LIST_BANK_TOPUP_SCADM;
+    public static String LINK_CONFIRM_TOPUP_SCADM;
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
@@ -392,6 +393,7 @@ public class MyApiClient {
         LINK_GET_PREVIEW_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Preview";
         LINK_CONFIRM_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_GET_LIST_BANK_TOPUP_SCADM = headaddressfinal +"scadm/ListBank/Topup";
+        LINK_CONFIRM_TOPUP_SCADM = headaddressfinal +"scadm/Topup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
@@ -1509,6 +1511,11 @@ public class MyApiClient {
     public static void getListBankTopupSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address List Bank Topup SCADM: %1$s ",LINK_GET_LIST_BANK_TOPUP_SCADM);
         post(mContext, LINK_GET_LIST_BANK_TOPUP_SCADM, params, responseHandler);
+    }
+
+    public static void confirmTopupScadm(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address confirm Topup SCADM: %1$s ",LINK_CONFIRM_TOPUP_SCADM);
+        post(mContext, LINK_CONFIRM_TOPUP_SCADM, params, responseHandler);
     }
 
     public static void getListBankDenomSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

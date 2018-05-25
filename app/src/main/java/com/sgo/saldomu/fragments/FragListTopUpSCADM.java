@@ -104,6 +104,7 @@ public class FragListTopUpSCADM extends BaseFragment {
                                 String comm_id = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_ID);
                                 String comm_code = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_CODE);
                                 String comm_name = mArrayCommunity.getJSONObject(i).getString(WebParams.COMM_NAME);
+                                String api_key = mArrayCommunity.getJSONObject(i).getString(WebParams.API_KEY);
                                 String member_code = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_CODE);
                                 String member_id_scadm = mArrayCommunity.getJSONObject(i).getString(WebParams.MEMBER_ID);
 
@@ -111,6 +112,7 @@ public class FragListTopUpSCADM extends BaseFragment {
                                 scadmCommunityModel.setComm_id(comm_id);
                                 scadmCommunityModel.setComm_code(comm_code);
                                 scadmCommunityModel.setComm_name(comm_name);
+                                scadmCommunityModel.setApi_key(api_key);
                                 scadmCommunityModel.setMember_code(member_code);
                                 scadmCommunityModel.setMember_id_scadm(member_id_scadm);
 

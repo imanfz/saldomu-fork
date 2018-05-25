@@ -13,6 +13,8 @@ public class SCADMCommunityModel {
 
     private String member_code;
 
+    private String api_key;
+
     private String member_id_scadm;
 
     private String type;
@@ -22,6 +24,14 @@ public class SCADMCommunityModel {
     }
 
     public SCADMCommunityModel() {
+    }
+
+    public void setApi_key(String api_key) {
+        this.api_key = api_key;
+    }
+
+    public String getApi_key() {
+        return api_key;
     }
 
     public void setComm_id(String comm_id) {
