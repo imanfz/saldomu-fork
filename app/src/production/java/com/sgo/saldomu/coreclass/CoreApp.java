@@ -154,11 +154,11 @@ public class CoreApp extends Application {
         */
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
-    }
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        super.attachBaseContext(base);
+//        MultiDex.install(this);
+//    }
 
     private void deleteBundledRealmFile(String outFileName) {
         File file = new File(this.getFilesDir(), outFileName);
