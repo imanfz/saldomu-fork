@@ -3,9 +3,6 @@ package com.sgo.saldomu.fragments;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -18,11 +15,11 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -30,8 +27,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -55,12 +50,13 @@ public class FragCancelTrxRequest extends DialogFragment {
     private Button btnProses, btnCancel;
     private EditText etReason;
     private String txId, userId;
+    SecurePreferences sp;
 
     CancelTrxRequestListener cpl;
     ProgressDialog progdialog;
 
     public interface CancelTrxRequestListener {
-        public void onSuccessCancelTrx(String txId);
+        void onSuccessCancelTrx(String txId);
     }
 
     public FragCancelTrxRequest() {
@@ -89,6 +85,8 @@ public class FragCancelTrxRequest extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp                      = CustomSecurePref.getInstance().getmSecurePrefs();
+
         if (getArguments() != null) {
             txId = getArguments().getString(DefineValue.TX_ID);
             userId = getArguments().getString(DefineValue.CUST_ID);
@@ -106,9 +104,9 @@ public class FragCancelTrxRequest extends DialogFragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.frag_cancel_trx_request, container, false);
 
-        btnProses   = (Button) v.findViewById(R.id.btnProses);
-        btnCancel   = (Button) v.findViewById(R.id.btnCancel);
-        etReason    = (EditText) v.findViewById(R.id.etReason);
+        btnProses   = v.findViewById(R.id.btnProses);
+        btnCancel   = v.findViewById(R.id.btnCancel);
+        etReason    = v.findViewById(R.id.etReason);
 
         btnProses.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,23 +124,18 @@ public class FragCancelTrxRequest extends DialogFragment {
 
                     progdialog              = DefinedDialog.CreateProgressDialog(getContext());
 
-                    RequestParams params    = new RequestParams();
-                    UUID rcUUID             = UUID.randomUUID();
-                    String  dtime           = DateTimeFormat.getCurrentDateTime();
+                    String extraSignature   = txId;
+                    RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                            MyApiClient.LINK_CANCEL_SEARCH_AGENT,
+                            userId, sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
-                    params.put(WebParams.RC_UUID, rcUUID);
-                    params.put(WebParams.RC_DATETIME, dtime);
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
                     params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
                     params.put(WebParams.TX_ID, txId);
                     params.put(WebParams.CUST_ID, userId);
                     params.put(WebParams.TX_REMARKS, reason);
-
-                    String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                            DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + BuildConfig.APP_ID + userId));
-
-                    params.put(WebParams.SIGNATURE, signature);
+                    params.put(WebParams.USER_ID, userId);
 
                     MyApiClient.cancelSearchAgent(getContext(), params, new JsonHttpResponseHandler() {
                         @Override

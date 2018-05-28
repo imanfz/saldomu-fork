@@ -22,6 +22,7 @@ import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -39,13 +40,12 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 6/11/2015.
  */
-public class FragRegisterSMSBanking extends Fragment {
+public class FragRegisterSMSBanking extends BaseFragment {
 
     private View v;
     private View layout_dll;
 
     private listBankModel mLB;
-    private SecurePreferences sp;
     private ArrayList<String> bankName;
     private ProgressDialog progdialog;
     private EditText etPhone;
@@ -58,8 +58,6 @@ public class FragRegisterSMSBanking extends Fragment {
     private String date_dob = null;
     private String custID;
     private String bank_name;
-    private String userID;
-    private String accessKey;
 
     private DateFormat fromFormat;
     private DateFormat toFormat2;
@@ -69,16 +67,15 @@ public class FragRegisterSMSBanking extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
         custID = sp.getString(DefineValue.CUST_ID,"");
         bank_name = getArguments().getString(DefineValue.BANK_NAME,"");
 
-        etPhone = (EditText) v.findViewById(R.id.rsb_value_phone);
-        etAccNo = (EditText) v.findViewById(R.id.rsb_value_acc_no);
-        tvDOB = (TextView) v.findViewById(R.id.rsb_value_dob);
-        btnRegister = (Button) v.findViewById(R.id.btn_register);
-        spinBankName = (Spinner) v.findViewById(R.id.spinner_nameBank);
+        etPhone = v.findViewById(R.id.rsb_value_phone);
+        etAccNo =  v.findViewById(R.id.rsb_value_acc_no);
+        tvDOB = v.findViewById(R.id.rsb_value_dob);
+        btnRegister = v.findViewById(R.id.btn_register);
+        spinBankName = v.findViewById(R.id.spinner_nameBank);
         layout_dll =  v.findViewById(R.id.layout_dll);
 
         tvDOB.setOnClickListener(textDOBListener);
@@ -130,12 +127,13 @@ public class FragRegisterSMSBanking extends Fragment {
             else
                 progdialog.show();
 
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BANK_SMS_REGIST,
-                    userID,accessKey);
+                    userPhoneID,accessKey, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_SMS);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params get BankList sms regist:"+params.toString());
 
@@ -301,10 +299,10 @@ public class FragRegisterSMSBanking extends Fragment {
                 progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE_JATIM,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.NO_HP, etPhone.getText().toString());
             params.put(WebParams.CUST_ID, custID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get BankList:"+params.toString());
@@ -379,12 +377,12 @@ public class FragRegisterSMSBanking extends Fragment {
                 progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INQUIRY_MOBILE,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.NO_HP, NoHPFormat.formatTo62(etPhone.getText().toString()) );
             params.put(WebParams.TGL_LAHIR, tvDOB.getText().toString());
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.ACCT_NO, etAccNo.getText().toString());
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params data SB:"+params.toString());
@@ -524,9 +522,9 @@ public class FragRegisterSMSBanking extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));

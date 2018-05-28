@@ -6,14 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,11 +40,8 @@ import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -59,13 +54,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
-import static com.sgo.saldomu.coreclass.GlobalUtils.setRatingStarColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -350,12 +343,10 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         } else {
 
             progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
-            RequestParams params3 = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            String extraSignature   = shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus;
+            RequestParams params3 = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
+                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
-            params3.put(WebParams.RC_UUID, rcUUID);
-            params3.put(WebParams.RC_DATETIME, dtime);
             params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
@@ -363,6 +354,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
             params3.put(WebParams.MEMBER_ID, memberId);
             params3.put(WebParams.SHOP_ID, shopId);
             params3.put(WebParams.TX_STATUS, flagTxStatus);
+            params3.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
             if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
                 params3.put(WebParams.KEY_VALUE, gcmId);
@@ -370,9 +362,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 params3.put(WebParams.LONGITUDE, currentLongitude);
             }
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
-
-            params3.put(WebParams.SIGNATURE, signature);
 
             MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
                 @Override
@@ -697,22 +686,16 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         ft.commitAllowingStateLoss();*/
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRANSACTION_AGENT,
+                customerId, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, customerId);
 
         MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
             @Override

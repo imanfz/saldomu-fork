@@ -25,6 +25,7 @@ import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
@@ -257,8 +258,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
 
+            extraSignature = txId + commCode;
             RequestParams params =  MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, commCode);
@@ -354,14 +356,15 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             out.show();
 
 
-            RequestParams params =  MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+            extraSignature = txId + comm_id;
+            RequestParams params =  MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
+                    userPhoneID,accessKey,extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TYPE, transtype);
             params.put(WebParams.PRIVACY, shareType);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
-            params.put(WebParams.USER_ID, userId);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             if(reportType.equals(DefineValue.BILLER_PLN)){
                 params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);

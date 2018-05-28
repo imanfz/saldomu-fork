@@ -10,7 +10,6 @@ import android.view.Menu;
 
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.BaseActivityOTP;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MyApiClient;

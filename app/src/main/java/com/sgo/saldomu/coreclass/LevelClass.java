@@ -103,7 +103,7 @@ public class LevelClass {
             String ownerId = getSp().getString(DefineValue.USERID_PHONE,"");
             String accessKey = getSp().getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_HELP_LIST,
                     ownerId,accessKey);
             params.put(WebParams.USER_ID, ownerId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

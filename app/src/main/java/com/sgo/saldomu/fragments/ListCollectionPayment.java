@@ -316,7 +316,7 @@ public class ListCollectionPayment extends ListFragment {
 
 
             RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_BANK_ACCOUNT_COLLECTION,
-                    userID,accessKey);
+                    userID,accessKey, commID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
             params.put(WebParams.USER_ID, userID);
