@@ -19,15 +19,17 @@ public class DenomItemOrderListAdapter extends RecyclerView.Adapter<DenomItemOrd
     Context context;
     ArrayList<DenomOrderListModel> itemList;
     listener listener;
+    boolean isFragConfirm;
 
     public interface listener{
         void delete(int pos);
     }
 
-    public DenomItemOrderListAdapter(Context _context, ArrayList<DenomOrderListModel> itemList, listener listener){
+    public DenomItemOrderListAdapter(Context _context, ArrayList<DenomOrderListModel> itemList, boolean isFragConfirm, listener listener){
         this.context = _context;
         this.itemList = itemList;
         this.listener = listener;
+        this.isFragConfirm = isFragConfirm;
     }
 
     @NonNull
@@ -40,12 +42,17 @@ public class DenomItemOrderListAdapter extends RecyclerView.Adapter<DenomItemOrd
     public void onBindViewHolder(@NonNull holder holder, final int position) {
         holder.number.setText(itemList.get(position).getPhoneNumber());
         holder.pulsa.setText(itemList.get(position).getPulsa());
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.delete(position);
-            }
-        });
+
+        if (!isFragConfirm) {
+            holder.delete.setVisibility(View.INVISIBLE);
+        }else {
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.delete(position);
+                }
+            });
+        }
     }
 
     @Override

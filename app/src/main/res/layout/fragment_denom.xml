@@ -14,137 +14,128 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            >
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Community Code"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/frag_denom_comm_code_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textColor="@color/colorSecondaryDark"
-                android:layout_marginTop="4dp"
-                />
+            android:padding="15dp">
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Community Name"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/frag_denom_comm_name_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textColor="@color/colorSecondaryDark"
-                android:layout_marginTop="4dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Member Code"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                />
-            <TextView
-                android:id="@+id/frag_denom_member_code_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textColor="@color/colorSecondaryDark"
-                android:layout_marginTop="4dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-            <TextView android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bank Product"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                />
-            <Spinner
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"
-                android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-                android:id="@+id/frag_denom_bank_product_spinner"
-                android:layout_gravity="center_horizontal"/>
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Community Code"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/frag_denom_comm_code_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="15dp"/>
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <Spinner
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
-            android:id="@+id/frag_denom_list_spinner"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/frag_denom_order_list_rv"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:visibility="gone">
-
-        </android.support.v7.widget.RecyclerView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginBottom="5dp">
-            <TextView android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Denom List"
-                android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/abc_text_size_medium_material"
-                android:textStyle="bold"
-                />
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Community Name"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/frag_denom_comm_name_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="15dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Member Code"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/frag_denom_member_code_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="15dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="15dp">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bank Product"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"
+                    android:spinnerStyle="@android:style/Widget.Spinner.DropDown"
+                    android:id="@+id/frag_denom_bank_product_spinner"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="5dp"
+                android:id="@+id/frag_denom_toogle_denom_list">
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Denom List"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/frag_denom_list_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp"
+                android:paddingLeft="10dp"
+                android:visibility="visible">
+
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/frag_denom_list_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp"
-            android:paddingLeft="10dp"
-            android:visibility="visible">
-
-        </android.support.v7.widget.RecyclerView>
 
         <com.balysv.materialripple.MaterialRippleLayout
             android:layout_width="match_parent"
@@ -152,7 +143,7 @@
             android:background="@drawable/card_bk"
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/white"
             app:mrl_rippleAlpha="0.2"

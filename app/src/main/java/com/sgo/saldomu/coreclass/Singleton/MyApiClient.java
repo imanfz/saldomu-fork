@@ -253,6 +253,7 @@ public class MyApiClient {
     public static String LINK_CONFIRM_TOPUP_SCADM;
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
+    public static String LINK_GET_DENOM_INVOKE;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -403,6 +404,7 @@ public class MyApiClient {
         LINK_CONFIRM_TOPUP_SCADM = headaddressfinal +"scadm/Topup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
+        LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
@@ -1534,6 +1536,11 @@ public class MyApiClient {
     public static void getDenomList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_DENOM_LIST);
         post(mContext, LINK_GET_DENOM_LIST, params, responseHandler);
+    }
+
+    public static void getDenomInvoke(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_DENOM_INVOKE);
+        post(mContext, LINK_GET_DENOM_INVOKE, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------

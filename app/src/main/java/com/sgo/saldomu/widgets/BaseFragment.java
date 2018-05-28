@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -25,6 +26,8 @@ public abstract class BaseFragment extends Fragment {
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     protected String extraSignature="";
     protected ProgBarDialog loadingDialog;
+
+    protected View v;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,12 +65,16 @@ public abstract class BaseFragment extends Fragment {
     protected void showLoading(){
         if (loadingDialog == null) {
             buildLoadingDialog();
-            loadingDialog.show(getFragmentManager(), "loading_dialog");
         }
+        loadingDialog.show(getFragmentManager(), "loading_dialog");
     }
 
     protected void dismissLoading(){
-        if (loadingDialog != null)
+        try {
             loadingDialog.dismiss();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }

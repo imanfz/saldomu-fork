@@ -20,16 +20,18 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
     Context context;
     ArrayList<DenomListModel> itemList;
     listener listener;
+    boolean isFragConfirm;
 
     public interface listener{
         void onClick(int pos);
         void onDelete(int pos);
     }
 
-    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener){
+    public DenomItemListAdapter(Context _context, ArrayList<DenomListModel> itemList, listener listener, boolean isFragConfirm){
         this.context = _context;
         this.itemList = itemList;
         this.listener=listener;
+        this.isFragConfirm = isFragConfirm;
     }
 
     @NonNull
@@ -40,7 +42,8 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
 
     @Override
     public void onBindViewHolder(@NonNull holder holder, final int position) {
-        DenomItemOrderListAdapter adapter = new DenomItemOrderListAdapter(context, itemList.get(position).getOrderList(), new DenomItemOrderListAdapter.listener() {
+        DenomItemOrderListAdapter adapter = new DenomItemOrderListAdapter(context
+                , itemList.get(position).getOrderList(), isFragConfirm, new DenomItemOrderListAdapter.listener() {
             @Override
             public void delete(int pos) {
                 listener.onDelete(pos);
@@ -58,6 +61,10 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
                 listener.onClick(position);
             }
         });
+
+        if (position == 0){
+            holder.border.setVisibility(View.VISIBLE);
+        }else holder.border.setVisibility(View.GONE);
     }
 
     @Override
@@ -70,9 +77,11 @@ public class DenomItemListAdapter extends RecyclerView.Adapter<DenomItemListAdap
         TextView itemName, itemID;
         LinearLayout inputDenom;
         RecyclerView orderList;
+        View border;
 
         public holder(View itemView) {
             super(itemView);
+            border = itemView.findViewById(R.id.border);
             itemName = itemView.findViewById(R.id.adapter_denom_item_name_field);
             itemID = itemView.findViewById(R.id.adapter_denom_item_id_field);
             inputDenom = itemView.findViewById(R.id.adapter_denom_item_layout);

@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,13 +47,14 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     ArrayAdapter<String> bankProductAdapter;
 
     TextView CommCodeTextview, CommNameTextview, MemberCodeTextview;
-    Spinner ProductBankSpinner, denomListSpinner;
-    RecyclerView itemListRv, orderListRv;
+    Spinner ProductBankSpinner;
+    RecyclerView itemListRv;
     DenomItemListAdapter itemListAdapter;
+    Button submitBtn;
+    RelativeLayout toogleDenomList;
 
     ArrayList<DenomListModel> itemList;
-    ArrayList<String> bankProductList, itemListString;
-    ArrayAdapter<String> denomListSpinAdapter;
+    ArrayList<String> bankProductList, productCodeList, bankCodeList, itemListString;
     SCADMCommunityModel obj;
 
     @Nullable
@@ -63,8 +67,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         MemberCodeTextview = v.findViewById(R.id.frag_denom_member_code_field);
         ProductBankSpinner = v.findViewById(R.id.frag_denom_bank_product_spinner);
         itemListRv = v.findViewById(R.id.frag_denom_list_rv);
-        denomListSpinner = v.findViewById(R.id.frag_denom_list_spinner);
-        orderListRv = v.findViewById(R.id.frag_denom_order_list_rv);
+        submitBtn = v.findViewById(R.id.frag_denom_submit_btn);
+        toogleDenomList = v.findViewById(R.id.frag_denom_toogle_denom_list);
 
         return v;
     }
@@ -75,7 +79,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         itemList = new ArrayList<>();
         itemListString = new ArrayList<>();
-        itemListAdapter = new DenomItemListAdapter(getActivity(), itemList,this);
+        itemListAdapter = new DenomItemListAdapter(getActivity(), itemList,this, false);
 //        denomListSpinAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, itemListString);
 //        denomListSpinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -94,10 +98,39 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         MemberCodeTextview.setText(obj.getMember_code());
 
         bankProductList = new ArrayList<>();
+        productCodeList = new ArrayList<>();
+        bankCodeList = new ArrayList<>();
         bankProductAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankProductList);
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
 
+        submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkInput()){
+                    Fragment frag = new FragmentDenomConfirm();
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WebParams.PRODUCT_CODE, productCodeList.get(ProductBankSpinner.getSelectedItemPosition()));
+                    bundle.putString(WebParams.PRODUCT_NAME, bankProductList.get(ProductBankSpinner.getSelectedItemPosition()));
+                    bundle.putString(WebParams.BANK_CODE, bankCodeList.get(ProductBankSpinner.getSelectedItemPosition()));
+
+                    frag.setArguments(bundle);
+
+                    SwitchFragment(frag, "Confirm Denom", true);
+                }else
+                    Toast.makeText(getActivity(), "Daftar denom kosong", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        toogleDenomList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemListRv.getVisibility() == View.VISIBLE){
+                    itemListRv.setVisibility(View.GONE);
+                }else itemListRv.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -105,6 +138,18 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         super.onResume();
 
         getBankProductList();
+    }
+
+    boolean checkInput(){
+
+        for (DenomListModel obj: itemList) {
+            if (obj.getOrderList().size()>0) {
+                DataManager.getInstance().setOrderList(itemList);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void getBankProductList(){
@@ -130,13 +175,18 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            if (bankProductList.size()>0)
+                            if (bankProductList.size()>0) {
                                 bankProductList.clear();
+                                productCodeList.clear();
+                                bankCodeList.clear();
+                            }
 
                             JSONArray bankArr = response.getJSONArray("bank");
                             for (int i=0; i<bankArr.length(); i++){
                                 JSONObject bankObj = bankArr.getJSONObject(i);
                                 bankProductList.add(bankObj.optString("product_name"));
+                                productCodeList.add(bankObj.optString("product_code"));
+                                bankCodeList.add(bankObj.optString("bank_code"));
                             }
 
                             bankProductAdapter.notifyDataSetChanged();
@@ -159,7 +209,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     }
 
                 }
-
                 @Override
                 public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                     super.onFailure(statusCode, headers, responseString, throwable);
@@ -199,8 +248,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         try{
 
             extraSignature = obj.getMember_id_scadm();
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_DENOM_LIST,
-                    userPhoneID,accessKey, extraSignature);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
