@@ -45,7 +45,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
     SCADMCommunityModel obj;
     ArrayList<DenomListModel> orderList;
-    String productCode, bankCode, productName;
+    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount;
 
     @Nullable
     @Override
@@ -88,24 +88,35 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     }
 
     String buildItem(){
+        try {
 
-        JSONArray parentArr = new JSONArray();
+            JSONArray parentArr = new JSONArray();
 
-        for (DenomListModel obj: orderList) {
-            if (obj.getOrderList().size()>0) {
-                for (int i=0; i<obj.getOrderList().size(); i++){
-                    JSONObject childObj = new JSONObject();
-                    try {
-                        childObj.put("item_qty", obj.getOrderList().get(i).getPulsa());
-                        childObj.put("item_phone", obj.getOrderList().get(i).getPhoneNumber());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+            for (DenomListModel obj: orderList) {
+                if (obj.getOrderList().size()>0) {
+                    JSONObject itemIdObj = new JSONObject();
+                    JSONArray itemArr = new JSONArray();
+
+                    for (int i=0; i<obj.getOrderList().size(); i++){
+                        JSONObject childObj = new JSONObject();
+                        try {
+                            childObj.put("item_qty", obj.getOrderList().get(i).getPulsa());
+                            childObj.put("item_phone", obj.getOrderList().get(i).getPhoneNumber());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        itemArr.put(childObj);
                     }
-                    parentArr.put(childObj);
+                    itemIdObj.put(obj.getItemID(), itemArr);
+                    parentArr.put(itemIdObj);
                 }
             }
+            return parentArr.toString();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
         }
-        return parentArr.toString();
     }
 
     void getDenomConfirmData(){
@@ -119,7 +130,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
         params.put(WebParams.PRODUCT_CODE, productCode);
         params.put(WebParams.BANK_CODE, bankCode);
-        params.put(WebParams.ITEM, "asdasd");
+        params.put(WebParams.ITEM, buildItem());
 
         Timber.d("isi params sent get denom invoke:"+params.toString());
 
@@ -130,11 +141,12 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
 
-                    Timber.d("isi response get denom list:"+response.toString());
+                    Timber.d("isi response get denom invoke:"+response.toString());
                     String code = response.getString(WebParams.ERROR_CODE);
+                    setDataView(response);
                     if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        setDataView();
+
 
                     } else if(code.equals(WebParams.LOGOUT_CODE)){
                         Timber.d("isi response autologout:"+response.toString());
@@ -184,17 +196,38 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         });
     }
 
-    void setDataView(){
-        commNameTextview.setText(obj.getComm_name());
-        commCodeTextview.setText(obj.getComm_code());
-        memberCodeTextview.setText(obj.getMember_code());
-        productBankTextview.setText(productName);
+    void setDataView(JSONObject resp){
+        try {
 
-        orderListrv.setAdapter(itemListAdapter);
-        orderListrv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        orderListrv.setNestedScrollingEnabled(false);
-        SnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(orderListrv);
+            commName = resp.getString("comm_name");
+            commCode = resp.getString("comm_code");
+            memberCode = resp.getString("member_code");
+            productName = resp.getString("product_name");
+            amount = resp.getString("amount");
+            fee = resp.getString("admin_fee");
+            totalAmount = resp.getString("total_amount");
+
+            commNameTextview.setText(commName);
+            commCodeTextview.setText(commCode);
+            memberCodeTextview.setText(memberCode);
+            productBankTextview.setText(productName);
+
+            if (amount != null)
+                costTextview.setText(amount);
+            if (fee != null)
+                feeTextview.setText(fee);
+            if (totalAmount != null)
+                totalTextview.setText(totalAmount);
+
+//            orderListrv.setAdapter(itemListAdapter);
+//            orderListrv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+//            orderListrv.setNestedScrollingEnabled(false);
+//            SnapHelper snapHelper = new LinearSnapHelper();
+//            snapHelper.attachToRecyclerView(orderListrv);
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
