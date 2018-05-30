@@ -20,6 +20,7 @@ import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.DenomItemListAdapter;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -45,7 +46,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
     SCADMCommunityModel obj;
     ArrayList<DenomListModel> orderList;
-    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount;
+    String productCode, bankCode, productName, commName, commCode, memberCode, amount, fee, totalAmount, ccyID;
 
     @Nullable
     @Override
@@ -203,9 +204,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             commCode = resp.getString("comm_code");
             memberCode = resp.getString("member_code");
             productName = resp.getString("product_name");
-            amount = resp.getString("amount");
-            fee = resp.getString("admin_fee");
-            totalAmount = resp.getString("total_amount");
+            amount = CurrencyFormat.format(resp.getString("amount"));
+            fee = CurrencyFormat.format(resp.getString("admin_fee"));
+            totalAmount = CurrencyFormat.format(resp.getString("total_amount"));
+            ccyID = resp.getString("ccy_id");
 
             commNameTextview.setText(commName);
             commCodeTextview.setText(commCode);
@@ -213,11 +215,11 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             productBankTextview.setText(productName);
 
             if (amount != null)
-                costTextview.setText(amount);
+                costTextview.setText(ccyID + " " + amount);
             if (fee != null)
-                feeTextview.setText(fee);
+                feeTextview.setText(ccyID + " " +fee);
             if (totalAmount != null)
-                totalTextview.setText(totalAmount);
+                totalTextview.setText(ccyID + " " +totalAmount);
 
 //            orderListrv.setAdapter(itemListAdapter);
 //            orderListrv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
