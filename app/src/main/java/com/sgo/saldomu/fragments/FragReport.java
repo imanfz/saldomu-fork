@@ -628,6 +628,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         emptyLayout.setVisibility(View.VISIBLE);
                         ClearDataAdapter();
                         NotifyDataChange();
+
+                        if (out != null && out.isShowing())
+                            out.dismiss();
                     }
                     Timber.w("Error Koneksi get data report report:" + throwable.toString());
                 }
