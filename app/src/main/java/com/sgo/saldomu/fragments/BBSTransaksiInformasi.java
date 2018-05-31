@@ -484,8 +484,10 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 hm.put("flag", Integer.toString(R.drawable.logo_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("telkomsel"))
                 hm.put("flag", Integer.toString(R.drawable.tcash_small));
-            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("unik"))
-                hm.put("flag", Integer.toString(R.drawable.unik_small));
+            else if(bankAgen.get(i).getProduct_code().toLowerCase().contains("emoedikk"))
+                hm.put("flag", Integer.toString(R.drawable.dana_small));
+            else if(bankAgen.get(i).getProduct_code().toLowerCase().contains("009"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bni_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("akardaya"))
                 hm.put("flag", Integer.toString(R.drawable.mad_small));
             else
@@ -524,8 +526,10 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 hm.put("flag", Integer.toString(R.drawable.logo_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("telkomsel"))
                 hm.put("flag", Integer.toString(R.drawable.tcash_small));
-            else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("unik"))
-                hm.put("flag", Integer.toString(R.drawable.unik_small));
+            else if(bankAgen.get(i).getProduct_code().toLowerCase().contains("emoedikk"))
+                hm.put("flag", Integer.toString(R.drawable.dana_small));
+            else if(bankAgen.get(i).getProduct_code().toLowerCase().contains("009"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bni_small));
             else if(bankAgen.get(i).getProduct_name().toLowerCase().contains("akardaya"))
                 hm.put("flag", Integer.toString(R.drawable.mad_small));
             else
