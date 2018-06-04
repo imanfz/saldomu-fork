@@ -13,7 +13,7 @@
     <color name="colorSecondaryDark">#ff9b9b9b</color>
 
     <color name="windowBackgroundColor">#F1F1F1</color>
-    <color name="black_translucent">#80000000</color>
+    <color name="black_translucent">#1A000000</color>
     <color name="photo_tint">#88101010</color>
     <color name="transparant">#12000000</color>
     <color name="semi_transparant">#47000000</color>

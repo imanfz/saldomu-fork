@@ -20,6 +20,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
 import org.apache.http.Header;
 import org.json.JSONArray;

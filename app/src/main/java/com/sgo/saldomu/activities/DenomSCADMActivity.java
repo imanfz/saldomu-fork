@@ -1,5 +1,6 @@
 package com.sgo.saldomu.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +24,8 @@ public class DenomSCADMActivity extends BaseActivity {
     FragmentManager fragmentManager;
     Fragment mContent;
     Fragment newFragment = null;
+
+    public static String DENOM_PAYMENT = "denom_payment";
 
     @Override
     protected int getLayoutResource() {
@@ -63,6 +66,10 @@ public class DenomSCADMActivity extends BaseActivity {
         super.onResume();
     }
 
+    public void setResultActivity(int result){
+        setResult(MainPage.RESULT_BALANCE);
+    }
+
     public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
         ToggleKeyboard.hide_keyboard(this);
         if(isBackstack){
@@ -82,6 +89,18 @@ public class DenomSCADMActivity extends BaseActivity {
 
         }
         setActionBarTitle(fragName);
+    }
+
+    public void switchActivity(Intent mIntent, int j) {
+        switch (j){
+            case MainPage.ACTIVITY_RESULT:
+                startActivityForResult(mIntent,MainPage.REQUEST_FINISH);
+                this.setResult(MainPage.RESULT_BALANCE);
+                break;
+            case 2:
+                break;
+        }
+        ToggleKeyboard.hide_keyboard(this);
     }
 
     @Override

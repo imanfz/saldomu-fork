@@ -2,6 +2,7 @@ package com.sgo.saldomu.adapter;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,19 +26,27 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
     private final Activity mContext;
     Fragment mFrag;
     private ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList;
+    listener listener;
 
-    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext) {
+    public ListDenomSCADMAdapter(ArrayList<SCADMCommunityModel> scadmCommunityModelArrayList, Activity mContext, listener _listener) {
         this.scadmCommunityModelArrayList = scadmCommunityModelArrayList;
         this.mContext = mContext;
+        listener = _listener;
 //        this.frameLayout = frameLayout;
     }
+
+    public interface listener{
+        void onClick(SCADMCommunityModel item);
+    }
+
+    @NonNull
     @Override
     public ListDenomSCADMAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ListDenomSCADMAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_topup_denom_scadm, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ListDenomSCADMAdapter.ViewHolder holder, final int position) {
         holder.communityCode.setText(scadmCommunityModelArrayList.get(position).getComm_code());
         holder.communityName.setText(scadmCommunityModelArrayList.get(position).getComm_name());
         holder.memberCode.setText(scadmCommunityModelArrayList.get(position).getMember_code());
@@ -45,19 +54,8 @@ public class ListDenomSCADMAdapter extends RecyclerView.Adapter<ListDenomSCADMAd
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle=new Bundle();
-                bundle.putString(DefineValue.MEMBER_ID_SCADM,scadmCommunityModelArrayList.get(position).getMember_id_scadm());
 
-                DenomSCADMActivity ftf = (DenomSCADMActivity) mContext;
-
-//                    mFrag = new FragTopUpSCADM();
-//                    ftf.switchContent(mFrag,"Tambah Saldo SCADM",true);
-
-                mFrag.setArguments(bundle);
-
-                if(mContext == null){
-                    return;
-                }
+                listener.onClick(scadmCommunityModelArrayList.get(position));
             }
         });
     }

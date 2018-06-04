@@ -1,6 +1,6 @@
 package com.sgo.saldomu.securities;
 
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import org.apache.commons.codec.binary.Hex;
 

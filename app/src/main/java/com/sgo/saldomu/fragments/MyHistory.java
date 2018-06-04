@@ -18,6 +18,7 @@ import com.sgo.saldomu.activities.HistoryDetailActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.HistoryRecycleAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
 

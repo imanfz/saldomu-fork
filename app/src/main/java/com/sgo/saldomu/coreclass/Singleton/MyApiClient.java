@@ -1,4 +1,4 @@
-package com.sgo.saldomu.coreclass;
+package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
 import android.os.Looper;
@@ -10,8 +10,14 @@ import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.TLSSocketFactory;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 
@@ -253,6 +259,8 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_TOPUP_SCADM;
     public static String LINK_CONFIRM_TOPUP_SCADM;
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
+    public static String LINK_GET_DENOM_LIST;
+    public static String LINK_GET_DENOM_INVOKE;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -395,13 +403,15 @@ public class MyApiClient {
         LINK_INQUIRY_DATA_ATC   = headaddressfinal + "InquiryDataATC/Retrieve";
         LINK_CANCEL_ATC         = headaddressfinal + "CancelATC/Invoke";
         LINK_GET_LIST_COMMUNITY_SCADM         = headaddressfinal + "scadm/ListCommunity/RetrieveAll";
-        LINK_GET_LIST_COMMUNITY_TOPUP_SCADM        = headaddressfinal + "scadm/ListCommunity/RetrieveTopup";
-        LINK_GET_LIST_COMMUNITY_DENOM_SCADM        = headaddressfinal + "scadm/ListCommunity/RetrieveDenom";
-        LINK_GET_PREVIEW_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Preview";
-        LINK_CONFIRM_COMMUNITY_SCADM         = headaddressfinal + "scadm/JoinCommunity/Save";
+        LINK_GET_LIST_COMMUNITY_TOPUP_SCADM   = headaddressfinal + "scadm/ListCommunity/RetrieveTopup";
+        LINK_GET_LIST_COMMUNITY_DENOM_SCADM   = headaddressfinal + "scadm/ListCommunity/RetrieveDenom";
+        LINK_GET_PREVIEW_COMMUNITY_SCADM      = headaddressfinal + "scadm/JoinCommunity/Preview";
+        LINK_CONFIRM_COMMUNITY_SCADM          = headaddressfinal + "scadm/JoinCommunity/Save";
         LINK_GET_LIST_BANK_TOPUP_SCADM = headaddressfinal +"scadm/ListBank/Topup";
         LINK_CONFIRM_TOPUP_SCADM = headaddressfinal +"scadm/Topup/Invoke";
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
+        LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
+        LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
@@ -1564,6 +1574,16 @@ public class MyApiClient {
     public static void getListBankDenomSCADM(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_LIST_BANK_DENOM_SCADM);
         post(mContext, LINK_GET_LIST_BANK_DENOM_SCADM, params, responseHandler);
+    }
+
+    public static void getDenomList(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_DENOM_LIST);
+        post(mContext, LINK_GET_DENOM_LIST, params, responseHandler);
+    }
+
+    public static void getDenomInvoke(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_DENOM_INVOKE);
+        post(mContext, LINK_GET_DENOM_INVOKE, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------

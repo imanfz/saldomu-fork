@@ -1,12 +1,8 @@
 package com.sgo.saldomu.coreclass;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
@@ -16,7 +12,6 @@ import com.activeandroid.Configuration;
 import com.facebook.stetho.Stetho;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.communityModel;
 import com.sgo.saldomu.Beans.friendModel;
@@ -26,7 +21,7 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ErrorActivity;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -35,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /*
@@ -116,7 +110,7 @@ public class CoreApp extends Application {
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
+        Timber.wtf("isi headaddressfinal:"+ MyApiClient.headaddressfinal);
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(
                 communityModel.class,

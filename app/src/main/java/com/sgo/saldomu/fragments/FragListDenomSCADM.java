@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,10 +16,12 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.adapter.ListDenomSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.DataManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -36,7 +39,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 5/16/2018.
  */
 
-public class FragListDenomSCADM extends BaseFragment {
+public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAdapter.listener{
     View v;
     SecurePreferences sp;
     private ProgressDialog progdialog;
@@ -73,7 +76,7 @@ public class FragListDenomSCADM extends BaseFragment {
     }
 
     private void initializeAdapter() {
-        listDenomSCADMAdapter = new ListDenomSCADMAdapter(scadmCommunityModelArrayList,getActivity());
+        listDenomSCADMAdapter = new ListDenomSCADMAdapter(scadmCommunityModelArrayList,getActivity(), this);
         recyclerView.setAdapter(listDenomSCADMAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
     }
@@ -192,5 +195,16 @@ public class FragListDenomSCADM extends BaseFragment {
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
+    }
+
+    @Override
+    public void onClick(SCADMCommunityModel item) {
+        Bundle bundle=new Bundle();
+        bundle.putString(DefineValue.MEMBER_ID_SCADM, item.getMember_id_scadm());
+        DataManager.getInstance().setSACDMCommMod(item);
+        Fragment frag = new FragmentDenom();
+        frag.setArguments(bundle);
+        SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
+
     }
 }

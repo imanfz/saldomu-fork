@@ -30,7 +30,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import timber.log.Timber;
 
 public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
+
     View v;
     SecurePreferences sp;
     Button btn_next;

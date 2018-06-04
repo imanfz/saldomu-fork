@@ -1,7 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -23,6 +22,7 @@ import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -90,7 +90,7 @@ public class SMSclass {
 
     public void sendSMSVerify(String phoneNo,String imei, String iccid,String TimeStamp, SMS_VERIFY_LISTENER listener){
 
-        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+MyApiClient.APP_ID;
+        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+ MyApiClient.APP_ID;
         sendSMS(phoneNo,msg,listener);
 
     }

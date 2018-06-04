@@ -13,7 +13,7 @@ import android.webkit.*;
 import android.widget.ProgressBar;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import timber.log.Timber;
 
