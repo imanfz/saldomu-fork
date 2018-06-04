@@ -48,6 +48,7 @@ import org.json.JSONObject;
 import timber.log.Timber;
 
 public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
+
     View v;
     SecurePreferences sp;
     Button btn_next;

@@ -16,6 +16,7 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.adapter.ListDenomSCADMAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -203,7 +204,7 @@ public class FragListDenomSCADM extends BaseFragment implements ListDenomSCADMAd
         DataManager.getInstance().setSACDMCommMod(item);
         Fragment frag = new FragmentDenom();
         frag.setArguments(bundle);
-        SwitchFragment(frag, "frag_denom", true);
+        SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
 
     }
 }

@@ -144,6 +144,7 @@
             android:paddingLeft="40dp"
             android:paddingRight="40dp"
             android:layout_marginTop="30dp"
+            android:layout_marginBottom="20dp"
             app:mrl_rippleOverlay="true"
             app:mrl_rippleColor="@color/white"
             app:mrl_rippleAlpha="0.2"
@@ -157,7 +158,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
                 android:textColor="@color/colorPrimaryDark"
                 android:gravity="center"
-                android:text="@string/save"
+                android:text="@string/submit"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/button_transparant"
                 />

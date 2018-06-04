@@ -20,10 +20,12 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.sgo.saldomu.Beans.DenomBankListData;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.adapter.DenomItemListAdapter;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -54,7 +56,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
     RelativeLayout toogleDenomList;
 
     ArrayList<DenomListModel> itemList;
-    ArrayList<String> bankProductList, productCodeList, bankCodeList, itemListString;
+    ArrayList<String> bankProductList, itemListString;
+    ArrayList<DenomBankListData> bankDataList;
     SCADMCommunityModel obj;
 
     @Nullable
@@ -98,8 +101,8 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         MemberCodeTextview.setText(obj.getMember_code());
 
         bankProductList = new ArrayList<>();
-        productCodeList = new ArrayList<>();
-        bankCodeList = new ArrayList<>();
+        bankDataList = new ArrayList<>();
+
         bankProductAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, bankProductList);
         bankProductAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         ProductBankSpinner.setAdapter(bankProductAdapter);
@@ -111,13 +114,14 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
                     Fragment frag = new FragmentDenomConfirm();
 
                     Bundle bundle = new Bundle();
-                    bundle.putString(WebParams.PRODUCT_CODE, productCodeList.get(ProductBankSpinner.getSelectedItemPosition()));
-                    bundle.putString(WebParams.PRODUCT_NAME, bankProductList.get(ProductBankSpinner.getSelectedItemPosition()));
-                    bundle.putString(WebParams.BANK_CODE, bankCodeList.get(ProductBankSpinner.getSelectedItemPosition()));
+                    bundle.putString(WebParams.BANK_NAME, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankName());
+                    bundle.putString(WebParams.BANK_GATEWAY, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankGateway());
+                    bundle.putString(WebParams.BANK_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getBankCode());
+                    bundle.putString(WebParams.PRODUCT_CODE, bankDataList.get(ProductBankSpinner.getSelectedItemPosition()).getProductCode());
 
                     frag.setArguments(bundle);
 
-                    SwitchFragment(frag, "Confirm Denom", true);
+                    SwitchFragment(frag, DenomSCADMActivity.DENOM_PAYMENT, true);
                 }else
                     Toast.makeText(getActivity(), "Daftar denom kosong", Toast.LENGTH_SHORT).show();
             }
@@ -144,7 +148,7 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
         for (DenomListModel obj: itemList) {
             if (obj.getOrderList().size()>0) {
-                DataManager.getInstance().setOrderList(itemList);
+                DataManager.getInstance().setItemList(itemList);
                 return true;
             }
         }
@@ -177,16 +181,14 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
 
                             if (bankProductList.size()>0) {
                                 bankProductList.clear();
-                                productCodeList.clear();
-                                bankCodeList.clear();
+                                bankDataList.clear();
                             }
 
                             JSONArray bankArr = response.getJSONArray("bank");
                             for (int i=0; i<bankArr.length(); i++){
                                 JSONObject bankObj = bankArr.getJSONObject(i);
+                                bankDataList.add(new DenomBankListData(bankObj));
                                 bankProductList.add(bankObj.optString("product_name"));
-                                productCodeList.add(bankObj.optString("product_code"));
-                                bankCodeList.add(bankObj.optString("bank_code"));
                             }
 
                             bankProductAdapter.notifyDataSetChanged();

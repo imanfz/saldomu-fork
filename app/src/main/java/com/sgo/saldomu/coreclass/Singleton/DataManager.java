@@ -28,11 +28,11 @@ public class DataManager {
         return item;
     }
 
-    public ArrayList<DenomListModel> getOrderList() {
+    public ArrayList<DenomListModel> getItemList() {
         return itemList;
     }
 
-    public void setOrderList(ArrayList<DenomListModel> orderList) {
+    public void setItemList(ArrayList<DenomListModel> orderList) {
         this.itemList = orderList;
     }
 }

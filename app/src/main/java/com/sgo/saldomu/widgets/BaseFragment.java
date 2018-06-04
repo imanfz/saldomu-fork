@@ -49,7 +49,7 @@ public abstract class BaseFragment extends Fragment {
 
         if(isBackstack){
             Timber.d("backstack");
-            fragManager.addToBackStack(null);
+            fragManager.addToBackStack(fragName);
         }
         else {
             Timber.d("bukan backstack");
@@ -76,5 +76,9 @@ public abstract class BaseFragment extends Fragment {
             e.printStackTrace();
         }
 
+    }
+
+    public FragmentManager getFragManager(){
+        return getActivity().getSupportFragmentManager();
     }
 }

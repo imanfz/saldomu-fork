@@ -21,6 +21,7 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
