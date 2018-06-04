@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -35,11 +34,9 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -48,7 +45,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -56,8 +52,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -500,21 +494,13 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-
-            String dtime = DateTimeFormat.getCurrentDateTime();
-
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DTIME, dtime);
+            String extraSignature = txId + comm_code;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REJECT_CONFIRM_CASHOUT,
+                    userPhoneID, accessKey, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, txId);
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + comm_code + userPhoneID));
-
-            params.put(WebParams.SIGNATURE, signature);
 
             Timber.d("isi params sent reject confirm cashout:"+params.toString());
 
