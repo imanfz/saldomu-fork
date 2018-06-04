@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -597,8 +598,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
 
                 tv_detail.setText(detail);
 
-            }
-            else if (buss_scheme_code.equals("OC") || type.equals(DefineValue.CASHOUT)) {
+            } else if (buss_scheme_code.equals("OC") || type.equals(DefineValue.CASHOUT)) {
 //                    //cashout ke bank
 
 //                      View report_layout = view.findViewById(R.id.report_cashout);
@@ -625,6 +625,29 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 tv_nominal_value.setText(args.getString(DefineValue.NOMINAL));
                 tv_fee_value.setText(args.getString(DefineValue.FEE));
                 tv_total_amount_value.setText(args.getString(DefineValue.TOTAL_AMOUNT));
+            }else if (buss_scheme_code.equals("BDK")){
+                stub.setLayoutResource(R.layout.layout_dialog_report_denom);
+                View inflated = stub.inflate();
+                inflated.setVisibility(View.VISIBLE);
+
+                TextView tv_report_type = inflated.findViewById(R.id.tv_report_transaction_type);
+                TextView tv_comm_code = inflated.findViewById(R.id.dialog_denom_comm_code);
+                TextView tv_member_code = inflated.findViewById(R.id.dialog_denom_member_code);
+                TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
+                TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
+                RecyclerView rv_denom_item_list = inflated.findViewById(R.id.dialog_denom_item_list_recyclerview);
+                TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
+                TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
+                TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+
+                tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
+                tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
+                tv_member_code.setText(args.getString(DefineValue.MEMBER_CODE));
+                tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
+                tv_bank_order_number.setText(args.getString(DefineValue.ORDER_NUMBER));
+                tv_amount.setText(args.getString(DefineValue.AMOUNT));
+                tv_fee.setText(args.getString(DefineValue.FEE));
+                tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
             }
         }
 

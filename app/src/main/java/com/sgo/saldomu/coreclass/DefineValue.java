@@ -523,5 +523,6 @@ public class DefineValue {
     public static String COMM_ID_SCADM   = "comm_id_scadm";
     public static String MEMBER_ID_SCADM   = "member_id_scadm";
     public static String BANK_GATEWAY   = "bank_gateway";
+    public static String ORDER_NUMBER   = "order_number";
 }
 
