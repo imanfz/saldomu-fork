@@ -86,6 +86,7 @@ public class FragTopUpSCADM extends BaseFragment {
         et_pesan = v.findViewById(R.id.et_remark);
         btn_next = v.findViewById(R.id.btn_next);
         scadmListBankTopUp.clear();
+        spinnerContentStrings.clear();
         initiateAdapterAndSpinner();
         getListBank();
 

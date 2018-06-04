@@ -486,6 +486,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
         args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
         args.putString(DefineValue.USERID_PHONE, userId);
+        args.putString(DefineValue.COMMUNITY_CODE, response.optString(DefineValue.COMMUNITY_CODE));
+        args.putString(DefineValue.MEMBER_CODE, response.optString(DefineValue.MEMBER_CODE));
+        args.putString(DefineValue.USERID_PHONE, userId);
 
         args.putString(DefineValue.FEE,MyApiClient.CCY_VALUE+". "+ CurrencyFormat.format(fee));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));

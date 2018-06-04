@@ -29,6 +29,7 @@
         android:background="@color/grey_300"/>
     <TableRow android:orientation="horizontal">
             <TextView
+                android:id="@+id/tv_user_id"
             android:text="@string/report_dialog_text_userid"
             android:layout_weight="1"
             android:minEms="10"
@@ -56,6 +57,7 @@
 
     <TableRow>
         <TextView
+            android:id="@+id/tv_name"
             android:text="@string/biller_name"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
