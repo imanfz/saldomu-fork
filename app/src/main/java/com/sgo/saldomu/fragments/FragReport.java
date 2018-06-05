@@ -940,12 +940,19 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                             response.optString(WebParams.MEMBER_SHOP_NAME, ""), response.optString(WebParams.OTP_MEMBER), response.optString(WebParams.BUSS_SCHEME_CODE),
                             response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE), ""));
                 }
-            } else if (mobj.getBuss_scheme_code().equals("EMO")) {
+            } else if (mobj.getBuss_scheme_code().equals("EMO") || mobj.getBuss_scheme_code().equalsIgnoreCase("TOP")) {
                 showReportEMODialog(response.optString(WebParams.MEMBER_NAME), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
                         response.optString(WebParams.TX_ID), response.optString(WebParams.MEMBER_PHONE), response.optString(WebParams.PRODUCT_NAME),
                         response.optString(WebParams.TX_FEE, "0"), response.optString(WebParams.TX_AMOUNT),
                         response.optString(WebParams.TX_STATUS), response.optString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
-                        response.optString(WebParams.BUSS_SCHEME_NAME));
+                        response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE,""));
+            }else if (mobj.getBuss_scheme_code().equals("BDK")) {
+                showReportBDKDialog(response.optString(WebParams.MEMBER_NAME), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
+                        response.optString(WebParams.TX_ID), response.optString(WebParams.MEMBER_PHONE), response.optString(WebParams.PRODUCT_NAME),
+                        response.optString(WebParams.TX_FEE, "0"), response.optString(WebParams.TX_AMOUNT),
+                        response.optString(WebParams.TX_STATUS), response.optString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
+                        response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.COMM_CODE,""),
+                        response.optString(WebParams.MEMBER_CODE,""), response.optString(WebParams.DENOM_DETAIL,""), response.optString(WebParams.ORDER_ID,""));
 
             }
         }
@@ -1047,7 +1054,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private void showReportEMODialog(String userName, String date, String txId, String userId, String bankProduct,
                                      String fee, String amount, String txStatus, String txRemark, String buss_scheme_code,
-                                     String buss_scheme_name) {
+                                     String buss_scheme_name, String comm_code, String member_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -1084,6 +1091,58 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
         args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.COMMUNITY_CODE, comm_code );
+        args.putString(DefineValue.MEMBER_CODE,member_code);
+
+        dialog.setArguments(args);
+//        dialog.setTargetFragment(this,0);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
+    }
+
+    private void showReportBDKDialog(String userName, String date, String txId, String userId, String bankProduct,
+                                     String fee, String amount, String txStatus, String txRemark, String buss_scheme_code,
+                                     String buss_scheme_name, String comm_code, String member_code, String denom_detail,
+                                     String order_id) {
+        Bundle args = new Bundle();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
+        args.putString(DefineValue.USER_NAME, userName);
+        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.TX_ID, txId);
+        args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
+        args.putString(DefineValue.USERID_PHONE, userId);
+        args.putString(DefineValue.BANK_PRODUCT, bankProduct);
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
+        args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
+
+        double dAmount = Double.valueOf(amount);
+        double dFee = Double.valueOf(fee);
+        double total_amount = dAmount + dFee;
+
+        args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
+
+        Boolean txStat = false;
+        if (txStatus.equals(DefineValue.SUCCESS)) {
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
+            txStat = true;
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
+        }
+        args.putBoolean(DefineValue.TRX_STATUS, txStat);
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
+
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.COMMUNITY_CODE, comm_code );
+        args.putString(DefineValue.MEMBER_CODE,member_code);
+        args.putString(DefineValue.DENOM_DETAIL,denom_detail);
+        args.putString(DefineValue.ORDER_ID,order_id);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

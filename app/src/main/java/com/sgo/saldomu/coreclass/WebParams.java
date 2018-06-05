@@ -118,6 +118,7 @@ public class WebParams {
     public static String MEMBER_CUST = "member_cust";
 
     public static String DENOM_DATA = "denom_data";
+    public static String DENOM_DETAIL = "denom_detail";
     public static String DENOM_ITEM_ID = "item_id";
     public static String DENOM_ITEM_NAME = "item_name";
     public static String DENOM_ITEM_PRICE = "item_price";
@@ -508,4 +509,5 @@ public class WebParams {
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
     public static String BANK  = "bank";
+    public static String ORDER_ID  = "order_id";
 }
