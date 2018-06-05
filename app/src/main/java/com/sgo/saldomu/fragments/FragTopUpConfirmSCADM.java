@@ -336,7 +336,8 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
                                     sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                     txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.BILLER_DETAIL),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME));
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
+                                    response.optString(WebParams.COMM_CODE), response.optString(WebParams.MEMBER_CODE));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -391,7 +392,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
                                         String txRemark, String _amount, JSONObject response, String biller_detail,
-                                        String buss_scheme_code, String buss_scheme_name, String product_name) {
+                                        String buss_scheme_code, String buss_scheme_name, String product_name, String comm_code, String member_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -428,6 +429,9 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.BILLER_DETAIL,biller_detail);
         args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
         args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
+        args.putString(DefineValue.BANK_PRODUCT,product_name);
+        args.putString(DefineValue.COMMUNITY_CODE,comm_code);
+        args.putString(DefineValue.MEMBER_CODE,member_code);
         args.putString(DefineValue.BANK_PRODUCT,product_name);
 
         dialog.setArguments(args);

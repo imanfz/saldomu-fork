@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -386,7 +385,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     tv_remark.setText(args.getString(DefineValue.REMARK));
                 }
 //                }
-            } else if (buss_scheme_code.equalsIgnoreCase("BIL") || buss_scheme_code.equalsIgnoreCase("BDK")) {
+            } else if (buss_scheme_code.equalsIgnoreCase("BIL")) {
 //                if (type.equals(DefineValue.BILLER) || type.equals(DefineValue.BILLER_BPJS) || type.equals(DefineValue.BILLER_PLN)) {
                 stub.setLayoutResource(R.layout.layout_dialog_report_biller);
                 View inflated = stub.inflate();
@@ -643,16 +642,22 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                 TextView tv_member_code = inflated.findViewById(R.id.dialog_denom_member_code);
                 TextView tv_bank_product = inflated.findViewById(R.id.dialog_denom_bank_product);
                 TextView tv_bank_order_number = inflated.findViewById(R.id.dialog_denom_order_number);
-                RecyclerView rv_denom_item_list = inflated.findViewById(R.id.dialog_denom_item_list_recyclerview);
+//                RecyclerView rv_denom_item_list = inflated.findViewById(R.id.dialog_denom_item_list_recyclerview);
                 TextView tv_amount = inflated.findViewById(R.id.dialog_denom_amount);
                 TextView tv_fee = inflated.findViewById(R.id.dialog_denom_fee_value);
                 TextView tv_total_amount = inflated.findViewById(R.id.dialog_denom_totalamount_value);
+
+                TableLayout mTableLayout = inflated.findViewById(R.id.billertoken_layout_table);
+                mTableLayout.setVisibility(View.VISIBLE);
+
+                createTableDenom(args.getString(DefineValue.DENOM_DETAIL, ""), mTableLayout);
+
 
                 tv_report_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                 tv_comm_code.setText(args.getString(DefineValue.COMMUNITY_CODE));
                 tv_member_code.setText(args.getString(DefineValue.MEMBER_CODE));
                 tv_bank_product.setText(args.getString(DefineValue.BANK_PRODUCT));
-                tv_bank_order_number.setText(args.getString(DefineValue.ORDER_NUMBER));
+                tv_bank_order_number.setText(args.getString(DefineValue.ORDER_ID));
                 tv_amount.setText(args.getString(DefineValue.AMOUNT));
                 tv_fee.setText(args.getString(DefineValue.FEE));
                 tv_total_amount.setText(args.getString(DefineValue.TOTAL_AMOUNT));
@@ -924,6 +929,64 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    public void createTableDenom(String jsonData, TableLayout mTableLayout) {
+        try {
+            JSONArray jsonArray = new JSONArray(jsonData);
+            TextView detail_field;
+            TextView detail_value;
+            TableRow layout_table_row;
+            String value = "";
+
+            int length = jsonArray.length();
+            List<String> tempList = new ArrayList<>();
+
+            for (int i=0; i<length; i++)
+            {
+                String tempData = jsonArray.getString(i);
+                tempList.add(tempData);
+            }
+
+            TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.WRAP_CONTENT);
+            TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT, 8.0f);
+            rowParams.setMargins(6, 6, 6, 6);
+            TableRow.LayoutParams rowParams2 = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            rowParams2.setMargins(6, 6, 6, 6);
+
+            for (int i = 0; i < tempList.size(); i++) {
+
+                detail_field = new TextView(getActivity());
+                detail_field.setGravity(Gravity.LEFT);
+                detail_field.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_field.setLayoutParams(rowParams2);
+                detail_field.setTextColor(Color.parseColor("#757575"));
+                detail_value = new TextView(getActivity());
+                detail_value.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
+                detail_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+                detail_value.setLayoutParams(rowParams);
+                detail_value.setPadding(6, 9, 3, 9);
+                detail_value.setTextColor(Color.parseColor("#757575"));
+                View line = new View(getActivity());
+                line.setLayoutParams(new LinearLayout.LayoutParams((ViewGroup.LayoutParams.MATCH_PARENT), 1));
+                line.setBackgroundColor(Color.parseColor("#e0e0e0"));
+                line.setPadding(8, 3, 3, 3);
+                layout_table_row = new TableRow(getActivity());
+                layout_table_row.setLayoutParams(tableParams);
+                layout_table_row.addView(detail_field);
+                layout_table_row.addView(detail_value);
+                detail_field.setText(tempList.get(i));
+                detail_value.setText(value);
+                mTableLayout.addView(layout_table_row);
+                mTableLayout.addView(line);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void createTablePayFriend(String jsonData, TableLayout mTableLayout) {
