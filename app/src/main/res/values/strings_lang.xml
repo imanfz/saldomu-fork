@@ -1153,9 +1153,11 @@
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
     <string name="upgrade_member">Upgrade Member</string>
+    <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
     <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik dana?</string>
+    <string name="message_upgrade_agent">Apakah Anda ingin upgrade menjadi agen?</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>

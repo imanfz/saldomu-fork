@@ -96,6 +96,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private boolean is_first_time = false;
     private boolean isRegisteredLevel =false; //saat antri untuk diverifikasi
     private boolean is_verified = false;
+    private boolean is_agent = false;
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
@@ -174,6 +175,7 @@ public class MyProfileNewActivity extends BaseActivity {
             is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
         }
 
+        is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
         reject_KTP = sp.getString(DefineValue.REJECT_KTP,"N");
         reject_selfie = sp.getString(DefineValue.REJECT_FOTO,"N");
@@ -236,6 +238,39 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
+        if (is_agent)
+        {
+            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+            builder1.setTitle(R.string.upgrade_agent);
+            builder1.setMessage(R.string.message_upgrade_agent);
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
+            builder1.setNegativeButton(
+                    "No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            tv_dob.setEnabled(false);
+                            if(is_first_time) {
+                                RESULT = MainPage.RESULT_FIRST_TIME;
+                                setResult(MainPage.RESULT_FIRST_TIME);
+                                finish();
+                            }else
+                                finish();
+                        }
+                    });
+
+            android.support.v7.app.AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
 
         if(!is_first_time)
         {
@@ -1239,7 +1274,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     }
 
-    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+    public class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         private int type;
 
 
