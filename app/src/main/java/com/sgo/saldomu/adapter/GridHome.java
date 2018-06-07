@@ -17,16 +17,9 @@ import java.util.ArrayList;
  */
 public class GridHome extends BaseAdapter {
 
-    public interface myInterface
-    {
-        void click();
-    }
-
     private Context mContext;
     private final ArrayList<String> text;
     private final int[] icons;
-    TextView textView;
-    ImageView imageView;
 
     public GridHome(Context c, ArrayList<String> text, int[] icons ) {
         mContext = c;
@@ -51,20 +44,26 @@ public class GridHome extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View grid;
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        final ViewHolder holder;
         if (convertView == null) {
-            grid = inflater.inflate(R.layout.grid_home, null);
-            textView = (TextView) grid.findViewById(R.id.grid_text);
-            imageView = (ImageView)grid.findViewById(R.id.grid_image);
+            holder = new ViewHolder();
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.grid_home, parent, false);
+            holder.textView = convertView.findViewById(R.id.grid_text);
+            holder.imageView = convertView.findViewById(R.id.grid_image);
 
+            convertView.setTag(holder);
         } else {
-            grid = (View) convertView;
+            holder = (ViewHolder) convertView.getTag();
         }
-        textView.setText(text.get(position));
-        imageView.setImageResource(icons[position]);
-        return grid;
+        holder.textView.setText(text.get(position));
+        holder.imageView.setImageResource(icons[position]);
+        return convertView;
     }
 
+
+    private class ViewHolder {
+        TextView textView;
+        ImageView imageView;
+    }
 }

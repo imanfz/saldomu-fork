@@ -41,10 +41,12 @@ public class BbsUtil {
                 hm.put("flag", Integer.toString(R.drawable.logo_small));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("telkomsel"))
                 hm.put("flag", Integer.toString(R.drawable.tcash_small));
-            else if(bankMember.get(i).getProduct_name().toLowerCase().contains("unik"))
-                hm.put("flag", Integer.toString(R.drawable.unik_small));
             else if(bankMember.get(i).getProduct_name().toLowerCase().contains("akardaya"))
                 hm.put("flag", Integer.toString(R.drawable.mad_small));
+            else if(bankMember.get(i).getProduct_code().toLowerCase().contains("emoedikk"))
+                hm.put("flag", Integer.toString(R.drawable.dana_small));
+            else if(bankMember.get(i).getProduct_code().toLowerCase().contains("009"))
+                hm.put("flag", Integer.toString(R.drawable.logo_bank_bni_small));
             else
                 hm.put("flag", Integer.toString(R.drawable.ic_square_gate_one));
             mapIcons.add(hm);

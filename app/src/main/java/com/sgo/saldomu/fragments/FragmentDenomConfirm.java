@@ -40,7 +40,6 @@ import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
@@ -459,8 +458,10 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                             String txstatus = response.getString(WebParams.TX_STATUS);
                             showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
                                     sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.BILLER_DETAIL),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME));
+                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.DENOM_DETAIL),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
+                                    response.optString(WebParams.ORDER_ID,""), response.optString(WebParams.COMM_CODE,""),
+                                    response.optString(WebParams.MEMBER_CODE,""));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -514,8 +515,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount, JSONObject response, String biller_detail,
-                                        String buss_scheme_code, String buss_scheme_name, String product_name) {
+                                        String txRemark, String _amount, JSONObject response, String denom_detail,
+                                        String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
+                                        String comm_code, String member_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
@@ -523,6 +525,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userId);
         args.putString(DefineValue.DENOM_DATA, itemName);
+//        args.putString(DefineValue.DENOM_DATA, response.optString(DefineValue.COMMUNITY_CODE));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_amount));
         args.putString(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
@@ -549,10 +552,13 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
-        args.putString(DefineValue.BILLER_DETAIL,biller_detail);
+        args.putString(DefineValue.DENOM_DETAIL,denom_detail);
         args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
         args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
         args.putString(DefineValue.BANK_PRODUCT,product_name);
+        args.putString(DefineValue.ORDER_ID,order_id);
+        args.putString(DefineValue.COMMUNITY_CODE,comm_code);
+        args.putString(DefineValue.MEMBER_CODE,member_code);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getFragManager().beginTransaction();

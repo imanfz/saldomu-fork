@@ -37,7 +37,6 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -53,8 +52,6 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -497,21 +494,13 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-
-            String dtime = DateTimeFormat.getCurrentDateTime();
-
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DTIME, dtime);
+            String extraSignature = txId + comm_code;
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REJECT_CONFIRM_CASHOUT,
+                    userPhoneID, accessKey, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, txId);
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + txId + comm_code + userPhoneID));
-
-            params.put(WebParams.SIGNATURE, signature);
 
             Timber.d("isi params sent reject confirm cashout:"+params.toString());
 

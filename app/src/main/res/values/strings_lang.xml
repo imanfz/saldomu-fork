@@ -1225,4 +1225,7 @@
     <string name="scadm_topup">Tambah Saldo Komunitas SCADM</string>
     <string name="scadm_denom">Denom SCADM</string>
     <string name="bank_product">Produk Bank</string>
+    <string name="comm_code">Kode Komunitas</string>
+    <string name="denom_item">Item Denom</string>
+    <string name="order_number">Nomor Order</string>
 </resources>

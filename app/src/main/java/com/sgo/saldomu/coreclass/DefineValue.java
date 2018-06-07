@@ -85,6 +85,7 @@ public class DefineValue {
     public static String BUSS_SCHEME_NAME = "bussSchemeName";
     public static String BUSS_SCHEME_CODE = "bussSchemeCode";
     public static String BILLER_DETAIL = "billerDetail";
+    public static String DENOM_DETAIL = "denomDetail";
     public static String COMMUNITY_ID = "communityID";
     public static String COMMUNITY_CODE = "communityCode";
     public static String COMMUNITY_NAME = "communityName";
@@ -523,5 +524,6 @@ public class DefineValue {
     public static String COMM_ID_SCADM   = "comm_id_scadm";
     public static String MEMBER_ID_SCADM   = "member_id_scadm";
     public static String BANK_GATEWAY   = "bank_gateway";
+    public static String ORDER_ID   = "order_id";
 }
 

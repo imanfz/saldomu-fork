@@ -43,6 +43,8 @@ public class MyApiClient {
     private AsyncHttpClient syncHttpClient_google;
     private SyncHttpClient syncHttpClient;
     private AsyncHttpClient asyncHttpClientUnstrusted;
+    private AsyncHttpClient asyncHttpClient_mnotif;
+    private SyncHttpClient syncHttpClient_mnotif;
     private SecurePreferences sp;
 
     private Context getmContext() {
@@ -71,11 +73,16 @@ public class MyApiClient {
             singleton.asyncHttpClient=new AsyncHttpClient();
             singleton.asyncHttpClient_google=new AsyncHttpClient();
             singleton.syncHttpClient_google=new SyncHttpClient();
+            singleton.asyncHttpClient_mnotif=new AsyncHttpClient();
+            singleton.syncHttpClient_mnotif=new SyncHttpClient();
             singleton.syncHttpClient=new SyncHttpClient();
             singleton.asyncHttpClientUnstrusted = new AsyncHttpClient();
             singleton.asyncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.asyncHttpClientUnstrusted.addHeader("Authorization", "Basic " + getBasicAuth());
             singleton.syncHttpClient.addHeader("Authorization", "Basic " + getBasicAuth());
+
+            singleton.asyncHttpClient_mnotif.addHeader("Authorization", "Basic " + getBasicAuthForMNotif());
+            singleton.syncHttpClient_mnotif.addHeader("Authorization", "Basic " + getBasicAuthForMNotif());
             singleton.sp = CustomSecurePref.getInstance().getmSecurePrefs();
         }
         return singleton;
@@ -663,6 +670,11 @@ public class MyApiClient {
         Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
     }
 
+    private static void postMNotif(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getClientMNotif().post(mContext, url, params, responseHandler);
+        Timber.d("isis timeoutnya : %1$s ",String.valueOf(getClient().getConnectTimeout()));
+    }
+
     private static void postUntrustedSSL(Context mContext, String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         getInstance().asyncHttpClientUnstrusted.post(mContext, url, params, responseHandler);
         Timber.d("isis timeoutnya : "+String.valueOf(getClient().getConnectTimeout()));
@@ -681,11 +693,35 @@ public class MyApiClient {
         getInstance().syncHttpClient.get(mContext, url, responseHandler);
     }
 
+    public static void postSyncMNotif(Context mContext,String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient_mnotif.post(mContext, url, params, responseHandler);
+    }
+
+    public static void getSyncMNotif(Context mContext,String url, AsyncHttpResponseHandler responseHandler) {
+        getInstance().syncHttpClient_mnotif.get(mContext, url, responseHandler);
+    }
+
+    private static AsyncHttpClient getClientMNotif(boolean isSync){
+        if(isSync)
+            return getInstance().syncHttpClient_mnotif;
+
+        return getInstance().asyncHttpClient_mnotif;
+    }
+
     private static AsyncHttpClient getClientGoogle(boolean isSync){
         if(isSync)
             return getInstance().syncHttpClient_google;
 
         return getInstance().asyncHttpClient_google;
+    }
+
+    public static AsyncHttpClient getClientMNotif() {
+        // Return the synchronous HTTP client when the thread is not prepared
+        if (Looper.myLooper() == null) {
+            return getInstance().syncHttpClient_mnotif;
+        }
+
+        return getInstance().asyncHttpClient_mnotif;
     }
 
     public static AsyncHttpClient getClient() {
@@ -700,6 +736,13 @@ public class MyApiClient {
     private static String getBasicAuth() {
 //        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
         String stringEncode = "s4LD0mu"+":"+"WPtK9YBa?4g,rfvm(^XD/M]{25TJF8";
+        byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
+        String encode = new String(encodeByte);
+        return encode.replace('+','-').replace('/','_');
+    }
+
+    private static String getBasicAuthForMNotif() {
+        String stringEncode = "dev.api.mobile"+":"+"590@dev.api.mobile!";
         byte[] encodeByte = Base64.encodeBase64(stringEncode.getBytes());
         String encode = new String(encodeByte);
         return encode.replace('+','-').replace('/','_');
@@ -1281,9 +1324,9 @@ public class MyApiClient {
     public static void sentReqTokenFCM(Context mContext,boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address req token fcm:"+ LINK_REG_TOKEN_FCM);
         if(isSync)
-            postSync(mContext,LINK_REG_TOKEN_FCM,params,responseHandler);
+            postSyncMNotif(mContext,LINK_REG_TOKEN_FCM,params,responseHandler);
         else
-            post(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
+            postMNotif(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
     }
 
     public static void sentConfirmChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
