@@ -59,7 +59,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class ListTopUp extends BaseFragment implements InformationDialog.OnDialogOkCallback {
+public class BankProductSelectTopUpFragment extends BaseFragment implements InformationDialog.OnDialogOkCallback {
 
     private final String DEFAULT_OTHER_BANK_CODE = "013"; //bank code permata
     View v,nodata_view, layout_list_view;
@@ -75,8 +75,8 @@ public class ListTopUp extends BaseFragment implements InformationDialog.OnDialo
     List<BankHeaderTopUp> listDataHeader;
     HashMap<String, BankDataTopUp> listDataChild;
 
-    public ListTopUp newInstance(Boolean is_full_activity){
-        ListTopUp fragment = new ListTopUp();
+    public BankProductSelectTopUpFragment newInstance(Boolean is_full_activity){
+        BankProductSelectTopUpFragment fragment = new BankProductSelectTopUpFragment();
         Bundle mbun = new Bundle();
         mbun.putBoolean(DefineValue.IS_ACTIVITY_FULL,is_full_activity);
         fragment.setArguments(mbun);

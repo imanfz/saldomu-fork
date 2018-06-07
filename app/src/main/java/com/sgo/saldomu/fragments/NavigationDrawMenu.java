@@ -471,7 +471,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         switch (itemId) {
             case MTOPUP:
-                newFragment = new ListTopUp();
+                newFragment = new ListBankTopUpFragment();
                 switchFragment(newFragment, getString(R.string.toolbar_title_topup));
                 break;
             case MPAYFRIENDS:
