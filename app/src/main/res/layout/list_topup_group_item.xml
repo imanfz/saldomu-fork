@@ -3,7 +3,64 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/adapter_bank_list_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:weightSum="1"
+            android:layout_toLeftOf="@+id/triangle">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/adapter_bank_list_logo"
+                android:layout_gravity="start|center_vertical"
+                android:src="@drawable/logo_bca_bank_small"
+                android:layout_weight="0.2" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/adapter_bank_list_group_title"
+                android:textSize="@dimen/text_size_medium_material"
+                android:textColor="@color/black"
+                android:layout_gravity="start|center_vertical"
+                android:maxLines="1"
+                android:layout_weight="0.7"
+                android:layout_marginLeft="10dp"
+                android:text="bank bca"
+                />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/triangle"
+            android:src="@drawable/triangle_close"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_10dp"
+            />
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/list_topup_atm_others_item"
+        android:id="@+id/adapter_bank_list_otheratm"
+        android:visibility="gone"/>
 
     <View
         android:layout_width="fill_parent"
@@ -12,45 +69,5 @@
         android:id="@+id/divider"
         android:visibility="visible">
     </View>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp">
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/logo"
-            android:layout_gravity="start|center_vertical"
-            android:src="@drawable/logo_bca_bank_small"
-            android:layout_weight="1" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/group_title"
-            android:textSize="@dimen/text_size_medium_material"
-            android:textColor="@color/black"
-            android:layout_gravity="start|center_vertical"
-            android:maxLines="1"
-            android:layout_weight="3"
-            android:text="bank bca"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/triangle"
-            android:src="@drawable/triangle_close"
-            android:layout_gravity="right|center_vertical"
-            />
-
-    </LinearLayout>
 
 </LinearLayout>

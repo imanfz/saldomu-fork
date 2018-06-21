@@ -111,7 +111,7 @@ public class MainPage extends BaseActivity {
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+    public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
     private RelativeLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
@@ -1264,7 +1264,7 @@ public class MainPage extends BaseActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem itemData = menu.findItem(R.id.notifications);
 
-        MenuItemCompat.setActionView(itemData, R.layout.ab_notification);
+        itemData.setActionView(R.layout.ab_notification);
         NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
         actionView.setItemData(menu, itemData);
         actionView.setCount(AmountNotif); // initial value

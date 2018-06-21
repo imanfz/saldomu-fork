@@ -132,7 +132,7 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
 
     protected abstract int getLayoutResource();
 
-    protected void setActionBarIcon(int iconRes) {
+    public void setActionBarIcon(int iconRes) {
         detoolbar.setNavigationIcon(iconRes);
     }
 
