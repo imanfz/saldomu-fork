@@ -178,13 +178,13 @@
     <string name="menu_item_title_pay_friends">Kirim Saldo</string>
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
-    <string name="menu_item_title_buy">Belanja</string>
+    <string name="menu_item_title_buy">PPOB</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
-    <string name="menu_item_title_scadm">SCADM</string>
+    <string name="menu_item_title_scadm">B2B Telko</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -498,14 +498,14 @@
     <string name="get_otp">Kirim OTP</string>
 
     <string name="listatm_topup_danamon_1">Pilih menu Pembayaran > menu Lainnya > menu Virtual Account</string>
-    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan</string>
+    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan:9628</string>
     <string name="listatm_topup_danamon_3">Masukkan 16 digit Nomor Virtual Account</string>
 
     <string name="listatm_topup_maybank_1">Masukkan kartu ATM Maybank dan PIN Anda</string>
     <string name="listatm_topup_maybank_2">Pilih Virtual Account</string>
 
     <string name="listatm_topup_cimb_1">Pilih menu Transfer > Rekening CIMB Niaga/Rekening Ponsel Lain > Rekening CIMB Niaga Lain</string>
-    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan</string>
+    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan:8079</string>
 
     <string name="listatm_topup_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_topup_ins_2">Pilih Transfer ke </string>
@@ -1140,7 +1140,7 @@
 
     <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
     <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
-    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan ESPAY : 89208</string>
+    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan Top Up Saldomu : 89208</string>
     <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
     <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
@@ -1153,9 +1153,11 @@
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
     <string name="upgrade_member">Upgrade Member</string>
+    <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
     <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik dana?</string>
+    <string name="message_upgrade_agent">Apakah Anda ingin upgrade menjadi agen?</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
@@ -1221,9 +1223,9 @@
     <string name="camer">No pictures</string>
     <string name="msg_error">Input errors, please check!</string>
 
-    <string name="scadm_join">Gabung Komunitas SCADM</string>
-    <string name="scadm_topup">Tambah Saldo Komunitas SCADM</string>
-    <string name="scadm_denom">Denom SCADM</string>
+    <string name="scadm_join">Gabung Komunitas B2B Telko</string>
+    <string name="scadm_topup">Bayar</string>
+    <string name="scadm_denom">Beli Denom Telko</string>
     <string name="bank_product">Produk Bank</string>
     <string name="comm_code">Kode Komunitas</string>
     <string name="denom_item">Item Denom</string>

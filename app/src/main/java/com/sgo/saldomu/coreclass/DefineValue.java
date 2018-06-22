@@ -482,9 +482,13 @@ public class DefineValue {
     public static String REJECT_KTP = "rejectKtp";
     public static String REJECT_FOTO = "rejectFoto";
     public static String REJECT_TTD = "rejectTtd";
+    public static String REJECT_SIUP = "rejectSiup";
+    public static String REJECT_NPWP = "rejectNpwp";
     public static String REMARK_KTP = "remarkKtp";
     public static String REMARK_FOTO = "remarkFoto";
     public static String REMARK_TTD = "remarkTtd";
+    public static String REMARK_SIUP = "remarkSiup";
+    public static String REMARK_NPWP = "remarkNpwp";
     public static String MODEL_NOTIF = "model_notif";
 
     public static String MEMBER_PROFILE_PICTURE = "member_profile_picture";

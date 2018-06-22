@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/main_toolbar"
+        layout="@layout/toolbar_main" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/layout_foto_siup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_foto_siup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:text="Foto SIUP / Surat Keterangan RT/RW"
+                    android:textColor="@color/grey_1000b"
+                    android:textSize="16dp" />
+
+                <ImageButton
+                    android:id="@+id/camera_siup"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/tv_foto_siup"
+                    android:onClick="camera_siup_dialog"
+                    android:src="@drawable/ic_photo_camera" />
+
+                <TextView
+                    android:id="@+id/tv_siup_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_foto_siup"
+                    android:layout_margin="8dp"
+                    android:layout_toRightOf="@+id/camera_siup"
+                    android:text="1. Pastikan Foto jelas dan tidak buram."
+                    android:textColor="@color/grey_1000b" />
+
+                <TextView
+                    android:id="@+id/tv_siup_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_siup_1"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/camera_siup"
+                    android:text="2. Foto asli (bukan fotocopy, hasil scan atau edit)."
+                    android:textColor="@color/grey_1000b" />
+
+                <TextView
+                    android:id="@+id/tv_respon_reject_siup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_siup_2"
+                    android:gravity="left"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/tv_pb1_upgradeAgent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_respon_reject_siup"
+                    android:gravity="right"
+                    android:textColor="@color/grey_1000b" />
+
+                <ProgressBar
+                    android:id="@+id/pb1_upgradeAgent"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_pb1_upgradeAgent"
+                    android:max="100"
+                    android:minWidth="200dp"
+                    android:progress="1" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_npwp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_npwp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:text="Foto NPWP"
+                    android:textColor="@color/grey_1000b"
+                    android:textSize="16dp" />
+
+                <ImageButton
+                    android:id="@+id/camera_npwp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_below="@+id/tv_npwp"
+                    android:onClick="camera_npwp_dialog"
+                    android:src="@drawable/ic_photo_camera" />
+
+                <TextView
+                    android:id="@+id/tv_npwp_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_npwp"
+                    android:layout_margin="8dp"
+                    android:layout_toRightOf="@+id/camera_npwp"
+                    android:text="1. Pastikan Foto jelas dan tidak buram."
+                    android:textColor="@color/grey_1000b" />
+
+                <TextView
+                    android:id="@+id/tv_npwp_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_npwp_1"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_toRightOf="@+id/camera_npwp"
+                    android:text="2. Foto asli (bukan fotocopy, hasil scan atau edit)."
+                    android:textColor="@color/grey_1000b" />
+
+                <TextView
+                    android:id="@+id/tv_respon_reject_npwp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_npwp_2"
+                    android:gravity="left"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/tv_pb2_upgradeAgent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_npwp_2"
+                    android:gravity="right"
+                    android:textColor="@color/grey_1000b" />
+
+                <ProgressBar
+                    android:id="@+id/pb2_upgradeAgent"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_pb2_upgradeAgent"
+                    android:max="100"
+                    android:minWidth="200dp"
+                    android:progress="1" />
+            </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/button_proses"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="30dp"
+                android:background="@color/colorPrimaryDark"
+                android:text="Proses"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

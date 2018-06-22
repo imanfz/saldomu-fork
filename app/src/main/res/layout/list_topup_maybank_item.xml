@@ -102,8 +102,8 @@
             </RelativeLayout>
 
             <TextView
-                android:layout_width="178dp"
-                android:layout_height="45dp"
+                android:layout_width="150dp"
+                android:layout_height="43dp"
                 android:layout_gravity="center"
                 android:text="@string/listatm_topup_danamon_3"
                 android:textColor="@color/colorSecondaryDark"
@@ -228,7 +228,7 @@
 
     <ImageView
         android:id="@+id/img_atm"
-        android:layout_width="147dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/title_atm"

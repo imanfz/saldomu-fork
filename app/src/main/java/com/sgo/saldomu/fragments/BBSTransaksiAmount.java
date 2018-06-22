@@ -436,17 +436,17 @@ public class BBSTransaksiAmount extends Fragment {
                     } else {
                         if(listbankSource.get(position).getBank_gateway() != null) {
                             source_product_code = listbankSource.get(position).getProduct_code();
-                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT) || source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                if (source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                {
-                                    etNoAcct.setHint(getString(R.string.nomor_rekening));
-                                }
-                                else if (source_product_code.equalsIgnoreCase("MANDIRIIB"))
-                                {
-                                    etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
-                                }else etNoAcct.setHint(getString(R.string.no_rekening_source_cashout) + " " + listbankSource.get(position).getProduct_name());
-                            else
-                                etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
+//                            if (listbankSource.get(position).getProduct_type().equalsIgnoreCase(DefineValue.ACCT) || source_product_code.equalsIgnoreCase("MANDIRILKD"))
+//                                if (source_product_code.equalsIgnoreCase("MANDIRILKD"))
+//                                {
+//                                    etNoAcct.setHint(getString(R.string.nomor_rekening));
+//                                }
+//                                else if (source_product_code.equalsIgnoreCase("MANDIRIIB"))
+//                                {
+//                                    etNoAcct.setHint(getString(R.string.user_id) + " " + listbankSource.get(position).getProduct_name());
+//                                }else etNoAcct.setHint(getString(R.string.no_rekening_source_cashout) + " " + listbankSource.get(position).getProduct_name());
+//                            else
+                                etNoAcct.setHint( getString(R.string.user_id)+ " " + getString(R.string.appname));
                         }
                     }
                     break;
