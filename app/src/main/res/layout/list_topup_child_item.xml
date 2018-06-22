@@ -7,7 +7,7 @@
     android:background="@color/white">
 
     <LinearLayout
-        android:id="@+id/child_item_layout"
+        android:id="@+id/adapter_child_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/title_child"
+            android:id="@+id/adapter_child_title_child"
             android:textSize="@dimen/text_size_small_material"
             android:textColor="@color/black"
             android:layout_gravity="start|center_vertical"
