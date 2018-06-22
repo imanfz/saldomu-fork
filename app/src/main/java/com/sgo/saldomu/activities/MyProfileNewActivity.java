@@ -238,7 +238,7 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
-        if (is_agent)
+        if (!is_agent && !levelClass.isLevel1QAC())
         {
             android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
             builder1.setTitle(R.string.upgrade_agent);

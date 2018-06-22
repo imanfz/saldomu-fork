@@ -10,7 +10,6 @@ import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -136,6 +135,7 @@ public class MyApiClient {
     public static String LINK_RETRY_TOKEN;
     public static String LINK_UPLOAD_PROFILE_PIC;
     public static String LINK_UPLOAD_KTP;
+    public static String LINK_UPLOAD_SIUP_NPWP;
     public static String LINK_LIST_BANK_BILLER;
 
     public static String LINK_REQ_TOKEN_P2P;
@@ -202,7 +202,8 @@ public class MyApiClient {
 
     private static String LINK_INQUIRY_CUST;
     public static String LINK_EXEC_CUST;
-	
+    public static String LINK_EXEC_AGENT;
+
 	public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
     public static String LINK_REJECT_CONFIRM_CASHOUT;
@@ -300,6 +301,7 @@ public class MyApiClient {
 
         LINK_UPLOAD_PROFILE_PIC  = headaddressfinal + "UploadProfPic/Submit";
         LINK_UPLOAD_KTP          = headaddressfinal + "UploadKtp/Submit";
+        LINK_UPLOAD_SIUP_NPWP    = headaddressfinal + "UploadNPWP/Submit";
         LINK_REQ_TOKEN_P2P       = headaddressfinal + "TransferP2P/Invoke";
         LINK_CONFIRM_TRANS_P2P   = headaddressfinal + "ConfirmTransfer/Invoke";
         LINK_RESENT_TOKEN_P2P    = headaddressfinal + "ResendTransfer/Invoke";
@@ -359,7 +361,8 @@ public class MyApiClient {
 
         LINK_INQUIRY_CUST = headaddressfinal + "InquiryCustomer/Retrieve";
         LINK_EXEC_CUST   = headaddressfinal + "ExecCustomer/Invoke";
-		
+        LINK_EXEC_AGENT   = headaddressfinal + "ExecAgent/Invoke";
+
 		LINK_REQUEST_CASHOUT    = headaddressfinal + "RequestCashout/Invoke";
         LINK_CONFIRM_CASHOUT    = headaddressfinal + "ConfirmCashout/Invoke";
         LINK_REJECT_CONFIRM_CASHOUT = headaddressfinal + "Rejectatc/Invoke";
@@ -915,6 +918,11 @@ public class MyApiClient {
         post(mContext,LINK_UPLOAD_KTP, params, responseHandler);
     }
 
+    public static void sentPhotoSIUPNPWP(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address Upload SIUP NPWP: %1$s ",LINK_UPLOAD_SIUP_NPWP);
+        post(mContext,LINK_UPLOAD_SIUP_NPWP, params, responseHandler);
+    }
+
     public static void sentReqTokenP2P(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address ReqToken P2P: %1$s ",LINK_REQ_TOKEN_P2P);
         post(mContext,LINK_REQ_TOKEN_P2P, params, responseHandler);
@@ -1154,7 +1162,11 @@ public class MyApiClient {
         Timber.wtf("address sent exec customer: %1$s ",LINK_EXEC_CUST);
         post(mContext,LINK_EXEC_CUST, params, responseHandler);
     }
-	
+
+    public static void sentExecAgent(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address sent exec agent: %1$s ",LINK_EXEC_AGENT);
+        post(mContext,LINK_EXEC_AGENT, params, responseHandler);
+    }
 	public static void sentReqCashout(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address sent req cashout: %1$s ",LINK_REQUEST_CASHOUT);
         post(mContext,LINK_REQUEST_CASHOUT, params, responseHandler);

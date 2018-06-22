@@ -1,6 +1,7 @@
 package com.sgo.saldomu.activities;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,11 +9,14 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +28,7 @@ import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -40,8 +45,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class UpgradeAgentActivity extends BaseActivity {
-    private final int SIUP_TYPE = 1;
-    private final int NPWP_TYPE = 2;
+    private final int SIUP_TYPE = 4;
+    private final int NPWP_TYPE = 5;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
     private final int RESULT_GALLERY_SIUP = 104;
@@ -59,6 +64,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private int RESULT;
     private Integer proses;
     private Integer set_result_photo;
+    RelativeLayout layout_siup , layout_npwp;
 
     @Override
     protected int getLayoutResource() {
@@ -82,9 +88,13 @@ public class UpgradeAgentActivity extends BaseActivity {
         tv_pb_npwp = v.findViewById(R.id.tv_pb2_upgradeAgent);
         tv_reject_siup = v.findViewById(R.id.tv_respon_reject_siup);
         tv_reject_npwp = v.findViewById(R.id.tv_respon_reject_npwp);
+        layout_siup = v.findViewById(R.id.layout_foto_siup);
+        layout_npwp = v.findViewById(R.id.layout_npwp);
         cameraSIUP.setOnClickListener(setImageCameraSIUP);
         cameraNPWP.setOnClickListener(setImageCameraNPWP);
+        btn_proses.setOnClickListener(prosesListener);
 
+        InitializeToolbar();
     }
 
     private ImageButton.OnClickListener setImageCameraSIUP= new ImageButton.OnClickListener ()
@@ -106,6 +116,31 @@ public class UpgradeAgentActivity extends BaseActivity {
             camera_dialog();
         }
     };
+
+    private Button.OnClickListener prosesListener= new ImageButton.OnClickListener ()
+    {
+        @Override
+        public void onClick(View v) {
+            if (validationPhoto())
+            {
+                sentExecAgent();
+            }
+        }
+    };
+
+    public Boolean validationPhoto(){
+        if (siup == null)
+        {
+            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
+            return false;
+        }
+        else if (npwp == null)
+        {
+            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
+            return false;
+        }
+        return true;
+    }
 
     @AfterPermissionGranted(RC_CAMERA_STORAGE)
     public void camera_dialog()
@@ -197,7 +232,7 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         extraSignature = String.valueOf(flag);
 
-        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
+        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_SIUP_NPWP,
                 userPhoneID,accessKey,extraSignature);
         try {
             params.put(WebParams.USER_ID,userPhoneID);
@@ -210,7 +245,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         Timber.d("params upload foto: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 
-        MyApiClient.sentPhotoKTP(this, params, new JsonHttpResponseHandler() {
+        MyApiClient.sentPhotoSIUPNPWP(this, params, new JsonHttpResponseHandler() {
 
             @Override
             public void onProgress(long bytesWritten, long totalSize) {
@@ -295,16 +330,117 @@ public class UpgradeAgentActivity extends BaseActivity {
                         Timber.d("masuk failure npwp");
                         pbNPWP.setProgress( 0);
                         tv_pb_npwp.setText("0 %");
-
                     }
                 }
-
                 else
                     Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                 Timber.w("Error Koneksi data update foto siup npwp:" + throwable.toString());
             }
-
         });
+    }
+
+    private void sentExecAgent(){
+        try{
+
+            if(progdialog == null)
+                progdialog = DefinedDialog.CreateProgressDialog(UpgradeAgentActivity.this, "");
+            else
+                progdialog.show();
+
+            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_AGENT,
+                    userPhoneID, accessKey, memberIDLogin);
+            params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+
+            Timber.d("isi params execute customer:" + params.toString());
+
+            MyApiClient.sentExecAgent(UpgradeAgentActivity.this,params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("response execute customer:"+response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+//                            SecurePreferences.Editor mEdit = sp.edit();
+//                            mEdit.remove(DefineValue.REJECT_SIUP);
+//                            mEdit.remove(DefineValue.REJECT_NPWP);
+//                            mEdit.remove(DefineValue.REMARK_SIUP);
+//                            mEdit.remove(DefineValue.REMARK_NPWP);
+//                            mEdit.remove(DefineValue.MODEL_NOTIF);
+//                            mEdit.apply();
+                            DialogSuccessUploadPhoto();
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:"+response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(UpgradeAgentActivity.this, message);
+                        } else {
+                            code = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
+                            getFragmentManager().popBackStack();
+
+                        }
+                        if (progdialog.isShowing())
+                            progdialog.dismiss();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable){
+                    if(MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if(progdialog.isShowing())
+                        progdialog.dismiss();
+                    getFragmentManager().popBackStack();
+                    Timber.w("Error Koneksi exec customer level req:"+throwable.toString());
+                }
+            });
+        }catch (Exception e){
+            Timber.d("httpclient:"+e.getMessage());
+        }
+    }
+
+    private void DialogSuccessUploadPhoto()
+    {
+        Dialog dialognya = DefinedDialog.MessageDialog(UpgradeAgentActivity.this, this.getString(R.string.level_dialog_finish_title),
+                this.getString(R.string.level_dialog_finish_message) + "\n\n" +
+                        this.getString(R.string.level_dialog_finish_message_2) + "\n",
+                        new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        finish();
+                    }
+                }
+        );
+
+        dialognya.setCanceledOnTouchOutside(false);
+        dialognya.setCancelable(false);
+
+        dialognya.show();
     }
 
     @Override
@@ -357,6 +493,29 @@ public class UpgradeAgentActivity extends BaseActivity {
     private void closethis(){
         setResult(RESULT);
         this.finish();
+    }
+
+    private void InitializeToolbar(){
+        setActionBarIcon(R.drawable.ic_arrow_left);
+        setActionBarTitle(getString(R.string.upgrade_agent));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
 

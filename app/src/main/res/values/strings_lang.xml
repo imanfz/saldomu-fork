@@ -178,13 +178,13 @@
     <string name="menu_item_title_pay_friends">Kirim Saldo</string>
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
-    <string name="menu_item_title_buy">Belanja</string>
+    <string name="menu_item_title_buy">PPOB</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
-    <string name="menu_item_title_scadm">SCADM</string>
+    <string name="menu_item_title_scadm">B2B Telko</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -1140,7 +1140,7 @@
 
     <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
     <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
-    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan ESPAY : 89208</string>
+    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan Top Up Saldomu : 89208</string>
     <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
     <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
@@ -1223,9 +1223,9 @@
     <string name="camer">No pictures</string>
     <string name="msg_error">Input errors, please check!</string>
 
-    <string name="scadm_join">Gabung Komunitas SCADM</string>
-    <string name="scadm_topup">Tambah Saldo Komunitas SCADM</string>
-    <string name="scadm_denom">Denom SCADM</string>
+    <string name="scadm_join">Gabung Komunitas B2B Telko</string>
+    <string name="scadm_topup">Bayar</string>
+    <string name="scadm_denom">Beli Denom Telko</string>
     <string name="bank_product">Produk Bank</string>
     <string name="comm_code">Kode Komunitas</string>
     <string name="denom_item">Item Denom</string>
