@@ -498,14 +498,14 @@
     <string name="get_otp">Kirim OTP</string>
 
     <string name="listatm_topup_danamon_1">Pilih menu Pembayaran > menu Lainnya > menu Virtual Account</string>
-    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan</string>
+    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan:9628</string>
     <string name="listatm_topup_danamon_3">Masukkan 16 digit Nomor Virtual Account</string>
 
     <string name="listatm_topup_maybank_1">Masukkan kartu ATM Maybank dan PIN Anda</string>
     <string name="listatm_topup_maybank_2">Pilih Virtual Account</string>
 
     <string name="listatm_topup_cimb_1">Pilih menu Transfer > Rekening CIMB Niaga/Rekening Ponsel Lain > Rekening CIMB Niaga Lain</string>
-    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan</string>
+    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan:8079</string>
 
     <string name="listatm_topup_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_topup_ins_2">Pilih Transfer ke </string>
