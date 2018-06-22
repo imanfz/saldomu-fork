@@ -173,25 +173,25 @@ public class NavigationDrawMenu extends ListFragment{
         levelClass = new LevelClass(getActivity(),sp);
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
-        ListView mListView = (ListView) v.findViewById(android.R.id.list);
+        ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
 
-        LinearLayout llHeaderProfile    = (LinearLayout) v.findViewById(R.id.llHeaderProfile);
-        llBalanceDetail    = (LinearLayout) v.findViewById(R.id.llBalanceDetail);
-        llAgentDetail      = (LinearLayout) v.findViewById(R.id.llAgentDetail);
+        LinearLayout llHeaderProfile    = v.findViewById(R.id.llHeaderProfile);
+        llBalanceDetail    = v.findViewById(R.id.llBalanceDetail);
+        llAgentDetail      = v.findViewById(R.id.llAgentDetail);
         llAgentDetail.setVisibility(View.GONE);
         llBalanceDetail.setVisibility(View.GONE);
 
-        headerCustImage = (ImageView) v.findViewById(R.id.header_cust_image);
-        headerCurrency = (TextView) v.findViewById(R.id.currency_value);
-        headerCustName = (TextView) v.findViewById(R.id.header_cust_name);
-        headerCustID = (TextView) v.findViewById(R.id.header_cust_id);
-        balanceValue = (TextView) v.findViewById(R.id.balance_value);
-        currencyLimit = (TextView) v.findViewById(R.id.currency_limit_value);
-        limitValue = (TextView) v.findViewById(R.id.limit_value);
-        periodeLimit = (TextView) v.findViewById(R.id.periode_limit_value);
-        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
-        tvAgentDetailName = (TextView) v.findViewById(R.id.tvAgentDetailName);
+        headerCustImage = v.findViewById(R.id.header_cust_image);
+        headerCurrency = v.findViewById(R.id.currency_value);
+        headerCustName = v.findViewById(R.id.header_cust_name);
+        headerCustID = v.findViewById(R.id.header_cust_id);
+        balanceValue = v.findViewById(R.id.balance_value);
+        currencyLimit = v.findViewById(R.id.currency_limit_value);
+        limitValue = v.findViewById(R.id.limit_value);
+        periodeLimit = v.findViewById(R.id.periode_limit_value);
+        swSettingOnline = v.findViewById(R.id.swSettingOnline);
+        tvAgentDetailName = v.findViewById(R.id.tvAgentDetailName);
 
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             llAgentDetail.setVisibility(View.GONE);
@@ -243,7 +243,7 @@ public class NavigationDrawMenu extends ListFragment{
             }
         });
 
-        btn_refresh_balance = (ImageView) v.findViewById(R.id.btn_refresh_balance);
+        btn_refresh_balance = v.findViewById(R.id.btn_refresh_balance);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
         btn_refresh_balance.setOnClickListener(new View.OnClickListener() {
@@ -471,7 +471,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         switch (itemId) {
             case MTOPUP:
-                newFragment = new ListTopUp();
+                newFragment = new ListBankTopUpFragment();
                 switchFragment(newFragment, getString(R.string.toolbar_title_topup));
                 break;
             case MPAYFRIENDS:

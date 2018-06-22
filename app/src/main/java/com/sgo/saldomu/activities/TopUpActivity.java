@@ -17,7 +17,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
-import com.sgo.saldomu.fragments.ListTopUp;
+import com.sgo.saldomu.fragments.ListBankTopUpFragment;
 import com.sgo.saldomu.fragments.SgoPlus_input;
 
 import java.util.List;
@@ -69,7 +69,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
             Bundle mArgs = i.getExtras();
 
             if(is_full_activity){
-                mFrag = new ListTopUp();
+                mFrag = new ListBankTopUpFragment();
                 mArgs.putBoolean(DefineValue.IS_ACTIVITY_FULL,is_full_activity);
                 mArgs.putString("Toolbar", i.getStringExtra("Toolbar"));
                 setToolbarTitle(getString(R.string.toolbar_title_topup));

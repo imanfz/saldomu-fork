@@ -74,7 +74,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             v = infalInflater.inflate(R.layout.list_topup_group_item, parent,false);
             tri_img = v.findViewById(R.id.triangle);
             logo_img = v.findViewById(R.id.logo);
-            group_title = v.findViewById(R.id.group_title);
+            group_title = v.findViewById(R.id.adapter_bank_list_group_title);
             v_divider = v.findViewById(R.id.divider);
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.addView(tri_img);
@@ -87,7 +87,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         ViewHolder cholder = (ViewHolder) v.getTag();
         tri_img = (ImageView) cholder.getView(R.id.triangle);
         logo_img = (ImageView) cholder.getView(R.id.logo);
-        group_title = (TextView) cholder.getView(R.id.group_title);
+        group_title = (TextView) cholder.getView(R.id.adapter_bank_list_group_title);
         v_divider = cholder.getView(R.id.divider);
 
         group_title.setText(headerObject.getHeader());
@@ -141,12 +141,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         if(isExpanded){
             tri_img.setImageResource(R.drawable.triangle_open);
             v_divider.setVisibility(View.VISIBLE);
-            headerObject.setExpanded(true);
+//            headerObject.setExpanded(true);
             group_title.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         }else {
             tri_img.setImageResource(R.drawable.triangle_close);
             v_divider.setVisibility(View.GONE);
-            headerObject.setExpanded(false);
+//            headerObject.setExpanded(false);
             group_title.setTextColor(mContext.getResources().getColor(R.color.black));
         }
 
@@ -158,7 +158,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         ViewHolder holder;
         BankDataTopUp childDataWrapper = (BankDataTopUp) getChild(groupPosition, childPosition);
         ListBankDataTopup childDataBank = childDataWrapper.getBankData().get(childPosition);
-        is_expanded = ((BankHeaderTopUp)getGroup(groupPosition)).getExpanded();
+//        is_expanded = ((BankHeaderTopUp)getGroup(groupPosition)).getExpanded();
         int itemType = getChildType(groupPosition,childPosition);
         View layout_view_child = convertView;
         View v_divider,childItemLayout, layoutAtm;

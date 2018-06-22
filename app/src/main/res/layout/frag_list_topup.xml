@@ -49,11 +49,21 @@
             android:background="@color/white"
             android:groupIndicator="@drawable/transparent"
             android:layout_below="@+id/maxtopup_layout"
-            android:textIsSelectable="true">
-            <!--android:dividerHeight="2dp"-->
-            <!--android:divider="@color/grey_300"-->
-            <!--android:childDivider="@color/grey_300"-->
+            android:textIsSelectable="true"
+            android:visibility="gone">
 
         </ExpandableListView>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/frag_bank_list_topup_list"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:layout_below="@+id/maxtopup_layout">
+
+        </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 </LinearLayout>
