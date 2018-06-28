@@ -84,6 +84,9 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
     List<BankHeaderTopUp> listDataHeader2;
     BankListTopupAdapter bankListTopupAdapter;
 
+    String otherAtmBankcode;
+    BankDataTopUp temp_other_atm;
+
     public ListBankTopUpFragment newInstance(Boolean is_full_activity){
         ListBankTopUpFragment fragment = new ListBankTopUpFragment();
         Bundle mbun = new Bundle();
@@ -130,7 +133,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
         listDataHeader2 = new ArrayList<>();
 
         expand_lv_adapter = new Expendable_List_View_Adapter(getActivity(),listDataHeader, listDataChild);
-        bankListTopupAdapter = new BankListTopupAdapter(getActivity(), listDataHeader2, new BankListTopupAdapter.OnClick() {
+        bankListTopupAdapter = new BankListTopupAdapter(getActivity(), temp_other_atm, listDataHeader2, new BankListTopupAdapter.OnClick() {
             @Override
             public void onClick(ArrayList<listBankModel> bankData) {
                 DataManager.getInstance().setBankData(bankData);
@@ -298,6 +301,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                                         nodata_view.setVisibility(View.GONE);
                                         layout_list_view.setVisibility(View.VISIBLE);
                                     }
+                                    otherAtmBankcode = response.getString("other_atm");
                                     insertBankLists(response.getJSONObject(WebParams.BANK_DATA), response.optString(WebParams.OTHER_ATM,""));
                                     prodDialog.dismiss();
                                 }
@@ -467,7 +471,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                 //temp_list_data_bank untuk menyimpan data bank per bank code
                 BankDataTopUp temp_list_data_bank;
                 //temp_other_atm untuk menyimpan data bank khusus ditampilkan di other atm
-                BankDataTopUp temp_other_atm = null;
+                temp_other_atm = null;
                 //tempListBankModels menyimpan data product bank bentuk array untuk dimasukan ke temp_list_data_bank(BankDataTopup)
                 ArrayList<ListBankDataTopup> tempListBankModels;
                 String bankCode;
@@ -479,8 +483,9 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                     tempListBankModels = new ArrayList<>();
                     String fee="",va="";
 
+
                     BankHeaderTopUp bankData = new BankHeaderTopUp(listProduct.getJSONObject(0).getString(WebParams.BANK_NAME)
-                            , bankCode);
+                            , bankCode, other_atm);
                     ArrayList<listBankModel> tempListBankModel = new ArrayList<>();
 
                     for (int j = 0 ; j < listProduct.length() ; j++){
@@ -506,6 +511,7 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                             ArrayList<ListBankDataTopup> listBankModels = new ArrayList<>();
                             listBankModels.add(new ListBankDataTopup(listBankModel));
                             temp_other_atm = new BankDataTopUp(listBankModels,bankCode,vaOtherATM,fee);
+                            DataManager.getInstance().setTemp_other_atm(temp_other_atm);
                         }
 
                         tempListBankModels.add(new ListBankDataTopup(listBankModel));

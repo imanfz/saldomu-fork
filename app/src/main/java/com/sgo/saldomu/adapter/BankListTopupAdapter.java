@@ -11,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sgo.saldomu.Beans.BankDataTopUp;
 import com.sgo.saldomu.Beans.BankHeaderTopUp;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.DataManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +26,13 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
     Context context;
     List<BankHeaderTopUp> listDataHeader;
     OnClick listener;
+    BankDataTopUp temp_other_atm;
 
     public interface OnClick{
         void onClick(ArrayList<listBankModel> bankData);
     }
 
-    public BankListTopupAdapter(Context _context, List<BankHeaderTopUp> listDataHeader, OnClick listener){
+    public BankListTopupAdapter(Context _context, BankDataTopUp temp_other_atm, List<BankHeaderTopUp> listDataHeader, OnClick listener){
         context = _context;
         this.listDataHeader = listDataHeader;
         this.listener = listener;
@@ -46,8 +49,10 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
         holder.bankName.setText(listDataHeader.get(position).getHeader());
 
         int logoId = 0;
-        if (listDataHeader.get(position).getBankCode() != null) {
-            switch (listDataHeader.get(position).getBankCode()) {
+        String bankCode = listDataHeader.get(position).getBankCode();
+        if (bankCode != null) {
+
+            switch (bankCode) {
                 case DefineValue.BankJatim:
                     logoId = R.drawable.logo_bank_jatim_small;
                     break;
@@ -94,6 +99,21 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
 //            holder.logoHolder.setVisibility(View.VISIBLE);
 //        }
 
+        temp_other_atm = DataManager.getInstance().getTemp_other_atm();
+        if (temp_other_atm != null) {
+            if (listDataHeader.get(position).getHeader().equals(context.getString(R.string.other_bank))) {
+                if (temp_other_atm.getFee() == null) {
+                    holder.feeDescOthers.setText("");
+                } else
+                    holder.feeDescOthers.setText(context.getString(R.string.listatm_topup_deskripsi_fee, temp_other_atm.getFee()));
+            }
+
+            holder.pinAccOthers.setText(temp_other_atm.getNoVa());
+        }
+
+
+
+
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +139,7 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
     class holder extends ViewHolder{
 
         LinearLayout parent;
-        TextView bankName;
+        TextView bankName, feeDescOthers, pinAccOthers;
         ImageView logoHolder;
         View otherATM;
 
@@ -130,6 +150,8 @@ public class BankListTopupAdapter extends RecyclerView.Adapter<BankListTopupAdap
             logoHolder = itemView.findViewById(R.id.adapter_bank_list_logo);
             bankName = itemView.findViewById(R.id.adapter_bank_list_group_title);
             otherATM = itemView.findViewById(R.id.adapter_bank_list_otheratm);
+            feeDescOthers = itemView.findViewById(R.id.fee_deskripsi);
+            pinAccOthers = itemView.findViewById(R.id.pin_account);
         }
     }
 }
