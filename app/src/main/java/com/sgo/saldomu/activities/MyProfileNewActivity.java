@@ -95,6 +95,7 @@ public class MyProfileNewActivity extends BaseActivity {
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
     private boolean isRegisteredLevel =false; //saat antri untuk diverifikasi
+    private boolean isUpgradeAgent =false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
     private boolean is_agent = false;
     private String listContactPhone = "";
@@ -185,6 +186,7 @@ public class MyProfileNewActivity extends BaseActivity {
         respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD,"");
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
+        isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
 
         if(contactCenter.equals("")) {
             getHelpList();
@@ -238,17 +240,24 @@ public class MyProfileNewActivity extends BaseActivity {
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
-        if (!is_agent && !levelClass.isLevel1QAC())
+
+        if (isUpgradeAgent)
+        {
+            DialogWaitingUpgradeAgent();
+        }
+
+        if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent)
         {
             android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
             builder1.setTitle(R.string.upgrade_agent);
             builder1.setMessage(R.string.message_upgrade_agent);
-            builder1.setCancelable(true);
+            builder1.setCancelable(false);
 
             builder1.setPositiveButton(
                     "Yes",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            finish();
                             Intent intent = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
                             startActivity(intent);
                         }
@@ -1046,6 +1055,25 @@ public class MyProfileNewActivity extends BaseActivity {
                     }
                 }
             );
+
+        dialognya.setCanceledOnTouchOutside(false);
+        dialognya.setCancelable(false);
+
+        dialognya.show();
+    }
+
+    private void DialogWaitingUpgradeAgent()
+    {
+        Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        finish();
+                    }
+                }
+        );
 
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);

@@ -71,6 +71,7 @@ public class DefineValue {
     public static String PUBLIC = "2" ;
 
     public static boolean NOBACK = false;
+    public static String IS_UPGRADE_AGENT = "isUpgradeAgent";
     public static String NP_DATA_PREF = "NpDataPref"; //Data Login,User Dan flag Register
     public static String FLAG_LOGIN = "flag_login";
     public static String USER_NAME = "userName";
