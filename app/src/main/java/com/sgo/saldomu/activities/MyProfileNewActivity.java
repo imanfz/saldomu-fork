@@ -241,11 +241,6 @@ public class MyProfileNewActivity extends BaseActivity {
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
 
-        if (isUpgradeAgent)
-        {
-            DialogWaitingUpgradeAgent();
-        }
-
         if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent)
         {
             android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
@@ -292,7 +287,7 @@ public class MyProfileNewActivity extends BaseActivity {
             dataVerifiedMember.setVisibility(View.GONE);
         }
 
-        if(!levelClass.isLevel1QAC())
+        if(!levelClass.isLevel1QAC() || is_agent)
         {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
@@ -307,6 +302,11 @@ public class MyProfileNewActivity extends BaseActivity {
             }else
             btn1.setVisibility(View.GONE);
 
+        }
+
+        if (isUpgradeAgent && !is_agent)
+        {
+            DialogWaitingUpgradeAgent();
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);
