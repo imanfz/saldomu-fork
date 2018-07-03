@@ -276,11 +276,6 @@ public class UpgradeAgentActivity extends BaseActivity {
             DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
             return false;
         }
-//        else if (npwp == null)
-//        {
-//            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
-//            return false;
-//        }
         return true;
     }
 
@@ -350,13 +345,11 @@ public class UpgradeAgentActivity extends BaseActivity {
             switch (type){
                 case SIUP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraSIUP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
                     siup = file;
                     uploadFileToServer(siup, SIUP_TYPE);
                     break;
                 case NPWP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraNPWP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
                     npwp = file;
                     uploadFileToServer(npwp, NPWP_TYPE);
                     break;
@@ -507,11 +500,11 @@ public class UpgradeAgentActivity extends BaseActivity {
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             SecurePreferences.Editor mEdit = sp.edit();
                             mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
-//                            mEdit.remove(DefineValue.REJECT_SIUP);
-//                            mEdit.remove(DefineValue.REJECT_NPWP);
-//                            mEdit.remove(DefineValue.REMARK_SIUP);
-//                            mEdit.remove(DefineValue.REMARK_NPWP);
-//                            mEdit.remove(DefineValue.MODEL_NOTIF);
+                            mEdit.remove(DefineValue.REJECT_SIUP);
+                            mEdit.remove(DefineValue.REJECT_NPWP);
+                            mEdit.remove(DefineValue.REMARK_SIUP);
+                            mEdit.remove(DefineValue.REMARK_NPWP);
+                            mEdit.remove(DefineValue.MODEL_NOTIF);
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
