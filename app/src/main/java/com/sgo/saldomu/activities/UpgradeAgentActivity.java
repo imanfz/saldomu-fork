@@ -69,6 +69,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private String contactCenter;
     private String listContactPhone = "";
     private String listAddress = "";
+    String reject_siup, reject_npwp, remark_siup, remark_npwp;
 
     @Override
     protected int getLayoutResource() {
@@ -81,6 +82,11 @@ public class UpgradeAgentActivity extends BaseActivity {
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        reject_siup = sp.getString(DefineValue.REJECT_SIUP,"");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"");
+        remark_siup = sp.getString(DefineValue.REMARK_SIUP,"");
+        remark_npwp = sp.getString(DefineValue.REMARK_NPWP,"");
+
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
 
         View v = this.findViewById(android.R.id.content);
@@ -117,6 +123,27 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
 
         InitializeToolbar();
+
+        if (reject_siup.equalsIgnoreCase("N") || reject_npwp.equalsIgnoreCase("N"))
+        {
+            if (reject_siup.equalsIgnoreCase("N"))
+            {
+                cameraSIUP.setEnabled(true);
+                tv_reject_siup.setText("Alasan : " +remark_siup);
+            }else layout_siup.setVisibility(View.GONE);
+
+            if (reject_npwp.equalsIgnoreCase("N"))
+            {
+                cameraNPWP.setEnabled(true);
+                tv_reject_npwp.setText("Alasan : " +remark_npwp);
+            }else layout_npwp.setVisibility(View.GONE);
+        }
+
+        if (reject_npwp.equalsIgnoreCase(""))
+        {
+            layout_siup.setVisibility(View.GONE);
+            layout_npwp.setVisibility(View.VISIBLE);
+        }
     }
 
     private ImageButton.OnClickListener setImageCameraSIUP= new ImageButton.OnClickListener ()
