@@ -1,6 +1,6 @@
 package com.sgo.saldomu.coreclass;
 
-import android.annotation.TargetApi;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
@@ -21,12 +22,14 @@ import android.widget.Toast;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
@@ -39,7 +42,8 @@ public class SMSclass {
     private BroadcastReceiver receiverSent;
     private BroadcastReceiver receiverDelivered;
 
-    private static final String SMS_VERIFY = "REG EMO "+MyApiClient.COMM_ID;
+    private static final String SMS_VERIFY      = "REG EMO "+MyApiClient.COMM_ID;
+    String[] perms                              = {Manifest.permission.READ_PHONE_STATE};
 
     public interface SMS_SIM_STATE{
         void sim_state(Boolean isExist, String msg);
@@ -86,7 +90,7 @@ public class SMSclass {
 
     public void sendSMSVerify(String phoneNo,String imei, String iccid,String TimeStamp, SMS_VERIFY_LISTENER listener){
 
-        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+MyApiClient.APP_ID;
+        String msg = SMS_VERIFY + " "+imei+"_"+iccid+"_"+TimeStamp+"_"+ MyApiClient.APP_ID;
         sendSMS(phoneNo,msg,listener);
 
     }
@@ -221,58 +225,58 @@ public class SMSclass {
 
     public boolean isSimExists(SMS_SIM_STATE listener)
     {
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
-            List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
-            if(subscriptionInfoList != null && subscriptionInfoList .size() > 0) {
-                if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
-                    if (listener != null)
-                        listener.sim_state(true, "Ada isinya");
-                    return true;
-                }
-                else {
+        if ( !EasyPermissions.hasPermissions(getmContext(), perms) ) {
+            return false;
+        } else {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 && EasyPermissions.hasPermissions(getmContext(), perms) ) {
+                SubscriptionManager subscriptionManager = SubscriptionManager.from(mContext);
+                List<SubscriptionInfo> subscriptionInfoList = subscriptionManager.getActiveSubscriptionInfoList();
+                if (subscriptionInfoList != null && subscriptionInfoList.size() > 0) {
+                    if (SmsManager.getSmsManagerForSubscriptionId(subscriptionInfoList.get(0).getSubscriptionId()) != null) {
+                        if (listener != null)
+                            listener.sim_state(true, "Ada isinya");
+                        return true;
+                    } else {
+                        if (listener != null)
+                            listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
+                        return false;
+                    }
+                } else {
                     if (listener != null)
                         listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
                     return false;
                 }
-            }
-            else {
-                if (listener != null)
-                    listener.sim_state(false, getmContext().getString(R.string.sim_not_found));
-                return false;
-            }
-        }
-        else {
-
-            int SIM_STATE = telephonyManager.getSimState();
-
-            if (SIM_STATE == TelephonyManager.SIM_STATE_READY) {
-                if (listener != null)
-                    listener.sim_state(true, "Ada isinya");
-                return true;
             } else {
-                String SimState = getmContext().getString(R.string.sim_failed);
-                switch (SIM_STATE) {
-                    case TelephonyManager.SIM_STATE_ABSENT:
-                        SimState = getmContext().getString(R.string.sim_not_found);
-                        break;
-                    case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
-                        SimState = getmContext().getString(R.string.sim_network_locked);
-                        break;
-                    case TelephonyManager.SIM_STATE_PIN_REQUIRED:
-                        SimState = getmContext().getString(R.string.sim_pin_required);
-                        break;
-                    case TelephonyManager.SIM_STATE_PUK_REQUIRED:
-                        SimState = getmContext().getString(R.string.sim_puk_required);
-                        break;
-                    case TelephonyManager.SIM_STATE_UNKNOWN:
-                        SimState = getmContext().getString(R.string.sim_failed);
-                        break;
+
+                int SIM_STATE = telephonyManager.getSimState();
+
+                if (SIM_STATE == TelephonyManager.SIM_STATE_READY) {
+                    if (listener != null)
+                        listener.sim_state(true, "Ada isinya");
+                    return true;
+                } else {
+                    String SimState = getmContext().getString(R.string.sim_failed);
+                    switch (SIM_STATE) {
+                        case TelephonyManager.SIM_STATE_ABSENT:
+                            SimState = getmContext().getString(R.string.sim_not_found);
+                            break;
+                        case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+                            SimState = getmContext().getString(R.string.sim_network_locked);
+                            break;
+                        case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+                            SimState = getmContext().getString(R.string.sim_pin_required);
+                            break;
+                        case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                            SimState = getmContext().getString(R.string.sim_puk_required);
+                            break;
+                        case TelephonyManager.SIM_STATE_UNKNOWN:
+                            SimState = getmContext().getString(R.string.sim_failed);
+                            break;
+                    }
+                    if (listener != null)
+                        listener.sim_state(false, SimState);
+                    return false;
                 }
-                if (listener != null)
-                    listener.sim_state(false, SimState);
-                return false;
             }
         }
     }
@@ -298,24 +302,40 @@ public class SMSclass {
     }
 
     public String getDeviceIMEI(){
-        String imei;
+        String imei = "";
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             SubscriptionManager sm = SubscriptionManager.from(mContext);
             List<SubscriptionInfo> sis = sm.getActiveSubscriptionInfoList();
-            imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
-        }
-        else {
-            if (telephonyManager.getDeviceId() == null)
-                imei =  "00000";
-            else
-                imei = telephonyManager.getDeviceId();
+
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+                imei = telephonyManager.getDeviceId(sis.get(0).getSimSlotIndex());
+            }
+        } else {
+            if ( isPermissionGranted() ) {
+                if (telephonyManager.getDeviceId() == null)
+                    imei = "00000";
+                else
+                    imei = telephonyManager.getDeviceId();
+            }
         }
 
         return imei;
     }
 
     public String getSimNumber(){
-        return telephonyManager.getLine1Number();
+        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+            return telephonyManager.getLine1Number();
+        }
+        return "";
+    }
+
+    public Boolean isPermissionGranted() {
+        if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+            return true;
+        }
+        return false;
+
     }
 
 
@@ -335,7 +355,7 @@ public class SMSclass {
             iccId = si.getIccId();
         }
         else {
-            if (telephonyManager.getSimSerialNumber() == null)
+            if (ContextCompat.checkSelfPermission(getmContext(), android.Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED  && telephonyManager.getSimSerialNumber() == null)
                 iccId = "00000";
             else
                 iccId = telephonyManager.getSimSerialNumber();

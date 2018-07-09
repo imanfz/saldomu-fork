@@ -23,8 +23,11 @@ import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -240,8 +243,9 @@ public class HistoryDetailActivity extends BaseActivity {
     private void getCommentList() {
         try {
 
+            extraSignature = post_id + from_id;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
@@ -344,8 +348,10 @@ public class HistoryDetailActivity extends BaseActivity {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
+            extraSignature = post_id + from_id;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_COMMENT,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
@@ -453,8 +459,11 @@ public class HistoryDetailActivity extends BaseActivity {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
+
+            extraSignature = post_id + comment_id + to;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_COMMENT,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.COMMENT_ID, comment_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);
@@ -578,8 +587,9 @@ public class HistoryDetailActivity extends BaseActivity {
         try {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
+            extraSignature = post_id + from_id;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
@@ -698,8 +708,9 @@ public class HistoryDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
             like = true;
 
+            extraSignature = post_id + from_id;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
@@ -818,8 +829,9 @@ public class HistoryDetailActivity extends BaseActivity {
 //            String user_id = sp.getString(DefineValue.USERID_PHONE,"");
 //            String access_key = sp.getString(DefineValue.ACCESS_KEY,"");
 
+            extraSignature = post_id + like_id + to;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
-                    _ownerID,accessKey);
+                    _ownerID,accessKey, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);

@@ -1,6 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -11,10 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ToggleButton;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.TutorialActivity;
+import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.ReportTabAdapter;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.viewpagerindicator.TabPageIndicator;
@@ -31,6 +33,7 @@ public class ReportTab extends Fragment {
     SecurePreferences sp;
     private View currentView;
     private InformationDialog dialogI;
+    String[] titles;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,6 +52,10 @@ public class ReportTab extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+
+        ToggleFAB(false);
 
         if (savedInstanceState == null) {
             final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
@@ -56,7 +63,10 @@ public class ReportTab extends Fragment {
             ReportTabAdapter adapternya;
             TabPageIndicator tabs;
             ViewPager pager;
-            String[] titles = getActivity().getResources().getStringArray(R.array.report_list);
+            if (isAgent){
+                titles = getActivity().getResources().getStringArray(R.array.report_list_agen);
+            }else
+                titles = getActivity().getResources().getStringArray(R.array.report_list);
 
             dialogI = InformationDialog.newInstance(10);
             dialogI.setTargetFragment(this,0);
@@ -64,11 +74,11 @@ public class ReportTab extends Fragment {
             mList.add(FragReport.newInstance(FragReport.REPORT_ESPAY));
             mList.add(FragReport.newInstance(FragReport.REPORT_SCASH));
             mList.add(FragReport.newInstance(FragReport.REPORT_ASK));
+            mList.add(FragReport.newInstance(FragReport.REPORT_FEE));
 
-            tabs = (TabPageIndicator) getCurrentView().findViewById(R.id.report_tabs);
-            pager = (ViewPager) getCurrentView().findViewById(R.id.report_pager);
+            tabs = getCurrentView().findViewById(R.id.report_tabs);
+            pager = getCurrentView().findViewById(R.id.report_pager);
             adapternya = new ReportTabAdapter(getChildFragmentManager(), getActivity(), mList, titles);
-            setTargetFragment(this, 0);
             pager.setAdapter(adapternya);
             pager.setPageMargin(pageMargin);
             tabs.setViewPager(pager);
@@ -78,6 +88,20 @@ public class ReportTab extends Fragment {
         }
     }
 
+    private void ToggleFAB(Boolean isShow){
+        if (getActivity() == null)
+            return;
+
+        if(getActivity() instanceof MainPage) {
+            MainPage fca = (MainPage) getActivity();
+            if(fca.materialSheetFab != null) {
+                if (isShow)
+                    fca.materialSheetFab.showFab();
+                else
+                    fca.materialSheetFab.hideSheetThenFab();
+            }
+        }
+    }
 
     private View getCurrentView() {
         return currentView;

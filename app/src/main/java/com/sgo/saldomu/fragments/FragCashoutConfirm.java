@@ -2,13 +2,10 @@ package com.sgo.saldomu.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,18 +20,26 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.BaseActivityOTP;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ErrorDefinition;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.TransactionResult;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -46,19 +51,17 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 11/20/2015.
  */
-public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.OnDialogOkCallback, CashoutActivity.GetSMSOTP {
+public class FragCashoutConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback, CashoutActivity.GetSMSOTP {
 
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashoutConfirm";
 
-
     View v;
-    SecurePreferences sp;
     LinearLayout layoutOTP;
     TextView txtTxId, txtBankName, txtAccno, txtAccName, txtCurrency, txtNominal, txtFee, txtTotal;
     EditText tokenValue;
     Button btnProcess;
     ProgressDialog progdialog;
-    String name, userID, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
+    String name, accessKey, txId, bankName, accNo, ccyId, nominal, accName, fee, total;
     boolean isPIN, isOTP;
     int pin_attempt=-1;
     private TransactionResult mListener;
@@ -67,33 +70,30 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         String authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
         name = sp.getString(DefineValue.USER_NAME,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         isPIN = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_PIN);
 
         isOTP = authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP);
 
-        txtTxId = (TextView) v.findViewById(R.id.cashout_value_tx_id);
-        txtBankName = (TextView) v.findViewById(R.id.cashout_value_bank_name);
-        txtAccno = (TextView) v.findViewById(R.id.cashout_value_bank_acc_no);
-        txtAccName = (TextView) v.findViewById(R.id.cashout_value_bank_acc_name);
-        txtCurrency = (TextView) v.findViewById(R.id.cashout_value_ccy);
-        txtNominal  = (TextView) v.findViewById(R.id.cashout_value_nominal);
-        txtFee = (TextView) v.findViewById(R.id.cashout_value_fee);
-        txtTotal = (TextView) v.findViewById(R.id.cashout_value_total);
-        layoutOTP = (LinearLayout) v.findViewById(R.id.cashout_layout_OTP);
-        tokenValue = (EditText) v.findViewById(R.id.cashout_value_otp);
-        btnProcess = (Button) v.findViewById(R.id.cashoutconfirm_btn_process);
+        txtTxId = v.findViewById(R.id.cashout_value_tx_id);
+        txtBankName = v.findViewById(R.id.cashout_value_bank_name);
+        txtAccno = v.findViewById(R.id.cashout_value_bank_acc_no);
+        txtAccName = v.findViewById(R.id.cashout_value_bank_acc_name);
+        txtCurrency = v.findViewById(R.id.cashout_value_ccy);
+        txtNominal  =  v.findViewById(R.id.cashout_value_nominal);
+        txtFee = v.findViewById(R.id.cashout_value_fee);
+        txtTotal = v.findViewById(R.id.cashout_value_total);
+        layoutOTP = v.findViewById(R.id.cashout_layout_OTP);
+        tokenValue = v.findViewById(R.id.cashout_value_otp);
+        btnProcess = v.findViewById(R.id.cashoutconfirm_btn_process);
         btnProcess.setOnClickListener(btnProcessListener);
 
         if(isOTP) layoutOTP.setVisibility(View.VISIBLE);
         else {
             layoutOTP.setVisibility(View.GONE);
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userID,new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     pin_attempt = (int) deData;
@@ -183,12 +183,13 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_CASHOUT,
-                    userID, accessKey);
+            extraSignature = txId+_token;
+
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_CASHOUT, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
 
             MyApiClient.sentConfCashout(getActivity(),params, new JsonHttpResponseHandler(){
                 @Override
@@ -199,9 +200,10 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
                         String code = response.getString(WebParams.ERROR_CODE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             Timber.d("isi response confirm cashout:"+response.toString());
-                            showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userID, txId, bankName, accNo,
+                            showReportBillerDialog(name, DateTimeFormat.getCurrentDateTime(), userPhoneID, txId, bankName, accNo,
                                     accName, ccyId + " " + CurrencyFormat.format(nominal),
-                                    ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total));
+                                    ccyId + " " + CurrencyFormat.format(fee), ccyId + " " + CurrencyFormat.format(total),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
 
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
@@ -271,10 +273,11 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
     }
 
     private void showReportBillerDialog(String _name,String _date,String _userId, String _txId, String _bankName,String _accNo,
-                                        String _accName, String _nominal, String _fee,String _totalAmount) {
+                                        String _accName, String _nominal, String _fee,String _totalAmount, String buss_scheme_code,
+                                        String buss_scheme_name) {
 
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME,_name);
         args.putString(DefineValue.DATE_TIME,_date);
         args.putString(DefineValue.USERID_PHONE,_userId);
@@ -286,9 +289,11 @@ public class FragCashoutConfirm extends Fragment implements ReportBillerDialog.O
         args.putString(DefineValue.FEE,_fee);
         args.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT);
+        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
 
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
     }
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:text="0822123132"
+        android:textSize="20sp"
+        android:textColor="@color/grey_600"
+        android:id="@+id/adapter_denom_item_order_list_number"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:text="50000"
+        android:textSize="20sp"
+        android:textColor="@color/grey_600"
+        android:gravity="center"
+        android:id="@+id/adapter_denom_item_order_list_pulsa"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:text="-"
+        android:textSize="40sp"
+        android:textColor="@color/grey_600"
+        android:gravity="center"
+        android:id="@+id/adapter_denom_item_order_list_delete"/>
+
+</LinearLayout>

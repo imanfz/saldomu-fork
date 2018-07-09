@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.FragRegisterSMSBanking;

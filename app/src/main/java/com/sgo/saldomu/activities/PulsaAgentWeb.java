@@ -19,9 +19,12 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseActivity;
+
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -219,8 +222,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
 
+            extraSignature = txId + comm_id;
             RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -304,7 +308,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = ReportBillerDialog.newInstance();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME,date);
         args.putString(DefineValue.TX_ID,txId);

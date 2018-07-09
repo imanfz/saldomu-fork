@@ -78,8 +78,8 @@
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarStyle="insideOverlay"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_toRightOf="@+id/empty_cashout_benef_layout"
+        android:layout_toEndOf="@+id/empty_cashout_benef_layout">
 
         <LinearLayout
             android:layout_width="match_parent"

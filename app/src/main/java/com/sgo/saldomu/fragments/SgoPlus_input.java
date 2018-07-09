@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,23 +30,22 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.R;
 //import com.sgo.saldomu.activities.TagihanActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 //import com.sgo.saldomu.widgets.CustomFacebookButton;
 
 import org.apache.http.Header;
@@ -65,7 +63,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/5/2014.
  */
-public class SgoPlus_input extends Fragment implements EasyPermissions.PermissionCallbacks{
+public class SgoPlus_input extends BaseFragment implements EasyPermissions.PermissionCallbacks{
     private final static int RC_SENDSMS = 103;
     private HashMap<String,String> listBankName;
     private HashMap<String,String> listBankProduct;
@@ -78,7 +76,7 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
     Spinner spin_namaBank,spin_produkBank;
     EditText jumlahSGO_value;
     listBankModel listBankModel;
-    String memberID, topupType,userID,accessKey, data, bank_name, product_name, bank_code, product_code, pairing_id, is_pairing;
+    String topupType, data, bank_name, product_name, bank_code, product_code, pairing_id, is_pairing;
     ProgressDialog progdialog;
     ArrayAdapter<String> adapter3;
     ImageView spinWheelBankName, spinWheelBankProduct;
@@ -169,12 +167,7 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-
         Bundle args = getArguments();
-        memberID = sp.getString(DefineValue.MEMBER_ID,"");
 
         if(sentObject == null)
             sentObject = new SentObject();
@@ -382,7 +375,7 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
 
         productname.setText(product_name);
         bankname.setText(bank_name);
-        titleAb = getString(R.string.topuplist_ab_title)+" - "+ bank_name;
+        titleAb = getString(R.string.toolbar_title_topup)+" - "+ bank_name;
 //            }
 
         setActionBarTitle(titleAb);
@@ -521,15 +514,17 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
 
             final String amount = String.valueOf(jumlahSGO_value.getText());
 
+            extraSignature = memberIDLogin+product_code+MyApiClient.CCY_VALUE+amount;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_VALID_TOPUP,
-                    userID,accessKey);
-            params.put(WebParams.MEMBER_ID, memberID);
+                    userPhoneID,accessKey, extraSignature);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.BANK_CODE, bank_kode);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.PAYMENT_REMARK, "");
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params sgoplusinput:"+params.toString());
@@ -688,12 +683,14 @@ public class SgoPlus_input extends Fragment implements EasyPermissions.Permissio
     public void sentDataReqToken(){
         try{
 
+            extraSignature = sentObject.tx_id+sentObject.comm_code+sentObject.product_code;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, sentObject.comm_code);
             params.put(WebParams.TX_ID, sentObject.tx_id);
             params.put(WebParams.PRODUCT_CODE, sentObject.product_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PRODUCT_VALUE,sentObject.productValue);
 

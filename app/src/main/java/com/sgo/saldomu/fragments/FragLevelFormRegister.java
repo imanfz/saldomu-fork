@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,13 +25,13 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CountryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -53,7 +52,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 11/19/2015.
  */
-public class FragLevelFormRegister extends Fragment {
+public class FragLevelFormRegister extends BaseFragment {
 
     private View v;
     private Activity act;
@@ -65,8 +64,6 @@ public class FragLevelFormRegister extends Fragment {
 private EditText et_email;
     private TextView tv_dob;
     private String dedate = "";
-    private String userID;
-    private String accessKey;
     private String custID;
     private String contactCenter;
     private String listContactPhone = "";
@@ -75,7 +72,6 @@ private EditText et_email;
     private Spinner sp_country;
     private Spinner sp_gender;
     private DatePickerDialog dpd;
-    private SecurePreferences sp;
     private DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID","INDONESIA"));
     private DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID","INDONESIA"));
     private ProgressDialog progdialog;
@@ -95,9 +91,6 @@ private EditText et_email;
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         custID = sp.getString(DefineValue.CUST_ID,"");
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
 
@@ -324,7 +317,7 @@ private EditText et_email;
                 progdialog.show();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
-                    userID, accessKey);
+                    userPhoneID, accessKey, memberIDLogin);
             params.put(WebParams.CUST_ID, custID);
             params.put(WebParams.CUST_NAME, et_name.getText().toString());
             params.put(WebParams.CUST_ID_TYPE, sp_socialid.getSelectedItem().toString());
@@ -334,7 +327,7 @@ private EditText et_email;
             params.put(WebParams.CUST_BIRTH_PLACE, et_pob.getText().toString());
             params.put(WebParams.CUST_MOTHER_NAME, sp.getString(DefineValue.PROFILE_BOM, ""));
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.IS_REGISTER, "Y");
 
             final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
@@ -346,7 +339,7 @@ private EditText et_email;
             else
                 gender = gender_value[1];
             params.put(WebParams.CUST_GENDER,gender);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params execute customer:" + params.toString());
@@ -533,8 +526,8 @@ private EditText et_email;
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID, userID);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 

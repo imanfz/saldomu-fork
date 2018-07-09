@@ -4,11 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,14 +24,11 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -42,14 +37,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
-
 import timber.log.Timber;
-
-import static com.sgo.saldomu.R.id.decor_content_parent;
-import static com.sgo.saldomu.R.id.rlApproval;
-import static com.sgo.saldomu.R.id.tvTotalTrx;
-import static com.sgo.saldomu.R.id.txtName;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -187,24 +175,19 @@ public class FragMemberRating extends Fragment {
     private void submitData() {
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params    = new RequestParams();
+        String extraSignature   = txId + userRating;
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_FEEDBACK,
+                customerId, sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.TX_ID, txId);
         params.put(WebParams.KEY_PHONE, customerId);
         params.put(WebParams.MESSAGE, comment);
         params.put(WebParams.RATING, userRating);
+        params.put(WebParams.USER_ID, customerId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + txId + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
 
         Timber.d("isi params updatefeedback:" + params.toString());
 
@@ -226,6 +209,8 @@ public class FragMemberRating extends Fragment {
                     mEditor.remove(DefineValue.BBS_DEFAULT_RATING);
                     mEditor.remove(DefineValue.BBS_SHOP_NAME);
                     mEditor.apply();
+
+                    sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
 
                     if (code.equals(WebParams.SUCCESS_CODE)) {
                         if ( isCancel.equals(DefineValue.STRING_NO) ) {

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/red"
+        android:textStyle="italic|bold"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/konfirmasi_alert_text"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rp."
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/text_size_large_material"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/confirmation_dialog_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_large_material"
+            android:layout_marginLeft="10dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/confirmation_dialog_from"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:gravity="right"
+            android:textSize="@dimen/text_size_medium_material"/>
+
+        <ImageView
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/icon_arrow"/>
+
+        <TextView
+            android:id="@+id/confirmation_dialog_to"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:gravity="left"
+            android:textSize="@dimen/text_size_medium_material"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="6dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/margin_10dp">
+
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:gravity="right"
+            android:textSize="10sp"
+            android:text="@string/milik_pelanggan"
+            android:textStyle="italic"
+            android:id="@+id/tv_milik_kiri"
+            />
+
+        <TextView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:gravity="left"
+            android:layout_gravity="center_horizontal"
+            android:textSize="10sp"
+            android:text="@string/milik_agen"
+            android:textStyle="italic"
+            android:id="@+id/tv_milik_kanan"/>
+    </LinearLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:layout_marginLeft="26dp"
+        android:layout_marginRight="26dp">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/confirmation_dialog_user_id"
+                android:layout_weight="1"
+                android:text="@string/no_tujuan"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_value_user_id"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/name_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/confirmation_dialog_name"
+                android:layout_weight="1"
+                android:text="@string/nama_rekening_tujuan_hint"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_value_name"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/notif_pelanggan_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/confirmation_dialog_notif_pengguna"
+                android:layout_weight="1"
+                android:text="@string/notif_pelanggan"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_value_notif_pengguna"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:weightSum="2">
+
+            <TextView
+                android:layout_weight="1"
+                android:text="@string/remark"
+                android:textColor="@color/colorSecondaryDark"/>
+
+            <TextView
+                android:id="@+id/confirmation_dialog_remark"
+                android:layout_weight="1"
+                android:textSize="@dimen/sheet_item_textsize"
+                android:textColor="@color/colorSecondaryDark"/>
+        </TableRow>
+
+
+
+    </TableLayout>
+
+    <LinearLayout android:id="@+id/confirmation_dialog_button_layout"
+        android:background="@color/windowBackgroundColor"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_bk"
+            android:layout_marginRight="8dp"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:id="@+id/confirmation_dialog_back_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorSecondaryDark"
+                android:gravity="center"
+                android:text="@string/cancel"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_bk_orange"
+            android:layout_weight="1"
+            app:mrl_rippleOverlay="true"
+            app:mrl_rippleColor="@color/colorPrimaryDark"
+            app:mrl_rippleAlpha="0.2"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="true"
+            >
+            <Button
+                android:id="@+id/confirmation_dialog_ok_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:text="@string/ok"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/button_transparant"
+                />
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,15 +1,16 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,23 +34,19 @@ import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.adapter.GridBbsMenu;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.services.AgentShopService;
-import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.services.UpdateBBSData;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.UUID;
-
-import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.services.UpdateBBSData;
 
 import timber.log.Timber;
 
@@ -71,6 +67,7 @@ public class ListBBS extends Fragment {
     String shopStatus;
     ProgressDialog progdialog2;
     ProgressDialog progDialog;
+    private static final int RC_GPS_REQUEST = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -336,8 +333,9 @@ public class ListBBS extends Fragment {
     Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            RequestParams params    = new RequestParams();
+
             shopStatus              = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice    = false;
 
             if (!isChecked) {
                 //buka
@@ -345,82 +343,121 @@ public class ListBBS extends Fragment {
 
             }
 
-            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    isCallWebservice    = true;
+                }
 
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            } else {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
+                    isCallWebservice    = true;
+                }
+            }
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
-            params.put(WebParams.SHOP_STATUS, shopStatus);
+            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                showAlertEnabledGPS();
+            } else {
+                if (isCallWebservice) {
 
-            params.put(WebParams.SIGNATURE, signature);
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+                    params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+                    params.put(WebParams.SHOP_STATUS, shopStatus);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-                    try {
+                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                            progdialog2.dismiss();
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                            try {
+
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    }
+
+                                    mEditor.apply();
+
+                                    getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                                } else {
+                                    setAgentDetailToUI();
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            mEditor.apply();
-
-                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-
-                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                        } else {
-                            setAgentDetailToUI();
-                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            progdialog2.dismiss();
+                            Timber.w("Error Koneksi login:" + throwable.toString());
+
+                        }
+                    });
                 }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-            });
+            }
         }
     };
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+
+                        swSettingOnline.setOnClickListener(null);
+                        swSettingOnline.setChecked(false);
+                        swSettingOnline.setOnCheckedChangeListener(switchListener);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
 

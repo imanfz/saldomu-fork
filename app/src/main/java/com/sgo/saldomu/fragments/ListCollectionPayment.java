@@ -24,7 +24,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.CollectionBankAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -316,7 +316,7 @@ public class ListCollectionPayment extends ListFragment {
 
 
             RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_BANK_ACCOUNT_COLLECTION,
-                    userID,accessKey);
+                    userID,accessKey, commID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
             params.put(WebParams.USER_ID, userID);

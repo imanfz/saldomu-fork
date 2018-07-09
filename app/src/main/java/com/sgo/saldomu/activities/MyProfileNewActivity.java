@@ -26,17 +26,16 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -66,14 +65,10 @@ public class MyProfileNewActivity extends BaseActivity {
     private final int SELFIE_TYPE = 2;
     private final int TTD_TYPE = 3;
 
-
-    private SecurePreferences sp;
     TextView tv_dob, tv_pb1, tv_pb2, tv_pb3, tv_verified_member, tv_respon_reject_KTP, tv_respon_reject_selfie, tv_respon_reject_ttd;
     LinearLayout dataMemberBasic , dataVerifiedMember;
     RelativeLayout layoutKTP, layoutSelfie, layoutTTD;
     EditText et_nama, et_noHp, et_email;
-    private String userID;
-    private String accessKey;
     private ProgressBar pb1, pb2, pb3;
     private ImageButton cameraKTP, selfieKTP, cameraTTD;
     private Button btn1, btn2;
@@ -100,7 +95,9 @@ public class MyProfileNewActivity extends BaseActivity {
     AlertDialog dialogSuccess = null;
     private boolean is_first_time = false;
     private boolean isRegisteredLevel =false; //saat antri untuk diverifikasi
+    private boolean isUpgradeAgent =false; //saat antri untuk diverifikasi upgrade agent
     private boolean is_verified = false;
+    private boolean is_agent = false;
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
@@ -171,10 +168,7 @@ public class MyProfileNewActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         Intent intent    = getIntent();
@@ -182,6 +176,7 @@ public class MyProfileNewActivity extends BaseActivity {
             is_first_time = intent.getStringExtra(DefineValue.IS_FIRST).equals(DefineValue.YES);
         }
 
+        is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
         reject_KTP = sp.getString(DefineValue.REJECT_KTP,"N");
         reject_selfie = sp.getString(DefineValue.REJECT_FOTO,"N");
@@ -191,6 +186,7 @@ public class MyProfileNewActivity extends BaseActivity {
         respon_reject_ttd = sp.getString(DefineValue.REMARK_TTD,"");
         isRegisteredLevel = sp.getBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
+        isUpgradeAgent = sp.getBoolean(DefineValue.IS_UPGRADE_AGENT, false);
 
         if(contactCenter.equals("")) {
             getHelpList();
@@ -214,36 +210,71 @@ public class MyProfileNewActivity extends BaseActivity {
         View v = this.findViewById(android.R.id.content);
 
         assert v != null;
-        dataMemberBasic = (LinearLayout) findViewById(R.id.data_member_basic);
-        dataVerifiedMember = (LinearLayout) findViewById(R.id.data_verified_member);
-        layoutKTP = (RelativeLayout) findViewById(R.id.layout_foto_ktp);
-        layoutSelfie = (RelativeLayout) findViewById(R.id.layout_selfie);
-        layoutTTD = (RelativeLayout) findViewById(R.id.layout_ttd);
-        pb1 = (ProgressBar) v.findViewById(R.id.pb1_myprofileactivity);
-        pb2 = (ProgressBar) v.findViewById(R.id.pb2_myprofileactivity);
-        pb3 = (ProgressBar) v.findViewById(R.id.pb3_myprofileactivity);
-        tv_pb1 = (TextView) v.findViewById(R.id.tv_pb1_myprofileactivity);
-        tv_pb2 = (TextView) v.findViewById(R.id.tv_pb2_myprofileactivity);
-        tv_pb3 = (TextView) v.findViewById(R.id.tv_pb3_myprofileactivity);
-        tv_dob = (TextView) v.findViewById(R.id.myprofile_value_dob);
-        tv_verified_member = (TextView) v.findViewById(R.id.group_title2);
-        tv_respon_reject_KTP = (TextView) v.findViewById(R.id.tv_respon_reject_ktp);
-        tv_respon_reject_selfie = (TextView) v.findViewById(R.id.tv_respon_reject_selfie);
-        tv_respon_reject_ttd = (TextView) v.findViewById(R.id.tv_respon_reject_ttd);
-        et_noHp = (EditText) v.findViewById(R.id.myprofile_value_hp);
-        et_nama = (EditText) v.findViewById(R.id.myprofile_value_name);
-        et_email = (EditText) v.findViewById(R.id.myprofile_value_email);
-        cameraKTP = (ImageButton) v.findViewById(R.id.camera_ktp_paspor);
-        selfieKTP = (ImageButton) v.findViewById(R.id.camera_selfie_ktp_paspor);
-        cameraTTD = (ImageButton) v.findViewById(R.id.camera_ttd);
-        btn1 = (Button) v.findViewById(R.id.button1);
-        btn2 = (Button) v.findViewById(R.id.button2);
+        dataMemberBasic = findViewById(R.id.data_member_basic);
+        dataVerifiedMember = findViewById(R.id.data_verified_member);
+        layoutKTP = findViewById(R.id.layout_foto_ktp);
+        layoutSelfie = findViewById(R.id.layout_selfie);
+        layoutTTD = findViewById(R.id.layout_ttd);
+        pb1 = v.findViewById(R.id.pb1_myprofileactivity);
+        pb2 = v.findViewById(R.id.pb2_myprofileactivity);
+        pb3 = v.findViewById(R.id.pb3_myprofileactivity);
+        tv_pb1 = v.findViewById(R.id.tv_pb1_myprofileactivity);
+        tv_pb2 = v.findViewById(R.id.tv_pb2_myprofileactivity);
+        tv_pb3 = v.findViewById(R.id.tv_pb3_myprofileactivity);
+        tv_dob = v.findViewById(R.id.myprofile_value_dob);
+        tv_verified_member = v.findViewById(R.id.group_title2);
+        tv_respon_reject_KTP = v.findViewById(R.id.tv_respon_reject_ktp);
+        tv_respon_reject_selfie = v.findViewById(R.id.tv_respon_reject_selfie);
+        tv_respon_reject_ttd = v.findViewById(R.id.tv_respon_reject_ttd);
+        et_noHp = v.findViewById(R.id.myprofile_value_hp);
+        et_nama = v.findViewById(R.id.myprofile_value_name);
+        et_email = v.findViewById(R.id.myprofile_value_email);
+        cameraKTP = v.findViewById(R.id.camera_ktp_paspor);
+        selfieKTP = v.findViewById(R.id.camera_selfie_ktp_paspor);
+        cameraTTD = v.findViewById(R.id.camera_ttd);
+        btn1 = v.findViewById(R.id.button1);
+        btn2 = v.findViewById(R.id.button2);
         levelClass = new LevelClass(this,sp);
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
         if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
+
+        if (!is_agent && !levelClass.isLevel1QAC() && !isUpgradeAgent)
+        {
+            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
+            builder1.setTitle(R.string.upgrade_agent);
+            builder1.setMessage(R.string.message_upgrade_agent);
+            builder1.setCancelable(false);
+
+            builder1.setPositiveButton(
+                    "Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                            Intent intent = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
+            builder1.setNegativeButton(
+                    "No",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            tv_dob.setEnabled(false);
+                            if(is_first_time) {
+                                RESULT = MainPage.RESULT_FIRST_TIME;
+                                setResult(MainPage.RESULT_FIRST_TIME);
+                                finish();
+                            }else
+                                finish();
+                        }
+                    });
+
+            android.support.v7.app.AlertDialog alert11 = builder1.create();
+            alert11.show();
+        }
 
         if(!is_first_time)
         {
@@ -256,11 +287,11 @@ public class MyProfileNewActivity extends BaseActivity {
             dataVerifiedMember.setVisibility(View.GONE);
         }
 
-        if(!levelClass.isLevel1QAC())
+        if(!levelClass.isLevel1QAC() || is_agent)
         {
             et_nama.setEnabled(false);
             tv_dob.setEnabled(false);
-            tv_verified_member.setText("Data Verfied Member Sudah Terverifikasi");
+            tv_verified_member.setText("Data Verified Member Sudah Terverifikasi");
             dataVerifiedMember.setVisibility(View.GONE);
             cameraKTP.setEnabled(false);
             selfieKTP.setEnabled(false);
@@ -271,6 +302,11 @@ public class MyProfileNewActivity extends BaseActivity {
             }else
             btn1.setVisibility(View.GONE);
 
+        }
+
+        if (isUpgradeAgent && !is_agent)
+        {
+            DialogWaitingUpgradeAgent();
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);
@@ -537,11 +573,11 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog = DefinedDialog.CreateProgressDialog(MyProfileNewActivity.this, "");
             else
                 progdialog.show();
-
+            String extraSignature = memberIDLogin;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.EMAIL,et_email.getText().toString());
             params.put(WebParams.FULL_NAME,et_nama.getText().toString());
@@ -884,8 +920,10 @@ public class MyProfileNewActivity extends BaseActivity {
         tv_respon_reject_selfie.setVisibility(View.GONE);
         tv_respon_reject_ttd.setVisibility(View.GONE);
 
+        extraSignature = String.valueOf(flag);
+
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
-                userID,accessKey);
+                userPhoneID,accessKey,extraSignature);
         try {
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
             params.put(WebParams.USER_IMAGES, photoFile);
@@ -1018,6 +1056,28 @@ public class MyProfileNewActivity extends BaseActivity {
                 }
             );
 
+        dialognya.setCanceledOnTouchOutside(false);
+        dialognya.setCancelable(false);
+
+        dialognya.show();
+    }
+
+    private void DialogWaitingUpgradeAgent()
+    {
+        Dialog dialognya = DefinedDialog.MessageDialog(MyProfileNewActivity.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+                this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
+                        this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
+                new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                        finish();
+                    }
+                }
+        );
+
+        dialognya.setCanceledOnTouchOutside(false);
+        dialognya.setCancelable(false);
+
         dialognya.show();
     }
 
@@ -1039,7 +1099,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 progdialog.show();
 
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
-                    userID, accessKey);
+                    userPhoneID, accessKey, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.CUST_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_ID_TYPE, "");
@@ -1049,7 +1109,7 @@ public class MyProfileNewActivity extends BaseActivity {
             params.put(WebParams.CUST_BIRTH_PLACE, "");
             params.put(WebParams.CUST_MOTHER_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_CONTACT_EMAIL, et_email.getText().toString());
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID,""));
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.IS_REGISTER, "Y");
 
 //            final String dob = nowCalendar.get(Calendar.YEAR)+"-"+ (nowCalendar.get(Calendar.MONTH)+1) +"-"+nowCalendar.get(Calendar.DAY_OF_MONTH);
@@ -1061,7 +1121,7 @@ public class MyProfileNewActivity extends BaseActivity {
 //            else
 //                gender = gender_value[1];
             params.put(WebParams.CUST_GENDER,"");
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USER_ID,""));
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params execute customer:" + params.toString());
@@ -1155,8 +1215,8 @@ public class MyProfileNewActivity extends BaseActivity {
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID, userID);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
@@ -1242,7 +1302,7 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     }
 
-    private class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
+    public class ImageCompressionAsyncTask extends AsyncTask<String, Void, File> {
         private int type;
 
 

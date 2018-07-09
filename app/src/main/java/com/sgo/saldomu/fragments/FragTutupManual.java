@@ -1,20 +1,5 @@
 package com.sgo.saldomu.fragments;
 
-import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.BuildConfig;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
-import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,21 +7,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -45,7 +36,6 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
@@ -170,22 +160,17 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        String extraSignature = DefineValue.STRING_NO;
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                extraSignature);
+
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, DefineValue.STRING_NO);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.AppID + DefineValue.STRING_NO));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
         MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
@@ -460,23 +445,20 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         try{
             progdialog2             = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-
-
-            RequestParams params2    = new RequestParams();
-
             UUID rcUUID             = UUID.randomUUID();
             String  dtime           = DateTimeFormat.getCurrentDateTime();
             String shopStatus       = DefineValue.SHOP_CLOSE;
 
-            params2.put(WebParams.RC_UUID, rcUUID);
-            params2.put(WebParams.RC_DATETIME, dtime);
-            params2.put(WebParams.APP_ID, BuildConfig.AppID);
+            String extraSignature = memberId + shopId + shopStatus;
+            RequestParams params2            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
+                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                    extraSignature);
+
+            params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params2.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params2.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params2.put(WebParams.SHOP_ID, shopId);
             params2.put(WebParams.MEMBER_ID, memberId);
-
-            params2.put(WebParams.AMOUNT, startMonth);
 
             String idxStartMonth   = String.valueOf(startMonth+1);
             String idxStartDay     = String.valueOf(startDay);
@@ -494,10 +476,7 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
 
             params2.put(WebParams.SHOP_STATUS, shopStatus);
             params2.put(WebParams.SHOP_REMARK, "");
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
-
-            params2.put(WebParams.SIGNATURE, signature);
+            params2.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
             MyApiClient.registerOpenCloseShop(getContext(), params2, new JsonHttpResponseHandler() {
                 @Override

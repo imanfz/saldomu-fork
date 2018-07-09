@@ -49,7 +49,7 @@
 -keep class com.sgo.saldomu.coreclass.InetHandler { *; }
 -keep class com.sgo.saldomu.coreclass.LifeCycleHandler { *; }
 -keep class com.sgo.saldomu.securities.Md5 { *; }
--keep class com.sgo.saldomu.coreclass.MyApiClient { *; }
+-keep class com.sgo.saldomu.coreclass.Singleton.MyApiClient { *; }
 -keep class com.sgo.saldomu.coreclass.MyPicasso { *; }
 -keep class com.sgo.saldomu.coreclass.NotificationActionView { *; }
 -keep class com.sgo.saldomu.coreclass.PeriodTime { *; }
@@ -116,3 +116,4 @@
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
+-dontwarn com.zj.command.**

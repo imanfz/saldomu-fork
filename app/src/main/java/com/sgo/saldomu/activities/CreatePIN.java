@@ -7,18 +7,24 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.venmo.android.pin.PinFragment;
 import com.venmo.android.pin.PinFragmentConfiguration;
 import com.venmo.android.pin.PinSaver;
 import com.venmo.android.pin.util.PinHelper;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,13 +37,8 @@ import timber.log.Timber;
  */
 public class CreatePIN extends BaseActivity implements PinFragment.Listener {
 
-    private SecurePreferences sp;
     private String mValuePin;
-    private String memberID;
-    private String commID;
     private String confirmPin;
-    private String userID;
-    private String accessKey;
     private Boolean isRegist=false;
 
     private ProgressDialog mProg;
@@ -45,12 +46,6 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        memberID = sp.getString(DefineValue.MEMBER_ID,"");
-        commID = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         Intent i = getIntent();
         isRegist = i.getBooleanExtra(DefineValue.REGISTRATION, false);
@@ -132,15 +127,14 @@ public class CreatePIN extends BaseActivity implements PinFragment.Listener {
     private void sendCreatePin() {
         try{
             mProg = DefinedDialog.CreateProgressDialog(this, "");
-
-//            RequestParams params = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_CREATE_PIN,
-//                    userID,accessKey);
-            RequestParams params = new RequestParams();
-            params.put(WebParams.MEMBER_ID, memberID);
-            params.put(WebParams.COMM_ID, commID);
-            params.put(WebParams.PIN, Md5.hashMd5(mValuePin));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(confirmPin));
-            params.put(WebParams.USER_ID, userID);
+            extraSignature = memberIDLogin + userPhoneID + mValuePin;
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.COMM_ID, commIDLogin);
+            params.put(WebParams.PIN, RSA.opensslEncrypt(mValuePin));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(confirmPin));
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params create pin:"+params.toString());
 

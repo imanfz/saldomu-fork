@@ -16,6 +16,7 @@ import com.sgo.saldomu.Beans.GroupCommentObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GroupCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.ArrayList;
 

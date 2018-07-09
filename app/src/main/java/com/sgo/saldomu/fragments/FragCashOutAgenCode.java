@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +24,12 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -38,7 +38,7 @@ import org.json.JSONObject;
 
 import timber.log.Timber;
 
-public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
 
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgenCode";
 
@@ -136,8 +136,9 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = tx_id + MyApiClient.COMM_ID;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userid,accesskey);
+                    userid,accesskey,extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -158,7 +159,8 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
                         String message = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             showReportBillerDialog( DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""));
+                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
 
@@ -240,9 +242,9 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
     }
 
 
-    private void showReportBillerDialog(String datetime, String txStatus, String txRemark) {
+    private void showReportBillerDialog(String datetime, String txStatus, String txRemark, String buss_scheme_code, String buss_scheme_name) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, tx_id);
         args.putString(DefineValue.USERID_PHONE, userid);
         args.putString(DefineValue.DATE_TIME, datetime);
@@ -271,8 +273,11 @@ public class FragCashOutAgenCode extends Fragment implements ReportBillerDialog.
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+
         dialog.setArguments(args);
-        dialog.setTargetFragment(this, 0);
+//        dialog.setTargetFragment(this, 0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

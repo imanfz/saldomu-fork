@@ -43,7 +43,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -124,16 +124,16 @@ public class FragAskForMoney extends Fragment {
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         memberLevel = sp.getInt(DefineValue.LEVEL_VALUE,0);
 
-        imgProfile = (ImageView) v.findViewById(R.id.img_profile);
-        imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
-        txtName = (TextView) v.findViewById(R.id.txtName);
-        phoneRetv = (RecipientEditTextView) v.findViewById(R.id.phone_retv);
-        etAmount = (EditText) v.findViewById(R.id.askformoney_value_amount);
+        imgProfile = v.findViewById(R.id.img_profile);
+        imgRecipients = v.findViewById(R.id.img_recipients);
+        txtName = v.findViewById(R.id.txtName);
+        phoneRetv = v.findViewById(R.id.phone_retv);
+        etAmount = v.findViewById(R.id.askformoney_value_amount);
         etAmount.addTextChangedListener(jumlahChangeListener);
-        etMessage = (EditText) v.findViewById(R.id.askformoney_value_message);
-        txtNumberRecipients = (TextView) v.findViewById(R.id.askformoney_value_number_recipients);
-        btnRequestMoney = (Button) v.findViewById(R.id.btn_request_money);
-        sp_privacy = (Spinner) v.findViewById(R.id.askformoney_privacy_spinner);
+        etMessage = v.findViewById(R.id.askformoney_value_message);
+        txtNumberRecipients = v.findViewById(R.id.askformoney_value_number_recipients);
+        btnRequestMoney = v.findViewById(R.id.btn_request_money);
+        sp_privacy = v.findViewById(R.id.askformoney_privacy_spinner);
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
@@ -499,10 +499,10 @@ public class FragAskForMoney extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
-        TextView Message_Detail = (TextView)dialog.findViewById(R.id.message_dialog3);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+        TextView Message_Detail = dialog.findViewById(R.id.message_dialog3);
 
         //clear data in edit text
         phoneRetv.setText("");

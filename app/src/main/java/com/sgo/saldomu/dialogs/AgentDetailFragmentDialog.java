@@ -59,6 +59,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
     private ShopDetail shopDetail = new ShopDetail();
     private Double currentLatitude;
     private Double currentLongitude;
+    private String mobility;
     final int RC_PHONE_CALL = 503;
 
     View rootView;
@@ -128,6 +129,10 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
         this.currentLongitude = currentLongitude;
     }
 
+    public void setMobility(String mobility) {
+        this.mobility = mobility;
+    }
+
     private void displayAgentProfile()
     {
         //create fragment
@@ -188,6 +193,7 @@ public class AgentDetailFragmentDialog extends DialogFragment implements View.On
             intent.putExtra("targetLongitude", this.shopDetail.getShopLongitude());
             intent.putExtra("currentLatitude", this.currentLatitude);
             intent.putExtra("currentLongitude", this.currentLongitude);
+            intent.putExtra("mobility", this.mobility);
             startActivity(intent);
         }
     }

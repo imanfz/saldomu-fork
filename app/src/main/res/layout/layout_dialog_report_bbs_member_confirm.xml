@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginLeft="@dimen/padding_small"
+    android:layout_marginTop="@dimen/abc_text_size_medium_material"
+    android:visibility="gone"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1">
+
+
+        <TextView
+            android:text="@string/report_dialog_token"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_small_material"
+            android:id="@+id/tv_kode"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/dialog_reportbbs_token_value"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            tools:text="8382392"
+            android:gravity="center"
+            android:textColor="@color/amber_900"
+            android:padding="6dip"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:textSize="@dimen/text_size_medium_material"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/report_transaction_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            />
+        <TextView
+            android:id="@+id/tv_report_transaction_type"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip"/>
+    </TableRow>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            android:text="@string/report_dialog_text_userid_agen" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_userid_value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/nama_rekening_agen"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip"
+            />
+        <TextView
+            android:id="@+id/dialog_reportbbs_membername_value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/number_hp_member"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_member_shop_phone"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/produk_pelanggan"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_source_bank_value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+
+    <TableRow>
+        <TextView
+            android:text="@string/no_sumber"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_bank_source_acct_no_value"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+
+
+    <TableRow>
+        <TextView
+            android:text="@string/nama_sumber"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbs_bank_source_acc_name_value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/jumlah_text"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_amount_value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:maxLines="1"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/cashout_fee_text"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_fee_value"
+            android:layout_weight="2"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+
+    <TableRow>
+        <TextView
+            android:text="@string/total"
+            android:layout_span="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="3dip" />
+        <TextView
+            android:id="@+id/dialog_reportbbs_totalamount_value"
+            android:layout_weight="2"
+            android:maxLines="1"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+
+</TableLayout>

@@ -82,14 +82,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_tx_id"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textStyle="bold"
                     />
                 <TextView
                     android:id="@+id/bbscashoutmember_tx_id_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
                     android:layout_marginTop="4dp"
                     />
@@ -106,14 +106,38 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_agent_name"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textStyle="bold"
                     />
                 <TextView
                     android:id="@+id/bbscashoutmember_agent_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textColor="@color/colorSecondaryDark"
+                    android:layout_marginTop="4dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="12dp"
+                android:layout_marginLeft="16dp"
+                >
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cashoutmember_bank_product"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size_medium_material"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/bbscashoutmember_bank_product_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
                     android:layout_marginTop="4dp"
                     />
@@ -130,14 +154,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_amount"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textStyle="bold"
                     />
                 <TextView
                     android:id="@+id/bbscashoutmember_amount_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
                     android:layout_marginTop="4dp"
                     />
@@ -154,14 +178,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_fee"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textStyle="bold"
                     />
                 <TextView
                     android:id="@+id/bbscashoutmember_fee_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
                     android:layout_marginTop="4dp"
                     />
@@ -179,7 +203,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorPrimaryDark"
                     android:text="@string/cashoutmember_total"
                     />
@@ -188,7 +212,7 @@
                     android:id="@+id/bbscashoutmember_total_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textColor="@color/colorSecondaryDark"
                     android:layout_marginTop="4dp"
                     />
@@ -207,14 +231,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/cashoutmember_text_otp"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:textStyle="bold"
                     />
                 <EditText
                     android:id="@+id/bbscashoutmember_value_otp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/abc_text_size_medium_material"
+                    android:textSize="@dimen/text_size_medium_material"
                     android:inputType="number|numberPassword"
                     android:maxLength="4"
                     android:hint="@string/regist2_edithint_otp"

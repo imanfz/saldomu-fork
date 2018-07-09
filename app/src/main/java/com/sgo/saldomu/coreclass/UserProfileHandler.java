@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 
 import org.apache.http.Header;
@@ -31,8 +32,9 @@ public class UserProfileHandler {
         String userID = sp.getString(DefineValue.USERID_PHONE, "");
         String memberID = sp.getString(DefineValue.MEMBER_ID, "");
 
+        String extraSignature = memberID;
         try{
-            RequestParams params = new RequestParams();
+            RequestParams params = new RequestParams(extraSignature);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

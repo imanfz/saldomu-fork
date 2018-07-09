@@ -10,6 +10,7 @@ import android.telephony.SmsMessage;
 import android.view.Menu;
 
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 

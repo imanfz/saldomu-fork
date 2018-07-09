@@ -40,7 +40,7 @@
     </fragment>
 
 
-    <com.sgo.saldomu.coreclass.CustomAutoCompleteTextView
+    <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton
         android:id="@+id/searchLocationEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -53,9 +53,9 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llNote">
+        app:layout_constraintTop_toBottomOf="@+id/etNote">
 
-    </com.sgo.saldomu.coreclass.CustomAutoCompleteTextView>
+    </com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton>
 
     <LinearLayout
         android:id="@+id/llButton"
@@ -67,7 +67,23 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_toolbar">
 
-        <EditText
+        <AutoCompleteTextView
+            android:paddingLeft="10dp"
+            android:id="@+id/etJumlah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.18"
+            android:drawableRight="@drawable/ic_description"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:hint="@string/jumlah"
+            android:inputType="number"
+            android:maxLength="10"
+            android:textSize="@dimen/abc_text_size_medium_material"
+            />
+
+        <!-- EditText
             android:id="@+id/etJumlah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +96,7 @@
             android:inputType="number"
             android:maxLength="10"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/abc_text_size_medium_material" />
+            android:textSize="@dimen/abc_text_size_medium_material" / -->
 
         <Button
             android:id="@+id/btnProses"
@@ -91,31 +107,6 @@
             android:text="@string/menu_item_search_agent"
             tools:layout_editor_absoluteX="283dp"
             tools:layout_editor_absoluteY="8dp" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/llNote"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llButton">
-
-        <EditText
-            android:id="@+id/etNote"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3.18"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center_vertical"
-            android:hint="@string/bbs_note_meeting_point"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/abc_text_size_medium_material" />
 
     </LinearLayout>
 
@@ -225,6 +216,34 @@
 
 
     </LinearLayout>
+
+    <com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon
+        android:id="@+id/acMemberAcct"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llButton"
+        tools:layout_width="match_parent"
+        android:layout_marginTop="0dp" />
+
+    <EditText
+        android:id="@+id/etNote"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.18"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
+        android:hint="@string/bbs_note_meeting_point"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/abc_text_size_medium_material"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/acMemberAcct" />
 
 
 </android.support.constraint.ConstraintLayout>

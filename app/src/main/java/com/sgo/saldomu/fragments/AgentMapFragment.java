@@ -44,9 +44,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsSearchAgentActivity;
+import com.sgo.saldomu.adapter.AgentListArrayAdapter;
 import com.sgo.saldomu.adapter.GooglePlacesAutoCompleteArrayAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
@@ -62,13 +63,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
  */
 public class AgentMapFragment extends Fragment implements MainResultReceiver.Receiver,
         OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener,
-        View.OnClickListener, AdapterView.OnItemClickListener ,TextView.OnEditorActionListener {
+        View.OnClickListener, AdapterView.OnItemClickListener ,TextView.OnEditorActionListener,
+        AgentListFragment.OnListAgentItemClick
+{
 
     private Double searchLatitude;
     private Double searchLongitude;
@@ -99,7 +104,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private Double currentLongitude;
     private Marker lastCoordinateMarker;
     private BbsSearchAgentActivity mainBbsActivity;
-    private CustomAutoCompleteTextView searchLocationEditText;
+    private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
     GooglePlacesAutoCompleteArrayAdapter googlePlacesAutoCompleteBbsArrayAdapter;
     List<Polyline> lines;
     Polyline line;
@@ -162,41 +167,6 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 llLegendShop.setVisibility(View.GONE);
             }
 
-            //buildGoogleApiClient();
-            //createLocationRequest();
-
-            //if ( currentLocation != null ) {
-            //process();
-            //}
-
-
-            /*searchLocationEditText = (CustomAutoCompleteTextView) rootView.findViewById(R.id.searchLocationEditText);
-            googlePlacesAutoCompleteBbsArrayAdapter = new GooglePlacesAutoCompleteArrayAdapter(getContext(), R.layout.google_places_auto_complete_listview);
-            searchLocationEditText.setAdapter(googlePlacesAutoCompleteBbsArrayAdapter);
-            searchLocationEditText.setOnItemClickListener(this);
-            searchLocationEditText.setOnEditorActionListener(this);
-            searchLocationEditText.clearFocus();
-            searchLocationEditText.setText(this.completeAddress);
-            searchLocationEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if ( hasFocus ) {
-                        v.setSelected(true);
-                    } else {
-                        v.setSelected(false);
-                    }
-                }
-            });
-            searchLocationEditText.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    v.setSelected(true);
-                }
-            });
-
-            searchLocationEditText.setSelectAllOnFocus(true);*/
-
-
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
@@ -225,26 +195,17 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void recreateAllMarker() {
         if (globalMap != null && getActivity() != null) {
 
-            //globalMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                //@Override
-                //public void onMapLoaded() {
-                    setMapCamera();
+            globalMap.clear();
 
-                    //add search location marker
-                    setSearchMarker();
+            setMapCamera();
 
-                    //getLastLocationSharedPreferences();
-                    //pickupTextView.setText(pickup);
-                    //setLastMarker();
+            //add search location marker
+            setSearchMarker();
 
-                    //getAgentLocationSharedPreferences();
-                    setAgentMarker();
+            setAgentMarker();
 
-                    setPolyline();
-                    globalMap.setOnMarkerClickListener(this);
-
-                //}
-            //});
+            setPolyline();
+            globalMap.setOnMarkerClickListener(this);
 
         }
     }
@@ -261,7 +222,24 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                 lines.clear();
             }
 
-            for (int idx = 0; idx < shopDetails.size(); idx++) {
+
+                String isSetPolyLine = shopDetails.get(agentPosition).getIsPolyline();
+                if ( isSetPolyLine != null && isSetPolyLine.equals("1") ) {
+                    String encodedPoints = shopDetails.get(agentPosition).getEncodedPoints();
+                    if (encodedPoints != null) {
+                        list = decodePoly(encodedPoints);
+                        line = globalMap.addPolyline(new PolylineOptions()
+                                .addAll(list)
+                                .width(3)
+                                .color(Color.RED)
+                                .geodesic(true)
+                        );
+                        lines.add(line);
+                    }
+                }
+
+
+            /*for (int idx = 0; idx < shopDetails.size(); idx++) {
                 String isSetPolyLine = shopDetails.get(idx).getIsPolyline();
 
                 if ( isSetPolyLine != null && isSetPolyLine.equals("1") ) {
@@ -277,7 +255,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                         lines.add(line);
                     }
                 }
-            }
+            }*/
         }
     }
 
@@ -355,29 +333,11 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void process() {
         hashMarker = new HashMap<>();
 
-        //pickupTextView = (TextView) rootView.findViewById(R.id.pickupTextView);
-        //pickupTextView.setText(pickup);
-
         thisClass = this;
 
         //get object activity
         mainBbsActivity = (BbsSearchAgentActivity) getActivity();
 
-        //set realtime listener for receiver. Will call function : onReceiveResult
-        //if(singleAgentFlag) mainBbsActivity.agentListMapResultReceiver.setReceiver(this);
-        //else mainBbsActivity.agentMapResultReceiver.setReceiver(this);
-
-        //displayMap();
-
-        //set button current location
-        //currentLocationBtn = (ImageView) rootView.findViewById(R.id.currentLocationBtn);
-        //currentLocationBtn.setOnClickListener(this);
-
-        //set button search location
-        //searchLocationBtn = (ImageView) rootView.findViewById(R.id.searchLocationBtn);
-        //searchLocationBtn.setOnClickListener(this);
-        //searchLocationContainer = (LinearLayout) rootView.findViewById(R.id.searchLocationContainer);
-        //if (!searchLocationChecked) searchLocationContainer.setVisibility(View.GONE);
     }
 
     //implements View.OnClickListener
@@ -398,9 +358,6 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.agentMap);
 
         }
-        //mapFrag.getView().setVisibility(View.VISIBLE);
-        //mapFrag.getMapAsync(this);
-
     }
 
     //implements OnMapReadyCallback
@@ -546,23 +503,6 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     private void setLastMarker()
     {
 
-        /*LatLng latLng = new LatLng(lastLatitude, lastLongitude);
-
-        if ( lastCoordinateMarker == null ) {
-
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng);
-
-            if (searchLocationChecked)
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.current_location, 30, 30)));
-            else
-                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.search_current_location, 370, 270)));
-
-            lastCoordinateMarker = globalMap.addMarker(markerOptions);
-        } else {
-            lastCoordinateMarker.setPosition(latLng);
-        }*/
-
     }
 
     //for resize icon
@@ -570,26 +510,6 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), image);
         return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-    }
-
-    private void setAgentMarkerDummy()
-    {
-        p = 0.001;
-
-        for(int i=0; i<4; i++)
-        {
-            LatLng latLng  = new LatLng(searchLatitude - p, searchLongitude + p);
-            MarkerOptions markerOptions = new MarkerOptions()
-                    .position(latLng)
-                    .title("christian" + p)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-
-            Marker marker = globalMap.addMarker(markerOptions);
-
-            p = p + 0.001;
-
-            hashMarker.put(i, marker);
-        }
     }
 
     private void setAgentMarker()
@@ -600,23 +520,6 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
             }
         }
 
-        /*if(agentLocation != null)
-        {
-            //set single agent map
-            if(singleAgentFlag)
-            {
-                setAgentMarkerOption(agentPosition);
-            }
-            //set multiple agent map
-            else
-            {
-                int length = agentLocation.length();
-
-                for (int i = 0; i < length; i++) {
-
-                }
-            }
-        }*/
     }
 
     private List<LatLng> decodePoly(String encoded) {
@@ -703,6 +606,7 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
                     agentDetailBbsFragmentDialog.setCurrentLatitude(currentLatitude);
                     agentDetailBbsFragmentDialog.setCurrentLongitude(currentLongitude);
                     agentDetailBbsFragmentDialog.setCancelable(false);
+                    agentDetailBbsFragmentDialog.setMobility(mobility);
                     agentDetailBbsFragmentDialog.show(fragmentManager, AgentConstant.AGENT_DETAIL_FRAGMENT_DIALOG_TAG);
                 }
             }
@@ -848,5 +752,11 @@ public class AgentMapFragment extends Fragment implements MainResultReceiver.Rec
     public void onStart() {
         super.onStart();
 
+    }
+
+    @Override
+    public void OnIconLocationClickListener(int position, ArrayList<ShopDetail> shopDetails) {
+        agentPosition = position;
+        setPolyline();
     }
 }

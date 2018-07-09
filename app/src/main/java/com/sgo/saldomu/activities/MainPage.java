@@ -1,6 +1,5 @@
 package com.sgo.saldomu.activities;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -13,9 +12,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -40,14 +37,13 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.BBSDataManager;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.BundleToJSON;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.FabInstance;
 import com.sgo.saldomu.coreclass.JobScheduleManager;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationActionView;
 import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RootUtil;
@@ -77,12 +73,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 /**
@@ -102,6 +96,7 @@ public class MainPage extends BaseActivity {
     public static final int RESULT_BBS = 11;
     public static final int RESULT_BBS_MEMBER_OTP = 12;
     public static final int RESULT_BBS_STATUS= 13;
+    public static final int RESULT_RETRY= 14;
 
     public static final int RESULT_FINISH = 99;
     public static final int ACTIVITY_RESULT = 1;
@@ -111,16 +106,12 @@ public class MainPage extends BaseActivity {
     private final static int REQCODE_PLAY_SERVICE = 312;
 
     private static int AmountNotif = 0;
-    private final static int RC_READPHONESTATE = 5;
 
     private String flagLogin = DefineValue.STRING_NO;
-    private String userID;
-    private String accessKey;
-    private SecurePreferences sp;
     private Fragment mContent;
     private NavigationDrawMenu mNavDrawer;
     private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
+    public ActionBarDrawerToggle mDrawerToggle;
     private ProgressDialog progdialog;
     private RelativeLayout mOuterRelativeContent;
     private FrameLayout mLeftDrawerRelativeLayout;
@@ -131,13 +122,10 @@ public class MainPage extends BaseActivity {
     private AppInfoService serviceAppInfoReference;
     private UserProfileService serviceUserProfileReference;
     private boolean isBound, isBoundAppInfo, isBoundUserProfile, agent, isForeground = false;
-    private UtilsLoader utilsLoader;
     public MaterialSheetFab materialSheetFab;
     AlertDialog devRootedDeviceAlertDialog;
     private Bundle savedInstanceState;
     private SMSclass smSclass;
-
-    public static final int RC_LOCATION_PERM    = 500;
 
     private LevelClass levelClass;
 
@@ -145,20 +133,13 @@ public class MainPage extends BaseActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Obtain the FirebaseAnalytics instance.
-//        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         this.savedInstanceState = savedInstanceState;
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(this,sp);
 
-        if (EasyPermissions.hasPermissions(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            startLocationService();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.rationale_location),
-                    RC_LOCATION_PERM, Manifest.permission.ACCESS_FINE_LOCATION);
-        }
+        if(isHasAppPermission())
+            InitializeApp();
+    }
 
+    private void InitializeApp(){
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
                 if (BuildConfig.FLAVOR.equals("development")){
@@ -179,7 +160,8 @@ public class MainPage extends BaseActivity {
                     });
                     builder.setCancelable(false);
                     devRootedDeviceAlertDialog = builder.create();
-                    devRootedDeviceAlertDialog.show();
+                    if(!isFinishing())
+                        devRootedDeviceAlertDialog.show();
                 }else {
                     switchErrorActivity(ErrorActivity.DEVICE_ROOTED);
                 }
@@ -192,65 +174,68 @@ public class MainPage extends BaseActivity {
         }
     }
 
-    @AfterPermissionGranted(RC_LOCATION_PERM)
     private void startLocationService() {
         JobScheduleManager.getInstance(this).scheduleUploadLocationService();
     }
 
     private void initializeDashboard(){
-        if (checkNotificationNotif()) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
+        if(isHasAppPermission()) {
+            if (checkNotificationNotif()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type_notif"));
 
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type);
-            startActivity(intent);
-        } else if (checkNotificationAction() ) {
-            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type);
+                startActivity(intent);
+            } else if (checkNotificationAction()) {
+                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-            Map<String, String> msgMap = new HashMap<String, String>();
-            Intent intentData = getIntent();
-            if (intentData.hasExtra("model_notif")) {
-                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-            }
-            if (intentData.hasExtra("options")) {
-                msgMap.put("options", intentData.getStringExtra("options"));
-            }
-            Timber.d("testing :" + msgMap.toString());
-
-            FCMManager fcmManager = new FCMManager(this);
-            Intent intent = fcmManager.checkingAction(type, msgMap);
-        }
-
-        if (!isLogin()) {
-            Bundle bundle = getIntent().getExtras();
-            if(bundle!=null) {
-                if(bundle.getString(DefineValue.MODEL_NOTIF) != null) {
-                    int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
-                    if (modelNotif==2)
-                    {
-                        SecurePreferences.Editor mEditor = sp.edit();
-                        mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
-                        mEditor.apply();
-                    }
-
+                Map<String, String> msgMap = new HashMap<String, String>();
+                Intent intentData = getIntent();
+                if (intentData.hasExtra("model_notif")) {
+                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
                 }
-            }
-            openFirstScreen(FIRST_SCREEN_INTRO);
-        } else {
-            String[] perms = {Manifest.permission.READ_PHONE_STATE};
+                if (intentData.hasExtra("options")) {
+                    msgMap.put("options", intentData.getStringExtra("options"));
+                }
+                Timber.d("testing :" + msgMap.toString());
 
-            if (EasyPermissions.hasPermissions(this, perms)) {
-                initializeLogin();
+                FCMManager fcmManager = new FCMManager(this);
+                Intent intent = fcmManager.checkingAction(type, msgMap);
+            }
+
+            if (!isLogin()) {
+                Bundle bundle = getIntent().getExtras();
+                if (bundle != null) {
+                    if (bundle.getString(DefineValue.MODEL_NOTIF) != null) {
+                        int modelNotif = Integer.valueOf(bundle.getString(DefineValue.MODEL_NOTIF));
+                        if (modelNotif == 2) {
+                            SecurePreferences.Editor mEditor = sp.edit();
+                            mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
+                            mEditor.apply();
+                        }
+
+                    }
+                }
+                openFirstScreen(FIRST_SCREEN_INTRO);
             } else {
-                EasyPermissions.requestPermissions(this,
-                        getString(R.string.rational_readphonestate),
-                        RC_READPHONESTATE, perms);
+                initializeLogin();
             }
-
         }
     }
 
-    @AfterPermissionGranted(RC_READPHONESTATE)
+    @Override
+    public void onGranted() {
+        super.onGranted();
+        InitializeApp();
+    }
+
+    @Override
+    public void onDeny() {
+        super.onDeny();
+        Toast.makeText(this,getString(R.string.cancel_permission),Toast.LENGTH_SHORT).show();
+        this.finish();
+    }
+
     void initializeLogin(){
         Boolean isSimSame = true;
         if (BuildConfig.FLAVOR.equals("production")){
@@ -262,24 +247,25 @@ public class MainPage extends BaseActivity {
 
         if(isSimSame) {
 
-            userID = sp.getString(DefineValue.USERID_PHONE, "");
-            accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+            startLocationService();
 
-            if (savedInstanceState != null)
-                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
+//            if (savedInstanceState != null)
+//                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
+            levelClass = new LevelClass(this,sp);
             isForeground = true;
             agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-            utilsLoader = new UtilsLoader(this, sp);
+            UtilsLoader utilsLoader = new UtilsLoader(this, sp);
             utilsLoader.getAppVersion();
             ActiveAndroid.initialize(this);
             progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
             progdialog.show();
             InitializeNavDrawer();
             setupFab();
-            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
             AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+
 
             if (checkNotificationAction()) {
                 int type = Integer.valueOf(getIntent().getExtras().getString("type"));
@@ -313,9 +299,6 @@ public class MainPage extends BaseActivity {
 
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
             if (!notifDataNextLogin.equals("")) {
-                SecurePreferences.Editor mEditor = sp.edit();
-                mEditor.putString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-                mEditor.apply();
 
                 changeActivityNextLogin(notifDataNextLogin);
 
@@ -335,6 +318,14 @@ public class MainPage extends BaseActivity {
 
             int modelNotif = jsonObj.getInt("model_notif");
 
+            if ( modelNotif != FCMManager.SHOP_ACCEPT_TRX && modelNotif != FCMManager.MEMBER_RATING_TRX
+                    && modelNotif != FCMManager.AGENT_LOCATION_MEMBER_REQ_TRX_TO_AGENT
+                    && modelNotif != FCMManager.AGENT_LOCATION_KEY_ACCEPT_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_NOTIF_TRANSACTION
+                    && modelNotif != FCMManager.SHOP_ACCEPT_TRX
+                    && modelNotif != FCMManager.MEMBER_CONFIRM_CASHOUT_TRANSACTION ) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
 
             switch (modelNotif) {
                 case FCMManager.AGENT_LOCATION_SET_SHOP_LOCATION:
@@ -413,6 +404,18 @@ public class MainPage extends BaseActivity {
                     i.putExtras(bundle);
 
 
+                    break;
+                case FCMManager.MEMBER_RATING_TRX:
+                    i = new Intent(this, BBSActivity.class);
+                    bundle.putInt(DefineValue.INDEX, BBSActivity.BBSRATINGBYMEMBER);
+                    bundle.putString(DefineValue.BBS_TX_ID, jsonObj.getString(WebParams.TX_ID));
+                    bundle.putString(DefineValue.CATEGORY_NAME, jsonObj.getString(WebParams.CATEGORY_NAME));
+                    bundle.putString(DefineValue.AMOUNT, jsonObj.getString(WebParams.AMOUNT));
+                    bundle.putString(DefineValue.URL_PROFILE_PICTURE, jsonObj.getString(WebParams.PROFILE_PICTURE));
+                    bundle.putString(DefineValue.BBS_SHOP_NAME, jsonObj.getString(WebParams.SHOP_NAME));
+                    bundle.putString(DefineValue.BBS_MAXIMUM_RATING, jsonObj.getString(WebParams.MAXIMUM_RATING));
+                    bundle.putString(DefineValue.BBS_DEFAULT_RATING, jsonObj.getString(WebParams.DEFAULT_RATING));
+                    i.putExtras(bundle);
                     break;
                 default:
                     i = new Intent(this, MainPage.class);
@@ -601,12 +604,11 @@ public class MainPage extends BaseActivity {
     }
 
     private void InitializeNavDrawer(){
-        FragmentManager mFragmentManager = getSupportFragmentManager();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer);
-        mLeftDrawerRelativeLayout = (FrameLayout) findViewById(R.id.left_drawer);
-        mRightDrawerRelativeLayout = (FrameLayout) findViewById(R.id.right_drawer);
+        mDrawerLayout = findViewById(R.id.main_drawer);
+        mLeftDrawerRelativeLayout = findViewById(R.id.left_drawer);
+        mRightDrawerRelativeLayout = findViewById(R.id.right_drawer);
         mDrawerLayout.setScrimColor(getResources().getColor(R.color.transparent));
-        mOuterRelativeContent = (RelativeLayout) findViewById(R.id.outer_layout_content);
+        mOuterRelativeContent = findViewById(R.id.outer_layout_content);
         findViewById(R.id.layout_include_fab).setVisibility(View.VISIBLE);
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -687,7 +689,8 @@ public class MainPage extends BaseActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
         getDataListMember();
-        mNavDrawer = (NavigationDrawMenu) getSupportFragmentManager().findFragmentById(R.id.main_list_menu_fragment);
+        mNavDrawer = new NavigationDrawMenu();
+        getSupportFragmentManager().beginTransaction().replace(R.id.left_menu_layout,mNavDrawer,NavigationDrawMenu.TAG).commitAllowingStateLoss();
     }
 
 
@@ -724,14 +727,13 @@ public class MainPage extends BaseActivity {
 
         try{
 
-            String comm_id = sp.getString(DefineValue.COMMUNITY_ID,"");
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_LIST_MEMBER,
-                    userID,accessKey);
-            params.put(WebParams.COMM_ID, comm_id);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
+                    , MyApiClient.COMM_ID_PULSA);
+            params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID_PULSA, MyApiClient.COMM_ID_PULSA);
 
             Timber.d("isi params listmember mainpage:" + params.toString());
@@ -756,8 +758,7 @@ public class MainPage extends BaseActivity {
 
                                 if(mNavDrawer != null && serviceReferenceBalance != null)
                                     serviceReferenceBalance.runBalance();
-//                                TurnOnGCM();
-//                                getBalance(true);
+
                                 initializeNavDrawer();
                                 CheckNotification();
 
@@ -892,7 +893,11 @@ public class MainPage extends BaseActivity {
                         Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
                     if(progdialog.isShowing())
                         progdialog.dismiss();
-                    sentLogout();
+
+//                    if (BuildConfig.FLAVOR.equals("development")){
+//                        Logout(FIRST_SCREEN_LOGIN);
+//                    }else
+                        sentLogout();
 //                    finish();
                     Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());
                 }
@@ -908,11 +913,22 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
-        }
-    }
+        }else {
 
+        }
+
+
+    }
+    /**
+     * Check jika bisa menjalankan ServiceUpdateData langsung
+     * Check jika MustUpdate, IsSameUser, dan IsUpdated
+     */
     void checkAndRunServiceBBS(){
-        BBSDataManager.checkAndRunService(this);
+        BBSDataManager bbsDataManager = new BBSDataManager();
+        if(bbsDataManager.isValidToUpdate()) {
+            bbsDataManager.runServiceUpdateData(this);
+            Timber.d("Run Service update data BBS");
+        }
     }
 
     private void CheckNotification(){
@@ -981,6 +997,7 @@ public class MainPage extends BaseActivity {
                 i = new Intent(this,LoginActivity.class);
                 break;
         }
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         this.finish();
     }
@@ -1050,7 +1067,7 @@ public class MainPage extends BaseActivity {
         deleteData();
         SecurePreferences.Editor mEditor = sp.edit();
         mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userID);
+        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userPhoneID);
         mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
         mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
 
@@ -1075,11 +1092,9 @@ public class MainPage extends BaseActivity {
                 progdialog.show();
             }
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LOGOUT,
-                    userID,accessKey);
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
-
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params logout:"+params.toString());
 
@@ -1249,7 +1264,7 @@ public class MainPage extends BaseActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem itemData = menu.findItem(R.id.notifications);
 
-        MenuItemCompat.setActionView(itemData, R.layout.ab_notification);
+        itemData.setActionView(R.layout.ab_notification);
         NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
         actionView.setItemData(menu, itemData);
         actionView.setCount(AmountNotif); // initial value
@@ -1326,6 +1341,32 @@ public class MainPage extends BaseActivity {
 
     }
 
+
+    public int getDefaultSimmm(Context context) {
+
+        Object tm = context.getSystemService(Context.TELEPHONY_SERVICE);
+        Method method_getDefaultSim;
+        int defaultSimm = -1;
+        try {
+            method_getDefaultSim = tm.getClass().getDeclaredMethod("getDefaultSim");
+            method_getDefaultSim.setAccessible(true);
+            defaultSimm = (Integer) method_getDefaultSim.invoke(tm);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        Method method_getSmsDefaultSim;
+        int smsDefaultSim = -1;
+        try {
+            method_getSmsDefaultSim = tm.getClass().getDeclaredMethod("getSmsDefaultSim");
+            smsDefaultSim = (Integer) method_getSmsDefaultSim.invoke(tm);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return smsDefaultSim;
+    }
 
 
 
@@ -1420,12 +1461,4 @@ public class MainPage extends BaseActivity {
     private void callAgentShopService() {
         AgentShopService.getAgentShop(MainPage.this);
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
 }

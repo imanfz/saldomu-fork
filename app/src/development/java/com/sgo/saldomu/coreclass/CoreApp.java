@@ -2,22 +2,16 @@ package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
-
 import com.facebook.stetho.Stetho;
-
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.communityModel;
 import com.sgo.saldomu.Beans.friendModel;
@@ -27,8 +21,7 @@ import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.activities.ErrorActivity;
-import com.sgo.saldomu.fcm.GooglePlayUtils;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -56,9 +49,15 @@ public class CoreApp extends Application {
     }
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
-        MultiDex.install(this);
+
         // Simply add the handler, and that's it! No need to add any code
         // to every activity. Everything is contained in MyLifecycleHandler
         // with just a few lines of code. Now *that's* nice.
@@ -111,7 +110,7 @@ public class CoreApp extends Application {
         }
 
         myApiClient.InitializeAddress();
-        Timber.wtf("isi headaddressfinal:"+MyApiClient.headaddressfinal);
+        Timber.wtf("isi headaddressfinal:"+ MyApiClient.headaddressfinal);
         Configuration.Builder configurationBuilder = new Configuration.Builder(getApplicationContext());
         configurationBuilder.addModelClasses(
                 communityModel.class,
@@ -125,7 +124,7 @@ public class CoreApp extends Application {
         ActiveAndroid.initialize(configurationBuilder.create());
         registerActivityLifecycleCallbacks(new LifeCycleHandler(this));
 
-        registerReceiver(new BroadcastReceiver() {
+        /*registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -150,8 +149,10 @@ public class CoreApp extends Application {
                     }
                 }
             }
-        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );
+        },new IntentFilter("android.intent.action.SIM_STATE_CHANGED") );*/
     }
+
+
 
     private void deleteBundledRealmFile(String outFileName) {
         File file = new File(this.getFilesDir(), outFileName);

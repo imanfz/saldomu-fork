@@ -152,32 +152,32 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/bbscashout_value_source"
-                    android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
+                    android:layout_weight="2"
                     android:gravity="right"
-                    android:textSize="@dimen/text_size_medium_material"/>
+                    android:textSize="@dimen/text_size_medium_material" />
 
                 <ImageView
-                    android:layout_weight="0.5"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/icon_arrow"/>
+                    android:layout_weight="0.5"
+                    android:src="@drawable/icon_arrow" />
 
                 <TextView
                     android:id="@+id/bbscashout_value_benef"
-                    android:layout_weight="2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_weight="2"
                     android:gravity="left"
-                    android:textSize="@dimen/text_size_medium_material"/>
+                    android:textSize="@dimen/text_size_medium_material" />
 
             </LinearLayout>
 
@@ -268,7 +268,9 @@
                 android:layout_marginLeft="26dp"
                 android:layout_marginRight="26dp"
                 >
-                <TextView android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/tv_kode"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cobbs_kode_tarik_tunai"
                     android:textColor="@color/colorPrimaryDark"
@@ -280,7 +282,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="number|numberPassword"
                     android:textSize="@dimen/text_size_small_material"
-                    android:maxLength="4" />
+                    android:maxLength="10" />
 
                 <TextView
                     android:layout_width="match_parent"

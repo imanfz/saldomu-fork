@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -19,12 +18,9 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
-import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 
@@ -32,13 +28,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
-
 import timber.log.Timber;
-
-import static com.sgo.saldomu.R.id.rlApproval;
-import static com.sgo.saldomu.R.id.tvCountTrx;
-import static com.sgo.saldomu.R.id.tvTotalTrx;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -95,21 +85,14 @@ public class FragOnProgressAgent extends Fragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userId                  = sp.getString(DefineValue.USERID_PHONE, "");
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.searching_onprogress_trx));
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT,
+                userId, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.USER_ID, userId);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + userId ));
-
-        params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.getOnProgressByAgent(getContext(), params, new JsonHttpResponseHandler() {
             @Override

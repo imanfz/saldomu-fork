@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.firebase.jobdispatcher.JobParameters;
@@ -21,19 +19,14 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
-import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -83,7 +76,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Timber.d("Location Service onConnected Started");
-        //startLocationUpdate();
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -96,7 +89,11 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
                 latitude  = mLastLocation.getLatitude();
                 longitude = mLastLocation.getLongitude();
 
-                updateLocation();
+                Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
+                if ( isAgent )
+                    updateLocation();
+
                 mGoogleApiClient.disconnect();
                 jobFinished(jobLocation, true);
 
@@ -128,7 +125,10 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         longitude   = mLastLocation.getLongitude();
         latitude    = mLastLocation.getLatitude();
 
-        updateLocation();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+
+        if ( isAgent )
+            updateLocation();
 
         mGoogleApiClient.disconnect();
         jobFinished(jobLocation, true);
@@ -175,9 +175,6 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
     }
 
     private void updateLocation() {
-        RequestParams params    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
@@ -190,20 +187,16 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             e.printStackTrace();
         }
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
+        RequestParams params    = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_LOCATION,
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.LONGITUDE, longitude );
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + String.valueOf(latitude)
-                + String.valueOf(longitude) + sp.getString(DefineValue.USERID_PHONE, "") ));
-
-        params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateLocationService(getApplicationContext(), params, new JsonHttpResponseHandler() {
             @Override

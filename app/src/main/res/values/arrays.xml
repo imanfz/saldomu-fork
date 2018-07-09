@@ -102,6 +102,13 @@
         <item>Permintaan</item>
     </string-array>
 
+    <string-array name="report_list_agen">
+        <item>Transaksi</item>
+        <item>Transfer</item>
+        <item>Permintaan</item>
+        <item>Fee</item>
+    </string-array>
+
     <integer-array name="google_colors">
         <item>@color/red_700</item>
         <item>@color/blue_700</item>
@@ -213,6 +220,13 @@
     </integer-array>
 
 
+    <string-array name="list_menu_scadm">
+        <item>@string/scadm_join</item>
+        <item>@string/scadm_topup</item>
+        <item>@string/scadm_denom</item>
+    </string-array>
+
+
 
     <string-array name="list_menu_frag_new_home">
         <item>@string/newhome_title_topup</item>
@@ -220,6 +234,7 @@
         <item>@string/menu_item_title_ask_for_money</item>
         <item>@string/menu_item_title_buy</item>
         <item>@string/menu_item_title_report</item>
+        <item>@string/menu_item_title_scadm</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_agent">
         <item>@string/cash_in</item>
@@ -231,14 +246,20 @@
         <!--<item>@string/menu_item_search_agent_cta</item>-->
         <!--<item>@string/menu_item_search_agent_atc</item>-->
         <item>@string/title_cash_out_member</item>
-
     </string-array>
+
+    <integer-array name="list_menu_icon_frag_scadm">
+        <item>@drawable/ic_bayarteman1</item>
+        <item>@drawable/ic_tambahsaldo</item>
+        <item>@drawable/ic_belanja</item>
+    </integer-array>
 
     <integer-array name="list_menu_icon_frag_new_home">
         <item>@drawable/ic_tambahsaldo</item>
         <item>@drawable/ic_bayarteman1</item>
         <item>@drawable/ic_mintauang</item>
         <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_laporan</item>
         <item>@drawable/ic_laporan</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_agent">
@@ -271,5 +292,13 @@
         <!-- item>@string/setup_agent_open_hour</item -->
         <item>@string/setup_tutup_manual</item>
     </string-array>
-    
+
+    <string-array name="list_denom_amount">
+        <item>10000</item>
+        <item>20000</item>
+        <item>50000</item>
+        <item>100000</item>
+        <item>150000</item>
+        <item>200000</item>
+    </string-array>
 </resources>

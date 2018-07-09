@@ -20,6 +20,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -363,8 +364,9 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     private void addLike(final String post_id, String from_id, final String jumlahLike) {
         try {
 
+            String extraSignature = post_id + from_id;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
-                    user_id,accessKey);
+                    user_id,accessKey,extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, user_id);
             params.put(WebParams.TO, from_id);
@@ -442,8 +444,9 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     private void removeLike(String like_id, String from, String to, final String post_id, final String jumlahLike) {
         try {
 
+            String extraSignature = post_id + like_id + to;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
-                    user_id,accessKey);
+                    user_id,accessKey, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);

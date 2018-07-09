@@ -72,9 +72,9 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             LayoutInflater infalInflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = infalInflater.inflate(R.layout.list_topup_group_item, parent,false);
-            tri_img = (ImageView) v.findViewById(R.id.triangle);
-            logo_img = (ImageView) v.findViewById(R.id.logo);
-            group_title = (TextView) v.findViewById(R.id.group_title);
+            tri_img = v.findViewById(R.id.triangle);
+            logo_img = v.findViewById(R.id.logo);
+            group_title = v.findViewById(R.id.adapter_bank_list_group_title);
             v_divider = v.findViewById(R.id.divider);
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.addView(tri_img);
@@ -87,7 +87,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         ViewHolder cholder = (ViewHolder) v.getTag();
         tri_img = (ImageView) cholder.getView(R.id.triangle);
         logo_img = (ImageView) cholder.getView(R.id.logo);
-        group_title = (TextView) cholder.getView(R.id.group_title);
+        group_title = (TextView) cholder.getView(R.id.adapter_bank_list_group_title);
         v_divider = cholder.getView(R.id.divider);
 
         group_title.setText(headerObject.getHeader());
@@ -111,7 +111,7 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                 logoId = R.drawable.logo_bank_permata;
                 break;
             case DefineValue.BankBII:
-                logoId = R.drawable.logo_bank_bii;
+                logoId = R.drawable.logo_maybank;
                 break;
             case DefineValue.BankUOB:
                 logoId = R.drawable.logo_bank_uob_small;
@@ -121,6 +121,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                 break;
             case DefineValue.BankBNI:
                 logoId = R.drawable.logo_bank_bni;
+                break;
+            case DefineValue.BankDanamon:
+                logoId = R.drawable.danamon_small;
+                break;
+            case DefineValue.BankCIMB:
+                logoId = R.drawable.cimb_small;
                 break;
         }
 
@@ -135,12 +141,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         if(isExpanded){
             tri_img.setImageResource(R.drawable.triangle_open);
             v_divider.setVisibility(View.VISIBLE);
-            headerObject.setExpanded(true);
+//            headerObject.setExpanded(true);
             group_title.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         }else {
             tri_img.setImageResource(R.drawable.triangle_close);
             v_divider.setVisibility(View.GONE);
-            headerObject.setExpanded(false);
+//            headerObject.setExpanded(false);
             group_title.setTextColor(mContext.getResources().getColor(R.color.black));
         }
 
@@ -152,10 +158,10 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
         ViewHolder holder;
         BankDataTopUp childDataWrapper = (BankDataTopUp) getChild(groupPosition, childPosition);
         ListBankDataTopup childDataBank = childDataWrapper.getBankData().get(childPosition);
-        is_expanded = ((BankHeaderTopUp)getGroup(groupPosition)).getExpanded();
+//        is_expanded = ((BankHeaderTopUp)getGroup(groupPosition)).getExpanded();
         int itemType = getChildType(groupPosition,childPosition);
         View layout_view_child = convertView;
-        View v_divider,childItemLayout, layoutAtm ;
+        View v_divider,childItemLayout, layoutAtm;
         ImageView indicator;
         TextView title_child;
         childItemLayout = convertView;
@@ -178,18 +184,18 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             holder.addView(v_divider);
 
             if(itemType == OTHER_ATM_VIEW){
-                TextView tvPinAccount =(TextView) layout_view_child.findViewById(R.id.pin_account);
-                TextView tv_fee = (TextView) layout_view_child.findViewById(R.id.fee_deskripsi);
+                TextView tvPinAccount = layout_view_child.findViewById(R.id.pin_account);
+                TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
                 holder.addView(tvPinAccount);
                 holder.addView(tv_fee);
             }
             else{
                 childItemLayout =layout_view_child.findViewById(R.id.child_item_layout);
-                title_child =(TextView) layout_view_child.findViewById(R.id.title_child);
-                indicator =(ImageView) layout_view_child.findViewById(R.id.child_indicator);
+                title_child = layout_view_child.findViewById(R.id.title_child);
+                indicator = layout_view_child.findViewById(R.id.child_indicator);
 
                 if(itemType == ATM_VIEW){
-                    TextView tv_fee = (TextView) layout_view_child.findViewById(R.id.fee_deskripsi);
+                    TextView tv_fee = layout_view_child.findViewById(R.id.fee_deskripsi);
                     holder.addView(tv_fee);
                 }
 
@@ -236,8 +242,8 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
                     title_child.setTextColor(mContext.getResources().getColor(R.color.black));
                 }
 
-                TextView tvTitleATM = (TextView) layoutAtm.findViewById(R.id.title_atm);
-                TextView tvPinAccount = (TextView) layoutAtm.findViewById(R.id.pin_account);
+                TextView tvTitleATM = layoutAtm.findViewById(R.id.title_atm);
+                TextView tvPinAccount = layoutAtm.findViewById(R.id.pin_account);
                 tvTitleATM.setText(childDataBank.getBankName());
                 tvPinAccount.setText(childDataWrapper.getNoVa());
                 if(childDataWrapper.getFee() == null)
@@ -272,6 +278,12 @@ public class Expendable_List_View_Adapter extends BaseExpandableListAdapter {
             else if (childDataBank.getProductCode().equals(DefineValue.PRODUCT_BCA_MOBILEBANK))
                 return R.id.layout_atm_bca_mbca;
         }
+        else if (bankCode.equals(DefineValue.BankDanamon))
+            return R.id.layout_atm_danamon;
+        else if (bankCode.equals(DefineValue.BankBII))
+            return R.id.layout_atm_bii;
+        else if (bankCode.equals(DefineValue.BankCIMB))
+            return R.id.layout_atm_cimb;
         return R.id.layout_atm;
     }
 

@@ -9,16 +9,16 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-import com.sgo.saldomu.receivers.LocalResultReceiver;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -68,8 +68,15 @@ public class UpdateBBSData extends IntentService {
         setUpdatingData(true);
 
         if(!userID.isEmpty() && !accessKey.isEmpty()) {
-            getBBSdata(CTA);
-            getBBSdata(ATC);
+            if(BBSDataManager.isDataCTANotValid())
+                getBBSdata(CTA);
+            else
+                ctaState = true;
+
+            if(BBSDataManager.isDataATCNotValid())
+                getBBSdata(ATC);
+            else
+                atcState = true;
         }
         else
             Timber.d("user id atau access key kosong semua");
@@ -81,24 +88,34 @@ public class UpdateBBSData extends IntentService {
         else {
             sentSuccess(null);
             setIsDataUpdated(true);
+            if(getMustUpdateBBSData())
+                setMustUpdateBBSData(false);
         }
         EndRealm();
         setUpdatingData(false);
     }
 
     void setUpdatingData(Boolean value){
-        sp.edit().putBoolean(DefineValue.IS_UPDATING_BBS_DATA,value).commit();
+        sp.edit().putBoolean(DefineValue.IS_UPDATING_BBS_DATA,value).apply();
     }
 
     void setIsDataUpdated(Boolean value){
-        sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED,value).commit();
+        sp.edit().putBoolean(DefineValue.IS_BBS_DATA_UPDATED,value).apply();
     }
 
     void setDateDataCTA(String value){
-        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTA_DATA,value).commit();
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_CTA_DATA,value).apply();
     }
     void setDateDataATC(String value){
-        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_ATC_DATA,value).commit();
+        sp.edit().putString(DefineValue.UPDATE_TIME_BBS_ATC_DATA,value).apply();
+    }
+
+    boolean getMustUpdateBBSData(){
+        return sp.getBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,false);
+    }
+
+    void setMustUpdateBBSData(boolean value){
+        sp.edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,value).apply();
     }
 
     private void EndRealm(){
@@ -117,6 +134,7 @@ public class UpdateBBSData extends IntentService {
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.SCHEME_CODE,schemeCode);
             params.put(WebParams.CUST_ID,userID);
+            params.put(WebParams.USER_ID,userID);
 
             Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
 

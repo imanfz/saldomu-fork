@@ -14,6 +14,7 @@ public class WebParams {
     public static String DATE_TIME= "datetime";
 
     public static String COMM_ID= "comm_id";
+    public static String COMM_ID_SCADM= "comm_id_scadm";
     public static String CUST_NAME = "cust_name";
     public static String CUST_ID = "cust_id";
     public static String COMM_CODE = "comm_code";
@@ -40,7 +41,12 @@ public class WebParams {
 
     public static String MEMBER_DATA = "member_data";
     public static String MEMBER_ID = "member_id";
+    public static String MEMBER_ID_SCADM = "member_id_scadm";
     public static String MEMBER_NAME = "member_name";
+    public static String MEMBER_CUST_NAME = "member_cust_name";
+    public static String MEMBER_SHOP_NO = "member_shop_no";
+    public static String MEMBER_SHOP_PHONE = "member_shop_phone";
+    public static String MEMBER_SHOP_NAME = "member_shop_name";
     public static String UNREGISTER_MEMBER = "unregister_member";
 
 
@@ -56,7 +62,11 @@ public class WebParams {
     public static String PRODUCT_TYPE = "product_type";
     public static String PRODUCT_CODE = "product_code";
     public static String PAYMENT_REMARK = "payment_remark";
+    public static String PAYMENT_BANK = "payment_bank";
+    public static String PAYMENT_PHONE = "payment_phone";
+    public static String PAYMENT_NAME= "payment_name";
     public static String PRODUCT_H2H = "product_h2h";
+    public static String PRODUCT_DISPLAY = "product_display";
 
     public static String TX_ID = "tx_id";
     public static String PRODUCT_VALUE = "product_value";
@@ -97,6 +107,7 @@ public class WebParams {
 
     public static String BILLER_TYPE = "biller_type";
     public static String BILLER_DATA = "biller_data";
+    public static String BILLER_DETAIL = "biller_detail";
     public static String BILLER_ID = "biller_id";
     public static String BILLER_CODE = "biller_code";
     public static String BILLER_NAME = "biller_name";
@@ -107,6 +118,7 @@ public class WebParams {
     public static String MEMBER_CUST = "member_cust";
 
     public static String DENOM_DATA = "denom_data";
+    public static String DENOM_DETAIL = "denom_detail";
     public static String DENOM_ITEM_ID = "item_id";
     public static String DENOM_ITEM_NAME = "item_name";
     public static String DENOM_ITEM_PRICE = "item_price";
@@ -127,6 +139,7 @@ public class WebParams {
     public static String DATA_TRANSFER = "data_transfer";
     public static String MEMBER_NAME_TO = "member_name_to";
     public static String MEMBER_PHONE = "member_phone";
+    public static String MEMBER_CUST_PHONE = "member_cust_id";
     public static String MEMBER_STATUS = "member_status";
 
     public static String FEE = "fee";
@@ -252,6 +265,7 @@ public class WebParams {
     public static String SETTINGS = "settings";
     public static String MAX_MEMBER_TRANSFER = "max_member_transfer";
     public static String ADMIN_FEE = "admin_fee";
+    public static String TX_FEE = "tx_fee";
     public static String ADMINFEE ="ADMIN FEE";
 
     public static String ACCOUNT_DATA = "account_data";
@@ -335,6 +349,7 @@ public class WebParams {
     public static String ID_RESULT = "id_result";
     public static String HOLD_ID = "hold_id";
     public static String CATEGORY_ID = "category_id";
+    public static String CATEGORY_NAME = "category_name";
     public static String IMEI = "imei";
     public static String ICCID = "iccid";
     public static String SENT = "sent";
@@ -342,6 +357,7 @@ public class WebParams {
 
     public static String IS_NEW_USER = "is_new_user";
     public static String ITEM_DATA = "item_data";
+    public static String ITEM = "item";
     public static String IS_DETAIL = "is_detail";
     public static String COMM_ID_REMARK = "comm_id_remark";
     public static String DISABLE = "disable";
@@ -390,12 +406,12 @@ public class WebParams {
     public static String BENEF_PRODUCT_TYPE= "benef_product_type";
     public static String BENEF_PRODUCT_VALUE_CODE= "benef_product_value_code";
     public static String BENEF_PRODUCT_VALUE_NAME= "benef_product_value_name";
+    public static String BENEF_PRODUCT_VALUE_TOKEN= "benef_product_value_token";
     public static String BENEF_ACCT_CITY= "benef_acct_city";
     public static String BANK_ACCOUNT= "bank_account";
     public static String BENEF_ACCT_TYPE= "benef_acct_type";
     public static String BENEF_BANK_CODE= "benef_bank_code";
     public static String BENEF_PRODUCT_VALUE_CITY= "benef_product_value_city";
-    public static String MEMBER_SHOP_PHONE= "member_shop_phone";
     public static String TX_PRODUCT_CODE= "tx_product_code";
     public static String TX_BANK_CODE= "tx_bank_code";
     public static String TX_BANK_NAME= "tx_bank_name";
@@ -415,6 +431,7 @@ public class WebParams {
     public static String IS_AGENT = "is_agent";
     public static String BBS_MOBILITY = "mobility";
     public static String BBS_NOTE = "note";
+    public static String BBS_NAME = "bbs_name";
     public static String FLAG_PROCESS = "flag_process";
 
     public static String KEY_CCY        = "key_ccy";
@@ -485,4 +502,12 @@ public class WebParams {
     public static String DEFAULT_RATING = "default_rating";
     public static String RATING         = "rating";
     public static String PROFILE_PICTURE    = "profile_picture";
+    public static String OFFSET    = "offset";
+    public static String TX_REMARKS = "tx_remarks";
+    public static String MEMBER_MAX_RATING  = "member_max_rating";
+    public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
+    public static String TX_DESCRIPTION  = "tx_description";
+    public static String TRANSFER_DATA  = "transfer_data";
+    public static String BANK  = "bank";
+    public static String ORDER_ID  = "order_id";
 }

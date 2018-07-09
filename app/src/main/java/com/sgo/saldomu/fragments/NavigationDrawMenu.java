@@ -48,12 +48,11 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
-import com.sgo.saldomu.coreclass.HashMessage;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -72,7 +71,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -85,6 +83,7 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NavigationDrawMenu extends ListFragment{
 
+    public static final String TAG = "com.sgo.saldomu.fragments.NavigationDrawMenu";
     public static final int MHOME = 0;
     public static final int MTOPUP = 1;
     public static final int MPAYFRIENDS= 2;
@@ -117,6 +116,9 @@ public class NavigationDrawMenu extends ListFragment{
     public static final int MBBSATC         = 25;
 
     public static final int MTARIKDANA = 26;
+    public static final int MSCADM = 27;
+
+    private static final int RC_GPS_REQUEST = 1;
 
     private ImageView headerCustImage;
     private TextView headerCustName,headerCustID,headerCurrency,balanceValue, currencyLimit, limitValue,periodeLimit, tvAgentDetailName;
@@ -171,25 +173,25 @@ public class NavigationDrawMenu extends ListFragment{
         levelClass = new LevelClass(getActivity(),sp);
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
-        ListView mListView = (ListView) v.findViewById(android.R.id.list);
+        ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
 
-        LinearLayout llHeaderProfile    = (LinearLayout) v.findViewById(R.id.llHeaderProfile);
-        llBalanceDetail    = (LinearLayout) v.findViewById(R.id.llBalanceDetail);
-        llAgentDetail      = (LinearLayout) v.findViewById(R.id.llAgentDetail);
+        LinearLayout llHeaderProfile    = v.findViewById(R.id.llHeaderProfile);
+        llBalanceDetail    = v.findViewById(R.id.llBalanceDetail);
+        llAgentDetail      = v.findViewById(R.id.llAgentDetail);
         llAgentDetail.setVisibility(View.GONE);
         llBalanceDetail.setVisibility(View.GONE);
 
-        headerCustImage = (ImageView) v.findViewById(R.id.header_cust_image);
-        headerCurrency = (TextView) v.findViewById(R.id.currency_value);
-        headerCustName = (TextView) v.findViewById(R.id.header_cust_name);
-        headerCustID = (TextView) v.findViewById(R.id.header_cust_id);
-        balanceValue = (TextView) v.findViewById(R.id.balance_value);
-        currencyLimit = (TextView) v.findViewById(R.id.currency_limit_value);
-        limitValue = (TextView) v.findViewById(R.id.limit_value);
-        periodeLimit = (TextView) v.findViewById(R.id.periode_limit_value);
-        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
-        tvAgentDetailName = (TextView) v.findViewById(R.id.tvAgentDetailName);
+        headerCustImage = v.findViewById(R.id.header_cust_image);
+        headerCurrency = v.findViewById(R.id.currency_value);
+        headerCustName = v.findViewById(R.id.header_cust_name);
+        headerCustID = v.findViewById(R.id.header_cust_id);
+        balanceValue = v.findViewById(R.id.balance_value);
+        currencyLimit = v.findViewById(R.id.currency_limit_value);
+        limitValue = v.findViewById(R.id.limit_value);
+        periodeLimit = v.findViewById(R.id.periode_limit_value);
+        swSettingOnline = v.findViewById(R.id.swSettingOnline);
+        tvAgentDetailName = v.findViewById(R.id.tvAgentDetailName);
 
         if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
             llAgentDetail.setVisibility(View.GONE);
@@ -241,7 +243,7 @@ public class NavigationDrawMenu extends ListFragment{
             }
         });
 
-        btn_refresh_balance = (ImageView) v.findViewById(R.id.btn_refresh_balance);
+        btn_refresh_balance = v.findViewById(R.id.btn_refresh_balance);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
         btn_refresh_balance.setOnClickListener(new View.OnClickListener() {
@@ -429,6 +431,7 @@ public class NavigationDrawMenu extends ListFragment{
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_topup_pulsa,R.drawable.ic_topup_pulsa,getString(R.string.menu_item_title_pulsa_agent), MDAP));
         models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_buy),MBUY));//4
         models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,R.drawable.ic_cashout_icon_color,getString(R.string.menu_item_title_cash_out),MTARIKDANA));
+        models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_scadm),MSCADM));              //6
 //        models.add(new navdrawmainmenuModel(R.drawable.ic_cashout_icon_color,0,getString(R.string.menu_item_title_cash_out),false));       //5
 
 
@@ -453,7 +456,6 @@ public class NavigationDrawMenu extends ListFragment{
         //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_bbs_search_toko),MREGISTERTOKO));
         //models.add(new navdrawmainmenuModel(R.drawable.map_white,R.drawable.map,getString(R.string.menu_item_search_agent),MSEARCHAGENT));
 
-
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_report),MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting,R.drawable.ic_setting,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
@@ -469,7 +471,7 @@ public class NavigationDrawMenu extends ListFragment{
 
         switch (itemId) {
             case MTOPUP:
-                newFragment = new ListTopUp();
+                newFragment = new ListBankTopUpFragment();
                 switchFragment(newFragment, getString(R.string.toolbar_title_topup));
                 break;
             case MPAYFRIENDS:
@@ -513,6 +515,10 @@ public class NavigationDrawMenu extends ListFragment{
                     newFragment = new ListCashOut();
                     switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
                 }
+                break;
+            case MSCADM:
+                newFragment = new FragSCADM();
+                switchFragment(newFragment, getString(R.string.menu_item_title_scadm));
                 break;
             case MMYGROUP:
                 newFragment = new FragMyGroup();
@@ -657,85 +663,101 @@ public class NavigationDrawMenu extends ListFragment{
     Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            RequestParams params    = new RequestParams();
+
             shopStatus              = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice    = false;
 
             if (!isChecked) {
                 //buka
                 shopStatus          = DefineValue.SHOP_CLOSE;
+            }
+
+            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    isCallWebservice    = true;
+                }
+
+            } else {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
+                    isCallWebservice    = true;
+                }
+            }
+
+
+            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+
+
+            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                showAlertEnabledGPS();
+            } else {
+                if ( isCallWebservice ) {
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+                    params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+                    params.put(WebParams.SHOP_STATUS, shopStatus);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+
+                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                            progdialog2.dismiss();
+
+                            try {
+
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    }
+
+                                    mEditor.apply();
+                                } else {
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                                Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            progdialog2.dismiss();
+                            Timber.w("Error Koneksi login:" + throwable.toString());
+
+                        }
+                    });
+                }
 
             }
 
-            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
-
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
-
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
-            params.put(WebParams.SHOP_STATUS, shopStatus);
-
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
-
-            params.put(WebParams.SIGNATURE, signature);
-
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
-
-                    try {
-
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
-                            }
-
-                            mEditor.apply();
-                        } else {
-                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
-                        }
-
-                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-            });
         }
     };
 
@@ -766,7 +788,7 @@ public class NavigationDrawMenu extends ListFragment{
             accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         if(userID == null)
-            userID = sp.getString(DefineValue.USER_ID,"");
+            userID = sp.getString(DefineValue.USERID_PHONE,"");
 
         RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
                 userID,accessKey);
@@ -788,7 +810,7 @@ public class NavigationDrawMenu extends ListFragment{
                     progdialog2.dismiss();
                     String error_code = response.getString("error_code");
                     String error_message = response.getString("error_message");
-                    Timber.d("response Listbank:" + response.toString());
+                    Timber.d("response upload profile picture:" + response.toString());
                     if (error_code.equalsIgnoreCase("0000")) {
                         SecurePreferences.Editor mEditor = sp.edit();
 
@@ -853,5 +875,30 @@ public class NavigationDrawMenu extends ListFragment{
             }
 
         });
+    }
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+
+                        swSettingOnline.setOnClickListener(null);
+                        swSettingOnline.setChecked(false);
+                        swSettingOnline.setOnCheckedChangeListener(switchListener);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
     }
 }

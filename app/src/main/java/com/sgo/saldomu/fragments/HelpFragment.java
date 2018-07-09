@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +12,14 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.HelpModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.HelpAdapter;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -36,13 +33,10 @@ import timber.log.Timber;
 /*
  Created by thinkpad on 6/9/2015.
  */
-public class HelpFragment extends Fragment {
+public class HelpFragment extends BaseFragment {
 
-    private SecurePreferences sp;
     private View v;
     private Activity act;
-    private String ownerId;
-    private String accessKey;
 
     private ArrayList<HelpModel> listHelp;
     private HelpAdapter mAdapter;
@@ -63,12 +57,9 @@ public class HelpFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         act = getActivity();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        ownerId = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         listHelp = new ArrayList<>();
-        ListView mListView = (ListView) v.findViewById(R.id.lvHelpCenter);
+        ListView mListView = v.findViewById(R.id.lvHelpCenter);
 
         getHelpList();
 
@@ -81,9 +72,9 @@ public class HelpFragment extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(act, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    ownerId,accessKey);
-            params.put(WebParams.USER_ID, ownerId);
+            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_HELP_LIST,
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 

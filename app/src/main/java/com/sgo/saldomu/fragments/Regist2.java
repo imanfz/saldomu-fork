@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -27,11 +28,12 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -44,7 +46,7 @@ import timber.log.Timber;
  * Created by thinkpad on 10/21/2016.
  */
 
-public class Regist2 extends Fragment {
+public class Regist2 extends BaseFragment {
     View v;
     EditText etToken;
     TextView currEmail;
@@ -210,7 +212,9 @@ public class Regist2 extends Fragment {
               try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+                  extraSignature = noHPValid + pass;
+                  RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+                          BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
@@ -285,12 +289,14 @@ public class Regist2 extends Fragment {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+            extraSignature = memberID + noHPValid + data.getStringExtra(DefineValue.PIN_VALUE);
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
 
             Timber.d("params create pin:"+params.toString());
 

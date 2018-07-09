@@ -11,17 +11,17 @@ import android.view.View;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.PasswordValidator;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.securities.RSA;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,11 +41,7 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     private CheckBox cb_show_pass;
     private Button btn_submit_changepass;
     private Button btn_batal_changepass;
-    private SecurePreferences sp;
     private ProgressDialog progdialog;
-    private String userID;
-    private String accessKey;
-    private String member_id;
     private boolean is_first_time;
     private int lenght_auth_min, validIdx;
     private PasswordValidator mPassValid;
@@ -56,11 +52,6 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        member_id = sp.getString(DefineValue.MEMBER_ID,"");
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST))
@@ -158,13 +149,15 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
+            extraSignature = memberIDLogin+et_pass_current.getText().toString()+et_pass_new.getText().toString();
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
-                    userID,accessKey);
-            params.put(WebParams.USER_ID,userID);
-            params.put(WebParams.OLD_PASSWORD,et_pass_current.getText().toString());
-            params.put(WebParams.NEW_PASSWORD,et_pass_new.getText().toString());
+                    userPhoneID,accessKey, extraSignature);
+            params.put(WebParams.USER_ID,userPhoneID);
+            params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(et_pass_current.getText().toString()));
+            params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(et_pass_new.getText().toString()));
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.MEMBER_ID, member_id);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
 
             Timber.d("isi params Change Password:" + params.toString());
 

@@ -42,8 +42,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
-import com.sgo.saldomu.coreclass.CustomAutoCompleteTextView;
+import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithRadioButton;
 import com.sgo.saldomu.coreclass.DefineValue;
 
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class BbsSearchByLocationActivity extends BaseActivity implements OnMapRe
     private LatLng mCenterLatLong;
 
 
-    private CustomAutoCompleteTextView searchLocationEditText;
+    private CustomAutoCompleteTextViewWithRadioButton searchLocationEditText;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

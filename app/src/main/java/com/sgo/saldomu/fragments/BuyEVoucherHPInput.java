@@ -11,19 +11,19 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.DenomModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.EvoucherHPActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,17 +36,15 @@ import timber.log.Timber;
 /*
   Created by Administrator on 1/15/2015.
  */
-public class BuyEVoucherHPInput extends Fragment {
+public class BuyEVoucherHPInput extends BaseFragment {
 
     private String[] namaProductBank;
     private String[] produkMANDIRI = {"MANDIRIIB","MANDIRISMS"};
     private String[] listDenomName;
     private ArrayList<DenomModel> mArrayListDenom;
 
-    private String _jumlah,_denomPayment,member_pulsa_id,userID,accessKey;
+    private String _jumlah,_denomPayment,member_pulsa_id;
     private String _noHPdestination="";
-
-    private SecurePreferences sp;
 
     private View v;
     private Button btn_submit_evoucher;
@@ -73,12 +71,8 @@ public class BuyEVoucherHPInput extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         Bundle args = getArguments();
         topupType = args.getString(DefineValue.TRANSACTION_TYPE);
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         if(topupType.equals(DefineValue.INTERNET_BANKING)){
             memberID = sp.getString(DefineValue.MEMBER_ID,"");
@@ -194,10 +188,10 @@ public class BuyEVoucherHPInput extends Fragment {
             progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_MEMBER_PULSA,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,"") );
             params.put(WebParams.DATE_TIME, produckBank_kode);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params get Member Pulsa:"+params.toString());
@@ -296,11 +290,11 @@ public class BuyEVoucherHPInput extends Fragment {
 
             RequestParams params;
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TOPUP_PULSA_RETAIL,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             if(MyApiClient.IS_INTERNET_BANKING){
                 if(MyApiClient.IS_PROD)
                     params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_PROD_TOPUP_RETAIL,
-                            userID,accessKey);
+                            userPhoneID,accessKey);
             }
 
             params.put(WebParams.MEMBER_ID, _member_id);
@@ -309,7 +303,7 @@ public class BuyEVoucherHPInput extends Fragment {
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.AMOUNT, _jumlah);
             params.put(WebParams.PAYMENT_REMARK, denomPattern);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params topup pulsa retail:"+params.toString());
@@ -387,12 +381,14 @@ public class BuyEVoucherHPInput extends Fragment {
     private void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code){
         try{
 
+            extraSignature = _tx_id+_comm_code+_product_code;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, _comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params regtoken pulsa retail:"+params.toString());

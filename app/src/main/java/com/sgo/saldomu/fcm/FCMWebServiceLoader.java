@@ -9,7 +9,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SmartResponseHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -52,10 +52,10 @@ public class FCMWebServiceLoader {
         String deviceID = DeviceUtils.getAndroidID();
         String token = FCMManager.getTokenFCM();
         RequestParams requestParams = MyApiClient.getSignatureWithParamsFCM(token,
-                deviceID, BuildConfig.AppID);
+                deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());
         requestParams.put(WebParams.GCM_ID, token);
-        requestParams.put(WebParams.APP_ID, BuildConfig.AppID);
+        requestParams.put(WebParams.APP_ID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_NAME, DeviceUtils.getDeviceName());
         requestParams.put(WebParams.DEVICE_OS, DeviceUtils.getDeviceOS());
         requestParams.put(WebParams.DEVICE_API, DeviceUtils.getDeviceAPILevel());

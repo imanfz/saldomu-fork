@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,21 +35,20 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.security.NoSuchAlgorithmException;
 
 import timber.log.Timber;
 
@@ -58,7 +56,7 @@ import timber.log.Timber;
  * Created by Lenovo Thinkpad on 8/25/2017.
  */
 
-public class FragCashoutMember extends Fragment implements ReportBillerDialog.OnDialogOkCallback {
+public class FragCashoutMember extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     View v, layout_button_transaction;
     SecurePreferences sp;
     String userID, accessKey, memberID, authType, amount, fee,total, ccyId, txId;
@@ -187,7 +185,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
                 }
                 else if(isOTP) {
                     if (inputValidation()) {
-                        inquiryTokenATC(Md5.hashMd5(tokenValue.getText().toString()), txId);
+                        inquiryTokenATC(RSA.opensslEncrypt(tokenValue.getText().toString()), txId);
                     }
                 }
                 else {
@@ -355,7 +353,7 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
             params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_TOKEN_ATC,
                     userID, accessKey);
 
-            params.put(WebParams.TOKEN_ID, _token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
@@ -629,8 +627,9 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = txId + MyApiClient.COMM_ID;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey);
+                    userID,accessKey, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -651,7 +650,8 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
                         String message = response.getString(WebParams.ERROR_MESSAGE);
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             showReportBillerDialog( DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""));
+                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
+                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
 
@@ -706,9 +706,10 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
         }
     }
 
-    private void showReportBillerDialog(String datetime, String txStatus, String txRemark) {
+    private void showReportBillerDialog(String datetime, String txStatus, String txRemark, String buss_scheme_code,
+                                        String buss_scheme_name) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userID);
         args.putString(DefineValue.DATE_TIME, datetime);
@@ -737,8 +738,11 @@ public class FragCashoutMember extends Fragment implements ReportBillerDialog.On
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+
         dialog.setArguments(args);
-        dialog.setTargetFragment(this, 0);
+//        dialog.setTargetFragment(this, 0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

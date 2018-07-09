@@ -248,12 +248,14 @@
                     />
             </LinearLayout>
 
-            <ImageView android:id="@+id/img_atm_other"
-                android:src="@drawable/atm_other"
-                android:layout_toRightOf="@id/title_atm"
-                android:gravity="right"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/img_atm_other"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_marginLeft="21dp"
+            android:layout_toRightOf="@id/title_atm"
+            android:gravity="right"
+            android:src="@drawable/atm_other" />
 
     </RelativeLayout>
 

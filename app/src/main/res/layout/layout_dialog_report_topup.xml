@@ -6,8 +6,30 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:stretchColumns="1">
-        <TableRow android:orientation="horizontal">
+
+
+    <TableRow>
         <TextView
+            android:text="@string/report_transaction_type"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:padding="3dip"
+            />
+        <TextView
+            android:id="@+id/dialog_topup_transaction_type"
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:gravity="right"
+            android:padding="3dip" />
+    </TableRow>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="8dp"
+        android:background="@color/grey_300"/>
+    <TableRow android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_user_id"
             android:text="@string/report_dialog_text_userid"
             android:layout_weight="1"
             android:minEms="10"
@@ -35,6 +57,7 @@
 
     <TableRow>
         <TextView
+            android:id="@+id/tv_name"
             android:text="@string/biller_name"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
@@ -56,27 +79,7 @@
 
     <TableRow>
         <TextView
-            android:text="@string/topup_token_bank_name"
-            android:layout_weight="0"
-            android:padding="3dip" />
-        <TextView
-            android:id="@+id/dialog_topup_bankname_value"
-            android:text="Toufan"
-            android:layout_weight="2"
-            android:layout_width="wrap_content"
-            android:gravity="right"
-            android:padding="3dip" />
-    </TableRow>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="8dp"
-        android:background="@color/grey_300"/>
-
-    <TableRow>
-        <TextView
-            android:text="@string/topup_token_bank_product"
+            android:text="Produk Bank"
             android:layout_weight="0"
             android:padding="3dip" />
         <TextView

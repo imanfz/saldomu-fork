@@ -103,6 +103,7 @@
     <string name="reg2_activation_code">Kode Aktivasi</string>
     <string name="reg2_hint_token_code">Kode Token</string>
     <string name="reg2_btn_text_resend_token_sms">Kirim ulang token ke sms</string>
+    <string name="reg2_btn_text_resend_token_tcash">Kirim ulang token T-Cash</string>
     <string name="reg2_btn_text_resend_token_email">Kirim ulang token ke email</string>
     <string name="reg2_dialog_token_message_sms">Kode token sudah dikirim lewat sms. Mohon ditunggu.</string>
     <string name="reg2_dialog_token_message_email">Kode token sudah dikirim lewat email. Mohon ditunggu.</string>
@@ -137,9 +138,6 @@
     <string name="pindialog_title">KODE PIN</string>
     <string name="pindialog_text_message">Masukkan kode PIN yang Anda gunakan untuk melanjutkan proses.</string>
     <string name="pindialog_edittext_hint">Kode PIN</string>
-
-    <string name="topuplist_ab_title">Topup Saldo</string>
-
     <string name="myprofilelist_ab_title">Profil Saya</string>
 
     <string name="sgoplus_ab_title">SGO +</string>
@@ -180,12 +178,13 @@
     <string name="menu_item_title_pay_friends">Kirim Saldo</string>
     <string name="menu_item_title_ask_for_money">Minta Saldo</string>
     <string name="menu_item_title_purchase_pulsa">Pembelian E-Voucher HP</string>
-    <string name="menu_item_title_buy">Belanja</string>
+    <string name="menu_item_title_buy">PPOB</string>
     <string name="menu_item_title_beli">Beli</string>
     <string name="menu_item_title_cash_out">Transfer ke Bank</string>
     <string name="menu_item_title_topup" translatable="false">Tambah Saldo</string>
     <string name="menu_item_title_pulsa_agent" translatable="false">Pulsa</string>
     <string name="menu_item_title_report">Laporan</string>
+    <string name="menu_item_title_scadm">B2B Telko</string>
     <string name="menu_group_title_account">Akun</string>
     <string name="menu_item_title_my_profile">Profil Saya</string>
     <string name="menu_item_title_my_friends">Teman Saya</string>
@@ -288,6 +287,7 @@
     <string name="evoucher_edithint_nohp" translatable="false">ex. 08138255xxxx</string>
 
     <string name="sgoplusweb_ab_title" translatable="false">ESPAY</string>
+    <string name="sgoplusweb_ab_title_saldomu" translatable="false">Saldomu</string>
 
     <string name="forgetpass_dialog_title">Lupa Password</string>
     <string name="forgetpass_dialog_message">Silahkan cek inbox SMS Anda untuk proses mengganti Password selanjutnya.</string>
@@ -320,6 +320,7 @@
     <string name="billerinput_text_month">Bulan</string>
     <string name="billerinput_text_denom" translatable="false">Denom Retail</string>
     <string name="billerinput_text_dest_remark">Keterangan Tujuan</string>
+    <string name="billerinput_text_keterangan">Keterangan</string>
     <string name="billerinput_text_payment_remark">ID Pelanggan</string>
     <string name="billerinput_text_payment_remark_Pulsa">Nomor Handphone</string>
     <string name="billerinput_text_payment_remark_Listrik">Nomor Meter</string>
@@ -356,7 +357,7 @@
     <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
     <string name="payfriends_message">* maks. 30 karakter</string>
     <string name="payfriends_number_recipients">* Jumlah Penerima</string>
-    <string name="payfriends_otp">* maks. 4 karakter</string>
+    <string name="payfriends_otp">* maks. 10 karakter</string>
     <string name="payfriends_ab_title_activity">Kirim Saldo</string>
     <string name="payfriends_recipients_validation">Nomor Penerima Dibutuhkan !</string>
     <string name="payfriends_recipients_alpha_validation">Nomor Penerima Tidak Valid !</string>
@@ -468,13 +469,17 @@
     <string name="menuitem_title_refresh">Muat Ulang</string>
 
     <string name="report_item_text_trans_id">ID Transaksi :</string>
-    <string name="report_item_text_date_time">Waktu dan Tanggal : </string>
+    <string name="kode_otp">Kode Tarik Tunai :</string>
+    <string name="report_item_text_date_time">Tanggal dan Waktu : </string>
     <string name="report_dialog_text_transaction_type">Tipe Transaksi</string>
     <string name="report_dialog_text_community">Komunitas</string>
     <string name="report_dialog_text_detail">Rincian</string>
+    <string name="report_dialog_token">Kode Tarik Tunai</string>
     <string name="report_dialog_text_type">Tipe</string>
     <string name="report_dialog_text_remark">Pesan</string>
     <string name="report_dialog_text_userid" >Nomor handphone</string>
+    <string name="report_dialog_text_userid_agen" >No. Handphone Agen</string>
+    <string name="report_dialog_text_hp_member" >No. Handphone Member</string>
     <string name="report_dialog_text_adminid">ID Admin</string>
     <string name="report_dialog_text_adminname">Nama Admin</string>
     <string name="report_dialog_text_status" translatable="false">Status</string>
@@ -482,6 +487,8 @@
     <string name="report_dialog_text_remark_destination">ID Tujuan</string>
     <string name="report_filter_button_on">Filter Hidup</string>
     <string name="report_filter_button_off">Filter Mati</string>
+    <string name="report_transaction_type">Jenis Transaksi</string>
+    <string name="report_bank_product">Produk Bank</string>
 
     <string name="header_monthly_limit">Batas Transaksi Bulanan</string>
     <string name="header_daily_limit">Batas Transaksi Harian</string>
@@ -489,6 +496,16 @@
     <string name="create_pin">Buat PIN</string>
     <string name="next">Lanjut</string>
     <string name="get_otp">Kirim OTP</string>
+
+    <string name="listatm_topup_danamon_1">Pilih menu Pembayaran > menu Lainnya > menu Virtual Account</string>
+    <string name="listatm_topup_danamon_2">Masukkan Kode Perusahaan:9628</string>
+    <string name="listatm_topup_danamon_3">Masukkan 16 digit Nomor Virtual Account</string>
+
+    <string name="listatm_topup_maybank_1">Masukkan kartu ATM Maybank dan PIN Anda</string>
+    <string name="listatm_topup_maybank_2">Pilih Virtual Account</string>
+
+    <string name="listatm_topup_cimb_1">Pilih menu Transfer > Rekening CIMB Niaga/Rekening Ponsel Lain > Rekening CIMB Niaga Lain</string>
+    <string name="listatm_topup_cimb_2">Masukkan Kode Perusahaan:8079</string>
 
     <string name="listatm_topup_ins_1">Pilih Menu Transfer</string>
     <string name="listatm_topup_ins_2">Pilih Transfer ke </string>
@@ -503,7 +520,7 @@
     <string name="listatm_topup_other_ins_5">Pilih YES/OK untuk menyetujui transaksi</string>
 
     <string name="about_apps">Tentang Aplikasi</string>
-    <string name="about_apps_desc"><b>Saldomu</b> - socialbanking adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
+    <string name="about_apps_desc"><b>Saldomu</b> adalah aplikasi keuangan dengan fitur <b><i>media sosial</i></b>. Karena perbankan merupakan bagian dari kehidupan sosial anda.</string>
     <string name="about_apps_ver" translatable="false">Version</string>
     <string name="about_apps_ver_detail" translatable="false">V 1.0 last update (16/04/2015)</string>
 
@@ -622,6 +639,7 @@
     <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
     <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo , Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
+    <string name="upgrade_agent_dialog_finish_title">Data Perbaharuan menjadi Agen telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership Anda ke Principal dengan membawa Kartu Identitas Anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>
 
@@ -668,6 +686,7 @@
 
     <string name="share_title">Bagikan</string>
     <string name="cancel_permission_read_contacts">Anda harus setuju dengan syarat untuk dapat menggunakan fitur ini.</string>
+    <string name="cancel_permission">Anda harus setuju dengan syarat untuk dapat menggunakan aplikasi.</string>
     <string name="failed_insert_realm">Gagal menyimpan data</string>
     <string name="list_contact_title">Daftar Kontak</string>
 
@@ -681,7 +700,7 @@
     <string name="toast_msg_wait_claim">Saldo Anda (Rp. %1$s) akan berkurang jika temanmu sudah bergabung dan melakukan \'Claim\' </string>
 
     <string name="dialog_sms_title" >Verifikasi Nomor Handphone</string>
-    <string name="dialog_sms_msg" >akan mengirimkan satu sms untuk proses verifikasi. Biaya SMS akan dikenakan sesuai dengan tarif operator.</string>
+    <string name="dialog_sms_msg" >akan mengirimkan satu sms untuk proses verifikasi. Biaya SMS akan dikenakan sesuai dengan tarif operator. Pastikan pulsa Anda cukup dan nomor yang didaftarkan merupakan nomor yang dipasang di slot SIM1 HP Anda.</string>
     <string name="dialog_sms_msg2" >Melakukan verifikasi data…</string>
     <string name="dialog_sms_msg3" >Verifikasi Nomor Handphone ke server gagal.\n Apakah Anda ingin mengulang proses verifikasi ?</string>
     <string name="dialog_sms_msg4" >Verifikasi Nomor Handphone ke server berhasil.</string>
@@ -722,7 +741,8 @@
     <string name="failed_save_gallery">Gagal simpan gambar di galeri</string>
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
-    <string name="foldername_struk">Struk PIN Saldomu</string>
+    <string name="member_code">Kode Member</string>
+    <string name="foldername_struk">Struk Saldomu</string>
 
     <string name="period_month">period_month</string>
     <string name="msisdn">msisdn</string>
@@ -848,18 +868,26 @@
     <string name="listatm_topup_deskripsi_fee">Jumlah topup Saldo yang anda masukan, sudah termasuk dengan biaya Admin sebesar %1$s</string>
     <string name="metode_pembayaran">Metode Pembayaran</string>
     <string name="rekening_bank_agent">Bank / E-Money Agen</string>
+    <string name="produk_agent">Produk Agen</string>
     <string name="jumlah_transfer">Jumlah Transfer</string>
     <string name="jumlah_transfer_hint">Jumlah transfer</string>
     <string name="rekening_bank_tujuan">Rekening Agen</string>
     <string name="bank_emoney_tujuan">Bank / E-Money Tujuan</string>
+    <string name="produk_pelanggan">Produk Pelanggan</string>
+    <string name="bank_emoney_agen">Bank / E-Money Agen</string>
     <string name="rekening_bank_member">Rekening Member</string>
-    <string name="no_rekening_agen">No Bank / E-Money Agen</string>
-    <string name="no_bank_emoney_sumber">No Bank / E-Money Sumber</string>
+    <string name="no_rekening_agen">No. Bank / E-Money Agen</string>
+    <string name="no_bank_emoney_sumber">No. Rekening Bank / E-Money Sumber</string>
+    <string name="no_sumber">No. Sumber</string>
     <string name="nama_rekening_agen">Nama Agen</string>
     <string name="nama_rekening_sumber">Nama Pemilik Bank / E-Money Sumber</string>
-    <string name="no_tujuan">Nomor Rekening</string>
+    <string name="nama_sumber">Nama Sumber</string>
+    <string name="no_rekening_tujuan">No. Rekening Tujuan</string>
+    <string name="no_tujuan">No. Tujuan</string>
     <string name="no_rekening_tujuan_hint">Nomor rekening tujuan</string>
+    <string name="otp_hint">Masukkan kode OTP</string>
     <string name="nama_rekening_tujuan">Nama pemilik Bank/E-Money Tujuan</string>
+    <string name="nama_rek_tujuan">Nama Tujuan</string>
     <string name="nama_rekening_tujuan_hint">Nama rekening tujuan</string>
     <string name="kota_rekening_tujuan">Kota Tujuan</string>
     <string name="no_hp_pengirim">Nomor Handphone Pengirim</string>
@@ -867,7 +895,8 @@
     <string name="no_hp_pengirim_hint">Nomor Handphone Pelanggan</string>
     <string name="number_destination">No Rekening Tujuan</string>
     <string name="number_destination_hint">Nomor rekening tujuan</string>
-    <string name="number_hp_destination">Nomor Handphone Tujuan</string>
+    <string name="number_hp_destination">No. Handphone Tujuan</string>
+    <string name="number_hp_member">No. Handphone Pelanggan</string>
     <string name="number_hp_destination_hint">Nomor Handphone tujuan</string>
     <string name="remark_hint">Pesan (opsional)</string>
     <string name="cash_in">Setor Tunai</string>
@@ -900,10 +929,12 @@
     <string name="community_empty">Tidak ada daftar komunitas</string>
     <string name="remark">Pesan</string>
     <string name="cobbs_kode_tarik_tunai">Kode Tarik Tunai</string>
+    <string name="no_tcash">No. Handphone TCASH Agen</string>
     <string name="no_member">No. Handphone Pelanggan</string>
     <string name="no_member_hint">Masukkan nomor Handphone member</string>
     <string name="no_member_validation">Nomor Member Dibutuhkan !</string>
-    <string name="no_rekening">No Rekening</string>
+    <string name="no_rekening">No. Rekening</string>
+    <string name="nomor_rekening">Nomor Rekening</string>
     <string name="no_rekening_hint">Masukkan nomor rekening</string>
     <string name="required">Dibutuhkan !</string>
     <string name="smsclass_simcard_listener_absent_toast">Transaksi dibatalkan karena SIMCARD tidak terdeteksi</string>
@@ -935,10 +966,15 @@
     <string name="kembali">Kembali</string>
     <string name="total_bayar">Total Bayar</string>
     <string name="nominal_text">Nominal</string>
+    <string name="jumlah_text">Jumlah</string>
+    <string name="total">Total</string>
+    <string name="pln_warn">Demi kenyamanan bersama, sebaiknya tidak melakukan transaksi antara pukul 23.59 - 00.59. Karena transaksi tidak dapat diproses. </string>
 
     <string name="cashoutmember_tx_id">ID Transaksi</string>
     <string name="cashoutmember_request_data">Meminta data...</string>
-    <string name="cashoutmember_agent_name">Agent</string>
+    <string name="cashoutmember_agent_name">Nama Agen</string>
+    <string name="cashoutmember_bank_product">Bank Produk</string>
+    <string name="cashoutmember_agent_no">No. Handphone Agen</string>
     <string name="cashoutmember_amount">Nominal</string>
     <string name="cashoutmember_fee">Biaya Admin</string>
     <string name="cashoutmember_total">Total Jumlah</string>
@@ -966,6 +1002,8 @@
     <string name="eg_no_acct">(contoh: 01000xxxx)</string>
     <string name="no_match_member_acct_message">Pilih rekening member yang tersedia</string>
     <string name="no_match_agent_acct_message">Pilih rekening agent yang tersedia</string>
+    <string name="no_match_customer_acct_message">Pilih rekening pelanggan yang tersedia</string>
+    <string name="no_rekening_source_cashout">Nomor Rekening Pelanggan</string>
     <string name="nama_tujuan">Nama Pemilik Rekening</string>
     <string name="msg_notif_batal_agen">Transaksi Anda dibatalkan. Silakan ulangi kembali. Terima Kasih</string>
 
@@ -986,7 +1024,7 @@
     <string name="alertbox_title_warning">Peringatan</string>
     <string name="alertbox_title_information">Informasi</string>
     <string name="alertbox_message_warning">Silakan aktifkan lokasi Anda untuk menggunakan aplikasi</string>
-    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call untuk menggunakan aplikasi</string>
+    <string name="alertbox_message_phone_permission_warning">Silakan berikan izin phone call, akses lokasi dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_location_phone_sms_permission_warning">Silakan berikan izin akses lokasi, phone call dan kirim SMS untuk menggunakan aplikasi</string>
     <string name="alertbox_message_information">Data tidak ditemukan</string>
     <string name="bbs_agent_search">Cari</string>
@@ -994,7 +1032,7 @@
     <string name="bbs_setting">Pengaturan</string>
     <string name="setup_tutup_sekarang">Tutup Sekarang</string>
     <string name="proses_update_success">Proses update berhasil</string>
-    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. Silahkan datangi lokasi agen terdekat untuk melakukan transaksi </string>
+    <string name="alertbox_message_search_agent_not_found">Tidak ada agent terdekat yang ditemukan. &#13;\n&#13;\nSilahkan datangi lokasi agen terdekat untuk melakukan transaksi.&#13;\n&#13;\nApakah Anda ingin mencari agen terdekat lagi?</string>
     <string name="alertbox_message_search_agent_fixed_not_found">Agen terdekat tidak ditemukan</string>
     <string name="alertbox_message_search_agent_inprogress_trx">Permintaan transaksi tidak bisa dilanjutkan karena masih ada permintaan transaksi sebelumnya yang belum selesai</string>
     <string name="search"> Cari </string>
@@ -1103,7 +1141,7 @@
 
     <string name="listatm_topup_mandiri_1">Pilih Menu Bayar/Beli</string>
     <string name="listatm_topup_mandiri_2">Pilih Lainnya > Lainnya > multi Payment</string>
-    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan UNIK : 88476</string>
+    <string name="listatm_topup_mandiri_3">Masukan Kode Perusahaan Top Up Saldomu : 89898</string>
     <string name="listatm_topup_mandiri_5">Masukkan Nominal Top Up</string>
     <string name="listatm_topup_mandiri_4">Masukkan Nomor Akun</string>
     <string name="listatm_topup_mandiri_6">Masukkan angka : 1</string>
@@ -1116,9 +1154,11 @@
     <string name="listatm_topup_bri_5">Masukkan Nominal TOP UP</string>
 
     <string name="upgrade_member">Upgrade Member</string>
+    <string name="upgrade_agent">Upgrade Agen</string>
     <string name="data_member_basic">Data Member Basic</string>
     <string name="data_verified_member">Data Verified Member</string>
     <string name="message_upgrade_member">Apakah Anda ingin upgrade menjadi verified member untuk bisa melakukan transaksi transfer, minta uang dan tarik dana?</string>
+    <string name="message_upgrade_agent">Apakah Anda ingin upgrade menjadi agen?</string>
 
     <string name="validation_pulsa">No. Hp tidak ditemukan</string>
     <string name="rational_readphonestate">Aplikasi membutuhkan akses untuk mengecek status perangkat</string>
@@ -1152,4 +1192,43 @@
     <string name="alertbox_set_rating_trx">Silakan pilih rating atas transaksi Anda</string>
     <string name="alertbox_thx_for_rating">Terima Kasih atas review Anda</string>
     <string name="alertbox_waiting_agent_approval">Silakan menunggu permintaan transaksi diterima oleh Agen</string>
+    <string name="bbs_setor_ke">Setor ke Rek.</string>
+    <string name="bbs_tarik_dari">Tarik dari Rek.</string>
+    <string name="msg_notif_tidak_bisa_batal">Maaf. Transaksi Anda tidak dapat dibatalkan.</string>
+    <string name="canceled_trx_reason">ALASAN BATAL</string>
+    <string name="err_empty_cancel_reason">Silakan isi alasan pembatalan</string>
+    <string name="txt_explanation_cancel_reason">contoh: respon agen terlalu lama</string>
+    <string name="notif_pelanggan">Notif Pelanggan</string>
+
+
+    <!--  DevicesList -->
+    <string name="scanning">Scanning Device&#8230;</string>
+    <string name="select_device">Select the connected device</string>
+    <string name="none_paired">No matching devices</string>
+    <string name="none_found">No device found</string>
+    <string name="title_paired_devices">Match equipment</string>
+    <string name="title_other_devices">Other useful equipment</string>
+    <string name="button_scan">Scanning device</string>
+
+    <!--  Message -->
+    <string name="msg_state">Input Error!</string>
+    <string name="empty1">Input is empty, in the text box to enter the content to be converted &#8230;</string>
+    <string name="not_connected">Please connect a Bluetooth printer</string>
+    <string name="bt_not_enabled_leaving">Bluetooth does not start, quit the program</string>
+    <string name="title_connecting">connecting…</string>
+    <string name="title_connected_to">connected: </string>
+    <string name="title_not_connected">Is not connected</string>
+    <string name="Connecting">It is connected to a Bluetooth printer</string>
+    <string name="msg_statev1">Without a picture</string>
+    <string name="strLang">en</string>
+    <string name="camer">No pictures</string>
+    <string name="msg_error">Input errors, please check!</string>
+
+    <string name="scadm_join">Gabung Komunitas B2B Telko</string>
+    <string name="scadm_topup">Bayar</string>
+    <string name="scadm_denom">Beli Denom Telko</string>
+    <string name="bank_product">Produk Bank</string>
+    <string name="comm_code">Kode Komunitas</string>
+    <string name="denom_item">Item Denom</string>
+    <string name="order_number">Nomor Order</string>
 </resources>

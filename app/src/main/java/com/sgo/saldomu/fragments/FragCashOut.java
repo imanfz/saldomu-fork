@@ -22,18 +22,17 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -49,11 +48,10 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 3/18/2015.
  */
-public class FragCashOut extends Fragment {
+public class FragCashOut extends BaseFragment {
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashout";
 
     View v;
-    SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
     LinearLayout layout_acc_name;
     Spinner sp_privacy, sp_bank;
     EditText etAccNo, etNominal, etAccName;
@@ -62,7 +60,7 @@ public class FragCashOut extends Fragment {
     ProgressDialog progdialog;
 
     int privacy, start = 0;
-    String userID, accessKey, memberId, balance, bankCashout, bankCode="", bankName, bankGateway;
+    String balance, bankCashout, bankCode="", bankName, bankGateway;
     ArrayList<String> arrBankName;
     ArrayList<String> arrBankCode;
     ArrayList<String> arrBankGateway;
@@ -123,22 +121,19 @@ public class FragCashOut extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
-        memberId = sp.getString(DefineValue.MEMBER_ID,"");
         balance = MyApiClient.CCY_VALUE + " " +CurrencyFormat.format(sp.getString(DefineValue.BALANCE_AMOUNT,""));
         bankCashout = sp.getString(DefineValue.BANK_CASHOUT,"");
 
         initializeBankCashout();
 
-        layout_acc_name = (LinearLayout) v.findViewById(R.id.layout_bankcashout_acc_name);
-        etAccName = (EditText) v.findViewById(R.id.cashout_value_bank_acc_name);
-        etAccNo = (EditText) v.findViewById(R.id.cashout_value_bank_acc_no);
-        etNominal = (EditText) v.findViewById(R.id.cashout_value_nominal);
-        txtBalance = (TextView) v.findViewById(R.id.cashout_balance);
-        sp_privacy = (Spinner) v.findViewById(R.id.cashout_privacy_spinner);
-        sp_bank = (Spinner) v.findViewById(R.id.cashout_spinner_nameBank);
-        btnProcess = (Button) v.findViewById(R.id.cashout_btn_process);
+        layout_acc_name = v.findViewById(R.id.layout_bankcashout_acc_name);
+        etAccName = v.findViewById(R.id.cashout_value_bank_acc_name);
+        etAccNo = v.findViewById(R.id.cashout_value_bank_acc_no);
+        etNominal = v.findViewById(R.id.cashout_value_nominal);
+        txtBalance = v.findViewById(R.id.cashout_balance);
+        sp_privacy = v.findViewById(R.id.cashout_privacy_spinner);
+        sp_bank = v.findViewById(R.id.cashout_spinner_nameBank);
+        btnProcess = v.findViewById(R.id.cashout_btn_process);
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
@@ -219,11 +214,12 @@ public class FragCashOut extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQUEST_CASHOUT,
-                    userID,accessKey);
+            extraSignature = memberIDLogin+bankCode+_acctNo+MyApiClient.CCY_VALUE+_amount;
+
+            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_REQUEST_CASHOUT, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
-            params.put(WebParams.MEMBER_ID, memberId);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.AMOUNT, _amount);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
             params.put(WebParams.BANK_CODE, bankCode);

@@ -6,14 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,12 +40,9 @@ import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -59,13 +54,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static com.sgo.saldomu.coreclass.GlobalSetting.RC_LOCATION_PERM;
-import static com.sgo.saldomu.coreclass.GlobalUtils.setRatingStarColor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,7 +86,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     String flagApprove, customerId, title, gcmId, flagTxStatus, txId, memberId, shopId;
     ShopDetail shopDetail;
     List<ShopDetail> shopDetails;
-    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote;
+    TextView tvCategoryName, tvMemberName, tvAmount, tvShop, tvCountTrx, tvTotalTrx, tvBbsNote, tvAcctLabel, tvAcctName;
     RelativeLayout rlApproval;
     RatingBar rbMemberRating;
     Spinner spPilihan;
@@ -135,6 +128,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d("Flag Login Approvalagent ");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -151,14 +145,29 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         txId                    = "";
         flagApprove             = DefineValue.STRING_NO;
         customerId              = sp.getString(DefineValue.USERID_PHONE, "");
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.frag_approval_agent, container, false);
 
+        String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
+        if(flagLogin == null)
+            flagLogin = DefineValue.STRING_NO;
+
+        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+            getActivity().finish();
+        } else {
+            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+            if (!notifDataNextLogin.equals("")) {
+                sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
+            }
+        }
 
         btnApprove              = (Button) v.findViewById(R.id.btnApprove);
         //btnReject               = (Button) v.findViewById(R.id.btnReject);
@@ -171,7 +180,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         tvCountTrx              = (TextView) v.findViewById(R.id.tvCountTrx);
         tvTotalTrx              = (TextView) v.findViewById(R.id.tvTotalTrx);
-
+        tvAcctLabel             = (TextView) v.findViewById(R.id.tvAcctLabel);
+        tvAcctName              = (TextView) v.findViewById(R.id.tvAcctName);
         //rbMemberRating          = (RatingBar) v.findViewById(R.id.rbMemberRating);
         //ivPPMember              = (ImageView) v.findViewById(R.id.ivPPMember);
 
@@ -221,18 +231,10 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
                         flagTxStatus = DefineValue.STRING_ACCEPT;
 
-                        if ( shopDetails.size() > 1 ) {
-                            itemId  = spPilihan.getSelectedItemPosition();
-
-                        } else {
-                            itemId = 0;
-                        }
+                        itemId = 0;
 
                         if ( shopDetails.size() > 0 ) {
-                            shopId = shopDetails.get(itemId).getShopId();
-                            memberId = shopDetails.get(itemId).getMemberId();
                             gcmId = "";
-
                             updateTrxAgent();
                         }
                     }
@@ -341,19 +343,18 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         } else {
 
             progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
-            RequestParams params3 = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            String extraSignature   = shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus;
+            RequestParams params3 = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
+                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
-            params3.put(WebParams.RC_UUID, rcUUID);
-            params3.put(WebParams.RC_DATETIME, dtime);
-            params3.put(WebParams.APP_ID, BuildConfig.AppID);
+            params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
             params3.put(WebParams.MEMBER_ID, memberId);
             params3.put(WebParams.SHOP_ID, shopId);
             params3.put(WebParams.TX_STATUS, flagTxStatus);
+            params3.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
             if (flagTxStatus.equals(DefineValue.STRING_ACCEPT)) {
                 params3.put(WebParams.KEY_VALUE, gcmId);
@@ -361,9 +362,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                 params3.put(WebParams.LONGITUDE, currentLongitude);
             }
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus));
-
-            params3.put(WebParams.SIGNATURE, signature);
 
             MyApiClient.updateTransactionAgent(getContext(), params3, new JsonHttpResponseHandler() {
                 @Override
@@ -393,7 +391,7 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                                 mEditor.apply();
 
                                 Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.putExtra(DefineValue.AOD_TX_ID, shopDetails.get(itemId).getTxId());
                                 startActivity(i);
                                 getActivity().finish();
                             } else {
@@ -688,22 +686,16 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
         ft.commitAllowingStateLoss();*/
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRANSACTION_AGENT,
+                customerId, sp.getString(DefineValue.ACCESS_KEY, ""));
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, customerId);
 
         MyApiClient.getListTransactionAgent(getContext(), params, new JsonHttpResponseHandler() {
             @Override
@@ -738,6 +730,8 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         shopDetail.setShopId(response.getString(WebParams.SHOP_ID));
                         shopDetail.setShopName(response.getString(WebParams.SHOP_NAME));
 
+                        shopId  = response.getString(WebParams.SHOP_ID);
+                        memberId  = response.getString(WebParams.MEMBER_ID);
                         shopDetails.add(shopDetail);
 
                         tvCategoryName.setText(shopDetail.getCategoryName());
@@ -753,6 +747,13 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
                         tvCountTrx.setText(response.getString(WebParams.COUNT_TRX));
                         tvTotalTrx.setText(DefineValue.IDR + " " + CurrencyFormat.format(response.getString(WebParams.TOTAL_TRX)));
 
+                        if ( response.getString(WebParams.SCHEME_CODE).equals(DefineValue.CTA) ) {
+                            tvAcctLabel.setText(getString(R.string.bbs_setor_ke));
+                        } else {
+                            tvAcctLabel.setText(getString(R.string.bbs_tarik_dari));
+                        }
+
+                        tvAcctName.setText(response.getString(WebParams.PRODUCT_NAME));
 
                         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.user_unknown_menu);
                         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);

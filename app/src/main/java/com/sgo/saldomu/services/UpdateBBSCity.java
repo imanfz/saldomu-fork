@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
-import com.sgo.saldomu.coreclass.RealmManager;
+import com.loopj.android.http.RequestParams;
+import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 
@@ -58,8 +59,10 @@ public class UpdateBBSCity extends IntentService {
 
     private void getListBBSCity(){
         try{
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_CITY,
+                    BuildConfig.SECRET_KEY);
 
-            MyApiClient.getBBSCity(this,true,new JsonHttpResponseHandler() {
+            MyApiClient.getBBSCity(this,true, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {

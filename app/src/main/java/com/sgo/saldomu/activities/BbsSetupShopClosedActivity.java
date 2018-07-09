@@ -25,16 +25,15 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.OpenCloseDatePickerFragment;
 import com.sgo.saldomu.fragments.OpenHourPickerFragment;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -42,7 +41,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -152,24 +150,22 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                         }
 
                         if (!hasError) {
-                            RequestParams params = new RequestParams();
-                            UUID rcUUID = UUID.randomUUID();
-                            String dtime = DateTimeFormat.getCurrentDateTime();
-
-                            params.put(WebParams.RC_UUID, rcUUID);
-                            params.put(WebParams.RC_DATETIME, dtime);
-                            params.put(WebParams.APP_ID, BuildConfig.AppID);
-                            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
-                            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
-                            params.put(WebParams.SHOP_ID, shopId);
-                            params.put(WebParams.MEMBER_ID, memberId);
 
                             shopRemark = etShopRemark.getText().toString();
                             progdialog = DefinedDialog.CreateProgressDialog(BbsSetupShopClosedActivity.this, "");
 
                             if (selectedType == 1) {
-                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID));
-                                params.put(WebParams.SIGNATURE, signature);
+
+                                String extraSignature = memberId + shopId;
+                                RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                                        userPhoneID, accessKey, extraSignature);
+
+                                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+                                params.put(WebParams.SHOP_ID, shopId);
+                                params.put(WebParams.MEMBER_ID, memberId);
+                                params.put(WebParams.USER_ID, userPhoneID);
 
                                 MyApiClient.updateCloseShopToday(getApplication(), params, new JsonHttpResponseHandler() {
                                     @Override
@@ -241,6 +237,16 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
                             } else if (selectedType == 2) {
 
+                                String extraSignature = memberId + shopId + shopStatus;
+                                RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
+                                        userPhoneID, accessKey, extraSignature);
+
+                                params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                                params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
+                                params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
+                                params.put(WebParams.SHOP_ID, shopId);
+                                params.put(WebParams.MEMBER_ID, memberId);
+                                params.put(WebParams.USER_ID, userPhoneID);
 
                                 params.put(WebParams.SHOP_STATUS, shopStatus);
                                 params.put(WebParams.SHOP_REMARK, shopRemark);
@@ -249,10 +255,6 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                                         params.put(WebParams.SHOP_END_OPEN_HOUR, shopEndOpenHour);
                                     }*/
                                 params.put(WebParams.SHOP_DATE, shopDate);
-
-                                String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
-
-                                params.put(WebParams.SIGNATURE, signature);
 
                                 MyApiClient.registerOpenCloseShop(getApplication(), params, new JsonHttpResponseHandler() {
                                     @Override

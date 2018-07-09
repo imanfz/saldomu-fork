@@ -1,7 +1,6 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,18 +21,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -45,10 +39,9 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.GlobalSetting;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
@@ -59,10 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -104,6 +94,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
     EasyAdapter lvSettingAdapter;
     String[] menuItems;
     FragmentManager fragmentManager;
+    private static final int RC_GPS_REQUEST = 1;
 
 
     public FragSetttingKelola() {
@@ -229,22 +220,17 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         flagApprove             = DefineValue.STRING_BOTH;
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams params    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        String extraSignature = flagApprove;
+        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                extraSignature);
+
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID );
         params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
         params.put(WebParams.FLAG_APPROVE, flagApprove);
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID +
-                sp.getString(DefineValue.USERID_PHONE, "") + BuildConfig.AppID + flagApprove));
-
-        params.put(WebParams.SIGNATURE, signature);
+        params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
         MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
             @Override
@@ -347,7 +333,7 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
                                 swTutupToko.setChecked(true);
                             }
 
-                            swTutupToko.setOnCheckedChangeListener(new mySwitchChangeClicker());
+                            swTutupToko.setOnCheckedChangeListener(switchListener);
                             swTutupToko.setVisibility(View.VISIBLE);
                         }
 
@@ -538,12 +524,38 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
         void onFragmentInteraction(Uri uri);
     }
 
-    class mySwitchChangeClicker implements Switch.OnCheckedChangeListener {
 
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+
+                        swTutupToko.setOnClickListener(null);
+                        swTutupToko.setChecked(false);
+                        swTutupToko.setOnCheckedChangeListener(switchListener);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            RequestParams params = new RequestParams();
-            shopStatus      = DefineValue.SHOP_OPEN;
+
+            shopStatus              = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice    = false;
 
             if (!isChecked) {
                 //buka
@@ -551,87 +563,95 @@ public class FragSetttingKelola extends Fragment implements View.OnClickListener
 
             }
 
-            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    isCallWebservice    = true;
+                }
 
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            } else {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
+                    isCallWebservice    = true;
+                }
+            }
 
-
-
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, shopId);
-            params.put(WebParams.MEMBER_ID, memberId);
-            params.put(WebParams.SHOP_STATUS, shopStatus);
-
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + memberId + shopId + BuildConfig.AppID + shopStatus));
-
-            params.put(WebParams.SIGNATURE, signature);
-
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
-
-                    try {
-
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
+            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
 
-                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                showAlertEnabledGPS();
+            } else {
+                if (isCallWebservice) {
+
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+
+
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+                    params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+                    params.put(WebParams.SHOP_STATUS, shopStatus);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+
+                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                            progdialog2.dismiss();
+
+                            try {
+
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    }
+
+                                    mEditor.apply();
+
+                                    getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                                } else {
+
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            mEditor.apply();
-
-                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-
-                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-                        } else {
-                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            progdialog2.dismiss();
+                            Timber.w("Error Koneksi login:" + throwable.toString());
+
+                        }
+                    });
                 }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    //if (MyApiClient.PROD_FAILURE_FLAG)
-                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    //else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-
-            });
+            }
         }
-    }
-
+    };
 }

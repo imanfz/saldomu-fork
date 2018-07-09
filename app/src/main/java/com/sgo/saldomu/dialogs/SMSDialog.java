@@ -23,7 +23,8 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.WebParams;
 
@@ -250,8 +251,12 @@ public class SMSDialog extends Dialog {
 
     public void sentSms() {
         if (!isStop) {
-            Timber.d("jalanin sentSMSVerify");
-            smsClass.sendSMSVerify(MyApiClient.INCOMINGSMS_SPRINT, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
+            String mobileNetworkCode = NoHPFormat.getMNC(ICCIDDevice);
+            String mobileDestination    = NoHPFormat.getSMSVerifyDestination(mobileNetworkCode);
+            Timber.d("ICC ID: "+ICCIDDevice+ ", Network Code : "+ mobileNetworkCode + ", mobile Dest : " + mobileDestination);
+            Timber.d("jalanin sentSMSVerify "+ICCIDDevice);
+
+            smsClass.sendSMSVerify(mobileDestination, imeiDevice, ICCIDDevice, timeStamp, smsVerifyListener);
         }
     }
 
@@ -260,7 +265,9 @@ public class SMSDialog extends Dialog {
             Timber.d("idx fail = " + String.valueOf(idx_fail));
             if (idx_fail <= max_fail_connect && InetHandler.isNetworkAvailable(getContext())) {
                 if (!isStop) {
-                    RequestParams params = new RequestParams();
+                    String extraSignature = ICCIDDevice + imeiDevice;
+                    RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
+                            BuildConfig.SECRET_KEY, extraSignature );
                     params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                     params.put(WebParams.IMEI, imeiDevice);
                     params.put(WebParams.ICCID, ICCIDDevice);

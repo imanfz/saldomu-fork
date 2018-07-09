@@ -26,6 +26,7 @@ import com.faber.circlestepview.CircleStepView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -34,11 +35,11 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.LocaleUtils;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.joda.time.DateTime;
@@ -46,14 +47,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Locale;
-
 import timber.log.Timber;
 
 /*
  Created by Administrator on 7/4/2014.
  */
-public class Regist3 extends Fragment {
+public class Regist3 extends BaseFragment {
 
     SecurePreferences sp;
     Button btnResend, btnSubmit,btnCancel;
@@ -462,11 +461,13 @@ public class Regist3 extends Fragment {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+            extraSignature = custID + pass;
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
-            params.put(WebParams.TOKEN_ID, token);
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(token));
             params.put(WebParams.CUST_ID, custID);
 
             Timber.d("params create pass:"+params.toString());
@@ -540,12 +541,14 @@ public class Regist3 extends Fragment {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+            extraSignature = memberID + custID + data.getStringExtra(DefineValue.PIN_VALUE);
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature );
             params.put(WebParams.USER_ID, custID);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
 
             Timber.d("params create pin:"+params.toString());
 

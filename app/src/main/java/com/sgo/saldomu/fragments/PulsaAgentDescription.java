@@ -12,23 +12,23 @@ import android.view.*;
 import android.widget.*;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PulsaAgentActivity;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,10 +44,9 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 9/14/2015.
  */
-public class PulsaAgentDescription extends Fragment {
+public class PulsaAgentDescription extends BaseFragment {
 
     private View v;
-    private SecurePreferences sp;
     private TextView tv_operator_value;
     private TextView tv_id_cust;
     private TextView tv_nominal;
@@ -61,7 +60,6 @@ public class PulsaAgentDescription extends Fragment {
     private ArrayAdapter<String> adapterPaymentOptions;
     private listBankModel mTempBank;
 
-    private String cust_id;
     private String member_id;
     private String phone_number;
     private String item_id;
@@ -75,15 +73,11 @@ public class PulsaAgentDescription extends Fragment {
     private String share_type;
     private String operator_id;
     private String operator_name;
-    private String accessKey;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        cust_id = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         Bundle bundle = getArguments();
         member_id = bundle.getString(DefineValue.MEMBER_ID);
@@ -94,12 +88,12 @@ public class PulsaAgentDescription extends Fragment {
         operator_id = bundle.getString(DefineValue.OPERATOR_ID);
         operator_name = bundle.getString(DefineValue.OPERATOR_NAME);
 
-        tv_id_cust = (TextView) v.findViewById(R.id.pulsatoken_pulsa_id_value);
-        tv_operator_value = (TextView) v.findViewById(R.id.pulsatoken_operator_value);
-        tv_nominal = (TextView) v.findViewById(R.id.pulsatoken_nominal_value);
-        spin_payment_options = (Spinner) v.findViewById(R.id.spinner_pulsainput_payment_options);
-        btn_submit = (Button) v.findViewById(R.id.pulsatoken_btn_verification);
-        btn_cancel = (Button) v.findViewById(R.id.pulsatoken_btn_cancel);
+        tv_id_cust = v.findViewById(R.id.pulsatoken_pulsa_id_value);
+        tv_operator_value = v.findViewById(R.id.pulsatoken_operator_value);
+        tv_nominal = v.findViewById(R.id.pulsatoken_nominal_value);
+        spin_payment_options = v.findViewById(R.id.spinner_pulsainput_payment_options);
+        btn_submit = v.findViewById(R.id.pulsatoken_btn_verification);
+        btn_cancel = v.findViewById(R.id.pulsatoken_btn_cancel);
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
@@ -212,7 +206,7 @@ public class PulsaAgentDescription extends Fragment {
         mArgs.putString(DefineValue.ITEM_ID,item_id);
         mArgs.putString(DefineValue.ITEM_NAME,item_name);
         mArgs.putString(DefineValue.PAYMENT_NAME, payment_name);
-        mArgs.putString(DefineValue.CUST_ID, cust_id);
+        mArgs.putString(DefineValue.CUST_ID, userPhoneID);
         mArgs.putString(DefineValue.API_KEY,api_key);
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.FEE, fee);
@@ -246,7 +240,7 @@ public class PulsaAgentDescription extends Fragment {
             final String topupType = mTempBank.getProduct_type();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_PAYMENT_DAP,
-                    cust_id,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.MEMBER_ID, member_id);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
@@ -254,8 +248,8 @@ public class PulsaAgentDescription extends Fragment {
             params.put(WebParams.BANK_CODE, bank_code);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
-            params.put(WebParams.CUST_ID, cust_id);
-            params.put(WebParams.USER_ID, cust_id);
+            params.put(WebParams.CUST_ID, userPhoneID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.MERCHANT_CODE, sp.getString(DefineValue.COMMUNITY_CODE,""));
 
@@ -352,10 +346,10 @@ public class PulsaAgentDescription extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_BANK_DAP,
-                    cust_id,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.MEMBER_ID, member_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.USER_ID, cust_id);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sent Bank DAP", params.toString());
 
@@ -471,14 +465,15 @@ public class PulsaAgentDescription extends Fragment {
     private void sentDataReqToken(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String _product_code, final String fee,
                                   final String _bank_code){
         try{
+            extraSignature = _tx_id+comm_code+_product_code;
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    cust_id,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, cust_id);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params reqtoken Sgo+" + params.toString());
 
@@ -591,9 +586,9 @@ public class PulsaAgentDescription extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         final LevelClass levelClass = new LevelClass(getActivity());
         Message.setVisibility(View.VISIBLE);
@@ -635,9 +630,9 @@ public class PulsaAgentDescription extends Fragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.smsBanking_dialog_validation_title));

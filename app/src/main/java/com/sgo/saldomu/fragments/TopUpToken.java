@@ -6,22 +6,40 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
 import android.text.InputFilter;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CurrencyFormat;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ErrorDefinition;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +50,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 12/10/2014.
  */
-public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogOkCallback{
+public class TopUpToken extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
 
     private String txID;
     private String productCode;
@@ -45,8 +63,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     private String topupType;
     private String fee;
     private String shareType;
-    private String userID;
-    private String accessKey;
     private int max_length_token = 6;
     private EditText tokenValue;
     private TextView mBankName;
@@ -65,9 +81,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     private int max_token_resend = 3;
     private View v;
     private View layout_btn_resend;
-    private SecurePreferences sp;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,9 +94,6 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
 
         Bundle args = getArguments();
         topupType = args.getString(DefineValue.TOPUP_TYPE, "");
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
         txID = args.getString(DefineValue.TX_ID,"");
         productCode = args.getString(DefineValue.PRODUCT_CODE,"");
@@ -232,15 +242,17 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txID+commCode+productCode+tokenValue;
+
             final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userID,accessKey);
+                    userPhoneID,accessKey);
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID,""));
-            params.put(WebParams.PRODUCT_VALUE, tokenValue.getText());
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue.getText().toString()));
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
@@ -253,7 +265,7 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             getActivity().setResult(MainPage.RESULT_BALANCE);
 
-                            getTrxStatus(sp.getString(DefineValue.USER_NAME, ""),  txID,userID,
+                            getTrxStatus(sp.getString(DefineValue.USER_NAME, ""),  txID,userPhoneID,
                                     bankName, productName, fee, jumlahnya);
 
                         }
@@ -325,18 +337,20 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = txID+commCode+productCode;
+
             RequestParams params;
             if(bankCode.equals("114"))
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
             else
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userID,accessKey);
+                        userPhoneID,accessKey);
 
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
             params.put(WebParams.COMM_CODE, commCode);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
             Timber.d("isi params resendTokenSGOL:"+params.toString());
@@ -429,8 +443,9 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
 
+            extraSignature = txId + MyApiClient.COMM_ID;
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userId,accessKey);
+                    userId,accessKey, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.TYPE, DefineValue.TOPUP_SMS_TYPE);
@@ -452,7 +467,8 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
                             String txstatus = response.getString(WebParams.TX_STATUS);
 
                             showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,bankName,bankProduct,fee,amount,
-                                    txstatus,response.getString(WebParams.TX_REMARK));
+                                    txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.BUSS_SCHEME_CODE),
+                                    response.optString(WebParams.BUSS_SCHEME_NAME));
                         } else if(code.equals(WebParams.LOGOUT_CODE)){
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -533,9 +549,10 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
     }
 
     private void showReportBillerDialog(String userName, String date,String txId, String userId, String bankName, String bankProduct,
-                                        String fee, String amount, String txStatus, String txRemark) {
+                                        String fee, String amount, String txStatus, String txRemark, String buss_scheme_code,
+                                        String buss_scheme_name) {
         Bundle args = new Bundle();
-        ReportBillerDialog dialog = new ReportBillerDialog();
+        ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
         args.putString(DefineValue.DATE_TIME, date);
         args.putString(DefineValue.TX_ID, txId);
@@ -571,8 +588,11 @@ public class TopUpToken extends Fragment implements ReportBillerDialog.OnDialogO
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
         if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
 
+        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
+        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+
         dialog.setArguments(args);
-        dialog.setTargetFragment(this,0);
+//        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 

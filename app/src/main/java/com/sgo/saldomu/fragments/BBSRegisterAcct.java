@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,18 +23,17 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -50,7 +48,7 @@ import io.realm.RealmResults;
 import timber.log.Timber;
 
 
-public class BBSRegisterAcct extends Fragment {
+public class BBSRegisterAcct extends BaseFragment {
 
     public final static String TAG = "com.sgo.saldomu.fragments.BBSRegisterAcct";
     private final static String TYPE_ACCT = "ACCT";
@@ -67,14 +65,12 @@ public class BBSRegisterAcct extends Fragment {
     private ProgressBar progBarComm;
     private ProgressBar progBarBank;
     private EditText etNoBenefAcct, etNameBenefAcct;
-    private String userID, accessKey;
     private Integer CityAutocompletePos = -1;
     private ArrayAdapter<String> adapterDataComm, adapterDataBank, adapterDataCity;
     private ActionListener actionListener;
     private ArrayList<List_BBS_City> list_bbs_cities;
     public Boolean isUpdate = false;
     private TextView tvEgNo;
-    SecurePreferences sp;
     public interface ActionListener{
         void OnSuccessReqAcct(Bundle data);
         void OnEmptyCommunity();
@@ -102,9 +98,7 @@ public class BBSRegisterAcct extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         realm = Realm.getDefaultInstance();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+
         listDataBank = new ArrayList<>();
         progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
         progdialog.dismiss();
@@ -303,6 +297,12 @@ public class BBSRegisterAcct extends Fragment {
 
 
     public boolean inputValidation(){
+        if(progBarBank.getVisibility() == View.VISIBLE)
+            return false;
+
+        if(listDataBank.size() == 0)
+            return false;
+
         if(etNoBenefAcct.getText().toString().length()==0){
             etNoBenefAcct.requestFocus();
             etNoBenefAcct.setError(getString(R.string.bbsreg_et_error_rekbenef));
@@ -370,10 +370,10 @@ public class BBSRegisterAcct extends Fragment {
     private void retreiveBank(String comm_code){
         try{
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_REG_ACCT,
-                    userID,accessKey);
+                    userPhoneID,accessKey, comm_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params retreive bank:" + params.toString());
 
             spSourceAcct.setVisibility(View.GONE);
@@ -448,8 +448,10 @@ public class BBSRegisterAcct extends Fragment {
     private void sentReqAcct(final String commCode, final String memberCode, final String benefAcctType, final String benefBankCode,
                              final String benefAcctNo, final String benefAcctCity, final String benefAcctName){
         try{
+            extraSignature = commCode+memberCode+benefAcctType+benefBankCode+benefAcctNo;
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_REQ_ACCT,
-                    userID,accessKey);
+                    userPhoneID,accessKey, extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.BENEF_ACCT_TYPE, benefAcctType);
@@ -457,7 +459,7 @@ public class BBSRegisterAcct extends Fragment {
             params.put(WebParams.BENEF_ACCT_NO, benefAcctNo);
             params.put(WebParams.BENEF_ACCT_NAME, benefAcctName);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             if(benefAcctType.equalsIgnoreCase(TYPE_ACCT))
                 params.put(WebParams.BENEF_ACCT_CITY, benefAcctCity);

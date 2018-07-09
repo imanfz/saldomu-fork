@@ -41,9 +41,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 
@@ -83,6 +83,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
     private GoogleApiClient googleApiClient;
     private LocationRequest mLocationRequest;
     private Location lastLocation;
+    private String mobility;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,7 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
         targetLongitude         = receiveIntent.getDoubleExtra("targetLongitude", 0);
         currentLatitude         = receiveIntent.getDoubleExtra("currentLatitude", 0);
         currentLongitude        = receiveIntent.getDoubleExtra("currentLongitude", 0);
+        mobility                = receiveIntent.getStringExtra("mobility");
 
         //tvDirection.setText(Html.fromHtml("<h2>Title</h2><p>Description here</p>"));
         updateLocationIntent    = new Intent(this, UpdateLocationService.class);
@@ -218,16 +220,28 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.house));
                     .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.ic_directions_car_black, 70, 90)));
             //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
             Marker marker = globalMap.addMarker(markerOptions);
 
             LatLng targetLatLng = new LatLng(targetLatitude, targetLongitude);
-            MarkerOptions markerTargetOptions = new MarkerOptions()
-                    .position(targetLatLng)
-                    //.title("")
-                    //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
-            globalMap.addMarker(markerTargetOptions);
+            MarkerOptions markerTargetOptions = null;
 
+            if ( mobility.equals(DefineValue.STRING_YES) ) {
+                markerTargetOptions = new MarkerOptions()
+                        .position(targetLatLng)
+                        //.title("")
+                        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                        .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+
+            } else {
+                markerTargetOptions = new MarkerOptions()
+                        .position(targetLatLng)
+                        //.title("")
+                        //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                        .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+            }
+
+            globalMap.addMarker(markerTargetOptions);
             //add camera position and configuration
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(latLng) // Center Set

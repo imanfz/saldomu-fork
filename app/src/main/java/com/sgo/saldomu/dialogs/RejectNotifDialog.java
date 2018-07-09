@@ -19,14 +19,12 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -85,9 +83,9 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
             ccy_id = bundle.getString(DefineValue.CCY_ID);
         }
 
-        etRemark = (EditText) view.findViewById(R.id.text_remark);
-        btnOk = (TextView) view.findViewById(R.id.btnOK);
-        btnCancel = (TextView) view.findViewById(R.id.btnCancel);
+        etRemark = view.findViewById(R.id.text_remark);
+        btnOk = view.findViewById(R.id.btnOK);
+        btnCancel = view.findViewById(R.id.btnCancel);
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,14 +107,17 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 
     private void sentAsk4MoneyReject(){
         try{
+//
+//            UUID uuid = MyApiClient.getUUID();
+//            String dtime = DateTimeFormat.getCurrentDateTime();
+//            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_ASK4MONEY_REJECT);
+//            Timber.d("Webservice:"+webservice);
+            String extraSignature = req_id+trx_id+from;
+//            String signature = MyApiClient.getSignature(webservice, MyApiClient.COMM_ID
+//                    , _userId, _accessKey, extraSignature);
 
-            UUID uuid = MyApiClient.getUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
-            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_ASK4MONEY_REJECT);
-            Timber.d("Webservice:"+webservice);
-            String signature = MyApiClient.getSignature(uuid, dtime, webservice, MyApiClient.COMM_ID + _userId, _accessKey);
-
-            RequestParams params = new RequestParams();
+            RequestParams params = MyApiClient.getInstance()
+                    .getSignatureWithParams(MyApiClient.LINK_ASK4MONEY_REJECT, extraSignature);
             params.put(WebParams.USER_ID, _userId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.REQUEST_ID, req_id);
@@ -126,9 +127,9 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
             params.put(WebParams.AMOUNT, amount);
             params.put(WebParams.CCY_ID, ccy_id);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.RC_UUID, uuid.toString());
-            params.put(WebParams.RC_DTIME, dtime);
-            params.put(WebParams.SIGNATURE, signature);
+//            params.put(WebParams.RC_UUID, uuid.toString());
+//            params.put(WebParams.RC_DTIME, dtime);
+//            params.put(WebParams.SIGNATURE, signature);
 
             Timber.d("isi params ask for money reject:" + params.toString());
 

@@ -29,17 +29,15 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -47,13 +45,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
-
-import static com.activeandroid.Cache.getContext;
 
 public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -201,22 +196,17 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         }*/
 
         progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        RequestParams params    = new RequestParams();
 
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
+        RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_TRANSACTION_AGENT,
+                userPhoneID, accessKey);
 
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.AppID);
+        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.SHOP_PHONE, customerId);
         params.put(WebParams.SHOP_REMARK, gcmId);
+        params.put(WebParams.USER_ID, customerId);
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + customerId ));
-
-        params.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.getListTransactionAgent(getApplication(), params, new JsonHttpResponseHandler() {
             @Override
@@ -549,20 +539,18 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         //startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
 
+        String extraSignature = txId + memberId + shopId + flagTxStatus;
+        RequestParams params3    = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
+                userPhoneID, accessKey, extraSignature);
 
-        RequestParams params3    = new RequestParams();
-        UUID rcUUID             = UUID.randomUUID();
-        String  dtime           = DateTimeFormat.getCurrentDateTime();
-
-        params3.put(WebParams.RC_UUID, rcUUID);
-        params3.put(WebParams.RC_DATETIME, dtime);
-        params3.put(WebParams.APP_ID, BuildConfig.AppID);
+        params3.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params3.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params3.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params3.put(WebParams.TX_ID, shopDetails.get(itemId).getTxId());
         params3.put(WebParams.MEMBER_ID, memberId);
         params3.put(WebParams.SHOP_ID, shopId);
         params3.put(WebParams.TX_STATUS, flagTxStatus);
+        params3.put(WebParams.USER_ID, userPhoneID);
 
         if ( flagTxStatus.equals(DefineValue.STRING_ACCEPT) ) {
             params3.put(WebParams.KEY_VALUE, gcmId);
@@ -570,9 +558,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
             params3.put(WebParams.LONGITUDE, currentLongitude);
         }
 
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID + shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus ));
-
-        params3.put(WebParams.SIGNATURE, signature);
 
         MyApiClient.updateTransactionAgent(getApplication(), params3, new JsonHttpResponseHandler() {
             @Override

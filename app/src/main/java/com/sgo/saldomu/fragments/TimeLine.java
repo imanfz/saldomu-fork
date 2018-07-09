@@ -22,6 +22,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TimelineDetailActivity;
 import com.sgo.saldomu.adapter.TimeLineRecycleAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import org.apache.http.Header;
 import org.json.JSONArray;

@@ -14,9 +14,13 @@ public class ReportListModel {
   private String remark;
   private String detail;
   private String alias;
+  private String buss_scheme_code;
+  private String buss_scheme_name;
 
 
-  public ReportListModel(String _datetime, String _type, String _ccyID, String _amount, String _trxID, String _description, String _remark, String _detail,String _commId, String _alias){
+  public ReportListModel(String _datetime, String _type, String _ccyID, String _amount, String _trxID, String _description,
+                         String _remark, String _detail,String _commId, String _alias, String _buss_scheme_code,
+                         String _buss_scheme_name){
     this.setDatetime(_datetime);
     this.setType(_type);
     this.setCcyID(_ccyID);
@@ -27,6 +31,8 @@ public class ReportListModel {
     this.setDetail(_detail);
     this.setCommId(_commId);
     this.setAlias(_alias);
+    this.setBuss_scheme_code(_buss_scheme_code);
+    this.setBuss_scheme_name(_buss_scheme_name);
   }
 
 
@@ -109,4 +115,12 @@ public class ReportListModel {
   private void setAlias(String alias) {
     this.alias = alias;
   }
+
+  public String getBuss_scheme_code() {return buss_scheme_code;}
+
+  public void setBuss_scheme_code(String buss_scheme_code) {this.buss_scheme_code = buss_scheme_code;}
+
+  public String getBuss_scheme_name() {return buss_scheme_name;}
+
+  public void setBuss_scheme_name(String buss_scheme_name) {this.buss_scheme_name = buss_scheme_name;}
 }

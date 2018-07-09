@@ -25,35 +25,32 @@ import com.sgo.saldomu.activities.CashoutActivity;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.NoSuchAlgorithmException;
-
 import timber.log.Timber;
 
-public class FragCashOutAgen extends Fragment {
+public class FragCashOutAgen extends BaseFragment {
 
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgen";
 
     private View v;
-    private SecurePreferences sp;
-    private String userid,accesskey,memberId,tx_id,nameadmin,amount,fee,total,ccy,authType;
+    private String tx_id,nameadmin,amount,fee,total,ccy,authType;
     private ProgressDialog progdialog;
     private Boolean isOTP =  false;
     private EditText et_otp;
@@ -83,11 +80,6 @@ public class FragCashOutAgen extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-
-        userid = sp.getString(DefineValue.USERID_PHONE, "");
-        accesskey = sp.getString(DefineValue.ACCESS_KEY, "");
-        memberId = sp.getString(DefineValue.MEMBER_ID,"");
         if(InetHandler.isNetworkAvailable(getActivity())) {
             sentInquiryWithdraw();
         }
@@ -123,9 +115,9 @@ public class FragCashOutAgen extends Fragment {
         View layout_no_trans = v.findViewById(R.id.layout_no_transaction);
         layout_no_trans.setVisibility(View.VISIBLE);
         layout_noData = v.findViewById(R.id.layout_no_data);
-        TextView tv_textNoData = (TextView) layout_noData.findViewById(R.id.txt_alert);
+        TextView tv_textNoData = layout_noData.findViewById(R.id.txt_alert);
         tv_textNoData.setText(getString(R.string.no_transaction));
-        TextView tv_message_noData = (TextView) v.findViewById(R.id.cashouttunai_message_notransaction);
+        TextView tv_message_noData = v.findViewById(R.id.cashouttunai_message_notransaction);
         tv_message_noData.setText(getString(R.string.cashoutagen_nodata_message) + "\n" + listContactPhone);
     }
 
@@ -136,14 +128,14 @@ public class FragCashOutAgen extends Fragment {
 
         dataInq = mJson;
 
-        TextView tvUserID = (TextView) v.findViewById(R.id.cashoutagen_userId_value);
-        TextView tvTxID = (TextView) v.findViewById(R.id.cashoutagen_trxid_value);
-        TextView tvNameAdmin = (TextView) v.findViewById(R.id.cashout_admin_name_value);
-        TextView tvAmount = (TextView) v.findViewById(R.id.cashoutagen_amount_value);
-        TextView tvFee = (TextView) v.findViewById(R.id.cashoutagen_fee_value);
-        TextView tvTotal = (TextView) v.findViewById(R.id.cashoutagen_total_amount_value);
-        btn_proses = (Button) v.findViewById(R.id.btn_verification);
-        btn_batal = (Button) v.findViewById(R.id.btn_cancel);
+        TextView tvUserID = v.findViewById(R.id.cashoutagen_userId_value);
+        TextView tvTxID = v.findViewById(R.id.cashoutagen_trxid_value);
+        TextView tvNameAdmin = v.findViewById(R.id.cashout_admin_name_value);
+        TextView tvAmount = v.findViewById(R.id.cashoutagen_amount_value);
+        TextView tvFee = v.findViewById(R.id.cashoutagen_fee_value);
+        TextView tvTotal = v.findViewById(R.id.cashoutagen_total_amount_value);
+        btn_proses = v.findViewById(R.id.btn_verification);
+        btn_batal = v.findViewById(R.id.btn_cancel);
 
         max_token_resend = mJson.optInt(WebParams.MAX_RESEND,3);
         count_resend = mJson.optInt(WebParams.COUNT_RESEND,0);
@@ -156,7 +148,7 @@ public class FragCashOutAgen extends Fragment {
         total = mJson.optString(WebParams.TOTAL,"");
         ccy = mJson.optString(WebParams.CCY_ID,"");
 
-        tvUserID.setText(userid);
+        tvUserID.setText(userPhoneID);
         tvTxID.setText(tx_id);
         tvNameAdmin.setText(nameadmin);
         tvAmount.setText(ccy+" "+CurrencyFormat.format(amount));
@@ -168,11 +160,11 @@ public class FragCashOutAgen extends Fragment {
         if(authType.equalsIgnoreCase("OTP")) {
             isOTP = true;
             View layoutOTP = v.findViewById(R.id.layout_token);
-            et_otp = (EditText) layoutOTP.findViewById(R.id.cashout_token_value);
+            et_otp = layoutOTP.findViewById(R.id.cashout_token_value);
             layoutOTP.setVisibility(View.VISIBLE);
 
             View layout_resendbtn = v.findViewById(R.id.layout_btn_resend);
-            btnResend= (Button) v.findViewById(R.id.btn_resend);
+            btnResend= v.findViewById(R.id.btn_resend);
             layout_resendbtn.setVisibility(View.VISIBLE);
 
             btnResend.setOnClickListener(new View.OnClickListener() {
@@ -193,7 +185,7 @@ public class FragCashOutAgen extends Fragment {
             changeTextBtnSub();
         }
         else {
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userid,new OnLoadDataListener() { //get pin attempt
+            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
                     attempt = (int)deData;
@@ -220,7 +212,7 @@ public class FragCashOutAgen extends Fragment {
                         btn_batal.setEnabled(false);
                         if (isOTP) {
                             btnResend.setEnabled(false);
-                            sentReqCodeWithdraw(Md5.hashMd5(et_otp.getText().toString()));
+                            sentReqCodeWithdraw(RSA.opensslEncrypt(et_otp.getText().toString()));
                         } else
                             CallPINinput(-1);
                     }
@@ -300,11 +292,13 @@ public class FragCashOutAgen extends Fragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            extraSignature = memberIDLogin+"COC";
+
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_WITHDRAW,
-                    userid , accesskey);
-            params.put(WebParams.MEMBER_ID, memberId);
+                    userPhoneID , accessKey, extraSignature);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.CASHOUT_TYPE, "COC");
 
             Timber.d("isi params sent inquiry withdraw:" + params.toString());
@@ -411,13 +405,13 @@ public class FragCashOutAgen extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_REQCODE_WITHDRAW,
-                    userid , accesskey);
-            params.put(WebParams.MEMBER_ID, memberId);
+                    userPhoneID , accessKey);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userid);
-            params.put(WebParams.MEMBER_ID,memberId);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_ID,memberIDLogin);
             params.put(WebParams.TX_ID, tx_id);
-            params.put(WebParams.TOKEN_ID, tokenid );
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenid ));
 
 
             Timber.d("isi params sent req code Withdraw:" + params.toString());
@@ -530,10 +524,10 @@ public class FragCashOutAgen extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_RESENT_TOKEN_BILLER,
-                    userid , accesskey);
+                    userPhoneID , accessKey);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sent resend token:" + params.toString());
 
@@ -642,10 +636,10 @@ public class FragCashOutAgen extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_DELTRX_WITHDRAW,
-                    userid , accesskey);
-            params.put(WebParams.MEMBER_ID, memberId);
+                    userPhoneID , accessKey);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userid);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.TX_ID, tx_id);
 
 
@@ -751,8 +745,8 @@ public class FragCashOutAgen extends Fragment {
 //            progdialog.show();
 
             RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userid,accesskey);
-            params.put(WebParams.USER_ID, userid);
+                    userPhoneID,accessKey);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 

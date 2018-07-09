@@ -10,6 +10,9 @@ public class listBankModel {
   private String product_name;
   private String product_type;
   private String product_h2h;
+  private String bank_gateway;
+  private String noVA;
+  private String fee;
 
   public listBankModel(){
     super();
@@ -24,6 +27,19 @@ public class listBankModel {
     this.setProduct_name(_product_name);
     this.setProduct_type(_product_type);
     this.setProduct_h2h(_product_h2h);
+  }
+
+  public listBankModel(String _bank_code, String _bank_name, String _product_code, String _product_name,
+                       String _product_type, String _product_h2h, String nova, String fee){
+    super();
+    this.setBank_code(_bank_code);
+    this.setBank_name(_bank_name);
+    this.setProduct_code(_product_code);
+    this.setProduct_name(_product_name);
+    this.setProduct_type(_product_type);
+    this.setProduct_h2h(_product_h2h);
+    this.setNoVA(nova);
+    this.setFee(fee);
   }
 
   public String getBank_name() {
@@ -72,5 +88,25 @@ public class listBankModel {
 
   public void setProduct_h2h(String product_h2h) {
     this.product_h2h = product_h2h;
+  }
+
+  public String getBank_gateway() {    return bank_gateway;  }
+
+  public void setBank_gateway(String bank_gateway) {    this.bank_gateway = bank_gateway;  }
+
+  public String getNoVA() {
+    return noVA;
+  }
+
+  public void setNoVA(String noVA) {
+    this.noVA = noVA;
+  }
+
+  public String getFee() {
+    return fee;
+  }
+
+  public void setFee(String fee) {
+    this.fee = fee;
   }
 }

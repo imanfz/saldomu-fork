@@ -41,6 +41,7 @@ import com.sgo.saldomu.activities.ListContactActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.MyFriendAdapter;
 import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.u1aryz.android.lib.newpopupmenu.MenuItem;
@@ -473,7 +474,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
 
             RequestParams params;
             if(isContactNew.equals(DefineValue.NO)){
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_UPDATE,
+                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_USER_CONTACT_UPDATE,
                         _ownerID,accessKey);
             }
             else

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_300">
+
+    <RelativeLayout
+        android:id="@+id/layout_list"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        >
+
+        <!--<com.sgo.saldomu.widgets.AnimatedExpandableListView-->
+        <ExpandableListView
+            android:id="@+id/frag_product_bank_list_expandableListView"
+            android:layout_width="match_parent"
+            android:dividerHeight="1dp"
+            android:layout_height="match_parent"
+            android:divider="@color/grey_300"
+            android:childDivider="@color/grey_300"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/white"
+            android:groupIndicator="@drawable/transparent"
+            android:layout_below="@+id/maxtopup_layout"
+            android:textIsSelectable="true">
+            <!--android:dividerHeight="2dp"-->
+            <!--android:divider="@color/grey_300"-->
+            <!--android:childDivider="@color/grey_300"-->
+        </ExpandableListView>
+        <!--</com.sgo.saldomu.widgets.AnimatedExpandableListView>-->
+    </RelativeLayout>
+</LinearLayout>

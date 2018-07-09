@@ -34,12 +34,13 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.securities.Md5;
+import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -54,7 +55,7 @@ import timber.log.Timber;
 /*
  Created by Administrator on 7/4/2014.
  */
-public class Regist1 extends Fragment implements EasyPermissions.PermissionCallbacks{
+public class Regist1 extends BaseFragment implements EasyPermissions.PermissionCallbacks{
 
     String namaValid = "" ,emailValid = "",noHPValid = "",token_id = "",member_code = "",max_resend_token = "3", authType, memberID;
     EditText namaValue,emailValue,noHPValue;
@@ -244,7 +245,9 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
             namaValue.setEnabled(false);
             emailValue.setEnabled(false);
 
-            RequestParams params = new RequestParams();
+            extraSignature = noHP;
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_REG_STEP1,
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE, noHP);
             params.put(WebParams.CUST_NAME,namaValue.getText());
@@ -348,10 +351,12 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+            extraSignature = noHPValid + pass;
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PASS, pass);
-            params.put(WebParams.CONF_PASS, confPass);
+            params.put(WebParams.PASS, RSA.opensslEncrypt(pass));
+            params.put(WebParams.CONF_PASS, RSA.opensslEncrypt(confPass));
             params.put(WebParams.CUST_ID, noHPValid);
             params.put(WebParams.FLAG_NEW_FLOW, DefineValue.Y);
 
@@ -431,12 +436,14 @@ public class Regist1 extends Fragment implements EasyPermissions.PermissionCallb
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = new RequestParams();
+            extraSignature = memberID + noHPValid + data.getStringExtra(DefineValue.PIN_VALUE);
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+                    BuildConfig.SECRET_KEY, extraSignature);
             params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.PIN, Md5.hashMd5(data.getStringExtra(DefineValue.PIN_VALUE)));
-            params.put(WebParams.CONFIRM_PIN, Md5.hashMd5(data.getStringExtra(DefineValue.CONF_PIN)));
+            params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
+            params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
 
             Timber.d("params create pin:"+params.toString());
 

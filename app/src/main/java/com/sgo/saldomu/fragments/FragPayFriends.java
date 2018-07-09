@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -35,17 +34,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
-import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -53,6 +50,7 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -69,7 +67,7 @@ import timber.log.Timber;
 /*
   Created by thinkpad on 3/11/2015.
  */
-public class FragPayFriends extends Fragment {
+public class FragPayFriends extends BaseFragment {
 
     private boolean isNotification = false;
     private InformationDialog dialogI;
@@ -82,15 +80,11 @@ public class FragPayFriends extends Fragment {
     private Button btnGetOTP;
     private EditText etAmount;
     private EditText etMessage;
-    private String _memberId;
-    private String userID;
-    private String accessKey;
     private List<String> listName;
 
     private int privacy;
     private int max_member_trans;
 
-    private SecurePreferences sp;
     private Bundle bundle;
     private DrawableRecipientChip[] chips;
 
@@ -130,24 +124,21 @@ public class FragPayFriends extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE, "");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
         max_member_trans = sp.getInt(DefineValue.MAX_MEMBER_TRANS, 5);
         authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
         dialogI = InformationDialog.newInstance(5);
         dialogI.setTargetFragment(this,0);
 
-        imgProfile = (ImageView) v.findViewById(R.id.img_profile);
-        imgRecipients = (ImageView) v.findViewById(R.id.img_recipients);
-        txtName = (TextView) v.findViewById(R.id.txtName);
-        phoneRetv = (RecipientEditTextView) v.findViewById(R.id.phone_retv);
-        etAmount = (EditText) v.findViewById(R.id.payfriends_value_amount);
+        imgProfile = v.findViewById(R.id.img_profile);
+        imgRecipients = v.findViewById(R.id.img_recipients);
+        txtName = v.findViewById(R.id.txtName);
+        phoneRetv = v.findViewById(R.id.phone_retv);
+        etAmount = v.findViewById(R.id.payfriends_value_amount);
         etAmount.addTextChangedListener(jumlahChangeListener);
-        etMessage = (EditText) v.findViewById(R.id.payfriends_value_message);
-        txtNumberRecipients = (TextView) v.findViewById(R.id.payfriends_value_number_recipients);
-        btnGetOTP = (Button) v.findViewById(R.id.btn_get_otp);
+        etMessage = v.findViewById(R.id.payfriends_value_message);
+        txtNumberRecipients = v.findViewById(R.id.payfriends_value_number_recipients);
+        btnGetOTP = v.findViewById(R.id.btn_get_otp);
 
         if(authType.equalsIgnoreCase("PIN")) {
             btnGetOTP.setText(R.string.next);
@@ -157,7 +148,7 @@ public class FragPayFriends extends Fragment {
             btnGetOTP.setText(R.string.submit);
         }
 
-        sp_privacy = (Spinner) v.findViewById(R.id.payfriend_privacy_spinner);
+        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.privacy_list, android.R.layout.simple_spinner_item);
@@ -170,7 +161,7 @@ public class FragPayFriends extends Fragment {
         RoundImageTransformation roundedImageRecipients = new RoundImageTransformation(bmRecipients);
         imgRecipients.setImageDrawable(roundedImageRecipients);
 
-        _memberId = sp.getString(DefineValue.MEMBER_ID,"");
+
         setImageProfPic();
 
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
@@ -203,7 +194,6 @@ public class FragPayFriends extends Fragment {
 
 
         phoneRetv.addTextChangedListener(new TextWatcher() {
-            boolean mToggle = false;
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Timber.d("before Text Change:"+s.toString());
@@ -225,7 +215,6 @@ public class FragPayFriends extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 Timber.d("after Text Change:"+s.toString());
-
             }
         });
 
@@ -449,18 +438,20 @@ public class FragPayFriends extends Fragment {
             RequestParams params;
             if(isNotification) {
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF,
-                        userID,accessKey);
+                        userPhoneID,accessKey, memberIDLogin);
             }
             else
+            {
+                extraSignature = memberIDLogin;
                 params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
-                        userID,accessKey);
+                        userPhoneID,accessKey, extraSignature);
+            }
 
-
-            params.put(WebParams.MEMBER_ID, _memberId);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.MEMBER_REMARK, _message);
             params.put(WebParams.DATA, _data);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userID);
+            params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.PRIVACY, privacy);
             if(isNotification){
                 params.put(WebParams.REQUEST_ID, bundle.getString(DefineValue.REQUEST_ID));
@@ -600,9 +591,9 @@ public class FragPayFriends extends Fragment {
             dialog.setContentView(R.layout.dialog_notification);
 
             // set values for custom dialog components - text, image and button
-            Button btnDialogOTP = (Button) dialog.findViewById(R.id.btn_dialog_notification_ok);
-            TextView Title = (TextView) dialog.findViewById(R.id.title_dialog);
-            TextView Message = (TextView) dialog.findViewById(R.id.message_dialog);
+            Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+            TextView Title = dialog.findViewById(R.id.title_dialog);
+            TextView Message = dialog.findViewById(R.id.message_dialog);
 
             Message.setVisibility(View.VISIBLE);
             Title.setText(getString(R.string.payfriends_dialog_validation_title));

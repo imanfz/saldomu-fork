@@ -1,8 +1,10 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.TypedArray;
@@ -36,11 +38,10 @@ import com.sgo.saldomu.adapter.GridHome;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.HashMessage;
+import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -55,7 +56,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.UUID;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
@@ -94,6 +94,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
     ProgressDialog progdialog2;
     String shopStatus;
 
+    private static final int RC_GPS_REQUEST = 1;
+
     int[] imageId = {
             R.drawable.ic_tariktunai,
             R.drawable.ic_tariktunai,
@@ -126,6 +128,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
     }
 
     @Override
@@ -213,24 +217,20 @@ public class FragHomeNew extends BaseFragmentMainPage {
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
 
         if ( isAgent ) {
-            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-            GridHome.setAdapter(adapter);
+            if(isAdded()) {
+                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                GridHome.setAdapter(adapter);
+            }
         } else {
-            RequestParams params = new RequestParams();
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
+            RequestParams params = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_CATEGORY_LIST,
+                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""));
+
+            params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, "");
-
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                    DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.AppID));
-
-            params.put(WebParams.SIGNATURE, signature);
+            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
             if(this.isVisible()) {
                 progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -254,6 +254,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                     JSONObject object = categories.getJSONObject(i);
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
+                                    shopCategory.setSchemeCode(object.getString("scheme_code"));
                                     String tempCategory = object.getString("category_name").toLowerCase();
 
                                     String[] strArray = tempCategory.split(" ");
@@ -273,8 +274,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             }
 
                             //gridBbsCategoryAdapter.notifyDataSetChanged();
-                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
+                            if(isAdded()) {
+                                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                                GridHome.setAdapter(adapter);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -305,8 +308,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         Timber.w("Error Koneksi login:" + throwable.toString());
 
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
-                        GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                        GridHome.setAdapter(adapter);
+                        if(isAdded()) {
+                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                            GridHome.setAdapter(adapter);
+                        }
                     }
 
                 });
@@ -369,6 +374,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 input.setText("");
+                input.setError(null);
+                input.clearFocus();
                 view_pulsa.setVisibility(View.INVISIBLE);
                 view_bpjs.setVisibility(View.VISIBLE);
                 view_listrikPLN.setVisibility(View.INVISIBLE);
@@ -380,6 +387,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             @Override
             public void onClick(View v) {
                 input.setText("");
+                input.setError(null);
+                input.clearFocus();
                 view_pulsa.setVisibility(View.INVISIBLE);
                 view_bpjs.setVisibility(View.INVISIBLE);
                 view_listrikPLN.setVisibility(View.VISIBLE);
@@ -408,6 +417,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     switchMenu(NavigationDrawMenu.MBUY, null);
                 } else if ( menuItemName.equals(getString(R.string.menu_item_title_report)) ) {
                     switchMenu(NavigationDrawMenu.MREPORT, null);
+                }else if ( menuItemName.equals(getString(R.string.menu_item_title_scadm)) ) {
+                    switchMenu(NavigationDrawMenu.MSCADM, null);
                 } else if (menuItemName.equals(getString(R.string.menu_item_search_agent)) ) {
                     Bundle bundle = new Bundle();
                     switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
@@ -463,6 +474,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                             i.putExtra(DefineValue.AMOUNT, "");
+                            i.putExtra(DefineValue.BBS_SCHEME_CODE, shopCategories.get(x).getSchemeCode());
                             switchActivity(i, MainPage.ACTIVITY_RESULT);
                             break;
                         }
@@ -529,7 +541,6 @@ public class FragHomeNew extends BaseFragmentMainPage {
         } else {
             totalIdx    += shopCategories.size();
             totalIdx    += taNotAgent.length();
-
         }
 
         int[] data        = new int[totalIdx];
@@ -638,7 +649,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
 
                 if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
-
+                    Timber.d("Receiver AgentShop " + sp.getString(DefineValue.AGENT_SHOP_CLOSED, "") );
                     swSettingOnline.setOnCheckedChangeListener(null);
                     if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
                         swSettingOnline.setChecked(true);
@@ -653,6 +664,18 @@ public class FragHomeNew extends BaseFragmentMainPage {
     @Override
     public void onResume() {
         super.onResume();
+
+        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+
+            swSettingOnline.setOnCheckedChangeListener(null);
+            if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                swSettingOnline.setChecked(true);
+            } else {
+                swSettingOnline.setChecked(false);
+            }
+            swSettingOnline.setOnCheckedChangeListener(switchListener);
+        }
+
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filter);
     }
 
@@ -669,11 +692,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         MainPage fca = (MainPage) getActivity();
         fca.switchActivity(mIntent,j);
     }
+
     Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            RequestParams params    = new RequestParams();
+
+
             shopStatus              = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice    = false;
 
             if (!isChecked) {
                 //buka
@@ -681,76 +707,117 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             }
 
-            progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
+            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    isCallWebservice    = true;
+                }
 
-            UUID rcUUID = UUID.randomUUID();
-            String dtime = DateTimeFormat.getCurrentDateTime();
+            } else {
+                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
+                    isCallWebservice    = true;
+                }
+            }
 
-            params.put(WebParams.RC_UUID, rcUUID);
-            params.put(WebParams.RC_DATETIME, dtime);
-            params.put(WebParams.APP_ID, BuildConfig.AppID);
-            params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-            params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-            params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
-            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
-            params.put(WebParams.SHOP_STATUS, shopStatus);
+            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
 
 
-            String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime + DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "") + BuildConfig.AppID + shopStatus));
+            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+                showAlertEnabledGPS();
+            } else {
+                if (isCallWebservice) {
 
-            params.put(WebParams.SIGNATURE, signature);
+                    progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-            MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
+                    params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+                    params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+                    params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+                    params.put(WebParams.SHOP_ID, sp.getString(DefineValue.BBS_SHOP_ID, ""));
+                    params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.BBS_MEMBER_ID, ""));
+                    params.put(WebParams.SHOP_STATUS, shopStatus);
+                    params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-                    try {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            if ( shopStatus.equals(DefineValue.SHOP_OPEN) ) {
-                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                            } else {
-                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
+                            progdialog2.dismiss();
+
+                            try {
+
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                    } else {
+                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                    }
+
+                                    mEditor.apply();
+                                } else {
+                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                }
+
+                                Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            mEditor.apply();
-                        } else {
-                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                         }
 
-                        Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            ifFailure(throwable);
+                        }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                            super.onFailure(statusCode, headers, throwable, errorResponse);
+                            ifFailure(throwable);
+                        }
+
+                        private void ifFailure(Throwable throwable) {
+                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                            progdialog2.dismiss();
+                            Timber.w("Error Koneksi login:" + throwable.toString());
+
+                        }
+                    });
                 }
+            }
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    progdialog2.dismiss();
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-            });
         }
     };
+
+    private void showAlertEnabledGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.alertbox_gps_warning))
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+
+                        Intent ilocation = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivityForResult(ilocation, RC_GPS_REQUEST);
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
+                        dialog.cancel();
+
+                        swSettingOnline.setOnClickListener(null);
+                        swSettingOnline.setChecked(false);
+                        swSettingOnline.setOnCheckedChangeListener(switchListener);
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 }

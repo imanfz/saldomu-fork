@@ -14,9 +14,9 @@ import android.webkit.*;
 import android.widget.Toast;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.BaseActivity;
+import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 
 /**
  * Created by thinkpad on 4/22/2015.
