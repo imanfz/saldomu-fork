@@ -304,8 +304,6 @@ public class SMSDialog extends Dialog {
                                     }, 3000);
 
                                 } else {
-
-
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
