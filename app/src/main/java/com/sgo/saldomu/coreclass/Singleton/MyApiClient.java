@@ -757,7 +757,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates
-            InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.saldomudev);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore
