@@ -114,8 +114,8 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 17
-            versionName "2.2"
+            versionCode = 18
+            versionName "2.3"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }

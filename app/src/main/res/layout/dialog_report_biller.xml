@@ -164,7 +164,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:text="@string/report_item_text_date_time"
-                            android:layout_marginLeft="@dimen/text_size_medium_material"
+                            android:layout_marginLeft="4dp"
                             android:layout_gravity="center_vertical"
                                 />
                         <TextView
@@ -190,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:text="@string/report_item_text_trans_id"
-                            android:layout_marginLeft="@dimen/text_size_medium_material"
+                            android:layout_marginLeft="4dp"
                                 />
                         <TextView
                             android:id="@+id/dialog_reportbiller_tx_id"
@@ -200,7 +200,7 @@
                             android:layout_weight="1"
                             android:text="EMO1459354600Y3K0asdfasdfwioej"
                             android:gravity="right"
-                            android:layout_marginLeft="8dp"
+                            android:layout_marginLeft="4dp"
                                 />
 
                     </LinearLayout>
