@@ -480,6 +480,7 @@ public class DefineValue {
     public static String CONTACTCENTER_PHONE = "contactCenterPhone";
     public static String CONTACTCENTER_EMAIL = "contactCenterEmail";
     public static String DATA_REJECT_UPGRADE_MEMBER = "dataRejectUpgradeMember";
+    public static String DATA_REJECT_UPGRADE_AGENT = "dataRejectUpgradeAgent";
     public static String REJECT_KTP = "rejectKtp";
     public static String REJECT_FOTO = "rejectFoto";
     public static String REJECT_TTD = "rejectTtd";

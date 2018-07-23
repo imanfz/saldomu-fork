@@ -25,6 +25,7 @@ public class NotificationActivity extends BaseActivity {
     public final static int TYPE_NON_MEMBER= 10;
     public final static int CLAIM_NON_MEMBER= 11;
     public final static int REJECTED_KTP= 13;
+    public final static int REJECTED_SIUP_NPWP= 14;
 
     public final static int P2PSTAT_PENDING = 1;
     public final static int P2PSTAT_PAID = 2;
