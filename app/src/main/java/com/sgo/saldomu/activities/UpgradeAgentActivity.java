@@ -46,8 +46,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class UpgradeAgentActivity extends BaseActivity {
-    private final int SIUP_TYPE = 4;
-    private final int NPWP_TYPE = 5;
+    private final int SIUP_TYPE = 5;
+    private final int NPWP_TYPE = 4;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
     private final int RESULT_GALLERY_SIUP = 104;
@@ -82,8 +82,8 @@ public class UpgradeAgentActivity extends BaseActivity {
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        reject_siup = sp.getString(DefineValue.REJECT_SIUP,"");
-        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"");
+        reject_siup = sp.getString(DefineValue.REJECT_SIUP,"N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"N");
         remark_siup = sp.getString(DefineValue.REMARK_SIUP,"");
         remark_npwp = sp.getString(DefineValue.REMARK_NPWP,"");
 
@@ -124,22 +124,22 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         InitializeToolbar();
 
-        if (reject_siup.equalsIgnoreCase("N") || reject_npwp.equalsIgnoreCase("N"))
+        if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y"))
         {
-            if (reject_siup.equalsIgnoreCase("N"))
+            if (reject_siup.equalsIgnoreCase("Y"))
             {
                 cameraSIUP.setEnabled(true);
                 tv_reject_siup.setText("Alasan : " +remark_siup);
             }else layout_siup.setVisibility(View.GONE);
 
-            if (reject_npwp.equalsIgnoreCase("N"))
+            if (reject_npwp.equalsIgnoreCase("Y"))
             {
                 cameraNPWP.setEnabled(true);
                 tv_reject_npwp.setText("Alasan : " +remark_npwp);
             }else layout_npwp.setVisibility(View.GONE);
         }
 
-        if (reject_npwp.equalsIgnoreCase(""))
+        if (is_agent && reject_npwp.equalsIgnoreCase(""))
         {
             layout_siup.setVisibility(View.GONE);
             layout_npwp.setVisibility(View.VISIBLE);
@@ -271,11 +271,22 @@ public class UpgradeAgentActivity extends BaseActivity {
     }
 
     public Boolean validationPhoto(){
-        if (siup == null)
+        if (layout_siup.getVisibility()==View.VISIBLE || reject_siup.equalsIgnoreCase("Y"))
         {
-            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
-            return false;
+            if ( siup == null)
+            {
+                DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
+                return false;
+            }
+        }else if (reject_npwp.equalsIgnoreCase("Y"))
+        {
+            if (npwp==null)
+            {
+                DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
+                return false;
+            }
         }
+
         return true;
     }
 
