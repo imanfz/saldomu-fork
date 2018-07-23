@@ -70,10 +70,7 @@ android {
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"EMOMSCADM\""
-//            buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
-//            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.espay.id/\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.saldomu.com/\""
-//            buildConfigField 'String', "HEAD_ADDRESSS", "\"http://192.168.86.55:50080/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
             buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6282333800085\""
