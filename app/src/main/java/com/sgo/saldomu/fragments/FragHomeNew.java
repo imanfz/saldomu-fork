@@ -231,6 +231,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
             params.put(WebParams.SHOP_ID, "");
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+            Timber.d("isi params shop category:" + params.toString());
 
             if(this.isVisible()) {
                 progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -243,6 +244,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 progdialog.dismiss();
 
                             String code = response.getString(WebParams.ERROR_CODE);
+                            Timber.d("isi response shop category:"+response.toString());
 
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
@@ -305,7 +307,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         else
                             Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                        Timber.w("Error Koneksi login:" + throwable.toString());
+                        Timber.w("Error Koneksi shop category:" + throwable.toString());
 
                         //gridBbsCategoryAdapter.notifyDataSetChanged();
                         if(isAdded()) {

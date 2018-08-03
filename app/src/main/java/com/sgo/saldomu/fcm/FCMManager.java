@@ -45,7 +45,7 @@ public class FCMManager {
     public final static int SHOP_NOTIF_TRANSACTION                  = 1007;
     public final static int MEMBER_RATING_TRX                       = 1008;
     public final static int REJECT_UPGRADE_MEMBER                   = 2;
-    public final static int REJECT_UPGRADE_AGENT                    = 3;
+    public final static int REJECT_UPGRADE_AGENT                    = 202;
 
     final private static String AGENT_TOPIC = "agent";
     final private static String ALL_TOPIC = BuildConfig.TOPIC_FCM_ALL_DEVICE;
@@ -363,9 +363,6 @@ public class FCMManager {
                             sp.edit().putString(DefineValue.REMARK_SIUP,remark_siup).apply();
                             sp.edit().putString(DefineValue.REMARK_NPWP,remark_npwp).apply();
                             sp.edit().putBoolean(DefineValue.IS_UPGRADE_AGENT,false).apply();
-                            sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
-
-                            i = new Intent(mContext, UpgradeAgentActivity.class);
                             sp.edit().putString(DefineValue.DATA_REJECT_UPGRADE_AGENT, jsonOptions.toString()).apply();
 
                             i = new Intent(mContext, UpgradeAgentActivity.class);

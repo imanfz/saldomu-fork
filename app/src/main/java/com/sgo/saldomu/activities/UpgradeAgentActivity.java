@@ -478,8 +478,9 @@ public class UpgradeAgentActivity extends BaseActivity {
                         tv_pb_npwp.setText("0 %");
                     }
                 }
-                else
+                else {
                     Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+                }
                 Timber.w("Error Koneksi data update foto siup npwp:" + throwable.toString());
             }
         });
@@ -500,20 +501,21 @@ public class UpgradeAgentActivity extends BaseActivity {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params execute customer:" + params.toString());
+            Timber.d("isi params execute agent:" + params.toString());
 
             MyApiClient.sentExecAgent(UpgradeAgentActivity.this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response execute customer:"+response.toString());
+                        Timber.d("response execute agent:"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             SecurePreferences.Editor mEdit = sp.edit();
                             mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
                             mEdit.remove(DefineValue.REJECT_SIUP);
                             mEdit.remove(DefineValue.REJECT_NPWP);
                             mEdit.remove(DefineValue.REMARK_SIUP);
+                            mEdit.remove(DefineValue.REMARK_NPWP);
                             mEdit.remove(DefineValue.REMARK_NPWP);
                             mEdit.remove(DefineValue.MODEL_NOTIF);
                             mEdit.apply();
@@ -563,7 +565,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                     if(progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi exec customer level req:"+throwable.toString());
+                    Timber.w("Error Koneksi exec agent req:"+throwable.toString());
                 }
             });
         }catch (Exception e){
