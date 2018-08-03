@@ -416,6 +416,7 @@ public class MyApiClient {
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
+//        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
@@ -514,7 +515,7 @@ public class MyApiClient {
     }
 
     public static String getWebserviceName(String link){
-        return link.substring(link.indexOf("saldomu"));
+        return link.substring(link.indexOf("saldomu/"));
     }
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
