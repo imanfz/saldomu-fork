@@ -55,7 +55,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         donebtn.setText("");
         skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
-        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("production")) {
             //cheat kalo diteken lama skip ke register (-1)
             skipbtn.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
