@@ -103,11 +103,11 @@ android {
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
 
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"SALDOMU\""
-//            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
 //            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
+//            buildConfigField 'String', "HEAD_ADDRESSS", "\"http://192.168.88.72:3334/\""
             buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
-//            buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
+//            buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.88.72:3335/\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""

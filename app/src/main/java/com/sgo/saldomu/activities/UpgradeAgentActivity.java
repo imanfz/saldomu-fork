@@ -465,13 +465,13 @@ public class UpgradeAgentActivity extends BaseActivity {
                 {
                     Timber.d("Masuk if prod failure flag");
                     Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if(flag==4)
+                    if(flag==SIUP_TYPE)
                     {
                         Timber.d("masuk failure siup");
                         pbSIUP.setProgress( 0 );
                         tv_pb_siup.setText("0 %");
                     }
-                    if (flag==5)
+                    if (flag==NPWP_TYPE)
                     {
                         Timber.d("masuk failure npwp");
                         pbNPWP.setProgress( 0);
