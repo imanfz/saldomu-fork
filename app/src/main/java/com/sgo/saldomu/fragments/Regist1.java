@@ -143,7 +143,7 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             noHPValue.setText(noHPValid);
         }
 
-        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("production")){
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){
             Bundle m = getArguments();
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 v.findViewById(R.id.noHP_value).setVisibility(View.VISIBLE);

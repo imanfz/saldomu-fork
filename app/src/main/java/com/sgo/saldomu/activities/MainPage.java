@@ -236,15 +236,15 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin(){
-//        Boolean isSimSame = true;
-//        if (BuildConfig.FLAVOR.equals("production")){
-//            if(smSclass == null)
-//                smSclass = new SMSclass(this);
-//
-//            isSimSame = smSclass.isSimSameSP();
-//        }
-//
-//        if(isSimSame) {
+        Boolean isSimSame = true;
+        if (BuildConfig.FLAVOR.equals("production")){
+            if(smSclass == null)
+                smSclass = new SMSclass(this);
+
+            isSimSame = smSclass.isSimSameSP();
+        }
+
+        if(isSimSame) {
 
             startLocationService();
 
@@ -302,10 +302,10 @@ public class MainPage extends BaseActivity {
                 changeActivityNextLogin(notifDataNextLogin);
 
             }
-//        }
-//        else {
-//            Logout(FIRST_SCREEN_INTRO);
-//        }
+        }
+        else {
+            Logout(FIRST_SCREEN_INTRO);
+        }
     }
 
     void changeActivityNextLogin(String jsonStr) {

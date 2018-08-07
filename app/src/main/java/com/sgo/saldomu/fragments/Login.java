@@ -98,7 +98,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setText(userIDfinale);
         }
 
-        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("production")){ //untuk shorcut dari tombol di activity LoginActivity
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
             Bundle m = getArguments();
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
