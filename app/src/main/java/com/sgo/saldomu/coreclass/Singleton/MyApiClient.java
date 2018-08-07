@@ -378,7 +378,7 @@ public class MyApiClient {
         LINK_BANKCASHOUT    = headaddressfinal + "BankCashout/Retrieve";
         LINK_USER_PROFILE   = headaddressfinal + "UserProfile/Retrieve";
         if(BuildConfig.IS_PROD_DOMAIN)
-            LINK_INQUIRY_SMS   = "https://mobile.goworld.asia/hpku/" + "InquirySMS/Retrieve";
+            LINK_INQUIRY_SMS   = "https://mobile.saldomu.com/saldomu/" + "InquirySMS/Retrieve";
 //            LINK_INQUIRY_SMS   = "https://mobile.espay.id/hpku/" + "InquirySMS/Retrieve";
         else
             LINK_INQUIRY_SMS   = headaddressfinal + "InquirySMS/Retrieve";
@@ -416,6 +416,7 @@ public class MyApiClient {
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
+//        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
         String googleMapsKey = getmContext().getString(R.string.google_maps_key_ws);
         LINK_GOOGLE_MAPS_API_GEOCODE = "https://maps.google.com/maps/api/geocode/json?sensor=false&key="+googleMapsKey+"&language=id";
@@ -446,13 +447,13 @@ public class MyApiClient {
     }
 
 
-    public static String URL_HELP_DEV = "https://mobile-dev.espay.id/static/pages/help/";
+    public static String URL_HELP_DEV = "https://mobile-dev.saldomu.com/static/pages/help/";
     public static String URL_FAQ;
-    public static String URL_FAQ_PROD = "https://mobile.espay.id/static/pages/help/pin_faq_saldomu.html";
+    public static String URL_FAQ_PROD = "https://mobile.saldomu.com/static/pages/help/pin_faq_saldomu.html";
     public static String URL_FAQ_DEV = URL_HELP_DEV +"pin_faq_saldomu.html";
 
     public static String URL_TERMS;
-    public static String URL_TERMS_PROD = "https://mobile.espay.id/static/pages/help/pin_terms_conditions_id_saldomu.html";
+    public static String URL_TERMS_PROD = "https://mobile.saldomu.com/static/pages/help/pin_terms_conditions_id_saldomu.html";
     public static String URL_TERMS_DEV = URL_HELP_DEV +"pin_terms_conditions_id_saldomu.html";
 
 
@@ -490,6 +491,7 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
+//    public static String COMM_ID_PROD = "EMOSALDOMU1500439694RS6DD";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
@@ -514,7 +516,7 @@ public class MyApiClient {
     }
 
     public static String getWebserviceName(String link){
-        return link.substring(link.indexOf("saldomu"));
+        return link.substring(link.indexOf("saldomu/"));
     }
 
     public static RequestParams getSignatureWithParams(String commID, String linknya, String user_id,String access_key ){
@@ -757,7 +759,7 @@ public class MyApiClient {
             KeyStore trusted = KeyStore.getInstance("BKS");
             // Get the raw resource, which contains the keystore with
             // your trusted certificates
-            InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
+            InputStream in = getmContext().getResources().openRawResource(R.raw.saldomucom);
             try {
                 // Initialize the keystore with the provided trusted certificates
                 // Also provide the password of the keystore

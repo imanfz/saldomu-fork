@@ -46,8 +46,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 public class UpgradeAgentActivity extends BaseActivity {
-    private final int SIUP_TYPE = 4;
-    private final int NPWP_TYPE = 5;
+    private final int SIUP_TYPE = 5;
+    private final int NPWP_TYPE = 4;
     final int RC_CAMERA_STORAGE = 14;
     final int RC_GALLERY = 15;
     private final int RESULT_GALLERY_SIUP = 104;
@@ -69,6 +69,7 @@ public class UpgradeAgentActivity extends BaseActivity {
     private String contactCenter;
     private String listContactPhone = "";
     private String listAddress = "";
+    String reject_siup, reject_npwp, remark_siup, remark_npwp;
 
     @Override
     protected int getLayoutResource() {
@@ -81,6 +82,11 @@ public class UpgradeAgentActivity extends BaseActivity {
         pickAndCameraUtil = new PickAndCameraUtil(this);
 
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        reject_siup = sp.getString(DefineValue.REJECT_SIUP,"N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"N");
+        remark_siup = sp.getString(DefineValue.REMARK_SIUP,"");
+        remark_npwp = sp.getString(DefineValue.REMARK_NPWP,"");
+
         contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER,"");
 
         View v = this.findViewById(android.R.id.content);
@@ -117,6 +123,27 @@ public class UpgradeAgentActivity extends BaseActivity {
         }
 
         InitializeToolbar();
+
+        if (reject_siup.equalsIgnoreCase("Y") || reject_npwp.equalsIgnoreCase("Y"))
+        {
+            if (reject_siup.equalsIgnoreCase("Y"))
+            {
+                cameraSIUP.setEnabled(true);
+                tv_reject_siup.setText("Alasan : " +remark_siup);
+            }else layout_siup.setVisibility(View.GONE);
+
+            if (reject_npwp.equalsIgnoreCase("Y"))
+            {
+                cameraNPWP.setEnabled(true);
+                tv_reject_npwp.setText("Alasan : " +remark_npwp);
+            }else layout_npwp.setVisibility(View.GONE);
+        }
+
+        if (is_agent && reject_npwp.equalsIgnoreCase(""))
+        {
+            layout_siup.setVisibility(View.GONE);
+            layout_npwp.setVisibility(View.VISIBLE);
+        }
     }
 
     private ImageButton.OnClickListener setImageCameraSIUP= new ImageButton.OnClickListener ()
@@ -244,16 +271,22 @@ public class UpgradeAgentActivity extends BaseActivity {
     }
 
     public Boolean validationPhoto(){
-        if (siup == null)
+        if (layout_siup.getVisibility()==View.VISIBLE || reject_siup.equalsIgnoreCase("Y"))
         {
-            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
-            return false;
+            if ( siup == null)
+            {
+                DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto SIUP/Surat Keterangan RT/RW tidak boleh kosong!");
+                return false;
+            }
+        }else if (reject_npwp.equalsIgnoreCase("Y"))
+        {
+            if (npwp==null)
+            {
+                DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
+                return false;
+            }
         }
-//        else if (npwp == null)
-//        {
-//            DefinedDialog.showErrorDialog(UpgradeAgentActivity.this, "Foto NPWP tidak boleh kosong!");
-//            return false;
-//        }
+
         return true;
     }
 
@@ -323,13 +356,11 @@ public class UpgradeAgentActivity extends BaseActivity {
             switch (type){
                 case SIUP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraSIUP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(cameraKTP);
                     siup = file;
                     uploadFileToServer(siup, SIUP_TYPE);
                     break;
                 case NPWP_TYPE :
                     GlideManager.sharedInstance().initializeGlideProfile(UpgradeAgentActivity.this, file,cameraNPWP);
-//                    Picasso.with(MyProfileNewActivity.this).load(file).centerCrop().fit().into(selfieKTP);
                     npwp = file;
                     uploadFileToServer(npwp, NPWP_TYPE);
                     break;
@@ -434,21 +465,22 @@ public class UpgradeAgentActivity extends BaseActivity {
                 {
                     Timber.d("Masuk if prod failure flag");
                     Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if(flag==4)
+                    if(flag==SIUP_TYPE)
                     {
                         Timber.d("masuk failure siup");
                         pbSIUP.setProgress( 0 );
                         tv_pb_siup.setText("0 %");
                     }
-                    if (flag==5)
+                    if (flag==NPWP_TYPE)
                     {
                         Timber.d("masuk failure npwp");
                         pbNPWP.setProgress( 0);
                         tv_pb_npwp.setText("0 %");
                     }
                 }
-                else
+                else {
                     Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+                }
                 Timber.w("Error Koneksi data update foto siup npwp:" + throwable.toString());
             }
         });
@@ -469,22 +501,23 @@ public class UpgradeAgentActivity extends BaseActivity {
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params execute customer:" + params.toString());
+            Timber.d("isi params execute agent:" + params.toString());
 
             MyApiClient.sentExecAgent(UpgradeAgentActivity.this,params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response execute customer:"+response.toString());
+                        Timber.d("response execute agent:"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             SecurePreferences.Editor mEdit = sp.edit();
                             mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
-//                            mEdit.remove(DefineValue.REJECT_SIUP);
-//                            mEdit.remove(DefineValue.REJECT_NPWP);
-//                            mEdit.remove(DefineValue.REMARK_SIUP);
-//                            mEdit.remove(DefineValue.REMARK_NPWP);
-//                            mEdit.remove(DefineValue.MODEL_NOTIF);
+                            mEdit.remove(DefineValue.REJECT_SIUP);
+                            mEdit.remove(DefineValue.REJECT_NPWP);
+                            mEdit.remove(DefineValue.REMARK_SIUP);
+                            mEdit.remove(DefineValue.REMARK_NPWP);
+                            mEdit.remove(DefineValue.REMARK_NPWP);
+                            mEdit.remove(DefineValue.MODEL_NOTIF);
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
@@ -532,7 +565,7 @@ public class UpgradeAgentActivity extends BaseActivity {
                     if(progdialog.isShowing())
                         progdialog.dismiss();
                     getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi exec customer level req:"+throwable.toString());
+                    Timber.w("Error Koneksi exec agent req:"+throwable.toString());
                 }
             });
         }catch (Exception e){

@@ -494,9 +494,13 @@ public class WebParams {
     public static String REJECT_KTP = "reject_ktp";
     public static String REJECT_FOTO = "reject_foto";
     public static String REJECT_TTD = "reject_ttd";
+    public static String REJECT_SIUP = "reject_siup";
+    public static String REJECT_NPWP = "reject_npwp";
     public static String REMARK_KTP = "remark_ktp";
     public static String REMARK_FOTO = "remark_foto";
     public static String REMARK_TTD = "remark_ttd";
+    public static String REMARK_SIUP = "remark_siup";
+    public static String REMARK_NPWP = "remark_npwp";
 
     public static String MAXIMUM_RATING = "maximum_rating";
     public static String DEFAULT_RATING = "default_rating";

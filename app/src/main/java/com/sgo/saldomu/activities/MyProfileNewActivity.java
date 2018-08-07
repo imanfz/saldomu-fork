@@ -101,7 +101,8 @@ public class MyProfileNewActivity extends BaseActivity {
     private String listContactPhone = "";
     private String listAddress = "";
     private String contactCenter;
-    private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie, respon_reject_ttd;
+    private String is_new_bulk, reject_KTP, reject_selfie, reject_ttd, respon_reject_ktp, respon_reject_selfie,
+            respon_reject_ttd, reject_npwp;
     private ProgressDialog progdialog;
     private PickAndCameraUtil pickAndCameraUtil;
 
@@ -179,6 +180,7 @@ public class MyProfileNewActivity extends BaseActivity {
         is_agent = sp.getBoolean(DefineValue.IS_AGENT, false);
         is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
         reject_KTP = sp.getString(DefineValue.REJECT_KTP,"N");
+        reject_npwp = sp.getString(DefineValue.REJECT_NPWP,"N");
         reject_selfie = sp.getString(DefineValue.REJECT_FOTO,"N");
         reject_ttd = sp.getString(DefineValue.REJECT_TTD,"N");
         respon_reject_ktp = sp.getString(DefineValue.REMARK_KTP,"");
@@ -307,6 +309,13 @@ public class MyProfileNewActivity extends BaseActivity {
         if (isUpgradeAgent && !is_agent)
         {
             DialogWaitingUpgradeAgent();
+        }
+
+        if (is_agent && reject_npwp.equalsIgnoreCase(""))
+        {
+            finish();
+            Intent intent1 = new Intent(MyProfileNewActivity.this, UpgradeAgentActivity.class);
+            startActivity(intent1);
         }
 
         dataMemberBasic.setOnClickListener(member_basic_click);

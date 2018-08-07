@@ -70,10 +70,10 @@ android {
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"EMOMSCADM\""
-//            buildConfigField 'String', "HeadAddress", "\"192.168.88.22:59088/\""
-            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.espay.id/\""
+            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile-dev.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidApp\""
-            buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.116:8114/\""
+//            buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.86.55:50081/\""
+            buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif-dev.saldomu.com/\""
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6282333800085\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282333800085\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
@@ -103,10 +103,12 @@ android {
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
 
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"SALDOMU\""
-//            buildConfigField 'String', "HeadAddress", "\"https://mobile.goworld.asia/akardaya2/\""
-            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
+//            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.espay.id/\""
+//            buildConfigField 'String', "HEAD_ADDRESSS", "\"http://192.168.88.72:3334/\""
+            buildConfigField 'String', "HEAD_ADDRESSS", "\"https://mobile.saldomu.com/\""
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
-            buildConfigField 'String', "URL_MNOTIF", "\"https://mobile.espay.id/mnotif/\""
+//            buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.88.72:3335/\""
+            buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
             buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
@@ -114,8 +116,8 @@ android {
             buildConfigField 'String', "SECRET_KEY", "\"28d6e03f4356f62937353cedc0fdfe6f\""
 
             signingConfig signingConfigs.prodKey
-            versionCode = 18
-            versionName "2.3"
+            versionCode = 19
+            versionName "2.4"
             buildConfigField 'String', "APP_ID", "\"SDOM\""
         }
     }

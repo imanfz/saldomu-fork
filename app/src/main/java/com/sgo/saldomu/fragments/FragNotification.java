@@ -271,6 +271,19 @@ public class FragNotification extends BaseFragment {
                     getActivity().setResult(MainPage.RESULT_NOTIF, dataProfile);
                     getActivity().finish();
                     break;
+                case NotificationActivity.REJECTED_SIUP_NPWP:
+                    SecurePreferences.Editor editor1 = sp.edit();
+                    editor1.putString(DefineValue.REJECT_SIUP,mObjDetail.optString(WebParams.REJECT_SIUP,"N"));
+                    editor1.putString(DefineValue.REJECT_NPWP,mObjDetail.optString(WebParams.REJECT_NPWP,"N"));
+                    editor1.putString(DefineValue.REMARK_SIUP,mObjDetail.optString(WebParams.REMARK_SIUP,"N"));
+                    editor1.putString(DefineValue.REMARK_NPWP,mObjDetail.optString(WebParams.REMARK_NPWP,"N"));
+                    editor1.putString(DefineValue.IS_AGENT,mObjDetail.optString(WebParams.IS_AGENT,"N"));
+                    editor1.apply();
+                    Intent dataUpgradeAgent = new Intent();
+                    dataUpgradeAgent.putExtra(DefineValue.NOTIF_TYPE,NotificationActivity.REJECTED_KTP);
+                    getActivity().setResult(MainPage.RESULT_NOTIF, dataUpgradeAgent);
+                    getActivity().finish();
+                    break;
             }
 
 
