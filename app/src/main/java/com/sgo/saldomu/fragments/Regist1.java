@@ -636,7 +636,12 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             if (referalValue.length()<9||referalValue.length()>13)
             {
                 referalValue.requestFocus();
-                referalValue.setError("Masukkan No. Hp Referal yang sesuai!");
+                referalValue.setError("Masukkan No. HP Referal yang sesuai!");
+                return false;
+            }else if (referalValue.getText().toString().equalsIgnoreCase(DefineValue.CUST_ID))
+            {
+                referalValue.requestFocus();
+                referalValue.setError("Nomor Referal tidak boleh sama dengan No. HP Pelanggan!");
                 return false;
             }
         }
