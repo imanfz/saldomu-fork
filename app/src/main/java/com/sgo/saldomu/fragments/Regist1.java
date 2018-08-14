@@ -631,14 +631,14 @@ public class Regist1 extends BaseFragment implements EasyPermissions.PermissionC
             emailValue.setError(getString(R.string.regist1_validation_email));
             return false;
         }
-        else if (referalValue.getText().toString()!=null)
+        else if (referalValue.getText().toString().length()!=0)
         {
             if (referalValue.length()<9||referalValue.length()>13)
             {
                 referalValue.requestFocus();
                 referalValue.setError("Masukkan No. HP Referal yang sesuai!");
                 return false;
-            }else if (referalValue.getText().toString().equalsIgnoreCase(DefineValue.CUST_ID))
+            }else if (referalValue.getText().toString().equals(noHPValue.getText().toString()))
             {
                 referalValue.requestFocus();
                 referalValue.setError("Nomor Referal tidak boleh sama dengan No. HP Pelanggan!");
