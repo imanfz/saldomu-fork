@@ -772,6 +772,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 ReportListEspayModel mobj = (ReportListEspayModel) _object;
                 _tx_id = mobj.getTx_id();
                 _comm_id = mobj.getComm_id();
+                String buss_scheme_code = mobj.getBuss_scheme_code();
+                Timber.d("buss_scheme_codenya : ", buss_scheme_code );
                 tx_type = DefineValue.ESPAY;
                 if (mobj.getType_desc().equals(ITEM_DESC_PLN) || mobj.getType_desc().equals(ITEM_DESC_BPJS)) {
                     isdetail = true;
@@ -871,7 +873,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         ccyId + " " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)),
                         response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
 
-            } else if (mobj.getBuss_scheme_code().equals("OR")) {
+            } else if (mobj.getBuss_scheme_code().equals("OR") || mobj.getBuss_scheme_code().equals("ORP")) {
                 showReportBillerDialog(mobj.getDatetime(), mobj.getDetail(), mobj.getTrxId(), mobj.getType(), mobj.getDescription(),
                         mobj.getAmount(), mobj.getCcyID(), mobj.getRemark(), txstatus, txremark, mobj.getAlias(),
                         mobj.getBuss_scheme_code(), mobj.getBuss_scheme_name(), response);

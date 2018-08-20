@@ -521,7 +521,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mLayoutFailed.setVisibility(View.VISIBLE);
                     tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
                 }
-            } else if (buss_scheme_code.equals("OR")) {
+            } else if (buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
 //                    laporan transfer yg out
 
                 stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
