@@ -491,7 +491,6 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
-//    public static String COMM_ID_PROD = "EMOSALDOMU1500439694RS6DD";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
@@ -1539,6 +1538,7 @@ public class MyApiClient {
 
     public static void getBillerType(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        Timber.d("param get biller type : ", params);
         post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
     }
 
