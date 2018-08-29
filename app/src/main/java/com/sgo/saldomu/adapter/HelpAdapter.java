@@ -1,11 +1,13 @@
 package com.sgo.saldomu.adapter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +28,13 @@ public class HelpAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private ArrayList<HelpModel> data;
     private Context context;
+    private Activity activity;
 
-    public HelpAdapter(Context context, ArrayList<HelpModel> _data) {
+    public HelpAdapter(Context context, ArrayList<HelpModel> _data, Activity activity) {
         mInflater = LayoutInflater.from(context);
         this.data = _data;
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class HelpAdapter extends BaseAdapter {
                 public void onClick(View view) {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
-                    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                         // TODO: Consider calling
                         //    ActivityCompat#requestPermissions
                         // here to request the missing permissions, and then overriding
@@ -75,9 +79,12 @@ public class HelpAdapter extends BaseAdapter {
                         //                                          int[] grantResults)
                         // to handle the case where the user grants the permission. See the documentation
                         // for ActivityCompat#requestPermissions for more details.
-                        return;
+                        ActivityCompat.requestPermissions((Activity)activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
                     }
-                    context.startActivity(callIntent);
+                    else {
+                        context.startActivity(callIntent);
+                       }
+
                 }
             });
         } else {
