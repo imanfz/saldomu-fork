@@ -37,6 +37,7 @@ public class HelpFragment extends BaseFragment {
 
     private View v;
     private Activity act;
+    private Activity act1;
 
     private ArrayList<HelpModel> listHelp;
     private HelpAdapter mAdapter;
@@ -57,13 +58,14 @@ public class HelpFragment extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         act = getActivity();
+        act1 = getActivity();
 
         listHelp = new ArrayList<>();
         ListView mListView = v.findViewById(R.id.lvHelpCenter);
 
         getHelpList();
 
-        mAdapter = new HelpAdapter(act, listHelp);
+        mAdapter = new HelpAdapter(act, listHelp, act1);
         mListView.setAdapter(mAdapter);
     }
 
