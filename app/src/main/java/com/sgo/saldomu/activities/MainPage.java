@@ -141,7 +141,7 @@ public class MainPage extends BaseActivity {
     private void InitializeApp(){
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
-                if (BuildConfig.FLAVOR.equals("development")){
+                if (BuildConfig.FLAVOR.equals("production")){
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                     builder.setMessage("Apakah anda ingin melewati pengecekan device?")
@@ -236,15 +236,15 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin(){
-        Boolean isSimSame = true;
-        if (BuildConfig.FLAVOR.equals("production")){
-            if(smSclass == null)
-                smSclass = new SMSclass(this);
-
-            isSimSame = smSclass.isSimSameSP();
-        }
-
-        if(isSimSame) {
+//        Boolean isSimSame = true;
+//        if (BuildConfig.FLAVOR.equals("production")){
+//            if(smSclass == null)
+//                smSclass = new SMSclass(this);
+//
+//            isSimSame = smSclass.isSimSameSP();
+//        }
+//
+//        if(isSimSame) {
 
             startLocationService();
 
@@ -302,10 +302,10 @@ public class MainPage extends BaseActivity {
                 changeActivityNextLogin(notifDataNextLogin);
 
             }
-        }
-        else {
-            Logout(FIRST_SCREEN_INTRO);
-        }
+//        }
+//        else {
+//            Logout(FIRST_SCREEN_INTRO);
+//        }
     }
 
     void changeActivityNextLogin(String jsonStr) {

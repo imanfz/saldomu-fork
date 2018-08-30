@@ -284,6 +284,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
                         tv_kode.setVisibility(View.VISIBLE);
                         tv_token_value.setVisibility(View.VISIBLE);
+                    }else if(args.getBoolean(DefineValue.IS_REPORT)== true && !args.getString(DefineValue.TOKEN_ID).isEmpty())
+                    {
+                        tv_kode.setVisibility(View.VISIBLE);
+                        tv_token_value.setVisibility(View.VISIBLE);
+                        tv_token_value.setText(args.getString(DefineValue.TOKEN_ID));
                     }
                     tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
