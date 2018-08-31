@@ -343,9 +343,10 @@ public class NavigationDrawMenu extends ListFragment{
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+//        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+//        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+//        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+        _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
         Timber.wtf("url prof pic:" + _url_profpic);
 
