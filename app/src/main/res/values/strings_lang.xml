@@ -75,6 +75,7 @@
     <string name="regist1_edithint_nohp"><font size="17">Nomor Handphone (ex. 08138255xxxx)</font></string>
     <string name="regist1_edithint_nama">Nama lengkap</string>
     <string name="regist1_edithint_email" translatable="false">Email</string>
+    <string name="regist1_edithint_referal" translatable="false">No. HP Referal</string>
     <string name="regist1_button_verifikasi">Verifikasi</string>
     <string name="regist1_validation_nohp">No HP dibutuhkan!</string>
     <string name="regist1_validation_length_nohp">Minimal 10 karakter!</string>
@@ -530,6 +531,7 @@
     <string name="menu_group_title_supports">Bantuan</string>
     <string name="menu_item_title_setting">Pengaturan</string>
     <string name="menu_item_title_help">Kontak Kami &amp; FAQ</string>
+    <string name="menu_item_title_info_harga">Info Harga</string>
     <string name="menu_item_title_about">Tentang Aplikasi</string>
 
     <string name="title_about_app">Tentang Aplikasi</string>

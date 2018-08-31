@@ -43,6 +43,7 @@ import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
@@ -52,8 +53,8 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -117,6 +118,7 @@ public class NavigationDrawMenu extends ListFragment{
 
     public static final int MTARIKDANA = 26;
     public static final int MSCADM = 27;
+    public static final int MINFO = 28;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -341,9 +343,10 @@ public class NavigationDrawMenu extends ListFragment{
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
 
-        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
-        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
-        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+//        if(density <= 1) _url_profpic = sp.getString(DefineValue.IMG_SMALL_URL, null);
+//        else if(density < 2) _url_profpic = sp.getString(DefineValue.IMG_MEDIUM_URL, null);
+//        else _url_profpic = sp.getString(DefineValue.IMG_LARGE_URL, null);
+        _url_profpic = sp.getString(DefineValue.IMG_URL, null);
 
         Timber.wtf("url prof pic:" + _url_profpic);
 
@@ -460,6 +463,7 @@ public class NavigationDrawMenu extends ListFragment{
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_report),MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting,R.drawable.ic_setting,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
         models.add(new navdrawmainmenuModel(R.drawable.ic_help,R.drawable.ic_help,getString(R.string.menu_item_title_help),MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_info_harga),MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
         models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,R.drawable.ic_logout_icon,getString(R.string.menu_item_title_logout),MLOGOUT));                 //14
 
@@ -600,6 +604,9 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MMAPVIEWBYMEMBER:
                 startActivity(new Intent(getActivity(), BbsMapViewByMemberActivity.class));
+                break;
+            case MINFO:
+                startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
                 break;
         }
     }

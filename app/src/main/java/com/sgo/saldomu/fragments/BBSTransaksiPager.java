@@ -15,6 +15,7 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BBSTransaksiPagerAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.widgets.CustomViewPager;
 
 /**
  * Created by thinkpad on 5/8/2017.
@@ -24,7 +25,7 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
 
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiPager";
     private View v;
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
     private int dotsCount;
     private ImageView[] dots;
     private LinearLayout pager_indicator;
@@ -50,10 +51,12 @@ public class BBSTransaksiPager extends Fragment implements ViewPager.OnPageChang
 
         Bundle bundle = getArguments();
         pager_indicator = (LinearLayout) v.findViewById(R.id.viewPagerCountDots);
-        mViewPager = (ViewPager) v.findViewById(R.id.bbs_transaksi_pager);
+        mViewPager = (CustomViewPager) v.findViewById(R.id.bbs_transaksi_pager);
         mAdapter = new BBSTransaksiPagerAdapter(getActivity(), getChildFragmentManager(), bundle);
         mViewPager.setAdapter(mAdapter);
         mViewPager.addOnPageChangeListener(this);
+        mViewPager.disableScroll(true);
+        pager_indicator.setVisibility(View.GONE);
 
         setUiPageViewController();
     }

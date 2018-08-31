@@ -45,9 +45,9 @@ import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
@@ -427,7 +427,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     };
 
     private void SubmitAction(boolean isCashin){
-//        btnNext.setEnabled(false);
         if (inputValidation()) {
             ConfirmationDialog dialog;
             if (isCashin){
@@ -448,11 +447,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         , no_source
                         , etRemark.getText().toString(),"","");
             }
-
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+//                getActivity().getFragmentManager().beginTransaction().add(dialog, "ConfirmationDialog").commit();
+//            else
+//                getChildFragmentManager().beginTransaction().add(dialog,"ConfirmationDialog").commit();
             dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
         }
-//        else
-//            btnNext.setEnabled(false);
     }
 
     private void setAgent(List<BBSBankModel> bankAgen) {
@@ -939,7 +939,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                             getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
                                         }
                                     });
-                                    dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
+//                                    dialog_frag.setTargetFragment(BBSTransaksiInformasi.this, 0);
                                     dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                 }
                             }

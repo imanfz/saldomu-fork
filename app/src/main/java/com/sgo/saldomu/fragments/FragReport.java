@@ -772,6 +772,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 ReportListEspayModel mobj = (ReportListEspayModel) _object;
                 _tx_id = mobj.getTx_id();
                 _comm_id = mobj.getComm_id();
+                String buss_scheme_code = mobj.getBuss_scheme_code();
+                Timber.d("buss_scheme_codenya : ", buss_scheme_code );
                 tx_type = DefineValue.ESPAY;
                 if (mobj.getType_desc().equals(ITEM_DESC_PLN) || mobj.getType_desc().equals(ITEM_DESC_BPJS)) {
                     isdetail = true;
@@ -871,7 +873,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         ccyId + " " + CurrencyFormat.format(response.optString(WebParams.TOTAL_AMOUNT)),
                         response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
 
-            } else if (mobj.getBuss_scheme_code().equals("OR")) {
+            } else if (mobj.getBuss_scheme_code().equals("OR") || mobj.getBuss_scheme_code().equals("ORP")) {
                 showReportBillerDialog(mobj.getDatetime(), mobj.getDetail(), mobj.getTrxId(), mobj.getType(), mobj.getDescription(),
                         mobj.getAmount(), mobj.getCcyID(), mobj.getRemark(), txstatus, txremark, mobj.getAlias(),
                         mobj.getBuss_scheme_code(), mobj.getBuss_scheme_name(), response);
@@ -938,7 +940,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                             response.optString(WebParams.BENEF_BANK_NAME, ""), response.optString(WebParams.BENEF_ACCT_NO, ""),
                             response.optString(WebParams.BENEF_ACCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE, ""),
                             response.optString(WebParams.MEMBER_SHOP_NAME, ""), response.optString(WebParams.OTP_MEMBER), response.optString(WebParams.BUSS_SCHEME_CODE),
-                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE), ""));
+                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE), ""), response.optString(WebParams.TOKEN_ID,""));
                 }
             } else if (mobj.getBuss_scheme_code().equals("EMO") || mobj.getBuss_scheme_code().equalsIgnoreCase("TOP")) {
                 showReportEMODialog(response.optString(WebParams.MEMBER_NAME), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
@@ -1002,7 +1004,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                            String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
                                            String source_bank_name, String member_shop_no, String source_acct_name,
                                            String benef_bank_name, String benef_acct_no, String benef_acct_name, String member_shop_phone,
-                                           String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone) {
+                                           String member_shop_name, String otp_member, String buss_scheme_code, String buss_scheme_name, String member_phone,
+                                           String token_id) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
@@ -1045,6 +1048,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
         args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
         args.putString(DefineValue.MEMBER_PHONE, member_phone);
+        args.putString(DefineValue.TOKEN_ID, token_id);
         args.putBoolean(DefineValue.IS_REPORT, isReport);
 
         dialog.setArguments(args);

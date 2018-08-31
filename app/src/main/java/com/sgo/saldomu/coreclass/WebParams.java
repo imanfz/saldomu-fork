@@ -514,4 +514,5 @@ public class WebParams {
     public static String TRANSFER_DATA  = "transfer_data";
     public static String BANK  = "bank";
     public static String ORDER_ID  = "order_id";
+    public static String REFERAL_NO  = "referral_no";
 }
