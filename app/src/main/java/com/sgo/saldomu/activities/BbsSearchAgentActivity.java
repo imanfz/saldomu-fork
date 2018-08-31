@@ -1083,13 +1083,14 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //Timber.d("LCurrent Latitude: " + latitude.toString() + ", Current Longitude: " + longitude.toString());
             //currentLatitude = latitude;
             //currentLongitude = longitude;
+            Timber.d("Params search toko :" +params);
 
             MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     //llHeaderProgress.setVisibility(View.GONE);
                     //pbHeaderProgress.setVisibility(View.GONE);
-                    Timber.d("Response:" + response.toString());
+                    Timber.d("Response search toko:" + response.toString());
 
                     if ( progdialog.isShowing())
                         progdialog.dismiss();
@@ -1300,7 +1301,7 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
                     else
                         Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    Timber.w("Error Koneksi:" + throwable.toString());
+                    Timber.d("Error Koneksi search toko:" + throwable.toString());
 
                     if ( progdialog.isShowing() )
                         progdialog.dismiss();
