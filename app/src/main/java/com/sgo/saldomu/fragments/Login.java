@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
@@ -32,15 +31,21 @@ import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
+import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -121,7 +126,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 if(InetHandler.isNetworkAvailable(getActivity())){
                     if(inputValidation()){
                         userIDfinale = NoHPFormat.formatTo62(userIDValue.getText().toString());
-                        sentData();
+                        sentDatas();
                     }
                 }
                 else
@@ -138,41 +143,37 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
     }
 
-
-    private void sentData(){
+    private void sentDatas(){
         try{
-            String comm_id = MyApiClient.COMM_ID;
-//            String encrypted_password = RSA.opensslEncrypt(passLoginValue.getText().toString()
-//                    , BuildConfig.OPENSSL_ENCRYPT_KEY, BuildConfig.OPENSSL_ENCRYPT_IV);
 
             btnLogin.setEnabled(false);
             userIDValue.setEnabled(false);
             btnRegister.setEnabled(false);
             passLoginValue.setEnabled(false);
             btnforgetPass.setEnabled(false);
-//            btnLayout.setVisibility(View.INVISIBLE);
             btnLogin.setVisibility(View.INVISIBLE);
             image_spinner.setVisibility(View.VISIBLE);
             image_spinner.startAnimation(frameAnimation);
 
-//            RequestParams params = MyApiClient.getSignatureWithParams(comm_id, MyApiClient.LINK_LOGIN,
-//                    "add647f3d560bcb65fc0cb15d7b66615", userIDfinale, encrypted_password);
             extraSignature = userIDfinale + passLoginValue.getText().toString();
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_LOGIN,
-                    BuildConfig.SECRET_KEY, extraSignature );
-            params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID,userIDfinale);
-            params.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
-//            params.put(WebParams.PASSWORD_LOGIN, encrypted_password);
-            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
-            params.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
 
-            Timber.d("isi params login:" + params.toString());
+            HashMap<String, Object> formBody = RetrofitService.getInstance()
+                    .getSignatureSecretKey(MyApiClient.LINK_LOGIN, extraSignature);
+            formBody.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            formBody.put(WebParams.USER_ID,userIDfinale);
+            formBody.put(WebParams.PASSWORD_LOGIN, RSA.opensslEncrypt(passLoginValue.getText().toString()));
+            formBody.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+            formBody.put(WebParams.MAC_ADDR, new DeviceUtils().getWifiMcAddress());
+            formBody.put(WebParams.DEV_MODEL, new DeviceUtils().getDeviceModelID());
 
-            MyApiClient.sentDataLogin(getActivity(),params, new JsonHttpResponseHandler() {
+            Timber.d("isi params login:" + formBody.toString());
+
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, formBody, new ObjListener() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                public void onResponses(JsonObject object) {
+
+                    LoginModel loginModel = getGson().fromJson(object, LoginModel.class);
+
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
                     btnLogin.setEnabled(true);
@@ -180,112 +181,69 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     btnRegister.setEnabled(true);
                     passLoginValue.setEnabled(true);
                     btnforgetPass.setEnabled(true);
-//                    btnLayout.setVisibility(View.VISIBLE);
                     btnLogin.setVisibility(View.VISIBLE);
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String msg = response.getString(WebParams.ERROR_MESSAGE);
-                        Timber.d("isi params response login:"+response.toString());
+                    String code = loginModel.getError_code();
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String unregist_member = response.optString(WebParams.UNREGISTER_MEMBER,"N");
-                            if(checkCommunity(response)){
-                                if (unregist_member.equals("N"))
-                                {
-                                    Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
-                                    setLoginProfile(response);
-                                    changeActivity();
-                                }
-                                else
-                                {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
-                                    bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
-                                    Fragment newFrag = new Regist1();
-                                    newFrag.setArguments(bundle);
-                                    switchFragment(newFrag, "reg1", true);
-                                }
+                    if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)){
+                        String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
+                        if(checkCommunity(loginModel.getCommunity())){
+                            if (unregist_member.equals("N")) {
+                                Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
+                                setLoginProfile(loginModel);
+                                changeActivity();
+                            } else {
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
+                                bundle.putBoolean(DefineValue.IS_UNREGISTER_MEMBER, true);
+                                Fragment newFrag = new Regist1();
+                                newFrag.setArguments(bundle);
+                                switchFragment(newFrag, "reg1", true);
                             }
-                        } else {
-                            if(code.equals(DefineValue.ERROR_0042)){
-                                int failed = response.optInt(WebParams.FAILED_ATTEMPT,0);
-                                int max = response.optInt(WebParams.MAX_FAILED,0);
-                                String message;
-
-                                if(max-failed == 0){
-                                    message = getString(R.string.login_failed_attempt_3);
-                                }
-                                else {
-                                    message = getString(R.string.login_failed_attempt_1,max-failed);
-                                }
-
-                                showDialog(message);
-                            }
-                            else if(code.equals(DefineValue.ERROR_0126)){
-                                showDialog(getString(R.string.login_failed_attempt_3));
-                            }
-                            else if(code.equals(DefineValue.ERROR_0018)||code.equals(DefineValue.ERROR_0017)){
-                                showDialog(getString(R.string.login_failed_inactive));
-                            }
-                            else if(code.equals(DefineValue.ERROR_0127)){
-                                showDialog(getString(R.string.login_failed_dormant));
-                            }
-                            else if(code.equals(DefineValue.ERROR_0004)){
-                                if(msg != null && !msg.isEmpty())
-                                    showDialog(msg);
-                                else
-                                    showDialog(getString(R.string.login_failed_wrong_pass));
-                            }
-                            else if(code.equals(DefineValue.ERROR_0002)){
-                                showDialog(getString(R.string.login_failed_wrong_id));
-                            }
-                            else {
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            }
-                            Timber.d("isi error login:" + response.toString());
-
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    } else if(code.equals(DefineValue.ERROR_0042)){
+                        int failed = Integer.valueOf(loginModel.getFailedAttempt());
+                        int max = Integer.valueOf(loginModel.getMaxFailed());
+                        String message;
+
+                        if(max-failed == 0){
+                            message = getString(R.string.login_failed_attempt_3);
+                        }
+                        else {
+                            message = getString(R.string.login_failed_attempt_1,max-failed);
+                        }
+
+                        showDialog(message);
+                    } else if(code.equals(DefineValue.ERROR_0126)){
+                        showDialog(getString(R.string.login_failed_attempt_3));
+                    } else if(code.equals(DefineValue.ERROR_0018)||code.equals(DefineValue.ERROR_0017)){
+                        showDialog(getString(R.string.login_failed_inactive));
+                    } else if(code.equals(DefineValue.ERROR_0127)){
+                        showDialog(getString(R.string.login_failed_dormant));
+                    } else if(code.equals(DefineValue.ERROR_0004)) {
+                        String msg = loginModel.getError_message();
+                        if (msg != null && !msg.isEmpty()){
+                            showDialog(msg);
+                        }else
+                            showDialog(getString(R.string.login_failed_wrong_pass));
+                    } else if(code.equals(DefineValue.ERROR_0002)){
+                        showDialog(getString(R.string.login_failed_wrong_id));
                     }
-                }
+                    else {
+                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        }else
+                            Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    image_spinner.clearAnimation();
-                    image_spinner.setVisibility(View.INVISIBLE);
-                    btnLogin.setEnabled(true);
-                    userIDValue.setEnabled(true);
-                    passLoginValue.setEnabled(true);
-                    btnforgetPass.setEnabled(true);
-//                    btnLayout.setVisibility(View.VISIBLE);
-                    btnRegister.setEnabled(true);
-                    btnLogin.setVisibility(View.VISIBLE);
-                    Timber.w("Error Koneksi login:" + throwable.toString());
+                        image_spinner.clearAnimation();
+                        image_spinner.setVisibility(View.INVISIBLE);
+                        btnLogin.setEnabled(true);
+                        userIDValue.setEnabled(true);
+                        passLoginValue.setEnabled(true);
+                        btnforgetPass.setEnabled(true);
+                        btnRegister.setEnabled(true);
+                        btnLogin.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }catch (Exception e){
@@ -359,120 +317,126 @@ public class Login extends BaseFragment implements View.OnClickListener {
         return false;
     }
 
-    private void setLoginProfile(JSONObject response){
+    private boolean checkCommunity(List<LoginCommunityModel> model){
+        if(model != null){
+            for(int i = 0 ; i < model.size();i++){
+                if(model.get(i).getCommId().equals(MyApiClient.COMM_ID)){
+                    Timber.w("check comm id yg bener: "+model.get(i).getCommId());
+                    return true;
+                }
+            }
+        }
+
+        Toast.makeText(getActivity(), getString(R.string.login_validation_comm), Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+    private void setLoginProfile(LoginModel model){
         getActivity();
         SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
         SecurePreferences.Editor mEditor = prefs.edit();
         String arraynya;
-        try {
-            String userId = response.getString(WebParams.USER_ID);
-            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
+        String userId = model.getUserId();
+        String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
 
-            if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
-                mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
-                mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
-                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,true);
+        if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
+            mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
+            mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
+            mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,true);
+        }
+        else {
+            if(prevContactFT.equals(DefineValue.NO)) {
+                myFriendModel.deleteAll();
+                mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
             }
-            else {
-                if(prevContactFT.equals(DefineValue.NO)) {
-                    myFriendModel.deleteAll();
-                    mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
-                }
-                mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
-                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,false);
-                BBSDataManager.resetBBSData();
-            }
+            mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+            mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,false);
+            BBSDataManager.resetBBSData();
+        }
 
 
-            mEditor.putString(DefineValue.USERID_PHONE, userId);
-            mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
-            mEditor.putString(DefineValue.USER_NAME, response.getString(WebParams.USER_NAME));
-            mEditor.putString(DefineValue.CUST_ID,response.getString(WebParams.CUST_ID));
-            mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.CUST_NAME));
+        mEditor.putString(DefineValue.USERID_PHONE, userId);
+        mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
+        mEditor.putString(DefineValue.USER_NAME, model.getUserName());
+        mEditor.putString(DefineValue.CUST_ID, model.getCustId());
+        mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
 
-            mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
-            mEditor.putString(DefineValue.PROFILE_ADDRESS,response.getString(WebParams.ADDRESS));
-            mEditor.putString(DefineValue.PROFILE_BIO,response.getString(WebParams.BIO));
-            mEditor.putString(DefineValue.PROFILE_COUNTRY,response.getString(WebParams.COUNTRY));
-            mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
-            mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID,response.getString(WebParams.SOCIAL_ID));
-            mEditor.putString(DefineValue.PROFILE_HOBBY,response.getString(WebParams.HOBBY));
-            mEditor.putString(DefineValue.PROFILE_POB,response.getString(WebParams.POB));
-            mEditor.putString(DefineValue.PROFILE_GENDER,response.getString(WebParams.GENDER));
-            mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE));
-            mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
-            mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
+        mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
+        mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
+        mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
+        mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
+        mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
+        mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFullName());
+        mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocialId());
+        mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
+        mEditor.putString(DefineValue.PROFILE_POB, model.getBirthPlace());
+        mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
+        mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
+        mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
+        mEditor.putString(DefineValue.PROFILE_BOM, model.getMotherName());
 
-            mEditor.putString(DefineValue.LIST_ID_TYPES,response.getString(WebParams.ID_TYPES));
+        mEditor.putString(DefineValue.LIST_ID_TYPES, getGson().toJson(model.getIdTypes()));
 //            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
-            mEditor.putString(DefineValue.IS_FIRST,response.getString(WebParams.USER_IS_NEW));
-            mEditor.putString(DefineValue.IS_CHANGED_PASS,response.optString(WebParams.CHANGE_PASS, ""));
+        mEditor.putString(DefineValue.IS_FIRST, model.getUserIsNew());
+        mEditor.putString(DefineValue.IS_CHANGED_PASS, model.getChangedPass());
 
-            mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
-            mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
-            mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
-            mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
+        mEditor.putString(DefineValue.IMG_URL, model.getImgUrl());
+        mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImgSmallUrl());
+        mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImgMediumUrl());
+        mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImgLargeUrl());
 
-            mEditor.putString(DefineValue.ACCESS_KEY, response.getString(WebParams.ACCESS_KEY));
-            mEditor.putString(DefineValue.ACCESS_SECRET, response.getString(WebParams.ACCESS_SECRET));
+        mEditor.putString(DefineValue.ACCESS_KEY, model.getAccessKey());
+        mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
 
-            mEditor.putString(DefineValue.LINK_APP,response.optString(WebParams.SOCIAL_SIGNATURE,""));
+        mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
 
-            if (response.optInt(WebParams.IS_REGISTERED,0) == 0)
-                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
-            else
-                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
+        if (Integer.valueOf(model.getIsRegistered()) == 0)
+            mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
+        else
+            mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
 
-            arraynya = response.getString(WebParams.COMMUNITY);
-            if(!arraynya.isEmpty()){
-                JSONArray arrayJson = new JSONArray(arraynya);
-                mEditor.putInt(DefineValue.COMMUNITY_LENGTH,arrayJson.length());
-                for(int i = 0 ; i < arrayJson.length();i++){
-                    if( arrayJson.getJSONObject(i).getString(WebParams.COMM_ID).equals(MyApiClient.COMM_ID)){
-                        mEditor.putString(DefineValue.COMMUNITY_ID, arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
-                        mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, arrayJson.getJSONObject(i).getString(WebParams.CALLBACK_URL));
-                        mEditor.putString(DefineValue.API_KEY_TOPUP, arrayJson.getJSONObject(i).getString(WebParams.API_KEY));
-                        mEditor.putString(DefineValue.COMMUNITY_CODE, arrayJson.getJSONObject(i).getString(WebParams.COMM_CODE));
-                        mEditor.putString(DefineValue.COMMUNITY_NAME,arrayJson.getJSONObject(i).getString(WebParams.COMM_NAME));
-                        mEditor.putString(DefineValue.BUSS_SCHEME_CODE,arrayJson.getJSONObject(i).getString(WebParams.BUSS_SCHEME_CODE));
-                        mEditor.putString(DefineValue.AUTHENTICATION_TYPE, arrayJson.getJSONObject(i).getString(WebParams.AUTHENTICATION_TYPE));
-                        mEditor.putString(DefineValue.LENGTH_AUTH, arrayJson.getJSONObject(i).getString(WebParams.LENGTH_AUTH));
-                        mEditor.putString(DefineValue.IS_HAVE_PIN, arrayJson.getJSONObject(i).getString(WebParams.IS_HAVE_PIN));
-                        mEditor.putInt(DefineValue.LEVEL_VALUE, arrayJson.getJSONObject(i).optInt(WebParams.MEMBER_LEVEL, 0));
-                        if (arrayJson.getJSONObject(i).optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
-                        else
-                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
-                        mEditor.putString(DefineValue.IS_NEW_BULK, arrayJson.getJSONObject(i).getString(WebParams.IS_NEW_BULK));
-                        mEditor.putBoolean(DefineValue.IS_AGENT, arrayJson.getJSONObject(i).optInt(WebParams.IS_AGENT,0)>0);
+        if(!model.getCommunity().isEmpty()){
+            mEditor.putInt(DefineValue.COMMUNITY_LENGTH,model.getCommunity().size());
+            for(int i = 0 ; i < model.getCommunity().size();i++){
+                LoginCommunityModel commModel = model.getCommunity().get(i);
+                if(commModel.getCommId().equals(MyApiClient.COMM_ID)){
+                    mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
+                    mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
+                    mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
+                    mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());
+                    mEditor.putString(DefineValue.COMMUNITY_NAME, commModel.getCommName());
+                    mEditor.putString(DefineValue.BUSS_SCHEME_CODE, commModel.getBussSchemeCode());
+                    mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
+                    mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
+                    mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
+                    mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
+                    if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES))
+                        mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
+                    else
+                        mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+                    mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
+                    mEditor.putBoolean(DefineValue.IS_AGENT, Integer.valueOf(commModel.getIsAgent())>0);
 
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
-                        Timber.w("isi comm id yg bener:" + arrayJson.getJSONObject(i).getString(WebParams.COMM_ID));
-                        break;
-                    }
+                    Timber.w("isi comm id yg bener:" + commModel.getCommId());
+                    break;
                 }
             }
+        }
 
-            if ( response.has("shop_id_agent") && !response.getString("shop_id_agent").equals("")) {
-                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
-                if (shopAgentObject.length() > 0) {
-                    mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
-                    mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
-                    mEditor.putString(DefineValue.SHOP_AGENT_DATA, shopAgentObject.toString());
-                }
+        if (!model.getShopIdAgent().equals("")) {
+//                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
+//                if (shopAgentObject.length() > 0) {
+//
+//                }
+            mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+            mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+            mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
+        }
 
-            }
-
-            arraynya = response.getString(WebParams.SETTINGS);
-            if(!arraynya.isEmpty()){
-                JSONArray arrayJson = new JSONArray(arraynya);
-                mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, arrayJson.getJSONObject(0).getInt(WebParams.MAX_MEMBER_TRANSFER));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if(model.getSettings() != null){
+            mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
         }
 
         mEditor.apply();

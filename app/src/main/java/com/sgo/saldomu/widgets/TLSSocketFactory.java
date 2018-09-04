@@ -1,4 +1,4 @@
-package com.sgo.saldomu.coreclass;
+package com.sgo.saldomu.widgets;
 
 import android.net.SSLCertificateSocketFactory;
 import android.os.Build;
@@ -46,6 +46,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 
     public TLSSocketFactory(KeyStore truststore) throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, UnrecoverableKeyException {
         super(truststore);
+        Timber.d("isi truststore:"+truststore.toString());
         this.keyStore = truststore;
     }
 

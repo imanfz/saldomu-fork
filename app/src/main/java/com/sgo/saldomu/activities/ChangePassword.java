@@ -9,9 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import com.loopj.android.http.JsonHttpResponseHandler;
+
+import com.google.gson.JsonObject;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
@@ -22,10 +26,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.securities.RSA;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -59,13 +60,13 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
         InitializeToolbar();
 
-        et_pass_current = (EditText) findViewById(R.id.current_pass_value);
-        et_pass_new = (EditText) findViewById(R.id.new_pass_value);
-        et_pass_retype = (EditText) findViewById(R.id.retype_new_pass_value);
-        cb_show_pass = (CheckBox) findViewById(R.id.cb_showPass_changepass);
-        btn_submit_changepass = (Button) findViewById(R.id.btn_submit_changePassword);
-        btn_batal_changepass = (Button) findViewById(R.id.btn_batal_changepass);
-        tv_firsttime_msg = (TextView) findViewById(R.id.changepass_firsttime_msg);
+        et_pass_current = findViewById(R.id.current_pass_value);
+        et_pass_new = findViewById(R.id.new_pass_value);
+        et_pass_retype = findViewById(R.id.retype_new_pass_value);
+        cb_show_pass = findViewById(R.id.cb_showPass_changepass);
+        btn_submit_changepass = findViewById(R.id.btn_submit_changePassword);
+        btn_batal_changepass = findViewById(R.id.btn_batal_changepass);
+        tv_firsttime_msg = findViewById(R.id.changepass_firsttime_msg);
 
         btn_submit_changepass.setOnClickListener(this);
         btn_batal_changepass.setOnClickListener(this);
@@ -151,8 +152,10 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
             extraSignature = memberIDLogin+et_pass_current.getText().toString()+et_pass_new.getText().toString();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_CHANGE_PASSWORD, extraSignature);
             params.put(WebParams.USER_ID,userPhoneID);
             params.put(WebParams.OLD_PASSWORD, RSA.opensslEncrypt(et_pass_current.getText().toString()));
             params.put(WebParams.NEW_PASSWORD, RSA.opensslEncrypt(et_pass_new.getText().toString()));
@@ -161,64 +164,44 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
             Timber.d("isi params Change Password:" + params.toString());
 
-            MyApiClient.sentChangePassword(this, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CHANGE_PASSWORD, params
+                    , new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            progdialog.dismiss();
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
 
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response change password:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
-                            Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
+                            if (!model.getOn_error()){
+
+                                String code = model.getError_code();
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    //Toast.makeText(ChangePassword.this, sp.getString(CoreApp.IS_FIRST_TIME,""), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChangePassword.this, getString(R.string.changepass_toast_success), Toast.LENGTH_LONG).show();
 //                            sp.edit().putString(DefineValue.IS_FIRST_TIME, DefineValue.NO);
-                            sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
-                            finishChild();
+                                    sp.edit().putString(DefineValue.IS_CHANGED_PASS, DefineValue.STRING_YES).apply();
+                                    finishChild();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+//                                    Timber.d("isi response autologout:"+response.toString());
+//                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(ChangePassword.this,model.getError_message());
+                                }
+                                else {
+//                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                                }
+                            }else {
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(ChangePassword.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(ChangePassword.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+//                                Timber.w("Error Koneksi change password:"+throwable.toString());
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(ChangePassword.this,message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(ChangePassword.this, code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(ChangePassword.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ChangePassword.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    progdialog.dismiss();
-                    Timber.w("Error Koneksi change password:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

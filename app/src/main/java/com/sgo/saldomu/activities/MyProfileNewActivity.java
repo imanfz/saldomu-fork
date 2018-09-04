@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -31,13 +34,21 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.GetHelpModel;
+import com.sgo.saldomu.models.retrofit.GetUserContactModel;
+import com.sgo.saldomu.models.retrofit.SentExecCustModel;
+import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
+import com.sgo.saldomu.models.retrofit.UploadFotoModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,8 +61,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -105,6 +120,7 @@ public class MyProfileNewActivity extends BaseActivity {
             respon_reject_ttd, reject_npwp;
     private ProgressDialog progdialog;
     private PickAndCameraUtil pickAndCameraUtil;
+    Gson gson;
 
     @Override
     protected int getLayoutResource() {
@@ -171,6 +187,7 @@ public class MyProfileNewActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         pickAndCameraUtil = new PickAndCameraUtil(this);
+        gson = new Gson();
 
         Intent intent    = getIntent();
         if(intent.hasExtra(DefineValue.IS_FIRST)) {
@@ -583,8 +600,12 @@ public class MyProfileNewActivity extends BaseActivity {
             else
                 progdialog.show();
             String extraSignature = memberIDLogin;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
                     userPhoneID,accessKey, extraSignature);
+
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_UPDATE_PROFILE, extraSignature);
+
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID,et_noHp.getText().toString());
@@ -619,20 +640,21 @@ public class MyProfileNewActivity extends BaseActivity {
 
             Timber.d("isi params update profile:"+ params.toString());
 
-            MyApiClient.sentUpdateProfile(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_UPDATE_PROFILE, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            UpdateProfileModel model = gson.fromJson(object, UpdateProfileModel.class);
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            if(progdialog.isShowing())
-                                progdialog.dismiss();
-                            sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
-                            setLoginProfile(response);
-                            Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
-                            Timber.d("isi response Update Profile:"+ response.toString());
-                            if (levelClass.isLevel1QAC()){
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if(progdialog.isShowing())
+                                    progdialog.dismiss();
+                                sp.edit().putString(DefineValue.IS_NEW_BULK, "N");
+                                setLoginProfile(model);
+                                Toast.makeText(MyProfileNewActivity.this,getString(R.string.myprofile_toast_update_success),Toast.LENGTH_LONG).show();
+//                                    Timber.d("isi response Update Profile:"+ response.toString());
+                                if (levelClass.isLevel1QAC()){
                                     android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(MyProfileNewActivity.this);
                                     builder1.setTitle(R.string.upgrade_member);
                                     builder1.setMessage(R.string.message_upgrade_member);
@@ -662,62 +684,32 @@ public class MyProfileNewActivity extends BaseActivity {
                                                         setResult(MainPage.RESULT_FIRST_TIME);
                                                         finish();
                                                     }else
-                                                    finish();
+                                                        finish();
                                                 }
                                             });
 
                                     android.support.v7.app.AlertDialog alert11 = builder1.create();
                                     alert11.show();
                                 }else
-                            {
-                                finish();
+                                {
+                                    finish();
+                                }
                             }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+//                                    Timber.d("isi response autologout:"+ response.toString());
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(MyProfileNewActivity.this,message);
+                            }
+                            else {
+//                                    Timber.d("Error Update Profile:"+ response.toString());
+                                code = model.getError_message();
+                                Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
+                            }
+
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(MyProfileNewActivity.this,message);
-                        }
-                        else {
-                            Timber.d("Error Update Profile:"+ response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
-                        }
+                    });
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi data update myprofile:"+ throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }
@@ -753,6 +745,24 @@ public class MyProfileNewActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        mEditor.apply();
+    }
+
+    private void setLoginProfile(UpdateProfileModel response){
+        SecurePreferences prefs = sp;
+        SecurePreferences.Editor mEditor = prefs.edit();
+
+        mEditor.putString(DefineValue.PROFILE_DOB, response.getDate_of_birth());
+        mEditor.putString(DefineValue.PROFILE_EMAIL,response.getEmail());
+        mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getFull_name());
+        mEditor.putString(DefineValue.PROFILE_BOM, response.getFull_name());
+        mEditor.putString(DefineValue.CUST_NAME, response.getFull_name());
+        mEditor.putString(DefineValue.USER_NAME, response.getFull_name());
+        mEditor.putString(DefineValue.MEMBER_NAME, response.getFull_name());
+        mEditor.putString(DefineValue.IS_NEW_BULK,"N");
+//            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
+        is_verified = response.getVerifieds() == 1;
+        mEditor.putString(DefineValue.PROFILE_VERIFIED, response.getVerified());
         mEditor.apply();
     }
 
@@ -931,125 +941,60 @@ public class MyProfileNewActivity extends BaseActivity {
 
         extraSignature = String.valueOf(flag);
 
-        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
+        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
                 userPhoneID,accessKey,extraSignature);
-        try {
-            params.put(WebParams.USER_ID,et_noHp.getText().toString());
-            params.put(WebParams.USER_IMAGES, photoFile);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.TYPE, flag);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        HashMap<String, RequestBody> params = RetrofitService.getInstance()
+                .getSignature2(MyApiClient.LINK_UPLOAD_PROFILE_PIC);
+
+        RequestBody request1 = RequestBody.create(MediaType.parse("text/plain"),
+                et_noHp.getText().toString());
+        RequestBody request2 = RequestBody.create(MediaType.parse("text/plain"),
+                MyApiClient.COMM_ID);
+        RequestBody request3 = RequestBody.create(MediaType.parse("text/plain"),
+                String.valueOf(flag));
+
+        params.put(WebParams.USER_ID,request1);
+//        params.put(WebParams.USER_IMAGES, photoFile);
+        params.put(WebParams.COMM_ID, request2);
+        params.put(WebParams.TYPE, request3);
         Timber.d("params upload foto ktp: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 
-        MyApiClient.sentPhotoKTP(this, params, new JsonHttpResponseHandler() {
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("image/*"), photoFile);
 
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                Timber.d("sebelum proses uploadKTP " +bytesWritten);
-                Timber.d("sebelum proses uploadKTP " +totalSize);
-                proses = (int) (100 * bytesWritten / totalSize);
-                if(proses < 100 || proses == 100)
-                {
-                    if(flag==KTP_TYPE)
-                    {
-                        Timber.d("sebelum proses uploadKTP " +proses);
-                        pb1.setProgress((int) (100 * bytesWritten / totalSize));
-                        Timber.d("proses uploadKTP " +proses);
-                        tv_pb1.setText(proses + "%");
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(WebParams.USER_IMAGES, photoFile.getName(),
+                requestFile);
+
+        RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_KTP, params, filePart,
+                new ObjListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
+
+                        UploadFotoModel model = gson.fromJson(object, UploadFotoModel.class);
+
+                        String error_code = model.getError_code();
+                        String error_message = model.getError_message();
+                        if (error_code.equalsIgnoreCase("0000")) {
+
+                            Timber.d("onsuccess upload foto type: " + flag);
+//                                Timber.d("isi response Upload Foto:"+ response.toString());
+
+                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+
+//                                Timber.d("isi response autologout:" + response.toString());
+//                                String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(MyProfileNewActivity.this, error_message);
+                        }else {
+                            Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+
+                        }
                     }
-                    else if(flag==SELFIE_TYPE)
-                    {
-                        pb2.setProgress((int) (100 * bytesWritten / totalSize));
-                        tv_pb2.setText(proses + "%");
-                    }
-                    else if(flag==TTD_TYPE)
-                    {
-                        pb3.setProgress((int) (100 * bytesWritten / totalSize));
-                        tv_pb3.setText(proses + "%");
-                    }
-                }
+                });
 
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    String error_code = response.getString("error_code");
-                    String error_message = response.getString("error_message");
-                    if (error_code.equalsIgnoreCase("0000")) {
-
-                        Timber.d("onsuccess upload foto type: " + flag);
-                        Timber.d("isi response Upload Foto:"+ response.toString());
-
-                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(MyProfileNewActivity.this, message);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable) {
-                Timber.d("Masuk failure");
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                {
-                    Timber.d("Masuk if prod failure flag");
-                    Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if(flag==1)
-                    {
-                        Timber.d("masuk failure ktp");
-                        pb1.setProgress( 0 );
-                        tv_pb1.setText("0 %");
-                    }
-                    if (flag==2)
-                    {
-                        Timber.d("masuk failure selfie");
-                        pb2.setProgress( 0);
-                        tv_pb2.setText("0 %");
-
-                    }
-                    if (flag==3)
-                    {
-                        Timber.d("masuk failure ttd");
-                        pb3.setProgress(0);
-                        tv_pb3.setText("0 %");
-                    }
-                }
-
-                else
-                    Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                Timber.w("Error Koneksi data update foto ktp:" + throwable.toString());
-            }
-
-        });
     }
 
     private void DialogSuccessUploadPhoto()
@@ -1107,8 +1052,10 @@ public class MyProfileNewActivity extends BaseActivity {
             else
                 progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
+            final RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
                     userPhoneID, accessKey, memberIDLogin);
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_EXEC_CUST, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.CUST_NAME, et_nama.getText().toString());
             params.put(WebParams.CUST_ID_TYPE, "");
@@ -1135,84 +1082,57 @@ public class MyProfileNewActivity extends BaseActivity {
 
             Timber.d("isi params execute customer:" + params.toString());
 
-            MyApiClient.sentExecCust(MyProfileNewActivity.this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response execute customer:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEdit = sp.edit();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_EXEC_CUST, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+
+                            SentExecCustModel model = gson.fromJson(object, SentExecCustModel.class);
+
+                            String code = model.getError_code();
+//                                Timber.d("response execute customer:"+response.toString());
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                SecurePreferences.Editor mEdit = sp.edit();
 //                            int member_level = sp.getInt(DefineValue.LEVEL_VALUE,1);
-                            mEdit.remove(DefineValue.REJECT_KTP);
-                            mEdit.remove(DefineValue.REJECT_FOTO);
-                            mEdit.remove(DefineValue.REJECT_TTD);
-                            mEdit.remove(DefineValue.REMARK_KTP);
-                            mEdit.remove(DefineValue.REMARK_FOTO);
-                            mEdit.remove(DefineValue.REMARK_TTD);
-                            mEdit.remove(DefineValue.MODEL_NOTIF);
-                            mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
-                            mEdit.putString(DefineValue.PROFILE_DOB, tv_dob.getText().toString());
-                            mEdit.putString(DefineValue.PROFILE_FULL_NAME,et_nama.getText().toString());
-                            mEdit.putString(DefineValue.CUST_NAME,et_nama.getText().toString());
-                            mEdit.putString(DefineValue.USER_NAME,et_nama.getText().toString());
-                            mEdit.putString(DefineValue.MEMBER_NAME, et_nama.getText().toString());
+                                mEdit.remove(DefineValue.REJECT_KTP);
+                                mEdit.remove(DefineValue.REJECT_FOTO);
+                                mEdit.remove(DefineValue.REJECT_TTD);
+                                mEdit.remove(DefineValue.REMARK_KTP);
+                                mEdit.remove(DefineValue.REMARK_FOTO);
+                                mEdit.remove(DefineValue.REMARK_TTD);
+                                mEdit.remove(DefineValue.MODEL_NOTIF);
+                                mEdit.putBoolean(DefineValue.IS_REGISTERED_LEVEL,true);
+                                mEdit.putString(DefineValue.PROFILE_DOB, tv_dob.getText().toString());
+                                mEdit.putString(DefineValue.PROFILE_FULL_NAME,et_nama.getText().toString());
+                                mEdit.putString(DefineValue.CUST_NAME,et_nama.getText().toString());
+                                mEdit.putString(DefineValue.USER_NAME,et_nama.getText().toString());
+                                mEdit.putString(DefineValue.MEMBER_NAME, et_nama.getText().toString());
 //                            mEdit.putInt(DefineValue.LEVEL_VALUE, response.optInt(WebParams.MEMBER_LEVEL, 1));
-                            if (response.optString(WebParams.ALLOW_MEMBER_LEVEL, DefineValue.STRING_NO).equals(DefineValue.STRING_YES))
-                                mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true );
-                            else
-                                mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false );
+                                if (model.getAllow_member_level().equals(DefineValue.STRING_YES))
+                                    mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true );
+                                else
+                                    mEdit.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false );
 
-                            mEdit.apply();
-                            DialogSuccessUploadPhoto();
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(MyProfileNewActivity.this, message);
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+                                mEdit.apply();
+                                DialogSuccessUploadPhoto();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+//                                    Timber.d("isi response autologout:"+response.toString());
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(MyProfileNewActivity.this, message);
+                            } else {
+                                code = model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(MyProfileNewActivity.this, code, Toast.LENGTH_LONG).show();
+                                getFragmentManager().popBackStack();
 
+                            }
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi exec customer level req:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -1223,88 +1143,62 @@ public class MyProfileNewActivity extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
                     userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(MyProfileNewActivity.this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
+            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_USER_CONTACT_INSERT,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
+                            GetUserContactModel model = gson.fromJson(object, GetUserContactModel.class);
 
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
+                            String code = model.getError_code();
+                            String message = model.getError_message();
 
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                Timber.d("isi params help list:"+response.toString());
 
-                            try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
-                                    if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                contactCenter = model.getContact_data();
+
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.LIST_CONTACT_CENTER, model.getContact_data());
+                                mEditor.apply();
+
+                                try {
+                                    JSONArray arrayContact = new JSONArray(contactCenter);
+                                    for(int i=0 ; i<arrayContact.length() ; i++) {
+                                        if(i == 0) {
+                                            listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+                                            listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                        }
                                     }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+//                                Timber.d("isi response autologout:"+response.toString());
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(MyProfileNewActivity.this,message);
+                            }
+                            else {
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                             }
 
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(MyProfileNewActivity.this,message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
-                        }
-
-                        progdialog.dismiss();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MyProfileNewActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

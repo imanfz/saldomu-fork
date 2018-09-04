@@ -11,7 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
-import com.loopj.android.http.JsonHttpResponseHandler;
+
+import com.google.gson.JsonObject;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
@@ -21,14 +22,16 @@ import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.ContactDataModel;
+import com.sgo.saldomu.models.retrofit.ForgorPasswordModel;
+import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -55,10 +58,10 @@ public class ForgotPassword extends BaseFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        et_user_id = (EditText) v.findViewById(R.id.forgotpass_userid_value);
-        spin_tipe_notif = (Spinner) v.findViewById(R.id.forgotpass_spin_notif);
-        Button btn_submit = (Button) v.findViewById(R.id.btn_submit_forgot_pass);
-        TextView textMsg = (TextView) v.findViewById(R.id.textForgotPassmsg);
+        et_user_id = v.findViewById(R.id.forgotpass_userid_value);
+        spin_tipe_notif = v.findViewById(R.id.forgotpass_spin_notif);
+        Button btn_submit = v.findViewById(R.id.btn_submit_forgot_pass);
+        TextView textMsg = v.findViewById(R.id.textForgotPassmsg);
         String msg = getString(R.string.forgotpass_text_instruction,getString(R.string.appname));
         textMsg.setText(msg);
 
@@ -157,8 +160,10 @@ public class ForgotPassword extends BaseFragment {
             progdialog.show();
 
             extraSignature = userIDfinale + value_pin;
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
+            RequestParams paramss = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
                     BuildConfig.SECRET_KEY, extraSignature );
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignatureSecretKey(MyApiClient.LINK_FORGOT_PASSWORD, extraSignature);
             params.put(WebParams.USER_ID, userIDfinale);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PIN, RSA.opensslEncrypt(value_pin));
@@ -167,77 +172,51 @@ public class ForgotPassword extends BaseFragment {
 
             Timber.d(params.toString());
 
-            MyApiClient.sentForgotPassword(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FORGOT_PASSWORD, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            progdialog.dismiss();
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("response forgot password" + response.toString());
-                            showDialog(getString(R.string.forgotpass_text_message_success));
+                            ForgorPasswordModel model = getGson().fromJson(object, ForgorPasswordModel.class);
 
-                        } else {
-                            Timber.d("error forgot password" + response.toString());
-                            String codemessage = response.getString(WebParams.ERROR_MESSAGE);
-                            switch (code) {
-                                case "0097":
-                                    attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                    failed = response.optInt(WebParams.MAX_FAILED, 0);
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+//                                    Timber.d("response forgot password" + response.toString());
+                                showDialog(getString(R.string.forgotpass_text_message_success));
 
-                                    if (attempt == -1)
-                                        CallPINinput(0);
-                                    else
-                                        CallPINinput(failed - attempt);
+                            } else {
+//                                    Timber.d("error forgot password" + response.toString());
+                                String codemessage = model.getError_message();
+                                switch (code) {
+                                    case "0097":
+                                        attempt = model.getFailed_attempt();
+                                        failed = model.getMax_failed();
 
-                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-                                    break;
-                                case "0133":
-                                    showDialog(codemessage);
-                                    break;
-                                default:
-                                    Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
-                                    break;
+                                        if (attempt == -1)
+                                            CallPINinput(0);
+                                        else
+                                            CallPINinput(failed - attempt);
+
+                                        Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                        break;
+                                    case "0133":
+                                        showDialog(codemessage);
+                                        break;
+                                    default:
+                                        if (MyApiClient.PROD_FAILURE_FLAG) {
+                                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                        }else
+                                            Toast.makeText(getActivity(), codemessage, Toast.LENGTH_LONG).show();
+                                        break;
+                                }
+
+
                             }
-
-
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                    });
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error forgot pass" + throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }
@@ -248,65 +227,40 @@ public class ForgotPassword extends BaseFragment {
             progDialog.setIndeterminate(true);
             progDialog.setVisibility(View.VISIBLE);
 
-            MyApiClient.getHelpPIN(getActivity(), new JsonHttpResponseHandler() {
+            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_HELP_PIN,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
+                            progDialog.setIndeterminate(false);
+                            progDialog.setVisibility(View.GONE);
+                            Message.setVisibility(View.VISIBLE);
 
-                    String message_value;
-                    try {
-                        JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
-                        JSONObject mObject;
-                        if (ForgotPassword.this.isVisible()) {
-                            for (int i = 0; i < arrayContact.length(); i++) {
-                                mObject = arrayContact.getJSONObject(i);
-//                                id = mObject.optString(WebParams.ID, "0");
-                                if (i==0) {
-                                    message_value = Message.getText().toString()+"\n"+
-                                            mObject.optString(WebParams.DESCRIPTION, "") + " " +
-                                            mObject.optString(WebParams.NAME, "") + "\n" +
-                                            mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
-                                            getString(R.string.or) + " " +
-                                            mObject.optString(WebParams.CONTACT_EMAIL, "");
-                                    Message.setText(message_value);
-                                    break;
+                            GetHelpModel model = getGson().fromJson(object, GetHelpModel.class);
+
+                            try {
+                                String message_value;
+
+                                if (ForgotPassword.this.isVisible()) {
+                                    for (int i = 0; i < model.getContact_data().size(); i++) {
+                                        ContactDataModel mObject = model.getContact_data().get(i);
+                                        if (i==0) {
+                                            message_value = Message.getText().toString()+"\n"+
+                                                    mObject.getDescription() + " " +
+                                                    mObject.getName() + "\n" +
+                                                    mObject.getContact_phone() + " " +
+                                                    getString(R.string.or) + " " +
+                                                    mObject.getContact_email();
+                                            Message.setText(message_value);
+                                            break;
+                                        }
+                                    }
                                 }
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure();
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure();
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure();
-                }
-
-                private void failure(){
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
-            });
-
+                    });
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }
@@ -321,10 +275,10 @@ public class ForgotPassword extends BaseFragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOK = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        ProgressBar progBar = (ProgressBar) dialog.findViewById(R.id.progressBarDialogNotif);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        Button btnDialogOK = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        ProgressBar progBar = dialog.findViewById(R.id.progressBarDialogNotif);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.mainpage_dialog_changepass_title));
         Message.setText(message_error);

@@ -2,41 +2,67 @@ package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.CoreApp;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
-import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
+import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmObject;
 import okhttp3.CertificatePinner;
 import okhttp3.ConnectionSpec;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -58,6 +84,12 @@ public class RetrofitService {
     private static Context mContext;
     private static RetrofitService singleton;
     Retrofit retrofit;
+    Gson gson;
+    private SecurePreferences sp;
+
+    //URL
+    public static String LINK_LOGIN = "saldomu/MemberLogin/SignIn";
+    public static String LINK_LIST_MEMBER = "saldomu/Member/Retrieve";
 
     private static HttpLoggingInterceptor interceptorLogging = new HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -88,15 +120,15 @@ public class RetrofitService {
     }
 
     private RetrofitInterfaces BuildRetrofit(){
-        return BuildRetrofit2(false);
+        return BuildRetrofit2();
     }
 
-    private RetrofitInterfaces BuildRetrofit2(boolean inApps){
+    private RetrofitInterfaces BuildRetrofit2(){
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(BuildGSON()))
                 .baseUrl(BuildConfig.HEAD_ADDRESSS)
-                .client(BuildOkHttpClients(inApps))
+                .client(BuildOkHttpClients())
                 .build();
         return retrofit.create(RetrofitInterfaces.class);
     }
@@ -123,7 +155,52 @@ public class RetrofitService {
         return encode.replace('+','-').replace('/','_');
     }
 
-    private OkHttpClient BuildOkHttpClients(final boolean inApps){
+    private OkHttpClient BuildOkHttpClients(){
+        return BuildOkHttpClient("application/x-www-form-urlencoded");
+    }
+
+    private OkHttpClient BuildOkHttpClient2(){
+        return BuildOkHttpClient("application/x-www-form-urlencoded");
+    }
+
+    private OkHttpClient BuildOkHttpClient(final String content_type){
+        TrustManager[] trustManagers = new TrustManager[0];
+        try {
+        
+            KeyStore keyStore = KeyStore.getInstance("BKS");
+            InputStream is = CoreApp.getAppContext().getResources().openRawResource(R.raw.saldomucom);
+            
+            keyStore.load(is, PRIVATE_KEY.toCharArray());
+        
+            is.close();
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("X509");
+            keyManagerFactory.init(keyStore, PRIVATE_KEY.toCharArray());
+
+            TrustManagerFactory tmf =
+                    TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(keyStore );
+
+            trustManagers = tmf.getTrustManagers();
+
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                throw new IllegalStateException(
+                        "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        }
+
+
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.readTimeout(600, TimeUnit.SECONDS);
         builder.retryOnConnectionFailure(true);
@@ -131,6 +208,13 @@ public class RetrofitService {
         builder.connectTimeout(600, TimeUnit.SECONDS);
         builder.addInterceptor(interceptorLogging);
         builder.certificatePinner(certificatePinner);
+        try {
+            builder.sslSocketFactory(new OkHttpTLSSocketFactory(CoreApp.getAppContext()), (X509TrustManager) trustManagers[0]);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                 .tlsVersions(TlsVersion.TLS_1_2)
@@ -158,10 +242,10 @@ public class RetrofitService {
 
                 Request.Builder builder1 = chain.request().newBuilder();
 
-                builder1.header("Content-Type", "application/x-www-form-urlencoded");
-                if (inApps){
+                builder1.header("Content-Type", content_type);
+//                if (inApps){
                     builder1.addHeader("Authorization", "Basic "+getBasicAuth());
-                }
+//                }
 
                 Request url = builder1.build();
 
@@ -171,6 +255,8 @@ public class RetrofitService {
         return builder.build();
     }
 
+
+
     private static CertificatePinner certificatePinner
             = new CertificatePinner.Builder()
             .add(hostname,"sha256/UUsUINnnxiyFSr9zQdrGG9kfl9er17hIN56rmbF1LMg=")
@@ -179,223 +265,207 @@ public class RetrofitService {
             .add(hostname,"sha256/lCppFqbkrlJ3EcVFAkeip0+44VaoJUymbnOaEUk7tEU")
             .build();
 
-
-//    public static <S> S createService(Class<S> serviceClass,String authToken){
-//
-//        if(!TextUtils.isEmpty(authToken)){
-//            AuthenticationInterceptor interceptor = new AuthenticationInterceptor(authToken);
-//
-//            if(!client.interceptors().contains(interceptor)){
-//
-//                client.addInterceptor(interceptor);
-//
-//                client .connectTimeout(600, TimeUnit.SECONDS);
-//                client .readTimeout(600, TimeUnit.SECONDS);
-//                client .addInterceptor(interceptorLogging);
-//                client .certificatePinner(certificatePinner);
-//                client.retryOnConnectionFailure(true);
-//                //OkHttp Configuration
-//                ConnectionSpec spec = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-//                        .tlsVersions(TlsVersion.TLS_1_2)
-//                        .build();
-//
-//                List<ConnectionSpec> specs = new ArrayList<>();
-//                specs.add(spec);
-//                specs.add(ConnectionSpec.CLEARTEXT);
-////                specs.add(ConnectionSpec.COMPATIBLE_TLS);
-//
-////                client.connectionSpecs(Collections.singletonList(spec));
-//                client.connectionSpecs(specs);
-//
-//                TLSSocket sf;
-//                try {
-//                    sf = new TLSSocket();
-//                    client.sslSocketFactory(sf, sf.systemDefaultTrustManager());
-//                }catch (Exception e) {
-//                    Timber.w("exception tls socket:"+e.toString());
-//                    throw new AssertionError(e);
-//                }
-//
-//                builder.client(client.build());
-//                retrofit = builder.build();
-//                Timber.d("Success build retrofit");
-
-
-// #bks
-//
-//                try {
-//                    // Get an instance of the Bouncy Castle KeyStore format
-//                    KeyStore trusted = KeyStore.getInstance("BKS");
-//                    // Get the raw resource, which contains the keystore with
-//                    // your trusted certificates
-//                    InputStream in = getmContext().getResources().openRawResource(R.raw.espayid);
-//                    try {
-//                        // Initialize the keystore with the provided trusted certificates
-//                        // Also provide the password of the keystore
-//                        trusted.load(in, PRIVATE_KEY.toCharArray());
-//                        Timber.d("x5019 socket open");
-//                    } finally {
-//                        Timber.d("x5019 socket closed");
-//                        in.close();
-//                    }
-//                    // Pass the keystore to the SSLSocketFactory. The factory is responsible
-//                    // for the verification of the server certificate.
-//                    TLSSocket sf;
-//                    try {
-//                        sf = new TLSSocket(trusted);
-//                        client.sslSocketFactory(sf,sf.customTrustManager());
-//                    } catch (KeyManagementException e) {
-//                        e.printStackTrace();
-//                    } catch (NoSuchAlgorithmException e) {
-//                        e.printStackTrace();
-//                    } catch (KeyStoreException e) {
-//                        e.printStackTrace();
-//                    }
-//                    // Hostname verification from certificate
-//                    // http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html#d4e506
-//                } catch (Exception e) {
-//                    Timber.w("exception tls socket:"+e.toString());
-//                    throw new AssertionError(e);
-//                }
-//                builder.client(client.build());
-//                retrofit = builder.build();
-//                Timber.d("Success build retrofit");
-//            }
-//        }
-//        return retrofit.create(serviceClass);
-//    }
-
-//    /** Return the value mapped by the given key, or {@code null} if not present or null. */
-//    public static String optString(JsonObject json, String key)
-//    {
-//        Timber.d("optString Key="+key.toString());
-//        if(json.get(key).equals(null)){
-//            return null;
-//        }
-//        else
-//            return json.get(key).getAsString();
-//    }
-
-    public static HashMap<String,String> getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
-
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
-        Timber.d("isi messageSignatureFCM : " + msgnya);
-
-
-        String hash = SHA.SHA1(msgnya);
-        Timber.d("isi sha1 signatureFCM : " + hash);
-
-        HashMap<String,String> params = new HashMap<>();
-        params.put(WebParams.RQ_UUID, uuidnya.toString());
-        params.put(WebParams.RQ_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-
-        return params;
-    }
-
-    public static HashMap<String,String> getSignatureWithParams(String commID, String linknya, String user_id, String access_key){
-
-        String webServiceName = getWebserviceName(linknya);
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id;
-//        Timber.d("isi access_key :" + access_key);
-//
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
-
-        String hash = SHA.SHA256(access_key,msgnya);
-
-        HashMap<String,String> params = new HashMap<>();
-        params.put(WebParams.RC_UUID, uuidnya.toString());
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-        return params;
-    }
-
-    public static String getSignature(UUID uuidnya, String date, String WebServiceName, String noID, String apinya){
-        String msgnya = uuidnya+date+BuildConfig.APP_ID+WebServiceName+noID;
-        String hash = SHA.SHA256(apinya,msgnya);
-        return hash;
-    }
-
     public static UUID getUUID(){
         return UUID.randomUUID();
     }
 
     public static String getWebserviceName(String link){
-        StringTokenizer tokens = new StringTokenizer(link, "/");
-        int index = 0;
-        while(index<3) {
-            tokens.nextToken();
-            index++;
-        }
-        return tokens.nextToken();
+        return link.substring(link.indexOf("saldomu/"));
     }
 
-//    public static String encodeURL(String url){
-//        try {
-//            address = URLEncoder.encode(url, "utf-8");
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
+    public HashMap<String, Object> getSignatureSecretKey(String linknya, String extraSignature){
+        return getSignatures(MyApiClient.COMM_ID, "", linknya, BuildConfig.SECRET_KEY, extraSignature);
+    }
+
+    public HashMap<String, Object> getSignature(String linknya){
+        return getInstance().getSignatures(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), "");
+    }
+
+    public HashMap<String, Object> getSignature(String linknya, String extraSignature){
+        return getInstance().getSignatures(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extraSignature);
+    }
+
+    public static HashMap<String, Object> getSignature(String commID, String linknya, String extraSignature){
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
+        String hash = SHA.SHA256(BuildConfig.SECRET_KEY, msgnya);
+
+        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+
+        return params;
+    }
+
+    private HashMap<String, Object> getSignatures(String commid, String userphoneid, String linknya, String secretKey
+            , String extraSignature){
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userphoneid + extraSignature;
+        String hash = SHA.SHA256(secretKey, msgnya);
+
+        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(WebParams.RC_UUID, uuidnya);
+        params.put(WebParams.RC_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+
+        return params;
+    }
+
+    public HashMap<String, RequestBody> getSignature2(String linknya){
+        return getInstance().getSignatures2(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), "");
+    }
+
+    private HashMap<String, RequestBody> getSignatures2(String commid, String userphoneid, String linknya, String secretKey
+            , String extraSignature){
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commid + userphoneid + extraSignature;
+        String hash = SHA.SHA256(secretKey, msgnya);
+
+        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
+
+        HashMap<String, RequestBody> params = new HashMap<>();
+        RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"),
+                uuidnya.toString());
+        RequestBody req2 = RequestBody.create(MediaType.parse("text/plain"),
+                dtime);
+        RequestBody req3 = RequestBody.create(MediaType.parse("text/plain"),
+                hash);
+        params.put(WebParams.RC_UUID, req1);
+        params.put(WebParams.RC_DTIME, req2);
+        params.put(WebParams.SIGNATURE, req3);
+
+        return params;
+    }
+
+    public String getAccessKey(){
+        return getInstance().getSecurePref().getString(DefineValue.ACCESS_KEY,"");
+    }
+
+    public String getCommIdLogin(){
+        return getInstance().getSecurePref().getString(DefineValue.COMMUNITY_ID,"");
+    }
+    public String getUserPhoneId(){
+        return getInstance().getSecurePref().getString(DefineValue.USERID_PHONE,"");
+    }
+
+    private SecurePreferences getSecurePref(){
+        if (sp == null)
+            sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        return sp;
+    }
+
+    private JsonObject getErrorMessage(Throwable e){
+        JsonObject error = new JsonObject();
+//        if (e instanceof HttpException) {
+            //                ResponseBody body = ((HttpException) e).response().raw();
+//                Converter<ResponseBody, JsonObject> errorConverter =
+//                        retrofit.responseBodyConverter(JsonObject.class, new Annotation[0]);
+
+//                assert body != null;
+//                error = errorConverter.convert(body);
+
+
 //        }
-//        return address;
-//    }
-
-    public static boolean callSuccess(Response response){
-        int code = response.code();
-        return (code >= 200 && code<=400);
-    }
-
-
-    public static void notSuccesResponse(int responsecode){
-        switch (responsecode) {
-            case 401:
-                Toast.makeText(mContext, mContext.getString(R.string.authentication_problem), Toast.LENGTH_SHORT).show();
-                break;
-            case 404:
-                Toast.makeText(mContext, mContext.getString(R.string.url_not_found), Toast.LENGTH_SHORT).show();
-                break;
-            case 500:
-                Toast.makeText(mContext, mContext.getString(R.string.server_is_broken), Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-    public static String checkErrorResponseCode(int responsecode){
-        String error = null;
-        switch (responsecode) {
-            case 401:
-                error = mContext.getString(R.string.authentication_problem);
-                break;
-            case 404:
-                error = mContext.getString(R.string.url_not_found);
-                break;
-            case 500:
-                error = mContext.getString(R.string.server_is_broken);
-                break;
-            default:
-                error = mContext.getString(R.string.unknown_error);
-                break;
-        }
+        error.addProperty("error_code", ((HttpException) e).code());
+        error.addProperty("error_message", (((HttpException) e).message()));
+        error.addProperty("on_error", true);
         return error;
     }
 
-    public static void networkError(Throwable throwable, Call call){
-        int retryCount = 0;
-        int totalRetries = 3;
-        if(throwable instanceof IOException){
-            Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+    public void PostObjectRequest(String link, HashMap<String, Object> param , final ObjListener listener) {
+        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        }
-        else{
-            Toast.makeText(mContext, mContext.getString(R.string.conversion_retrofit_error), Toast.LENGTH_SHORT).show();
-        }
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onResponses(getErrorMessage(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
+    public void GetObjectRequest(String link, final ObjListener listener) {
+        BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onResponses(getErrorMessage(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void MultiPartRequest(String link, HashMap<String, RequestBody> param,
+                                 MultipartBody.Part file, final ObjListener listener) {
+        BuildRetrofit().MultiPartInterface(link, param, file).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onResponses(getErrorMessage(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public Gson getGson(){
+        if (gson== null)
+            gson = new Gson();
+        return gson;
+    }
 
  }

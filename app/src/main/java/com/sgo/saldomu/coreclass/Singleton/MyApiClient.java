@@ -2,6 +2,7 @@ package com.sgo.saldomu.coreclass.Singleton;
 
 import android.content.Context;
 import android.os.Looper;
+import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -15,10 +16,10 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.TLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
+import com.sgo.saldomu.widgets.TLSSocketFactory;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -207,7 +208,7 @@ public class MyApiClient {
 	public static String LINK_REQUEST_CASHOUT;
     public static String LINK_CONFIRM_CASHOUT;
     public static String LINK_REJECT_CONFIRM_CASHOUT;
-    private static String LINK_HELP_PIN;
+    public static String LINK_HELP_PIN;
 
     public static String LINK_INQUIRY_WITHDRAW;
     public static String LINK_REQCODE_WITHDRAW;
@@ -572,8 +573,8 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ getCommIdLogin() + getUserPhoneId()+extraSignature;
-        Timber.d("isi access_key :" + getAccessKey());
-        Timber.d("isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
+        Timber.d("myapiclient isi access_key :" + getAccessKey());
+        Timber.d("myapiclient isisnya signature : "+  webServiceName +" / "+getCommIdLogin()+" / " + getUserPhoneId() + " / " + extraSignature);
 
         String hash = SHA.SHA256(getAccessKey(),msgnya);
 
@@ -613,12 +614,29 @@ public class MyApiClient {
         return getInstance().sp.getString(DefineValue.ACCESS_KEY,"");
     }
 
-    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature){
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key, String extraSignature, String uuid, String dtimes){
 
         String webServiceName = getWebserviceName(linknya);
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
+        String msgnya = uuid+dtimes+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
+        String hash = SHA.SHA256(secret_key,msgnya);
+
+        Log.d("myapiclient", "msg : " + msgnya + ", hashed : " + hash);
+
+        RequestParams params = new RequestParams();
+        params.put(WebParams.RC_UUID, uuid);
+        params.put(WebParams.RC_DTIME, dtimes);
+        params.put(WebParams.SIGNATURE, hash);
+        return params;
+    }
+
+    public static RequestParams getSignatureWithParamsWithoutLogin(String commID, String linknya, String secret_key,  String extraSignature){
+
+        String webServiceName = getWebserviceName(linknya);
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID;
         String hash = SHA.SHA256(secret_key,msgnya);
 
         RequestParams params = new RequestParams();

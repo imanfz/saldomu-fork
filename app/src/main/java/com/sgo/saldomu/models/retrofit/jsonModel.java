@@ -3,54 +3,23 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.SerializedName;
 
 public class jsonModel {
-    @SerializedName("status")
-    private String status;
-    @SerializedName("statusCode")
-    private Integer statusCode;
-    @SerializedName("errorCode")
-    private Integer errorCode;
-    @SerializedName("message")
-    private String message;
-//    @SerializedName("payload")
-//    private List<Payload> payload;
+    @SerializedName("error_code")
+    private String error_code;
+    @SerializedName("error_message")
+    private String error_message;
+    @SerializedName("on_error")
+    private boolean on_error;
 
-    public String getStatus() {
-        return status;
+
+    public String getError_code() {
+        return error_code;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getError_message() {
+        return error_message;
     }
 
-    public Integer getStatusCode() {
-        return statusCode;
+    public boolean getOn_error() {
+        return on_error;
     }
-
-    public void setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public Integer getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(Integer errorCode) {
-        this.errorCode = errorCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-//    public List<Payload> getPayload() {
-//        return payload;
-//    }
-//
-//    public void setPayload(List<Payload> payload) {
-//        this.payload = payload;
-//    }
 }

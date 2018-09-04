@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
+import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -46,6 +47,7 @@ import com.sgo.saldomu.coreclass.NotificationHandler;
 import com.sgo.saldomu.coreclass.RootUtil;
 import com.sgo.saldomu.coreclass.SMSclass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.UserProfileHandler;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -58,8 +60,12 @@ import com.sgo.saldomu.fragments.FragMainPage;
 import com.sgo.saldomu.fragments.MyHistory;
 import com.sgo.saldomu.fragments.NavigationDrawMenu;
 import com.sgo.saldomu.fragments.RightSideDrawMenu;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.GetMemberModel;
+import com.sgo.saldomu.models.retrofit.MemberDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
@@ -728,8 +734,9 @@ public class MainPage extends BaseActivity {
 
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
-                    , MyApiClient.COMM_ID_PULSA);
+//            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
+//                    , MyApiClient.COMM_ID_PULSA);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -737,170 +744,151 @@ public class MainPage extends BaseActivity {
 
             Timber.d("isi params listmember mainpage:" + params.toString());
 
-            MyApiClient.sentDataListMember(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String arraynya = response.getString(WebParams.MEMBER_DATA);
-                            Timber.d("Isi response listmember:" + response.toString());
-                            if (!arraynya.isEmpty()) {
-                                JSONArray arrayJson = new JSONArray(arraynya);
-                                JSONObject objectJson = arrayJson.getJSONObject(0);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIST_MEMBER, params
+                    , new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                                SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.MEMBER_CODE, objectJson.optString(WebParams.MEMBER_CODE, ""));
-                                mEditor.putString(DefineValue.MEMBER_ID, objectJson.optString(WebParams.MEMBER_ID, ""));
-                                mEditor.putString(DefineValue.MEMBER_NAME, objectJson.optString(WebParams.MEMBER_NAME, ""));
-                                mEditor.apply();
+                            GetMemberModel model = RetrofitService.getInstance().getGson().fromJson(object, GetMemberModel.class);
 
-                                if(mNavDrawer != null && serviceReferenceBalance != null)
-                                    serviceReferenceBalance.runBalance();
+                            if (!model.getOn_error()){
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    if (!model.getMemberData().isEmpty()) {
 
-                                initializeNavDrawer();
-                                CheckNotification();
+                                        MemberDataModel memberModel = model.getMemberData().get(0);
 
-                                String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.MEMBER_CODE, memberModel.getMember_code());
+                                        mEditor.putString(DefineValue.MEMBER_ID, memberModel.getMember_id());
+                                        mEditor.putString(DefineValue.MEMBER_NAME, memberModel.getMember_name());
+                                        mEditor.apply();
 
-                                if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
-                                {
-                                    UserProfileHandler mBH = new UserProfileHandler(getApplication());
-                                    mBH.sentUserProfile(new OnLoadDataListener() {
-                                        @Override
-                                        public void onSuccess(Object deData) {
+                                        if(mNavDrawer != null && serviceReferenceBalance != null)
+                                            serviceReferenceBalance.runBalance();
+
+                                        initializeNavDrawer();
+                                        CheckNotification();
+
+                                        String is_new_bulk = sp.getString(DefineValue.IS_NEW_BULK,"N");
+
+                                        if(is_new_bulk.equalsIgnoreCase(DefineValue.STRING_YES))
+                                        {
+                                            UserProfileHandler mBH = new UserProfileHandler(getApplication());
+                                            mBH.sentUserProfile(new OnLoadDataListener() {
+                                                @Override
+                                                public void onSuccess(Object deData) {
+                                                    if (progdialog.isShowing())
+                                                        progdialog.dismiss();
+                                                    checkField();
+                                                }
+
+                                                @Override
+                                                public void onFail(Bundle message) {
+
+                                                }
+
+                                                @Override
+                                                public void onFailure(String message) {
+
+                                                }
+                                            }, is_new_bulk);
+                                        }
+                                        else {
                                             if (progdialog.isShowing())
                                                 progdialog.dismiss();
                                             checkField();
                                         }
 
-                                        @Override
-                                        public void onFail(Bundle message) {
-
-                                        }
-
-                                        @Override
-                                        public void onFailure(String message) {
-
-                                        }
-                                    }, is_new_bulk);
-                                }
-                                else {
-                                    if (progdialog.isShowing())
-                                        progdialog.dismiss();
-                                    checkField();
-                                }
-
 //                                if (progdialog.isShowing())
 //                                    progdialog.dismiss();
 //                                checkField();
-                                setupBBSData();
+                                        setupBBSData();
 
-                                if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
-                                    try{
-                                        JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
-                                        Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtra("memberId", shopAgentObject.getString("member_id"));
-                                        intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
-                                        intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
-                                        intent.putExtra("memberType", shopAgentObject.getString("member_type"));
-                                        intent.putExtra("memberName", shopAgentObject.getString("member_name"));
-                                        intent.putExtra("commName", shopAgentObject.getString("comm_name"));
-                                        intent.putExtra("province", shopAgentObject.getString("province"));
-                                        intent.putExtra("district", shopAgentObject.getString("district"));
-                                        intent.putExtra("address", shopAgentObject.getString("address1"));
-                                        intent.putExtra("category", "");
-                                        intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
-                                        switchActivity(intent, ACTIVITY_RESULT);
-                                    }catch(Exception e){
-                                        e.printStackTrace();
+                                        if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_LOCATION, "").equals(DefineValue.STRING_NO) ) {
+                                            try{
+                                                JSONObject shopAgentObject = new JSONObject(sp.getString(DefineValue.SHOP_AGENT_DATA, ""));
+                                                Intent intent = new Intent(MainPage.this, BbsMemberLocationActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtra("memberId", shopAgentObject.getString("member_id"));
+                                                intent.putExtra("shopId", shopAgentObject.getString("shop_id"));
+                                                intent.putExtra("shopName", shopAgentObject.getString("shop_name"));
+                                                intent.putExtra("memberType", shopAgentObject.getString("member_type"));
+                                                intent.putExtra("memberName", shopAgentObject.getString("member_name"));
+                                                intent.putExtra("commName", shopAgentObject.getString("comm_name"));
+                                                intent.putExtra("province", shopAgentObject.getString("province"));
+                                                intent.putExtra("district", shopAgentObject.getString("district"));
+                                                intent.putExtra("address", shopAgentObject.getString("address1"));
+                                                intent.putExtra("category", "");
+                                                intent.putExtra("isMobility", shopAgentObject.getString("is_mobility"));
+                                                switchActivity(intent, ACTIVITY_RESULT);
+                                            }catch(Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
+                                            try{
+                                                Bundle bundle = new Bundle();
+                                                bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
+
+                                                Intent intent = new Intent(MainPage.this, BBSActivity.class);
+                                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.putExtras(bundle);
+                                                startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
+                                                finish();
+
+                                            }catch(Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+
+                                    } else {
+
+                                        Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
+                                        if (progdialog.isShowing())
+                                            progdialog.dismiss();
                                     }
-                                } else if ( !sp.getString(DefineValue.SHOP_AGENT_DATA, "").equals("") && sp.getString(DefineValue.IS_AGENT_SET_OPENHOUR, "").equals(DefineValue.STRING_NO) ) {
-                                    try{
-                                        Bundle bundle = new Bundle();
-                                        bundle.putInt(DefineValue.INDEX, BBSActivity.BBSWAKTUBEROPERASI);
 
-                                        Intent intent = new Intent(MainPage.this, BBSActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtras(bundle);
-                                        startActivityForResult(intent, MainPage.RESULT_REFRESH_NAVDRAW);
-                                        finish();
 
-                                    }catch(Exception e){
-                                        e.printStackTrace();
-                                    }
-                                }
+                                    String member_dap = RetrofitService.getInstance().getGson().toJson(model.getMember_dap());
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
+                                    mEditor.apply();
 
-                            } else {
+                                    if (progdialog.isShowing())
+                                        progdialog.dismiss();
 
-                                Toast.makeText(MainPage.this, "List Member is Empty", Toast.LENGTH_LONG).show();
-                                if (progdialog.isShowing())
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + model.getError_message());
                                     progdialog.dismiss();
-                            }
+                                    String message = model.getError_message();
 
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(MainPage.this, message);
+                                } else {
+                                    Timber.d("Error ListMember comlist:" + model.getError_message());
+                                    code = model.getError_message();
+                                    progdialog.dismiss();
+                                    Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
 
-                            String member_dap = response.getString(WebParams.MEMBER_DAP);
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.MEMBER_DAP, member_dap);
-                            mEditor.apply();
-
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            progdialog.dismiss();
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(MainPage.this, message);
-                        } else {
-                            Timber.d("Error ListMember comlist:" + response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
-                            Toast.makeText(MainPage.this, code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
+                                }
+                            }else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                if(progdialog.isShowing())
+                                    progdialog.dismiss();
 
 //                    if (BuildConfig.FLAVOR.equals("development")){
 //                        Logout(FIRST_SCREEN_LOGIN);
 //                    }else
-                        sentLogout();
+                                sentLogout();
 //                    finish();
-                    Timber.w("Error Koneksi List member comlist:" + throwable.getMessage());
-                }
-            });
+                            }
+                        }
+                    });
+
+
         }catch (Exception e){
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -1091,64 +1079,43 @@ public class MainPage extends BaseActivity {
                 progdialog.show();
             }
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
+//            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params logout:"+params.toString());
 
-            MyApiClient.sentLogout(this, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        progdialog.dismiss();
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("logout:"+response.toString());
-                            //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                            Logout(FIRST_SCREEN_LOGIN);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
+                    , new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
 
-                        } else {
-                            progdialog.dismiss();
-                            Timber.d("isi error logout:"+response.toString());
-                            Toast.makeText(MainPage.this, message, Toast.LENGTH_LONG).show();
+                            if (!model.getOn_error()){
+                                progdialog.dismiss();
+                                if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
+//                                    Timber.d("logout:"+response.toString());
+                                    //stopService(new Intent(MainPage.this, UpdateLocationService.class));
+                                    Logout(FIRST_SCREEN_LOGIN);
+
+                                } else {
+                                    progdialog.dismiss();
+//                                    Timber.d("isi error logout:"+response.toString());
+                                    Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_LONG).show();
+                                }
+                            }else {
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                if(progdialog.isShowing())
+                                    progdialog.dismiss();
+                                MainPage.this.finish();
+//                                Timber.w("Error Koneksi logout mainpage:"+throwable.toString());
+                            }
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(MainPage.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(MainPage.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    MainPage.this.finish();
-                    Timber.w("Error Koneksi logout mainpage:"+throwable.toString());
-                }
-            });
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

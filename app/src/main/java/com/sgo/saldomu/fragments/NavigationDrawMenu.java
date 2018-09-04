@@ -32,6 +32,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -48,17 +50,22 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.UploadPPModel;
+import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
@@ -71,12 +78,18 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
+import static com.sgo.saldomu.coreclass.Singleton.RetrofitService.getUUID;
 
 /*
   Created by Administrator on 12/8/2014.
@@ -127,6 +140,7 @@ public class NavigationDrawMenu extends ListFragment{
 
     private Animation frameAnimation;
     private ImageView btn_refresh_balance;
+    Gson gson;
 
     private View v;
     private NavDrawMainMenuAdapter mAdapter;
@@ -156,6 +170,8 @@ public class NavigationDrawMenu extends ListFragment{
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
+
+        gson = new Gson();
     }
 
     @Override
@@ -790,91 +806,63 @@ public class NavigationDrawMenu extends ListFragment{
         if(userID == null)
             userID = sp.getString(DefineValue.USERID_PHONE,"");
 
-        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_PROFILE_PIC,
-                userID,accessKey);
+        HashMap<String, RequestBody> params2 = RetrofitService.getInstance()
+                .getSignature2(MyApiClient.LINK_UPLOAD_PROFILE_PIC);
 
-        try {
-            params.put(WebParams.USER_ID,headerCustID.getText().toString());
-            params.put(WebParams.USER_FILE, photoFile);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        RequestBody requestFile =
+                RequestBody.create(MediaType.parse("image/*"), photoFile);
 
-        Timber.d("params upload profile picture: " + params.toString());
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(WebParams.USER_FILE, photoFile.getName(),
+                requestFile);
+        RequestBody req1 = RequestBody.create(MediaType.parse("text/plain"),
+                headerCustID.getText().toString());
+        RequestBody req2 = RequestBody.create(MediaType.parse("text/plain"),
+                MyApiClient.COMM_ID);
 
-        MyApiClient.sentProfilePicture(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    progdialog2.dismiss();
-                    String error_code = response.getString("error_code");
-                    String error_message = response.getString("error_message");
-                    Timber.d("response upload profile picture:" + response.toString());
-                    if (error_code.equalsIgnoreCase("0000")) {
-                        SecurePreferences.Editor mEditor = sp.edit();
+        params2.put(WebParams.USER_ID, req1);
+        params2.put(WebParams.COMM_ID, req2);
 
-                        mEditor.putString(DefineValue.IMG_URL, response.getString(WebParams.IMG_URL));
-                        mEditor.putString(DefineValue.IMG_SMALL_URL, response.getString(WebParams.IMG_SMALL_URL));
-                        mEditor.putString(DefineValue.IMG_MEDIUM_URL, response.getString(WebParams.IMG_MEDIUM_URL));
-                        mEditor.putString(DefineValue.IMG_LARGE_URL, response.getString(WebParams.IMG_LARGE_URL));
+        RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_PROFILE_PIC, params2, filePart,
+                new ObjListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
+                        progdialog2.dismiss();
 
-                        mEditor.apply();
+                        UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
 
-                        setImageProfPic();
+                        String error_code = model.getError_code();
+                        String error_message = model.getError_message();
+//                            Timber.d("response upload profile picture:" + response.toString());
+                        if (error_code.equalsIgnoreCase("0000")) {
+                            SecurePreferences.Editor mEditor = sp.edit();
 
-                        RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
-                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                            mEditor.putString(DefineValue.IMG_URL, model.getImg_url());
+                            mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImg_small_url());
+                            mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImg_medium_url());
+                            mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImg_large_url());
 
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(), message);
-                    } else {
-                        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                        alert.setTitle("Upload Image");
-                        alert.setMessage("Upload Image : " + error_message);
-                        alert.setPositiveButton("OK", null);
-                        alert.show();
+                            mEditor.apply();
+
+                            setImageProfPic();
+
+                            RESULT = MainPage.RESULT_REFRESH_NAVDRAW;
+                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+//                                Timber.d("isi response autologout:" + response.toString());
+//                                String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(), error_message);
+                        } else {
+                            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                            alert.setTitle("Upload Image");
+                            alert.setMessage("Upload Image : " + error_message);
+                            alert.setPositiveButton("OK", null);
+                            alert.show();
+
+                        }
 
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                setImageProfPic();
-                progdialog2.dismiss();
-                Timber.w("Error Koneksi data upload foto myprofile:" + throwable.toString());
-            }
-
-        });
+                });
     }
 
     private void showAlertEnabledGPS() {

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -28,6 +29,7 @@ public abstract class BaseFragment extends Fragment {
     protected ProgBarDialog loadingDialog;
 
     protected View v;
+    protected Gson gson;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,6 +41,13 @@ public abstract class BaseFragment extends Fragment {
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
         userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+    }
+
+    protected Gson getGson(){
+        if (gson == null){
+            gson = new Gson();
+        }
+        return gson;
     }
 
     protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack){
