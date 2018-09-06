@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,7 +32,7 @@ import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -46,17 +45,20 @@ import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
+import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +67,7 @@ import timber.log.Timber;
 /*
  * Created by thinkpad on 3/17/2015.
  */
-public class FragAskForMoney extends Fragment {
+public class FragAskForMoney extends BaseFragment {
 
     private View v;
     private ImageView imgProfile;
@@ -375,8 +377,9 @@ public class FragAskForMoney extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ASKFORMONEY_SUBMIT,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ASKFORMONEY_SUBMIT,
                     _userid,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ASKFORMONEY_SUBMIT);
             params.put(WebParams.MEMBER_ID,_memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
@@ -388,84 +391,58 @@ public class FragAskForMoney extends Fragment {
 
             Timber.d("isi params sent ask for money:"+params.toString());
 
-            MyApiClient.sentSubmitAskForMoney(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    Timber.d("isi params response ask for money:"+response.toString());
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASKFORMONEY_SUBMIT, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            JSONArray mArrayData;
-                            String messageDialog = null, recipient="",amount, recipient_name = "";
-                            try {
-                                mArrayData = new JSONArray(_data);
-                                for(int i=0;i<mArrayData.length();i++){
-                                    recipient = recipient+mArrayData.getJSONObject(i).getString(WebParams.SEND_TO);
-                                    recipient_name = recipient_name + mArrayData.getJSONObject(i).getString(WebParams.RECIPIENT_NAME);
-                                    if((i+1)<mArrayData.length()){
-                                        recipient= recipient+", ";
-                                        recipient_name =recipient_name+", ";
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                JSONArray mArrayData;
+                                String messageDialog = null, recipient="",amount, recipient_name = "";
+                                try {
+                                    mArrayData = new JSONArray(_data);
+                                    for(int i=0;i<mArrayData.length();i++){
+                                        recipient = recipient+mArrayData.getJSONObject(i).getString(WebParams.SEND_TO);
+                                        recipient_name = recipient_name + mArrayData.getJSONObject(i).getString(WebParams.RECIPIENT_NAME);
+                                        if((i+1)<mArrayData.length()){
+                                            recipient= recipient+", ";
+                                            recipient_name =recipient_name+", ";
+                                        }
                                     }
+                                    amount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(mArrayData.getJSONObject(0).getString(WebParams.AMOUNT));
+                                    messageDialog = getString(R.string.askfriends_dialog_text_recipient)+" : "+recipient_name+"\n"+
+                                            getString(R.string.askfriends_dialog_text_amount)+" : "+amount+"\n"+
+                                            getString(R.string.askfriends_dialog_text_desc)+" : "+_message+"\n";
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                                amount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(mArrayData.getJSONObject(0).getString(WebParams.AMOUNT));
-                                messageDialog = getString(R.string.askfriends_dialog_text_recipient)+" : "+recipient_name+"\n"+
-                                        getString(R.string.askfriends_dialog_text_amount)+" : "+amount+"\n"+
-                                        getString(R.string.askfriends_dialog_text_desc)+" : "+_message+"\n";
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                showDialog(messageDialog );
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getActivity(),message);
                             }
-                            showDialog(messageDialog );
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
-                        }
-                        else {
-                            if(code.equals("0998")){
-                                phoneRetv.requestFocus();
-                                phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                            else {
+                                if(code.equals("0998")){
+                                    phoneRetv.requestFocus();
+                                    phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                                }
+                                code = model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
                             }
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi sent proses ask4money:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

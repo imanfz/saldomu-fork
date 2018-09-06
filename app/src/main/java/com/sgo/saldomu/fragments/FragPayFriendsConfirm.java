@@ -13,6 +13,7 @@ import android.telephony.SmsMessage;
 import android.view.*;
 import android.widget.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -24,12 +25,17 @@ import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
 import com.sgo.saldomu.adapter.RecipientAdapter;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.PayFriendConfirmModel;
+import com.sgo.saldomu.models.retrofit.PayfriendDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -39,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -346,8 +353,7 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId, String recipients,String amountEach, String amount,
-                                        String fee,String totalAmount, String message, String errorRecipients, String buss_scheme_code,
-                                        String buss_scheme_name, String transfer_data) {
+                                        String fee,String totalAmount, String message, String errorRecipients, PayFriendConfirmModel model) {
 
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -363,9 +369,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.MESSAGE,message);
         args.putString(DefineValue.RECIPIENTS_ERROR,errorRecipients);
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
-        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
-        args.putString(DefineValue.TRANSFER_DATA, transfer_data);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
+        args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
+        args.putString(DefineValue.TRANSFER_DATA, model.getTransfer_data());
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
@@ -408,12 +414,18 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
             extraSignature = memberIDLogin+_token;
-            RequestParams params;
+            RequestParams param;
+            HashMap<String, Object> params;
+            String url;
             if(isNotification) {
 
-                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF, extraSignature);
+                url = MyApiClient.LINK_CONFIRM_TRANS_P2P_NOTIF;
             }else {
-                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
+//                params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_CONFIRM_TRANS_P2P,extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANS_P2P, extraSignature);
+                url = MyApiClient.LINK_CONFIRM_TRANS_P2P;
             }
 
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
@@ -424,145 +436,108 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             params.put(WebParams.DATA_MAPPER, dataMapper);
             Timber.d("isi params sent confirm token p2p:"+params.toString());
 
-            JsonHttpResponseHandler myHandler = new JsonHttpResponseHandler() {
+            RetrofitService.getInstance().PostObjectRequest(url, params, new ObjListener() {
                 @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+                public void onResponses(JsonObject object) {
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response confirm token p2p:"+response.toString());
-                            //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
+                    PayFriendConfirmModel model = getGson().fromJson(object, PayFriendConfirmModel.class);
 
-                            JSONArray mArrayData = new JSONArray(response.getString(WebParams.DATA));
-                            Timber.d("isi response data:"+mArrayData.toString());
-                            int isFailed=0 ;
-                            String error_msg = "";
+                    String code = model.getError_code();
+                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                        //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
 
-                            String _txid = "", _recipient = "", _recipient_error = null,_message;
-                            double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
-                            _message = message;
+                        int isFailed=0 ;
+                        String error_msg = "";
 
-                            for(int i = 0 ; i < mArrayData.length() ; i++) {
-                                for (RecepientModel aListObjectRecipient : listObjectRecipient) {
-                                    if (aListObjectRecipient.getTx_id().equals(mArrayData.getJSONObject(i).getString(WebParams.TX_ID))) {
-                                        if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.SUCCESS)) {
-                                            if (_txid.equals("")) {
-                                                _txid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                                                _recipient = aListObjectRecipient.getName();
-                                            } else {
-                                                _txid = _txid + "\n" + mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                                                _recipient = _recipient + "\n" + aListObjectRecipient.getName();
-                                            }
+                        String _txid = "", _recipient = "", _recipient_error = null,_message;
+                        double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
+                        _message = message;
 
-                                            _Amount = _Amount + amountEach;
-                                            _fee = _fee + fee;
-                                            _total_amount = _total_amount + totalAmount;
-                                        }
-                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.FAILED)) {
-                                            isFailed++ ;
-                                            error_msg = mArrayData.getJSONObject(i).getString(WebParams.TX_REMARK);
-                                            if (_recipient_error == null)
-                                                _recipient_error = aListObjectRecipient.getName()+ " = " + error_msg;
-                                            else _recipient_error = _recipient_error + "\n" +
-                                                    aListObjectRecipient.getName()+ " = " + error_msg;
-                                        }
-                                        else if(mArrayData.getJSONObject(i).getString(WebParams.TX_STATUS).equals(DefineValue.WAITING_CLAIM)){
-                                            _total_wc = _total_wc + totalAmount;
+                        for (PayfriendDataModel obj: model.getData()) {
+                            for (RecepientModel aListObjectRecipient : listObjectRecipient) {
+                                if (aListObjectRecipient.getTx_id().equals(obj.getTx_id())) {
+                                    if(obj.getTx_status().equals(DefineValue.SUCCESS)) {
+                                        if (_txid.equals("")) {
+                                            _txid = obj.getTx_id();
+                                            _recipient = aListObjectRecipient.getName();
+                                        } else {
+                                            _txid = _txid + "\n" + obj.getTx_id();
+                                            _recipient = _recipient + "\n" + aListObjectRecipient.getName();
                                         }
 
+                                        _Amount = _Amount + amountEach;
+                                        _fee = _fee + fee;
+                                        _total_amount = _total_amount + totalAmount;
                                     }
+                                    else if(obj.getTx_status().equals(DefineValue.FAILED)) {
+                                        isFailed++ ;
+                                        error_msg = obj.getTx_remark();
+                                        if (_recipient_error == null)
+                                            _recipient_error = aListObjectRecipient.getName()+ " = " + error_msg;
+                                        else _recipient_error = _recipient_error + "\n" +
+                                                aListObjectRecipient.getName()+ " = " + error_msg;
+                                    }
+                                    else if(obj.getTx_status().equals(DefineValue.WAITING_CLAIM)){
+                                        _total_wc = _total_wc + totalAmount;
+                                    }
+
                                 }
                             }
+                        }
 
 
-                            if(isFailed != mArrayData.length()){
+                        if(isFailed != model.getData().size()){
 
-                                String name = sp.getString(DefineValue.USER_NAME,"");
+                            String name = sp.getString(DefineValue.USER_NAME,"");
 //                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
 
-                                if(list_non_member.size() == mArrayData.length()){
-                                    showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
-                                }
-                                else {
-                                    showReportBillerDialog(name,
-                                            DateTimeFormat.getCurrentDateTime(),
-                                            sp.getString(DefineValue.USERID_PHONE, ""),
-                                            _txid,
-                                            _recipient,
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
-                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
-                                            _message,
-                                            _recipient_error, response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA));
-                                }
+                            if(list_non_member.size() == model.getData().size()){
+                                showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
                             }
-                            else showDialog(error_msg);
-
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialogError(code);
-                        }
-                        else {
-                            Timber.d("isi error confirm token p2p:" + response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            if(authType.equalsIgnoreCase("PIN")) {
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
-                                attempt = attempt-1;
-                                if(attempt != -1 && attempt < 2)
-                                    i.putExtra(DefineValue.ATTEMPT, attempt);
-                                startActivityForResult(i,MainPage.REQUEST_FINISH);
+                            else {
+                                showReportBillerDialog(name,
+                                        DateTimeFormat.getCurrentDateTime(),
+                                        sp.getString(DefineValue.USERID_PHONE, ""),
+                                        _txid,
+                                        _recipient,
+                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
+                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
+                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
+                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
+                                        _message,
+                                        _recipient_error, model);
+//                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA)
                             }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        } else showDialog(error_msg);
                     }
-                }
+                    else if(code.equals(WebParams.LOGOUT_CODE)){
+                        String message = model.getError_message();
+                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                        test.showDialoginActivity(getActivity(),message);
+                    }
+                    else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                        code = model.getError_message();
+                        showDialogError(code);
+                    }
+                    else {
+                        code = model.getError_message();
+                        if(MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                        if(authType.equalsIgnoreCase("PIN")) {
+                            Intent i = new Intent(getActivity(), InsertPIN.class);
+                            attempt = attempt-1;
+                            if(attempt != -1 && attempt < 2)
+                                i.putExtra(DefineValue.ATTEMPT, attempt);
+                            startActivityForResult(i,MainPage.REQUEST_FINISH);
+                        }
+                    }
                     if (progdialog.isShowing())
                         progdialog.dismiss();
-
-                    Timber.w("Error Koneksi confirm proses p2p confirm:"+throwable.toString());
                 }
-            };
-
-            if(isNotification)
-                MyApiClient.sentConfirmTransP2PNotif(getActivity(),params, myHandler );
-            else
-                MyApiClient.sentConfirmTransP2P(getActivity(),params, myHandler );
+            });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -597,8 +572,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESENT_TOKEN_P2P,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESENT_TOKEN_P2P,
                     userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESENT_TOKEN_P2P);
             params.put(WebParams.MEMBER_ID,memberIDLogin);
             params.put(WebParams.DATA,_data);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -606,68 +582,40 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
 
             Timber.d("isi params sent resend token p2p:"+params.toString());
 
-            MyApiClient.sentResentTokenP2P(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params resend confirm token p2p:"+response.toString());
-                            max_token_resend = max_token_resend - 1;
-                            changeTextBtnSub();
-                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESENT_TOKEN_P2P, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                max_token_resend = max_token_resend - 1;
+                                changeTextBtnSub();
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE) ){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    code = model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                            }
+                            if(max_token_resend == 0 ){
+                                btnResend.setEnabled(false);
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
+                            }
+
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE) ){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            Timber.d("isi error resend token p2p:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
-                        }
-                        if(max_token_resend == 0 ){
-                            btnResend.setEnabled(false);
-                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi resend p2p confirm:" + throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

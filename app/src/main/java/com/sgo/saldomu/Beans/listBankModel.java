@@ -2,13 +2,26 @@ package com.sgo.saldomu.Beans;/*
   Created by Administrator on 12/15/2014.
  */
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class listBankModel {
 
+  @SerializedName("bank_name")
+  @Expose
   private String bank_name;
   private String bank_code;
+  @SerializedName("product_code")
+  @Expose
   private String product_code;
+  @SerializedName("product_name")
+  @Expose
   private String product_name;
+  @SerializedName("product_type")
+  @Expose
   private String product_type;
+  @SerializedName("product_h2h")
+  @Expose
   private String product_h2h;
   private String bank_gateway;
   private String noVA;

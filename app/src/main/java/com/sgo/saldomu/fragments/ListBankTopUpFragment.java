@@ -24,6 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.BankDataTopUp;
@@ -42,10 +46,13 @@ import com.sgo.saldomu.coreclass.JsonUtil;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.BankListModel;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -55,9 +62,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import timber.log.Timber;
 
@@ -75,8 +85,8 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
     Boolean is_full_activity = false;
     LevelClass levelClass;
     private InformationDialog dialogI;
-    Expendable_List_View_Adapter expand_lv_adapter;
-    ExpandableListView expand_lv;
+//    Expendable_List_View_Adapter expand_lv_adapter;
+//    ExpandableListView expand_lv;
     List<BankHeaderTopUp> listDataHeader;
     HashMap<String, BankDataTopUp> listDataChild;
 
@@ -132,22 +142,11 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
         listDataChild = new HashMap<>();
         listDataHeader2 = new ArrayList<>();
 
-        expand_lv_adapter = new Expendable_List_View_Adapter(getActivity(),listDataHeader, listDataChild);
+//        expand_lv_adapter = new Expendable_List_View_Adapter(getActivity(),listDataHeader, listDataChild);
         bankListTopupAdapter = new BankListTopupAdapter(getActivity(), temp_other_atm, listDataHeader2, new BankListTopupAdapter.OnClick() {
             @Override
             public void onClick(ArrayList<listBankModel> bankData) {
                 DataManager.getInstance().setBankData(bankData);
-//                FragmentManager fm = getFragmentManager();
-//                FragmentTransaction ft = fm.beginTransaction();
-//                dialog d = dialog.newDialog(new dialog.OnClick() {
-//                    @Override
-//                    public void onClick(listBankModel obj) {
-//                        selectAction(obj);
-//                    }
-//                });
-//                d.show(ft, "dialog");
-
-//                switchFragment(new BankProductSelectTopUpFragment(), "Tambah Saldo");
 
                 BankProductSelectionBottomSheet dialogs = BankProductSelectionBottomSheet.newDialog(new BankProductSelectionBottomSheet.OnClick() {
                     @Override
@@ -164,8 +163,8 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
 
         levelClass = new LevelClass(getActivity(),sp);
         levelClass.refreshData();
-        expand_lv = v.findViewById(R.id.expandableListView);
-        expand_lv.setAdapter(expand_lv_adapter);
+//        expand_lv = v.findViewById(R.id.expandableListView);
+//        expand_lv.setAdapter(expand_lv_adapter);
 
         btn_noData.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,32 +173,18 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
             }
         });
 
-        expand_lv.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-
-                String productType = listDataChild.get(listDataHeader.get(groupPosition).getHeader()).getBankData().get(childPosition).getProductType();
-//                if (productType.equals(DefineValue.BANKLIST_TYPE_ATM)) {
-//                    expand_lv_adapter.toggleVisible(v,groupPosition,childPosition);
-//                } else {
-//                    selectAction(groupPosition,childPosition);
+//        expand_lv.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//            @Override
+//            public void onGroupCollapse(int groupPosition) {
+//                ArrayList<ListBankDataTopup> data = listDataChild.get(listDataHeader.get(groupPosition).getHeader()).getBankData();
+//
+//                for(int i = 0; i<data.size(); i++){
+//                    if(data.get(i).getProductType().equals(DefineValue.BANKLIST_TYPE_ATM)){
+//                        data.get(i).setVisible(false);
+//                    }
 //                }
-                return false;
-            }
-        });
-
-        expand_lv.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                ArrayList<ListBankDataTopup> data = listDataChild.get(listDataHeader.get(groupPosition).getHeader()).getBankData();
-
-                for(int i = 0; i<data.size(); i++){
-                    if(data.get(i).getProductType().equals(DefineValue.BANKLIST_TYPE_ATM)){
-                        data.get(i).setVisible(false);
-                    }
-                }
-            }
-        });
+//            }
+//        });
     }
 
     private void selectAction(listBankModel model){
@@ -280,8 +265,9 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
         try {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                RequestParams params =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BANK_LIST,
+                RequestParams param =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BANK_LIST,
                         userPhoneID,accessKey, memberIDLogin);
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANK_LIST, memberIDLogin);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.MEMBER_ID, memberIDLogin );
                 params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);
@@ -289,180 +275,56 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
 
                 Timber.d("isi params get BankList:" + params.toString());
 
-                MyApiClient.getBankList(getActivity(),params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                Timber.d("response Listbank:"+response.toString());
-                                if (isAdded()) {
-                                    if(nodata_view.getVisibility() == View.VISIBLE) {
-                                        nodata_view.setVisibility(View.GONE);
-                                        layout_list_view.setVisibility(View.VISIBLE);
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_LIST, params,
+                        new ObjListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+
+                                BankListModel model = getGson().fromJson(object, BankListModel.class);
+
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    if (isAdded()) {
+                                        if(nodata_view.getVisibility() == View.VISIBLE) {
+                                            nodata_view.setVisibility(View.GONE);
+                                            layout_list_view.setVisibility(View.VISIBLE);
+                                        }
+                                        otherAtmBankcode = model.getOther_atm();
+                                        insertBankLists(model.getBank_data(), model.getOther_atm());
+                                        prodDialog.dismiss();
                                     }
-                                    otherAtmBankcode = response.getString("other_atm");
-                                    insertBankLists(response.getJSONObject(WebParams.BANK_DATA), response.optString(WebParams.OTHER_ATM,""));
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    if(is_full_activity)
+                                        test.showDialoginActivity(getActivity(),message);
+                                    else
+                                        test.showDialoginMain(getActivity(),message);
+                                }
+                                else {
+                                    code = model.getError_message();
                                     prodDialog.dismiss();
+                                    if(nodata_view.getVisibility() == View.GONE) {
+                                        nodata_view.setVisibility(View.VISIBLE);
+                                        layout_list_view.setVisibility(View.GONE);
+                                    }
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
+
                             }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
-                                Timber.d("isi response autologout:"+response.toString());
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                if(is_full_activity)
-                                    test.showDialoginActivity(getActivity(),message);
-                                else
-                                    test.showDialoginMain(getActivity(),message);
-                            }
-                            else {
-                                Timber.d("Error ListMember comlist:"+response.toString());
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                prodDialog.dismiss();
-                                if(nodata_view.getVisibility() == View.GONE) {
-                                    nodata_view.setVisibility(View.VISIBLE);
-                                    layout_list_view.setVisibility(View.GONE);
-                                }
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        failure(throwable);
-                    }
-
-                    private void failure(Throwable throwable){
-                        if(getActivity()!=null && !getActivity().isFinishing()) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            if (prodDialog.isShowing())
-                                prodDialog.dismiss();
-                            if(nodata_view.getVisibility() == View.GONE) {
-                                nodata_view.setVisibility(View.VISIBLE);
-                                layout_list_view.setVisibility(View.GONE);
-                            }
-                        }
-                        Timber.w("Error Koneksi bank list list topup:"+throwable.toString());
-                    }
-                });
+                        });
             }
         }catch(Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
     }
 
-    public void insertBankList(JSONObject bank_data, String other_atm){
+    public void insertBankLists(JsonObject data, String other_atm){
         try {
-            if(bank_data.length() > 0){
-                //Siapin Json tambahan dari file raw
-                JSONObject otherItemVA = new JsonUtil(getActivity()).readFromRaw(R.raw.topup_atm_item);
-                //temp_list_data_bank untuk menyimpan data bank per bank code
-                BankDataTopUp temp_list_data_bank;
-                //temp_other_atm untuk menyimpan data bank khusus ditampilkan di other atm
-                BankDataTopUp temp_other_atm = null;
-                //tempListBankModels menyimpan data product bank bentuk array untuk dimasukan ke temp_list_data_bank(BankDataTopup)
-                ArrayList<ListBankDataTopup> tempListBankModels;
-                String bankCode;
-                for (int i = 0; i < bank_data.length(); i++) {
-                    //ambil bankcode dari json response
-                    bankCode = bank_data.names().getString(i);
-                    //ambil list product bank sesuai dengan bankcode index sekrang
-                    JSONArray listProduct = bank_data.getJSONArray(bankCode);
-                    tempListBankModels = new ArrayList<>();
-                    String fee="",va="";
 
-                    for (int j = 0 ; j < listProduct.length() ; j++){
-                        //siapin listDataBank
-                        listBankModel listBankModel = new listBankModel(bankCode,
-                                listProduct.getJSONObject(j).getString(WebParams.BANK_NAME),
-                                listProduct.getJSONObject(j).getString(WebParams.PRODUCT_CODE),
-                                listProduct.getJSONObject(j).getString(WebParams.PRODUCT_NAME),
-                                listProduct.getJSONObject(j).getString(WebParams.PRODUCT_TYPE),
-                                listProduct.getJSONObject(j).getString(WebParams.PRODUCT_H2H),
-                                listProduct.getJSONObject(j).getString(WebParams.NO_VA),
-                                listProduct.getJSONObject(j).getString(WebParams.FEE));
+            JSONObject bank_data = new JSONObject(String.valueOf(data));
 
-                        //simpen data va dan fee jika tipenya atm
-                        if(listBankModel.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_ATM)){
-                            fee = listProduct.getJSONObject(j).getString(WebParams.FEE);
-                            va = listProduct.getJSONObject(j).getString(WebParams.NO_VA);
-                        }
-
-                        //isi data produk other atm jika ada
-                        if(!va.isEmpty() && other_atm.equals(bankCode) && listBankModel.getProduct_type().equals(DefineValue.BANKLIST_TYPE_ATM)){
-                            String vaOtherATM = bankCode+" + "+va;
-                            ArrayList<ListBankDataTopup> listBankModels = new ArrayList<>();
-                            listBankModels.add(new ListBankDataTopup(listBankModel));
-                            temp_other_atm = new BankDataTopUp(listBankModels,bankCode,vaOtherATM,fee);
-                        }
-
-                        tempListBankModels.add(new ListBankDataTopup(listBankModel));
-                    }
-
-                    //masukan data product other atm bank ke templistbankModel sebagai tambahan product yg didapat dari raw json
-                    if(!va.isEmpty() && otherItemVA.has(bankCode)){
-                        JSONArray otherProduct = otherItemVA.getJSONArray(bankCode);
-                        for(int j = 0; j < otherProduct.length();j++){
-                            listBankModel listBankModel = new listBankModel(bankCode,
-                                    otherProduct.getJSONObject(j).getString(WebParams.BANK_NAME),
-                                    otherProduct.getJSONObject(j).getString(WebParams.PRODUCT_CODE),
-                                    otherProduct.getJSONObject(j).getString(WebParams.PRODUCT_NAME),
-                                    otherProduct.getJSONObject(j).getString(WebParams.PRODUCT_TYPE),
-                                    otherProduct.getJSONObject(j).getString(WebParams.PRODUCT_H2H),
-                                    listProduct.getJSONObject(j).getString(WebParams.NO_VA),
-                                    listProduct.getJSONObject(j).getString(WebParams.FEE));
-
-                            tempListBankModels.add(new ListBankDataTopup(listBankModel));
-                        }
-                    }
-
-                    //masukin data listbankmodel, va , fee digabung ke class BankDataTopUp
-                    String bankName = tempListBankModels.get(0).getListBankModel().getBank_name();
-                    temp_list_data_bank = new BankDataTopUp(tempListBankModels,bankCode,va,fee);
-
-                    //masukin nama bank untuk title header dan nama bank, BankDataTopup ke hashmap child
-                    listDataHeader.add(new BankHeaderTopUp(bankName));
-                    listDataChild.put(bankName,temp_list_data_bank);
-                }
-
-                //sorting title header
-                Collections.sort(listDataHeader,new BankHeaderTopUp.CustomComparator());
-
-                //tambahin ATM lain ke header dan child jika ada
-                if(!other_atm.isEmpty() && temp_other_atm !=null){
-                    listDataHeader.add(new BankHeaderTopUp(getString(R.string.other_bank)));
-                    listDataChild.put(getString(R.string.other_bank),temp_other_atm);
-                }
-//                expand_lv_adapter.notifyDataSetChanged();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void insertBankLists(JSONObject bank_data, String other_atm){
-        try {
             if(bank_data.length() > 0){
                 if (listDataHeader2.size()>0)
                     listDataHeader2.clear();
@@ -482,7 +344,6 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
                     JSONArray listProduct = bank_data.getJSONArray(bankCode);
                     tempListBankModels = new ArrayList<>();
                     String fee="",va="";
-
 
                     BankHeaderTopUp bankData = new BankHeaderTopUp(listProduct.getJSONObject(0).getString(WebParams.BANK_NAME)
                             , bankCode, other_atm);
@@ -533,6 +394,12 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
 //                                    otherProduct.getJSONObject(j).getString(WebParams.NO_VA),
 //                                    otherProduct.getJSONObject(j).getString(WebParams.FEE
 
+//                            JsonParser jsonParser = new JsonParser();
+//                            JsonElement element = jsonParser.parse(otherProduct.toString());
+
+//                            listBankModel listBankModel2 = getGson().fromJson(element, listBankModel.class);
+//                            listBankModel2.setBank_code(bankCode);
+
                             tempListBankModels.add(new ListBankDataTopup(listBankModel));
                         }
                     }
@@ -564,58 +431,6 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-
-    private void selectAction(int groupPos, int childPos){
-        ListBankDataTopup model = listDataChild.get(listDataHeader.get(groupPos).getHeader()).getBankData().get(childPos);
-        if(is_full_activity){
-            Fragment mFrag = new SgoPlus_input();
-            String titleToolbar = model.getBankName()+" - "+model.getProductName();
-            Bundle mBun = new Bundle();
-            mBun.putString(DefineValue.BANK_CODE,model.getBankCode());
-            mBun.putString(DefineValue.BANK_NAME,model.getBankName());
-            mBun.putString(DefineValue.PRODUCT_NAME,model.getProductName());
-            mBun.putString(DefineValue.PRODUCT_CODE,model.getProductCode());
-            mBun.putString(DefineValue.PRODUCT_TYPE,model.getProductType());
-            mBun.putString(DefineValue.PRODUCT_H2H,model.getProductH2H());
-            mFrag.setArguments(mBun);
-//            if(model.getProductType().equals(DefineValue.BANKLIST_TYPE_SMS)) {
-//                if (!levelClass.isLevel1QAC()) {
-//                    switchFragmentTopUpActivity(mFrag,titleToolbar,true);
-//                } else
-//                    levelClass.showDialogLevel();
-//            }
-//            else
-//                switchFragmentTopUpActivity(mFrag,titleToolbar,true);
-        }
-        else {
-            Intent i = new Intent(getActivity(), TopUpActivity.class);
-            i.putExtra(DefineValue.BANK_CODE,model.getBankCode());
-            i.putExtra(DefineValue.BANK_NAME,model.getBankName());
-            i.putExtra(DefineValue.PRODUCT_NAME,model.getProductName());
-            i.putExtra(DefineValue.PRODUCT_CODE,model.getProductCode());
-            i.putExtra(DefineValue.PRODUCT_TYPE,model.getProductType());
-            i.putExtra(DefineValue.PRODUCT_H2H,model.getProductH2H());
-            if(model.getProductType().equals(DefineValue.BANKLIST_TYPE_SMS)) {
-                if (!levelClass.isLevel1QAC()) {
-                    switchActivity(i);
-                }
-                else
-                    levelClass.showDialogLevel();
-            }
-            else
-                switchActivity(i);
-
-        }
-    }
-
-    private void switchFragment(Fragment i, String name){
-        if (getActivity() == null)
-            return;
-
-        MainPage fca = (MainPage) getActivity();
-        fca.switchContent(i,name, true);
     }
 
     private void switchActivity(Intent mIntent){

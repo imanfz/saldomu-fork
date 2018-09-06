@@ -32,6 +32,7 @@ import com.android.ex.chips.RecipientEditTextView;
 import com.android.ex.chips.recipientchip.DrawableRecipientChip;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
@@ -45,11 +46,15 @@ import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
+import com.sgo.saldomu.models.retrofit.SentDataPayfriendModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -58,6 +63,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -435,16 +441,22 @@ public class FragPayFriends extends BaseFragment {
             progdialog.show();
 
 
-            RequestParams params;
+            RequestParams param;
+            HashMap<String, Object> params;
+            String url;
             if(isNotification) {
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF,
-                        userPhoneID,accessKey, memberIDLogin);
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF,
+//                        userPhoneID,accessKey, memberIDLogin);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF, memberIDLogin);
+                url = MyApiClient.LINK_REQ_TOKEN_P2P_NOTIF;
             }
             else
             {
                 extraSignature = memberIDLogin;
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
-                        userPhoneID,accessKey, extraSignature);
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_P2P,
+//                        userPhoneID,accessKey, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_P2P, extraSignature);
+                url = MyApiClient.LINK_REQ_TOKEN_P2P;
             }
 
             params.put(WebParams.MEMBER_ID, memberIDLogin);
@@ -460,110 +472,73 @@ public class FragPayFriends extends BaseFragment {
 
             Timber.d("isi params sent req token p2p:"+params.toString());
 
-            JsonHttpResponseHandler myHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostObjectRequest(url, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response req token p2p:"+response.toString());
-                            JSONArray mArrayData = new JSONArray(response.getString(WebParams.DATA_TRANSFER));
-                            int isFailed=0 ;
-                            String msg = "";
-                            for(int i = 0 ; i < mArrayData.length() ; i++) {
-                                if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(DefineValue.FAILED)){
-                                    isFailed++ ;
-                                    msg = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_REMARK);
-                                }
-                            }
-                            if(isFailed != mArrayData.length()){
-                                String dataTransfer = response.getString(WebParams.DATA_TRANSFER);
-                                showDialog(dataTransfer, _nameJson, response.getString(WebParams.MESSAGE), response.getString(WebParams.DATA_MAPPER));
-                            }
-                            else Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialogError(code);
-                        }
-                        else {
-                            Timber.d("isi error req token p2p:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)){
-                                phoneRetv.requestFocus();
-                                phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
-                            }
-                            else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+                            SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
-
-                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent mI = new Intent(getActivity(),TopUpActivity.class);
-                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
-                                        getActivity().startActivityForResult(mI,MainPage.ACTIVITY_RESULT);
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                int isFailed=0 ;
+                                String msg = "";
+                                for (PayfriendDataTrfModel obj: model.getData_transfer()) {
+                                    if(obj.getMember_status().equals(DefineValue.FAILED)){
+                                        isFailed++ ;
+                                        msg = obj.getMember_remark();
                                     }
-                                });
-                                dialog_frag.setTargetFragment(FragPayFriends.this, 0);
-                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                }
+                                if(isFailed != model.getData_transfer().size()){
+                                    String dataTransfer = getGson().toJson(model.getData_transfer());
+                                    showDialog(dataTransfer, _nameJson, model.getMessage(), model.getData_mapper());
+                                }
+                                else Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getActivity(),message);
+                            }
+                            else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                                code = model.getError_message();
+                                showDialogError(code);
                             }
                             else {
-                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                String code_msg = model.getError_message();;
+                                if(code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)){
+                                    phoneRetv.requestFocus();
+                                    phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                                }
+                                else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+
+                                    String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(),TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
+                                            getActivity().startActivityForResult(mI,MainPage.ACTIVITY_RESULT);
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(FragPayFriends.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                }
+                                else {
+                                    if(MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                }
+
                             }
-
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi req token p2p:"+throwable.toString());
-                }
-            };
-
-            if(isNotification) {
-                Timber.d("masuk ke reqTokenP2P notif");
-                MyApiClient.sentReqTokenP2PNotif(getActivity(),params, myHandler);
-            }
-            else
-                MyApiClient.sentReqTokenP2P(getActivity(),params, myHandler );
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

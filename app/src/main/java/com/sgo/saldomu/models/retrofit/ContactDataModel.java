@@ -20,6 +20,10 @@ public class ContactDataModel {
     @Expose
     private
     String contact_email;
+    @SerializedName("address")
+    @Expose
+    private
+    String address;
 
     public String getDescription() {
         return description;
@@ -35,5 +39,9 @@ public class ContactDataModel {
 
     public String getContact_email() {
         return contact_email;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

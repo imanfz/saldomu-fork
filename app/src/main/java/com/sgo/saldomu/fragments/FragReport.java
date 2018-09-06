@@ -23,6 +23,8 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -41,11 +43,15 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.ReportListCommFeeModel;
+import com.sgo.saldomu.models.retrofit.GetReportDataModel;
+import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -57,6 +63,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -110,6 +117,10 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private Boolean isMemberCTA = false;
 
     SummaryReportFeeModel SummaryFeeModel;
+
+    GetReportDataModel 
+
+    private Gson gson;
 
     public static FragReport newInstance(int _report_type) {
         FragReport mFrag = new FragReport();
@@ -365,10 +376,45 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
             String user_id = sp.getString(DefineValue.USERID_PHONE, "");
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
+            String url="", signature="";
 
-//            String webserviceScash = MyApiClient.getWebserviceName(MyApiClient.LINK_TRANSACTION_REPORT);
-//            String signatureScash = MyApiClient.getSignature(uuid, dtime, webserviceScash, MyApiClient.COMM_ID
-//                    + user_id , access_key, member_id);
+            if (report_type == REPORT_SCASH) {
+//                Timber.d("Isi params report scash:" + paramsScash.toString());
+//                MyApiClient.sentGetTrxReport(getActivity(), paramsScash, deHandler);
+                url = MyApiClient.LINK_TRANSACTION_REPORT;
+                signature = member_id;
+            } else if (report_type == REPORT_ESPAY) {
+//                Timber.d("Isi params report espay:" + paramsEspay.toString());
+//                MyApiClient.sentReportEspay(getActivity(), paramsEspay, deHandler);
+                url = MyApiClient.LINK_REPORT_ESPAY;
+            } else if (report_type == REPORT_ASK) {
+//                Timber.d("Isi params report ask:" + paramsAsk.toString());
+//                MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
+                url = MyApiClient.LINK_REPORT_MONEY_REQUEST;
+            } else if (report_type == REPORT_FEE) {
+//                Timber.d("Isi params report comm fee:" + paramsFee.toString());
+//                MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
+                url = MyApiClient.LINK_REPORT_COMM_FEE;
+            }
+
+            HashMap<String, Object> params = RetrofitService.getInstance()
+                    .getSignature(url, signature);
+            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.PAGE, _page);
+            params.put(WebParams.DATE_FROM, _date_from);
+            params.put(WebParams.DATE_TO, _date_to);
+            params.put(WebParams.USER_ID, user_id);
+
+            if (report_type == REPORT_SCASH) {
+                params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
+            } else if (report_type == REPORT_ESPAY) {
+                params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
+            } else if (report_type == REPORT_ASK) {
+            } else if (report_type == REPORT_FEE) {
+                params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
+                params.put(WebParams.OFFSET, sp.getString(DefineValue.OFFSET, ""));
+            }
 
             RequestParams paramsScash = MyApiClient.getInstance()
                     .getSignatureWithParams(MyApiClient.LINK_TRANSACTION_REPORT, member_id);
@@ -422,74 +468,78 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             paramsFee.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             paramsFee.put(WebParams.USER_ID, user_id);
 
-            JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        if (isAdded()) {
-                            if (isRefresh != null) {
-                                if (isRefresh)
-                                    out.dismiss();
-                            }
+            RetrofitService.getInstance().PostObjectRequest(url, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
 
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                if (isRefresh == null) {
-                                    mPtrFrame.refreshComplete();
-                                    ClearDataAdapter();
-                                } else if (isRefresh)
-                                    ClearDataAdapter();
-                                else {
-                                    btn_loadmore.setVisibility(View.VISIBLE);
-                                    spining_progress.setVisibility(View.GONE);
-                                    spining_progress.setAnimation(null);
-                                }
+                                GetReportDataModel model = getGson().fromJson(object, GetReportDataModel.class);
 
-                                if (lv_report.getVisibility() == View.GONE) {
-                                    lv_report.setVisibility(View.VISIBLE);
-                                    emptyLayout.setVisibility(View.GONE);
-                                }
-
-                                JSONArray arrayData = new JSONArray(response.getString(WebParams.REPORT_DATA));
-                                JSONObject mObj;
-                                if (report_type == REPORT_SCASH) {
-                                    Timber.d("Isi response transaction report:" + response.toString());
-                                    ReportListModel mTempData;
-                                    for (int i = 0; i < arrayData.length(); i++) {
-                                        mObj = arrayData.getJSONObject(i);
-                                        mTempData = new ReportListModel(mObj.optString(WebParams.DATE_TIME, ""),
-                                                mObj.optString(WebParams.TYPE, ""),
-                                                mObj.optString(WebParams.CCY_ID, ""),
-                                                mObj.optString(WebParams.AMOUNT, ""),
-                                                mObj.optString(WebParams.TRX_ID, ""),
-                                                mObj.optString(WebParams.DESCRIPTION, ""),
-                                                mObj.optString(WebParams.REMARK, ""),
-                                                mObj.optString(WebParams.DETAIL, ""),
-                                                sp.getString(DefineValue.COMMUNITY_ID, ""),
-                                                mObj.optString(WebParams.TO_ALIAS),
-                                                mObj.optString(WebParams.BUSS_SCHEME_CODE),
-                                                mObj.optString(WebParams.BUSS_SCHEME_NAME));
-                                        AddNewData(mTempData);
+                                if (isAdded()) {
+                                    if (isRefresh != null) {
+                                        if (isRefresh)
+                                            out.dismiss();
                                     }
-                                } else if (report_type == REPORT_ESPAY) {
-                                    Timber.d("Isi response Espay report:" + response.toString());
-                                    ReportListEspayModel mTempData;
-                                    for (int i = 0; i < arrayData.length(); i++) {
-                                        mObj = arrayData.getJSONObject(i);
-                                        mTempData = new ReportListEspayModel(mObj.optString(WebParams.CREATED, ""),
-                                                mObj.optString(WebParams.BUSS_SCHEME_TITLE, ""),
-                                                mObj.optString(WebParams.COMM_NAME, ""),
-                                                mObj.optString(WebParams.CCY_ID, ""),
-                                                mObj.optString(WebParams.AMOUNT, ""),
-                                                mObj.optString(WebParams.ADMIN_FEE, ""),
-                                                mObj.optString(WebParams.TX_DESCRIPTION, ""),
-                                                mObj.optString(WebParams.REMARK, ""),
-                                                mObj.optString(WebParams.TX_ID, ""),
-                                                mObj.optString(WebParams.COMM_ID, ""),
-                                                mObj.optString(WebParams.BANK_NAME, ""),
-                                                mObj.optString(WebParams.PRODUCT_NAME, ""),
-                                                mObj.optString(WebParams.TX_STATUS, ""),
-                                                mObj.optString(WebParams.BUSS_SCHEME_CODE));
+
+                                    String code = model.getError_code();
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        if (isRefresh == null) {
+                                            mPtrFrame.refreshComplete();
+                                            ClearDataAdapter();
+                                        } else if (isRefresh)
+                                            ClearDataAdapter();
+                                        else {
+                                            btn_loadmore.setVisibility(View.VISIBLE);
+                                            spining_progress.setVisibility(View.GONE);
+                                            spining_progress.setAnimation(null);
+                                        }
+
+                                        if (lv_report.getVisibility() == View.GONE) {
+                                            lv_report.setVisibility(View.VISIBLE);
+                                            emptyLayout.setVisibility(View.GONE);
+                                        }
+
+//                                        JSONArray arrayData = new JSONArray(response.getString(WebParams.REPORT_DATA));
+//                                        JSONObject mObj;
+                                        if (report_type == REPORT_SCASH) {
+                                            ReportListModel mTempData;
+                                            for (int i = 0; i < model.getReport_data().size(); i++) {
+//                                                mObj = arrayData.getJSONObject(i);
+                                                ReportDataModel tempMod = model.getReport_data().get(i);
+                                                mTempData = new ReportListModel(mObj.optString(WebParams.DATE_TIME, ""),
+                                                        mObj.optString(WebParams.TYPE, ""),
+                                                        mObj.optString(WebParams.CCY_ID, ""),
+                                                        mObj.optString(WebParams.AMOUNT, ""),
+                                                        mObj.optString(WebParams.TRX_ID, ""),
+                                                        mObj.optString(WebParams.DESCRIPTION, ""),
+                                                        mObj.optString(WebParams.REMARK, ""),
+                                                        mObj.optString(WebParams.DETAIL, ""),
+                                                        sp.getString(DefineValue.COMMUNITY_ID, ""),
+                                                        mObj.optString(WebParams.TO_ALIAS),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_CODE),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_NAME));
+                                                AddNewData(mTempData);
+                                            }
+                                        } else if (report_type == REPORT_ESPAY) {
+                                            Timber.d("Isi response Espay report:" + response.toString());
+                                            ReportListEspayModel mTempData;
+                                            for (int i = 0; i < arrayData.length(); i++) {
+                                                mObj = arrayData.getJSONObject(i);
+                                                mTempData = new ReportListEspayModel(mObj.optString(WebParams.CREATED, ""),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_TITLE, ""),
+                                                        mObj.optString(WebParams.COMM_NAME, ""),
+                                                        mObj.optString(WebParams.CCY_ID, ""),
+                                                        mObj.optString(WebParams.AMOUNT, ""),
+                                                        mObj.optString(WebParams.ADMIN_FEE, ""),
+                                                        mObj.optString(WebParams.TX_DESCRIPTION, ""),
+                                                        mObj.optString(WebParams.REMARK, ""),
+                                                        mObj.optString(WebParams.TX_ID, ""),
+                                                        mObj.optString(WebParams.COMM_ID, ""),
+                                                        mObj.optString(WebParams.BANK_NAME, ""),
+                                                        mObj.optString(WebParams.PRODUCT_NAME, ""),
+                                                        mObj.optString(WebParams.TX_STATUS, ""),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_CODE));
 
 //                                        if(mTempData.getDescription().contains(ITEM_DESC_PLN)||
 //                                                mTempData.getDescription().contains(ITEM_DESC_LISTRIK)||
@@ -501,98 +551,120 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //                                            mTempData.setType_desc(ITEM_DESC_BPJS);
 //                                        }
 
-                                        AddNewData(mTempData);
+                                                AddNewData(mTempData);
+                                            }
+                                        } else if (report_type == REPORT_ASK) {
+                                            Timber.d("Isi response ask report:" + response.toString());
+                                            ReportAskListModel mTempData;
+                                            for (int i = 0; i < arrayData.length(); i++) {
+                                                mObj = arrayData.getJSONObject(i);
+                                                mTempData = new ReportAskListModel(mObj.optString(WebParams.DATE_TIME, ""),
+                                                        mObj.optString(WebParams.TYPE, ""),
+                                                        mObj.optString(WebParams.CCY_ID, ""),
+                                                        mObj.optString(WebParams.AMOUNT, ""),
+                                                        mObj.optString(WebParams.TRX_ID, ""),
+                                                        mObj.optString(WebParams.DESCRIPTION, ""),
+                                                        mObj.optString(WebParams.REMARK, ""),
+                                                        mObj.optString(WebParams.DETAIL, ""),
+                                                        mObj.optString(WebParams.TO_ALIAS, ""),
+                                                        mObj.optString(WebParams.STATUS, ""),
+                                                        mObj.optString(WebParams.REASON, ""),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_CODE),
+                                                        mObj.optString(WebParams.BUSS_SCHEME_NAME));
+                                                AddNewData(mTempData);
+                                            }
+                                        } else if (report_type == REPORT_FEE) {
+                                            Timber.d("Isi response report comm fee:" + response.toString());
+                                            ReportListCommFeeModel mTempData;
+                                            SummaryFeeModel = new SummaryReportFeeModel();
+                                            SummaryFeeModel.setTotal_transaction(arrayData.length());
+                                            for (int i = 0; i < arrayData.length(); i++) {
+                                                mObj = arrayData.getJSONObject(i);
+                                                mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.CREATED, ""),
+                                                        mObj.optString(WebParams.BBS_NAME, ""),
+                                                        mObj.optString(WebParams.COMM_NAME, ""),
+                                                        mObj.optString(WebParams.CCY_ID, ""),
+                                                        mObj.optString(WebParams.AMOUNT, ""),
+                                                        mObj.optString(WebParams.STATUS, ""));
+                                                AddNewData(mTempData);
+                                                getSummaryFee(SummaryFeeModel, mObj);
+                                            }
+                                            setSummarytoView(SummaryFeeModel);
+
+                                        }
+
+                                        int _page = response.optInt(WebParams.NEXT, 0);
+                                        if (_page != 0) {
+                                            page++;
+                                            setLoadMore(false);
+                                            setLoadMore(true);
+                                        } else {
+                                            setLoadMore(false);
+                                        }
+                                        NotifyDataChange();
+
+                                        if (isRefresh == null || isRefresh) {
+                                            lv_report.setSelection(0);
+                                            lv_report.smoothScrollToPosition(0);
+                                            lv_report.setSelectionAfterHeaderView();
+                                        }
+
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+
+                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                        Timber.d("isi response autologout:" + response.toString());
+                                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getActivity(), message);
+                                    } else if (code.equals("0003")) {
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+                                        mPtrFrame.refreshComplete();
+                                        setLoadMore(false);
+                                        lv_report.setVisibility(View.GONE);
+                                        emptyLayout.setVisibility(View.VISIBLE);
+                                        ClearDataAdapter();
+                                        NotifyDataChange();
+                                    } else {
+                                        date_from = (Calendar) bak_date_from.clone();
+                                        String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
+                                        tv_date_from.setText(dedate);
+                                        date_to = (Calendar) bak_date_to.clone();
+                                        dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
+                                        tv_date_to.setText(dedate);
+                                        filter_btn.setChecked(false);
+                                        code = response.getString(WebParams.ERROR_MESSAGE);
+                                        if (MyApiClient.PROD_FAILURE_FLAG)
+                                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                        else
+                                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+                                        mPtrFrame.refreshComplete();
+                                        setLoadMore(false);
+                                        lv_report.setVisibility(View.GONE);
+                                        emptyLayout.setVisibility(View.VISIBLE);
+                                        ClearDataAdapter();
+                                        NotifyDataChange();
                                     }
-                                } else if (report_type == REPORT_ASK) {
-                                    Timber.d("Isi response ask report:" + response.toString());
-                                    ReportAskListModel mTempData;
-                                    for (int i = 0; i < arrayData.length(); i++) {
-                                        mObj = arrayData.getJSONObject(i);
-                                        mTempData = new ReportAskListModel(mObj.optString(WebParams.DATE_TIME, ""),
-                                                mObj.optString(WebParams.TYPE, ""),
-                                                mObj.optString(WebParams.CCY_ID, ""),
-                                                mObj.optString(WebParams.AMOUNT, ""),
-                                                mObj.optString(WebParams.TRX_ID, ""),
-                                                mObj.optString(WebParams.DESCRIPTION, ""),
-                                                mObj.optString(WebParams.REMARK, ""),
-                                                mObj.optString(WebParams.DETAIL, ""),
-                                                mObj.optString(WebParams.TO_ALIAS, ""),
-                                                mObj.optString(WebParams.STATUS, ""),
-                                                mObj.optString(WebParams.REASON, ""),
-                                                mObj.optString(WebParams.BUSS_SCHEME_CODE),
-                                                mObj.optString(WebParams.BUSS_SCHEME_NAME));
-                                        AddNewData(mTempData);
-                                    }
-                                } else if (report_type == REPORT_FEE) {
-                                    Timber.d("Isi response report comm fee:" + response.toString());
-                                    ReportListCommFeeModel mTempData;
-                                    SummaryFeeModel = new SummaryReportFeeModel();
-                                    SummaryFeeModel.setTotal_transaction(arrayData.length());
-                                    for (int i = 0; i < arrayData.length(); i++) {
-                                        mObj = arrayData.getJSONObject(i);
-                                        mTempData = new ReportListCommFeeModel(mObj.optString(WebParams.CREATED, ""),
-                                                mObj.optString(WebParams.BBS_NAME, ""),
-                                                mObj.optString(WebParams.COMM_NAME, ""),
-                                                mObj.optString(WebParams.CCY_ID, ""),
-                                                mObj.optString(WebParams.AMOUNT, ""),
-                                                mObj.optString(WebParams.STATUS, ""));
-                                        AddNewData(mTempData);
-                                        getSummaryFee(SummaryFeeModel, mObj);
-                                    }
-                                    setSummarytoView(SummaryFeeModel);
 
+                                    if (out != null && out.isShowing())
+                                        out.dismiss();
+
+                                    filter_btn.setOnClickListener(filterBtnListener);
                                 }
-
-                                int _page = response.optInt(WebParams.NEXT, 0);
-                                if (_page != 0) {
-                                    page++;
-                                    setLoadMore(false);
-                                    setLoadMore(true);
-                                } else {
-                                    setLoadMore(false);
-                                }
-                                NotifyDataChange();
-
-                                if (isRefresh == null || isRefresh) {
-                                    lv_report.setSelection(0);
-                                    lv_report.smoothScrollToPosition(0);
-                                    lv_report.setSelectionAfterHeaderView();
-                                }
-
-                                bak_date_from = (Calendar) date_from.clone();
-                                bak_date_to = (Calendar) date_to.clone();
-
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                Timber.d("isi response autologout:" + response.toString());
-                                String message = response.getString(WebParams.ERROR_MESSAGE);
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getActivity(), message);
-                            } else if (code.equals("0003")) {
-                                bak_date_from = (Calendar) date_from.clone();
-                                bak_date_to = (Calendar) date_to.clone();
-                                mPtrFrame.refreshComplete();
-                                setLoadMore(false);
-                                lv_report.setVisibility(View.GONE);
-                                emptyLayout.setVisibility(View.VISIBLE);
-                                ClearDataAdapter();
-                                NotifyDataChange();
-                            } else {
-                                date_from = (Calendar) bak_date_from.clone();
-                                String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
-                                tv_date_from.setText(dedate);
-                                date_to = (Calendar) bak_date_to.clone();
-                                dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
-                                tv_date_to.setText(dedate);
-                                filter_btn.setChecked(false);
-                                code = response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
-                            filter_btn.setOnClickListener(filterBtnListener);
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    });
+
+            JsonHttpResponseHandler deHandler = new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
                 }
 
                 @Override
@@ -637,23 +709,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
             };
 
-            if (report_type == REPORT_SCASH) {
-//                Timber.d("Webservice:"+webserviceScash);
-                Timber.d("Isi params report scash:" + paramsScash.toString());
-                MyApiClient.sentGetTrxReport(getActivity(), paramsScash, deHandler);
-            } else if (report_type == REPORT_ESPAY) {
-//                Timber.d("Webservice:"+webserviceEspay);
-                Timber.d("Isi params report espay:" + paramsEspay.toString());
-                MyApiClient.sentReportEspay(getActivity(), paramsEspay, deHandler);
-            } else if (report_type == REPORT_ASK) {
-//                Timber.d("Webservice:"+webserviceAsk);
-                Timber.d("Isi params report ask:" + paramsAsk.toString());
-                MyApiClient.sentReportAsk(getActivity(), paramsAsk, deHandler);
-            } else if (report_type == REPORT_FEE) {
-//                Timber.d("Webservice:"+webserviceFee);
-                Timber.d("Isi params report comm fee:" + paramsFee.toString());
-                MyApiClient.sentReportCommFee(getActivity(), paramsFee, deHandler);
-            }
+
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -1464,5 +1520,11 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    public Gson getGson() {
+        if (gson == null)
+            gson = new Gson();
+        return gson;
     }
 }

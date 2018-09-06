@@ -125,19 +125,19 @@ public class BillerInput extends Fragment {
 
         isToken = false;
 
-        spin_denom = (Spinner) v.findViewById(R.id.spinner_billerinput_denom);
-        tv_denom = (TextView) v.findViewById(R.id.billerinput_text_denom);
-        tv_payment_remark = (TextView) v.findViewById(R.id.billerinput_text_payment_remark);
-        et_payment_remark = (EditText) v.findViewById(R.id.payment_remark_billerinput_value);
-        spinWheelDenom = (ImageView) v.findViewById(R.id.spinning_wheel_billerinput_denom);
-        btn_submit = (Button) v.findViewById(R.id.btn_submit_billerinput);
+        spin_denom = v.findViewById(R.id.spinner_billerinput_denom);
+        tv_denom = v.findViewById(R.id.billerinput_text_denom);
+        tv_payment_remark = v.findViewById(R.id.billerinput_text_payment_remark);
+        et_payment_remark = v.findViewById(R.id.payment_remark_billerinput_value);
+        spinWheelDenom = v.findViewById(R.id.spinning_wheel_billerinput_denom);
+        btn_submit = v.findViewById(R.id.btn_submit_billerinput);
         layout_denom = v.findViewById(R.id.billerinput_layout_denom);
-        sp_privacy = (Spinner) v.findViewById(R.id.privacy_spinner);
-        spin_month = (Spinner) v.findViewById(R.id.spinner_billerinput_month);
-        tv_month = (TextView) v.findViewById(R.id.billerinput_text_month);
-        spinWheelMonth = (ImageView) v.findViewById(R.id.spinning_wheel_billerinput_month);
+        sp_privacy = v.findViewById(R.id.privacy_spinner);
+        spin_month = v.findViewById(R.id.spinner_billerinput_month);
+        tv_month = v.findViewById(R.id.billerinput_text_month);
+        spinWheelMonth = v.findViewById(R.id.spinning_wheel_billerinput_month);
         layout_month = v.findViewById(R.id.billerinput_layout_month);
-        layout_warn_pln = (LinearLayout) v.findViewById(R.id.layout_warn_pln);
+        layout_warn_pln = v.findViewById(R.id.layout_warn_pln);
         if(args.containsKey(DefineValue.BILLER_ID_NUMBER))
         {
             et_payment_remark.setText(args.getString(DefineValue.BILLER_ID_NUMBER));

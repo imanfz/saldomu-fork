@@ -28,6 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.listBankModel;
@@ -40,11 +41,15 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.dialogs.SMSDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.DataReqModel;
+import com.sgo.saldomu.models.retrofit.TopupValidModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 //import com.sgo.saldomu.widgets.CustomFacebookButton;
 
@@ -253,10 +258,7 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
-
         InitializeData();
-
 
     }
 
@@ -303,11 +305,11 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
     private void InitializeData() {
 
-        jumlahSGO_value = (EditText) v.findViewById(R.id.jumlahSGOplus_value);
-        btn_subSGO = (Button) v.findViewById(R.id.btn_submit_sgoplus_input);
-        sp_privacy = (Spinner) v.findViewById(R.id.payfriend_privacy_spinner);
-        spin_namaBank = (Spinner) v.findViewById(R.id.spinner_nameBank);
-        spin_produkBank = (Spinner) v.findViewById(R.id.spinner_productBank);
+        jumlahSGO_value = v.findViewById(R.id.jumlahSGOplus_value);
+        btn_subSGO = v.findViewById(R.id.btn_submit_sgoplus_input);
+        sp_privacy = v.findViewById(R.id.payfriend_privacy_spinner);
+        spin_namaBank = v.findViewById(R.id.spinner_nameBank);
+        spin_produkBank = v.findViewById(R.id.spinner_productBank);
         String titleAb;
 //            if(isTagihan){
 //
@@ -365,8 +367,8 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
         spin_namaBank.setVisibility(View.GONE);
         spin_produkBank.setVisibility(View.GONE);
-        TextView productname = (TextView) v.findViewById(R.id.text_productbank);
-        TextView bankname = (TextView) v.findViewById(R.id.text_namebank);
+        TextView productname = v.findViewById(R.id.text_productbank);
+        TextView bankname = v.findViewById(R.id.text_namebank);
 
         bank_name = listBankModel.getBank_name();
         bank_code = listBankModel.getBank_code();
@@ -516,8 +518,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             extraSignature = memberIDLogin+product_code+MyApiClient.CCY_VALUE+amount;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_VALID_TOPUP,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_VALID_TOPUP,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_VALID_TOPUP, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.BANK_CODE, bank_kode);
             params.put(WebParams.PRODUCT_CODE, product_code);
@@ -529,82 +532,48 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             Timber.d("isi params sgoplusinput:"+params.toString());
 
-            MyApiClient.sentValidTopUp(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response sgoplusinput:"+response.toString());
-                            if(isSMSBanking) {
-                                Timber.d("isi product_name "+ product_name);
-                                if(sentObject == null)
-                                    sentObject = new SentObject();
-                                sentObject.tx_id = response.getString(WebParams.TX_ID);
-                                sentObject.product_code = response.getString(WebParams.PRODUCT_CODE);
-                                sentObject.bank_kode = bank_kode;
-                                sentObject.nama_bank = bank_name;
-                                sentObject.comm_code = response.getString(WebParams.COMM_CODE);
-                                sentObject.fee = response.getString(WebParams.FEE);
-                                sentObject.amount = amount;
-                                sentObject.product_name = product_name;
-                                sentObject.ccy_id = MyApiClient.CCY_VALUE;
-                                Timber.d("Valid topup "+ sentObject.getData());
-                                smsDialog.show();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_VALID_TOPUP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            TopupValidModel model = getGson().fromJson(object, TopupValidModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if(isSMSBanking) {
+                                    if(sentObject == null)
+                                        sentObject = new SentObject();
+                                    sentObject.tx_id = model.getTx_id();
+                                    sentObject.product_code = model.getProduct_code();
+                                    sentObject.bank_kode = bank_kode;
+                                    sentObject.nama_bank = bank_name;
+                                    sentObject.comm_code = model.getComm_code();
+                                    sentObject.fee = model.getFee();
+                                    sentObject.amount = amount;
+                                    sentObject.product_name = product_name;
+                                    sentObject.ccy_id = MyApiClient.CCY_VALUE;
+                                    Timber.d("Valid topup "+ sentObject.getData());
+                                    smsDialog.show();
+                                }
+                                else {
+                                    progdialog.dismiss();
+                                    changeTopUpSgoPlus(model.getTx_id(), model.getProduct_code(),bank_kode
+                                            ,product_name, model.getComm_code(), model.getFee(),
+                                            MyApiClient.CCY_VALUE, bank_name,amount,false,null);
+                                }
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
                             }
                             else {
+                                code = model.getError_code() + " : "+model.getError_message();
                                 progdialog.dismiss();
-                                changeTopUpSgoPlus(response.getString(WebParams.TX_ID), response.getString(WebParams.PRODUCT_CODE),bank_kode
-                                        ,product_name, response.getString(WebParams.COMM_CODE), response.getString(WebParams.FEE),
-                                        MyApiClient.CCY_VALUE, bank_name,amount,false,null);
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+
                         }
-                        else {
-                            Timber.d("Error ListMember comlist:"+response.toString());
-                            code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi valid topup sgo input:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -685,8 +654,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             extraSignature = sentObject.tx_id+sentObject.comm_code+sentObject.product_code;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, sentObject.comm_code);
             params.put(WebParams.TX_ID, sentObject.tx_id);
             params.put(WebParams.PRODUCT_CODE, sentObject.product_code);
@@ -694,71 +664,43 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PRODUCT_VALUE,sentObject.productValue);
 
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-            Timber.d("isi params regtoken Sgo+:"+params.toString());
+                            DataReqModel model = getGson().fromJson(object, DataReqModel.class);
 
-            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response reqtoken :"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            sentObject.productValue = response.getString(WebParams.PRODUCT_VALUE);
-                            Timber.d("reqToken Sgol "+ sentObject.getData());
-                            showDialog();
-                            progdialog.dismiss();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            progdialog.dismiss();
-                            if(code.equals("0059")||code.equals("0164")){
-                                showDialogErrorSMS(sentObject.nama_bank,code,response.optString(WebParams.ERROR_MESSAGE,""));
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                sentObject.productValue = model.getProduct_value();
+                                showDialog();
+                                progdialog.dismiss();
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
                             }
                             else {
-                                code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                progdialog.dismiss();
+                                if(code.equals("0059")||code.equals("0164")){
+                                    showDialogErrorSMS(sentObject.nama_bank,code,model.getError_message());
+                                }
+                                else {
+                                    code = model.getError_code() + " : " + model.getError_message();
+
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
                             }
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi reg token sgo input:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -773,9 +715,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
@@ -813,9 +755,9 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.topup_dialog_not_registered));

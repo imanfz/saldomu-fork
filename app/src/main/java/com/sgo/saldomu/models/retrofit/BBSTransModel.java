@@ -3,7 +3,7 @@ package com.sgo.saldomu.models.retrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class InsertC2AModel extends jsonModel{
+public class BBSTransModel extends jsonModel{
     @SerializedName("tx_id")
     @Expose
     private

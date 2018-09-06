@@ -24,6 +24,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -43,9 +44,14 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.ShopCategory;
+import com.sgo.saldomu.models.retrofit.CategoriesModel;
+import com.sgo.saldomu.models.retrofit.CategoryListModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 
@@ -56,6 +62,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import io.realm.Realm;
@@ -223,8 +230,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         } else {
 
-            RequestParams params = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_CATEGORY_LIST,
+            RequestParams param = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_CATEGORY_LIST,
                     sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""));
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CATEGORY_LIST);
+
 
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -235,93 +244,53 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
             if(this.isVisible()) {
                 progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                MyApiClient.getCategoryList(getActivity().getApplicationContext(), params, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                        try {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
+                        new ObjListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
 
-                            String code = response.getString(WebParams.ERROR_CODE);
-                            Timber.d("isi response shop category:"+response.toString());
+                                CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
 
+                                String code = model.getError_code();
 
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    for (int i = 0; i < model.getCategories().size(); i++) {
 
-                                JSONArray categories = response.getJSONArray("category");
+                                        CategoriesModel obj = model.getCategories().get(i);
 
-                                for (int i = 0; i < categories.length(); i++) {
+                                        ShopCategory shopCategory = new ShopCategory();
+                                        shopCategory.setCategoryId(obj.getCategory_id());
+                                        shopCategory.setSchemeCode(obj.getScheme_code());
+                                        String tempCategory = obj.getCategory_name().toLowerCase();
 
-                                    JSONObject object = categories.getJSONObject(i);
-                                    ShopCategory shopCategory = new ShopCategory();
-                                    shopCategory.setCategoryId(object.getString("category_id"));
-                                    shopCategory.setSchemeCode(object.getString("scheme_code"));
-                                    String tempCategory = object.getString("category_name").toLowerCase();
+                                        String[] strArray = tempCategory.split(" ");
+                                        StringBuilder builder = new StringBuilder();
+                                        for (String s : strArray) {
+                                            String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
+                                            builder.append(cap + " ");
+                                        }
 
-                                    String[] strArray = tempCategory.split(" ");
-                                    StringBuilder builder = new StringBuilder();
-                                    for (String s : strArray) {
-                                        String cap = s.substring(0, 1).toUpperCase() + s.substring(1);
-                                        builder.append(cap + " ");
+                                        shopCategory.setCategoryName(builder.toString());
+                                        shopCategories.add(shopCategory);
                                     }
 
-                                    shopCategory.setCategoryName(builder.toString());
-                                    shopCategories.add(shopCategory);
+
+                                } else {
+                                    Toast.makeText(getActivity().getApplicationContext(), model.getError_message(), Toast.LENGTH_LONG);
                                 }
 
-
-                            } else {
-                                Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                                //gridBbsCategoryAdapter.notifyDataSetChanged();
+                                if(isAdded()) {
+                                    GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
+                                    GridHome.setAdapter(adapter);
+                                }
                             }
-
-                            //gridBbsCategoryAdapter.notifyDataSetChanged();
-                            if(isAdded()) {
-                                GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                                GridHome.setAdapter(adapter);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        ifFailure(throwable);
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        ifFailure(throwable);
-                    }
-
-                    private void ifFailure(Throwable throwable) {
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
-
-                        if (MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity().getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity().getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                        Timber.w("Error Koneksi shop category:" + throwable.toString());
-
-                        //gridBbsCategoryAdapter.notifyDataSetChanged();
-                        if(isAdded()) {
-                            GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
-                            GridHome.setAdapter(adapter);
-                        }
-                    }
-
-                });
+                        });
             }
         }
-
-
-
 
         btn_beli.setOnClickListener(new View.OnClickListener()
         {
@@ -721,9 +690,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
             String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
-            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
-                    sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
-
+            RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                    MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, sp.getString(DefineValue.USERID_PHONE,""),
+                    sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
             if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                 showAlertEnabledGPS();
@@ -740,58 +710,35 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     params.put(WebParams.SHOP_STATUS, shopStatus);
                     params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
+                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
+                            new ObjListener() {
+                                @Override
+                                public void onResponses(JsonObject object) {
+                                    progdialog2.dismiss();
 
-                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                            progdialog2.dismiss();
+                                    jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                            try {
+                                    String code = model.getError_code();
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                            Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                            mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                        } else {
+                                            Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                            mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                        }
 
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                        mEditor.apply();
                                     } else {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                        Toast.makeText(getContext(), model.getError_message(), Toast.LENGTH_SHORT).show();
                                     }
 
-                                    mEditor.apply();
-                                } else {
-                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
                                 }
-
-                                Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            progdialog2.dismiss();
-                            Timber.w("Error Koneksi login:" + throwable.toString());
-
-                        }
-                    });
+                            });
                 }
             }
 

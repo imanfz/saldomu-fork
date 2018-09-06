@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +24,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
@@ -39,8 +38,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
-import com.sgo.saldomu.models.retrofit.GetUserContactModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
 import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
@@ -48,20 +47,19 @@ import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -211,16 +209,14 @@ public class MyProfileNewActivity extends BaseActivity {
             getHelpList();
         }
         else {
-            try {
-                JSONArray arrayContact = new JSONArray(contactCenter);
-                for(int i=0 ; i<arrayContact.length() ; i++) {
-                    if(i == 0) {
-                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                    }
+            Type type = new TypeToken<List<ContactDataModel>>() {}.getType();
+            List<ContactDataModel> temp = gson.fromJson(contactCenter, type);
+
+            for(int i=0 ; i<temp.size() ; i++) {
+                if(i == 0) {
+                    listContactPhone = temp.get(i).getContact_phone();
+                    listAddress = temp.get(i).getAddress();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
 
@@ -1156,7 +1152,7 @@ public class MyProfileNewActivity extends BaseActivity {
                         @Override
                         public void onResponses(JsonObject object) {
 
-                            GetUserContactModel model = gson.fromJson(object, GetUserContactModel.class);
+                            GetHelpModel model = gson.fromJson(object, GetHelpModel.class);
 
                             String code = model.getError_code();
                             String message = model.getError_message();
@@ -1164,22 +1160,17 @@ public class MyProfileNewActivity extends BaseActivity {
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                Timber.d("isi params help list:"+response.toString());
 
-                                contactCenter = model.getContact_data();
+//                                contactCenter = model.getContact_data();
 
                                 SecurePreferences.Editor mEditor = sp.edit();
-                                mEditor.putString(DefineValue.LIST_CONTACT_CENTER, model.getContact_data());
+                                mEditor.putString(DefineValue.LIST_CONTACT_CENTER, gson.toJson(model.getContact_data()));
                                 mEditor.apply();
 
-                                try {
-                                    JSONArray arrayContact = new JSONArray(contactCenter);
-                                    for(int i=0 ; i<arrayContact.length() ; i++) {
-                                        if(i == 0) {
-                                            listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                            listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
-                                        }
+                                for(int i=0 ; i<model.getContact_data().size() ; i++) {
+                                    if(i == 0) {
+                                        listContactPhone = model.getContact_data().get(i).getContact_phone();
+                                        listAddress = model.getContact_data().get(i).getAddress();
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
 
                             }
