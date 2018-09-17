@@ -482,7 +482,7 @@ public class BillerDesciption extends BaseFragment {
                                 ccy_id = model.getCcy_id();
                                 amount = model.getAmount();
                                 item_name = model.getItem_name();
-                                description = model.getDescription();
+                                description = model.getDescription().getPhoneNumber();
 //                            if(isPLN ) {
                                 fee = model.getAdmin_fee();
 //                            }

@@ -35,12 +35,15 @@ public class InqBillerModel extends jsonModel {
     @SerializedName("description")
     @Expose
     private
-    String description;
+    DescriptionModel description;
     @SerializedName("admin_fee")
     @Expose
     private
     String admin_fee;
-
+    @SerializedName("auth_type")
+    @Expose
+    private
+    String auth_type;
 
     public String getBiller_input_amount() {
         return biller_input_amount;
@@ -70,11 +73,15 @@ public class InqBillerModel extends jsonModel {
         return item_name;
     }
 
-    public String getDescription() {
+    public DescriptionModel getDescription() {
         return description;
     }
 
     public String getAdmin_fee() {
         return admin_fee;
+    }
+
+    public String getAuth_type() {
+        return auth_type;
     }
 }

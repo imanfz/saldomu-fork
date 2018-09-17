@@ -14,6 +14,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.listBankModel;
@@ -24,9 +26,14 @@ import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
+import com.sgo.saldomu.models.retrofit.TopupAccCollectionModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -257,8 +264,9 @@ public class CollectionInput extends BaseFragment {
 
             extraSignature = _comm_id + _product_code + MyApiClient.CCY_VALUE + _amount;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION,
+            RequestParams param = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
@@ -281,91 +289,59 @@ public class CollectionInput extends BaseFragment {
 
             Timber.d("isi params Valid TopupCollection:" + params.toString());
 
-            MyApiClient.sentTopUpAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        Timber.w("isi response validTopupCollection:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            if(topupType.equals(DefineValue.INTERNET_BANKING)) {
-                                changeToDescription(response.getString(WebParams.TX_ID),
-                                        response.getString(WebParams.PRODUCT_CODE),
-                                        response.getString(WebParams.PRODUCT_NAME),
-                                        response.getString(WebParams.AMOUNT),
-                                        _payment_remark,
-                                        MyApiClient.CCY_VALUE,
-                                        response.getString(WebParams.BANK_NAME),
-                                        response.getString(WebParams.BANK_CODE),
-                                        response.getString(WebParams.FEE),
-                                        response.optString(WebParams.AUTH_TYPE,"")
-                                );
-                                progdialog.dismiss();
+                            TopupAccCollectionModel model = getGson().fromJson(object, TopupAccCollectionModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if(topupType.equals(DefineValue.INTERNET_BANKING)) {
+                                    changeToDescription(model.getTx_id(),
+                                            model.getProduct_code(),
+                                            model.getProduct_name(),
+                                            model.getAmount(),
+                                            _payment_remark,
+                                            MyApiClient.CCY_VALUE,
+                                            model.getBank_name(),
+                                            model.getBank_code(),
+                                            model.getFee(),
+                                            model.getAuth_type()
+                                    );
+                                    progdialog.dismiss();
+                                }
+                                else {
+                                    sentDataReqToken(model.getTx_id(),
+                                            model.getProduct_code(),
+                                            model.getProduct_name(),
+                                            model.getAmount(),
+                                            _payment_remark,
+                                            MyApiClient.CCY_VALUE,
+                                            model.getBank_name(),
+                                            model.getBank_code(),
+                                            model.getFee(),
+                                            model.getAuth_type()
+                                    );
+                                }
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
                             }
                             else {
-                                sentDataReqToken(response.getString(WebParams.TX_ID),
-                                        response.getString(WebParams.PRODUCT_CODE),
-                                        response.getString(WebParams.PRODUCT_NAME),
-                                        response.getString(WebParams.AMOUNT),
-                                        _payment_remark,
-                                        MyApiClient.CCY_VALUE,
-                                        response.getString(WebParams.BANK_NAME),
-                                        response.getString(WebParams.BANK_CODE),
-                                        response.getString(WebParams.FEE),
-                                        response.optString(WebParams.AUTH_TYPE,"")
-                                );
+                                code = model.getError_code() + ":" + model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
                             }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            Timber.d("Error ListMember comlist:"+response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            progdialog.dismiss();
-                        }
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi valid topup collect input:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -379,8 +355,9 @@ public class CollectionInput extends BaseFragment {
 
             extraSignature = _tx_id+ args.getString(DefineValue.COMMUNITY_CODE, "")+_product_code;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
                     userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE, ""));
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
@@ -390,92 +367,61 @@ public class CollectionInput extends BaseFragment {
 
             Timber.d("isi params regtoken Collection:"+params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response reqtoken collection  :"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            if (topupType.equals(DefineValue.SMS_BANKING) || auth_type.equals(DefineValue.AUTH_TYPE_OTP))
-                                showDialog(_tx_id, _product_code, _product_name, response.getString(WebParams.PRODUCT_VALUE), _fee,
-                                        _bank_code, _bank_name, _amount, auth_type);
-                            else if (auth_type.equals(DefineValue.AUTH_TYPE_PIN))
-                                changeToDescription(_tx_id, _product_code, _product_name, _amount,
-                                        _payment_remark, _ccy_value, _bank_name, _bank_code, _fee, auth_type);
-                            progdialog.dismiss();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            progdialog.dismiss();
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if (code.equals(ErrorDefinition.ERROR_CODE_UNREGISTERED_SMS_BANKING)) {
-                                showDialogSMS(nama_bank);
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if (topupType.equals(DefineValue.SMS_BANKING) || auth_type.equals(DefineValue.AUTH_TYPE_OTP))
+                                    showDialog(_tx_id, _product_code, _product_name, object.get(WebParams.PRODUCT_VALUE).getAsString(), _fee,
+                                            _bank_code, _bank_name, _amount, auth_type);
+                                else if (auth_type.equals(DefineValue.AUTH_TYPE_PIN))
+                                    changeToDescription(_tx_id, _product_code, _product_name, _amount,
+                                            _payment_remark, _ccy_value, _bank_name, _bank_code, _fee, auth_type);
+                                progdialog.dismiss();
                             }
-                            else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
-                                String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
-
-                                AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                        message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent mI = new Intent(getActivity(), TopUpActivity.class);
-                                        mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                        switchActivity(mI, MainPage.ACTIVITY_RESULT);
-                                    }
-                                });
-                                dialog_frag.setTargetFragment(CollectionInput.this, 0);
-                                dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
                             }
                             else {
-                                code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                progdialog.dismiss();
+                                String code_msg = model.getError_message();
+                                if (code.equals(ErrorDefinition.ERROR_CODE_UNREGISTERED_SMS_BANKING)) {
+                                    showDialogSMS(nama_bank);
+                                }
+                                else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+                                    String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+
+                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                            message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
+                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                            switchActivity(mI, MainPage.ACTIVITY_RESULT);
+                                        }
+                                    });
+                                    dialog_frag.setTargetFragment(CollectionInput.this, 0);
+                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                }
+                                else {
+                                    code = model.getError_code() + ":" + model.getError_message();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
+
+                                if(progdialog.isShowing())
+                                    progdialog.dismiss();
                             }
-
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi req token collect input:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -556,13 +502,14 @@ public class CollectionInput extends BaseFragment {
         dialog.show();
     }
 
-    private void changeToDescription(String _tx_id, String _product_code, String _product_name, String _amount, String _remark,
-                                     String _ccy_id, String _bank_name, String _bank_code, String _fee, String _auth_type){
+    private void changeToDescription(String _tx_id, String _product_code, String _product_name, String _amount,
+                                     String _remark, String _ccy_id,
+                                     String _bank_name, String _bank_code, String _fee, String _auth_type){
 
         Fragment newFrag = new CollectionDescription();
         Bundle mArgs = getArguments();
         mArgs.putString(DefineValue.TX_ID,_tx_id);
-        mArgs.putString(DefineValue.PRODUCT_CODE,_product_code);
+        mArgs.putString(DefineValue.PRODUCT_CODE, _product_code);
         mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
         mArgs.putString(DefineValue.AMOUNT, _amount);
         mArgs.putString(DefineValue.REMARK, _remark);

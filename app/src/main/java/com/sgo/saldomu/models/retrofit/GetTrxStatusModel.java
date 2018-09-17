@@ -19,7 +19,7 @@ public class GetTrxStatusModel extends jsonModel{
     @SerializedName("biller_detail")
     @Expose
     private
-    String biller_detail;
+    BillerDetailModel biller_detail;
     @SerializedName("merchant_type")
     @Expose
     private
@@ -53,7 +53,7 @@ public class GetTrxStatusModel extends jsonModel{
         return tx_remark;
     }
 
-    public String getBiller_detail() {
+    public BillerDetailModel getBiller_detail() {
         return biller_detail;
     }
 
@@ -71,5 +71,9 @@ public class GetTrxStatusModel extends jsonModel{
 
     public String getProduct_name() {
         return product_name;
+    }
+
+    public String getDetail() {
+        return detail;
     }
 }

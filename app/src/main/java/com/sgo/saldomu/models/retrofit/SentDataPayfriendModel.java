@@ -17,7 +17,7 @@ public class SentDataPayfriendModel extends jsonModel {
     @SerializedName("data_mapper")
     @Expose
     private
-    String data_mapper;
+    List<DataMapperModel> data_mapper;
 
     public List<PayfriendDataTrfModel> getData_transfer() {
         return data_transfer;
@@ -27,7 +27,7 @@ public class SentDataPayfriendModel extends jsonModel {
         return message;
     }
 
-    public String getData_mapper() {
+    public List<DataMapperModel> getData_mapper() {
         return data_mapper;
     }
 }

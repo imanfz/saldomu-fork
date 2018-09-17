@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
@@ -38,12 +39,17 @@ import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.FailedPinModel;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -51,6 +57,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -472,8 +480,10 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_code+tx_product_code+token;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_INSERT_TRANS_TOPUP,
+                    extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
             params.put(WebParams.COMM_CODE, comm_code);
@@ -484,24 +494,25 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             Timber.d("isi params insertTrxSGOL:" + params.toString());
 
-            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response insertTrxSGOL:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            getActivity().setResult(MainPage.RESULT_BALANCE);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
+                            FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
+
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
 //                        else if(code.equals("0288")){
 //                            Timber.d("isi error sent insertTrx:"+response.toString());
 //                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
@@ -509,85 +520,58 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 //                            tokenValue.setText("");
 //                            retryToken=true;
 //                        }
-                        else if(code.equals("0061")){
-                            Timber.d("isi error sent insertTrx:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                            tokenValue.setText("");
-                            btnSubmit.setEnabled(true);
-                        }
-                        else {
-                            btnSubmit.setEnabled(true);
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            if(isPIN){
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                                //pin tidak sesuai errorcode 0097
-                                if(code.equals("0097")) {
-                                    Intent i = new Intent(getActivity(), InsertPIN.class);
+                            else if(code.equals("0061")){
+                                String code_msg = model.getError_message();
+                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                tokenValue.setText("");
+                                btnSubmit.setEnabled(true);
+                            }
+                            else {
+                                btnSubmit.setEnabled(true);
+                                String message = model.getError_message();
+                                if(isPIN){
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                                    //pin tidak sesuai errorcode 0097
+                                    if(code.equals("0097")) {
+                                        Intent i = new Intent(getActivity(), InsertPIN.class);
 
-                                    attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                    failed = response.optInt(WebParams.MAX_FAILED, 0);
+                                        attempt = model.getFailed_attempt();
+                                        failed = model.getMax_failed();
 
-                                    if (attempt != -1)
-                                        i.putExtra(DefineValue.ATTEMPT, failed - attempt);
+                                        if (attempt != -1)
+                                            i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
-                                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                        startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    }
+                                    else {
+                                        getActivity().setResult(MainPage.RESULT_BALANCE);
+                                        getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
+//                                    onOkButton();
+                                    }
                                 }
-                                else {
+                                else if(isSMS){
+                                    if(!code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN))
+                                        getFragmentManager().popBackStack();
+                                    code = model.getError_code() + " : " + model.getError_message();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }else
+                                {
                                     getActivity().setResult(MainPage.RESULT_BALANCE);
                                     getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
-//                                    onOkButton();
                                 }
+
+//                                    if (MyApiClient.PROD_FAILURE_FLAG)
+//                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                                    else
+//                                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
                             }
-                            else if(isSMS){
-                                if(!code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN))
-                                    getFragmentManager().popBackStack();
-                                code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            }else
-                            {
-                                getActivity().setResult(MainPage.RESULT_BALANCE);
-                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
-                            }
-//                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                            btnSubmit.setEnabled(true);
                         }
-                        progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        btnSubmit.setEnabled(true);
-                    }
+                    });
 
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btnSubmit.setEnabled(true);
-                    Timber.w("Error Koneksi insert trx:"+throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -600,13 +584,21 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_code+tx_product_code;
 
-            RequestParams params;
-            if(isRequestOTP)
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userPhoneID,accessKey, extraSignature);
-            else
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userPhoneID,accessKey, extraSignature);
+            RequestParams param;
+            HashMap<String, Object> params;
+            String url;
+
+            if(isRequestOTP) {
+                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_REQ_TOKEN_SGOL,
+                        userPhoneID, accessKey, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
+                url = MyApiClient.LINK_REQ_TOKEN_SGOL;
+            }else {
+                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_RESEND_TOKEN_SGOL,
+                        userPhoneID, accessKey, extraSignature);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_SGOL, extraSignature);
+                url = MyApiClient.LINK_RESEND_TOKEN_SGOL;
+            }
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
@@ -618,84 +610,47 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             Timber.d("isi params resendTokenSGOL:"+params.toString());
 
-            JsonHttpResponseHandler handler =  new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(url, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            if(!isRequestOTP) {
-                                max_token_resend = max_token_resend - 1;
-                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if(!isRequestOTP) {
+                                    max_token_resend = max_token_resend - 1;
+                                    Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                                }
+
+                                changeTextBtnSub();
+                                layout_OTP.setVisibility(View.VISIBLE);
                             }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                code = model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                if(isRequestOTP)
+                                    getFragmentManager().popBackStack();
 
-                            changeTextBtnSub();
-                            layout_OTP.setVisibility(View.VISIBLE);
-                            Timber.w("txid response resend tokenSGOL:"+response.toString());
+                            }
+                            progdialog.dismiss();
+
+                            btnSubmit.setEnabled(true);
+                            btnResend.setEnabled(true);
+                            if(max_token_resend == 0 ){
+                                btnResend.setEnabled(false);
+                                btnSubmit.setEnabled(true);
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            Timber.d("Error resendTokenSGOL:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
-                            if(isRequestOTP)
-                                getFragmentManager().popBackStack();
-
-                        }
-                        progdialog.dismiss();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    btnSubmit.setEnabled(true);
-                    btnResend.setEnabled(true);
-                    if(max_token_resend == 0 ){
-                        btnResend.setEnabled(false);
-                        btnSubmit.setEnabled(true);
-                        Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btnSubmit.setEnabled(true);
-                    Timber.w("Error Koneksi resend token topuptoken:"+throwable.toString());
-                }
-            };
-
-            if(isRequestOTP)
-                MyApiClient.sentDataReqTokenSGOL(getActivity(),params,handler);
-            else
-                MyApiClient.sentResendTokenSGOL(getActivity(),params,handler);
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -707,8 +662,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             out.show();
 
             extraSignature = txId + comm_code;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
                     userId,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, comm_code);
@@ -716,80 +672,40 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             Timber.d("isi params sent get Trx Status bbs:"+params.toString());
 
-            MyApiClient.sentGetTRXStatusBBS(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        out.dismiss();
-                        Timber.d("isi response sent get Trx Status bbs:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            String txstatus = response.getString(WebParams.TX_STATUS);
+                            GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
-                            showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
-                                    txId, userId,response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
-                                    response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
-                                    txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
-                                    response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
-                                    response.optString(WebParams.SOURCE_ACCT_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
-                                    response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
-                                    response.optString(WebParams.BENEF_ACCT_NAME,""),response.optString(WebParams.BENEF_ACCT_TYPE),
-                                    response.optString(WebParams.PRODUCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
-                        } else if(code.equals("0288")){
-                            Timber.d("isi error sent token di trxStatusBBS:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                            layout_OTP.setVisibility(View.VISIBLE);
-                            tokenValue.setText("");
-                            retryToken=true;
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+
+                                showReportBillerDialog(userName, txId, userId, model);
+
+                            } else if(code.equals("0288")){
+                                String code_msg = model.getError_message();
+                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                layout_OTP.setVisibility(View.VISIBLE);
+                                tokenValue.setText("");
+                                retryToken=true;
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                String msg = model.getError_message();
+                                showDialog(msg);
+                            }
+                            if(out.isShowing())
+                                out.dismiss();
+                            btnSubmit.setEnabled(true);
                         }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialog(msg);
-                        }
+                    });
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    btnSubmit.setEnabled(true);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(out.isShowing())
-                        out.dismiss();
-                    btnSubmit.setEnabled(true);
-                    Timber.w("Error Koneksi trx status bbs:"+throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }
@@ -802,7 +718,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_id+tokenValue.getText().toString();
 
-            final RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_RETRY_TOKEN, extraSignature);
+            final RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_RETRY_TOKEN, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_RETRY_TOKEN,
+                    extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
@@ -811,72 +729,45 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             Timber.d("isi params sentRetryToken:" + params.toString());
 
-            MyApiClient.sentRetryToken(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response sentRetryToken:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            getActivity().setResult(MainPage.RESULT_BALANCE);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RETRY_TOKEN, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                        }else if(code.equals("0288")){
-                            Timber.d("isi error sent retry token:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                            tokenValue.setText("");
-                            retryToken=true;
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                getActivity().setResult(MainPage.RESULT_BALANCE);
+
+                                getTrxStatusBBS(sp.getString(DefineValue.USER_NAME, ""),  tx_id,userPhoneID);
+
+                            }else if(code.equals("0288")){
+                                String code_msg = model.getError_message();
+                                Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                tokenValue.setText("");
+                                retryToken=true;
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                String code_msg = model.getError_message();
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                            }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                            btnSubmit.setEnabled(true);
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            Timber.d("isi error sentRetryToken:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                        }
-                        progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        btnSubmit.setEnabled(true);
-                    }
+                    });
 
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btnSubmit.setEnabled(true);
-                    Timber.w("Error Koneksi sentRetryToken:"+throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -910,25 +801,28 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         dialog.show();
     }
 
-    private void showReportBillerDialog(String userName, String date, String txId, String userId, String bankName, String bankProduct,
-                                        String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
-                                        String source_bank_name, String source_acct_no, String source_acct_name,
-                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name,
-                                        String member_shop_phone, String buss_scheme_code, String buss_scheme_name) {
+    private void showReportBillerDialog(String userName, String txId, String userId, GetTrxStatusReportModel response){
+//            String userName, String date, String txId, String userId, String bankName, String bankProduct,
+//                                        String fee, String amount, String txStatus, String txRemark, String total_amount, String member_name,
+//                                        String source_bank_name, String source_acct_no, String source_acct_name,
+//                                        String benef_bank_name, String benef_acct_no, String benef_acct_name, String benef_type, String product_name,
+//                                        String member_shop_phone, String buss_scheme_code, String buss_scheme_name) {
+
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
-        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(response.getCreated()));
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.REPORT_TYPE, DefineValue.BBS_CASHIN);
         args.putString(DefineValue.USERID_PHONE, userId);
-        args.putString(DefineValue.BANK_NAME, bankName);
-        args.putString(DefineValue.BANK_PRODUCT, bankProduct);
+        args.putString(DefineValue.BANK_NAME, response.getTx_bank_name());
+        args.putString(DefineValue.BANK_PRODUCT, response.getProduct_name());
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 
         Boolean txStat = false;
+        String txStatus = response.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)){
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -945,19 +839,19 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
-        args.putString(DefineValue.MEMBER_NAME, member_name);
-        args.putString(DefineValue.SOURCE_ACCT, source_bank_name);
-        args.putString(DefineValue.SOURCE_ACCT_NO, source_acct_no);
-        args.putString(DefineValue.SOURCE_ACCT_NAME, source_acct_name);
-        args.putString(DefineValue.BANK_BENEF, benef_bank_name);
-        args.putString(DefineValue.TYPE_BENEF, benef_type);
-        args.putString(DefineValue.NO_BENEF, benef_acct_no);
-        args.putString(DefineValue.NAME_BENEF, benef_acct_name);
-        args.putString(DefineValue.PRODUCT_NAME, product_name);
-        args.putString(DefineValue.MEMBER_SHOP_PHONE, member_shop_phone);
-        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        if(!txStat)args.putString(DefineValue.TRX_REMARK, response.getTx_remark());
+        args.putString(DefineValue.MEMBER_NAME, response.getMember_name());
+        args.putString(DefineValue.SOURCE_ACCT, response.getSource_bank_name());
+        args.putString(DefineValue.SOURCE_ACCT_NO, response.getSource_acct_no());
+        args.putString(DefineValue.SOURCE_ACCT_NAME, response.getSource_acct_name());
+        args.putString(DefineValue.BANK_BENEF, response.getBenef_bank_name());
+        args.putString(DefineValue.TYPE_BENEF, response.getBenef_acct_type());
+        args.putString(DefineValue.NO_BENEF, response.getBenef_acct_no());
+        args.putString(DefineValue.NAME_BENEF, response.getBenef_acct_name());
+//        args.putString(DefineValue.PRODUCT_NAME, response.getProduct_name());
+        args.putString(DefineValue.MEMBER_SHOP_PHONE, response.getMember_shop_phone());
+        args.putString(DefineValue.BUSS_SCHEME_CODE, response.getBuss_scheme_code());
+        args.putString(DefineValue.BUSS_SCHEME_NAME, response.getBuss_scheme_name());
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);

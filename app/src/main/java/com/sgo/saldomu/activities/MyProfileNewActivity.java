@@ -757,7 +757,7 @@ public class MyProfileNewActivity extends BaseActivity {
         mEditor.putString(DefineValue.MEMBER_NAME, response.getFull_name());
         mEditor.putString(DefineValue.IS_NEW_BULK,"N");
 //            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
-        is_verified = response.getVerifieds() == 1;
+        is_verified = Integer.valueOf(response.getVerified()) == 1;
         mEditor.putString(DefineValue.PROFILE_VERIFIED, response.getVerified());
         mEditor.apply();
     }
@@ -941,7 +941,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 userPhoneID,accessKey,extraSignature);
 
         HashMap<String, RequestBody> params = RetrofitService.getInstance()
-                .getSignature2(MyApiClient.LINK_UPLOAD_PROFILE_PIC);
+                .getSignature2(MyApiClient.LINK_UPLOAD_KTP);
 
         RequestBody request1 = RequestBody.create(MediaType.parse("text/plain"),
                 et_noHp.getText().toString());

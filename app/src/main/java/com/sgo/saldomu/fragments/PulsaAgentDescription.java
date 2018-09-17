@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.*;
+
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.listBankModel;
@@ -23,10 +25,15 @@ import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.BBSRetrieveBankModel;
+import com.sgo.saldomu.models.retrofit.InqBillerModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -37,6 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -239,8 +247,9 @@ public class PulsaAgentDescription extends BaseFragment {
             final String product_code = mTempBank.getProduct_code();
             final String topupType = mTempBank.getProduct_type();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_PAYMENT_DAP,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_PAYMENT_DAP,
                     userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignaturePulsa(MyApiClient.LINK_PAYMENT_DAP, "");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.MEMBER_ID, member_id);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
@@ -262,204 +271,143 @@ public class PulsaAgentDescription extends BaseFragment {
 
             Timber.d("isi params sent payment DAP" + params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response payment DAP" +response.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_PAYMENT_DAP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
-                                changeToConfirmDAP(response.getString(WebParams.AMOUNT), response.getString(WebParams.AUTH_TYPE), response.getString(WebParams.TX_ID), response.getString(WebParams.CCY_ID),
-                                        response.getString(WebParams.ADMIN_FEE), bank_code,product_code);
+                            InqBillerModel model = getGson().fromJson(object, InqBillerModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if(mTempBank.getProduct_type().equals(DefineValue.BANKLIST_TYPE_IB)){
+                                    changeToConfirmDAP(model.getAmount(), model.getAuth_type(),
+                                            model.getTx_id(), model.getCcy_id(),
+                                            model.getAdmin_fee(), bank_code,product_code);
+                                    progdialog.dismiss();
+                                    btn_submit.setEnabled(true);
+                                }
+                                else {
+                                    sentDataReqToken(model.getAmount(), model.getAuth_type(),
+                                            model.getTx_id(), model.getCcy_id(), product_code,
+                                            model.getAdmin_fee(),
+                                            bank_code);
+                                }
+
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }else {
+                                code = model.getError_code() + " : " + model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 progdialog.dismiss();
                                 btn_submit.setEnabled(true);
-                            }
-                            else {
-                                sentDataReqToken(response.getString(WebParams.AMOUNT), response.getString(WebParams.AUTH_TYPE), response.getString(WebParams.TX_ID), response.getString(WebParams.CCY_ID), product_code, response.getString(WebParams.ADMIN_FEE),
-                                        bank_code);
+                                getFragmentManager().popBackStack();
                             }
 
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }else {
-                            Timber.d("Error isi response payment DAP"+response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            progdialog.dismiss();
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                             btn_submit.setEnabled(true);
-                            getFragmentManager().popBackStack();
                         }
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        btn_submit.setEnabled(true);
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_submit.setEnabled(true);
-                    Timber.w("Error Koneksi payment DAP:" + throwable.toString());
-                }
-            };
-
-            MyApiClient.sentPaymentDAP(getActivity(),params, mHandler);
+                    });
 
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }
     }
 
-    private void getBankDAP(){
-        try{
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+    private void getBankDAP() {
+        progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_BANK_DAP,
-                    userPhoneID,accessKey);
-            params.put(WebParams.MEMBER_ID, member_id);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
-            params.put(WebParams.USER_ID, userPhoneID);
+        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA, MyApiClient.LINK_BANK_DAP,
+                userPhoneID, accessKey);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignaturePulsa(MyApiClient.LINK_BANK_DAP, "");
+        params.put(WebParams.MEMBER_ID, member_id);
+        params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
+        params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params sent Bank DAP", params.toString());
+        Timber.d("isi params sent Bank DAP", params.toString());
 
-            MyApiClient.getBankDAP(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response Bank DAP", response.toString());
-                            String arrayBank = response.getString(WebParams.BANK_DATA);
-                            if(!arrayBank.equals("")) {
-                                JSONArray mData = new JSONArray(arrayBank);
-                                mDataPayment = new ArrayList<>();
-                                ArrayList<String> tempDataPaymentName = new ArrayList<>();
-                                ArrayList<listBankModel> tempMDataPayment = new ArrayList<>();
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANK_DAP, params,
+                new ObjListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
 
-                                paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+                        BBSRetrieveBankModel model = getGson().fromJson(object, BBSRetrieveBankModel.class);
 
-                                for (int i = 0; i < mData.length(); i++) {
-                                    JSONObject mJob = mData.getJSONObject(i);
-                                    listBankModel mBob = new listBankModel(mJob.getString(WebParams.BANK_CODE),
-                                            mJob.getString(WebParams.BANK_NAME),
-                                            mJob.getString(WebParams.PRODUCT_CODE),
-                                            mJob.getString(WebParams.PRODUCT_NAME),
-                                            mJob.getString(WebParams.PRODUCT_TYPE),
-                                            mJob.getString(WebParams.PRODUCT_H2H)
-                                    );
+                        try {
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String arrayBank = getGson().toJson(model.getBank_data());
+                                if (!arrayBank.equals("")) {
+                                    JSONArray mData = new JSONArray(arrayBank);
+                                    mDataPayment = new ArrayList<>();
+                                    ArrayList<String> tempDataPaymentName = new ArrayList<>();
+                                    ArrayList<listBankModel> tempMDataPayment = new ArrayList<>();
 
-                                    if(mBob.getProduct_code().equals(DefineValue.SCASH)){
-                                        String tempProductName = mBob.getProduct_name();
-                                        mDataPayment.add(mBob);
-                                        paymentData.add(getString(R.string.appname));
+                                    paymentData.add(getString(R.string.billerinput_text_spinner_default_payment));
+
+                                    for (int i = 0; i < mData.length(); i++) {
+                                        JSONObject mJob = mData.getJSONObject(i);
+                                        listBankModel mBob = new listBankModel(mJob.getString(WebParams.BANK_CODE),
+                                                mJob.getString(WebParams.BANK_NAME),
+                                                mJob.getString(WebParams.PRODUCT_CODE),
+                                                mJob.getString(WebParams.PRODUCT_NAME),
+                                                mJob.getString(WebParams.PRODUCT_TYPE),
+                                                mJob.getString(WebParams.PRODUCT_H2H)
+                                        );
+
+                                        if (mBob.getProduct_code().equals(DefineValue.SCASH)) {
+                                            String tempProductName = mBob.getProduct_name();
+                                            mDataPayment.add(mBob);
+                                            paymentData.add(getString(R.string.appname));
+                                        } else {
+                                            //mDataPayment.add(mBob);
+                                            tempMDataPayment.add(mBob);
+                                            tempDataPaymentName.add(mBob.getProduct_name());
+                                        }
+
                                     }
-                                    else {
-                                        //mDataPayment.add(mBob);
-                                        tempMDataPayment.add(mBob);
-                                        tempDataPaymentName.add(mBob.getProduct_name());
-                                    }
 
+                                    if (!tempDataPaymentName.isEmpty())
+                                        Collections.sort(tempDataPaymentName);
+                                    if (!tempMDataPayment.isEmpty())
+                                        Collections.sort(tempMDataPayment, new PaymentNameComparator());
+
+                                    mDataPayment.addAll(tempMDataPayment);
+                                    paymentData.addAll(tempDataPaymentName);
+
+                                    adapterPaymentOptions.notifyDataSetChanged();
+                                    progdialog.dismiss();
                                 }
-
-                                if(!tempDataPaymentName.isEmpty())
-                                    Collections.sort(tempDataPaymentName);
-                                if(!tempMDataPayment.isEmpty())
-                                    Collections.sort(tempMDataPayment, new PaymentNameComparator());
-
-                                mDataPayment.addAll(tempMDataPayment);
-                                paymentData.addAll(tempDataPaymentName);
-
-                                adapterPaymentOptions.notifyDataSetChanged();
+                                comm_id = model.getComm_id();
+                                comm_name = model.getComm_name();
+                                comm_code = model.getComm_code();
+                                api_key = model.getApi_key();
+                                callback_url = model.getCallback_url();
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
+                                code = model.getError_message();
                                 progdialog.dismiss();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
-                            comm_id = response.getString(WebParams.COMM_ID);
-                            comm_name = response.getString(WebParams.COMM_NAME);
-                            comm_code = response.getString(WebParams.COMM_CODE);
-                            api_key = response.getString(WebParams.API_KEY);
-                            callback_url = response.getString(WebParams.CALLBACK_URL);
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
                     }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi Biller Type:"+throwable.toString());
-                }
-
-
-            });
-        }catch (Exception e){
-            Timber.d("httpclient", e.getMessage());
-        }
+                });
     }
 
     private void sentDataReqToken(final String _amount, final String _merchant_type, final String _tx_id, final String _ccy_id, final String _product_code, final String fee,
@@ -467,8 +415,9 @@ public class PulsaAgentDescription extends BaseFragment {
         try{
             extraSignature = _tx_id+comm_code+_product_code;
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.PRODUCT_CODE, _product_code);
@@ -477,101 +426,70 @@ public class PulsaAgentDescription extends BaseFragment {
 
             Timber.d("isi params reqtoken Sgo+" + params.toString());
 
-            MyApiClient.sentDataReqTokenSGOL(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response reqtoken " + response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            if(mTempBank.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
-                                showDialog(_amount, _merchant_type, _tx_id, _ccy_id, fee, _product_code, _bank_code);
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                if(mTempBank.getProduct_type().equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
+                                    showDialog(_amount, _merchant_type, _tx_id, _ccy_id, fee, _product_code, _bank_code);
+                                }
+                                else if(_merchant_type.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP))
+                                    showDialog(_amount, _merchant_type, _tx_id, _ccy_id, fee, _product_code, _bank_code);
+                                else
+                                    changeToConfirmDAP(_amount,_merchant_type, _tx_id,_ccy_id,fee,_bank_code,_product_code);
+
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }else {
+                                String code_msg = model.getError_message();
+                                switch (code) {
+                                    case "0059":
+                                        showDialogSMS(mTempBank.getBank_name());
+                                        break;
+                                    case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
+                                        String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+
+                                        AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                                message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
+                                        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent mI = new Intent(getActivity(), TopUpActivity.class);
+                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
+                                                startActivityForResult(mI, MainPage.REQUEST_FINISH);
+                                            }
+                                        });
+                                        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        });
+                                        dialog_frag.setTargetFragment(PulsaAgentDescription.this, 0);
+                                        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                        break;
+                                    default:
+                                        code = model.getError_code() + ":" + model.getError_message();
+                                        if(MyApiClient.PROD_FAILURE_FLAG)
+                                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                        else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                        getFragmentManager().popBackStack();
+                                        break;
+                                }
                             }
-                            else if(_merchant_type.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP))
-                                showDialog(_amount, _merchant_type, _tx_id, _ccy_id, fee, _product_code, _bank_code);
-                            else
-                                changeToConfirmDAP(_amount,_merchant_type, _tx_id,_ccy_id,fee,_bank_code,_product_code);
-
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout" +response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }else {
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            switch (code) {
-                                case "0059":
-                                    showDialogSMS(mTempBank.getBank_name());
-                                    break;
-                                case ErrorDefinition.ERROR_CODE_LESS_BALANCE:
-                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance,getString(R.string.appname));
-
-                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
-                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent mI = new Intent(getActivity(), TopUpActivity.class);
-                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL, true);
-                                            startActivityForResult(mI, MainPage.REQUEST_FINISH);
-                                        }
-                                    });
-                                    dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    });
-                                    dialog_frag.setTargetFragment(PulsaAgentDescription.this, 0);
-                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
-                                    break;
-                                default:
-                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                                    getFragmentManager().popBackStack();
-                                    break;
-                            }
+                            btn_submit.setEnabled(true);
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        btn_submit.setEnabled(true);
-                        if(progdialog.isShowing())
-                            progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_submit.setEnabled(true);
-                    Timber.w("Error Koneksi request token:"+throwable.toString());
-                }
-
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }

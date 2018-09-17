@@ -24,6 +24,7 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.PrefixOperatorValidator;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -367,8 +368,9 @@ public class FragPulsaAgent extends Fragment{
         try{
             out = DefinedDialog.CreateProgressDialog(getActivity(), null);
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_DENOM_DAP,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_DENOM_DAP,
                     userID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_DENOM_DAP);
             params.put(WebParams.MEMBER_ID, member_id);
             params.put(WebParams.CATALOG_ID, catalog_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

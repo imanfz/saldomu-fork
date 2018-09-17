@@ -734,8 +734,8 @@ public class MainPage extends BaseActivity {
 
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-//            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
-//                    , MyApiClient.COMM_ID_PULSA);
+            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
+                    , MyApiClient.COMM_ID_PULSA);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);

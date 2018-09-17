@@ -217,7 +217,7 @@ public class MyApiClient {
     public static String LINK_GET_FAILED_PIN;
     private static String LINK_ATMTOPUP;
     public static String LINK_BANKCASHOUT;
-    private static String LINK_USER_PROFILE;
+    public static String LINK_USER_PROFILE;
     private static String LINK_INQUIRY_SMS;
     public static String LINK_CLAIM_TRANSFER_NON_MEMBER;
 

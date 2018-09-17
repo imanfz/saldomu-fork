@@ -294,7 +294,7 @@ public class FragCashoutConfirm extends BaseFragment implements ReportBillerDial
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
     public boolean inputValidation(){

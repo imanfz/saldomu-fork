@@ -12,10 +12,14 @@ public class jsonModel {
 
 
     public String getError_code() {
+        if (error_code == null)
+            error_code = "1111";
         return error_code;
     }
 
     public String getError_message() {
+        if (error_message == null)
+            error_message = "";
         return error_message;
     }
 

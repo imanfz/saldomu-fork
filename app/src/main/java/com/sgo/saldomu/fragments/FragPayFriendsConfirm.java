@@ -15,7 +15,6 @@ import android.widget.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
@@ -35,14 +34,10 @@ import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.PayFriendConfirmModel;
 import com.sgo.saldomu.models.retrofit.PayfriendDataModel;
+import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,57 +186,60 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             Double total_fee = 0.0, total_amount = 0.0;
             String expired_period_date = "";
 
-            try {
-                JSONArray mArrayData = new JSONArray(dataJson);
-                listName = json.fromJson(dataName, new TypeToken<List<String>>(){}.getType());
+            //                JSONArray mArrayData = new JSONArray(dataJson);
+            List<PayfriendDataTrfModel> dataTrf = json.fromJson(dataJson, new TypeToken<List<PayfriendDataTrfModel>>(){}.getType());
+            listName = json.fromJson(dataName, new TypeToken<List<String>>(){}.getType());
 
-                if(mArrayData.length() > 0){
-                    amountEach = mArrayData.getJSONObject(0).getDouble(WebParams.AMOUNT);
-                    fee = mArrayData.getJSONObject(0).getDouble(WebParams.FEE);
-                    totalAmount = mArrayData.getJSONObject(0).getDouble(WebParams.TOTAL);
+//                if(mArrayData.length() > 0){
+//                    amountEach = mArrayData.getJSONObject(0).getDouble(WebParams.AMOUNT);
+//                    fee = mArrayData.getJSONObject(0).getDouble(WebParams.FEE);
+//                    totalAmount = mArrayData.getJSONObject(0).getDouble(WebParams.TOTAL);
+//                }
+
+            if (dataTrf.size()>0){
+                amountEach = Double.valueOf(dataTrf.get(0).getAmount());
+                fee = Double.valueOf(dataTrf.get(0).getFee());
+                totalAmount = Double.valueOf(dataTrf.get(0).getTotal());
+            }
+
+            for(int i = 0 ; i < dataTrf.size() ; i++){
+
+                PayfriendDataTrfModel obj = dataTrf.get(i);
+
+                if(obj.getMember_status().equals(DefineValue.FAILED)){
+                    finalName = listName.get(i);
+                    finalTxid = "";
+                }
+                else {
+                    total_receive_recepient++;
+                    finalTxid = obj.getTx_id();
+                    finalName = obj.getMember_name_to();
+                    mTempTxID.add(new TempTxID(obj.getTx_id()));
+                    if(expired_period_date.isEmpty() || expired_period_date.equals(""))
+                        expired_period_date = obj.getExp_duration_hour();
                 }
 
-                for(int i = 0 ; i < mArrayData.length() ; i++){
+                listObjectRecipient.add(new RecepientModel(finalTxid, finalName, obj
+//                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_PHONE),
+//                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS),
+//                                                                mArrayData.getJSONObject(i).optString(WebParams.IS_MEMBER_TEMP,"")
+                                                            ));
+                if(listObjectRecipient.get(i).getStatus().equals(DefineValue.SUCCESS)){
+                    amount = amount + amountEach;
+                    total_fee = total_fee + fee;
+                    total_amount = total_amount + totalAmount;
 
-                    if(mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS).equals(DefineValue.FAILED)){
-                        finalName = listName.get(i);
-                        finalTxid = "";
-                    }
-                    else {
-                        total_receive_recepient++;
-                        finalTxid = mArrayData.getJSONObject(i).getString(WebParams.TX_ID);
-                        finalName = mArrayData.getJSONObject(i).getString(WebParams.MEMBER_NAME_TO);
-                        mTempTxID.add(new TempTxID(mArrayData.getJSONObject(i).getString(WebParams.TX_ID)));
-                        if(expired_period_date.isEmpty() || expired_period_date.equals(""))
-                            expired_period_date = mArrayData.getJSONObject(i).optString(WebParams.EXP_DURATION_HOUR,"");
-                    }
-
-                    listObjectRecipient.add(new RecepientModel(finalTxid,
-                                                                finalName,
-                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_PHONE),
-                                                                mArrayData.getJSONObject(i).getString(WebParams.MEMBER_STATUS),
-                                                                mArrayData.getJSONObject(i).optString(WebParams.IS_MEMBER_TEMP,"")
-                                                                ));
-                    if(listObjectRecipient.get(i).getStatus().equals(DefineValue.SUCCESS)){
-                        amount = amount + amountEach;
-                        total_fee = total_fee + fee;
-                        total_amount = total_amount + totalAmount;
-
-                        if(listObjectRecipient.get(i).getIs_member_temp().equals(DefineValue.STRING_YES)){
-                            list_non_member.add(listObjectRecipient.get(i));
-                            if(number_recipient_nonmember.isEmpty())
-                                number_recipient_nonmember = listObjectRecipient.get(i).getNumber();
-                            else {
-                                number_recipient_nonmember = number_recipient_nonmember + ", "+ listObjectRecipient.get(i).getNumber();
-                            }
+                    if(listObjectRecipient.get(i).getIs_member_temp().equals(DefineValue.STRING_YES)){
+                        list_non_member.add(listObjectRecipient.get(i));
+                        if(number_recipient_nonmember.isEmpty())
+                            number_recipient_nonmember = listObjectRecipient.get(i).getNumber();
+                        else {
+                            number_recipient_nonmember = number_recipient_nonmember + ", "+ listObjectRecipient.get(i).getNumber();
                         }
                     }
-
-
                 }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
 
             txID = json.toJson(mTempTxID);
@@ -371,11 +369,13 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.REPORT_TYPE, DefineValue.PAYFRIENDS);
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
-        args.putString(DefineValue.TRANSFER_DATA, model.getTransfer_data());
+//        getGson().toJson(model.getTransfer_data());
+        String trfData = getGson().toJson(model.getTransfer_data());
+        args.putString(DefineValue.TRANSFER_DATA, trfData);
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this,0);
-        dialog.show(getActivity().getSupportFragmentManager(),ReportBillerDialog.TAG);
+        dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
 
@@ -439,101 +439,112 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
             RetrofitService.getInstance().PostObjectRequest(url, params, new ObjListener() {
                 @Override
                 public void onResponses(JsonObject object) {
+                    try {
 
-                    PayFriendConfirmModel model = getGson().fromJson(object, PayFriendConfirmModel.class);
+                        PayFriendConfirmModel model = getGson().fromJson(object, PayFriendConfirmModel.class);
 
-                    String code = model.getError_code();
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
+                        String code = model.getError_code();
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            //Toast.makeText(getActivity(), getString(R.string.transaction_success), Toast.LENGTH_LONG).show();
 
-                        int isFailed=0 ;
-                        String error_msg = "";
+                            int isFailed=0 ;
+                            String error_msg = "";
 
-                        String _txid = "", _recipient = "", _recipient_error = null,_message;
-                        double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
-                        _message = message;
+                            String _txid = "", _recipient = "", _recipient_error = null,_message;
+                            double _Amount = 0.0,_fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
+                            _message = message;
+                            List<PayfriendDataModel> temp = new ArrayList<>(model.getData());
 
-                        for (PayfriendDataModel obj: model.getData()) {
-                            for (RecepientModel aListObjectRecipient : listObjectRecipient) {
-                                if (aListObjectRecipient.getTx_id().equals(obj.getTx_id())) {
-                                    if(obj.getTx_status().equals(DefineValue.SUCCESS)) {
-                                        if (_txid.equals("")) {
-                                            _txid = obj.getTx_id();
-                                            _recipient = aListObjectRecipient.getName();
-                                        } else {
-                                            _txid = _txid + "\n" + obj.getTx_id();
-                                            _recipient = _recipient + "\n" + aListObjectRecipient.getName();
+//                        if (!model.getData().equals("")){
+//                            Type type = new TypeToken<List<PayfriendDataModel>>() {}.getType();
+//                            temp = getGson().fromJson(model.getData(), type);
+//                        }
+
+                            for (PayfriendDataModel obj: temp) {
+                                for (RecepientModel aListObjectRecipient : listObjectRecipient) {
+                                    if (aListObjectRecipient.getTx_id().equals(obj.getTx_id())) {
+                                        if(obj.getTx_status().equals(DefineValue.SUCCESS)) {
+                                            if (_txid.equals("")) {
+                                                _txid = obj.getTx_id();
+                                                _recipient = aListObjectRecipient.getName();
+                                            } else {
+                                                _txid = _txid + "\n" + obj.getTx_id();
+                                                _recipient = _recipient + "\n" + aListObjectRecipient.getName();
+                                            }
+
+                                            _Amount = _Amount + amountEach;
+                                            _fee = _fee + fee;
+                                            _total_amount = _total_amount + totalAmount;
+                                        }
+                                        else if(obj.getTx_status().equals(DefineValue.FAILED)) {
+                                            isFailed++ ;
+                                            error_msg = obj.getTx_remark();
+                                            if (_recipient_error == null)
+                                                _recipient_error = aListObjectRecipient.getName()+ " = " + error_msg;
+                                            else _recipient_error = _recipient_error + "\n" +
+                                                    aListObjectRecipient.getName()+ " = " + error_msg;
+                                        }
+                                        else if(obj.getTx_status().equals(DefineValue.WAITING_CLAIM)){
+                                            _total_wc = _total_wc + totalAmount;
                                         }
 
-                                        _Amount = _Amount + amountEach;
-                                        _fee = _fee + fee;
-                                        _total_amount = _total_amount + totalAmount;
                                     }
-                                    else if(obj.getTx_status().equals(DefineValue.FAILED)) {
-                                        isFailed++ ;
-                                        error_msg = obj.getTx_remark();
-                                        if (_recipient_error == null)
-                                            _recipient_error = aListObjectRecipient.getName()+ " = " + error_msg;
-                                        else _recipient_error = _recipient_error + "\n" +
-                                                aListObjectRecipient.getName()+ " = " + error_msg;
-                                    }
-                                    else if(obj.getTx_status().equals(DefineValue.WAITING_CLAIM)){
-                                        _total_wc = _total_wc + totalAmount;
-                                    }
-
                                 }
                             }
-                        }
 
+                            if(isFailed != temp.size()){
 
-                        if(isFailed != model.getData().size()){
-
-                            String name = sp.getString(DefineValue.USER_NAME,"");
+                                String name = sp.getString(DefineValue.USER_NAME,"");
 //                                String _totalAmount = MyApiClient.CCY_VALUE+". "+CurrencyFormat.format(_Amount);
 
-                            if(list_non_member.size() == model.getData().size()){
-                                showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
-                            }
-                            else {
-                                showReportBillerDialog(name,
-                                        DateTimeFormat.getCurrentDateTime(),
-                                        sp.getString(DefineValue.USERID_PHONE, ""),
-                                        _txid,
-                                        _recipient,
-                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
-                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
-                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
-                                        MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
-                                        _message,
-                                        _recipient_error, model);
+                                if(list_non_member.size() == temp.size()){
+                                    showDialogClaim(getString(R.string.toast_msg_wait_claim, CurrencyFormat.format(_total_wc)));
+                                }
+                                else {
+                                    showReportBillerDialog(name,
+                                            DateTimeFormat.getCurrentDateTime(),
+                                            sp.getString(DefineValue.USERID_PHONE, ""),
+                                            _txid,
+                                            _recipient,
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amountEach),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_Amount),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_fee),
+                                            MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(_total_amount),
+                                            _message,
+                                            _recipient_error, model);
 //                                            response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.TRANSFER_DATA)
-                            }
-                        } else showDialog(error_msg);
-                    }
-                    else if(code.equals(WebParams.LOGOUT_CODE)){
-                        String message = model.getError_message();
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(),message);
-                    }
-                    else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                        code = model.getError_message();
-                        showDialogError(code);
-                    }
-                    else {
-                        code = model.getError_message();
-                        if(MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-
-                        if(authType.equalsIgnoreCase("PIN")) {
-                            Intent i = new Intent(getActivity(), InsertPIN.class);
-                            attempt = attempt-1;
-                            if(attempt != -1 && attempt < 2)
-                                i.putExtra(DefineValue.ATTEMPT, attempt);
-                            startActivityForResult(i,MainPage.REQUEST_FINISH);
+                                }
+                            } else showDialog(error_msg);
                         }
+                        else if(code.equals(WebParams.LOGOUT_CODE)){
+                            String message = model.getError_message();
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(),message);
+                        }
+                        else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                            code = model.getError_message();
+                            showDialogError(code);
+                        }
+                        else {
+                            code = model.getError_message();
+                            if(MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                            if(authType.equalsIgnoreCase("PIN")) {
+                                Intent i = new Intent(getActivity(), InsertPIN.class);
+                                attempt = attempt-1;
+                                if(attempt != -1 && attempt < 2)
+                                    i.putExtra(DefineValue.ATTEMPT, attempt);
+                                startActivityForResult(i,MainPage.REQUEST_FINISH);
+                            }
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
                     }
+
                     if (progdialog.isShowing())
                         progdialog.dismiss();
                 }

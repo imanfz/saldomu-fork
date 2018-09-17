@@ -3,16 +3,23 @@ package com.sgo.saldomu.coreclass;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -34,7 +41,10 @@ public class UserProfileHandler {
 
         String extraSignature = memberID;
         try{
-            RequestParams params = new RequestParams(extraSignature);
+//            RequestParams param = new RequestParams(extraSignature);
+//            HashMap<String, Object> params = RetrofitService.getInstance()
+//                    .getSignature(MyApiClient.LINK_FORGOT_PASSWORD, extraSignature);
+            HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -43,74 +53,46 @@ public class UserProfileHandler {
 
             Timber.d("isi params sent user profile:" + params.toString());
 
-            MyApiClient.sentUserProfile(mContext, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        Timber.d("isi request sent user profile:" + response.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_USER_PROFILE, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            Gson gson = new Gson();
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
-                            mEditor.putString(DefineValue.PROFILE_ADDRESS,response.getString(WebParams.ADDRESS));
-                            mEditor.putString(DefineValue.PROFILE_BIO,response.getString(WebParams.BIO));
-                            mEditor.putString(DefineValue.PROFILE_COUNTRY,response.getString(WebParams.COUNTRY));
-                            mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
-                            mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
-                            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID,response.getString(WebParams.SOCIAL_ID));
-                            mEditor.putString(DefineValue.PROFILE_HOBBY,response.getString(WebParams.HOBBY));
-                            mEditor.putString(DefineValue.PROFILE_POB,response.getString(WebParams.POB));
-                            mEditor.putString(DefineValue.PROFILE_GENDER,response.getString(WebParams.GENDER));
-                            mEditor.putString(DefineValue.PROFILE_ID_TYPE,response.getString(WebParams.ID_TYPE));
-                            mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
-                            mEditor.putString(DefineValue.PROFILE_BOM,response.getString(WebParams.MOTHER_NAME));
+                            UpdateProfileModel model = gson.fromJson(object, UpdateProfileModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                SecurePreferences.Editor mEditor = sp.edit();
+                                mEditor.putString(DefineValue.PROFILE_DOB, model.getDate_of_birth());
+                                mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
+                                mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
+                                mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
+                                mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
+                                mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFull_name());
+                                mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocial_id());
+                                mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
+                                mEditor.putString(DefineValue.PROFILE_POB, model.getBirth_place());
+                                mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
+                                mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
+                                mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
+                                mEditor.putString(DefineValue.PROFILE_BOM, model.getMother_name());
 //                            mEditor.apply();
 
-                            if(mEditor.commit()) {
-                                if (onLoadDataListener != null)
-                                    onLoadDataListener.onSuccess(response);
-                            }
-                        } else {
-                            if (onLoadDataListener != null) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString(DefineValue.ERROR_CODE,response.optString(WebParams.ERROR_CODE,""));
-                                bundle.putString(DefineValue.ERROR,response.optString(WebParams.ERROR_MESSAGE,""));
-                                onLoadDataListener.onFail(bundle);
+                                if(mEditor.commit()) {
+                                    if (onLoadDataListener != null)
+                                        onLoadDataListener.onSuccess(model);
+                                }
+                            } else {
+                                if (onLoadDataListener != null) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(DefineValue.ERROR_CODE,model.getError_code());
+                                    bundle.putString(DefineValue.ERROR, model.getError_message());
+                                    onLoadDataListener.onFail(bundle);
+                                }
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        if (onLoadDataListener != null)
-                            onLoadDataListener.onFailure(e.getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi sent user profile" + throwable.toString());
-                    if (onLoadDataListener != null) {
-                        onLoadDataListener.onFailure(throwable.toString());
-                    }
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
             if (onLoadDataListener != null)

@@ -476,67 +476,77 @@ public class FragPayFriends extends BaseFragment {
                     new ObjListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
 
-                            SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
+                            try {
 
-                            String code = model.getError_code();
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
-                                int isFailed=0 ;
-                                String msg = "";
-                                for (PayfriendDataTrfModel obj: model.getData_transfer()) {
-                                    if(obj.getMember_status().equals(DefineValue.FAILED)){
-                                        isFailed++ ;
-                                        msg = obj.getMember_remark();
-                                    }
-                                }
-                                if(isFailed != model.getData_transfer().size()){
-                                    String dataTransfer = getGson().toJson(model.getData_transfer());
-                                    showDialog(dataTransfer, _nameJson, model.getMessage(), model.getData_mapper());
-                                }
-                                else Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getActivity(),message);
-                            }
-                            else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
-                                code = model.getError_message();
-                                showDialogError(code);
-                            }
-                            else {
-                                String code_msg = model.getError_message();;
-                                if(code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)){
-                                    phoneRetv.requestFocus();
-                                    phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
-                                }
-                                else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
 
-                                    String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+                                SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
-                                    AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                            message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
-                                    dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent mI = new Intent(getActivity(),TopUpActivity.class);
-                                            mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
-                                            getActivity().startActivityForResult(mI,MainPage.ACTIVITY_RESULT);
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    int isFailed=0 ;
+                                    String msg = "";
+
+                                    for (PayfriendDataTrfModel obj: model.getData_transfer()) {
+                                        if(obj.getMember_status().equals(DefineValue.FAILED)){
+                                            isFailed++ ;
+                                            msg = obj.getMember_remark();
                                         }
-                                    });
-                                    dialog_frag.setTargetFragment(FragPayFriends.this, 0);
-                                    dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    }
+                                    if(isFailed != model.getData_transfer().size()){
+                                        String dataTransfer = getGson().toJson(model.getData_transfer());
+                                        showDialog(dataTransfer, _nameJson, model.getMessage(), getGson().toJson(model.getData_mapper()));
+                                    }
+                                    else Toast.makeText(getActivity(),msg,Toast.LENGTH_SHORT).show();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(),message);
+                                }
+                                else if(code.equals(ErrorDefinition.WRONG_PIN_P2P)){
+                                    code = model.getError_message();
+                                    showDialogError(code);
                                 }
                                 else {
-                                    if(MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                    String code_msg = model.getError_message();;
+                                    if(code.equals(ErrorDefinition.ERROR_CODE_DUPLICATED_RECIPIENT)){
+                                        phoneRetv.requestFocus();
+                                        phoneRetv.setError(getString(R.string.payfriends_recipients_duplicate_validation));
+                                    }
+                                    else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
+
+                                        String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+
+                                        AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
+                                                message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
+                                        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent mI = new Intent(getActivity(),TopUpActivity.class);
+                                                mI.putExtra(DefineValue.IS_ACTIVITY_FULL,true);
+                                                getActivity().startActivityForResult(mI,MainPage.ACTIVITY_RESULT);
+                                            }
+                                        });
+                                        dialog_frag.setTargetFragment(FragPayFriends.this, 0);
+                                        dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
+                                    }
+                                    else {
+                                        if(MyApiClient.PROD_FAILURE_FLAG)
+                                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                        else
+                                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                    }
+
                                 }
 
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
+
+
                         }
                     });
         }catch (Exception e){

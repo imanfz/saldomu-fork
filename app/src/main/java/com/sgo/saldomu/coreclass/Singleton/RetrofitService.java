@@ -27,6 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -60,8 +61,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.TlsVersion;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Converter;
 import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -285,21 +288,8 @@ public class RetrofitService {
         return getInstance().getSignatures(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extraSignature);
     }
 
-    public static HashMap<String, Object> getSignature(String commID, String linknya, String extraSignature){
-        String webServiceName = getWebserviceName(linknya);
-        UUID uuidnya = getUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-        String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + extraSignature;
-        String hash = SHA.SHA256(BuildConfig.SECRET_KEY, msgnya);
-
-        Log.d("myapiclient retrofit", "msg : " + msgnya + ", hashed : " + hash);
-
-        HashMap<String, Object> params = new HashMap<>();
-        params.put(WebParams.RC_UUID, uuidnya);
-        params.put(WebParams.RC_DTIME, dtime);
-        params.put(WebParams.SIGNATURE, hash);
-
-        return params;
+    public HashMap<String, Object> getSignaturePulsa(String linknya, String extraSignature){
+        return getInstance().getSignatures(MyApiClient.COMM_ID_PULSA, getUserPhoneId(), linknya, getAccessKey(), extraSignature);
     }
 
     private HashMap<String, Object> getSignatures(String commid, String userphoneid, String linknya, String secretKey
@@ -367,19 +357,29 @@ public class RetrofitService {
 
     private JsonObject getErrorMessage(Throwable e){
         JsonObject error = new JsonObject();
-//        if (e instanceof HttpException) {
-            //                ResponseBody body = ((HttpException) e).response().raw();
-//                Converter<ResponseBody, JsonObject> errorConverter =
-//                        retrofit.responseBodyConverter(JsonObject.class, new Annotation[0]);
+        if (e instanceof HttpException) {
 
-//                assert body != null;
-//                error = errorConverter.convert(body);
+            ResponseBody body = ((HttpException) e).response().errorBody();
+            Response resp = ((HttpException) e).response().raw();
+            Converter<ResponseBody, JsonObject> errorConverter = retrofit.responseBodyConverter(JsonObject.class, new Annotation[0]);
 
+            assert body != null;
+            try {
+                error = errorConverter.convert(body);
+            } catch (IOException e1) {
+                error.addProperty("error_code", resp.code());
+                error.addProperty("error_message", resp.message());
 
-//        }
-        error.addProperty("error_code", ((HttpException) e).code());
-        error.addProperty("error_message", (((HttpException) e).message()));
+                e1.printStackTrace();
+            }
+        }else {
+            error.addProperty("error_code", "1111");
+            error.addProperty("error_message", e.getMessage());
+
+        }
+
         error.addProperty("on_error", true);
+
         return error;
     }
 

@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
@@ -60,8 +59,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -779,7 +776,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
             args.putString(DefineValue.BILLER_TYPE,biller_type_code);
         }
 
-        args.putString(DefineValue.BILLER_DETAIL,model.getBiller_detail());
+        args.putString(DefineValue.BILLER_DETAIL,model.getBiller_detail().getPhoneNumber());
         args.putString(DefineValue.BUSS_SCHEME_CODE,model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME,model.getBuss_scheme_name());
         args.putString(DefineValue.PRODUCT_NAME,model.getProduct_name());

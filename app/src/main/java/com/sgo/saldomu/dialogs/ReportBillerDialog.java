@@ -284,6 +284,11 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     if (args.getBoolean(DefineValue.IS_REPORT) == false && !args.getString(DefineValue.OTP_MEMBER).isEmpty()) {
                         tv_kode.setVisibility(View.VISIBLE);
                         tv_token_value.setVisibility(View.VISIBLE);
+                    }else if(args.getBoolean(DefineValue.IS_REPORT)== true && !args.getString(DefineValue.TOKEN_ID).isEmpty())
+                    {
+                        tv_kode.setVisibility(View.VISIBLE);
+                        tv_token_value.setVisibility(View.VISIBLE);
+                        tv_token_value.setText(args.getString(DefineValue.TOKEN_ID));
                     }
                     tv_source_bank_name_value.setText(args.getString(DefineValue.SOURCE_ACCT));
                     tv_source_acc_no_value.setText(args.getString(DefineValue.MEMBER_SHOP_NO));
@@ -521,7 +526,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     mLayoutFailed.setVisibility(View.VISIBLE);
                     tv_error_recipient_value.setText(args.getString(DefineValue.RECIPIENTS_ERROR));
                 }
-            } else if (buss_scheme_code.equals("OR")) {
+            } else if (buss_scheme_code.equals("OR") || buss_scheme_code.equals("ORP")) {
 //                    laporan transfer yg out
 
                 stub.setLayoutResource(R.layout.layout_dialog_report_transaction);
@@ -667,7 +672,7 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         Button btn_ok = view.findViewById(R.id.dialog_reportbiller_btn_ok);
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         btn_ok.setOnClickListener(this);
 
@@ -1295,6 +1300,6 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
         }
     }
 
-
 }
+
 

@@ -20,10 +20,42 @@ public class UpdateProfileModel extends jsonModel {
     @Expose
     private
     String verified;
-    @SerializedName("verified")
+    @SerializedName("address")
     @Expose
     private
-    int verifieds;
+    String address;
+    @SerializedName("bio")
+    @Expose
+    private
+    String bio;
+    @SerializedName("country")
+    @Expose
+    private
+    String country;
+    @SerializedName("social_id")
+    @Expose
+    private
+    String social_id;
+    @SerializedName("hobby")
+    @Expose
+    private
+    String hobby;
+    @SerializedName("birth_place")
+    @Expose
+    private
+    String birth_place;
+    @SerializedName("gender")
+    @Expose
+    private
+    String gender;
+    @SerializedName("idtype")
+    @Expose
+    private
+    String idtype;
+    @SerializedName("mother_name")
+    @Expose
+    private
+    String mother_name;
 
     public String getDate_of_birth() {
         return date_of_birth;
@@ -43,11 +75,39 @@ public class UpdateProfileModel extends jsonModel {
         return verified;
     }
 
-    public int getVerifieds() {
-        return verifieds;
+    public String getAddress() {
+        return address;
     }
 
-    public void setVerifieds(int verifieds) {
-        this.verifieds = verifieds;
+    public String getBio() {
+        return bio;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getSocial_id() {
+        return social_id;
+    }
+
+    public String getHobby() {
+        return hobby;
+    }
+
+    public String getBirth_place() {
+        return birth_place;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getIdtype() {
+        return idtype;
+    }
+
+    public String getMother_name() {
+        return mother_name;
     }
 }
