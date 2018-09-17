@@ -546,9 +546,9 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
-//        Timber.d("isi access_key :" + access_key);
+        Timber.d("isi access_key :" + access_key);
 
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
 

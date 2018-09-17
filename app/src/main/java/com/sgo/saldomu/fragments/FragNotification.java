@@ -653,10 +653,10 @@ public class FragNotification extends BaseFragment {
                     out.show();
             }
 
-            extraSignature = _hold_id + commIDLogin;
+            extraSignature = _hold_id + MyApiClient.COMM_ID;
 
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
-                    userPhoneID, accessKey, extraSignature);
+                    _userid, accessKey, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.HOLD_ID, _hold_id);
