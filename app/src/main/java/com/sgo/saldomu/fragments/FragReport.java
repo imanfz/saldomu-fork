@@ -744,8 +744,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //                        mobj.getBuss_scheme_code(), mobj.getBuss_scheme_name());
                 lv_report.setOnItemClickListener(null);
             } else {
+
                 getTrxStatus(getListView().getAdapter().getItem(position));
-                lv_report.setOnItemClickListener(null);
+//                lv_report.setOnItemClickListener(null);
             }
         }
     };
@@ -753,9 +754,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
     private void getTrxStatus(final Object _object) {
         try {
-            out = DefinedDialog.CreateProgressDialog(getActivity(), null);
-            out.show();
-
 //            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_GET_TRX_STATUS);
 //            Timber.d("Webservice:"+webservice);
 
@@ -763,11 +761,18 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             String _comm_id = "";
             String tx_type = DefineValue.EMO;
             boolean isdetail = false;
+            boolean call = true;
 
             if (report_type == REPORT_SCASH) {
                 ReportListModel mobj = (ReportListModel) _object;
                 _tx_id = mobj.getTrxId();
                 _comm_id = mobj.getCommId();
+
+                if (mobj.getBuss_scheme_code().equalsIgnoreCase("RF") ||
+                        mobj.getBuss_scheme_code().equalsIgnoreCase("RA")){
+                    call = false;
+                }
+
             } else if (report_type == REPORT_ESPAY) {
                 ReportListEspayModel mobj = (ReportListEspayModel) _object;
                 _tx_id = mobj.getTx_id();
@@ -780,80 +785,86 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 }
             }
 
-            String extraSignature = _tx_id + _comm_id;
+            if (call) {
 
-            RequestParams params = MyApiClient.getInstance()
-                    .getSignatureWithParams(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
+                out = DefinedDialog.CreateProgressDialog(getActivity(), null);
+                out.show();
 
-            params.put(WebParams.TX_ID, _tx_id);
-            params.put(WebParams.COMM_ID, _comm_id);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
-            params.put(WebParams.TX_TYPE, tx_type);
-            if (isdetail)
-                params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
-            Timber.d("isi params sent get Trx Status:" + params.toString());
+                String extraSignature = _tx_id + _comm_id;
 
-            MyApiClient.sentGetTRXStatus(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        out.dismiss();
+                RequestParams params = MyApiClient.getInstance()
+                        .getSignatureWithParams(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
-                        Timber.d("isi response sent get Trx Status:" + response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                params.put(WebParams.TX_ID, _tx_id);
+                params.put(WebParams.COMM_ID, _comm_id);
+                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.TX_TYPE, tx_type);
+                if (isdetail)
+                    params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
+                Timber.d("isi params sent get Trx Status:" + params.toString());
 
-                            ShowDialog(_object, response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), response);
+                MyApiClient.sentGetTRXStatus(getActivity(), params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            out.dismiss();
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(), message);
-                        } else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            Timber.d("isi response sent get Trx Status:" + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                ShowDialog(_object, response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), response);
+
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                Timber.d("isi response autologout:" + response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getActivity(), message);
+                            } else {
+                                String msg = response.getString(WebParams.ERROR_MESSAGE);
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                            }
+
+                            lv_report.setOnItemClickListener(reportItemListener);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        lv_report.setOnItemClickListener(reportItemListener);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
 
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        failure(throwable);
+                    }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                        failure(throwable);
+                    }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        super.onFailure(statusCode, headers, throwable, errorResponse);
+                        failure(throwable);
+                    }
 
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+                    private void failure(Throwable throwable) {
+                        if (MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
 
-                    if (out.isShowing())
-                        out.dismiss();
-                    lv_report.setOnItemClickListener(reportItemListener);
-                    Timber.w("Error Koneksi trx stat report:" + throwable.toString());
+                        if (out.isShowing())
+                            out.dismiss();
+                        lv_report.setOnItemClickListener(reportItemListener);
+                        Timber.w("Error Koneksi trx stat report:" + throwable.toString());
 
-                }
-            });
+                    }
+                });
+            }
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -882,7 +893,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                         mobj.getAmount(), mobj.getCcyID(), mobj.getRemark(), txstatus, txremark, mobj.getAlias(),
                         mobj.getBuss_scheme_code(), mobj.getBuss_scheme_name(), response);
             }
-
         } else if (report_type == REPORT_ESPAY) {
             ReportListEspayModel mobj = (ReportListEspayModel) _object;
             if (mobj.getBuss_scheme_code().equals("BIL")) {

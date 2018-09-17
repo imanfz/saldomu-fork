@@ -138,7 +138,7 @@
     <string-array name="social_id_type">
         <item>KTP</item>
         <item>SIM</item>
-        <item>Passport</item>
+        <item>PASPOR</item>
         <item>KITAS</item>
     </string-array>
 

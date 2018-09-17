@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fcm;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -104,11 +105,6 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         broadcast.putExtra(DefineValue.FCM_OPTIONS, jsonOptions);
                         sendBroadcast(broadcast);
                     }
-
-
-
-
-
                 }
             }
 
@@ -623,6 +619,11 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
 
         Timber.d("Debug 2: " + msg.toString());
 
+        String CHANNEL_ID = "my_channel_01";// The id of the channel.
+        CharSequence name = "channel_name";// The user-visible name of the channel.
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_pin_bw);
         NotificationCompat.Builder mBuilder =
@@ -632,6 +633,7 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
                         .setSmallIcon(R.mipmap.ic_launcher_pin_only)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
+                        .setChannelId(CHANNEL_ID)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg.getString("msg", "")));
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -651,9 +653,13 @@ public class FirebaseAppMessaging extends FirebaseMessagingService {
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            mNotifyMgr.createNotificationChannel(mChannel);
+        }
+
         // Builds the notification and issues it.
         mNotifyMgr.notify(getNotifId(), mBuilder.build());
-
     }
 
     int getNotifId(){

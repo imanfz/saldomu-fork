@@ -404,11 +404,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             }
                             layout_btn_resend.setVisibility(View.GONE);
                             validasiNomor = true;
-////                        if(InetHandler.isNetworkAvailable(getActivity())){
-////                            requestResendToken();
-////                        }
-////                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-
                         }
 
                     }else sentInsertTransTopup(tokenValue.getText().toString());
@@ -434,8 +429,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
-
-
+    
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {

@@ -142,8 +142,8 @@ public class MyProfileActivity extends BaseActivity implements EasyPermissions.P
         View v = this.findViewById(android.R.id.content);
 
         assert v != null;
-        prgLoading = (ProgressBar) v.findViewById(R.id.prgLoading);
-        profilePicContent = (ImageView) v.findViewById(R.id.myprofile_pic_content);
+        prgLoading = v.findViewById(R.id.prgLoading);
+        profilePicContent = v.findViewById(R.id.myprofile_pic_content);
         et_name = (EditText) v.findViewById(R.id.myprofile_value_name);
         et_address = (EditText) v.findViewById(R.id.myprofile_value_address);
         et_email = (EditText) v.findViewById(R.id.myprofile_value_email);
