@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -28,6 +31,8 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.DenomModel;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -114,17 +119,17 @@ public class FragPulsaAgent extends Fragment{
         layout_denom = v.findViewById(R.id.pulsainput_layout_denom);
         layout_remark = v.findViewById(R.id.pulsainput_layout_remark);
         layout_nominal = v.findViewById(R.id.pulsainput_layout_nominal);
-        spin_member = (Spinner) v.findViewById(R.id.spinner_pulsainput_member);
-        spin_denom = (Spinner) v.findViewById(R.id.spinner_pulsainput_denom);
-        spin_nominal = (Spinner) v.findViewById(R.id.spinner_pulsainput_nominal);
-        tv_denom = (TextView) v.findViewById(R.id.pulsainput_text_denom);
-        tv_payment_remark = (TextView) v.findViewById(R.id.pulsainput_text_payment_remark);
-        et_payment_remark = (EditText) v.findViewById(R.id.payment_remark_pulsainput_value);
-        spinWheelDenom = (ImageView) v.findViewById(R.id.spinning_wheel_pulsainput_denom);
-        spinWheelMember = (ImageView) v.findViewById(R.id.spinning_wheel_pulsainput_member);
-        spinWheelNominal = (ImageView) v.findViewById(R.id.spinning_wheel_pulsainput_nominal);
-        btn_submit = (Button) v.findViewById(R.id.btn_submit_pulsainput);
-        sp_privacy = (Spinner) v.findViewById(R.id.privacy_spinner);
+        spin_member = v.findViewById(R.id.spinner_pulsainput_member);
+        spin_denom = v.findViewById(R.id.spinner_pulsainput_denom);
+        spin_nominal = v.findViewById(R.id.spinner_pulsainput_nominal);
+        tv_denom = v.findViewById(R.id.pulsainput_text_denom);
+        tv_payment_remark = v.findViewById(R.id.pulsainput_text_payment_remark);
+        et_payment_remark = v.findViewById(R.id.payment_remark_pulsainput_value);
+        spinWheelDenom = v.findViewById(R.id.spinning_wheel_pulsainput_denom);
+        spinWheelMember = v.findViewById(R.id.spinning_wheel_pulsainput_member);
+        spinWheelNominal = v.findViewById(R.id.spinning_wheel_pulsainput_nominal);
+        btn_submit = v.findViewById(R.id.btn_submit_pulsainput);
+        sp_privacy = v.findViewById(R.id.privacy_spinner);
 
         Bundle bundle = getArguments();
         if(bundle!=null)
@@ -378,61 +383,36 @@ public class FragPulsaAgent extends Fragment{
 
             Timber.d("isi params sent Denom DAP"+ params.toString());
 
-            MyApiClient.getDenomDAP(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response Denom DAP"+ response.toString());
-                            String denom_data = response.getString(WebParams.DENOM_DATA);
-                            if(catalog_id.equals("")) initializeDenom(denom_data);
-                            else initializeNominal(denom_data);
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
-                        }else {
-                            out.dismiss();
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_DENOM_DAP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+
+                            Gson gson = new Gson();
+                            DenomModel model = gson.fromJson(object, DenomModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String denom_data = gson.toJson(model.getDenom_data());
+                                if(catalog_id.equals("")) initializeDenom(denom_data);
+                                else initializeNominal(denom_data);
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getActivity(),message);
+                            }else {
+                                out.dismiss();
+                                code = model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
+
+                            if(out.isShowing())
+                                out.dismiss();
+
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(out.isShowing())
-                        out.dismiss();
-                    Timber.w("Error Koneksi getDenomDAP desc:" + throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient"+ e.getMessage());
         }

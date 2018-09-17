@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.DenomListModel;
@@ -38,11 +39,16 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.FailedPinModel;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -52,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -336,8 +343,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
             extraSignature = txID+commCode+productCode+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin
+            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin
                     ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
@@ -349,84 +357,52 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
 
-            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response insertTrxTOpupSGOL:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            getTrxStatus(txID,commID,_amount);
-                            setResultActivity(MainPage.RESULT_BALANCE);
+                            FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                                getTrxStatus(txID,commID,_amount);
+                                setResultActivity(MainPage.RESULT_BALANCE);
+
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+
+                                code = model.getError_code() +" : "+ model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                String message = model.getError_message();
 //                            progdialog.dismiss();
 //                            btn_next.setEnabled(true);
-                            if(isPIN && message.equals("PIN tidak sesuai")){
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
+                                if(isPIN && message.equals("PIN tidak sesuai")){
+                                    Intent i = new Intent(getActivity(), InsertPIN.class);
 
-                                attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                failed = response.optInt(WebParams.MAX_FAILED,0);
+                                    attempt = model.getFailed_attempt();
+                                    failed = model.getMax_failed();
 
-                                if(attempt != -1)
-                                    i.putExtra(DefineValue.ATTEMPT,failed-attempt);
+                                    if(attempt != -1)
+                                        i.putExtra(DefineValue.ATTEMPT,failed-attempt);
 
-                                startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                }
+                                else{
+                                    getActivity().finish();
+                                }
+
                             }
-                            else{
-                                getActivity().finish();
-                            }
-
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-//                    if(progdialog.isShowing())
-//                        progdialog.dismiss();
-//                    btn_next.setEnabled(true);
-                    Timber.w("Error Koneksi insert trx topup biller confirm:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -436,8 +412,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -446,76 +423,44 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-//                        progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            String txstatus = response.getString(WebParams.TX_STATUS);
-                            showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.DENOM_DETAIL),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
-                                    response.optString(WebParams.ORDER_ID,""), response.optString(WebParams.COMM_CODE,""),
-                                    response.optString(WebParams.MEMBER_CODE,""));
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+                            GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+
+                                String txstatus = model.getTx_status();
+                                showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
+                                        DateTimeFormat.formatToID(model.getCreated()),
+                                        sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
+                                        txstatus, model.getTx_remark(), _amount, model.getDenom_detail(), model.getBuss_scheme_code(),
+                                        model.getBuss_scheme_name(), model.getProduct_name(), model.getOrder_id(), model.getComm_code(),
+                                        model.getMember_code());
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                String msg;
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    msg = getString(R.string.network_connection_failure_toast);
+                                else msg = model.getError_message();
+                                showDialog(msg);
+                            }
                         }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialog(msg);
-                        }
-
-//                        btn_next.setEnabled(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-//                    if(progdialog.isShowing())
-//                        progdialog.dismiss();
-//                    btn_next.setEnabled(true);
-                    Timber.w("Error Koneksi trx stat biller confirm:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
     }
 
     private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount, JSONObject response, String denom_detail,
+                                        String txRemark, String _amount, String denom_detail,
                                         String buss_scheme_code, String buss_scheme_name, String product_name, String order_id,
                                         String comm_code, String member_code) {
         Bundle args = new Bundle();

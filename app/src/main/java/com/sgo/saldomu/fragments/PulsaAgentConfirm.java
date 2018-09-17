@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.*;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -23,9 +25,12 @@ import com.sgo.saldomu.activities.PulsaAgentActivity;
 import com.sgo.saldomu.activities.PulsaAgentWeb;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -33,6 +38,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -237,8 +244,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
             extraSignature = tx_id+comm_code+product_code+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
+            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     userID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, comm_code);
@@ -249,77 +257,45 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
             Timber.d("isi params insertTrxTOpupSGOL", params.toString());
 
-            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        Timber.d("isi response insertTrxTOpupSGOL", response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            getTrxStatus(tx_id, comm_id);
-                            setResultActivity();
-                        }
-                        else if(message.equals("PIN tidak sesuai")) {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            if (isPIN) {
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
-                                startActivityForResult(i, MainPage.REQUEST_FINISH);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
+
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                getTrxStatus(tx_id, comm_id);
+                                setResultActivity();
                             }
-                            progdialog.dismiss();
+                            else if(message.equals("PIN tidak sesuai")) {
+                                String msg = code + ":" + message;
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                                if (isPIN) {
+                                    Intent i = new Intent(getActivity(), InsertPIN.class);
+                                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                }
+
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                String msg = code + ":" + message;
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+
+                                onOkButton();
+                            }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                             btn_submit.setEnabled(true);
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            progdialog.dismiss();
-                            btn_submit.setEnabled(true);
-                            onOkButton();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_submit.setEnabled(true);
-                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }

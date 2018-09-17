@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -31,12 +32,15 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -44,6 +48,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -197,8 +203,9 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
             extraSignature = tx_id+comm_code+product_code+tokenValue;
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin
+            final RequestParams paras = MyApiClient.getSignatureWithParams(commIDLogin
                     ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, product_code);
@@ -210,84 +217,53 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
 
-            MyApiClient.sentInsertTransTopup(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response insertTrxTOpupSGOL:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
-                            getTrxStatus(tx_id,comm_id,_amount);
-                            setResultActivity(MainPage.RESULT_BALANCE);
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
+                                getTrxStatus(tx_id,comm_id,_amount);
+                                setResultActivity(MainPage.RESULT_BALANCE);
 
-                            code = response.getString(WebParams.ERROR_CODE)+":"+response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            progdialog.dismiss();
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+
+                                code = model.getError_code()+":"+ model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                String message = model.getError_message();
+                                progdialog.dismiss();
+                                btn_next.setEnabled(true);
+                                if(isPIN && message.equals("PIN tidak sesuai")){
+                                    Intent i = new Intent(getActivity(), InsertPIN.class);
+
+                                    attempt = model.getFailed_attempt();
+                                    failed = model.getMax_failed();
+
+                                    if(attempt != -1)
+                                        i.putExtra(DefineValue.ATTEMPT,failed-attempt);
+
+                                    startActivityForResult(i, MainPage.REQUEST_FINISH);
+                                }
+                                else{
+                                    getActivity().finish();
+                                }
+
+                            }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                             btn_next.setEnabled(true);
-                            if(isPIN && message.equals("PIN tidak sesuai")){
-                                Intent i = new Intent(getActivity(), InsertPIN.class);
-
-                                attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                failed = response.optInt(WebParams.MAX_FAILED,0);
-
-                                if(attempt != -1)
-                                    i.putExtra(DefineValue.ATTEMPT,failed-attempt);
-
-                                startActivityForResult(i, MainPage.REQUEST_FINISH);
-                            }
-                            else{
-                                getActivity().finish();
-                            }
-
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_next.setEnabled(true);
-                    Timber.w("Error Koneksi insert trx topup biller confirm:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
