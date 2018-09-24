@@ -45,6 +45,7 @@ import com.sgo.saldomu.models.retrofit.UpdateProfileModel;
 import com.sgo.saldomu.models.retrofit.UploadFotoModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.ProgressRequestBody;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONArray;
@@ -722,28 +723,6 @@ public class MyProfileNewActivity extends BaseActivity {
         }
     }
 
-    private void setLoginProfile(JSONObject response){
-        SecurePreferences prefs = sp;
-        SecurePreferences.Editor mEditor = prefs.edit();
-
-        try {
-            mEditor.putString(DefineValue.PROFILE_DOB, response.getString(WebParams.DOB));
-            mEditor.putString(DefineValue.PROFILE_EMAIL,response.getString(WebParams.EMAIL));
-            mEditor.putString(DefineValue.PROFILE_FULL_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.PROFILE_BOM, response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.CUST_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.USER_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.MEMBER_NAME,response.getString(WebParams.FULL_NAME));
-            mEditor.putString(DefineValue.IS_NEW_BULK,"N");
-//            mEditor.putString(DefineValue.IS_REGISTERED_LEVEL, response.getString(WebParams.IS_REGISTER));
-            is_verified = response.getInt(WebParams.VERIFIED) == 1;
-            mEditor.putString(DefineValue.PROFILE_VERIFIED,response.getString(WebParams.VERIFIED));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        mEditor.apply();
-    }
-
     private void setLoginProfile(UpdateProfileModel response){
         SecurePreferences prefs = sp;
         SecurePreferences.Editor mEditor = prefs.edit();
@@ -941,7 +920,7 @@ public class MyProfileNewActivity extends BaseActivity {
                 userPhoneID,accessKey,extraSignature);
 
         HashMap<String, RequestBody> params = RetrofitService.getInstance()
-                .getSignature2(MyApiClient.LINK_UPLOAD_KTP);
+                .getSignature2(MyApiClient.LINK_UPLOAD_KTP, extraSignature);
 
         RequestBody request1 = RequestBody.create(MediaType.parse("text/plain"),
                 et_noHp.getText().toString());
@@ -957,8 +936,14 @@ public class MyProfileNewActivity extends BaseActivity {
         Timber.d("params upload foto ktp: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 
-        RequestBody requestFile =
-                RequestBody.create(MediaType.parse("image/*"), photoFile);
+//                RequestBody.create(MediaType.parse("image/*"), photoFile);
+        RequestBody requestFile = new ProgressRequestBody(photoFile,
+                new ProgressRequestBody.UploadCallbacks() {
+                    @Override
+                    public void onProgressUpdate(int percentage) {
+
+                    }
+                });
 
         MultipartBody.Part filePart = MultipartBody.Part.createFormData(WebParams.USER_IMAGES, photoFile.getName(),
                 requestFile);

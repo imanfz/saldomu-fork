@@ -18,6 +18,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,6 @@ import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.GlobalSetting;
@@ -65,21 +65,17 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.UploadPPModel;
-import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
+import com.sgo.saldomu.widgets.ProgressRequestBody;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -89,12 +85,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
-import static com.sgo.saldomu.coreclass.Singleton.RetrofitService.getUUID;
 
 /*
   Created by Administrator on 12/8/2014.
  */
-public class NavigationDrawMenu extends ListFragment{
+public class NavigationDrawMenu extends ListFragment implements ProgressRequestBody.UploadCallbacks{
 
     public static final String TAG = "com.sgo.saldomu.fragments.NavigationDrawMenu";
     public static final int MHOME = 0;
@@ -796,6 +791,13 @@ public class NavigationDrawMenu extends ListFragment{
         }
     }
 
+    @Override
+    public void onProgressUpdate(int percentage) {
+        Log.d("okhttp", "percentage :" + String.valueOf(percentage));
+        if (progdialog2.isShowing())
+            progdialog2.setProgress(percentage);
+    }
+
     private void uploadFileToServer(File photoFile) {
 
         progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
@@ -807,10 +809,11 @@ public class NavigationDrawMenu extends ListFragment{
             userID = sp.getString(DefineValue.USERID_PHONE,"");
 
         HashMap<String, RequestBody> params2 = RetrofitService.getInstance()
-                .getSignature2(MyApiClient.LINK_UPLOAD_PROFILE_PIC);
+                .getSignature2(MyApiClient.LINK_UPLOAD_PROFILE_PIC, "");
 
         RequestBody requestFile =
-                RequestBody.create(MediaType.parse("image/*"), photoFile);
+                new ProgressRequestBody(photoFile, this);
+//                RequestBody.create(MediaType.parse("image/*"), photoFile);
 
         MultipartBody.Part filePart = MultipartBody.Part.createFormData(WebParams.USER_FILE, photoFile.getName(),
                 requestFile);
@@ -826,7 +829,6 @@ public class NavigationDrawMenu extends ListFragment{
                 new ObjListener() {
                     @Override
                     public void onResponses(JsonObject object) {
-                        progdialog2.dismiss();
 
                         UploadPPModel model = gson.fromJson(object, UploadPPModel.class);
 
@@ -860,6 +862,8 @@ public class NavigationDrawMenu extends ListFragment{
                             alert.show();
 
                         }
+
+                        progdialog2.dismiss();
 
                     }
                 });

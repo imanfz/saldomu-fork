@@ -24,6 +24,7 @@ import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
+import org.reactivestreams.Subscription;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +47,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -310,8 +313,8 @@ public class RetrofitService {
         return params;
     }
 
-    public HashMap<String, RequestBody> getSignature2(String linknya){
-        return getInstance().getSignatures2(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), "");
+    public HashMap<String, RequestBody> getSignature2(String linknya, String extra){
+        return getInstance().getSignatures2(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extra);
     }
 
     private HashMap<String, RequestBody> getSignatures2(String commid, String userphoneid, String linknya, String secretKey
@@ -413,6 +416,7 @@ public class RetrofitService {
         BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
+
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -440,6 +444,7 @@ public class RetrofitService {
         BuildRetrofit().MultiPartInterface(link, param, file).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
+
                     @Override
                     public void onSubscribe(Disposable d) {
 

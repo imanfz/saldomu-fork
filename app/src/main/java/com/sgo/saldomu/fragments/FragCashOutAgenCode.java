@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -25,16 +26,22 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusModel;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -137,8 +144,9 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = tx_id + MyApiClient.COMM_ID;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
                     userid,accesskey,extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -149,67 +157,40 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
 
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            showReportBillerDialog( DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME));
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.ERROR_CODE_ADMIN_NOT_INPUT)) {
-                            showDialogNotInput(message);
-                        }
-                        else {
-                            Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
-                        }
+                            GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                showReportBillerDialog(model
+//                                        , DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
+//                                        response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
+//                                        response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME)
+                                );
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else if(code.equals(ErrorDefinition.ERROR_CODE_ADMIN_NOT_INPUT)) {
+                                showDialogNotInput(message);
+                            }
+                            else {
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
+                            }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi trx stat biller confirm:"+throwable.toString());
-                }
-            });
+            );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -242,12 +223,14 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
     }
 
 
-    private void showReportBillerDialog(String datetime, String txStatus, String txRemark, String buss_scheme_code, String buss_scheme_name) {
+    private void showReportBillerDialog(GetTrxStatusReportModel model
+//                                        String datetime, String txStatus, String txRemark, String buss_scheme_code, String buss_scheme_name
+    ) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.TX_ID, tx_id);
         args.putString(DefineValue.USERID_PHONE, userid);
-        args.putString(DefineValue.DATE_TIME, datetime);
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(model.getCreated()));
         args.putString(DefineValue.NAME_ADMIN, nameadmin);
         args.putString(DefineValue.AMOUNT, ccy+" "+CurrencyFormat.format(amount));
         args.putString(DefineValue.FEE, ccy + " " + CurrencyFormat.format(fee));
@@ -255,6 +238,7 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
         args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT_TUNAI);
 
         Boolean txStat = false;
+        String txStatus = model.getTx_status();
         if (txStatus.equals(DefineValue.SUCCESS)){
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
@@ -271,10 +255,10 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if(!txStat)args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
 
-        args.putString(DefineValue.BUSS_SCHEME_CODE, buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME, buss_scheme_name);
+        args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_name());
+        args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
 
         dialog.setArguments(args);
 //        dialog.setTargetFragment(this, 0);

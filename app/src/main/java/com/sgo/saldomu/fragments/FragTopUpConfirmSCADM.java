@@ -31,6 +31,7 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -41,6 +42,7 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -289,8 +291,9 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -299,80 +302,51 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             params.put(WebParams.USER_ID, userPhoneID);
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
-            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            String txstatus = response.getString(WebParams.TX_STATUS);
-                            showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    txstatus, response.optString(WebParams.TX_REMARK, ""), _amount,response, response.optString(WebParams.BILLER_DETAIL),
-                                    response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
-                                    response.optString(WebParams.COMM_CODE), response.optString(WebParams.MEMBER_CODE));
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialog(msg);
-                        }
+                            GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
-                        btn_next.setEnabled(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+
+                                showReportBillerDialog(model, sp.getString(DefineValue.USER_NAME, ""),
+                                        sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
+                                        model.getTx_status(), _amount);
+//                                        , response.optString(WebParams.BILLER_DETAIL),
+//                                        response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
+//                                        response.optString(WebParams.COMM_CODE), response.optString(WebParams.MEMBER_CODE));
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                showDialog(message);
+                            }
+
+                            btn_next.setEnabled(true);
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_next.setEnabled(true);
-                    Timber.w("Error Koneksi trx stat biller confirm:"+throwable.toString());
-                }
-            });
+            );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
     }
 
-    private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
-                                        String txRemark, String _amount, JSONObject response, String biller_detail,
-                                        String buss_scheme_code, String buss_scheme_name, String product_name, String comm_code, String member_code) {
+    private void showReportBillerDialog(GetTrxStatusReportModel model, String name,String userId, String txId,
+                                        String itemName,String txStatus, String _amount){
+//            , String biller_detail,
+//                                        String buss_scheme_code, String buss_scheme_name, String product_name, String comm_code, String member_code) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);
-        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(model.getCreated()));
         args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.USERID_PHONE, userId);
         args.putString(DefineValue.DENOM_DATA, itemName);
@@ -397,14 +371,14 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if(!txStat)args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
 
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(admin_fee);
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(String.valueOf(totalAmount)));
-        args.putString(DefineValue.BILLER_DETAIL,biller_detail);
-        args.putString(DefineValue.BUSS_SCHEME_CODE,buss_scheme_code);
-        args.putString(DefineValue.BUSS_SCHEME_NAME,buss_scheme_name);
+        args.putString(DefineValue.BILLER_DETAIL, model.getBiller_detail().getPhoneNumber());
+        args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
+        args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
         args.putString(DefineValue.BANK_PRODUCT,product_name);
         args.putString(DefineValue.COMMUNITY_CODE,comm_code);
         args.putString(DefineValue.MEMBER_CODE,member_code);

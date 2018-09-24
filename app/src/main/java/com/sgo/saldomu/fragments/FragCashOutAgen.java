@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -29,12 +30,15 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -42,6 +46,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -523,107 +529,55 @@ public class FragCashOutAgen extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_RESENT_TOKEN_BILLER,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_RESENT_TOKEN_BILLER,
                     userPhoneID , accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESENT_TOKEN_BILLER);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
 
             Timber.d("isi params sent resend token:" + params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESENT_TOKEN_BILLER, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                        btn_proses.setEnabled(true);
-                        btn_batal.setEnabled(true);
-                        if(isOTP && count_resend>0)
-                            btnResend.setEnabled(true);
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response resend token:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            count_resend = count_resend - 1;
+                            String code = model.getError_code();
 
-                            changeTextBtnSub();
-                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                count_resend = count_resend - 1;
+
+                                changeTextBtnSub();
+                                Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else if(code.equals(ErrorDefinition.NO_TRANSACTION)){
+                                layout_noData.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                code = model.getError_code() + ":" + model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                getFragmentManager().popBackStack();
+                            }
+
+                            btn_proses.setEnabled(true);
+                            btn_batal.setEnabled(true);
+                            if(isOTP && count_resend>0)
+                                btnResend.setEnabled(true);
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else if(code.equals(ErrorDefinition.NO_TRANSACTION)){
-                            layout_noData.setVisibility(View.VISIBLE);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
-                        }
-                        if(progdialog.isShowing())
-                            progdialog.dismiss();
-
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    btn_proses.setEnabled(true);
-                    btn_batal.setEnabled(true);
-                    if(isOTP && count_resend>0)
-                        btnResend.setEnabled(true);
-
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    Timber.w("Error Koneksi resend token:"+throwable.toString());
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                    if(!isAdded())
-                        MyApiClient.CancelRequestWS(getActivity(), true);
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                }
-            };
-
-            MyApiClient.sentResendToken(getActivity(), params, mHandler);
-
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }

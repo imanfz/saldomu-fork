@@ -16,6 +16,9 @@ import android.webkit.*;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -23,9 +26,12 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.commons.io.IOUtils;
@@ -37,6 +43,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Random;
 
 import timber.log.Timber;
@@ -147,7 +154,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
     private void loadUrl(final String userName, String url, final String payment_id, final String userId, final String totalAmount,
                          final String fee, final String amount, final String reportType, final String commId,
                          final String transType, final String commCode, final String shareType) {
-        webview = (WebView) findViewById(R.id.webview);
+        webview = findViewById(R.id.webview);
         assert webview != null;
         WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -362,8 +369,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
 
             extraSignature = txId + comm_id;
-            RequestParams params =  MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param =  MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
                     userPhoneID,accessKey,extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.TYPE, transtype);
@@ -377,75 +385,52 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
             Timber.d("isi params sent get Trx Status:" + params.toString());
 
-            MyApiClient.sentGetTRXStatus(this, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        out.dismiss();
-                        Timber.d("isi response sent get Trx Status:"+ response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            String txstatus = response.getString(WebParams.TX_STATUS);
-                            showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,totalAmount,fee,amount,
-                                    txstatus,response.getString(WebParams.TX_REMARK),
-                                    reportType,response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response,
-                                    response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE, ""),
-                                    response.optString(WebParams.ORDER_ID,""));
-                        }else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(SgoPlusWeb.this,message);
-                        }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals("0003")){
-                                showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,response.getString(WebParams.BUSS_SCHEME_CODE),
-                                        response.getString(WebParams.BUSS_SCHEME_NAME), response, response.optString(WebParams.COMM_CODE,""),
-                                        response.optString(WebParams.MEMBER_CODE, ""), response.optString(WebParams.ORDER_ID,""));
+                            Gson gson = new Gson();
+                            GetTrxStatusReportModel model = gson.fromJson(object, GetTrxStatusReportModel.class);
+
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+
+                            try {
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    String txstatus = model.getTx_status();
+
+                                        showReportBillerDialog(userName,DateTimeFormat.formatToID(model.getCreated()),txId, userId,totalAmount,fee,amount,
+                                                txstatus,model.getTx_remark(),
+                                                reportType,model.getBuss_scheme_code(), model.getBuss_scheme_name(), new JSONObject(gson.toJson(model)),
+                                                model.getComm_code(), model.getMember_code(), model.getOrder_id());
+
+                                }else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(SgoPlusWeb.this,message);
+                                }
+                                else {
+                                    if(code.equals("0003")){
+                                        showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
+                                                DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,model.getBuss_scheme_code(),
+                                                model.getBuss_scheme_name(), new JSONObject(gson.toJson(model)), model.getComm_code(),
+                                                model.getMember_code(), model.getOrder_id());
+                                    }
+                                    else
+                                        showDialog(message);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            else
-                                showDialog(msg);
+
+
+                            if(out.isShowing())
+                                out.dismiss();
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(SgoPlusWeb.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(SgoPlusWeb.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(out.isShowing()) {
-                        out.dismiss();
-                        showDialog(getString(R.string.network_connection_failure_toast));
-                    }
-                   Timber.w("Error Koneksi app version registration:"+ throwable.toString());
-                }
-            });
+            );
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }
@@ -460,9 +445,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

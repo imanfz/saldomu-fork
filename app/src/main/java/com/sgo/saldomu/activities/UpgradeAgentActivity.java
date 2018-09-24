@@ -20,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -27,11 +29,15 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
+import com.sgo.saldomu.widgets.ProgressRequestBody;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -39,8 +45,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.util.HashMap;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -378,112 +391,170 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         extraSignature = String.valueOf(flag);
 
-        RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_SIUP_NPWP,
+        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_SIUP_NPWP,
                 userPhoneID,accessKey,extraSignature);
-        try {
-            params.put(WebParams.USER_ID,userPhoneID);
-            params.put(WebParams.USER_IMAGES, photoFile);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.TYPE, flag);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        HashMap<String, RequestBody> params = RetrofitService.getInstance()
+                .getSignature2(MyApiClient.LINK_UPLOAD_SIUP_NPWP, extraSignature);
+
+        RequestBody requestFile = new ProgressRequestBody(photoFile,
+                new ProgressRequestBody.UploadCallbacks() {
+                    @Override
+                    public void onProgressUpdate(int percentage) {
+
+                    }
+                });
+//                RequestBody.create(MediaType.parse("image/*"), photoFile);
+
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData(WebParams.USER_IMAGES, photoFile.getName(),
+                requestFile);
+        RequestBody userPhone = RequestBody.create(MediaType.parse("text/plain"),
+                userPhoneID);
+        RequestBody commid = RequestBody.create(MediaType.parse("text/plain"),
+                MyApiClient.COMM_ID);
+        RequestBody flags = RequestBody.create(MediaType.parse("text/plain"),
+                String.valueOf(flag));
+
+        params.put(WebParams.USER_ID, userPhone);
+//            params.put(WebParams.USER_IMAGES, photoFile);
+        params.put(WebParams.COMM_ID, commid);
+        params.put(WebParams.TYPE, flags);
         Timber.d("params upload foto: " + params.toString());
         Timber.d("params upload foto type: " + flag);
 
-        MyApiClient.sentPhotoSIUPNPWP(this, params, new JsonHttpResponseHandler() {
+        RetrofitService.getInstance().MultiPartRequest(MyApiClient.LINK_UPLOAD_SIUP_NPWP, params, filePart,
+                new ObjListener() {
+                    @Override
+                    public void onResponses(JsonObject object) {
 
-            @Override
-            public void onProgress(long bytesWritten, long totalSize) {
-                super.onProgress(bytesWritten, totalSize);
-                Timber.d("sebelum proses uploadSIUPNPWP " +bytesWritten);
-                Timber.d("sebelum proses uploadSIUPNPWP " +totalSize);
-                proses = (int) (100 * bytesWritten / totalSize);
-                if(proses < 100 || proses == 100)
-                {
-                    if(flag==SIUP_TYPE)
-                    {
-                        Timber.d("sebelum proses uploadSIUP" +proses);
-                        pbSIUP.setProgress((int) (100 * bytesWritten / totalSize));
-                        Timber.d("proses uploadSIUP " +proses);
-                        tv_pb_siup.setText(proses + "%");
+                        Gson gson = new Gson();
+                        jsonModel model = gson.fromJson(object, jsonModel.class);
+
+                        String error_code = model.getError_code();
+                        String error_message = model.getError_message();
+                        if (error_code.equalsIgnoreCase("0000")) {
+
+                        } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(UpgradeAgentActivity.this, error_message);
+                        }else {
+
+                            Timber.d("Masuk failure");
+                            if (MyApiClient.PROD_FAILURE_FLAG) {
+                                Timber.d("Masuk if prod failure flag");
+                                Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                if (flag == SIUP_TYPE) {
+                                    Timber.d("masuk failure siup");
+                                    pbSIUP.setProgress(0);
+                                    tv_pb_siup.setText("0 %");
+                                }
+                                if (flag == NPWP_TYPE) {
+                                    Timber.d("masuk failure npwp");
+                                    pbNPWP.setProgress(0);
+                                    tv_pb_npwp.setText("0 %");
+                                }
+                            } else {
+                                Toast.makeText(UpgradeAgentActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
                     }
-                    else if(flag==NPWP_TYPE)
-                    {
-                        pbNPWP.setProgress((int) (100 * bytesWritten / totalSize));
-                        tv_pb_npwp.setText(proses + "%");
-                    }
-                }
+                });
 
-            }
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
-                    String error_code = response.getString("error_code");
-                    String error_message = response.getString("error_message");
-                    if (error_code.equalsIgnoreCase("0000")) {
-
-                        Timber.d("onsuccess upload foto type: " + flag);
-                        Timber.d("isi response Upload Foto SIUP NPWP:"+ response.toString());
-
-                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
-
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(UpgradeAgentActivity.this, message);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable) {
-                Timber.d("Masuk failure");
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                {
-                    Timber.d("Masuk if prod failure flag");
-                    Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if(flag==SIUP_TYPE)
-                    {
-                        Timber.d("masuk failure siup");
-                        pbSIUP.setProgress( 0 );
-                        tv_pb_siup.setText("0 %");
-                    }
-                    if (flag==NPWP_TYPE)
-                    {
-                        Timber.d("masuk failure npwp");
-                        pbNPWP.setProgress( 0);
-                        tv_pb_npwp.setText("0 %");
-                    }
-                }
-                else {
-                    Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                }
-                Timber.w("Error Koneksi data update foto siup npwp:" + throwable.toString());
-            }
-        });
+//        MyApiClient.sentPhotoSIUPNPWP(this, params, new JsonHttpResponseHandler() {
+//
+//            @Override
+//            public void onProgress(long bytesWritten, long totalSize) {
+//                super.onProgress(bytesWritten, totalSize);
+//                Timber.d("sebelum proses uploadSIUPNPWP " +bytesWritten);
+//                Timber.d("sebelum proses uploadSIUPNPWP " +totalSize);
+//                proses = (int) (100 * bytesWritten / totalSize);
+//                if(proses < 100 || proses == 100)
+//                {
+//                    if(flag==SIUP_TYPE)
+//                    {
+//                        Timber.d("sebelum proses uploadSIUP" +proses);
+//                        pbSIUP.setProgress((int) (100 * bytesWritten / totalSize));
+//                        Timber.d("proses uploadSIUP " +proses);
+//                        tv_pb_siup.setText(proses + "%");
+//                    }
+//                    else if(flag==NPWP_TYPE)
+//                    {
+//                        pbNPWP.setProgress((int) (100 * bytesWritten / totalSize));
+//                        tv_pb_npwp.setText(proses + "%");
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                try {
+//                    String error_code = response.getString("error_code");
+//                    String error_message = response.getString("error_message");
+//                    if (error_code.equalsIgnoreCase("0000")) {
+//
+//                        Timber.d("onsuccess upload foto type: " + flag);
+//                        Timber.d("isi response Upload Foto SIUP NPWP:"+ response.toString());
+//
+//                    } else if (error_code.equals(WebParams.LOGOUT_CODE)) {
+//
+//                        Timber.d("isi response autologout:" + response.toString());
+//                        String message = response.getString(WebParams.ERROR_MESSAGE);
+//
+//                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                        test.showDialoginActivity(UpgradeAgentActivity.this, message);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getApplicationContext(), "Unexpected Error occurred! [Most common Error: Device might not be connected to Internet or remote server is not up and running]", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                failure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                failure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                failure(throwable);
+//            }
+//
+//            private void failure(Throwable throwable) {
+//                Timber.d("Masuk failure");
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                {
+//                    Timber.d("Masuk if prod failure flag");
+//                    Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                    if(flag==SIUP_TYPE)
+//                    {
+//                        Timber.d("masuk failure siup");
+//                        pbSIUP.setProgress( 0 );
+//                        tv_pb_siup.setText("0 %");
+//                    }
+//                    if (flag==NPWP_TYPE)
+//                    {
+//                        Timber.d("masuk failure npwp");
+//                        pbNPWP.setProgress( 0);
+//                        tv_pb_npwp.setText("0 %");
+//                    }
+//                }
+//                else {
+//                    Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
+//                }
+//                Timber.w("Error Koneksi data update foto siup npwp:" + throwable.toString());
+//            }
+//        });
     }
 
     private void sentExecAgent(){

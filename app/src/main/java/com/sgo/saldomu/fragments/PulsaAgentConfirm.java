@@ -31,6 +31,7 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -108,15 +109,15 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         userID = sp.getString(DefineValue.USERID_PHONE,"");
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-        tv_phone_number = (TextView) v.findViewById(R.id.pulsatoken_pulsa_id_value);
-        tv_operator_value = (TextView) v.findViewById(R.id.pulsatoken_operator_value);
-        tv_nominal_value = (TextView) v.findViewById(R.id.pulsatoken_nominal_value);
-        tv_payment_name = (TextView) v.findViewById(R.id.pulsatoken_item_payment_value);
-        tv_amount_value = (TextView) v.findViewById(R.id.pulsatoken_amount_value);
-        tv_fee_value = (TextView) v.findViewById(R.id.pulsatoken_fee_value);
-        tv_total_amount_value = (TextView) v.findViewById(R.id.pulsatoken_total_amount_value);
-        btn_submit = (Button) v.findViewById(R.id.pulsatoken_btn_verification);
-        btn_cancel = (Button) v.findViewById(R.id.pulsatoken_btn_cancel);
+        tv_phone_number = v.findViewById(R.id.pulsatoken_pulsa_id_value);
+        tv_operator_value = v.findViewById(R.id.pulsatoken_operator_value);
+        tv_nominal_value = v.findViewById(R.id.pulsatoken_nominal_value);
+        tv_payment_name = v.findViewById(R.id.pulsatoken_item_payment_value);
+        tv_amount_value = v.findViewById(R.id.pulsatoken_amount_value);
+        tv_fee_value = v.findViewById(R.id.pulsatoken_fee_value);
+        tv_total_amount_value = v.findViewById(R.id.pulsatoken_total_amount_value);
+        btn_submit = v.findViewById(R.id.pulsatoken_btn_verification);
+        btn_cancel = v.findViewById(R.id.pulsatoken_btn_cancel);
 
         btn_submit.setOnClickListener(submitListener);
         btn_cancel.setOnClickListener(cancelListener);
@@ -161,9 +162,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         if(!is_sgo_plus){
             merchant_type = args.getString(DefineValue.AUTHENTICATION_TYPE,"");
             if(merchant_type.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)|| product_payment_type.equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)){
-                LinearLayout layoutOTP = (LinearLayout) v.findViewById(R.id.layout_token);
+                LinearLayout layoutOTP = v.findViewById(R.id.layout_token);
                 layoutOTP.setVisibility(View.VISIBLE);
-                et_token_value = (EditText) layoutOTP.findViewById(R.id.pulsatoken_token_value);
+                et_token_value = layoutOTP.findViewById(R.id.pulsatoken_token_value);
 
                 et_token_value.requestFocus();
                 isPIN = false;
@@ -305,8 +306,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         try{
 
             extraSignature = tx_id + comm_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
                     userID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
@@ -315,67 +317,38 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
 
             Timber.d("isi params sent get Trx Status" + params.toString());
 
-            MyApiClient.sentGetTRXStatus(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        progdialog.dismiss();
-                        Timber.d("isi response sent get Trx Status"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                            showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""), DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
-                                    sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
-                                    response.optString(WebParams.TX_STATUS, ""), response.optString(WebParams.TX_REMARK, ""), amount);
+                            GetTrxStatusModel model = getGson().fromJson(object, GetTrxStatusModel.class);
+
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+
+                                showReportBillerDialog(sp.getString(DefineValue.USER_NAME, ""),
+                                        DateTimeFormat.formatToID(model.getCreated()),
+                                        sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
+                                        model.getTx_status(), model.getTx_remark(), amount);
+                            }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }else {
+                                String msg;
+                                if(MyApiClient.PROD_FAILURE_FLAG) {
+                                    msg = getString(R.string.network_connection_failure_toast);
+                                }else msg = model.getError_message();
+                                showDialog(msg);
+                            }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                            btn_submit.setEnabled(true);
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            showDialog(msg);
-                        }
-
-                        btn_submit.setEnabled(true);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btn_submit.setEnabled(true);
-                    Timber.w("Error Koneksi update inq biller desc:"+throwable.toString());
-                }
-
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }
@@ -434,9 +407,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

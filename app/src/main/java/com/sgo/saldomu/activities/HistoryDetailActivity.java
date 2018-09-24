@@ -14,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -24,8 +26,12 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.CommentDataModel;
+import com.sgo.saldomu.models.retrofit.CommentModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
@@ -36,6 +42,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -244,8 +251,9 @@ public class HistoryDetailActivity extends BaseActivity {
         try {
 
             extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_COMMENT_LIST, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
@@ -253,91 +261,55 @@ public class HistoryDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:"+params.toString());
 
-            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_COMMENT_LIST, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params comment list:" + response.toString());
+                            Gson gson = new Gson();
+                            CommentModel model = gson.fromJson(object, CommentModel.class);
 
-                            JSONArray mArrayComment = new JSONArray(response.getString(WebParams.DATA_COMMENTS));
-                            List<commentModel> mListComment = new ArrayList<>();
-                            for (int i = 0; i < mArrayComment.length(); i++) {
-                                int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
-                                boolean flagSameComment = false;
+                            String code = model.getError_code();
+                            String count = model.getCount();
 
-                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                if (listComment.size() > 0) {
-                                    for (int index = 0; index < listComment.size(); index++) {
-                                        if (listComment.get(index).getComment_id() != comment_id) {
-                                            flagSameComment = false;
-                                        } else {
-                                            flagSameComment = true;
-                                            break;
+                            if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                List<commentModel> mListComment = new ArrayList<>();
+                                for (CommentDataModel obj : model.getData_comments()) {
+                                    boolean flagSameComment = false;
+
+                                    int comment_id = Integer.parseInt(obj.getId());
+
+                                    // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                    if (listComment.size() > 0) {
+                                        for (int index = 0; index < listComment.size(); index++) {
+                                            if (listComment.get(index).getComment_id() != comment_id) {
+                                                flagSameComment = false;
+                                            } else {
+                                                flagSameComment = true;
+                                                break;
+                                            }
                                         }
+                                    }
+
+                                    if (!flagSameComment) {
+                                        mListComment.add(new commentModel(obj));
                                     }
                                 }
 
-                                if (!flagSameComment) {
-                                    String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
-                                    String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
-                                    String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                    String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                    String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
-                                    String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
-                                    String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                    String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
-                                    String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
-
-                                    mListComment.add(new commentModel(comment_id, comment_post_id,
-                                            comment_from, comment_from_name, comment_from_profile_picture, comment_to,
-                                            comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
-                                }
+                                insertCommentToDB(mListComment, false, "");
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(HistoryDetailActivity.this, message);
+                            } else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(HistoryDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                             }
-                            insertCommentToDB(mListComment, false, "");
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(HistoryDetailActivity.this, message);
-                        } else {
-                            Timber.d("isi error comment list:" + response.toString());
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(HistoryDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi History comment list:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+e.getMessage());

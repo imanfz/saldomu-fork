@@ -14,15 +14,21 @@ import android.webkit.*;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
@@ -31,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.Random;
 
 import timber.log.Timber;
@@ -223,8 +230,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             out.show();
 
             extraSignature = txId + comm_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
+            RequestParams param = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
                     userID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -235,42 +243,39 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
             Timber.d("isi params sent get Trx Status", params.toString());
 
-            MyApiClient.sentGetTRXStatus(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        out.dismiss();
-                        Timber.d("isi response sent get Trx Status", response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),txId, userId,totalAmount,fee,amount,
-                                    response.getString(WebParams.TX_STATUS),response.getString(WebParams.TX_REMARK),
-                                    reportType);
-                        }else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout", response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(PulsaAgentWeb.this,message);
-                        } else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals("0003")){
-                                showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+
+                            Gson gson = new Gson();
+                            GetTrxStatusReportModel model = gson.fromJson(object, GetTrxStatusReportModel.class);
+
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                showReportBillerDialog(userName,DateTimeFormat.formatToID(model.getCreated()),
+                                        txId, userId,totalAmount,fee,amount,
+                                        model.getTx_status(),model.getTx_remark(), reportType);
+                            }else if(code.equals(WebParams.LOGOUT_CODE)){
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(PulsaAgentWeb.this,message);
+                            } else {
+                                if(code.equals("0003")){
+                                    showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
+                                            DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType);
+                                }
+                                else
+                                    showDialog(message);
                             }
-                            else
-                                showDialog(msg);
+
+                            if(out.isShowing())
+                                out.dismiss();
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
-                }
+            );
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    Log.w("Error get trx status", throwable.toString());
-                }
-            });
         }catch (Exception e){
             Timber.d("httpclient", e.getMessage());
         }
