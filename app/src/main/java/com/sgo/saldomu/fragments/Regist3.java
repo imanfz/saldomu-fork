@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -36,8 +37,11 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -46,6 +50,8 @@ import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -92,14 +98,14 @@ public class Regist3 extends BaseFragment {
 //            max_resend_email = 3;
         }
 
-        txtToken = (TextView) v.findViewById(R.id.token_text);
-        TokenValue = (EditText) v.findViewById(R.id.reg2_token_value);
-        mNoHPValue = (TextView) v.findViewById(R.id.reg2_noHP_value); mNoHPValue.setText(noHPValue);
-        mNamaValue = (TextView) v.findViewById(R.id.reg2_nama_value); mNamaValue.setText(namaValue);
-        mEmail = (TextView) v.findViewById(R.id.reg2_email_value);mEmail.setText(emailValue);
-        btnSubmit = (Button) v.findViewById(R.id.btn_reg2_verification);
-        btnCancel = (Button) v.findViewById(R.id.btn_reg2_cancel);
-        btnResend = (Button) v.findViewById(R.id.btn_reg2_resend_token);
+        txtToken = v.findViewById(R.id.token_text);
+        TokenValue = v.findViewById(R.id.reg2_token_value);
+        mNoHPValue = v.findViewById(R.id.reg2_noHP_value); mNoHPValue.setText(noHPValue);
+        mNamaValue = v.findViewById(R.id.reg2_nama_value); mNamaValue.setText(namaValue);
+        mEmail = v.findViewById(R.id.reg2_email_value);mEmail.setText(emailValue);
+        btnSubmit = v.findViewById(R.id.btn_reg2_verification);
+        btnCancel = v.findViewById(R.id.btn_reg2_cancel);
+        btnResend = v.findViewById(R.id.btn_reg2_resend_token);
         layout_resend = v.findViewById(R.id.reg2_layout_resend);
 
         TokenValue.requestFocus();
@@ -228,7 +234,8 @@ public class Regist3 extends BaseFragment {
             btnSubmit.setEnabled(false);
             TokenValue.setEnabled(false);
 
-            RequestParams params = new RequestParams();
+            RequestParams param = new RequestParams();
+            HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE,noHPValue);
             params.put(WebParams.CUST_NAME,namaValue);
@@ -240,40 +247,41 @@ public class Regist3 extends BaseFragment {
 
             Timber.d("isi params resend token:"+params.toString());
 
-            MyApiClient.sentRegStep2(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    btnCancel.setEnabled(true);
-                    btnSubmit.setEnabled(true);
-                    TokenValue.setEnabled(true);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP2, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            btnCancel.setEnabled(true);
+                            btnSubmit.setEnabled(true);
+                            TokenValue.setEnabled(true);
 
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                            AlertDialog dialogToken;
-                            if(is_sms.equalsIgnoreCase("Y")) {
-                                --max_resend_sms;
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                if (max_resend_sms == 0) {
-                                    layout_resend.setVisibility(View.GONE);
-                                    showDialogEmptyToken();
+                                AlertDialog dialogToken;
+                                if(is_sms.equalsIgnoreCase("Y")) {
+                                    --max_resend_sms;
+
+                                    if (max_resend_sms == 0) {
+                                        layout_resend.setVisibility(View.GONE);
+                                        showDialogEmptyToken();
+                                    }
+                                    else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                        builder.setMessage(getString(R.string.reg3_dialog_token_message_sms))
+                                                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                        dialogToken = builder.create();
+                                        dialogToken.show();
+                                        countDownTimer.start();
+                                    }
                                 }
-                                else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                    builder.setMessage(getString(R.string.reg3_dialog_token_message_sms))
-                                            .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                    dialogToken = builder.create();
-                                    dialogToken.show();
-                                    countDownTimer.start();
-                                }
-                            }
 //                            else if(is_email.equalsIgnoreCase("Y")) {
 //                                --max_resend_email;
 //                                txtToken.setText(getString(R.string.kode_token_email));
@@ -290,57 +298,25 @@ public class Regist3 extends BaseFragment {
 //                            }
 
 //                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
-                            changeTextBtnSub();
+                                changeTextBtnSub();
 
-                            Timber.d("isi response resend token:" + response.toString());
-                        } else {
-                            btnResend.setEnabled(true);
-                            Timber.d("Error Resend token:" + response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                        }
+                            } else {
+                                btnResend.setEnabled(true);
+                                code = model.getError_message();
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
+
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
 
 //                        if (max_resend_email == 0) {
 //                            btnResend.setEnabled(false);
 //                            Toast.makeText(getActivity(), getString(R.string.notif_max_resend_token_empty), Toast.LENGTH_SHORT).show();
 //                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    btnCancel.setEnabled(true);
-                    btnSubmit.setEnabled(true);
-                    TokenValue.setEnabled(true);
-                    btnResend.setEnabled(true);
-                    Timber.w("Error Koneksi rresend token reg3:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -623,11 +599,11 @@ public class Regist3 extends BaseFragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
-        TextView Message2 = (TextView)dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
-        TextView Message3 = (TextView)dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message2 = dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
+        TextView Message3 = dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.regist2_notif_title));
         Message.setText(getResources().getString(R.string.regist2_notif_message_1));

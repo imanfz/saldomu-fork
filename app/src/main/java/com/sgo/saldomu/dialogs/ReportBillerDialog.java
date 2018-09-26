@@ -276,7 +276,14 @@ public class ReportBillerDialog extends DialogFragment implements View.OnClickLi
                     TextView tv_fee_value = inflated.findViewById(R.id.dialog_reportbbs_fee_value);
                     TextView tv_total_amount_value = inflated.findViewById(R.id.dialog_reportbbs_totalamount_value);
                     TextView tv_member_shop_phone = inflated.findViewById(R.id.dialog_reportbbs_member_shop_phone);
+                    Boolean isSuccess = args.getBoolean(DefineValue.TRX_STATUS);
 
+                    tv_trans_remark.setText(args.getString(DefineValue.TRX_MESSAGE));
+                    if (!isSuccess) {
+                        String transRemark = args.getString(DefineValue.TRX_REMARK);
+                        tv_trans_remark_sub.setVisibility(View.VISIBLE);
+                        tv_trans_remark_sub.setText(transRemark);
+                    }
                     tv_transaction_type.setText(args.getString(DefineValue.BUSS_SCHEME_NAME));
                     tv_userid_value.setText(args.getString(DefineValue.MEMBER_PHONE));
                     tv_name_value.setText(args.getString(DefineValue.MEMBER_NAME));

@@ -1,12 +1,20 @@
 package com.sgo.saldomu.adapter;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 import com.sgo.saldomu.Beans.HelpModel;
 import com.sgo.saldomu.R;
 
@@ -15,16 +23,18 @@ import java.util.ArrayList;
 /**
  * Created by thinkpad on 6/9/2015.
  */
-public class HelpAdapter extends BaseAdapter{
+public class HelpAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private ArrayList<HelpModel> data;
     private Context context;
+    private Activity activity;
 
-    public HelpAdapter(Context context, ArrayList<HelpModel> _data) {
+    public HelpAdapter(Context context, ArrayList<HelpModel> _data, Activity activity) {
         mInflater = LayoutInflater.from(context);
         this.data = _data;
         this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -45,16 +55,38 @@ public class HelpAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        ViewHolder holder;
-        if(convertView == null) {
+        final ViewHolder holder;
+        if (convertView == null) {
             view = mInflater.inflate(R.layout.list_help_center_item, parent, false);
             holder = new ViewHolder();
-            holder.name = (TextView)view.findViewById(R.id.help_name_value);
-            holder.phone = (TextView)view.findViewById(R.id.help_phone_value);
-            holder.mail = (TextView)view.findViewById(R.id.help_mail_value);
-            holder.trPhone = (TableRow)view.findViewById(R.id.tr_phone);
-            holder.trMail = (TableRow)view.findViewById(R.id.tr_mail);
+            holder.name = (TextView) view.findViewById(R.id.help_name_value);
+            holder.phone = (TextView) view.findViewById(R.id.help_phone_value);
+            holder.mail = (TextView) view.findViewById(R.id.help_mail_value);
+            holder.trPhone = (TableRow) view.findViewById(R.id.tr_phone);
+            holder.trMail = (TableRow) view.findViewById(R.id.tr_mail);
             view.setTag(holder);
+
+            holder.phone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:"+ holder.phone.getText().toString()));
+                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        ActivityCompat.requestPermissions((Activity)activity, new String[]{Manifest.permission.CALL_PHONE}, 1);
+                    }
+                    else {
+                        context.startActivity(callIntent);
+                       }
+
+                }
+            });
         } else {
             view = convertView;
             holder = (ViewHolder)view.getTag();

@@ -520,6 +520,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
     private ListView.OnItemClickListener reportItemListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             getTrxStatus(reportData.get(position));
         }
     };
@@ -534,66 +535,74 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             String _comm_id = "";
             String tx_type = DefineValue.EMO;
             boolean isdetail = false;
+            boolean call = true;
 
 
             if (report_type == REPORT_SCASH) {
                 _tx_id = _object.getTrx_id();
                 _comm_id = sp.getString(DefineValue.COMMUNITY_ID, "");
-            } else
-                if (report_type == REPORT_ESPAY) {
+                if (_object.getBuss_scheme_code().equalsIgnoreCase("RF") ||
+                        _object.getBuss_scheme_code().equalsIgnoreCase("RA")){
+                    call = false;
+                }
+//                call =
+            } else if (report_type == REPORT_ESPAY) {
                 _tx_id = _object.getTx_id();
                 _comm_id = _object.getComm_id();
                 tx_type = DefineValue.ESPAY;
-//                if (mobj.getType_desc().equals(ITEM_DESC_PLN) || mobj.getType_desc().equals(ITEM_DESC_BPJS)) {
-//                    isdetail = true;
+//                if (smobj.getType_desc().equals(ITEM_DESC_PLN) || mobj.getType_desc().equals(ITEM_DESC_BPJS)) {
+////                    idetail = true;
 //                }
             }
 
             String extraSignature = _tx_id + _comm_id;
 
+            if (call) {
 
-            HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
+                HashMap<String, Object> params = RetrofitService.getInstance()
+                        .getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
-            params.put(WebParams.TX_ID, _tx_id);
-            params.put(WebParams.COMM_ID, _comm_id);
-            params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
-            params.put(WebParams.TX_TYPE, tx_type);
+                params.put(WebParams.TX_ID, _tx_id);
+                params.put(WebParams.COMM_ID, _comm_id);
+                params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
+                params.put(WebParams.TX_TYPE, tx_type);
                 params.put(WebParams.IS_DETAIL, DefineValue.STRING_YES);
-            Timber.d("isi params sent get Trx Status:" + params.toString());
+                Timber.d("isi params sent get Trx Status:" + params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
+                RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
+                        new ObjListener() {
+                            @Override
+                            public void onResponses(JsonObject object) {
+                                GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
-                            String code = model.getError_code();
-                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                ShowDialog(_object, model);
+                                    ShowDialog(_object, model);
 
-                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                String message = model.getError_message();
-                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginMain(getActivity(), message);
-                            } else {
-                                String msg = model.getError_message();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
+                                } else {
+                                    String msg = model.getError_message();
 
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                }
+
+                                if (out.isShowing())
+                                    out.dismiss();
                             }
-
-                            if (out.isShowing())
-                                out.dismiss();
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+                        });
+            }
+            } catch(Exception e){
+                Timber.d("httpclient:" + e.getMessage());
+            }
         }
-    }
+
 
     private void ShowDialog(ReportDataModel _object, GetTrxStatusReportModel response) {
         if (report_type == REPORT_SCASH) {
@@ -610,7 +619,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             } else if (_object.getBuss_scheme_code().equals("IR")) {
                 showReportBillerDialog(_object, response, ccyId);
             }
-
         } else if (report_type == REPORT_ESPAY) {
             if (_object.getBuss_scheme_code().equals("BIL")) {
                 showReportEspayBillerDialog(sp.getString(DefineValue.USER_NAME, ""), response);
@@ -677,7 +685,6 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
-
     private void showReportATCMemberDialog(GetTrxStatusReportModel response){
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);

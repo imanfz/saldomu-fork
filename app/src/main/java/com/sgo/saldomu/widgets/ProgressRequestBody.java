@@ -1,5 +1,6 @@
 package com.sgo.saldomu.widgets;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -44,24 +45,43 @@ public class ProgressRequestBody extends RequestBody{
     public void writeTo(BufferedSink sink) throws IOException {
         long fileLength = mFile.length();
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-        FileInputStream in = new FileInputStream(mFile);
         long uploaded = 0;
 
-        try {
-            int read;
-            Handler handler = new Handler(Looper.getMainLooper());
-            while ((read = in.read(buffer)) != -1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try (FileInputStream in = new FileInputStream(mFile)) {
+                int read;
+                Handler handler = new Handler(Looper.getMainLooper());
+                while ((read = in.read(buffer)) != -1) {
 
-                // update progress on UI thread
-                handler.post(new ProgressUpdater(uploaded, fileLength));
+                    // update progress on UI thread
+                    handler.post(new ProgressUpdater(uploaded, fileLength));
 
-                uploaded += read;
-                sink.write(buffer, 0, read);
+                    uploaded += read;
+                    sink.write(buffer, 0, read);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally{
-            in.close();
+        }else {
+
+            FileInputStream in = new FileInputStream(mFile);
+
+            try {
+                int read;
+                Handler handler = new Handler(Looper.getMainLooper());
+                while ((read = in.read(buffer)) != -1) {
+
+                    // update progress on UI thread
+                    handler.post(new ProgressUpdater(uploaded, fileLength));
+
+                    uploaded += read;
+                    sink.write(buffer, 0, read);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                in.close();
+            }
         }
     }
 

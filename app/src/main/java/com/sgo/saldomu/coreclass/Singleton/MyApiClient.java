@@ -263,6 +263,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
+    public static String LINK_BBS_SEND_DATA;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -416,6 +417,7 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
+        LINK_BBS_SEND_DATA = headaddressfinal +"BBSTrxCustomer/Submit";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
@@ -492,7 +494,6 @@ public class MyApiClient {
     public static String COMM_ID_PULSA_DEV = "DAPMSCADM1458816850U9KR7"; //dev pulsa agent
     public static String COMM_ID_PULSA_PROD = "DAPHAH14992553291VINB"; //prod pulsa agent
     public static String COMM_ID_PROD = "SALDOMU1503988580RFVBK";  //prod
-//    public static String COMM_ID_PROD = "EMOSALDOMU1500439694RS6DD";  //prod
 
     public static String INCOMINGSMS_INFOBIP = "+6281350058801";
     public static String INCOMINGSMS_SPRINT = "+6281333332000";
@@ -1557,6 +1558,7 @@ public class MyApiClient {
 
     public static void getBillerType(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address Get Biller Type: %1$s ",LINK_GET_BILLER_TYPE);
+        Timber.d("param get biller type : ", params);
         post(mContext, LINK_GET_BILLER_TYPE, params, responseHandler);
     }
 
@@ -1616,6 +1618,11 @@ public class MyApiClient {
     public static void getDenomInvoke(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address List Bank Denom SCADM: %1$s ",LINK_GET_DENOM_INVOKE);
         post(mContext, LINK_GET_DENOM_INVOKE, params, responseHandler);
+    }
+
+    public static void getBBSSendDataLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs send data: %1$s ",LINK_BBS_SEND_DATA);
+        post(mContext, LINK_BBS_SEND_DATA, params, responseHandler);
     }
 
     //get Data------------------------------------------------------------------------------------------

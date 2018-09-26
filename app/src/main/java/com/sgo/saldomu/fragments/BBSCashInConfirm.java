@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
@@ -37,8 +36,8 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -368,6 +367,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
+//            DialogSignature dialogSignature;
             if(InetHandler.isNetworkAvailable(getActivity())){
                 btnSubmit.setEnabled(false);
                 if(isSMS) {
@@ -411,11 +411,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                             }
                             layout_btn_resend.setVisibility(View.GONE);
                             validasiNomor = true;
-//                        if(InetHandler.isNetworkAvailable(getActivity())){
-//                            requestResendToken();
-//                        }
-//                        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
-
                         }
 
                     }else sentInsertTransTopup(tokenValue.getText().toString());
@@ -441,7 +436,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
-
+    
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {

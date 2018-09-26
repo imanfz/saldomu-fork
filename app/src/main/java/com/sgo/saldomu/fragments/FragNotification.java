@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -31,9 +32,13 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.NotifModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -44,6 +49,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -316,8 +322,9 @@ public class FragNotification extends BaseFragment {
     private void sentReadNotif(String _notif_id, final int position){
         try{
             extraSignature = _notif_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_READ,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_READ,
                     _userid,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_READ, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.NOTIF_ID_READ,_notif_id);
             params.put(WebParams.MEMBER_ID, _memberId);
@@ -326,63 +333,34 @@ public class FragNotification extends BaseFragment {
 
             Timber.d("isi params Read Notif:" + params.toString());
 
-            MyApiClient.sentReadNotif(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.w("isi response Read Notif:"+response.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_READ, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            if(getActivity()!=null){
-                                mData.get(position).setRead(true);
-                                getActivity().setResult(MainPage.RESULT_NOTIF);
-                                mAdapter.notifyItemChanged(position);
-                                CheckNotification();
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
+                            String code = model.getError_code();
+
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if(getActivity()!=null){
+                                    mData.get(position).setRead(true);
+                                    getActivity().setResult(MainPage.RESULT_NOTIF);
+                                    mAdapter.notifyItemChanged(position);
+                                    CheckNotification();
+                                }
                             }
+                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                code = model.getError_code() + ":" + model.getError_message();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
+
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    Timber.w("Error Koneksi Read Notif:"+throwable.toString());
-                }
-
-
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:" + e.getMessage());
         }
@@ -418,8 +396,9 @@ public class FragNotification extends BaseFragment {
                 out.show();
             }
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_RETRIEVE,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_RETRIEVE,
                     _userid,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.MEMBER_ID, _memberId);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -427,217 +406,179 @@ public class FragNotification extends BaseFragment {
 
             Timber.d("isi params Retrieve Notif:"+params.toString());
 
-            MyApiClient.sentRetrieveNotif(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                    try {
-                        if (isDialog) {
-                            if(out.isShowing())
-                                out.dismiss();
-                        }
-
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.w("isi response Retrieve Notif:"+response.toString());
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                            if (mRecyclerView.getVisibility() == View.GONE) {
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                empty_layout.setVisibility(View.GONE);
-                            }
-
-                            JSONArray mArrayData = new JSONArray(response.getString(WebParams.NOTIF_DATA));
-
-                            String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
-                            mData.clear();
-                            mDataNotifDetail.clear();
-                            int notif_type, image = 0;
-                            boolean read;
-                            Date time1;
-                            PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
-                            JSONObject notif_detail, mObject;
-                            NotificationModelClass mObj;
-
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
                             try {
-                                for (int i = 0; i < mArrayData.length(); i++) {
-                                    mObject = mArrayData.getJSONObject(i);
+                                if (isDialog) {
+                                    if(out.isShowing())
+                                        out.dismiss();
+                                }
 
-                                    notif_id = mObject.getString(WebParams.NOTIF_ID);
-                                    notif_type = mObject.getInt(WebParams.NOTIF_TYPE);
-                                    from_name = mObject.getString(WebParams.FROM_NAME);
-                                    from_id = mObject.getString(WebParams.FROM_USER_ID);
-                                    to_id = mObject.getString(WebParams.TO_USER_ID);
-                                    from_profile_picture = mObject.getString(WebParams.FROM_PROFILE_PICTURE);
-                                    date_time = mObject.getString(WebParams.CREATED_DATE);
-                                    read = (mObject.getInt(WebParams.NOTIF_READ) == 1);
-                                    id_result = mObject.getString(WebParams.ID_RESULT);
+                                NotifModel model = getGson().fromJson(object, NotifModel.class);
 
-                                    String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL, "");
+                                String code = model.getError_message();
 
-                                    if (!notif_detail_string.isEmpty()) {
-                                        notif_detail = new JSONArray(notif_detail_string).getJSONObject(0);
-                                        switch (notif_type) {
-                                            case NotificationActivity.TYPE_LIKE:
-                                                image = 0;
-                                                title = from_name + " " + getString(R.string.notif_text_like_name) + " : ";
-                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
-                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
-                                                break;
-                                            case NotificationActivity.TYPE_COMMENT:
-                                                image = 0;
-                                                title = from_name + " " + getString(R.string.notif_text_comment_name) + " : ";
-                                                if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
-                                                    detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
-                                                break;
-                                            case NotificationActivity.TYPE_TRANSFER:
-                                                image = R.drawable.ic_cash_in;
-                                                title = getString(R.string.notif_text_ask4money_name) + " " + from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
-                                                        "\n" + notif_detail.get(WebParams.DESC);
-                                                break;
-                                            case NotificationActivity.TYPE_PAID:
-                                                image = R.drawable.ic_cash_out;
-                                                title = getString(R.string.notif_text_paid_name) + " " + from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
-                                                        "\n" + notif_detail.get(WebParams.DESC);
-                                                break;
-                                            case NotificationActivity.TYPE_DECLINE:
-                                                image = R.drawable.ic_cash_in;
-                                                title = getString(R.string.notif_text_decline_name) + " " + from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
-                                                        "\n" + notif_detail.get(WebParams.REMARK);
-                                                break;
-                                            case NotificationActivity.TYPE_NON_MEMBER:
-                                                image = R.drawable.ic_cash_out;
-                                                title = getString(R.string.notif_text_non_member) + " " + from_name;
-                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT);
-                                                break;
-                                            case NotificationActivity.CLAIM_NON_MEMBER:
-                                                image = R.drawable.ic_cash_in;
-                                                title = from_name + " " + getString(R.string.notif_text_claim_non_member);
-                                                detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
-                                                        "\n" + from_name + " " + getString(R.string.notif_detail_claim_non_member);
-                                                break;
-                                            case NotificationActivity.REJECTED_KTP:
-                                                image = R.drawable.ic_photo_camera_rejected;
-                                                title = getString(R.string.notif_title_photo_ktp_rejected);
-                                                break;
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    if (mRecyclerView.getVisibility() == View.GONE) {
+                                        mRecyclerView.setVisibility(View.VISIBLE);
+                                        empty_layout.setVisibility(View.GONE);
+                                    }
+
+                                    JSONArray mArrayData = new JSONArray(getGson().toJson(model.getData_user_notif()));
+
+                                    String title = null, detail = "", time, to_id, from_name, from_id, notif_id, from_profile_picture, date_time, id_result;
+                                    mData.clear();
+                                    mDataNotifDetail.clear();
+                                    int notif_type, image = 0;
+                                    boolean read;
+                                    Date time1;
+                                    PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
+                                    JSONObject notif_detail, mObject;
+                                    NotificationModelClass mObj;
+
+                                    try {
+                                        for (int i = 0; i < mArrayData.length(); i++) {
+                                            mObject = mArrayData.getJSONObject(i);
+
+                                            notif_id = mObject.getString(WebParams.NOTIF_ID);
+                                            notif_type = mObject.getInt(WebParams.NOTIF_TYPE);
+                                            from_name = mObject.getString(WebParams.FROM_NAME);
+                                            from_id = mObject.getString(WebParams.FROM_USER_ID);
+                                            to_id = mObject.getString(WebParams.TO_USER_ID);
+                                            from_profile_picture = mObject.getString(WebParams.FROM_PROFILE_PICTURE);
+                                            date_time = mObject.getString(WebParams.CREATED_DATE);
+                                            read = (mObject.getInt(WebParams.NOTIF_READ) == 1);
+                                            id_result = mObject.getString(WebParams.ID_RESULT);
+
+                                            String notif_detail_string = mObject.optString(WebParams.NOTIF_DETAIL, "");
+
+                                            if (!notif_detail_string.isEmpty()) {
+                                                notif_detail = new JSONArray(notif_detail_string).getJSONObject(0);
+                                                switch (notif_type) {
+                                                    case NotificationActivity.TYPE_LIKE:
+                                                        image = 0;
+                                                        title = from_name + " " + getString(R.string.notif_text_like_name) + " : ";
+                                                        if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                            detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                        break;
+                                                    case NotificationActivity.TYPE_COMMENT:
+                                                        image = 0;
+                                                        title = from_name + " " + getString(R.string.notif_text_comment_name) + " : ";
+                                                        if(!notif_detail.optString(WebParams.MESSAGE,"").isEmpty())
+                                                            detail = "\"" + notif_detail.getString(WebParams.MESSAGE) + "\"";
+                                                        break;
+                                                    case NotificationActivity.TYPE_TRANSFER:
+                                                        image = R.drawable.ic_cash_in;
+                                                        title = getString(R.string.notif_text_ask4money_name) + " " + from_name;
+                                                        detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                                "\n" + notif_detail.get(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.TYPE_PAID:
+                                                        image = R.drawable.ic_cash_out;
+                                                        title = getString(R.string.notif_text_paid_name) + " " + from_name;
+                                                        detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                                "\n" + notif_detail.get(WebParams.DESC);
+                                                        break;
+                                                    case NotificationActivity.TYPE_DECLINE:
+                                                        image = R.drawable.ic_cash_in;
+                                                        title = getString(R.string.notif_text_decline_name) + " " + from_name;
+                                                        detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                                "\n" + notif_detail.get(WebParams.REMARK);
+                                                        break;
+                                                    case NotificationActivity.TYPE_NON_MEMBER:
+                                                        image = R.drawable.ic_cash_out;
+                                                        title = getString(R.string.notif_text_non_member) + " " + from_name;
+                                                        detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT);
+                                                        break;
+                                                    case NotificationActivity.CLAIM_NON_MEMBER:
+                                                        image = R.drawable.ic_cash_in;
+                                                        title = from_name + " " + getString(R.string.notif_text_claim_non_member);
+                                                        detail = notif_detail.getString(WebParams.CCY_ID) + " " + notif_detail.getString(WebParams.AMOUNT) +
+                                                                "\n" + from_name + " " + getString(R.string.notif_detail_claim_non_member);
+                                                        break;
+                                                    case NotificationActivity.REJECTED_KTP:
+                                                        image = R.drawable.ic_photo_camera_rejected;
+                                                        title = getString(R.string.notif_title_photo_ktp_rejected);
+                                                        break;
+                                                }
+
+                                                if (notif_type == NotificationActivity.TYPE_LIKE ||
+                                                        notif_type == NotificationActivity.TYPE_COMMENT ||
+                                                        notif_type == NotificationActivity.TYPE_TRANSFER ||
+                                                        notif_type == NotificationActivity.TYPE_PAID ||
+                                                        notif_type == NotificationActivity.TYPE_DECLINE ||
+                                                        notif_type == NotificationActivity.TYPE_NON_MEMBER ||
+                                                        notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
+                                                        notif_type == NotificationActivity.REJECTED_KTP
+                                                        ) {
+                                                    mDataNotifDetail.add(notif_detail);
+
+                                                    time1 = DateTimeFormat.convertStringtoCustomDateTime(date_time);
+                                                    time = p.formatDuration(time1);
+
+                                                    mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
+                                                            from_id, detail, time, notif_type, read, notif_detail, from_profile_picture, date_time, id_result);
+                                                    mData.add(mObj);
+                                                }
+
+                                            }
+                                        }
+                                        if (mData.size() != 0) {
+                                            mAdapter.notifyDataSetChanged();
+                                        } else {
+                                            Toast.makeText(getActivity(), "Tidak ada Notifikasi", Toast.LENGTH_LONG).show();
+                                            mRecyclerView.setVisibility(View.GONE);
+                                            empty_layout.setVisibility(View.VISIBLE);
+                                            mData.clear();
+                                            mAdapter.notifyDataSetChanged();
+                                            getActivity().setResult(MainPage.RESULT_NOTIF);
                                         }
 
-                                        if (notif_type == NotificationActivity.TYPE_LIKE ||
-                                                notif_type == NotificationActivity.TYPE_COMMENT ||
-                                                notif_type == NotificationActivity.TYPE_TRANSFER ||
-                                                notif_type == NotificationActivity.TYPE_PAID ||
-                                                notif_type == NotificationActivity.TYPE_DECLINE ||
-                                                notif_type == NotificationActivity.TYPE_NON_MEMBER ||
-                                                notif_type == NotificationActivity.CLAIM_NON_MEMBER ||
-                                                notif_type == NotificationActivity.REJECTED_KTP
-                                                ) {
-                                            mDataNotifDetail.add(notif_detail);
+                                        getActivity().setResult(MainPage.RESULT_NOTIF);
+                                    } catch (Exception ex) {
+                                        Timber.d("isi exception Notification:"+ex.getMessage());
+                                    }
 
-                                            time1 = DateTimeFormat.convertStringtoCustomDateTime(date_time);
-                                            time = p.formatDuration(time1);
 
-                                            mObj = new NotificationModelClass(notif_id, image, title, to_id, from_name,
-                                                    from_id, detail, time, notif_type, read, notif_detail, from_profile_picture, date_time, id_result);
-                                            mData.add(mObj);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+
+                                    if (code.equals("0003")) {
+                                        if(FragNotification.this.isVisible()) {
+                                            Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
+                                            mRecyclerView.setVisibility(View.GONE);
+                                            empty_layout.setVisibility(View.VISIBLE);
+                                            mData.clear();
+                                            mAdapter.notifyDataSetChanged();
+                                            getActivity().setResult(MainPage.RESULT_NOTIF);
+
                                         }
-
                                     }
                                 }
-                                if (mData.size() != 0) {
-                                    mAdapter.notifyDataSetChanged();
-                                } else {
-                                    Toast.makeText(getActivity(), "Tidak ada Notifikasi", Toast.LENGTH_LONG).show();
-                                    mRecyclerView.setVisibility(View.GONE);
-                                    empty_layout.setVisibility(View.VISIBLE);
-                                    mData.clear();
-                                    mAdapter.notifyDataSetChanged();
-                                    getActivity().setResult(MainPage.RESULT_NOTIF);
+
+                                if (mPtr.isShown())
+                                    mPtr.refreshComplete();
+
+                                if (model.getOn_error()) {
+                                    if(MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
+                                    getActivity().finish();
                                 }
 
-                                getActivity().setResult(MainPage.RESULT_NOTIF);
-                            } catch (Exception ex) {
-                                Timber.d("isi exception Notification:"+ex.getMessage());
+                            } catch (JSONException e) {
+
+                                Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
                             }
-
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-
-                            if (code.equals("0003")) {
-                                if(FragNotification.this.isVisible()) {
-                                    Toast.makeText(getActivity(), getString(R.string.notifications_empty), Toast.LENGTH_LONG).show();
-                                    mRecyclerView.setVisibility(View.GONE);
-                                    empty_layout.setVisibility(View.VISIBLE);
-                                    mData.clear();
-                                    mAdapter.notifyDataSetChanged();
-                                    getActivity().setResult(MainPage.RESULT_NOTIF);
-                                }
-                            }
-
                         }
-
-                        if (mPtr.isShown())
-                            mPtr.refreshComplete();
-
-                    } catch (JSONException e) {
-
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (isDialog)
-                        if(out.isShowing())
-                            out.dismiss();
-                    getActivity().setResult(MainPage.RESULT_NOTIF);
-                    getActivity().finish();
-                    Timber.w("Error Koneksi Notif Retrieve:"+throwable.toString());
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if (isDialog)
-                        if(out.isShowing())
-                            out.dismiss();
-                    getActivity().setResult(MainPage.RESULT_NOTIF);
-                    getActivity().finish();
-                    Timber.w("Error Koneksi Notif Retrieve");
-                }
-
-
-            });
+                    });
         } catch (Exception e) {
             String err = (e.getMessage()==null)?"Connection failed":e.getMessage();
             Timber.e("http err:"+err);
@@ -653,90 +594,50 @@ public class FragNotification extends BaseFragment {
                     out.show();
             }
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
-                    _userid,accessKey);
+            extraSignature = _hold_id + commIDLogin;
+
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
+                    userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.HOLD_ID, _hold_id);
 
             Timber.d("isi params sent claim non member:"+params.toString());
 
-            MyApiClient.sentClaimNonMemberTrf(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            if (isDialog)
+                                if(out.isShowing())
+                                    out.dismiss();
 
-                    try {
-                        if (isDialog)
-                            if(out.isShowing())
-                                out.dismiss();
+                            jsonModel model = getGson().fromJson(object, jsonModel.class);
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.w("isi response sent claim non member:" + response.toString());
+                            if (!model.getOn_error()){
+                                String code = model.getError_code();
 
 //                        if (code.equals(WebParams.SUCCESS_CODE)) {
 //
 //                        } else
-                        if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
+                                if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                }
+
+                                sentRetrieveNotif(true);
+                            }else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_SHORT).show();
+                                getActivity().setResult(MainPage.RESULT_NOTIF);
+                                getActivity().finish();
+                            }
                         }
-
-                        sentRetrieveNotif(true);
-
-                    } catch (JSONException e) {
-
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (isDialog)
-                        if(out.isShowing())
-                            out.dismiss();
-                    getActivity().setResult(MainPage.RESULT_NOTIF);
-                    getActivity().finish();
-                    Timber.w("Error Koneksi claim non member:" + throwable.toString());
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    if (isDialog)
-                        if(out.isShowing())
-                            out.dismiss();
-                    getActivity().setResult(MainPage.RESULT_NOTIF);
-                    getActivity().finish();
-                    Timber.w("Error Koneksi claim non member");
-                }
-
-
-            });
+                    });
         } catch (Exception e) {
             String err = (e.getMessage()==null)?"Connection failed":e.getMessage();
             Timber.e("http err:"+err);

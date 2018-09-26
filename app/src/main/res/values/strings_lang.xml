@@ -531,6 +531,7 @@
     <string name="menu_group_title_supports">Bantuan</string>
     <string name="menu_item_title_setting">Pengaturan</string>
     <string name="menu_item_title_help">Kontak Kami &amp; FAQ</string>
+    <string name="menu_item_title_info_harga">Info Harga</string>
     <string name="menu_item_title_about">Tentang Aplikasi</string>
 
     <string name="title_about_app">Tentang Aplikasi</string>
@@ -633,6 +634,7 @@
     <string name="cashout_total_text">Total Jumlah</string>
     <string name="cashout_validation_otp">Token dibutuhkan!</string>
     
+    <string name="limit_dialog_title">Kendala Setor Tunai</string>
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
     <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran.</string>
     <string name="level_dialog_btn_ok">Isi Form</string>

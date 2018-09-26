@@ -55,13 +55,13 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
     public final static String TAG = "com.sgo.saldomu.fragments.CashOutBBS_confirm_agent";
     private ProgressDialog progdialog;
     private View v, layout_OTP;
-    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle, tvKode;
+    private TextView tvSourceAcct, tvBankBenef, tvAmount, tvUserIdSource, tvRemark, tvUserIdTitle, tvKode, tv_amount, tvFee, tvTotal;
     private EditText tokenValue;
     private Button btnSubmit;
     private String userID, accessKey, comm_code, tx_product_code, source_product_type,
             source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             tx_id, amount, share_type, comm_id, benef_product_name,
-            userId_source, remark, source_product_name, transaksi;
+            userId_source, remark, source_product_name, transaksi, fee, totalAmount;
     private Boolean retryToken=false;
 
     @Override
@@ -88,6 +88,9 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
         tvUserIdSource = v.findViewById(R.id.bbscashout_value_user_id);
         tvBankBenef = v.findViewById(R.id.bbscashout_value_benef);
         tvAmount = v.findViewById(R.id.bbscashout_value_amount);
+        tv_amount = v.findViewById(R.id.tv_bbscashout_value_amount);
+        tvFee = v.findViewById(R.id.bbscashout_value_fee);
+        tvTotal = v.findViewById(R.id.bbscashout_value_total);
         tvRemark = v.findViewById(R.id.bbscashout_value_remark);
         tvKode = v.findViewById(R.id.tv_kode);
         btnSubmit = v.findViewById(R.id.btn_submit);
@@ -107,6 +110,8 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             comm_code = bundle.getString(DefineValue.COMMUNITY_CODE);
             tx_id = bundle.getString(DefineValue.TX_ID);
             amount = bundle.getString(DefineValue.AMOUNT);
+            fee = bundle.getString(DefineValue.FEE);
+            totalAmount = bundle.getString(DefineValue.TOTAL_AMOUNT);
             share_type = bundle.getString(DefineValue.SHARE_TYPE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
@@ -128,6 +133,9 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             }
             tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
+            tv_amount.setText(CurrencyFormat.format(amount));
+            tvFee.setText(CurrencyFormat.format(fee));
+            tvTotal.setText(CurrencyFormat.format(totalAmount));
             tvBankBenef.setText(benef_product_name);
             tvUserIdSource.setText(userId_source);
             tvRemark.setText(remark);

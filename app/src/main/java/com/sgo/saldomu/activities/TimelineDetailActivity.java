@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import com.activeandroid.ActiveAndroid;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -25,8 +27,12 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TimelineCommentAdapter;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.CommentModel;
+import com.sgo.saldomu.models.retrofit.LikesModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
 import org.apache.http.Header;
@@ -37,6 +43,7 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,8 +72,8 @@ public class TimelineDetailActivity extends BaseActivity {
     private String post_id;
     private String from_id;
 
-
     private ProgressDialog mProg;
+    private Gson gson;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,19 +87,21 @@ public class TimelineDetailActivity extends BaseActivity {
         listLike = new ArrayList<>();
         listComment = new ArrayList<>();
 
-        RoundedQuickContactBadge iconPicture = (RoundedQuickContactBadge) findViewById(R.id.icon_picture);
-        RoundedQuickContactBadge iconPictureRight = (RoundedQuickContactBadge) findViewById(R.id.icon_picture_right);
-        TextView fromId = (TextView) findViewById(R.id.from_id);
-        TextView toId = (TextView) findViewById(R.id.to_id);
-        TextView messageTransaction = (TextView) findViewById(R.id.message_transaction);
-        TextView amount = (TextView) findViewById(R.id.amount);
-        TextView dateTime = (TextView) findViewById(R.id.datetime);
-        imageLove = (ImageView)findViewById(R.id.image_love);
-        imageSendComment = (ImageView)findViewById(R.id.image_comment);
-        etComment = (EditText)findViewById(R.id.detail_value_comment);
-        textLove = (TextView)findViewById(R.id.detail_value_love);
-        lvComment = (ListView)findViewById(R.id.lvComment);
-        TextView textStatus = (TextView) findViewById(R.id.status);
+        gson = new Gson();
+
+        RoundedQuickContactBadge iconPicture = findViewById(R.id.icon_picture);
+        RoundedQuickContactBadge iconPictureRight = findViewById(R.id.icon_picture_right);
+        TextView fromId = findViewById(R.id.from_id);
+        TextView toId = findViewById(R.id.to_id);
+        TextView messageTransaction = findViewById(R.id.message_transaction);
+        TextView amount = findViewById(R.id.amount);
+        TextView dateTime = findViewById(R.id.datetime);
+        imageLove = findViewById(R.id.image_love);
+        imageSendComment = findViewById(R.id.image_comment);
+        etComment = findViewById(R.id.detail_value_comment);
+        textLove = findViewById(R.id.detail_value_love);
+        lvComment = findViewById(R.id.lvComment);
+        TextView textStatus = findViewById(R.id.status);
 
         Bitmap bm = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.user_unknown_menu);
         RoundImageTransformation roundedImage = new RoundImageTransformation(bm);
@@ -363,8 +372,9 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_COMMENT,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_COMMENT,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_COMMENT, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
@@ -375,95 +385,72 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params add comment:"+ params.toString());
 
-            MyApiClient.sentAddComment(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        mProg.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_COMMENT, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params add comment:" + response.toString());
-                            String data_comments = response.getString(WebParams.DATA_COMMENTS);
-                            JSONArray mArrayComment = new JSONArray(data_comments);
-                            List<commentModel> mListComment = new ArrayList<>();
-                            for (int i = 0; i < mArrayComment.length(); i++) {
-                                int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
-                                boolean flagSameComment = false;
+                                CommentModel model = gson.fromJson(object, CommentModel.class);
 
-                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                if (listComment.size() > 0) {
-                                    for (int index = 0; index < listComment.size(); index++) {
-                                        if (listComment.get(index).getComment_id() != comment_id) {
-                                            flagSameComment = false;
-                                        } else {
-                                            flagSameComment = true;
-                                            break;
+                                String code = model.getError_code();
+                                String count = model.getCount();
+
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                                    String data_comments = gson.toJson(model.getData_comments());
+                                    JSONArray mArrayComment = new JSONArray(data_comments);
+                                    List<commentModel> mListComment = new ArrayList<>();
+                                    for (int i = 0; i < mArrayComment.length(); i++) {
+                                        int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
+                                        boolean flagSameComment = false;
+
+                                        // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                        if (listComment.size() > 0) {
+                                            for (int index = 0; index < listComment.size(); index++) {
+                                                if (listComment.get(index).getComment_id() != comment_id) {
+                                                    flagSameComment = false;
+                                                } else {
+                                                    flagSameComment = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if(!flagSameComment) {
+                                            String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
+                                            String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
+                                            String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                            String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                            String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
+                                            String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
+                                            String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                            String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
+                                            String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
+
+                                            mListComment.add(new commentModel(comment_id, comment_post_id,
+                                                    comment_from, comment_from_name, comment_from_profile_picture, comment_to,
+                                                    comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
                                         }
                                     }
+                                    insertCommentToDB(mListComment, true, data_comments);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else {
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                                 }
-
-                                if(!flagSameComment) {
-                                    String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
-                                    String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
-                                    String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                    String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                    String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
-                                    String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
-                                    String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                    String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
-                                    String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
-
-                                    mListComment.add(new commentModel(comment_id, comment_post_id,
-                                            comment_from, comment_from_name, comment_from_profile_picture, comment_to,
-                                            comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
-                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            insertCommentToDB(mListComment, true, data_comments);
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this, message);
-                        } else {
-                            Timber.d("isi error add comment:" + response.toString());
+
+                            if(mProg.isShowing())
+                                mProg.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(mProg.isShowing())
-                        mProg.dismiss();
-                    Timber.w("Error Koneksi add comment:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -475,8 +462,9 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id + comment_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_COMMENT,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_COMMENT,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REMOVE_COMMENT, extraSignature);
             params.put(WebParams.COMMENT_ID, comment_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);
@@ -486,111 +474,86 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove comment:"+ params.toString());
 
-            MyApiClient.sentRemoveComment(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        mProg.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_COMMENT, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+                                CommentModel model = gson.fromJson(object, CommentModel.class);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params add comment:" + response.toString());
+                                String code = model.getError_code();
+                                String count = model.getCount();
 
-                            String data_comments = response.getString(WebParams.DATA_COMMENTS);
-                            JSONArray mArrayComment = new JSONArray(data_comments);
-                            List<commentModel> mListComment = new ArrayList<>();
-                            for (int i = 0; i < mArrayComment.length(); i++) {
-                                int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
-                                boolean flagSameComment = false;
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                                    String data_comments = gson.toJson(model.getData_comments());
+                                    JSONArray mArrayComment = new JSONArray(data_comments);
+                                    List<commentModel> mListComment = new ArrayList<>();
+                                    for (int i = 0; i < mArrayComment.length(); i++) {
+                                        int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
+                                        boolean flagSameComment = false;
 
-                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                if (listComment.size() > 0) {
-                                    for (int index = 0; index < listComment.size(); index++) {
-                                        if (listComment.get(index).getComment_id() != comment_id) {
-                                            flagSameComment = false;
-                                        } else {
-                                            flagSameComment = true;
-                                            break;
+                                        // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                        if (listComment.size() > 0) {
+                                            for (int index = 0; index < listComment.size(); index++) {
+                                                if (listComment.get(index).getComment_id() != comment_id) {
+                                                    flagSameComment = false;
+                                                } else {
+                                                    flagSameComment = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if(!flagSameComment) {
+                                            String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
+                                            String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
+                                            String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                            String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                            String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
+                                            String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
+                                            String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                            String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
+                                            String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
+
+                                            mListComment.add(new commentModel(comment_id, comment_post_id,
+                                                    comment_from, comment_from_name, comment_from_profile_picture, comment_to,
+                                                    comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
                                         }
                                     }
-                                }
+                                    insertCommentToDB(mListComment, true, data_comments);
 
-                                if(!flagSameComment) {
-                                    String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
-                                    String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
-                                    String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                    String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                    String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
-                                    String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
-                                    String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                    String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
-                                    String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else if (code.equals(WebParams.NO_DATA_CODE)) {
+                                    listComment.addAll(commentModel.getByPostId(post_id));
+                                    commentAdapter.notifyDataSetChanged();
 
-                                    mListComment.add(new commentModel(comment_id, comment_post_id,
-                                            comment_from, comment_from_name, comment_from_profile_picture, comment_to,
-                                            comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
+                                    listTimeLineModel.updateNumcomments(count, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateComments("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateCommentId1("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateCommentId2("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromname1("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromname2("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateReply1("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateReply2("",Integer.parseInt(post_id));
+                                } else {
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                                 }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            insertCommentToDB(mListComment, true, data_comments);
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this, message);
-                        } else if (code.equals(WebParams.NO_DATA_CODE)) {
-                            Timber.d("isi error add comment:" + response.toString());
-                            listComment.addAll(commentModel.getByPostId(post_id));
-                            commentAdapter.notifyDataSetChanged();
-
-                            listTimeLineModel.updateNumcomments(count, Integer.parseInt(post_id));
-                            listTimeLineModel.updateComments("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateCommentId1("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateCommentId2("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromname1("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromname2("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateReply1("",Integer.parseInt(post_id));
-                            listTimeLineModel.updateReply2("",Integer.parseInt(post_id));
-                        } else {
-                            Timber.d("isi error add comment:" + response.toString());
+                            if(mProg.isShowing())
+                                mProg.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(mProg.isShowing())
-                        mProg.dismiss();
-                    Timber.w("Error Koneksi remove comment timeline detail:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -602,8 +565,9 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIKE_LIST, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
@@ -611,21 +575,23 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params get like list:"+ params.toString());
 
-            MyApiClient.getLikeList(this,params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        mProg.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIKE_LIST, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi response like list:" + response.toString());
+                                LikesModel model = gson.fromJson(object, LikesModel.class);
 
-                            JSONArray mArrayLike = new JSONArray(response.getString(WebParams.DATA_LIKES));
-                            List<likeModel> mListLike = new ArrayList<>();
-                            for (int i = 0; i < mArrayLike.length(); i++) {
-                                int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
+                                String code = model.getError_code();
+                                String count = model.getCount();
+
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                    JSONArray mArrayLike = new JSONArray(gson.toJson(model.getData_likes()));
+                                    List<likeModel> mListLike = new ArrayList<>();
+                                    for (int i = 0; i < mArrayLike.length(); i++) {
+                                        int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
 //
 //                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
@@ -641,71 +607,47 @@ public class TimelineDetailActivity extends BaseActivity {
 //                                }
 //
 //                                if(flagSameLike == false) {
-                                String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
-                                String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
-                                String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
-                                String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
-                                String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
+                                        String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
+                                        String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
+                                        String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                        String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                        String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
+                                        String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
+                                        String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                        String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                if(like_from.equals(_ownerID)) like = true;
+                                        if(like_from.equals(_ownerID)) like = true;
 
-                                mListLike.add(new likeModel(like_id, like_post_id,
-                                        like_from, like_from_name, like_from_profile_picture, like_to,
-                                        like_to_name, like_to_profile_picture, like_datetime));
+                                        mListLike.add(new likeModel(like_id, like_post_id,
+                                                like_from, like_from_name, like_from_profile_picture, like_to,
+                                                like_to_name, like_to_profile_picture, like_datetime));
 //                                }
+                                    }
+                                    setImageLove();
+                                    insertLikeToDB(mListLike);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else if (code.equals(WebParams.NO_DATA_CODE)) {
+                                    textLove.setText("");
+                                } else {
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+
+                                    finish();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            setImageLove();
-                            insertLikeToDB(mListLike);
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this, message);
-                        } else if (code.equals(WebParams.NO_DATA_CODE)) {
-                            textLove.setText("");
-                            Timber.d("isi error like list:" + response.toString());
-                        } else {
-                            Timber.d("isi error like list:" + response.toString());
+
+                            if(mProg.isShowing())
+                                mProg.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(mProg.isShowing())
-                        mProg.dismiss();
-                    finish();
-                    Timber.w("Error Koneksi like list timeline detail:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -718,8 +660,9 @@ public class TimelineDetailActivity extends BaseActivity {
             like = true;
 
             extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_LIKE, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
             params.put(WebParams.TO, from_id);
@@ -729,22 +672,23 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params add like:"+ params.toString());
 
-            MyApiClient.sentAddLike(this,params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        mProg.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+                                LikesModel model = gson.fromJson(object, LikesModel.class);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi response add like:" + response.toString());
+                                String code = model.getError_code();
+                                String count = model.getCount();
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            JSONArray mArrayLike = new JSONArray(data_likes);
-                            List<likeModel> mListLike = new ArrayList<>();
-                            for (int i = 0; i < mArrayLike.length(); i++) {
-                                int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                    String data_likes = gson.toJson(model.getData_likes());
+                                    JSONArray mArrayLike = new JSONArray(data_likes);
+                                    List<likeModel> mListLike = new ArrayList<>();
+                                    for (int i = 0; i < mArrayLike.length(); i++) {
+                                        int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
 //
 //                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
@@ -760,71 +704,46 @@ public class TimelineDetailActivity extends BaseActivity {
 //                                }
 //
 //                                if(flagSameLike == false) {
-                                String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
-                                String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
-                                String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
-                                String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
-                                String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
+                                        String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
+                                        String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
+                                        String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                        String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                        String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
+                                        String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
+                                        String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                        String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                mListLike.add(new likeModel(like_id, like_post_id,
-                                        like_from, like_from_name, like_from_profile_picture, like_to,
-                                        like_to_name, like_to_profile_picture, like_datetime));
+                                        mListLike.add(new likeModel(like_id, like_post_id,
+                                                like_from, like_from_name, like_from_profile_picture, like_to,
+                                                like_to_name, like_to_profile_picture, like_datetime));
 //                                }
+                                    }
+                                    listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateIsLike("1", Integer.parseInt(post_id));
+                                    insertLikeToDB(mListLike);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else if (code.equals(WebParams.NO_DATA_CODE)) {
+                                    textLove.setText("");
+                                    List<likeModel> mListLike = new ArrayList<>();
+                                    insertLikeToDB(mListLike);
+                                } else {
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
-                            listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
-                            listTimeLineModel.updateIsLike("1", Integer.parseInt(post_id));
-                            insertLikeToDB(mListLike);
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this, message);
-                        } else if (code.equals(WebParams.NO_DATA_CODE)) {
-                            textLove.setText("");
-                            List<likeModel> mListLike = new ArrayList<>();
-                            insertLikeToDB(mListLike);
-                            Timber.d("isi error add like:" + response.toString());
-                        } else {
-                            Timber.d("isi error add like:" + response.toString());
+
+                            if(mProg.isShowing())
+                                mProg.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(mProg.isShowing())
-                        mProg.dismiss();
-                    Timber.w("Error Koneksi add like timeline detail:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());
@@ -837,8 +756,9 @@ public class TimelineDetailActivity extends BaseActivity {
             like = false;
 
             extraSignature = post_id + like_id + to;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REMOVE_LIKE, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, from);
@@ -848,23 +768,23 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params remove like:"+ params.toString());
 
-            MyApiClient.sentRemoveLike(this,params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        mProg.dismiss();
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+                                LikesModel model = gson.fromJson(object, LikesModel.class);
 
-                        Timber.d("isi response remove like:"+ response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi response remove like:"+ response.toString());
+                                String code = model.getError_code();
+                                String count = model.getCount();
 
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            JSONArray mArrayLike = new JSONArray(data_likes);
-                            List<likeModel> mListLike = new ArrayList<>();
-                            for (int i = 0; i < mArrayLike.length(); i++) {
-                                int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+
+                                    String data_likes = gson.toJson(model.getData_likes());
+                                    JSONArray mArrayLike = new JSONArray(data_likes);
+                                    List<likeModel> mListLike = new ArrayList<>();
+                                    for (int i = 0; i < mArrayLike.length(); i++) {
+                                        int like_id = Integer.parseInt(mArrayLike.getJSONObject(i).getString(WebParams.ID));
 //                                boolean flagSameLike = false;
 //
 //                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
@@ -880,78 +800,54 @@ public class TimelineDetailActivity extends BaseActivity {
 //                                }
 //
 //                                if(flagSameLike == false) {
-                                String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
-                                String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
-                                String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
-                                String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
-                                String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
+                                        String like_post_id = mArrayLike.getJSONObject(i).getString(WebParams.POST_ID);
+                                        String like_from = mArrayLike.getJSONObject(i).getString(WebParams.FROM);
+                                        String like_from_name = mArrayLike.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                        String like_from_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                        String like_to = mArrayLike.getJSONObject(i).getString(WebParams.TO);
+                                        String like_to_name = mArrayLike.getJSONObject(i).getString(WebParams.TO_NAME);
+                                        String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                        String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                mListLike.add(new likeModel(like_id, like_post_id,
-                                        like_from, like_from_name, like_from_profile_picture, like_to,
-                                        like_to_name, like_to_profile_picture, like_datetime));
+                                        mListLike.add(new likeModel(like_id, like_post_id,
+                                                like_from, like_from_name, like_from_profile_picture, like_to,
+                                                like_to_name, like_to_profile_picture, like_datetime));
 //                                }
+                                    }
+                                    listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
+                                    insertLikeToDB(mListLike);
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    String message = model.getError_message();
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this,message);
+                                }
+                                else if(code.equals(WebParams.NO_DATA_CODE)){
+                                    textLove.setText("");
+                                    String data_likes = gson.toJson(model.getData_likes());
+                                    listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
+                                    listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
+                                    List<likeModel> mListLike = new ArrayList<>();
+                                    insertLikeToDB(mListLike);
+                                } else {
+                                    if(MyApiClient.PROD_FAILURE_FLAG)
+                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+
+                                }
                             }
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
-                            listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
-                            listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
-                            insertLikeToDB(mListLike);
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if(mProg.isShowing())
+                                mProg.dismiss();
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this,message);
-                        }
-                        else if(code.equals(WebParams.NO_DATA_CODE)){
-                            String data_likes = response.getString(WebParams.DATA_LIKES);
-                            textLove.setText("");
-                            listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
-                            listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
-                            listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
-                            List<likeModel> mListLike = new ArrayList<>();
-                            insertLikeToDB(mListLike);
-                            Timber.d("isi error remove like:"+ response.toString());
-                        } else {
-                            Timber.d("isi error remove like:"+ response.toString());
-                        }
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(mProg.isShowing())
-                        mProg.dismiss();
-                    Timber.w("Error Koneksi remove like timeline detail:"+ throwable.toString());
-                }
-            });
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());

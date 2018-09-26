@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -30,8 +31,13 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.CreatePassModel;
+import com.sgo.saldomu.models.retrofit.CreatePinModel;
+import com.sgo.saldomu.models.retrofit.RegModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -39,6 +45,8 @@ import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -83,10 +91,10 @@ public class Regist2 extends BaseFragment {
             emailValid = args.getString(DefineValue.CUST_EMAIL, "-");
         }
 
-        etToken = (EditText) v.findViewById(R.id.token_value);
-        currEmail = (TextView) v.findViewById(R.id.text_email);
-        btnProses = (Button) v.findViewById(R.id.btn_token);
-        btnCancel = (Button) v.findViewById(R.id.btn_cancel);
+        etToken = v.findViewById(R.id.token_value);
+        currEmail = v.findViewById(R.id.text_email);
+        btnProses = v.findViewById(R.id.btn_token);
+        btnCancel = v.findViewById(R.id.btn_cancel);
 
         currEmail.setText(getString(R.string.validasi_email_text) + " " + emailValid);
 
@@ -129,7 +137,7 @@ public class Regist2 extends BaseFragment {
 
             btnProses.setEnabled(false);
 
-            RequestParams params = new RequestParams();
+            HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE, noHPValid);
             params.put(WebParams.CUST_NAME,namaValid);
@@ -141,80 +149,54 @@ public class Regist2 extends BaseFragment {
 
             Timber.d("isi params reg2:" + params.toString());
 
-            MyApiClient.sentRegStep2(getActivity(),params,new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    btnProses.setEnabled(true);
-                    Timber.d("response reg 2:"+response.toString());
-                    progdialog.dismiss();
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if(code.equals(WebParams.SUCCESS_CODE)){
-                            String flag_process = response.getString(WebParams.FLAG_PROCESS);
-                            if(flag_process.equals("N"))
-                            {
-                                namaValid = response.getString(WebParams.CUST_NAME);
-                                emailValid = response.getString(WebParams.CUST_EMAIL);
-                                noHPValid = response.getString(WebParams.CUST_PHONE);
-                                changeActivity(token);
-                            }else{
-                                    flag_change_pwd = response.optString(WebParams.FLAG_CHANGE_PWD, "Y");
-                                    flag_change_pin = response.optString(WebParams.FLAG_CHANGE_PIN, "Y");
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP2, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            btnProses.setEnabled(true);
+                            RegModel model = getGson().fromJson(object, RegModel.class);
+
+                            String code = model.getError_code();
+
+                            if(code.equals(WebParams.SUCCESS_CODE)){
+                                String flag_process = model.getFlag_process();
+                                if(flag_process.equals("N"))
+                                {
+                                    namaValid = model.getCust_name();
+                                    emailValid = model.getCust_email();
+                                    noHPValid = model.getCust_phone();
+                                    changeActivity(token);
+                                }else{
+                                    flag_change_pwd = model.getFlag_change_pwd();
+                                    flag_change_pin = model.getFlag_change_pin();
                                     check();
+                                }
                             }
+                            else {
+                                code = model.getError_message();
+                                if(MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                            }
+
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                        else {
-                            Timber.d("Error Reg2:"+response.toString());
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    btnProses.setEnabled(true);
-                    Timber.w("Error Koneksi reg2 proses reg2:"+throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
     }
 
     public void sendCreatePass(){
-              try{
+        try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
                   extraSignature = noHPValid + pass;
-                  RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
+                  RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
                           BuildConfig.SECRET_KEY, extraSignature );
+                  HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PASS, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
             params.put(WebParams.CONF_PASS, confPass);
@@ -222,63 +204,34 @@ public class Regist2 extends BaseFragment {
 
             Timber.d("params create pass:"+params.toString());
 
-            MyApiClient.sentCreatePass(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PASS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            CreatePassModel model = getGson().fromJson(object, CreatePassModel.class);
 
-                        progdialog.dismiss();
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            memberID = response.getString(WebParams.MEMBER_ID);
-                            flag_change_pwd="N";
-                            check();
-                        } else {
-                            Timber.d("isi error create pass:" + response.toString());
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                            i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
-                            switchActivityPIN(i);
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+
+                            progdialog.dismiss();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                memberID = model.getMember_id();
+                                flag_change_pwd="N";
+                                check();
+                            } else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                                Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
+                                i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
+                                switchActivityPIN(i);
+                            }
+
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
-                    i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
-                    switchActivityPIN(i);
-                    Timber.w("Error Koneksi create pass reg2:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -290,8 +243,9 @@ public class Regist2 extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = memberID + noHPValid + data.getStringExtra(DefineValue.PIN_VALUE);
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
+            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
                     BuildConfig.SECRET_KEY, extraSignature );
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
             params.put(WebParams.USER_ID, noHPValid);
             params.put(WebParams.MEMBER_ID, memberID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -300,63 +254,33 @@ public class Regist2 extends BaseFragment {
 
             Timber.d("params create pin:"+params.toString());
 
-            MyApiClient.sentCreatePin(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        Timber.d("response create pin:"+response.toString());
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PIN, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            CreatePinModel model = getGson().fromJson(object, CreatePinModel.class);
 
-                        progdialog.dismiss();
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            flag_change_pin="N";
-                            check();
-                        } else {
-                            Timber.d("isi error create pin:" + response.toString());
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(getActivity(), CreatePIN.class);
-                            i.putExtra(DefineValue.REGISTRATION, true);
-                            switchActivity(i);
+                            String code = model.getError_code();
+                            String message = model.getError_message();
+
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                flag_change_pin="N";
+                                check();
+                            } else {
+                                if (MyApiClient.PROD_FAILURE_FLAG)
+                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                                Intent i = new Intent(getActivity(), CreatePIN.class);
+                                i.putExtra(DefineValue.REGISTRATION, true);
+                                switchActivity(i);
+                            }
+
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    Intent i = new Intent(getActivity(), CreatePIN.class);
-                    i.putExtra(DefineValue.REGISTRATION, true);
-                    switchActivity(i);
-                    Timber.w("Error Koneksi create pin reg2:" + throwable.toString());
-                }
-            });
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -394,11 +318,11 @@ public class Regist2 extends BaseFragment {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
-        TextView Message2 = (TextView)dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
-        TextView Message3 = (TextView)dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        TextView Message2 = dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
+        TextView Message3 = dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.regist2_notif_title));
         Message.setText(getResources().getString(R.string.regist2_notif_message_1));
