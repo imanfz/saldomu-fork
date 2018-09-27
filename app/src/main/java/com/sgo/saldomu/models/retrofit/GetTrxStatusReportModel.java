@@ -36,6 +36,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String admin_fee;
+    @SerializedName("fee_amount")
+    @Expose
+    private
+    String fee_amount;
     @SerializedName("total_amount")
     @Expose
     private
@@ -113,6 +117,10 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     @Expose
     private
     String member_shop_no;
+    @SerializedName("product_h2h")
+    @Expose
+    private
+    String product_h2h;
 
     public String getTx_id() {
         return tx_id;

@@ -1362,6 +1362,7 @@ public class MyApiClient {
             postMNotif(mContext, LINK_REG_TOKEN_FCM, params, responseHandler);
     }
 
+    //unused
     public static void sentConfirmChangeEmail(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address confirm change email:"+ LINK_CONFIRM_CHANGE_EMAIL);
         post(mContext, LINK_CONFIRM_CHANGE_EMAIL, params, responseHandler);

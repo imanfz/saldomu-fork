@@ -28,6 +28,10 @@ public class RegModel extends jsonModel{
     @Expose
     private
     String flag_change_pin;
+    @SerializedName("authentication_type")
+    @Expose
+    private
+    String authentication_type;
 
     public String getFlag_process() {
         return flag_process;
@@ -51,5 +55,9 @@ public class RegModel extends jsonModel{
 
     public String getFlag_change_pin() {
         return flag_change_pin;
+    }
+
+    public String getAuthentication_type() {
+        return authentication_type;
     }
 }

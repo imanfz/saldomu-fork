@@ -183,6 +183,7 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
                 }
             }
         });
+
         webview.setWebViewClient(new WebViewClient() {
 
 
@@ -267,8 +268,9 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
             out.show();
 
             extraSignature = txId + commCode;
-            RequestParams params =  MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_TRX_STATUS_BBS,
+            RequestParams param =  MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_TRX_STATUS_BBS,
                     userID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.COMM_CODE, commCode);
@@ -276,86 +278,64 @@ public class SgoPlusWeb extends BaseActivity implements ReportBillerDialog.OnDia
 
             Timber.d("isi params sent get Trx Status bbs:" + params.toString());
 
-            MyApiClient.sentGetTRXStatusBBS(this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        out.dismiss();
-                        Timber.d("isi response sent get Trx Status bbs:"+ response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+                                Gson gson = new Gson();
+                                out.dismiss();
+                                GetTrxStatusReportModel model = gson.fromJson(object, GetTrxStatusReportModel.class);
+                                String code = model.getError_code();
 
-                            String txstatus = response.getString(WebParams.TX_STATUS);
+                                JSONObject response = new JSONObject(gson.toJson(model));
 
-                            showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
-                                    txId, userId,totalAmount,fee,amount,
-                                    txstatus,response.getString(WebParams.TX_REMARK),
-                                    reportType, response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),
-                                    response, response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE, ""),
-                                    response.optString(WebParams.ORDER_ID,""));
-                        }
-                        else if(code.equals("0288")){
-                            Timber.d("isi error sent trx status bbs:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(SgoPlusWeb.this, code_msg, Toast.LENGTH_LONG).show();
-                            setResult(MainPage.RESULT_RETRY);
-                            finish();
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+ response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(SgoPlusWeb.this,message);
-                        }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
-                            if(code.equals("0003")){
-                                showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                        DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,
-                                        response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response,
-                                        response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE,""),
-                                        response.optString(WebParams.ORDER_ID,""));
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+
+                                    String txstatus = response.getString(WebParams.TX_STATUS);
+
+                                    showReportBillerDialog(userName,DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
+                                            txId, userId,totalAmount,fee,amount,
+                                            txstatus,response.getString(WebParams.TX_REMARK),
+                                            reportType, response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),
+                                            response, response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE, ""),
+                                            response.optString(WebParams.ORDER_ID,""));
+                                }
+                                else if(code.equals("0288")){
+                                    Timber.d("isi error sent trx status bbs:"+response.toString());
+                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(SgoPlusWeb.this, code_msg, Toast.LENGTH_LONG).show();
+                                    setResult(MainPage.RESULT_RETRY);
+                                    finish();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+ response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(SgoPlusWeb.this,message);
+                                }
+                                else {
+                                    String msg = model.getError_message();
+                                    if(code.equals("0003")){
+                                        showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
+                                                DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType,
+                                                response.getString(WebParams.BUSS_SCHEME_CODE), response.getString(WebParams.BUSS_SCHEME_NAME),response,
+                                                response.optString(WebParams.COMM_CODE,""), response.optString(WebParams.MEMBER_CODE,""),
+                                                response.optString(WebParams.ORDER_ID,""));
+                                    }
+                                    else
+                                        showDialog(msg);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            else
-                                showDialog(msg);
+
+                            if(out.isShowing()) {
+                                out.dismiss();
+                            }
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(SgoPlusWeb.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(SgoPlusWeb.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(out.isShowing()) {
-                        out.dismiss();
-                        showDialog(getString(R.string.network_connection_failure_toast));
-                    }
-                    Timber.w("Error Koneksi get trx status bbs:"+ throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+ e.getMessage());
         }

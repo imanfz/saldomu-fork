@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
@@ -15,15 +17,22 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.CommDataModel;
+import com.sgo.saldomu.models.retrofit.CommentDataModel;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -128,8 +137,9 @@ public class UpdateBBSData extends IntentService {
 
     private void getBBSdata(final String schemeCode){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,
                     MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, userID, accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL);
 
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
             params.put(WebParams.SCHEME_CODE,schemeCode);
@@ -138,43 +148,25 @@ public class UpdateBBSData extends IntentService {
 
             Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
 
-            MyApiClient.sentBBSListCommunityAllSync(this,params,new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response listcommunity %1$s : %2$s",schemeCode,response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            insertToRealm(response.optJSONArray(WebParams.COMMUNITY),schemeCode);
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, params,
+                    new ObjListener() {
+                        @Override
+                        public void onResponses(JsonObject object) {
+                            try {
+
+                                Gson gson = new Gson();
+                                CommDataModel model = gson.fromJson(object, CommDataModel.class);
+
+                                String code = model.getError_code();
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    insertToRealm(new JSONArray(gson.toJson(model.getCommunity())),schemeCode);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.e("Error Koneksi get BBS city %1$s : %2$s",schemeCode,throwable.toString());
-                }
-            });
+                    });
         }catch (Exception e){
             Timber.d("httpclient %1$s : %2$s",schemeCode,e.getMessage());
         }

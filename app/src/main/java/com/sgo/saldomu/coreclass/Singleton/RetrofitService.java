@@ -9,6 +9,7 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -18,8 +19,10 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
+import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.TLSSocket;
 
@@ -313,6 +316,25 @@ public class RetrofitService {
         return params;
     }
 
+    public HashMap<String, Object> getSignatureWithParamsFCM(String gcmID, String deviceId, String appID){
+
+        UUID uuidnya = getUUID();
+        String dtime = DateTimeFormat.getCurrentDateTime();
+        String msgnya = Md5.hashMd5(uuidnya+dtime+gcmID+deviceId+appID);
+        Timber.d("isi messageSignatureFCM : " + msgnya);
+
+
+        String hash = SHA.SHA1(msgnya);
+        Timber.d("isi sha1 signatureFCM : " + hash);
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put(WebParams.RQ_UUID, uuidnya);
+        params.put(WebParams.RQ_DTIME, dtime);
+        params.put(WebParams.SIGNATURE, hash);
+
+        return params;
+    }
+
     public HashMap<String, RequestBody> getSignature2(String linknya, String extra){
         return getInstance().getSignatures2(getCommIdLogin(), getUserPhoneId(), linknya, getAccessKey(), extra);
     }
@@ -403,6 +425,32 @@ public class RetrofitService {
                     @Override
                     public void onError(Throwable e) {
                         listener.onResponses(getErrorMessage(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public void PostWithOnError(String link, HashMap<String, Object> param , final ErrorListener listener) {
+        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
                     }
 
                     @Override
