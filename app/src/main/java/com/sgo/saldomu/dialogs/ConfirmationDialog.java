@@ -107,7 +107,6 @@ public class ConfirmationDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 listener.onOK();
-                dismiss();
             }
         });
 

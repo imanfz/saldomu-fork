@@ -108,6 +108,10 @@
     "prefix_name": "XL"
   },
   {
+    "prefix": "0879",
+    "prefix_name": "XL"
+  },
+  {
     "prefix": "0881",
     "prefix_name": "Smart"
   },
@@ -162,5 +166,13 @@
   {
     "prefix": "0899",
     "prefix_name": "Three"
+  },
+  {
+    "prefix": "999",
+    "prefix_name": "Bolt"
+  },
+  {
+    "prefix": "998",
+    "prefix_name": "Bolt"
   }
 ]

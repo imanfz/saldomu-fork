@@ -189,7 +189,7 @@ public class FragDataMandiriLKD extends BaseFragment {
         public void onClick(View view) {
             if (inputvalidation()) {
                 sendData();
-            } else btn_submit.setEnabled(false);
+            };
         }
     };
 
