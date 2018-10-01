@@ -26,10 +26,12 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -43,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -199,8 +202,9 @@ public class FragDataMandiriLKD extends BaseFragment {
         progressDialog.show();
         try{
         extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID,"") + socialIdType;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA,
+        RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA,
                 userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_SEND_DATA, extraSignature);
 
         params.put(WebParams.USER_ID, userPhoneID);
         params.put(WebParams.TX_ID, tx_id);
@@ -215,64 +219,45 @@ public class FragDataMandiriLKD extends BaseFragment {
         params.put(WebParams.CUST_MOTHER_NAME, et_mothersname.getText().toString());
 
         Timber.d("params bbs send data : ", params.toString());
-        MyApiClient.getBBSSendDataLKD(getActivity(),params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
-                progressDialog.dismiss();
 
-                try {
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    Timber.d("response bbs send data : ", response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        changeToBBSCashInConfirm();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_SEND_DATA, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
 
-                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(), message);
-                    }else {
-                        Timber.d("isi error bbs send data:"+response.toString());
-                        String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("response bbs send data : ", response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    changeToBBSCashInConfirm();
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                }else {
+                                    Timber.d("isi error bbs send data:"+response.toString());
+                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            btn_submit.setEnabled(true);
+                        }
 
-            private void failure(Throwable throwable){
-                btn_submit.setEnabled(true);
-                if(MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                if(progressDialog.isShowing())
-                    progressDialog.dismiss();
-
-                Timber.w("Error Koneksi sent bbs send data:"+throwable.toString());
-            }
-
-        });
+                        @Override
+                        public void onComplete() {
+                            if(progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        }
+                    });
     }catch (Exception e){
         Timber.d("httpclient:"+e.getMessage());
     }

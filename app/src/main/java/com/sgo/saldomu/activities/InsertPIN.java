@@ -17,6 +17,8 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.*;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.securities.RSA;
@@ -207,62 +209,46 @@ public class InsertPIN extends BaseActivity implements PinFragment.Listener {
 
     public void getHelpPin(final ProgressBar progDialog, final TextView Message){
         try{
-            MyApiClient.getHelpPIN(this, new JsonHttpResponseHandler() {
 
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    String message_value;
-                    try {
-                        JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
-                        JSONObject mObject;
-                        Log.d("getHelpPin", response.toString());
-                        for (int i = 0; i < arrayContact.length(); i++) {
-                            mObject = arrayContact.getJSONObject(i);
+            RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_HELP_PIN,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            String message_value;
+                            try {
+                                JSONArray arrayContact = new JSONArray(response.optString(WebParams.CONTACT_DATA));
+                                JSONObject mObject;
+                                Log.d("getHelpPin", response.toString());
+                                for (int i = 0; i < arrayContact.length(); i++) {
+                                    mObject = arrayContact.getJSONObject(i);
 //                            id = mObject.optString(WebParams.ID, "0");
-                            if (i == 1) {
-                                message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
-                                        mObject.optString(WebParams.NAME, "") + "\n" +
-                                        mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
-                                        getString(R.string.or) + " " +
-                                        mObject.optString(WebParams.CONTACT_EMAIL, "");
-                                Message.setText(message_value);
-                                break;
+                                    if (i == 1) {
+                                        message_value = mObject.optString(WebParams.DESCRIPTION, "") + " " +
+                                                mObject.optString(WebParams.NAME, "") + "\n" +
+                                                mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
+                                                getString(R.string.or) + " " +
+                                                mObject.optString(WebParams.CONTACT_EMAIL, "");
+                                        Message.setText(message_value);
+                                        break;
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    progDialog.setIndeterminate(false);
-                    progDialog.setVisibility(View.GONE);
-                    Message.setVisibility(View.VISIBLE);
-                }
-            });
-
+                        @Override
+                        public void onComplete() {
+                            progDialog.setIndeterminate(false);
+                            progDialog.setVisibility(View.GONE);
+                            Message.setVisibility(View.VISIBLE);
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient"+e.getMessage());
         }

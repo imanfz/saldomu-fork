@@ -18,8 +18,10 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
@@ -28,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
@@ -89,50 +92,41 @@ public class ListBuyRF extends Fragment{
 
     private void getBiller(){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_GET_BILLER_TYPE,
+            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_GET_BILLER_TYPE,
                     BuildConfig.SECRET_KEY);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_GET_BILLER_TYPE,
+                    "");
 
-            MyApiClient.getBillerType(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("Isi response get Biller Type:" + response.toString());
-                            String arrayBiller = response.getString(WebParams.BILLER_TYPE_DATA);
-                            getDataCollection(new JSONArray(arrayBiller));
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_BILLER_TYPE, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("Isi response get Biller Type:" + response.toString());
+                                    String arrayBiller = response.getString(WebParams.BILLER_TYPE_DATA);
+                                    getDataCollection(new JSONArray(arrayBiller));
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi biller data list buy:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -141,8 +135,9 @@ public class ListBuyRF extends Fragment{
     private void getDataCollection(final JSONArray arrayBiller){
         try{
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMM_ACCOUNT_COLLECTION,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMM_ACCOUNT_COLLECTION,
                     userID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_COMM_ACCOUNT_COLLECTION);
 
             params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.CUST_ID, "") );
             params.put(WebParams.USER_ID, userID);
@@ -151,56 +146,45 @@ public class ListBuyRF extends Fragment{
 
             Timber.d("Isi params CommAccountCollection:"+params.toString());
 
-            MyApiClient.sentCommAccountCollection(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        Timber.d("Isi response CommAccountCollection:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
-                            JSONArray arrayCollection ;
-                            String data = response.getString(WebParams.COMMUNITY);
-                            if(code.equals("0003")||data.equals("")){
-                                arrayCollection = new JSONArray();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_COMM_ACCOUNT_COLLECTION, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                Timber.d("Isi response CommAccountCollection:"+response.toString());
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
+                                    JSONArray arrayCollection ;
+                                    String data = response.getString(WebParams.COMMUNITY);
+                                    if(code.equals("0003")||data.equals("")){
+                                        arrayCollection = new JSONArray();
+                                    }
+                                    else
+                                        arrayCollection = new JSONArray(data);
+                                    initializeData(arrayBiller,arrayCollection);
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(),message);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            else
-                                arrayCollection = new JSONArray(data);
-                            initializeData(arrayBiller,arrayCollection);
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    Timber.w("Error Koneksi collect data list buy:"+throwable.toString());
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

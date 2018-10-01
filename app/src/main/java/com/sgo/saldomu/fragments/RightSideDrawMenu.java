@@ -25,8 +25,10 @@ import com.sgo.saldomu.adapter.PromoAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -34,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -143,8 +146,9 @@ public class RightSideDrawMenu extends Fragment {
     private void getPromoList() {
         try {
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_PROMO_LIST,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_PROMO_LIST,
                     _ownerID, accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PROMO_LIST);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PAGE, Integer.toString(page));
             params.put(WebParams.COUNT, count);
@@ -152,95 +156,78 @@ public class RightSideDrawMenu extends Fragment {
 
             Timber.d("isi params get promo list:" + params.toString());
 
-            MyApiClient.getPromoList(getActivity(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_PROMO_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params promo list:" + response.toString());
-                            String count = response.getString(WebParams.COUNT);
-                            if (!count.equals("0")) {
-                                JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params promo list:" + response.toString());
+                                    String count = response.getString(WebParams.COUNT);
+                                    if (!count.equals("0")) {
+                                        JSONArray mArrayPromo = new JSONArray(response.getString(WebParams.PROMO_DATA));
 
-                                for (int i = 0; i < mArrayPromo.length(); i++) {
-                                    String id = mArrayPromo.getJSONObject(i).getString(WebParams.ID);
-                                    boolean flagSame = false;
+                                        for (int i = 0; i < mArrayPromo.length(); i++) {
+                                            String id = mArrayPromo.getJSONObject(i).getString(WebParams.ID);
+                                            boolean flagSame = false;
 
-                                    // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                    if (listPromo.size() > 0) {
-                                        for (int index = 0; index < listPromo.size(); index++) {
-                                            if (listPromo.get(index).getId().equals(id)) {
-                                                flagSame = true;
-                                                break;
-                                            } else {
-                                                flagSame = false;
+                                            // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                            if (listPromo.size() > 0) {
+                                                for (int index = 0; index < listPromo.size(); index++) {
+                                                    if (listPromo.get(index).getId().equals(id)) {
+                                                        flagSame = true;
+                                                        break;
+                                                    } else {
+                                                        flagSame = false;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!flagSame) {
+                                                String name = mArrayPromo.getJSONObject(i).getString(WebParams.NAME);
+                                                String description = mArrayPromo.getJSONObject(i).getString(WebParams.DESCRIPTION);
+                                                String banner_pic = mArrayPromo.getJSONObject(i).getString(WebParams.BANNER_PIC);
+                                                String target_url = mArrayPromo.getJSONObject(i).getString(WebParams.TARGET_URL);
+                                                String type = mArrayPromo.getJSONObject(i).getString(WebParams.TYPE);
+
+                                                PromoObject promoObject = new PromoObject();
+                                                promoObject.setId(id);
+                                                promoObject.setName(name);
+                                                promoObject.setDesc(description);
+                                                promoObject.setImage(banner_pic);
+                                                promoObject.setUrl(target_url);
+                                                promoObject.setType(type);
+
+                                                listPromo.add(promoObject);
                                             }
                                         }
+
+                                        promoAdapter.notifyDataSetChanged();
                                     }
-
-                                    if (!flagSame) {
-                                        String name = mArrayPromo.getJSONObject(i).getString(WebParams.NAME);
-                                        String description = mArrayPromo.getJSONObject(i).getString(WebParams.DESCRIPTION);
-                                        String banner_pic = mArrayPromo.getJSONObject(i).getString(WebParams.BANNER_PIC);
-                                        String target_url = mArrayPromo.getJSONObject(i).getString(WebParams.TARGET_URL);
-                                        String type = mArrayPromo.getJSONObject(i).getString(WebParams.TYPE);
-
-                                        PromoObject promoObject = new PromoObject();
-                                        promoObject.setId(id);
-                                        promoObject.setName(name);
-                                        promoObject.setDesc(description);
-                                        promoObject.setImage(banner_pic);
-                                        promoObject.setUrl(target_url);
-                                        promoObject.setType(type);
-
-                                        listPromo.add(promoObject);
-                                    }
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout", response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
                                 }
 
-                                promoAdapter.notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout", response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(), message);
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (getActivity() != null) {
-                        if (MyApiClient.PROD_FAILURE_FLAG)
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                    Timber.w("Error Koneksi promo list promo righside:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
         }

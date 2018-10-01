@@ -34,6 +34,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -195,88 +196,70 @@ public class UpgradeAgentActivity extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
                     userPhoneID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             Timber.d("isi params help list:" + params.toString());
 
-            MyApiClient.getHelpList(UpgradeAgentActivity.this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
 
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi params help list:"+response.toString());
-
-                            contactCenter = response.getString(WebParams.CONTACT_DATA);
-
-                            SecurePreferences.Editor mEditor = sp.edit();
-                            mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
-                            mEditor.apply();
-
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_USER_CONTACT_INSERT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
                             try {
-                                JSONArray arrayContact = new JSONArray(contactCenter);
-                                for(int i=0 ; i<arrayContact.length() ; i++) {
-                                    if(i == 0) {
-                                        listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
-                                        listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi params help list:"+response.toString());
+
+                                    contactCenter = response.getString(WebParams.CONTACT_DATA);
+
+                                    SecurePreferences.Editor mEditor = sp.edit();
+                                    mEditor.putString(DefineValue.LIST_CONTACT_CENTER, response.getString(WebParams.CONTACT_DATA));
+                                    mEditor.apply();
+
+                                    try {
+                                        JSONArray arrayContact = new JSONArray(contactCenter);
+                                        for(int i=0 ; i<arrayContact.length() ; i++) {
+                                            if(i == 0) {
+                                                listContactPhone = arrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE);
+                                                listAddress = arrayContact.getJSONObject(i).getString(WebParams.ADDRESS);
+                                            }
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
+
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(UpgradeAgentActivity.this,message);
+                                }
+                                else {
+                                    Timber.d("isi error help list:"+response.toString());
+                                    Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(UpgradeAgentActivity.this,message);
-                        }
-                        else {
-                            Timber.d("isi error help list:"+response.toString());
-                            Toast.makeText(UpgradeAgentActivity.this, message, Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
 
-                        progdialog.dismiss();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi help list help:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }
         catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -565,8 +548,9 @@ public class UpgradeAgentActivity extends BaseActivity {
             else
                 progdialog.show();
 
-            final RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_AGENT,
+            final RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_AGENT,
                     userPhoneID, accessKey, memberIDLogin);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_EXEC_AGENT, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -574,71 +558,52 @@ public class UpgradeAgentActivity extends BaseActivity {
 
             Timber.d("isi params execute agent:" + params.toString());
 
-            MyApiClient.sentExecAgent(UpgradeAgentActivity.this,params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("response execute agent:"+response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            SecurePreferences.Editor mEdit = sp.edit();
-                            mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
-                            mEdit.remove(DefineValue.REJECT_SIUP);
-                            mEdit.remove(DefineValue.REJECT_NPWP);
-                            mEdit.remove(DefineValue.REMARK_SIUP);
-                            mEdit.remove(DefineValue.REMARK_NPWP);
-                            mEdit.remove(DefineValue.REMARK_NPWP);
-                            mEdit.remove(DefineValue.MODEL_NOTIF);
-                            mEdit.apply();
-                            DialogSuccessUploadPhoto();
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(UpgradeAgentActivity.this, message);
-                        } else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
-                            getFragmentManager().popBackStack();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_EXEC_AGENT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("response execute agent:"+response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    SecurePreferences.Editor mEdit = sp.edit();
+                                    mEdit.putBoolean(DefineValue.IS_UPGRADE_AGENT,true);
+                                    mEdit.remove(DefineValue.REJECT_SIUP);
+                                    mEdit.remove(DefineValue.REJECT_NPWP);
+                                    mEdit.remove(DefineValue.REMARK_SIUP);
+                                    mEdit.remove(DefineValue.REMARK_NPWP);
+                                    mEdit.remove(DefineValue.REMARK_NPWP);
+                                    mEdit.remove(DefineValue.MODEL_NOTIF);
+                                    mEdit.apply();
+                                    DialogSuccessUploadPhoto();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(UpgradeAgentActivity.this, message);
+                                } else {
+                                    code = response.getString(WebParams.ERROR_MESSAGE);
+                                    Toast.makeText(UpgradeAgentActivity.this, code, Toast.LENGTH_LONG).show();
+                                    getFragmentManager().popBackStack();
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(UpgradeAgentActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(UpgradeAgentActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-                    getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi exec agent req:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

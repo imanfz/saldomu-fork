@@ -44,6 +44,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
@@ -266,7 +267,8 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
         extraSignature = obj.getMember_id_scadm()+productCode;
 
-        RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
+        RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
 
         params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
         params.put(WebParams.PRODUCT_CODE, productCode);
@@ -276,64 +278,46 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
         Timber.d("isi params sent get denom invoke:"+params.toString());
 
-        MyApiClient.getDenomInvoke(getActivity(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_INVOKE, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    Timber.d("isi response get denom invoke:"+response.toString());
-                    String code = response.getString(WebParams.ERROR_CODE);
+                            Timber.d("isi response get denom invoke:"+response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        setDataView(response);
+                                setDataView(response);
 
-                    } else if(code.equals(WebParams.LOGOUT_CODE)){
-                        Timber.d("isi response autologout:"+response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(),message);
-                    }
-                    else {
-                        String msg = response.getString(WebParams.ERROR_MESSAGE);
+                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                Timber.d("isi response autologout:"+response.toString());
+                                String message = response.getString(WebParams.ERROR_MESSAGE);
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginActivity(getActivity(),message);
+                            }
+                            else {
+                                String msg = response.getString(WebParams.ERROR_MESSAGE);
 //                            showDialog(msg);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                dismissLoading();
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
+                        dismissLoading();
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable){
-                if(MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi get denom invoke:"+throwable.toString());
-                dismissLoading();
-            }
-        });
+                    }
+                });
     }
 
     private void sentInsertTransTopup(String tokenValue, final String _amount){

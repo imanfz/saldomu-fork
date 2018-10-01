@@ -21,12 +21,16 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -125,9 +129,11 @@ public class FragCancelTrxRequest extends DialogFragment {
                     progdialog              = DefinedDialog.CreateProgressDialog(getContext());
 
                     String extraSignature   = txId;
-                    RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                    RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
                             MyApiClient.LINK_CANCEL_SEARCH_AGENT,
                             userId, sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+                    HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_SEARCH_AGENT,
+                            extraSignature);
 
                     params.put(WebParams.APP_ID, BuildConfig.APP_ID);
                     params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -137,57 +143,37 @@ public class FragCancelTrxRequest extends DialogFragment {
                     params.put(WebParams.TX_REMARKS, reason);
                     params.put(WebParams.USER_ID, userId);
 
-                    MyApiClient.cancelSearchAgent(getContext(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CANCEL_SEARCH_AGENT, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
 
-                            Timber.d("Response Cancel Search Agent:" + response.toString());
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                            cpl.onSuccessCancelTrx(txId);
+                                        } else {
+                                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        }
 
-                            if ( progdialog.isShowing())
-                                progdialog.dismiss();
+                                        getDialog().dismiss();
 
-                            try {
-
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    cpl.onSuccessCancelTrx(txId);
-                                } else {
-                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
 
-                                getDialog().dismiss();
+                                @Override
+                                public void onError(Throwable throwable) {
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                                }
 
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            if (MyApiClient.PROD_FAILURE_FLAG)
-                                Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            Timber.w("Error Cancel Search Agent:" + throwable.toString());
-
-                            if ( progdialog.isShowing() )
-                                progdialog.dismiss();
-
-                        }
-
-                    });
+                                @Override
+                                public void onComplete() {
+                                    if ( progdialog.isShowing())
+                                        progdialog.dismiss();
+                                }
+                            });
 
                 }
                 //getDialog().dismiss();

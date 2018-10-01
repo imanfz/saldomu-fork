@@ -365,7 +365,8 @@ public class Regist3 extends BaseFragment {
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                 switchActivityPIN(i);
                             } else {
-                                code = model.getError_message();if (MyApiClient.PROD_FAILURE_FLAG)
+                                code = model.getError_message();
+                                if (MyApiClient.PROD_FAILURE_FLAG)
                                     Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                                 else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }

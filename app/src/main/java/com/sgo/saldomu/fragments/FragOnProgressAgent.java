@@ -21,12 +21,16 @@ import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -86,94 +90,79 @@ public class FragOnProgressAgent extends Fragment {
         userId                  = sp.getString(DefineValue.USERID_PHONE, "");
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.searching_onprogress_trx));
 
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT,
+        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT,
                 userId, sp.getString(DefineValue.ACCESS_KEY, ""));
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
         params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
         params.put(WebParams.USER_ID, userId);
 
-        MyApiClient.getOnProgressByAgent(getContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+
+                            String code = response.getString(WebParams.ERROR_CODE);
 
 
-                try {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    if( progdialog.isShowing() )
-                        progdialog.dismiss();
+                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                SecurePreferences.Editor mEditor = prefs.edit();
+                                mEditor.putString(DefineValue.BBS_MEMBER_ID, response.getString(WebParams.MEMBER_ID));
+                                mEditor.putString(DefineValue.BBS_SHOP_ID, response.getString(WebParams.SHOP_ID));
+                                mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
+                                mEditor.putDouble(DefineValue.AGENT_LATITUDE, response.getDouble(WebParams.SHOP_LATITUDE));
+                                mEditor.putDouble(DefineValue.AGENT_LONGITUDE, response.getDouble(WebParams.SHOP_LONGITUDE));
+                                mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
+                                mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
+                                mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
+                                mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
+                                mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
+                                mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
+                                mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
+                                mEditor.apply();
 
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                        SecurePreferences.Editor mEditor = prefs.edit();
-                        mEditor.putString(DefineValue.BBS_MEMBER_ID, response.getString(WebParams.MEMBER_ID));
-                        mEditor.putString(DefineValue.BBS_SHOP_ID, response.getString(WebParams.SHOP_ID));
-                        mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
-                        mEditor.putDouble(DefineValue.AGENT_LATITUDE, response.getDouble(WebParams.SHOP_LATITUDE));
-                        mEditor.putDouble(DefineValue.AGENT_LONGITUDE, response.getDouble(WebParams.SHOP_LONGITUDE));
-                        mEditor.putString(DefineValue.KEY_CCY, response.getString(DefineValue.KEY_CCY));
-                        mEditor.putString(DefineValue.KEY_AMOUNT, response.getString(DefineValue.KEY_AMOUNT));
-                        mEditor.putString(DefineValue.KEY_ADDRESS, response.getString(DefineValue.KEY_ADDRESS));
-                        mEditor.putString(DefineValue.KEY_CODE, response.getString(DefineValue.KEY_CODE));
-                        mEditor.putString(DefineValue.KEY_NAME, response.getString(DefineValue.KEY_NAME));
-                        mEditor.putDouble(DefineValue.BENEF_LATITUDE, response.getDouble(DefineValue.KEY_LATITUDE));
-                        mEditor.putDouble(DefineValue.BENEF_LONGITUDE, response.getDouble(DefineValue.KEY_LONGITUDE));
-                        mEditor.apply();
-
-                        Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
-                        startActivity(i);
-                        getActivity().finish();
+                                Intent i = new Intent(getContext(), BbsMapViewByAgentActivity.class);
+                                startActivity(i);
+                                getActivity().finish();
 
 
-                    } else {
+                            } else {
 
-                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                        alertDialog.setMessage(getString(R.string.alertbox_message_information));
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        getActivity().finish();
+                                AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                alertDialog.setCanceledOnTouchOutside(false);
+                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                alertDialog.setMessage(getString(R.string.alertbox_message_information));
+                                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                getActivity().finish();
 
-                                    }
-                                });
-                        alertDialog.show();
+                                            }
+                                        });
+                                alertDialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                if( progdialog.isShowing() )
-                    progdialog.dismiss();
-                Timber.w("Error Koneksi Trx On Progress by Agent:" + throwable.toString());
-
-            }
-
-        });
+                    @Override
+                    public void onComplete() {
+                        if( progdialog.isShowing() )
+                            progdialog.dismiss();
+                    }
+                });
     }
 }

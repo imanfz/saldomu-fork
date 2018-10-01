@@ -59,10 +59,12 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.utils.BbsUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -596,8 +598,10 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         Double tempLatitude = latitude;
         Double tempLongitude = longitude;
         String extraSignature = categoryId + tempLatitude + tempLongitude;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
+        RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
                 userPhoneID, accessKey, extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -612,144 +616,122 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
         //Start
         handlerSearchAgent.removeCallbacks(runnableSearchAgent);
 
-        MyApiClient.NewSearchAgent(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                Timber.d("Response New Search Agent:" + response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
+                                //Start
+                                handlerSearchAgent.postDelayed(runnableSearchAgent, timeDelayed);
 
-                try {
+                                JSONArray shops = response.getJSONArray("shop");
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                shopDetails.clear();
 
-                        //Start
-                        handlerSearchAgent.postDelayed(runnableSearchAgent, timeDelayed);
+                                if (shops.length() > 0) {
 
-                        JSONArray shops = response.getJSONArray("shop");
-
-                        shopDetails.clear();
-
-                        if (shops.length() > 0) {
-
-                            Boolean firstLoad = false;
-                            if ( currentShops.size() == 0 ) {
-                                firstLoad = true;
-                            }
-
-                            latestShops = new ArrayList<String>();
-
-                            for (int j = 0; j < shops.length(); j++) {
-                                JSONObject object = shops.getJSONObject(j);
-                                ShopDetail shopDetail = new ShopDetail();
-
-                                shopDetail.setShopId(object.getString("shop_id"));
-                                shopDetail.setMemberCust(object.getString("member_cust"));
-                                shopDetail.setMemberId(object.getString("member_id"));
-                                shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
-                                shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                shopDetail.setMemberName(object.getString("member_name"));
-                                shopDetail.setShopAddress(object.getString("shop_address"));
-                                shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
-                                shopDetail.setLastActivity(object.getString("shop_lastactivity"));
-                                shopDetail.setShopMobility(object.getString("shop_mobility"));
-                                shopDetails.add(shopDetail);
-
-                                latestShops.add(shopDetail.getShopId());
-
-                                if ( firstLoad ) {
-                                    currentShops.add(shopDetail.getShopId());
-                                }
-                            }
-
-                            if ( !firstLoad ) {
-                                differentShops = new ArrayList<String>(currentShops);
-                                differentShops.removeAll(latestShops);
-
-                                currentShops = new ArrayList<String>(latestShops);
-                            }
-
-                            if ( differentShops.size() > 0 ) {
-                                for (String tempShopId : differentShops) {
-                                    if (hashMapMarkers.containsKey(tempShopId)) {
-                                        Marker marker = hashMapMarkers.get(tempShopId);
-                                        marker.remove();
-
-                                        hashMapMarkers.remove(tempShopId);
+                                    Boolean firstLoad = false;
+                                    if ( currentShops.size() == 0 ) {
+                                        firstLoad = true;
                                     }
-                                }
-                            }
 
-                            for(int i = 0; i < shopDetails.size(); i++){
+                                    latestShops = new ArrayList<String>();
 
-                                if ( shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null ) {
-                                    LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
+                                    for (int j = 0; j < shops.length(); j++) {
+                                        JSONObject object = shops.getJSONObject(j);
+                                        ShopDetail shopDetail = new ShopDetail();
 
-                                    if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
-                                        Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
+                                        shopDetail.setShopId(object.getString("shop_id"));
+                                        shopDetail.setMemberCust(object.getString("member_cust"));
+                                        shopDetail.setMemberId(object.getString("member_id"));
+                                        shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
+                                        shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
+                                        shopDetail.setMemberName(object.getString("member_name"));
+                                        shopDetail.setShopAddress(object.getString("shop_address"));
+                                        shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
+                                        shopDetail.setLastActivity(object.getString("shop_lastactivity"));
+                                        shopDetail.setShopMobility(object.getString("shop_mobility"));
+                                        shopDetails.add(shopDetail);
 
-                                        marker.setPosition(latLng);
-                                        hashMapMarkers.remove(shopDetails.get(i).getShopId());
-                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
-                                    } else {
+                                        latestShops.add(shopDetail.getShopId());
 
-                                        MarkerOptions markerOptions = new MarkerOptions().position(latLng);
-                                        if (shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES)) {
-                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
-                                        } else {
-                                            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+                                        if ( firstLoad ) {
+                                            currentShops.add(shopDetail.getShopId());
                                         }
-
-                                        hashMapMarkers.put(shopDetails.get(i).getShopId(), globalMap.addMarker(markerOptions));
-
                                     }
+
+                                    if ( !firstLoad ) {
+                                        differentShops = new ArrayList<String>(currentShops);
+                                        differentShops.removeAll(latestShops);
+
+                                        currentShops = new ArrayList<String>(latestShops);
+                                    }
+
+                                    if ( differentShops.size() > 0 ) {
+                                        for (String tempShopId : differentShops) {
+                                            if (hashMapMarkers.containsKey(tempShopId)) {
+                                                Marker marker = hashMapMarkers.get(tempShopId);
+                                                marker.remove();
+
+                                                hashMapMarkers.remove(tempShopId);
+                                            }
+                                        }
+                                    }
+
+                                    for(int i = 0; i < shopDetails.size(); i++){
+
+                                        if ( shopDetails.get(i).getShopLatitude() != null && shopDetails.get(i).getShopLongitude() != null ) {
+                                            LatLng latLng = new LatLng(shopDetails.get(i).getShopLatitude(), shopDetails.get(i).getShopLongitude());
+
+                                            if (hashMapMarkers.containsKey(shopDetails.get(i).getShopId())) {
+                                                Marker marker = hashMapMarkers.get(shopDetails.get(i).getShopId());
+
+                                                marker.setPosition(latLng);
+                                                hashMapMarkers.remove(shopDetails.get(i).getShopId());
+                                                hashMapMarkers.put(shopDetails.get(i).getShopId(), marker);
+                                            } else {
+
+                                                MarkerOptions markerOptions = new MarkerOptions().position(latLng);
+                                                if (shopDetails.get(i).getShopMobility().equals(DefineValue.STRING_YES)) {
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_person, 90, 90)));
+                                                } else {
+                                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons(R.drawable.map_home, 90, 90)));
+                                                }
+
+                                                hashMapMarkers.put(shopDetails.get(i).getShopId(), globalMap.addMarker(markerOptions));
+
+                                            }
+                                        }
+                                    }
+
+                                    Timber.d("diffShops: " + differentShops.toString());
                                 }
+
+
+                            } else {
+                                shopDetails.clear();
+
                             }
 
-                            Timber.d("diffShops: " + differentShops.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-
-                    } else {
-                        shopDetails.clear();
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi Search Agent:" + throwable.toString());
-
-                //if ( progdialog.isShowing())
-                    //progdialog.dismiss();
-
-            }
-
-        });
-
+                    }
+                });
     }
 
     public void initializeToolbar(String title)
@@ -940,82 +922,102 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
 
     private void getAddressByLatLng() {
         btnProses.setEnabled(false);
-        MyApiClient.getGoogleAPIAddressByLatLng(this, latitude, longitude, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+        RetrofitService.getInstance().GetObjectRequest(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + latitude + "," + longitude,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+
+                            String status = response.getString(WebParams.GMAP_API_STATUS);
+                            Timber.w("JSON Response: "+response.toString());
+
+                            btnProses.setEnabled(true);
+
+                            if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                                ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
+
+                                for (HashMap<String, String> hashMapObject : gData) {
+                                    for (String key : hashMapObject.keySet()) {
+                                        switch(key) {
+                                            case "formattedAddress":
+                                                completeAddress = hashMapObject.get(key);
+                                                break;
+                                            case "province":
+                                                provinceName = hashMapObject.get(key);
+                                                break;
+                                            case "district":
+                                                districtName = hashMapObject.get(key);
+                                                break;
+                                            case "subdistrict":
+                                                break;
+                                            case "country":
+                                                countryName = hashMapObject.get(key);
+                                                break;
+                                        }
 
 
-                try {
+                                    }
+                                }
 
-                    String status = response.getString(WebParams.GMAP_API_STATUS);
-                    Timber.w("JSON Response: "+response.toString());
-
-                    btnProses.setEnabled(true);
-
-                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
-
-                        for (HashMap<String, String> hashMapObject : gData) {
-                            for (String key : hashMapObject.keySet()) {
-                                switch(key) {
-                                    case "formattedAddress":
-                                        completeAddress = hashMapObject.get(key);
-                                        break;
-                                    case "province":
-                                        provinceName = hashMapObject.get(key);
-                                        break;
-                                    case "district":
-                                        districtName = hashMapObject.get(key);
-                                        break;
-                                    case "subdistrict":
-                                        break;
-                                    case "country":
-                                        countryName = hashMapObject.get(key);
-                                        break;
+                                if ( completeAddress.equals("") ) {
+                                    completeAddress += districtName + ", ";
+                                    completeAddress += provinceName;
                                 }
 
 
                             }
-                        }
 
-                        if ( completeAddress.equals("") ) {
-                            completeAddress += districtName + ", ";
-                            completeAddress += provinceName;
-                        }
 
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
+                    @Override
+                    public void onComplete() {
 
+                    }
+                });
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi: " + throwable.toString());
-
-            }
-        });
+//        MyApiClient.getGoogleAPIAddressByLatLng(this, latitude, longitude, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                Timber.w("Error Koneksi: " + throwable.toString());
+//
+//            }
+//        });
     }
 
     @Override

@@ -23,9 +23,11 @@ import com.sgo.saldomu.activities.TopUpSCADMActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.json.JSONArray;
@@ -33,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -135,112 +138,76 @@ public class FragTopUpSCADM extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             extraSignature = member_id_scadm;
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM,
                     userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
 
             Timber.d("isi params get list bank topup scadm:" + params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response get list bank topup scadm:" + response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_BANK_TOPUP_SCADM, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("isi response get list bank topup scadm:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            JSONArray mArrayBank = new JSONArray(response.getString(WebParams.BANK));
+                                    JSONArray mArrayBank = new JSONArray(response.getString(WebParams.BANK));
 
-                            for (int i = 0; i < mArrayBank.length(); i++) {
-                                bank_code = mArrayBank.getJSONObject(i).getString(WebParams.BANK_CODE);
-                                bank_name = mArrayBank.getJSONObject(i).getString(WebParams.BANK_NAME);
-                                product_code = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
-                                product_name = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
-                                bank_gateway = mArrayBank.getJSONObject(i).getString(WebParams.BANK_GATEWAY);
+                                    for (int i = 0; i < mArrayBank.length(); i++) {
+                                        bank_code = mArrayBank.getJSONObject(i).getString(WebParams.BANK_CODE);
+                                        bank_name = mArrayBank.getJSONObject(i).getString(WebParams.BANK_NAME);
+                                        product_code = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_CODE);
+                                        product_name = mArrayBank.getJSONObject(i).getString(WebParams.PRODUCT_NAME);
+                                        bank_gateway = mArrayBank.getJSONObject(i).getString(WebParams.BANK_GATEWAY);
 
-                                listBankModel listBankModel = new listBankModel();
-                                listBankModel.setBank_code(bank_code);
-                                listBankModel.setBank_name(bank_name);
-                                listBankModel.setProduct_code(product_code);
-                                listBankModel.setProduct_name(product_name);
-                                listBankModel.setBank_gateway(bank_gateway);
+                                        listBankModel listBankModel = new listBankModel();
+                                        listBankModel.setBank_code(bank_code);
+                                        listBankModel.setBank_name(bank_name);
+                                        listBankModel.setProduct_code(product_code);
+                                        listBankModel.setProduct_name(product_name);
+                                        listBankModel.setBank_gateway(bank_gateway);
 
-                                scadmListBankTopUp.add(listBankModel);
-                                spinnerContentStrings.add(product_name);
+                                        scadmListBankTopUp.add(listBankModel);
+                                        spinnerContentStrings.add(product_name);
 
+                                    }
+                                    arrayAdapter.addAll(spinnerContentStrings);
+                                    arrayAdapter.notifyDataSetChanged();
+
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error isi response get list bank topup scadm:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    getActivity().finish();
+                                }
+                            } catch (JSONException e) {
+                                Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
                             }
-                            arrayAdapter.addAll(spinnerContentStrings);
-                            arrayAdapter.notifyDataSetChanged();
-
-                            progdialog.dismiss();
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            Timber.d("Error isi response get list bank topup scadm:" + response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-                            getActivity().finish();
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
 
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi get list bank topup scadm:" + throwable.toString());
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                }
-            };
-
-            MyApiClient.getListBankTopupSCADM(getActivity(), params, mHandler);
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
@@ -252,8 +219,9 @@ public class FragTopUpSCADM extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             extraSignature = member_id_scadm + selectedProductCode + MyApiClient.CCY_VALUE + et_jumlah.getText().toString();
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_TOPUP_SCADM,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_TOPUP_SCADM,
                     userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, member_id_scadm);
             params.put(WebParams.BANK_CODE, selectedBankCode);
@@ -265,100 +233,65 @@ public class FragTopUpSCADM extends BaseFragment {
 
             Timber.d("isi params confirm topup scadm:" + params.toString());
 
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("isi response confirm topup scadm:" + response.toString());
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            tx_id = response.getString(WebParams.TX_ID);
-                            member_id = response.getString(WebParams.MEMBER_ID);
-                            member_code = response.getString(WebParams.MEMBER_CODE);
-                            member_name = response.getString(WebParams.MEMBER_NAME);
-                            comm_id = response.getString(WebParams.COMM_ID);
-                            comm_code = response.getString(WebParams.COMM_CODE);
-                            comm_name = response.getString(WebParams.COMM_NAME);
-                            bank_code = response.getString(WebParams.BANK_CODE);
-                            bank_name = response.getString(WebParams.BANK_NAME);
-                            product_code = response.getString(WebParams.PRODUCT_CODE);
-                            product_name = response.getString(WebParams.PRODUCT_NAME);
-                            ccy_id = response.getString(WebParams.CCY_ID);
-                            amount = response.getString(WebParams.AMOUNT);
-                            admin_fee = response.getString(WebParams.ADMIN_FEE);
-                            total_amount = response.getString(WebParams.TOTAL_AMOUNT);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CONFIRM_TOPUP_SCADM, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                Timber.d("isi response confirm topup scadm:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    tx_id = response.getString(WebParams.TX_ID);
+                                    member_id = response.getString(WebParams.MEMBER_ID);
+                                    member_code = response.getString(WebParams.MEMBER_CODE);
+                                    member_name = response.getString(WebParams.MEMBER_NAME);
+                                    comm_id = response.getString(WebParams.COMM_ID);
+                                    comm_code = response.getString(WebParams.COMM_CODE);
+                                    comm_name = response.getString(WebParams.COMM_NAME);
+                                    bank_code = response.getString(WebParams.BANK_CODE);
+                                    bank_name = response.getString(WebParams.BANK_NAME);
+                                    product_code = response.getString(WebParams.PRODUCT_CODE);
+                                    product_name = response.getString(WebParams.PRODUCT_NAME);
+                                    ccy_id = response.getString(WebParams.CCY_ID);
+                                    amount = response.getString(WebParams.AMOUNT);
+                                    admin_fee = response.getString(WebParams.ADMIN_FEE);
+                                    total_amount = response.getString(WebParams.TOTAL_AMOUNT);
 //                            payment_remark = response.getString(WebParams.PAYMENT_REMARK);
 
-                            changeToConfirmTopup();
+                                    changeToConfirmTopup();
 
-                            progdialog.dismiss();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:" + response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
+                                    Timber.d("Error isi response confirm topup  scadm:" + response.toString());
+                                    code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:" + response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(), message);
-                        } else {
-                            Timber.d("Error isi response confirm topup  scadm:" + response.toString());
-                            code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
-
-                            Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 //                            getActivity().finish();
+                                }
+
+
+                            } catch (JSONException e) {
+                                Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
+                            }
                         }
-                        if (progdialog.isShowing())
-                            progdialog.dismiss();
 
-                    } catch (JSONException e) {
-                        progdialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.internal_error), Toast.LENGTH_LONG).show();
-                        e.printStackTrace();
-                    }
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            getFragmentManager().popBackStack();
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                    getFragmentManager().popBackStack();
-                    Timber.w("Error Koneksi confirm topup  scadm:" + throwable.toString());
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                }
-
-                @Override
-                public void onCancel() {
-                    super.onCancel();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-                }
-            };
-
-            MyApiClient.confirmTopupScadm(getActivity(), params, mHandler);
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
 
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());

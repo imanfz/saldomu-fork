@@ -3,6 +3,7 @@ package com.sgo.saldomu.coreclass.Singleton;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -21,12 +22,15 @@ import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.reactivestreams.Subscription;
 
 import java.io.IOException;
@@ -434,6 +438,43 @@ public class RetrofitService {
                 });
     }
 
+    public void PostJsonObjRequest(String link, HashMap<String, Object> param , final ObjListeners listener) {
+        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
     public void PostWithOnError(String link, HashMap<String, Object> param , final ErrorListener listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -456,6 +497,44 @@ public class RetrofitService {
                     @Override
                     public void onComplete() {
 
+                    }
+                });
+    }
+
+    public void GetObjectRequest(String link, final ObjListeners listener) {
+        BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        try {
+                            listener.onResponses(new JSONObject(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
                     }
                 });
     }

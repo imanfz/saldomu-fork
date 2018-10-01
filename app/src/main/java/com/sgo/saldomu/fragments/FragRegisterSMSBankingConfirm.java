@@ -21,13 +21,18 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
+
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -67,12 +72,12 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
         cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-        tvNo = (TextView) v.findViewById(R.id.rsb_value_no);
-        tvName = (TextView) v.findViewById(R.id.rsb_value_name);
-        tvTglLahir  = (TextView) v.findViewById(R.id.rsb_value_tgl);
-        etToken = (EditText) v.findViewById(R.id.rsb_value_token);
+        tvNo = v.findViewById(R.id.rsb_value_no);
+        tvName = v.findViewById(R.id.rsb_value_name);
+        tvTglLahir  = v.findViewById(R.id.rsb_value_tgl);
+        etToken = v.findViewById(R.id.rsb_value_token);
         layout_dll = v.findViewById(R.id.layout_dll);
-        btnConfirm = (Button) v.findViewById(R.id.btn_confirm);
+        btnConfirm = v.findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(btnConfTokenListener);
 
         Bundle bundle = this.getArguments();
@@ -137,13 +142,21 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams params;
-            if(!isJatim)
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CONFIRM_TOKEN_SB,
-                        userID,accessKey);
-            else
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CONFIRM_TOKEN_JATIM,
-                        userID,accessKey);
+            RequestParams param;
+            HashMap<String, Object> params;
+            String url;
+            if(!isJatim) {
+                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TOKEN_SB,
+                        userID, accessKey);
+
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_SB);
+                url = MyApiClient.LINK_CONFIRM_TOKEN_SB;
+            }else {
+                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TOKEN_JATIM,
+                        userID, accessKey);
+                params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_JATIM);
+                url = MyApiClient.LINK_CONFIRM_TOKEN_SB;
+            }
 
             params.put(WebParams.NO_HP, no_hp);
             params.put(WebParams.CUST_ID, cust_id);
@@ -156,70 +169,47 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
                 params.put(WebParams.CCY_ID, ccy_id);
             }
 
-            Timber.d("isi params confirm token SB:" + params.toString());
+            RetrofitService.getInstance().PostJsonObjRequest(url, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            progdialog.dismiss();
+                            Timber.d("isi response confirm token SB:"+response.toString());
 
-            JsonHttpResponseHandler handler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    Timber.d("isi response confirm token SB:"+response.toString());
+                            String code;
+                            try {
+                                code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
+                                    getActivity().finish();
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(),message);
+                                }
+                                else {
+                                    Toast.makeText(getActivity(), "Failed!", Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                    String code;
-                    try {
-                        code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Toast.makeText(getActivity(), "Success!", Toast.LENGTH_LONG).show();
-                            getActivity().finish();
+
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                        else {
-                            Toast.makeText(getActivity(), "Failed!", Toast.LENGTH_LONG).show();
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi confirm token sms banking confirm:"+throwable.toString());
-                }
-            };
-
-            if(isJatim)
-                MyApiClient.sentConfirmTokenJatim(getActivity(),params, handler);
-            else
-                MyApiClient.sentConfTokenSB(getActivity(),params,handler);
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -230,69 +220,48 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQUEST_TOKEN_SB,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQUEST_TOKEN_SB,
                     userID,accessKey);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_TOKEN_SB);
             params.put(WebParams.NO_HP, no_hp);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get token SB:"+params.toString());
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_TOKEN_SB, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    token_id = response.getString(WebParams.TOKEN_ID);
+                                }
+                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(),message);
+                                }else {
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-            MyApiClient.sentReqTokenSB(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
-                    Timber.d("isi response get token SB:"+response.toString());
-
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            token_id = response.getString(WebParams.TOKEN_ID);
 
                         }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
-                }
-
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-                    if (progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi get token sms banking confirm:"+throwable.toString());
-                }
-
-            });
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         } catch (Exception e) {
             Timber.d("httpclient:"+e.getMessage());
         }

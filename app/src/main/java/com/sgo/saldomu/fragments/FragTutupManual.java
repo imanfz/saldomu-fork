@@ -25,8 +25,10 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.apache.http.Header;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -161,9 +164,10 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = DefineValue.STRING_NO;
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
+        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
                 sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
                 extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -172,67 +176,52 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
         params.put(WebParams.FLAG_APPROVE, DefineValue.STRING_NO);
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-        MyApiClient.getMemberShopList(getContext(), params, false, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                progdialog.dismiss();
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_MEMBER_SHOP_LIST, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                llTutupManual.setVisibility(View.VISIBLE);
+                                btnSubmit.setVisibility(View.VISIBLE);
+                                llTanggal.setVisibility(View.VISIBLE);
+                                llMulaiDari.setVisibility(View.VISIBLE);
+                                llSampaiDengan.setVisibility(View.VISIBLE);
 
-                        llTutupManual.setVisibility(View.VISIBLE);
-                        btnSubmit.setVisibility(View.VISIBLE);
-                        llTanggal.setVisibility(View.VISIBLE);
-                        llMulaiDari.setVisibility(View.VISIBLE);
-                        llSampaiDengan.setVisibility(View.VISIBLE);
+                                JSONArray members = response.getJSONArray("member");
 
-                        JSONArray members = response.getJSONArray("member");
-
-                        if ( members.length() > 0 ) {
-                            memberId = members.getJSONObject(0).getString("member_id");
-                            shopId = members.getJSONObject(0).getString("shop_id");
+                                if ( members.length() > 0 ) {
+                                    memberId = members.getJSONObject(0).getString("member_id");
+                                    shopId = members.getJSONObject(0).getString("shop_id");
 
 
-                        } else {
-                            backToPreviousFragment();
+                                } else {
+                                    backToPreviousFragment();
+                                }
+
+                            } else {
+                                backToPreviousFragment();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                    } else {
-                        backToPreviousFragment();
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
 
-            private void ifFailure(Throwable throwable) {
-                //if (MyApiClient.PROD_FAILURE_FLAG)
-                //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                //else
-                Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                progdialog.dismiss();
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
+                        progdialog.dismiss();
+                    }
+                });
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
@@ -450,8 +439,11 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             String shopStatus       = DefineValue.SHOP_CLOSE;
 
             String extraSignature = memberId + shopId + shopStatus;
-            RequestParams params2            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
+            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                    MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
                     sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
+                    extraSignature);
+            HashMap<String, Object> params2 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
                     extraSignature);
 
             params2.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -478,78 +470,60 @@ public class FragTutupManual extends Fragment implements View.OnClickListener, D
             params2.put(WebParams.SHOP_REMARK, "");
             params2.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-            MyApiClient.registerOpenCloseShop(getContext(), params2, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog2.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params2,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
 
-                    try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                    alertDialog.setMessage(getString(R.string.message_notif_update_tutup_manual_success));
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    getActivity().onBackPressed();
+                                                }
+                                            });
+                                    alertDialog.show();
 
-                            alertDialog.setMessage(getString(R.string.message_notif_update_tutup_manual_success));
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            getActivity().onBackPressed();
-                                        }
-                                    });
-                            alertDialog.show();
+                                } else {
+                                    //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
 
-                        } else {
-                            //Toast.makeText(getApplicationContext(), code, Toast.LENGTH_LONG).show();
+                                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
-                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                    alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    alertDialog.show();
 
-                            alertDialog.setMessage(response.getString(WebParams.ERROR_MESSAGE));
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            alertDialog.show();
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    //if (MyApiClient.PROD_FAILURE_FLAG)
-                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    //else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if (progdialog2.isShowing())
-                        progdialog2.dismiss();
-
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-
-            });
-
-
+                        @Override
+                        public void onComplete() {
+                            if (progdialog2.isShowing())
+                                progdialog2.dismiss();
+                        }
+                    });
 
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());

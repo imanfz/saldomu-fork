@@ -55,6 +55,7 @@ import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.AgentDetail;
@@ -62,6 +63,7 @@ import com.sgo.saldomu.entityRealm.AgentServiceDetail;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.fragments.AgentListFragment;
 import com.sgo.saldomu.fragments.FragCancelTrxRequest;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -539,84 +541,90 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         completeAddress = "";
 
 
+        RetrofitService.getInstance().GetObjectRequest(
+                MyApiClient.LINK_GOOGLE_MAPS_API_GEOCODE + "&latlng=" + currentLatitude + "," + currentLongitude,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-        MyApiClient.getGoogleAPIAddressByLatLng(this, currentLatitude, currentLongitude, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            String status = response.getString(WebParams.GMAP_API_STATUS);
+                            Timber.w("JSON Response: "+response.toString());
 
+                            if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
+                                ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
 
-                try {
-
-                    String status = response.getString(WebParams.GMAP_API_STATUS);
-                    Timber.w("JSON Response: "+response.toString());
-
-
-                    if ( status.equals(DefineValue.GMAP_STRING_OK) ) {
-                        ArrayList<HashMap<String,String>> gData = GoogleAPIUtils.getResponseGoogleAPI(response);
-
-                        for (HashMap<String, String> hashMapObject : gData) {
-                            for (String key : hashMapObject.keySet()) {
-                                switch(key) {
-                                    case "formattedAddress":
-                                        completeAddress = hashMapObject.get(key);
-                                        break;
-                                    case "province":
-                                        provinceName = hashMapObject.get(key);
-                                        break;
-                                    case "district":
-                                        districtName = hashMapObject.get(key);
-                                        break;
-                                    case "subdistrict":
-                                        break;
-                                    case "country":
-                                        countryName = hashMapObject.get(key);
-                                        break;
+                                for (HashMap<String, String> hashMapObject : gData) {
+                                    for (String key : hashMapObject.keySet()) {
+                                        switch(key) {
+                                            case "formattedAddress":
+                                                completeAddress = hashMapObject.get(key);
+                                                break;
+                                            case "province":
+                                                provinceName = hashMapObject.get(key);
+                                                break;
+                                            case "district":
+                                                districtName = hashMapObject.get(key);
+                                                break;
+                                            case "subdistrict":
+                                                break;
+                                            case "country":
+                                                countryName = hashMapObject.get(key);
+                                                break;
+                                        }
+                                    }
                                 }
-
-
+                                if ( completeAddress.equals("") ) {
+                                    completeAddress += districtName + ", ";
+                                    completeAddress += provinceName;
+                                }
+                                if ( isAllowed )
+                                    searchToko(currentLatitude, currentLongitude);
                             }
-                        }
 
-                        if ( completeAddress.equals("") ) {
-                            completeAddress += districtName + ", ";
-                            completeAddress += provinceName;
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                    }
 
-                        if ( isAllowed )
-                            searchToko(currentLatitude, currentLongitude);
+                    @Override
+                    public void onError(Throwable throwable) {
 
                     }
 
+                    @Override
+                    public void onComplete() {
 
+                    }
+                });
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi: " + throwable.toString());
-
-            }
-        });
+//        MyApiClient.getGoogleAPIAddressByLatLng(this, currentLatitude, currentLongitude, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                Timber.w("Error Koneksi: " + throwable.toString());
+//
+//            }
+//        });
 
         /*try
         {
@@ -1037,8 +1045,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
             String extraSignature = categoryId + bbsProductType + bbsProductCode;
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SEARCH_TOKO,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SEARCH_TOKO,
                     userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SEARCH_TOKO,
+                    extraSignature);
 
             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
             SecurePreferences.Editor mEditor = prefs.edit();
@@ -1085,230 +1095,203 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             //currentLongitude = longitude;
             Timber.d("Params search toko :" +params);
 
-            MyApiClient.searchToko(getApplicationContext(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    //llHeaderProgress.setVisibility(View.GONE);
-                    //pbHeaderProgress.setVisibility(View.GONE);
-                    Timber.d("Response search toko:" + response.toString());
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_SEARCH_TOKO, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            //llHeaderProgress.setVisibility(View.GONE);
+                            //pbHeaderProgress.setVisibility(View.GONE);
+                            Timber.d("Response search toko:" + response.toString());
 
-                    if ( progdialog.isShowing())
-                        progdialog.dismiss();
+                            try {
 
-                    try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    clicked = true;
+                                    txId = response.getString(DefineValue.TX_ID2);
 
-                            clicked = true;
-                            txId = response.getString(DefineValue.TX_ID2);
+                                    JSONArray shops = response.getJSONArray("shop");
 
-                            JSONArray shops = response.getJSONArray("shop");
+                                    shopDetails.clear();
 
-                            shopDetails.clear();
+                                    if (shops.length() > 0) {
 
-                            if (shops.length() > 0) {
+                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                        mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
+                                        mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
+                                        mEditor.putString(DefineValue.AMOUNT, amount);
+                                        mEditor.apply();
 
-                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                SecurePreferences.Editor mEditor = prefs.edit();
-                                mEditor.putString(DefineValue.BBS_TX_ID, response.getString(WebParams.TX_ID));
-                                mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
-                                mEditor.putString(DefineValue.AMOUNT, amount);
-                                mEditor.apply();
+                                        for (int j = 0; j < shops.length(); j++) {
+                                            JSONObject object = shops.getJSONObject(j);
+                                            ShopDetail shopDetail = new ShopDetail();
 
-                                for (int j = 0; j < shops.length(); j++) {
-                                    JSONObject object = shops.getJSONObject(j);
-                                    ShopDetail shopDetail = new ShopDetail();
-
-                                    shopDetail.setShopName(object.getString("shop_name"));
-                                    shopDetail.setMemberCust(object.getString("member_cust"));
-                                    shopDetail.setMemberId(object.getString("member_id"));
-                                    shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
-                                    shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
-                                    shopDetail.setMemberName(object.getString("member_name"));
-                                    shopDetail.setShopAddress(object.getString("shop_address"));
-                                    shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
-                                    shopDetail.setLastActivity(object.getString("shop_lastactivity"));
-                                    shopDetail.setShopMobility(object.getString("shop_mobility"));
-                                    shopDetail.setShopScore(object.getString("shop_score"));
-                                    shopDetail.setShopCount(object.getString("shop_count"));
-                                    shopDetail.setNumStars(Integer.valueOf(response.getString(WebParams.MEMBER_MAX_RATING)));
-                                    shopDetails.add(shopDetail);
-                                }
-                            }
-
-                            //tabPageAdapter.notifyDataSetChanged();
-
-                            if (mobility.equals(DefineValue.STRING_YES)) {
-
-                                imgDelete.setVisibility(View.VISIBLE);
-
-                                //popup
-                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-                                alertDialog.setCanceledOnTouchOutside(false);
-                                alertDialog.setCancelable(false);
-                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
-
-
-                                alertDialog.setMessage(getString(R.string.message_notif_waiting_agent_approval));
-
-
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-
-
-                                            }
-                                        });
-                                alertDialog.show();
-
-                            } else {
-
-                            }
-
-                        } else if (code.equals(WebParams.INPROGRESS_CODE)) {
-                            android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-                            alertDialog.setCanceledOnTouchOutside(false);
-                            alertDialog.setCancelable(false);
-                            alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                            String tempMessage = getString(R.string.alertbox_message_search_agent_inprogress_trx);
-                            alertDialog.setMessage(tempMessage);
-
-                            alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-
-                                            Intent i = new Intent(getApplicationContext(), MainPage.class);
-                                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(i);
-                                            finish();
-
+                                            shopDetail.setShopName(object.getString("shop_name"));
+                                            shopDetail.setMemberCust(object.getString("member_cust"));
+                                            shopDetail.setMemberId(object.getString("member_id"));
+                                            shopDetail.setShopLatitude(object.getDouble("shop_latitude"));
+                                            shopDetail.setShopLongitude(object.getDouble("shop_longitude"));
+                                            shopDetail.setMemberName(object.getString("member_name"));
+                                            shopDetail.setShopAddress(object.getString("shop_address"));
+                                            shopDetail.setUrlSmallProfilePicture(object.getString("shop_picture"));
+                                            shopDetail.setLastActivity(object.getString("shop_lastactivity"));
+                                            shopDetail.setShopMobility(object.getString("shop_mobility"));
+                                            shopDetail.setShopScore(object.getString("shop_score"));
+                                            shopDetail.setShopCount(object.getString("shop_count"));
+                                            shopDetail.setNumStars(Integer.valueOf(response.getString(WebParams.MEMBER_MAX_RATING)));
+                                            shopDetails.add(shopDetail);
                                         }
-                                    });
-                            alertDialog.show();
-                        } else {
-                            shopDetails.clear();
-                            //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+                                    }
+
+                                    //tabPageAdapter.notifyDataSetChanged();
+
+                                    if (mobility.equals(DefineValue.STRING_YES)) {
+
+                                        imgDelete.setVisibility(View.VISIBLE);
+
+                                        //popup
+                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        alertDialog.setCanceledOnTouchOutside(false);
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
 
 
-
-                            if (mobility.equals(DefineValue.STRING_YES)) {
-
-                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-                                alertDialog.setCanceledOnTouchOutside(false);
-                                alertDialog.setCancelable(false);
-                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                                String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
-                                alertDialog.setMessage(tempMessage);
-
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-
-                                                Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
-                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
-                                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
-                                                i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
-                                                i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
-
-                                                if ( mobility.equals(DefineValue.STRING_YES) ) {
-
-                                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                    i.putExtra(DefineValue.AMOUNT, amount);
-                                                    i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                                        alertDialog.setMessage(getString(R.string.message_notif_waiting_agent_approval));
 
 
-                                                } else {
-                                                    i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
-                                                    i.putExtra(DefineValue.AMOUNT, "");
+                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+
+
+                                                    }
+                                                });
+                                        alertDialog.show();
+
+                                    } else {
+
+                                    }
+
+                                } else if (code.equals(WebParams.INPROGRESS_CODE)) {
+                                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                    alertDialog.setCanceledOnTouchOutside(false);
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                    String tempMessage = getString(R.string.alertbox_message_search_agent_inprogress_trx);
+                                    alertDialog.setMessage(tempMessage);
+
+                                    alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+
+                                                    Intent i = new Intent(getApplicationContext(), MainPage.class);
+                                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(i);
+                                                    finish();
 
                                                 }
-
-                                                startActivity(i);
-                                                finish();
-
-                                            }
-                                        });
-
+                                            });
+                                    alertDialog.show();
+                                } else {
+                                    shopDetails.clear();
+                                    //Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
 
 
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
 
-                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                SecurePreferences.Editor mEditor = prefs.edit();
-                                                mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
-                                                mEditor.remove(DefineValue.BBS_TX_ID);
-                                                mEditor.remove(DefineValue.AMOUNT);
-                                                mEditor.apply();
+                                    if (mobility.equals(DefineValue.STRING_YES)) {
 
-                                                finish();
+                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        alertDialog.setCanceledOnTouchOutside(false);
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                        String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
+                                        alertDialog.setMessage(tempMessage);
 
-                                            }
-                                        });
-                                alertDialog.show();
+                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+
+                                                        Intent i = new Intent(getApplicationContext(), BbsSearchAgentActivity.class);
+                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                        i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                        i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                        i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
+
+                                                        if ( mobility.equals(DefineValue.STRING_YES) ) {
+
+                                                            i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                            i.putExtra(DefineValue.AMOUNT, amount);
+                                                            i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
 
 
-                            } else {
-                                //alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
+                                                        } else {
+                                                            i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                                                            i.putExtra(DefineValue.AMOUNT, "");
 
-                                Intent i = new Intent(getApplicationContext(), MainPage.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                                finish();
+                                                        }
 
+                                                        startActivity(i);
+                                                        finish();
+
+                                                    }
+                                                });
+
+
+
+                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+
+                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                                        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                        mEditor.remove(DefineValue.BBS_TX_ID);
+                                                        mEditor.remove(DefineValue.AMOUNT);
+                                                        mEditor.apply();
+
+                                                        finish();
+
+                                                    }
+                                                });
+                                        alertDialog.show();
+
+
+                                    } else {
+                                        //alertDialog.setMessage(getString(R.string.alertbox_message_search_agent_fixed_not_found));
+
+                                        Intent i = new Intent(getApplicationContext(), MainPage.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                }
+                                new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
+                        }
 
-
-
-
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
 
-                        new GoogleMapRouteTask(shopDetails, currentLatitude, currentLongitude).execute();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
-
-                private void ifFailure(Throwable throwable) {
-                    //llHeaderProgress.setVisibility(View.GONE);
-                    //pbHeaderProgress.setVisibility(View.GONE);
-
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.d("Error Koneksi search toko:" + throwable.toString());
-
-                    if ( progdialog.isShowing() )
-                        progdialog.dismiss();
-
-                }
-
-            });
+                        @Override
+                        public void onComplete() {
+                            if ( progdialog.isShowing() )
+                                progdialog.dismiss();
+                        }
+                    });
         }
 
     }
@@ -1555,51 +1538,46 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
     }
 
     public void getGoogleMapRoute(String tempParams, final int idx) {
-        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Error Koneksi login:" + response.toString());
-                try {
 
-                    JSONArray array = response.getJSONArray("routes");
-                    JSONObject routes = array.getJSONObject(0);
-                    JSONArray legs = routes.getJSONArray("legs");
-                    JSONObject steps = legs.getJSONObject(0);
-                    JSONObject distance = steps.getJSONObject("distance");
-                    String parsedDistance = distance.getString("text");
+        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                    String points = overviewPolyline.getString("points");
+                            JSONArray array = response.getJSONArray("routes");
+                            JSONObject routes = array.getJSONObject(0);
+                            JSONArray legs = routes.getJSONArray("legs");
+                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject distance = steps.getJSONObject("distance");
+                            String parsedDistance = distance.getString("text");
 
-                    //routes.getOverviewPolyline().getPoints();
+                            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                            String points = overviewPolyline.getString("points");
 
-                    //Timber.w("isi index : %d",idx);
-                    shopDetails.get(idx).setCalculatedDistance(parsedDistance);
-                    shopDetails.get(idx).setEncodedPoints(points);
-                    //viewPager.getAdapter().notifyDataSetChanged();
+                            //routes.getOverviewPolyline().getPoints();
+
+                            //Timber.w("isi index : %d",idx);
+                            shopDetails.get(idx).setCalculatedDistance(parsedDistance);
+                            shopDetails.get(idx).setEncodedPoints(points);
+                            //viewPager.getAdapter().notifyDataSetChanged();
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    }
 
-            private void ifFailure(Throwable throwable) {
-                Timber.w("Error Koneksi login:" + throwable.toString());
-            }
-        });
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @AfterPermissionGranted(RC_LOCATION_PHONE_SMS)
@@ -1723,8 +1701,10 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( !txId.equals("") ) {
 
             String extraSignature = txId;
-            RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
+            RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
                     userPhoneID, accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
+                    extraSignature);
 
             params.put(WebParams.APP_ID, BuildConfig.APP_ID);
             params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -1734,47 +1714,47 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             params.put(WebParams.KEY_PHONE, userPhoneID);
             params.put(WebParams.USER_ID, userPhoneID);
 
-            MyApiClient.checkTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_CHECK_TRANSACTION_MEMBER, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
 
-                    try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    String txStatus = response.getString(WebParams.TX_STATUS);
 
-                            String txStatus = response.getString(WebParams.TX_STATUS);
+                                    if ( txStatus.equals(DefineValue.TX_STATUS_OP) ) {
+                                        handler.removeCallbacks(runnable);
 
-                            if ( txStatus.equals(DefineValue.TX_STATUS_OP) ) {
-                                handler.removeCallbacks(runnable);
+                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                        mEditor.putString(DefineValue.TX_ID2, txId);
+                                        mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
+                                        mEditor.putString(DefineValue.AMOUNT, amount);
+                                        mEditor.apply();
 
-                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                SecurePreferences.Editor mEditor = prefs.edit();
-                                mEditor.putString(DefineValue.TX_ID2, txId);
-                                mEditor.putString(DefineValue.CATEGORY_NAME, categoryName);
-                                mEditor.putString(DefineValue.AMOUNT, amount);
-                                mEditor.apply();
+                                        Intent i = new Intent(getApplicationContext(), BbsMapViewByMemberActivity.class);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
 
-                                Intent i = new Intent(getApplicationContext(), BbsMapViewByMemberActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(i);
-                                finish();
+                                    } else if ( txStatus.equals(DefineValue.TX_STATUS_RJ) ) {
 
-                            } else if ( txStatus.equals(DefineValue.TX_STATUS_RJ) ) {
+                                        handler.removeCallbacks(runnable);
 
-                                handler.removeCallbacks(runnable);
+                                        android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
+                                        alertDialog.setCanceledOnTouchOutside(false);
+                                        alertDialog.setCancelable(false);
+                                        alertDialog.setTitle(getString(R.string.alertbox_title_information));
+                                        String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
+                                        alertDialog.setMessage(tempMessage);
 
-                                android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(BbsSearchAgentActivity.this).create();
-                                alertDialog.setCanceledOnTouchOutside(false);
-                                alertDialog.setCancelable(false);
-                                alertDialog.setTitle(getString(R.string.alertbox_title_information));
-                                String tempMessage = getString(R.string.alertbox_message_search_agent_not_found);
-                                alertDialog.setMessage(tempMessage);
-
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
+                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.yes),
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
 
                                                 /*SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                                                 SecurePreferences.Editor mEditor = prefs.edit();
@@ -1785,50 +1765,50 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 
                                                 searchToko(currentLatitude,currentLongitude);*/
 
-                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                SecurePreferences.Editor mEditor = prefs.edit();
-                                                mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                mEditor.putString(DefineValue.BBS_TX_ID, "");
-                                                mEditor.putString(DefineValue.AMOUNT, amount);
-                                                mEditor.apply();
+                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                                        mEditor.putString(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                        mEditor.putString(DefineValue.BBS_TX_ID, "");
+                                                        mEditor.putString(DefineValue.AMOUNT, amount);
+                                                        mEditor.apply();
 
-                                                Intent i = new Intent(BbsSearchAgentActivity.this, BbsSearchAgentActivity.class);
-                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
-                                                i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
-                                                i.putExtra(DefineValue.AMOUNT, amount);
-                                                i.putExtra(DefineValue.CATEGORY_ID, categoryId);
-                                                i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
-                                                i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
-                                                i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
-                                                i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
-                                                i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
-                                                startActivity(i);
-                                                finish();
+                                                        Intent i = new Intent(BbsSearchAgentActivity.this, BbsSearchAgentActivity.class);
+                                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        i.putExtra(DefineValue.IS_AUTOSEARCH, DefineValue.STRING_YES);
+                                                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_NO);
+                                                        i.putExtra(DefineValue.AMOUNT, amount);
+                                                        i.putExtra(DefineValue.CATEGORY_ID, categoryId);
+                                                        i.putExtra(DefineValue.CATEGORY_NAME, categoryName);
+                                                        i.putExtra(DefineValue.LAST_CURRENT_LATITUDE, currentLatitude);
+                                                        i.putExtra(DefineValue.LAST_CURRENT_LONGITUDE, currentLongitude);
+                                                        i.putExtra(DefineValue.BBS_PRODUCT_NAME, bbsProductName);
+                                                        i.putExtra(DefineValue.BBS_SCHEME_CODE, bbsSchemeCode);
+                                                        startActivity(i);
+                                                        finish();
 
-                                            }
-                                        });
+                                                    }
+                                                });
 
-                                alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
+                                        alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.no),
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
 
-                                                SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                                                SecurePreferences.Editor mEditor = prefs.edit();
-                                                mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
-                                                mEditor.remove(DefineValue.BBS_TX_ID);
-                                                mEditor.remove(DefineValue.AMOUNT);
-                                                mEditor.apply();
+                                                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                                                        SecurePreferences.Editor mEditor = prefs.edit();
+                                                        mEditor.remove(DefineValue.BBS_AGENT_MOBILITY);
+                                                        mEditor.remove(DefineValue.BBS_TX_ID);
+                                                        mEditor.remove(DefineValue.AMOUNT);
+                                                        mEditor.apply();
 
-                                                finish();
+                                                        finish();
 
-                                            }
-                                        });
+                                                    }
+                                                });
 
 
-                                if ( !isFinishing() )
-                                    alertDialog.show();
+                                        if ( !isFinishing() )
+                                            alertDialog.show();
 
 
 //                                Intent intent = new Intent();
@@ -1836,42 +1816,26 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
 //                                setResult(DefineValue.IDX_CATEGORY_SEARCH_AGENT,intent);
 //                                finish();//finishing activity
 
-                                //startActivity(new Intent(getApplicationContext(), Bb.class));
+                                        //startActivity(new Intent(getApplicationContext(), Bb.class));
+                                    }
+                                } else {
+                                    finish();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } else {
-                            finish();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    ifFailure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    ifFailure(throwable);
-                }
+                        }
 
-                private void ifFailure(Throwable throwable) {
-                    //llHeaderProgress.setVisibility(View.GONE);
-                    //pbHeaderProgress.setVisibility(View.GONE);
+                        @Override
+                        public void onComplete() {
 
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                }
-
-            });
+                        }
+                    });
         }
     }
 

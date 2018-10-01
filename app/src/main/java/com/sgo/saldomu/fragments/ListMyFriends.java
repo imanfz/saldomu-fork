@@ -469,116 +469,116 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    private void insertContact(List<friendModel> mfriendModel){
-        try{
-
-            RequestParams params;
-            if(isContactNew.equals(DefineValue.NO)){
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_USER_CONTACT_UPDATE,
-                        _ownerID,accessKey);
-            }
-            else
-                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                        _ownerID,accessKey);
-
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            Gson gson = gsonBuilder.registerTypeAdapter(friendModel.class, new friendAdapter()).create();
-            params.put(WebParams.USER_ID, _ownerID);
-            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
-            params.put(WebParams.CONTACTS, gson.toJson(mfriendModel));
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-
-
-            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-
-                        if(isContactNew.equals(DefineValue.NO))
-                            Timber.d("Isi response UpdateContact:" + response.toString());
-                        else Timber.d("Isi response InsertContact:"+response.toString());
-
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            String arrayFriend = response.getString(WebParams.DATA_CONTACT);
-                            String arrayMyFriend = response.getString(WebParams.DATA_FRIEND);
-                            insertFriendToDB(new JSONArray(arrayFriend), new JSONArray(arrayMyFriend));
-                        }
-                        else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(),message);
-                        }
-                        else {
-                            code = response.getString(WebParams.ERROR_MESSAGE);
-                            if(isContactNew.equals(DefineValue.YES)){
-                                layout_check_contact.setVisibility(View.VISIBLE);
-                                layout_list_contact.setVisibility(View.GONE);
-                            }
-                            Toast.makeText(getActivity(),code,Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onProgress(long bytesWritten, long totalSize) {
-                    super.onProgress(bytesWritten, totalSize);
-                    Timber.d("onProgress insert contact:"+bytesWritten + " / " + totalSize);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadingCircle.setProgress(0);
-                            if(layout_loading_contact.getVisibility() == View.VISIBLE)
-                                crossfadingView(layout_loading_contact,layout_check_contact);
-                        }
-                    });
-
-                    Timber.w("Error Koneksi insert contact myfriend:"+throwable.toString());
-                }
-            };
-
-            if(isContactNew.equals(DefineValue.NO)){
-                Timber.d("isi params update Contact:"+params.toString());
-                MyApiClient.sentUpdateContact(getActivity(),params, mHandler);
-            }
-            else {
-                Timber.d("isi params insert Contact:"+params.toString());
-                MyApiClient.sentInsertContact(getActivity(),params, mHandler);
-            }
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
-        }
-    }
+//    private void insertContact(List<friendModel> mfriendModel){
+//        try{
+//
+//            RequestParams params;
+//            if(isContactNew.equals(DefineValue.NO)){
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_USER_CONTACT_UPDATE,
+//                        _ownerID,accessKey);
+//            }
+//            else
+//                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
+//                        _ownerID,accessKey);
+//
+//            GsonBuilder gsonBuilder = new GsonBuilder();
+//            Gson gson = gsonBuilder.registerTypeAdapter(friendModel.class, new friendAdapter()).create();
+//            params.put(WebParams.USER_ID, _ownerID);
+//            params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
+//            params.put(WebParams.CONTACTS, gson.toJson(mfriendModel));
+//            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+//
+//
+//            JsonHttpResponseHandler mHandler = new JsonHttpResponseHandler() {
+//                @Override
+//                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                    try {
+//                        String code = response.getString(WebParams.ERROR_CODE);
+//
+//                        if(isContactNew.equals(DefineValue.NO))
+//                            Timber.d("Isi response UpdateContact:" + response.toString());
+//                        else Timber.d("Isi response InsertContact:"+response.toString());
+//
+//                        if (code.equals(WebParams.SUCCESS_CODE)) {
+//                            String arrayFriend = response.getString(WebParams.DATA_CONTACT);
+//                            String arrayMyFriend = response.getString(WebParams.DATA_FRIEND);
+//                            insertFriendToDB(new JSONArray(arrayFriend), new JSONArray(arrayMyFriend));
+//                        }
+//                        else if(code.equals(WebParams.LOGOUT_CODE)){
+//                            Timber.d("isi response autologout:"+response.toString());
+//                            String message = response.getString(WebParams.ERROR_MESSAGE);
+//                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+//                            test.showDialoginMain(getActivity(),message);
+//                        }
+//                        else {
+//                            code = response.getString(WebParams.ERROR_MESSAGE);
+//                            if(isContactNew.equals(DefineValue.YES)){
+//                                layout_check_contact.setVisibility(View.VISIBLE);
+//                                layout_list_contact.setVisibility(View.GONE);
+//                            }
+//                            Toast.makeText(getActivity(),code,Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                @Override
+//                public void onProgress(long bytesWritten, long totalSize) {
+//                    super.onProgress(bytesWritten, totalSize);
+//                    Timber.d("onProgress insert contact:"+bytesWritten + " / " + totalSize);
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                    super.onFailure(statusCode, headers, responseString, throwable);
+//                    failure(throwable);
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                    super.onFailure(statusCode, headers, throwable, errorResponse);
+//                    failure(throwable);
+//                }
+//
+//                @Override
+//                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+//                    super.onFailure(statusCode, headers, throwable, errorResponse);
+//                    failure(throwable);
+//                }
+//
+//                private void failure(Throwable throwable){
+//                    if(MyApiClient.PROD_FAILURE_FLAG)
+//                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                    else
+//                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            loadingCircle.setProgress(0);
+//                            if(layout_loading_contact.getVisibility() == View.VISIBLE)
+//                                crossfadingView(layout_loading_contact,layout_check_contact);
+//                        }
+//                    });
+//
+//                    Timber.w("Error Koneksi insert contact myfriend:"+throwable.toString());
+//                }
+//            };
+//
+//            if(isContactNew.equals(DefineValue.NO)){
+//                Timber.d("isi params update Contact:"+params.toString());
+//                MyApiClient.sentUpdateContact(getActivity(),params, mHandler);
+//            }
+//            else {
+//                Timber.d("isi params insert Contact:"+params.toString());
+//                MyApiClient.sentInsertContact(getActivity(),params, mHandler);
+//            }
+//        }catch (Exception e){
+//            Timber.d("httpclient:"+ e.getMessage());
+//        }
+//    }
 
     private void insertFriendToDB(JSONArray arrayFriend, JSONArray arrayMyfriend){
         try {

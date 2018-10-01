@@ -18,6 +18,8 @@ import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -35,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import timber.log.Timber;
@@ -136,7 +139,8 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
 
                         if (!hasError) {
                             progdialog = DefinedDialog.CreateProgressDialog(BbsRegisterOpenClosedShopActivity.this, "");
-                            RequestParams params = new RequestParams();
+                            RequestParams param = new RequestParams();
+                            HashMap<String, Object> params = new HashMap<>();
                             UUID rcUUID = UUID.randomUUID();
                             String dtime = DateTimeFormat.getCurrentDateTime();
 
@@ -160,52 +164,38 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
 
                             params.put(WebParams.SIGNATURE, signature);
 
-                            MyApiClient.registerOpenCloseShop(getApplication(), params, new JsonHttpResponseHandler() {
-                                @Override
-                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                                    progdialog.dismiss();
+                            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO, params,
+                                    new ObjListeners() {
+                                        @Override
+                                        public void onResponses(JSONObject response) {
+                                            try {
 
-                                    try {
+                                                String code = response.getString(WebParams.ERROR_CODE);
+                                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                        String code = response.getString(WebParams.ERROR_CODE);
-                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                                    //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
+                                                    //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
+                                                    //                                    startActivity(intent);
+                                                } else {
+                                                    Toast.makeText(getApplication(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                                }
 
-                                            //                                    Intent intent=new Intent(BbsRegisterOpenClosedShopActivity.this, .class);
-                                            //                                    //intent.putExtra("PersonID", personDetailsModelArrayList.get(position).getId());
-                                            //                                    startActivity(intent);
-                                        } else {
-                                            Toast.makeText(getApplication(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
 
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                        @Override
+                                        public void onError(Throwable throwable) {
 
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                                    super.onFailure(statusCode, headers, responseString, throwable);
-                                    ifFailure(throwable);
-                                }
+                                        }
 
-                                @Override
-                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                                    ifFailure(throwable);
-                                }
+                                        @Override
+                                        public void onComplete() {
 
-                                private void ifFailure(Throwable throwable) {
-                                    //if (MyApiClient.PROD_FAILURE_FLAG)
-                                    //Toast.makeText(getApplication(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    //else
-                                    Toast.makeText(getApplication(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                                    progdialog.dismiss();
-                                    Timber.w("Error Koneksi login:" + throwable.toString());
-
-                                }
-
-                            });
+                                            progdialog.dismiss();
+                                        }
+                                    });
                         }
                     }
 

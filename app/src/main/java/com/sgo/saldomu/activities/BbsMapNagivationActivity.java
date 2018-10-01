@@ -41,6 +41,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
@@ -401,67 +403,57 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
     }
 
     public void getGoogleMapRoute(String tempParams, final int idx) {
-        MyApiClient.getGoogleMapRoute(getApplicationContext(), tempParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Timber.w("Error Koneksi login:" + response.toString());
-                try {
 
-                    JSONArray array = response.getJSONArray("routes");
-                    JSONObject routes = array.getJSONObject(0);
-                    JSONArray legs = routes.getJSONArray("legs");
-                    JSONObject steps = legs.getJSONObject(0);
-                    JSONObject distance = steps.getJSONObject("distance");
-                    String parsedDistance = distance.getString("text");
+        RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_GOOGLE_MAP_API_ROUTE + "?" + tempParams,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
 
-                    JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
-                    String points = overviewPolyline.getString("points");
+                            JSONArray array = response.getJSONArray("routes");
+                            JSONObject routes = array.getJSONObject(0);
+                            JSONArray legs = routes.getJSONArray("legs");
+                            JSONObject steps = legs.getJSONObject(0);
+                            JSONObject distance = steps.getJSONObject("distance");
+                            String parsedDistance = distance.getString("text");
 
-                    encodedPoints = points;
+                            JSONObject overviewPolyline = routes.getJSONObject("overview_polyline");
+                            String points = overviewPolyline.getString("points");
 
-                    JSONArray directions = steps.getJSONArray("steps");
+                            encodedPoints = points;
 
-                    if ( directions.length() > 0 ) {
-                        JSONObject toDirection = directions.getJSONObject(0);
-                        htmlDirections = toDirection.getString("html_instructions");
+                            JSONArray directions = steps.getJSONArray("steps");
 
-                        JSONArray toDistanceArray = toDirection.getJSONArray("distance");
-                        JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
-                        String toDistanceString = toDistanceObject.getString("text");
+                            if ( directions.length() > 0 ) {
+                                JSONObject toDirection = directions.getJSONObject(0);
+                                htmlDirections = toDirection.getString("html_instructions");
 
-                        htmlDirections += " ( " + toDistanceString + " ) ";
-                        //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
+                                JSONArray toDistanceArray = toDirection.getJSONArray("distance");
+                                JSONObject toDistanceObject = toDistanceArray.getJSONObject(0);
+                                String toDistanceString = toDistanceObject.getString("text");
+
+                                htmlDirections += " ( " + toDistanceString + " ) ";
+                                //tvDirection.setText(Html.fromHtml(toDirection.getString("html_instructions")));
+                            }
+
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
+                    @Override
+                    public void onError(Throwable throwable) {
 
+                    }
 
+                    @Override
+                    public void onComplete() {
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
-
-
+                    }
+                });
 
     }
 

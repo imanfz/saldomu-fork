@@ -229,4 +229,12 @@ public class GetTrxStatusReportModel extends GetTrxStatusModel{
     public String getMember_shop_no() {
         return member_shop_no;
     }
+
+    public String getFee_amount() {
+        return fee_amount;
+    }
+
+    public String getProduct_h2h() {
+        return product_h2h;
+    }
 }

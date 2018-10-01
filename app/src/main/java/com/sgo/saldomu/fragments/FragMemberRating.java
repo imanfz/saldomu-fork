@@ -30,12 +30,16 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlideManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -176,8 +180,10 @@ public class FragMemberRating extends Fragment {
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature   = txId + userRating;
-        RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_FEEDBACK,
+        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_FEEDBACK,
                 customerId, sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_FEEDBACK,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
@@ -188,82 +194,64 @@ public class FragMemberRating extends Fragment {
         params.put(WebParams.RATING, userRating);
         params.put(WebParams.USER_ID, customerId);
 
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_FEEDBACK, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            Timber.d("isi params response updatefeedback:"+response.toString());
+                            String code = response.getString(WebParams.ERROR_CODE);
 
-        Timber.d("isi params updatefeedback:" + params.toString());
+                            // Now remove tvalue from shared preferences
+                            mEditor.remove(DefineValue.BBS_MODULE);
+                            mEditor.remove(DefineValue.BBS_TX_ID);
+                            mEditor.remove(DefineValue.IMG_MEDIUM_URL);
+                            mEditor.remove(DefineValue.BBS_MAXIMUM_RATING);
+                            mEditor.remove(DefineValue.BBS_DEFAULT_RATING);
+                            mEditor.remove(DefineValue.BBS_SHOP_NAME);
+                            mEditor.apply();
 
-        MyApiClient.updateFeedback(getContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if ( progdialog.isShowing() )
-                    progdialog.dismiss();
+                            sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
 
-                try {
-                    Timber.d("isi params response updatefeedback:"+response.toString());
-                    String code = response.getString(WebParams.ERROR_CODE);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                if ( isCancel.equals(DefineValue.STRING_NO) ) {
+                                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                                    alertDialog.setMessage(getString(R.string.alertbox_thx_for_rating));
+                                    alertDialog.setCancelable(false);
+                                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    getActivity().finish();
+                                                }
+                                            });
+                                    alertDialog.show();
+                                } else {
+                                    getActivity().finish();
+                                }
+                            } else {
+                                Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
+                                getActivity().finish();
+                            }
 
-                    // Now remove tvalue from shared preferences
-                    mEditor.remove(DefineValue.BBS_MODULE);
-                    mEditor.remove(DefineValue.BBS_TX_ID);
-                    mEditor.remove(DefineValue.IMG_MEDIUM_URL);
-                    mEditor.remove(DefineValue.BBS_MAXIMUM_RATING);
-                    mEditor.remove(DefineValue.BBS_DEFAULT_RATING);
-                    mEditor.remove(DefineValue.BBS_SHOP_NAME);
-                    mEditor.apply();
-
-                    sp.edit().remove(DefineValue.NOTIF_DATA_NEXT_LOGIN).commit();
-
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        if ( isCancel.equals(DefineValue.STRING_NO) ) {
-                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                            alertDialog.setMessage(getString(R.string.alertbox_thx_for_rating));
-                            alertDialog.setCancelable(false);
-                            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok),
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                            getActivity().finish();
-                                        }
-                                    });
-                            alertDialog.show();
-                        } else {
-                            getActivity().finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
-                        getActivity().finish();
                     }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onError(Throwable throwable) {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
+                    }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
+                    @Override
+                    public void onComplete() {
+                        if ( progdialog.isShowing() )
+                            progdialog.dismiss();
+                    }
+                });
 
-            private void ifFailure(Throwable throwable) {
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                if ( progdialog.isShowing() )
-                    progdialog.dismiss();
-                Timber.w("Error Koneksi updateFeedback:" + throwable.toString());
-
-            }
-
-        });
-
+        Timber.d("isi params updatefeedback:" + params.toString());
     }
 
     @Override

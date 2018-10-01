@@ -31,6 +31,7 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.retrofit.CommentModel;
 import com.sgo.saldomu.models.retrofit.LikesModel;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -268,8 +269,9 @@ public class TimelineDetailActivity extends BaseActivity {
         try {
 
             extraSignature = post_id + from_id;
-            RequestParams params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
+            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
                     _ownerID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_COMMENT_LIST, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
             params.put(WebParams.USER_ID, _ownerID);
@@ -277,90 +279,75 @@ public class TimelineDetailActivity extends BaseActivity {
 
             Timber.d("isi params get comment list:" + params.toString());
 
-            MyApiClient.getCommentList(this,params, new JsonHttpResponseHandler(){
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        String count = response.getString(WebParams.COUNT);
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_COMMENT_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                String count = response.getString(WebParams.COUNT);
 
-                        if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
-                            Timber.d("isi params comment list:" + response.toString());
+                                if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
+                                    Timber.d("isi params comment list:" + response.toString());
 
-                            JSONArray mArrayComment = new JSONArray(response.getString(WebParams.DATA_COMMENTS));
-                            List<commentModel> mListComment = new ArrayList<>();
-                            for (int i = 0; i < mArrayComment.length(); i++) {
-                                int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
-                                boolean flagSameComment = false;
+                                    JSONArray mArrayComment = new JSONArray(response.getString(WebParams.DATA_COMMENTS));
+                                    List<commentModel> mListComment = new ArrayList<>();
+                                    for (int i = 0; i < mArrayComment.length(); i++) {
+                                        int comment_id = Integer.parseInt(mArrayComment.getJSONObject(i).getString(WebParams.ID));
+                                        boolean flagSameComment = false;
 
-                                // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
-                                if (listComment.size() > 0) {
-                                    for (int index = 0; index < listComment.size(); index++) {
-                                        if (listComment.get(index).getComment_id() != comment_id) {
-                                            flagSameComment = false;
-                                        } else {
-                                            flagSameComment = true;
-                                            break;
+                                        // cek apakah ada id yang sama.. kalau ada tidak dimasukan ke array
+                                        if (listComment.size() > 0) {
+                                            for (int index = 0; index < listComment.size(); index++) {
+                                                if (listComment.get(index).getComment_id() != comment_id) {
+                                                    flagSameComment = false;
+                                                } else {
+                                                    flagSameComment = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if(!flagSameComment) {
+                                            String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
+                                            String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
+                                            String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
+                                            String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
+                                            String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
+                                            String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
+                                            String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
+                                            String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
+                                            String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
+
+                                            mListComment.add(new commentModel(comment_id, comment_post_id,
+                                                    comment_from, comment_from_name, comment_from_profile_picture, comment_to,
+                                                    comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
                                         }
                                     }
+                                    insertCommentToDB(mListComment, false, "");
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout", response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else {
+                                    Timber.d("isi error comment list:" + response.toString());
                                 }
-
-                                if(!flagSameComment) {
-                                    String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
-                                    String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
-                                    String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
-                                    String comment_from_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.FROM_PROFILE_PICTURE);
-                                    String comment_to = mArrayComment.getJSONObject(i).getString(WebParams.TO);
-                                    String comment_to_name = mArrayComment.getJSONObject(i).getString(WebParams.TO_NAME);
-                                    String comment_to_profile_picture = mArrayComment.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
-                                    String comment_reply = mArrayComment.getJSONObject(i).getString(WebParams.REPLY);
-                                    String comment_datetime = mArrayComment.getJSONObject(i).getString(WebParams.DATETIME);
-
-                                    mListComment.add(new commentModel(comment_id, comment_post_id,
-                                            comment_from, comment_from_name, comment_from_profile_picture, comment_to,
-                                            comment_to_name, comment_to_profile_picture, comment_reply, comment_datetime));
-                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            insertCommentToDB(mListComment, false, "");
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout", response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(TimelineDetailActivity.this, message);
-                        } else {
-                            Timber.d("isi error comment list:" + response.toString());
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable throwable) {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                private void failure(Throwable throwable) {
-                    if (MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(TimelineDetailActivity.this, throwable.toString(), Toast.LENGTH_SHORT).show();
-                    Timber.w("Error Koneksi comment list timelinedetail:" + throwable.toString());
-                }
-            });
+                        }
+                    });
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());

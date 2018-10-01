@@ -29,9 +29,11 @@ import com.sgo.saldomu.activities.DenomSCADMActivity;
 import com.sgo.saldomu.adapter.DenomItemListAdapter;
 import com.sgo.saldomu.coreclass.Singleton.DataManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DenomItemDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -40,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -162,83 +165,67 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             showLoading();
 
             extraSignature = obj.getMember_id_scadm();
-            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM,
+            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM,
                     userPhoneID,accessKey, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
             Timber.d("isi params sent get bank list denom:"+params.toString());
 
-            MyApiClient.getListBankDenomSCADM(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
 
-                        Timber.d("isi response get bank list denom:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Timber.d("isi response get bank list denom:"+response.toString());
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            if (bankProductList.size()>0) {
-                                bankProductList.clear();
-                                bankDataList.clear();
-                            }
+                                    if (bankProductList.size()>0) {
+                                        bankProductList.clear();
+                                        bankDataList.clear();
+                                    }
 
-                            JSONArray bankArr = response.getJSONArray("bank");
-                            for (int i=0; i<bankArr.length(); i++){
-                                JSONObject bankObj = bankArr.getJSONObject(i);
-                                bankDataList.add(new DenomBankListData(bankObj));
-                                bankProductList.add(bankObj.optString("product_name"));
-                            }
+                                    JSONArray bankArr = response.getJSONArray("bank");
+                                    for (int i=0; i<bankArr.length(); i++){
+                                        JSONObject bankObj = bankArr.getJSONObject(i);
+                                        bankDataList.add(new DenomBankListData(bankObj));
+                                        bankProductList.add(bankObj.optString("product_name"));
+                                    }
 
-                            bankProductAdapter.notifyDataSetChanged();
+                                    bankProductAdapter.notifyDataSetChanged();
 
-                            getDenomList();
+                                    getDenomList();
 
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
+                                } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(),message);
+                                }
+                                else {
+                                    String msg = response.getString(WebParams.ERROR_MESSAGE);
 //                            showDialog(msg);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onError(Throwable throwable) {
+                            dismissLoading();
+                        }
 
-                }
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onComplete() {
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi get bank list denom:"+throwable.toString());
-                    dismissLoading();
-                }
-            });
+                        }
+                    });
         }catch (Exception e){
             e.printStackTrace();
             Timber.d("httpclient:"+e.getMessage());
@@ -250,86 +237,68 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         try{
 
             extraSignature = obj.getMember_id_scadm();
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
+            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
 
             Timber.d("isi params sent get denom list:"+params.toString());
 
-            MyApiClient.getDenomList(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    try {
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_GET_DENOM_LIST, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
 
-                        Timber.d("isi response get denom list:"+response.toString());
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                Timber.d("isi response get denom list:"+response.toString());
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                            if (itemList.size()>0) {
-                                itemList.clear();
-                                itemListString.clear();
-                            }
+                                    if (itemList.size()>0) {
+                                        itemList.clear();
+                                        itemListString.clear();
+                                    }
 
-                            JSONArray dataArr = response.getJSONArray("item");
+                                    JSONArray dataArr = response.getJSONArray("item");
 
-                            for (int i=0; i<dataArr.length(); i++){
-                                JSONObject dataObj = dataArr.getJSONObject(i);
-                                DenomListModel denomObj = new DenomListModel(dataObj);
+                                    for (int i=0; i<dataArr.length(); i++){
+                                        JSONObject dataObj = dataArr.getJSONObject(i);
+                                        DenomListModel denomObj = new DenomListModel(dataObj);
 
-                                itemListString.add(denomObj.getItemName());
-                                itemList.add(denomObj);
-                            }
+                                        itemListString.add(denomObj.getItemName());
+                                        itemList.add(denomObj);
+                                    }
 
-                            itemListAdapter.notifyDataSetChanged();
+                                    itemListAdapter.notifyDataSetChanged();
 //                            denomListSpinAdapter.notifyDataSetChanged();
-                            dismissLoading();
 
-                        } else if(code.equals(WebParams.LOGOUT_CODE)){
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginActivity(getActivity(),message);
-                        }
-                        else {
-                            String msg = response.getString(WebParams.ERROR_MESSAGE);
+
+                                } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginActivity(getActivity(),message);
+                                }
+                                else {
+                                    String msg = response.getString(WebParams.ERROR_MESSAGE);
 //                            showDialog(msg);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        @Override
+                        public void onError(Throwable throwable) {
+                        }
 
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    Timber.w("Error Koneksi get denom list:"+throwable.toString());
-                    dismissLoading();
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            dismissLoading();
+                        }
+                    });
         }catch (Exception e){
             e.printStackTrace();
             Timber.d("httpclient:"+e.getMessage());

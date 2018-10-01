@@ -37,8 +37,10 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.UpdateBBSData;
 
@@ -47,6 +49,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -355,9 +358,11 @@ public class ListBBS extends Fragment {
             }
 
             String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
-            RequestParams params            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+            RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                    MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
                     sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
-
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
+                    extraSignature);
 
             if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
                 showAlertEnabledGPS();
@@ -374,61 +379,50 @@ public class ListBBS extends Fragment {
                     params.put(WebParams.SHOP_STATUS, shopStatus);
                     params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
-                    MyApiClient.updateCloseShopToday(getContext(), params, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, org.apache.http.Header[] headers, JSONObject response) {
-                            progdialog2.dismiss();
+                    RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
+                            new ObjListeners() {
+                                @Override
+                                public void onResponses(JSONObject response) {
+                                    try {
 
-                            try {
+                                        String code = response.getString(WebParams.ERROR_CODE);
+                                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                                            SecurePreferences.Editor mEditor = sp.edit();
+                                            if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
+                                                Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
+                                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
+                                            } else {
+                                                Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
+                                                mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                            }
 
-                                String code = response.getString(WebParams.ERROR_CODE);
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    SecurePreferences.Editor mEditor = sp.edit();
-                                    if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_online_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_NO);
-                                    } else {
-                                        Toast.makeText(getContext(), getString(R.string.process_update_offline_success), Toast.LENGTH_SHORT).show();
-                                        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, DefineValue.STRING_YES);
+                                            mEditor.apply();
+
+                                            getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
+
+                                            Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
+                                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+
+                                        } else {
+                                            setAgentDetailToUI();
+                                            Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-
-                                    mEditor.apply();
-
-                                    getActivity().setResult(MainPage.RESULT_REFRESH_NAVDRAW);
-
-                                    Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
-
-                                } else {
-                                    setAgentDetailToUI();
-                                    Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                 }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                                @Override
+                                public void onError(Throwable throwable) {
 
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, String responseString, Throwable throwable) {
-                            super.onFailure(statusCode, headers, responseString, throwable);
-                            ifFailure(throwable);
-                        }
+                                }
 
-                        @Override
-                        public void onFailure(int statusCode, org.apache.http.Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                            super.onFailure(statusCode, headers, throwable, errorResponse);
-                            ifFailure(throwable);
-                        }
-
-                        private void ifFailure(Throwable throwable) {
-                            Toast.makeText(getContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                            progdialog2.dismiss();
-                            Timber.w("Error Koneksi login:" + throwable.toString());
-
-                        }
-                    });
+                                @Override
+                                public void onComplete() {
+                                    progdialog2.dismiss();
+                                }
+                            });
                 }
             }
         }

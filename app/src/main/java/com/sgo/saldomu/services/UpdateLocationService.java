@@ -22,11 +22,15 @@ import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ObjListeners;
 
 import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import timber.log.Timber;
 
@@ -188,8 +192,11 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         }
 
         String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
-        RequestParams params    = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_LOCATION,
+        RequestParams param    = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""),
+                MyApiClient.LINK_UPDATE_LOCATION,
                 sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+        HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION,
+                extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -198,38 +205,27 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
 
-        MyApiClient.updateLocationService(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                try {
+        RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_UPDATE_LOCATION, params,
+                new ObjListeners() {
+                    @Override
+                    public void onResponses(JSONObject response) {
+                        try {
+                            String code = response.getString(WebParams.ERROR_CODE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-                    String code = response.getString(WebParams.ERROR_CODE);
+                    @Override
+                    public void onError(Throwable throwable) {
 
+                    }
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-
-                Timber.w("Error Koneksi Update Location Service:" + throwable.toString());
-
-            }
-
-        });
+                    }
+                });
 
     }
 

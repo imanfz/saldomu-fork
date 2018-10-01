@@ -29,9 +29,11 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -40,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -216,7 +219,8 @@ public class FragCashOut extends BaseFragment {
 
             extraSignature = memberIDLogin+bankCode+_acctNo+MyApiClient.CCY_VALUE+_amount;
 
-            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_REQUEST_CASHOUT, extraSignature);
+            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_REQUEST_CASHOUT, extraSignature);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_CASHOUT, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
@@ -235,95 +239,80 @@ public class FragCashOut extends BaseFragment {
 
             Timber.d("isi params req cashout:" + params.toString());
 
-            MyApiClient.sentReqCashout(getActivity(),params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    progdialog.dismiss();
+            RetrofitService.getInstance().PostJsonObjRequest(MyApiClient.LINK_REQUEST_CASHOUT, params,
+                    new ObjListeners() {
+                        @Override
+                        public void onResponses(JSONObject response) {
+                            try {
+                                String code = response.getString(WebParams.ERROR_CODE);
+                                if (code.equals(WebParams.SUCCESS_CODE)) {
+                                    Timber.d("isi response req cashout:"+response.toString());
 
-                    try {
-                        String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response req cashout:"+response.toString());
+                                    sp_bank.setSelection(0);
+                                    etAccNo.setText("");
+                                    etNominal.setText("");
+                                    etAccName.setText("");
+                                    sp_privacy.setSelection(0);
 
-                            sp_bank.setSelection(0);
-                            etAccNo.setText("");
-                            etNominal.setText("");
-                            etAccName.setText("");
-                            sp_privacy.setSelection(0);
+                                    String tx_id = response.getString(WebParams.TX_ID);
+                                    String acct_name = response.getString(WebParams.ACCT_NAME);
+                                    String ccyId = response.getString(WebParams.CCY_ID);
+                                    String fee = response.getString(WebParams.FEE);
+                                    String total = response.getString(WebParams.TOTAL);
 
-                            String tx_id = response.getString(WebParams.TX_ID);
-                            String acct_name = response.getString(WebParams.ACCT_NAME);
-                            String ccyId = response.getString(WebParams.CCY_ID);
-                            String fee = response.getString(WebParams.FEE);
-                            String total = response.getString(WebParams.TOTAL);
+                                    Fragment i = new FragCashoutConfirm();
+                                    Bundle args = new Bundle();
+                                    args.putString(DefineValue.TX_ID, tx_id);
+                                    args.putString(DefineValue.BANK_NAME, bankName);
+                                    args.putString(DefineValue.ACCOUNT_NUMBER, _acctNo);
+                                    args.putString(DefineValue.CCY_ID, ccyId);
+                                    args.putString(DefineValue.NOMINAL, _amount);
+                                    args.putString(DefineValue.ACCT_NAME, acct_name);
+                                    args.putString(DefineValue.FEE, fee);
+                                    args.putString(DefineValue.TOTAL_AMOUNT, total);
+                                    i.setArguments(args);
+                                    switchContent(i,FragCashoutConfirm.TAG);
 
-                            Fragment i = new FragCashoutConfirm();
-                            Bundle args = new Bundle();
-                            args.putString(DefineValue.TX_ID, tx_id);
-                            args.putString(DefineValue.BANK_NAME, bankName);
-                            args.putString(DefineValue.ACCOUNT_NUMBER, _acctNo);
-                            args.putString(DefineValue.CCY_ID, ccyId);
-                            args.putString(DefineValue.NOMINAL, _amount);
-                            args.putString(DefineValue.ACCT_NAME, acct_name);
-                            args.putString(DefineValue.FEE, fee);
-                            args.putString(DefineValue.TOTAL_AMOUNT, total);
-                            i.setArguments(args);
-                            switchContent(i,FragCashoutConfirm.TAG);
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                    Timber.d("isi response autologout:"+response.toString());
+                                    String message = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                    test.showDialoginMain(getActivity(), message);
+                                } else {
+                                    Timber.d("isi error req cashout:"+response.toString());
+                                    String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                    builder.setMessage(code_msg)
+                                            .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                            Timber.d("isi response autologout:"+response.toString());
-                            String message = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialogLogout test = AlertDialogLogout.getInstance();
-                            test.showDialoginMain(getActivity(), message);
-                        } else {
-                            Timber.d("isi error req cashout:"+response.toString());
-                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage(code_msg)
-                                    .setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
+
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    failure(throwable);
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            if(MyApiClient.PROD_FAILURE_FLAG)
+                                Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
 
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                    super.onFailure(statusCode, headers, throwable, errorResponse);
-                    failure(throwable);
-                }
-
-                private void failure(Throwable throwable){
-                    if(MyApiClient.PROD_FAILURE_FLAG)
-                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                    if(progdialog.isShowing())
-                        progdialog.dismiss();
-
-                    Timber.w("Error Koneksi req cash out cashout:"+throwable.toString());
-                }
-            });
+                        @Override
+                        public void onComplete() {
+                            if(progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    });
         }catch (Exception e){
             Timber.d("httpclient:" + e.getMessage());
         }
