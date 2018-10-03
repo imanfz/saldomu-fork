@@ -103,7 +103,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private SMSDialog smsDialog;
     ConfirmationDialog confirmationDialog;
     Dialog dialog;
-    private Boolean isSMSBanking = false, isSimExist = false;
+    private Boolean isSMSBanking = false, isSimExist = false, isOwner = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
     private String comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
@@ -698,13 +698,13 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                             response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                         }
 
-//                    } else if (code.equals("0295")) {
-//                       message = response.getString(WebParams.ERROR_MESSAGE);
-//                       showDialogLimit();
-//                    } else if (code.equals("0296")) {
-//                        message = response.getString(WebParams.ERROR_MESSAGE);
-//                        lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
-//                        dialogJoinLKD();
+                    } else if (code.equals("0295")) {
+                       message = response.getString(WebParams.ERROR_MESSAGE);
+                       showDialogLimit();
+                    } else if (code.equals("0296")) {
+                        message = response.getString(WebParams.ERROR_MESSAGE);
+                        lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
+                        dialogJoinLKD();
                     }else if (code.equals(WebParams.LOGOUT_CODE)) {
                         Timber.d("isi response autologout:" + response.toString());
                         String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -792,6 +792,40 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         getActivity().finish();
+                    }
+                });
+
+        android.support.v7.app.AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    public void dialogBenefLKD (final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
+                                final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
+                                final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name){
+        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder1.setTitle(R.string.c2a_lkd);
+        builder1.setMessage("Transfer ke : ");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Diri Sendiri",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isOwner = true;
+                        changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+                                            _benef_acct_no, _benef_acct_name);
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Orang Lain",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isOwner = false;
+                        changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
+                                _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+                                _benef_acct_no, _benef_acct_name);
                     }
                 });
 
@@ -944,11 +978,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     null, null);
 
                         }
-//                        else if (code.equals("0296")) {
-//                            message = response.getString(WebParams.ERROR_MESSAGE);
-//                            lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
-//                            dialogJoinLKD();
-//                        }
+                        else if (code.equals("0296")) {
+                            message = response.getString(WebParams.ERROR_MESSAGE);
+                            lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
+                            dialogJoinLKD();
+                        }
                         else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -1002,7 +1036,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                                 final String _amount, final String fee, final String totalAmount, final String _bank_name,
+                                 final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
                                  final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
@@ -1037,22 +1071,22 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                                 if (isSMSBanking)
                                     showDialog(_tx_id, _product_code, _product_name, _bank_code,
-                                            _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                                             _benef_acct_no, _benef_acct_name);
-//                                else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
-//                                {
-//                                    changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
-//                                            _amount, fee, totalAmount, _bank_name, _max_resend_token,
-//                                            _benef_acct_no, _benef_acct_name);
-//                                }
+                                else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+                                {
+                                    dialogBenefLKD(_tx_id, _product_code, _product_name, _bank_code,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+                                            _benef_acct_no, _benef_acct_name);
+                                }
                                 else
                                     changeToConfirmCashIn(_tx_id, _product_code, _product_name, _bank_code,
-                                            _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                                             _benef_acct_no, _benef_acct_name);
                             }
                             else {
                                 changeToConfirmCashout(_tx_id, _product_code, _product_name, _bank_code,
-                                        _amount, fee, totalAmount, _bank_name);
+                                        _amount, _fee, _totalAmount, _bank_name);
                             }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -1142,7 +1176,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void showDialog(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                            final String _amount, final String fee, final String totalAmount, final String _bank_name,
+                            final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
                             final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
@@ -1163,7 +1197,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             @Override
             public void onClick(View view) {
                 changeToConfirmCashIn(_tx_id, _product_code, _product_name, _bank_code,
-                        _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                        _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                         _benef_acct_no, _benef_acct_name);
                 dialog.dismiss();
             }
@@ -1173,7 +1207,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void changeToConfirmCashIn(String _tx_id, String _product_code, String _product_name, String _bank_code,
-                                       String _amount, String fee, String totalAmount, String _bank_name, String _max_resend_token,
+                                       String _amount, String _fee, String _totalAmount, String _bank_name, String _max_resend_token,
                                        String _benef_acct_no, String _benef_acct_name) {
 
         Bundle mArgs = new Bundle();
@@ -1186,11 +1220,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.BANK_CODE, _bank_code);
         mArgs.putString(DefineValue.BANK_NAME, _bank_name);
         mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
-        mArgs.putString(DefineValue.FEE, fee);
+        mArgs.putString(DefineValue.FEE, _fee);
         mArgs.putString(DefineValue.COMMUNITY_CODE,comm_code);
         mArgs.putString(DefineValue.TX_ID,_tx_id);
         mArgs.putString(DefineValue.AMOUNT,_amount);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT,totalAmount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
@@ -1224,7 +1258,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void changeToDataMandiriLKD(String _tx_id, String _product_code, String _product_name, String _bank_code,
-                                       String _amount, String fee, String totalAmount, String _bank_name, String _max_resend_token,
+                                       String _amount, String _fee, String _totalAmount, String _bank_name, String _max_resend_token,
                                        String _benef_acct_no, String _benef_acct_name) {
 
         Bundle mArgs = new Bundle();
@@ -1237,11 +1271,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.BANK_CODE, _bank_code);
         mArgs.putString(DefineValue.BANK_NAME, _bank_name);
         mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
-        mArgs.putString(DefineValue.FEE, fee);
+        mArgs.putString(DefineValue.FEE, _fee);
         mArgs.putString(DefineValue.COMMUNITY_CODE,comm_code);
         mArgs.putString(DefineValue.TX_ID,_tx_id);
         mArgs.putString(DefineValue.AMOUNT,_amount);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT,totalAmount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
@@ -1256,6 +1290,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
+        mArgs.putBoolean(DefineValue.IS_OWNER, isOwner);
         if (TCASHValidation!=null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
         if (MandiriLKDValidation!=null)
@@ -1271,7 +1306,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         getFragmentManager().beginTransaction().addToBackStack(TAG)
                 .replace(R.id.bbsTransaksiFragmentContent , mFrag, FragDataMandiriLKD.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
-//        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
 
     private void cashInHistory ()
@@ -1308,7 +1342,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,
-                                        String _amount, String fee, String totalAmount, String _bank_name) {
+                                        String _amount, String _fee, String _totalAmount, String _bank_name) {
 
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
@@ -1329,8 +1363,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
-        mArgs.putString(DefineValue.FEE, fee);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT, totalAmount);
+        mArgs.putString(DefineValue.FEE, _fee);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT, _totalAmount);
         btnNext.setEnabled(true);
         cashOutHistory();
 

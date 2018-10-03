@@ -512,8 +512,10 @@ public class WebParams {
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
+    public static String TRANSFER_TO  = "transfer_to";
     public static String BANK  = "bank";
     public static String ORDER_ID  = "order_id";
     public static String REFERAL_NO  = "referral_no";
     public static String LKD_PRODUCT_CODE  = "lkd_product_code";
+    public static String SOURCE_OF_FUND = "source_of_fund";
 }

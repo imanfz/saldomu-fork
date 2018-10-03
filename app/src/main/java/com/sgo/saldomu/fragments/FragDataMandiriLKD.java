@@ -13,8 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -30,6 +33,7 @@ import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -41,10 +45,14 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
 public class FragDataMandiriLKD extends BaseFragment {
@@ -53,8 +61,8 @@ public class FragDataMandiriLKD extends BaseFragment {
     SecurePreferences sp;
     Bundle bundle;
     Button btn_submit, btn_cancel;
-    EditText et_name, et_address, et_noID, et_noHp, et_pob, et_mothersname;
-    Spinner sp_id_types;
+    EditText et_name, et_address, et_noID, et_noHp, et_pob, et_mothersname, et_sumberdana;
+    Spinner sp_sumberdana;
     TextView tv_dob;
     String tx_id;
     private com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd;
@@ -64,16 +72,24 @@ public class FragDataMandiriLKD extends BaseFragment {
     private String dateNow;
     private String dedate;
     private String date_dob;
-    private String socialIdType;
+    private String sumberdana;
     ProgressDialog progressDialog;
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     private String comm_code, tx_product_code, source_product_type,
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status,
-            benef_product_type, max_resend;
-    private Boolean TCASHValidation=false, MandiriLKDValidation=false, code_success =false;
+            benef_product_type, max_resend, custIDtypes;
+    LinearLayout layout_sender, layout_pob, layout_dob;
+    private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false, isOwner = false;
     private Activity act;
+    private Realm realm;
+    private ArrayList<List_BBS_City> list_bbs_cities;
+    private ArrayList<String> list_name_bbs_cities;
+    private ArrayList<BBSCommBenef> listDataBank;
+    public Boolean isUpdate = false;
+    AutoCompleteTextView city_textview_autocomplete;
+
 
     @Nullable
     @Override
@@ -87,10 +103,14 @@ public class FragDataMandiriLKD extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        realm = Realm.getDefaultInstance();
+
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
+
+        custIDtypes = "KTP";
 
         btn_submit = v.findViewById(R.id.btn_submit_data_mandirilkd);
         btn_cancel = v.findViewById(R.id.btn_cancel_mandirilkd);
@@ -98,16 +118,19 @@ public class FragDataMandiriLKD extends BaseFragment {
         et_address = v.findViewById(R.id.address_value);
         et_noID = v.findViewById(R.id.socialId_value);
         et_noHp = v.findViewById(R.id.noHP_value);
-        et_pob = v.findViewById(R.id.pob_value);
-        et_mothersname = v.findViewById(R.id.mothers_name_value);
-        sp_id_types = v.findViewById(R.id.spinner_socialid_type);
+        sp_sumberdana = v.findViewById(R.id.datalkd_sumber_dana);
         tv_dob = v.findViewById(R.id.dob_value);
+        layout_sender = v.findViewById(R.id.layout_name);
+        layout_pob = v.findViewById(R.id.layout_tempat_lahir);
+        layout_dob = v.findViewById(R.id.layout_tanggal_lahir);
+        city_textview_autocomplete = v.findViewById(R.id.mandiriLKD_pob);
+        et_sumberdana = v.findViewById(R.id.et_sumber_dana);
 
         bundle = getArguments();
         if (bundle != null) {
             transaksi = bundle.getString(DefineValue.TRANSACTION);
             tx_id = bundle.getString(DefineValue.TX_ID, "");
-            if(bundle.containsKey(DefineValue.BENEF_CITY)) {
+            if (bundle.containsKey(DefineValue.BENEF_CITY)) {
                 benef_city = bundle.getString(DefineValue.BENEF_CITY);
             }
             source_product_h2h = bundle.getString(DefineValue.PRODUCT_H2H);
@@ -124,20 +147,49 @@ public class FragDataMandiriLKD extends BaseFragment {
             share_type = bundle.getString(DefineValue.SHARE_TYPE);
             callback_url = bundle.getString(DefineValue.CALLBACK_URL);
             api_key = bundle.getString(DefineValue.API_KEY);
-            comm_id = bundle.getString(DefineValue.COMMUNITY_ID );
+            comm_id = bundle.getString(DefineValue.COMMUNITY_ID);
             benef_product_name = bundle.getString(DefineValue.BANK_BENEF);
             benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
             name_benef = bundle.getString(DefineValue.NAME_BENEF);
-            no_benef =  bundle.getString(DefineValue.NO_BENEF);
-            no_hp_benef  = bundle.getString(DefineValue.NO_HP_BENEF);
+            no_benef = bundle.getString(DefineValue.NO_BENEF);
+            no_hp_benef = bundle.getString(DefineValue.NO_HP_BENEF);
             remark = bundle.getString(DefineValue.REMARK);
             max_resend = bundle.getString(DefineValue.MAX_RESEND);
             source_product_name = bundle.getString(DefineValue.SOURCE_ACCT);
             TCASHValidation = bundle.getBoolean(DefineValue.TCASH_HP_VALIDATION);
             MandiriLKDValidation = bundle.getBoolean(DefineValue.MANDIRI_LKD_VALIDATION);
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
-            benef_product_type = bundle.getString(DefineValue.TYPE_BENEF,"");
+            benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
+            isOwner = bundle.getBoolean(DefineValue.IS_OWNER, false);
         }
+
+        RealmResults<List_BBS_City> results = realm.where(List_BBS_City.class).findAllAsync();
+        list_name_bbs_cities = new ArrayList<>();
+        list_bbs_cities = new ArrayList<>();
+        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_City>>() {
+            @Override
+            public void onChange(RealmResults<List_BBS_City> element) {
+                if (getActivity() != null && !getActivity().isFinishing()) {
+                    for (List_BBS_City bbsCity : element) {
+                        list_bbs_cities.add(bbsCity);
+                        list_name_bbs_cities.add(bbsCity.getCity_name());
+                    }
+
+                    ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
+                            (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
+
+//                    city_textview_autocomplete.setText("KOTA JAKARTA");
+//                    city_textview_autocomplete.setThreshold(1);
+                    city_textview_autocomplete.setAdapter(city_adapter);
+
+                    if (bundle.containsKey(DefineValue.BENEF_CITY)) {
+                        city_textview_autocomplete.setText(bundle.getString(DefineValue.BENEF_CITY));
+                    }
+                }
+            }
+        });
+
+        initializeLayout();
 
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
@@ -162,20 +214,31 @@ public class FragDataMandiriLKD extends BaseFragment {
         });
 
         ArrayAdapter<CharSequence> spinAdapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.social_id_type, android.R.layout.simple_spinner_item);
+                R.array.sumber_dana_type, android.R.layout.simple_spinner_item);
         spinAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_id_types.setAdapter(spinAdapter);
-        sp_id_types.setOnItemSelectedListener(spinnerIdTypes);
+        sp_sumberdana.setAdapter(spinAdapter);
+        sp_sumberdana.setOnItemSelectedListener(spinnerSumberDana);
 
         btn_submit.setOnClickListener(submitlistener);
         btn_cancel.setOnClickListener(cancellistener);
 
     }
 
-    private Spinner.OnItemSelectedListener spinnerIdTypes = new Spinner.OnItemSelectedListener() {
+    public void initializeLayout() {
+        if (!isOwner) {
+            layout_sender.setVisibility(View.VISIBLE);
+            layout_dob.setVisibility(View.VISIBLE);
+            layout_pob.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private Spinner.OnItemSelectedListener spinnerSumberDana = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            socialIdType = sp_id_types.getItemAtPosition(i).toString();
+            sumberdana = sp_sumberdana.getItemAtPosition(i).toString();
+            if (sumberdana.equalsIgnoreCase("LAINNYA")) {
+                et_sumberdana.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -189,100 +252,108 @@ public class FragDataMandiriLKD extends BaseFragment {
         public void onClick(View view) {
             if (inputvalidation()) {
                 sendData();
-            };
+            }
+            ;
         }
     };
 
-    public void sendData()
-    {
+    public void sendData() {
         progressDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progressDialog.show();
-        try{
-        extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID,"") + socialIdType;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA,
-                userPhoneID, accessKey, extraSignature);
+        try {
+            extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID, "") + custIDtypes;
 
-        params.put(WebParams.USER_ID, userPhoneID);
-        params.put(WebParams.TX_ID, tx_id);
-        params.put(WebParams.CUST_NAME, et_name.getText().toString());
-        params.put(WebParams.MEMBER_ID, memberIDLogin);
-        params.put(WebParams.CUST_PHONE, et_noHp.getText().toString());
-        params.put(WebParams.CUST_ADDRESS, et_address.getText().toString());
-        params.put(WebParams.CUST_ID_TYPE, socialIdType);
-        params.put(WebParams.CUST_ID_NUMBER, et_noID.getText().toString());
-        params.put(WebParams.CUST_BIRTH_PLACE, et_pob.getText().toString());
-        params.put(WebParams.CUST_BIRTH_DATE, date_dob);
-        params.put(WebParams.CUST_MOTHER_NAME, et_mothersname.getText().toString());
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA_LKD,
+                    userPhoneID, accessKey, extraSignature);
 
-        Timber.d("params bbs send data : ", params.toString());
-        MyApiClient.getBBSSendDataLKD(getActivity(),params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
-                progressDialog.dismiss();
-
-                try {
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    Timber.d("response bbs send data : ", response.toString());
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-                        changeToBBSCashInConfirm();
-
-                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                        Timber.d("isi response autologout:" + response.toString());
-                        String message = response.getString(WebParams.ERROR_MESSAGE);
-                        AlertDialogLogout test = AlertDialogLogout.getInstance();
-                        test.showDialoginActivity(getActivity(), message);
-                    }else {
-                        Timber.d("isi error bbs send data:"+response.toString());
-                        String code_msg = response.getString(WebParams.ERROR_MESSAGE);
-                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            if (isOwner) {
+                params.put(WebParams.TRANSFER_TO, "S");
+            } else {
+                params.put(WebParams.TRANSFER_TO, "O");
+                params.put(WebParams.CUST_NAME, et_name.getText().toString());
+                params.put(WebParams.CUST_BIRTH_PLACE, city_textview_autocomplete.getText().toString());
+                params.put(WebParams.CUST_BIRTH_DATE, date_dob);
             }
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.TX_ID, tx_id);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.CUST_PHONE, et_noHp.getText().toString());
+            params.put(WebParams.CUST_ADDRESS, et_address.getText().toString());
+            params.put(WebParams.CUST_ID_TYPE, custIDtypes);
+            params.put(WebParams.CUST_ID_NUMBER, et_noID.getText().toString());
+            if (sumberdana.equalsIgnoreCase("LAINNYA")) {
+                params.put(WebParams.SOURCE_OF_FUND, et_sumberdana.getText().toString());
+            } else params.put(WebParams.SOURCE_OF_FUND, sumberdana);
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                failure(throwable);
-            }
-
-            private void failure(Throwable throwable){
-                btn_submit.setEnabled(true);
-                if(MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                if(progressDialog.isShowing())
+            Timber.d("params bbs send data lkd : "+ params.toString());
+            MyApiClient.getBBSSendDataLKD(getActivity(), params, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
                     progressDialog.dismiss();
 
-                Timber.w("Error Koneksi sent bbs send data:"+throwable.toString());
-            }
+                    try {
+                        String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("response bbs send data lkd : "+ response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            changeToBBSCashInConfirm();
 
-        });
-    }catch (Exception e){
-        Timber.d("httpclient:"+e.getMessage());
-    }
+                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            Timber.d("isi response autologout:" + response.toString());
+                            String message = response.getString(WebParams.ERROR_MESSAGE);
+                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                            test.showDialoginActivity(getActivity(), message);
+                        } else {
+                            Timber.d("isi error bbs send data lkd:" + response.toString());
+                            String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                            Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    failure(throwable);
+                }
+
+                private void failure(Throwable throwable) {
+                    btn_submit.setEnabled(true);
+                    if (MyApiClient.PROD_FAILURE_FLAG)
+                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                    if (progressDialog.isShowing())
+                        progressDialog.dismiss();
+
+                    Timber.w("Error Koneksi sent bbs send data lkd:" + throwable.toString());
+                }
+
+            });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
+        }
 
     }
 
     private void changeToBBSCashInConfirm() {
 
         Bundle mArgs = new Bundle();
-        if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
+        if (benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
             mArgs.putString(DefineValue.BENEF_CITY, benef_city);
         }
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
@@ -290,14 +361,14 @@ public class FragDataMandiriLKD extends BaseFragment {
         mArgs.putString(DefineValue.PRODUCT_CODE, tx_product_code);
         mArgs.putString(DefineValue.BANK_CODE, tx_bank_code);
         mArgs.putString(DefineValue.BANK_NAME, tx_bank_name);
-        mArgs.putString(DefineValue.PRODUCT_NAME,tx_product_name);
+        mArgs.putString(DefineValue.PRODUCT_NAME, tx_product_name);
         mArgs.putString(DefineValue.FEE, fee);
-        mArgs.putString(DefineValue.COMMUNITY_CODE,comm_code);
-        mArgs.putString(DefineValue.TX_ID,tx_id);
-        mArgs.putString(DefineValue.AMOUNT,amount);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT,total_amount);
-        mArgs.putString(DefineValue.SHARE_TYPE,"1");
-        mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
+        mArgs.putString(DefineValue.COMMUNITY_CODE, comm_code);
+        mArgs.putString(DefineValue.TX_ID, tx_id);
+        mArgs.putString(DefineValue.AMOUNT, amount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT, total_amount);
+        mArgs.putString(DefineValue.SHARE_TYPE, "1");
+        mArgs.putString(DefineValue.CALLBACK_URL, callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
         mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
         mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
@@ -310,11 +381,11 @@ public class FragDataMandiriLKD extends BaseFragment {
         mArgs.putString(DefineValue.MAX_RESEND, max_resend);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
         mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
-        if (TCASHValidation!=null)
+        if (TCASHValidation != null)
             mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
-        if (MandiriLKDValidation!=null)
+        if (MandiriLKDValidation != null)
             mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
-        if (code_success!=null)
+        if (code_success != null)
             mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
         btn_submit.setEnabled(true);
 
@@ -322,7 +393,7 @@ public class FragDataMandiriLKD extends BaseFragment {
         mFrag.setArguments(mArgs);
 
         getFragmentManager().beginTransaction().addToBackStack(TAG)
-                .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
+                .replace(R.id.bbsTransaksiFragmentContent, mFrag, BBSCashInConfirm.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
     }
@@ -330,19 +401,17 @@ public class FragDataMandiriLKD extends BaseFragment {
     Button.OnClickListener cancellistener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(getFragmentManager().getBackStackEntryCount() > 0) {
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
                 getFragmentManager().popBackStack();
-            }
-            else
+            } else
                 getActivity().finish();
         }
     };
 
 
-    private boolean inputvalidation()
-    {
+    private boolean inputvalidation() {
         int compare = 100;
-        if(date_dob != null) {
+        if (date_dob != null) {
             Date dob = null;
             Date now = null;
             try {
@@ -357,46 +426,25 @@ public class FragDataMandiriLKD extends BaseFragment {
                     compare = dob.compareTo(now);
                 }
             }
-            Timber.d("compare date:"+ Integer.toString(compare));
+            Timber.d("compare date:" + Integer.toString(compare));
         }
-
-        if (et_name.getText().toString().length()==0 )
-        {
+        if (et_noID.getText().toString().length() == 0) {
+            et_noID.requestFocus();
+            et_noID.setError("NIK dibutuhkan!");
+            return false;
+        } else if (layout_sender.getVisibility() == View.VISIBLE && et_name.getText().toString().length() == 0) {
             et_name.requestFocus();
             et_name.setError("Nama dibutuhkan!");
             return false;
-        }
-        else if (et_noID.getText().toString().length()==0)
-        {
-            et_noID.requestFocus();
-            et_noID.setError("No. ID dibutuhkan!");
-            return false;
-        }
-        else if (et_address.getText().toString().length()==0)
-        {
+        } else if (et_address.getText().toString().length() == 0) {
             et_address.requestFocus();
             et_address.setError("Alamat dibutuhkan!");
             return false;
-        }
-        else if (et_noHp.getText().toString().length()==0)
-        {
-            et_noHp.requestFocus();
-            et_noHp.setError("No. Handphone dibutuhkan!");
+        } else if (layout_pob.getVisibility() == View.VISIBLE && city_textview_autocomplete.getText().toString().length() == 0) {
+            city_textview_autocomplete.requestFocus();
+            city_textview_autocomplete.setError("Tempat Lahir dibutuhkan!");
             return false;
-        }
-        else if (et_pob.getText().toString().length()==0)
-        {
-            et_pob.requestFocus();
-            et_pob.setError("Tempat Lahir dibutuhkan!");
-            return false;
-        }
-        else if (et_mothersname.getText().length()==0)
-        {
-            et_mothersname.requestFocus();
-            et_mothersname.setError("Nama Ibu dibutuhkan!");
-            return false;
-        }
-        else if(compare == 100) {
+        } else if (layout_dob.getVisibility() == View.VISIBLE && compare == 100) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date_empty))
@@ -409,8 +457,7 @@ public class FragDataMandiriLKD extends BaseFragment {
             AlertDialog dialog = builder.create();
             dialog.show();
             return false;
-        }
-        else if(compare >= 0) {
+        } else if (layout_dob.getVisibility() == View.VISIBLE && compare >= 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Alert")
                     .setMessage(getString(R.string.myprofile_validation_date))
@@ -423,18 +470,27 @@ public class FragDataMandiriLKD extends BaseFragment {
             AlertDialog dialog = builder.create();
             dialog.show();
             return false;
+        } else if (et_noHp.getText().toString().length() == 0) {
+            et_noHp.requestFocus();
+            et_noHp.setError("No. Handphone dibutuhkan!");
+            return false;
+        } else if (et_sumberdana.getVisibility() == View.VISIBLE && et_sumberdana.getText().toString().length() == 0) {
+            et_sumberdana.requestFocus();
+            et_sumberdana.setError("Sumber Dana dibutuhkan!");
+            return false;
         }
+
         return true;
     }
 
     private DatePickerDialog.OnDateSetListener dobPickerSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-            dedate = dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
+            dedate = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
             Timber.d("masuk date picker dob");
             try {
                 date_dob = fromFormat.format(toFormat2.parse(dedate));
-                Timber.d("masuk date picker dob masuk tanggal : "+date_dob);
+                Timber.d("masuk date picker dob masuk tanggal : " + date_dob);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

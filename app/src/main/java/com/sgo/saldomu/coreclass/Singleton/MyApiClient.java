@@ -262,7 +262,7 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
-    public static String LINK_BBS_SEND_DATA;
+    public static String LINK_BBS_SEND_DATA_LKD;
     public static String LINK_BBS_MANDIRI_LKD;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
@@ -417,7 +417,7 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
-        LINK_BBS_SEND_DATA = headaddressfinal +"BBSTrxCustomer/Submit";
+        LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
@@ -1605,8 +1605,8 @@ public class MyApiClient {
     }
 
     public static void getBBSSendDataLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-        Timber.wtf("address bbs send data: %1$s ",LINK_BBS_SEND_DATA);
-        post(mContext, LINK_BBS_SEND_DATA, params, responseHandler);
+        Timber.wtf("address bbs send data lkd: %1$s ",LINK_BBS_SEND_DATA_LKD);
+        post(mContext, LINK_BBS_SEND_DATA_LKD, params, responseHandler);
     }
 
     public static void sentDataMemberMandiriLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {

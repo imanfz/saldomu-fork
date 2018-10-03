@@ -141,6 +141,12 @@
         <item>PASPOR</item>
     </string-array>
 
+    <string-array name="sumber_dana_type">
+        <item>GAJI</item>
+        <item>HASIL USAHA</item>
+        <item>LAINNYA</item>
+    </string-array>
+
     <string-array name="gender_type">
         <item>Pria</item>
         <item>Wanita</item>
