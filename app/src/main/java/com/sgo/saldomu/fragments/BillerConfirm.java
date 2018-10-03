@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -446,8 +445,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             extraSignature = tx_id+args.getString(DefineValue.BILLER_COMM_CODE)+product_code+tokenValue;
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin
-                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
             params.put(WebParams.TX_ID, tx_id);
@@ -524,9 +521,8 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
             extraSignature = tx_id+getArguments().getString(DefineValue.BILLER_COMM_CODE)+product_code;
 
-            RequestParams param;
             String url;
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
+            HashMap<String, Object> params;
             if(bank_code.equals("114")) {
 //                params = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_INSERT_TRANS_TOPUP,
 //                        userPhoneID,accessKey, extraSignature);
@@ -595,8 +591,6 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);

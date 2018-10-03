@@ -10,10 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -26,13 +23,10 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-
-import timber.log.Timber;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,8 +84,6 @@ public class FragOnProgressAgent extends Fragment {
         userId                  = sp.getString(DefineValue.USERID_PHONE, "");
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.searching_onprogress_trx));
 
-        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT,
-                userId, sp.getString(DefineValue.ACCESS_KEY, ""));
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_ONPROGRESS_BY_AGENT);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);

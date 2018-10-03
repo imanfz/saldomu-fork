@@ -22,8 +22,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -40,7 +38,6 @@ import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,10 +45,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -196,8 +189,6 @@ public class UpgradeAgentActivity extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -374,9 +365,6 @@ public class UpgradeAgentActivity extends BaseActivity {
 
         extraSignature = String.valueOf(flag);
 
-        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_SIUP_NPWP,
-                userPhoneID,accessKey,extraSignature);
-
         HashMap<String, RequestBody> params = RetrofitService.getInstance()
                 .getSignature2(MyApiClient.LINK_UPLOAD_SIUP_NPWP, extraSignature);
 
@@ -548,8 +536,6 @@ public class UpgradeAgentActivity extends BaseActivity {
             else
                 progdialog.show();
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_AGENT,
-                    userPhoneID, accessKey, memberIDLogin);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_EXEC_AGENT, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
             params.put(WebParams.MEMBER_ID, memberIDLogin);

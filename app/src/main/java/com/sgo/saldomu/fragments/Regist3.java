@@ -24,10 +24,7 @@ import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CreatePIN;
 import com.sgo.saldomu.activities.LoginActivity;
@@ -48,11 +45,7 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.joda.time.DateTime;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -237,7 +230,6 @@ public class Regist3 extends BaseFragment {
             btnSubmit.setEnabled(false);
             TokenValue.setEnabled(false);
 
-            RequestParams param = new RequestParams();
             HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE,noHPValue);
@@ -333,7 +325,6 @@ public class Regist3 extends BaseFragment {
 
             btnSubmit.setEnabled(false);
 
-            RequestParams param = new RequestParams();
             HashMap<String, Object> params = new HashMap<>();
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.CUST_PHONE, noHPValue);
@@ -411,8 +402,6 @@ public class Regist3 extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = custID + pass;
-            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PASS,
-                    BuildConfig.SECRET_KEY, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PASS, extraSignature);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.PASS, pass);
@@ -462,8 +451,6 @@ public class Regist3 extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = memberID + custID + data.getStringExtra(DefineValue.PIN_VALUE);
-            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_CREATE_PIN,
-                    BuildConfig.SECRET_KEY, extraSignature );
             HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_CREATE_PIN, extraSignature);
             params.put(WebParams.USER_ID, custID);
             params.put(WebParams.MEMBER_ID, memberID);

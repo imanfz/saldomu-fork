@@ -147,7 +147,7 @@ public class SMSDialog extends Dialog {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_process));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 isStop = true;
                 dismiss();
                 if (deListener != null)
@@ -174,7 +174,7 @@ public class SMSDialog extends Dialog {
             @Override
             public void onFinish() {
                 isStop = true;
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
 
                 i = 0;
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));
@@ -215,7 +215,7 @@ public class SMSDialog extends Dialog {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
                 cdTimer.cancel();
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 isStop = true;
             }
         };
@@ -331,7 +331,7 @@ public class SMSDialog extends Dialog {
                 } else {
                     img_view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.phone_sms_icon_fail));
                 }
-                MyApiClient.CancelRequestWS(getContext(), true);
+                RetrofitService.dispose();
                 DestroyDialog();
                 idx_fail = 0;
             }

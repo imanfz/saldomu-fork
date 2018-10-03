@@ -7,13 +7,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsMessage;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
@@ -27,8 +31,6 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -142,20 +144,14 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            RequestParams param;
             HashMap<String, Object> params;
             String url;
             if(!isJatim) {
-                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TOKEN_SB,
-                        userID, accessKey);
-
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_SB);
                 url = MyApiClient.LINK_CONFIRM_TOKEN_SB;
             }else {
-                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CONFIRM_TOKEN_JATIM,
-                        userID, accessKey);
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TOKEN_JATIM);
-                url = MyApiClient.LINK_CONFIRM_TOKEN_SB;
+                url = MyApiClient.LINK_CONFIRM_TOKEN_JATIM;
             }
 
             params.put(WebParams.NO_HP, no_hp);
@@ -220,8 +216,6 @@ public class FragRegisterSMSBankingConfirm extends Fragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQUEST_TOKEN_SB,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQUEST_TOKEN_SB);
             params.put(WebParams.NO_HP, no_hp);
             params.put(WebParams.USER_ID, userID);

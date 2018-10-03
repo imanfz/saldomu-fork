@@ -19,17 +19,23 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.activeandroid.ActiveAndroid;
-import com.google.gson.*;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.friendModel;
@@ -40,16 +46,16 @@ import com.sgo.saldomu.activities.FriendsViewDetailActivity;
 import com.sgo.saldomu.activities.ListContactActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.MyFriendAdapter;
-import com.sgo.saldomu.coreclass.*;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
-import com.sgo.saldomu.dialogs.AlertDialogLogout;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.u1aryz.android.lib.newpopupmenu.MenuItem;
 import com.u1aryz.android.lib.newpopupmenu.PopupMenu;
-import org.apache.http.Header;
+
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -444,7 +450,7 @@ public class ListMyFriends extends ListFragment implements LoaderManager.LoaderC
                             }
 
                         }
-                        insertContact(mListFriendModel);
+//                        insertContact(mListFriendModel);
                         Looper.loop();
                         //getLoaderManager().destroyLoader(CONTACTS_LOADER);
                     }

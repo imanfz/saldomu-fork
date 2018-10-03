@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -36,11 +34,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.BBSJoinAgentCommModel;
 import com.sgo.saldomu.models.retrofit.BBSJoinAgentModel;
 import com.sgo.saldomu.models.retrofit.CommunityModel;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,7 +163,7 @@ public class BBSJoinAgentInput extends Fragment {
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         super.onDestroy();
     }
 
@@ -207,8 +200,6 @@ public class BBSJoinAgentInput extends Fragment {
 
     private void retrieveComm(){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_GLOBAL_COMM,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_GLOBAL_COMM);
             params.put(WebParams.SCHEME_CODE, DefineValue.BBS);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -269,8 +260,6 @@ public class BBSJoinAgentInput extends Fragment {
 
     private void sentJoinAgent(final String commName, final String commCode, final String memberCode, String userID){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_JOIN_AGENT,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_JOIN_AGENT);
             params.put(WebParams.COMM_CODE,commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);

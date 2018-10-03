@@ -8,23 +8,27 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListener;
-import com.sgo.saldomu.models.retrofit.jsonModel;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.PasswordValidator;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.HashMap;
 
@@ -152,8 +156,6 @@ public class ChangePassword extends BaseActivity implements View.OnClickListener
 
             extraSignature = memberIDLogin+et_pass_current.getText().toString()+et_pass_new.getText().toString();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_CHANGE_PASSWORD,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_CHANGE_PASSWORD, extraSignature);
             params.put(WebParams.USER_ID,userPhoneID);

@@ -8,15 +8,13 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.coreclass.BBSDataManager;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
@@ -24,13 +22,9 @@ import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.CommDataModel;
-import com.sgo.saldomu.models.retrofit.CommentDataModel;
-import com.sgo.saldomu.models.retrofit.jsonModel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -127,6 +121,12 @@ public class UpdateBBSData extends IntentService {
         sp.edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,value).apply();
     }
 
+    private Realm getRealm(){
+        if (realm.isClosed() || realm == null)
+            realm = Realm.getInstance(RealmManager.BBSConfiguration);
+        return realm;
+    }
+
     private void EndRealm(){
         if(realm.isInTransaction())
             realm.cancelTransaction();
@@ -137,8 +137,6 @@ public class UpdateBBSData extends IntentService {
 
     private void getBBSdata(final String schemeCode){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,
-                    MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, userID, accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL);
 
             params.put(WebParams.COMM_ID_REMARK, MyApiClient.COMM_ID);
@@ -173,9 +171,9 @@ public class UpdateBBSData extends IntentService {
     }
 
     private void clearDataRealm(String scheme_code){
-        RealmResults<BBSCommModel> jumlahDataComm = realm.where(BBSCommModel.class).
+        RealmResults<BBSCommModel> jumlahDataComm = getRealm().where(BBSCommModel.class).
                 equalTo(BBSCommModel.SCHEME_CODE,scheme_code).findAll();
-        RealmResults<BBSBankModel> jumlahDataBank = realm.where(BBSBankModel.class).
+        RealmResults<BBSBankModel> jumlahDataBank = getRealm().where(BBSBankModel.class).
                 equalTo(BBSBankModel.SCHEME_CODE,scheme_code).findAll();
 
 

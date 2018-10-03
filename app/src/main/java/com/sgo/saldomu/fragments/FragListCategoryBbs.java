@@ -22,8 +22,6 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,7 +40,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopCategory;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -114,7 +111,6 @@ public class FragListCategoryBbs extends ListFragment implements EasyPermissions
 
 
 
-        RequestParams param    = new RequestParams();
         HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String dtime            = DateTimeFormat.getCurrentDateTime();

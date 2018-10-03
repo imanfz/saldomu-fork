@@ -19,8 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CollectionActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -43,11 +41,6 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -262,8 +255,6 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
 
             extraSignature = txID+args.getString(DefineValue.COMMUNITY_CODE)+productCode+tokenValue;
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin
-                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, txID);
             params.put(WebParams.PRODUCT_CODE, productCode);
@@ -332,7 +323,6 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
 
             extraSignature = txID+getArguments().getString(DefineValue.COMMUNITY_CODE)+productCode;
 
-            RequestParams param;
             HashMap<String, Object> params;
             String url;
 
@@ -408,8 +398,6 @@ public class CollectionDescription extends BaseFragment implements ReportBillerD
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(comm_id,MyApiClient.LINK_GET_TRX_STATUS,
-                    userPhoneID,accessKey, extraSignature);
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 

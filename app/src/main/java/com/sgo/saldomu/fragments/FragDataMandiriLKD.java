@@ -19,8 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -35,8 +33,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -202,8 +198,6 @@ public class FragDataMandiriLKD extends BaseFragment {
         progressDialog.show();
         try{
         extraSignature = tx_id + sp.getString(DefineValue.MEMBER_ID,"") + socialIdType;
-        RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_SEND_DATA,
-                userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_SEND_DATA, extraSignature);
 
         params.put(WebParams.USER_ID, userPhoneID);

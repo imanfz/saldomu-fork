@@ -20,8 +20,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -37,15 +35,12 @@ import com.sgo.saldomu.fragments.OpenHourPickerFragment;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import timber.log.Timber;
 
 public class BbsSetupShopClosedActivity extends BaseActivity implements OpenCloseDatePickerFragment.OpenCloseDatePickerListener,
         OpenHourPickerFragment.OpenHourPickerListener {
@@ -72,7 +67,7 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
         super.onCreate(savedInstanceState);
         initializeToolbar();
 
-        spPilihan       = (Spinner) findViewById(R.id.spPilihan);
+        spPilihan       = findViewById(R.id.spPilihan);
         arrayItems[0]   = "Silakan Pilih";
         arrayItems[1]   = getString(R.string.yes);
         arrayItems[2]   = getString(R.string.no);
@@ -108,11 +103,11 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        etShopRemark        = (EditText) findViewById(R.id.etShopRemark);
-        llSetupShopDate     = (LinearLayout) findViewById(R.id.llSetupShopDate);
-        llShopRemark        = (LinearLayout) findViewById(R.id.llShopRemark);
-        tvSetupShopDate     = (LinearLayout) findViewById(R.id.tvSetupShopDate);
-        tvOpen24Hours       = (TextView) findViewById(R.id.tvOpen24Hours);
+        etShopRemark        = findViewById(R.id.etShopRemark);
+        llSetupShopDate     = findViewById(R.id.llSetupShopDate);
+        llShopRemark        = findViewById(R.id.llShopRemark);
+        tvSetupShopDate     = findViewById(R.id.tvSetupShopDate);
+        tvOpen24Hours       = findViewById(R.id.tvOpen24Hours);
 
         llSetupShopDate.setVisibility(View.GONE);
         tvSetupShopDate.setVisibility(View.GONE);
@@ -127,14 +122,14 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
         shopId              = getIntent().getStringExtra("shopId");
         flagApprove         = getIntent().getStringExtra("flagApprove");
 
-        tvStartHour         = (TextView) findViewById(R.id.tvStartHour);
-        tvEndHour           = (TextView) findViewById(R.id.tvEndHour);
+        tvStartHour         = findViewById(R.id.tvStartHour);
+        tvEndHour           = findViewById(R.id.tvEndHour);
 
-        btnShopDate         = (Button) findViewById(R.id.btnShopDate);
+        btnShopDate         = findViewById(R.id.btnShopDate);
         btnShopDate.setOnClickListener(btnShopDateListener);
 
-        btnProses       = (Button) findViewById(R.id.btnProses);
-        tvDate          = (TextView) findViewById(R.id.tvDate);
+        btnProses       = findViewById(R.id.btnProses);
+        tvDate          = findViewById(R.id.tvDate);
 
 
         btnProses.setOnClickListener(
@@ -160,8 +155,6 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                             if (selectedType == 1) {
 
                                 String extraSignature = memberId + shopId;
-                                RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY,
-                                        userPhoneID, accessKey, extraSignature);
                                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
                                 params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -226,8 +219,6 @@ public class BbsSetupShopClosedActivity extends BaseActivity implements OpenClos
                             } else if (selectedType == 2) {
 
                                 String extraSignature = memberId + shopId + shopStatus;
-                                RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
-                                        userPhoneID, accessKey, extraSignature);
                                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REGISTER_OPEN_CLOSE_TOKO,
                                         extraSignature);
 

@@ -26,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -55,8 +53,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -279,9 +275,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
     public void sentListMemberATC() {
         try {
-            RequestParams param;
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_LIST_MEMBER_A2C,
-                    userPhoneID, accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.CUSTOMER_ID, userPhoneID);
@@ -289,7 +282,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
             Timber.d("isi params sent list member atc:" + params.toString());
 
-            RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_TRX_STATUS_BBS, params,
+            RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
                     new ErrorListener() {
                         @Override
                         public void onError(Throwable e) {
@@ -398,9 +391,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
             extraSignature = _tx_id+_token+comm_code;
 
-            RequestParams param;
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_OTP_MEMBER_A2C,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_OTP_MEMBER_A2C, extraSignature);
 
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
@@ -464,8 +454,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             progdialog.show();
 
             String extraSignature = txId + comm_code;
-            RequestParams paras = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_REJECT_CONFIRM_CASHOUT,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REJECT_CONFIRM_CASHOUT, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
@@ -509,8 +497,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_LKD,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_LKD, extraSignature);
             params.put(WebParams.TX_ID,_data);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -561,8 +547,6 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             out.show();
 
             extraSignature = txId + comm_code;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);

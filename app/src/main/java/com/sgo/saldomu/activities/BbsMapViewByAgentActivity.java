@@ -42,8 +42,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -59,7 +57,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -457,8 +454,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
         isInquiryRoute          = false;
 
         String extraSignature = txId + memberId + shopId + agentLatitude + agentLongitude;
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_AGENT,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_AGENT,
                 extraSignature);
 
@@ -652,12 +647,12 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+ Locale.getDefault().getLanguage();
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", Locale.getDefault().getLanguage() );
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", Locale.getDefault().getLanguage() );
 
 
             String tempParams = nextParams;
@@ -860,8 +855,6 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
     private void confirmTransactionByAgent() {
 
         String extraSignature = txId;
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CONFIRM_TRANSACTION_BY_AGENT,
                 extraSignature);
 

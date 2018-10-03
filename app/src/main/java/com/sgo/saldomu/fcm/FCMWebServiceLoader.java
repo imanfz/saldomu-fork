@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -13,15 +12,9 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.coreclass.SmartResponseHandler;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ErrorListener;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.FcmModel;
-
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -59,8 +52,6 @@ public class FCMWebServiceLoader {
     private HashMap<String, Object> setupSignatureParams(){
         String deviceID = DeviceUtils.getAndroidID();
         String token = FCMManager.getTokenFCM();
-        RequestParams requestParam = MyApiClient.getSignatureWithParamsFCM(token,
-                deviceID, BuildConfig.APP_ID);
         HashMap<String, Object> requestParams = RetrofitService.getInstance().getSignatureWithParamsFCM(token,
                 deviceID, BuildConfig.APP_ID);
         requestParams.put(WebParams.DEVICE_ID, DeviceUtils.getAndroidID());

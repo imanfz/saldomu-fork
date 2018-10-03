@@ -12,10 +12,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,18 +39,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,7 +55,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import android.speech.tts.TextToSpeech;
 
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -385,12 +382,12 @@ public class BbsMapNagivationActivity extends BaseActivity implements OnMapReady
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+Locale.getDefault().getLanguage();
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", Locale.getDefault().getLanguage() );
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", Locale.getDefault().getLanguage() );
 
 
             String tempParams = nextParams;

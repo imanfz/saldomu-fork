@@ -19,17 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.BankDataTopUp;
 import com.sgo.saldomu.Beans.BankHeaderTopUp;
 import com.sgo.saldomu.Beans.ListBankDataTopup;
@@ -39,7 +33,6 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.adapter.BankListTopupAdapter;
 import com.sgo.saldomu.adapter.EasyAdapter;
-import com.sgo.saldomu.adapter.Expendable_List_View_Adapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.JsonUtil;
@@ -56,18 +49,14 @@ import com.sgo.saldomu.models.retrofit.BankListModel;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import timber.log.Timber;
 
@@ -265,8 +254,6 @@ public class ListBankTopUpFragment extends BaseFragment implements InformationDi
         try {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-                RequestParams param =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BANK_LIST,
-                        userPhoneID,accessKey, memberIDLogin);
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANK_LIST, memberIDLogin);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.MEMBER_ID, memberIDLogin );

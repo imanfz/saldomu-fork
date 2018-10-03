@@ -7,18 +7,15 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
 import com.sgo.saldomu.Beans.Denom_Data_Model;
 import com.sgo.saldomu.Beans.bank_biller_model;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.activities.BillerActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -27,7 +24,6 @@ import com.sgo.saldomu.models.retrofit.BillerModel;
 import com.sgo.saldomu.models.retrofit.DenomModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -219,8 +215,6 @@ public class BillerActivityRF extends BaseFragment{
     private void getBiller(final String _biller_type_code, final Boolean withDenom){
         try{
 
-            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID,MyApiClient.LINK_LIST_BILLER,
-                    BuildConfig.SECRET_KEY, _biller_type_code);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey( MyApiClient.LINK_LIST_BILLER, "");
             //params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.BILLER_TYPE, _biller_type_code);
@@ -425,8 +419,6 @@ public class BillerActivityRF extends BaseFragment{
 
     private void getDenom(final String _comm_id, final String _comm_name){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(_comm_id,MyApiClient.LINK_DENOM_RETAIL,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_DENOM_RETAIL);
             params.put(WebParams.COMM_ID, _comm_id);
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE,""));

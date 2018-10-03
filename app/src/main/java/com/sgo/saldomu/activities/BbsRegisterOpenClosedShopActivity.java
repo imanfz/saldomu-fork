@@ -13,25 +13,22 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.OpenCloseDatePickerFragment;
 import com.sgo.saldomu.fragments.OpenHourPickerFragment;
+import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-
-import timber.log.Timber;
 
 public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements OpenCloseDatePickerFragment.OpenCloseDatePickerListener,
         OpenHourPickerFragment.OpenHourPickerListener {
@@ -139,7 +134,6 @@ public class BbsRegisterOpenClosedShopActivity extends BaseActivity implements O
 
                         if (!hasError) {
                             progdialog = DefinedDialog.CreateProgressDialog(BbsRegisterOpenClosedShopActivity.this, "");
-                            RequestParams param = new RequestParams();
                             HashMap<String, Object> params = new HashMap<>();
                             UUID rcUUID = UUID.randomUUID();
                             String dtime = DateTimeFormat.getCurrentDateTime();

@@ -20,29 +20,25 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.GridViewAdapter;
-import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.fragments.ClosedTypePickerFragment;
 import com.sgo.saldomu.fragments.TimePickerFragment;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.OpenHourDays;
 import com.sgo.saldomu.models.SetupOpenHour;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -310,12 +306,11 @@ public class BbsSetupOpenHourActivity extends BaseActivity implements TimePicker
                     }
                 }
 
-                if ( hasError == false ) {
+                if (!hasError) {
                     try{
                         progdialog = DefinedDialog.CreateProgressDialog(BbsSetupOpenHourActivity.this, "");
                         progdialog.show();
 
-                        RequestParams param = new RequestParams();
                         HashMap<String, Object> params = new HashMap<>();
 
                         UUID rcUUID             = UUID.randomUUID();

@@ -17,8 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -37,7 +35,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +44,6 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import io.realm.Realm;
-import timber.log.Timber;
 
 /**
  * Created by thinkpad on 7/14/2016.
@@ -87,7 +83,6 @@ public class FragMerchantCategory extends Fragment {
         progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
         progdialog.show();
 
-        RequestParams param    = new RequestParams();
         HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();
@@ -190,7 +185,6 @@ public class FragMerchantCategory extends Fragment {
 
 
                     progdialog.show();
-                    RequestParams param    = new RequestParams();
                     HashMap<String, Object> params = new HashMap<>();
                     UUID rcUUID             = UUID.randomUUID();
                     String  dtime           = DateTimeFormat.getCurrentDateTime();

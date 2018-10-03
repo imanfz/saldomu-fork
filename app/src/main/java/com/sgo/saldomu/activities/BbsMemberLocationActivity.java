@@ -42,8 +42,6 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -267,8 +265,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
                     progdialog              = DefinedDialog.CreateProgressDialog(BbsMemberLocationActivity.this, "");
 
                     String extraSignature = memberId + shopId + selectedLat + selectedLong;
-                    RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_MEMBER_LOCATION,
-                            userPhoneID, accessKey, extraSignature);
                     HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_MEMBER_LOCATION,
                             extraSignature);
 
@@ -371,8 +367,6 @@ public class BbsMemberLocationActivity extends BaseActivity implements OnMapRead
 
     void isMobility(){
         String extraSignature = memberId + shopId;
-        RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SETUP_OPENING_HOUR,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params2 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SETUP_OPENING_HOUR, extraSignature);
 
 

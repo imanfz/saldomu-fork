@@ -31,8 +31,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -42,15 +40,14 @@ import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -347,8 +344,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
             progdialog2              = DefinedDialog.CreateProgressDialog(getContext(), "");
             String extraSignature   = shopDetails.get(itemId).getTxId() + memberId + shopId + flagTxStatus;
-            RequestParams params = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
-                    sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
             HashMap<String, Object> params3 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
                     extraSignature);
 
@@ -455,10 +450,10 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         if ( googleApiClient != null ) {
             try {
-                lastLocation = LocationServices.getFusedLocationProviderClient(getActivity()).getLastLocation(googleApiClient);
+                lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
                 if (lastLocation == null) {
-                    LocationServices.getFusedLocationProviderClient(getActivity()).requestLocationUpdates(googleApiClient, mLocationRequest, this);
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, mLocationRequest, this);
                 } else {
 
                     currentLatitude = lastLocation.getLatitude();
@@ -677,8 +672,6 @@ public class FragApprovalAgent extends Fragment implements GoogleApiClient.Conne
 
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
-        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_TRANSACTION_AGENT,
-                customerId, sp.getString(DefineValue.ACCESS_KEY, ""));
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRANSACTION_AGENT);
 
 

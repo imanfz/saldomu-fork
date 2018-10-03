@@ -6,24 +6,20 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.Account_Collection_Model;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.Biller_Type_Data_Model;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ObjListeners;
 
-import org.apache.http.Header;
 import org.joda.time.DateTimeComparator;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,8 +88,6 @@ public class ListBuyRF extends Fragment{
 
     private void getBiller(){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_GET_BILLER_TYPE,
-                    BuildConfig.SECRET_KEY);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_GET_BILLER_TYPE,
                     "");
 
@@ -135,8 +129,6 @@ public class ListBuyRF extends Fragment{
     private void getDataCollection(final JSONArray arrayBiller){
         try{
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMM_ACCOUNT_COLLECTION,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_COMM_ACCOUNT_COLLECTION);
 
             params.put(WebParams.CUSTOMER_ID, sp.getString(DefineValue.CUST_ID, "") );

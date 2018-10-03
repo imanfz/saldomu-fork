@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -40,11 +38,6 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -190,7 +183,6 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
 
             extraSignature = tx_id+comm_code+tx_product_code+token;
 
-            final RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.PRODUCT_CODE, tx_product_code);
@@ -263,8 +255,6 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_RETRY_TOKEN,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_RETRY_TOKEN);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.COMM_CODE, comm_code);
@@ -325,8 +315,6 @@ public class CashOutBBS_confirm_agent extends BaseFragment implements ReportBill
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
             extraSignature = txId + comm_code;
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);

@@ -8,12 +8,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.listBankModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
@@ -36,7 +45,6 @@ import com.sgo.saldomu.models.retrofit.InqBillerModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -247,8 +255,6 @@ public class PulsaAgentDescription extends BaseFragment {
             final String product_code = mTempBank.getProduct_code();
             final String topupType = mTempBank.getProduct_type();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA,MyApiClient.LINK_PAYMENT_DAP,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignaturePulsa(MyApiClient.LINK_PAYMENT_DAP, "");
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.MEMBER_ID, member_id);
@@ -323,8 +329,6 @@ public class PulsaAgentDescription extends BaseFragment {
     private void getBankDAP() {
         progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID_PULSA, MyApiClient.LINK_BANK_DAP,
-                userPhoneID, accessKey);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignaturePulsa(MyApiClient.LINK_BANK_DAP, "");
         params.put(WebParams.MEMBER_ID, member_id);
         params.put(WebParams.COMM_ID, MyApiClient.COMM_ID_PULSA);
@@ -415,8 +419,6 @@ public class PulsaAgentDescription extends BaseFragment {
         try{
             extraSignature = _tx_id+comm_code+_product_code;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, _tx_id);

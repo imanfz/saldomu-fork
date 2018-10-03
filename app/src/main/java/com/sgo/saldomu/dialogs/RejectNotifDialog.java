@@ -15,8 +15,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -27,11 +25,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.jsonModel;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -125,8 +118,6 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
 //            String signature = MyApiClient.getSignature(webservice, MyApiClient.COMM_ID
 //                    , _userId, _accessKey, extraSignature);
 
-            RequestParams param = MyApiClient.getInstance()
-                    .getSignatureWithParams(MyApiClient.LINK_ASK4MONEY_REJECT, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ASK4MONEY_REJECT,
                     extraSignature);
             params.put(WebParams.USER_ID, _userId);

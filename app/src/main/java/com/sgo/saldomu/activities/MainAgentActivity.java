@@ -29,19 +29,18 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.SyncHttpClient;
+import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TabAgentPagerAdapter;
 import com.sgo.saldomu.coreclass.AgentConstant;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AgentDetailFragmentDialog;
 import com.sgo.saldomu.entityRealm.AgentDetail;
 import com.sgo.saldomu.entityRealm.AgentServiceDetail;
+import com.sgo.saldomu.interfaces.ArrListeners;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +52,6 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import com.sgo.saldomu.R;
 
 /**
  * Created by Lenovo Thinkpad on 12/1/2016.
@@ -730,8 +728,6 @@ public class MainAgentActivity extends BaseActivity implements View.OnClickListe
         //String url = "http://192.168.0.100/webserver/gethotlist/testing";
         String url = "http://192.168.43.206/webserver/gethotlist/testing";
 
-        AsyncHttpClient client = new SyncHttpClient();
-
         //client.setConnectTimeout(5000);
         //client.setMaxConnections(1);
         //client.setResponseTimeout(10000);
@@ -742,70 +738,62 @@ public class MainAgentActivity extends BaseActivity implements View.OnClickListe
         //sets the maximum retries and timeout between those retries
         //client.setMaxRetriesAndTimeout(1, 3000);
 
-        client.get(url, null, new JsonHttpResponseHandler()
-        {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray responseBody)
-            {
-                //modification responseBody with adding parameter distance
-                try
-                {
-                    int length = responseBody.length();
-
-                    for (int i = 0; i < length; i++)
-                    {
-                        //convert json array to json object
-                        JSONObject object      = responseBody.getJSONObject(i);
-                        Double agentLatitude   = object.getDouble("latitude");
-                        Double agentLongitude  = object.getDouble("longitude");
-
-                        //jika radio button search location yang dipilih maka proses ini :
-                        if(searchLocationChecked)
+        RetrofitService.getInstance().GetArrayRequest(url,
+                new ArrListeners() {
+                    @Override
+                    public void onResponses(JSONArray responseBody) {
+                        try
                         {
-                            String distance = getDistance(agentLatitude, agentLongitude, searchLocation.getLatitude(), searchLocation.getLongitude());
-                            //String distanceString = Double.toString(distance);
-                            object.put("distance", distance);
+                            int length = responseBody.length();
+
+                            for (int i = 0; i < length; i++)
+                            {
+                                //convert json array to json object
+                                JSONObject object      = responseBody.getJSONObject(i);
+                                Double agentLatitude   = object.getDouble("latitude");
+                                Double agentLongitude  = object.getDouble("longitude");
+
+                                //jika radio button search location yang dipilih maka proses ini :
+                                if(searchLocationChecked)
+                                {
+                                    String distance = getDistance(agentLatitude, agentLongitude, searchLocation.getLatitude(), searchLocation.getLongitude());
+                                    //String distanceString = Double.toString(distance);
+                                    object.put("distance", distance);
+                                }
+                                //jika radio button current location yang dipilih maka proses ini :
+                                else
+                                {
+                                    String distance = getDistance(agentLatitude, agentLongitude, lastLocation.getLatitude(), lastLocation.getLongitude());
+                                    //String distanceString = Double.toString(distance);
+                                    object.put("distance", distance);
+                                }
+                            }
                         }
-                        //jika radio button current location yang dipilih maka proses ini :
-                        else
+                        catch(JSONException ex)
                         {
-                            String distance = getDistance(agentLatitude, agentLongitude, lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //String distanceString = Double.toString(distance);
-                            object.put("distance", distance);
+                            ex.printStackTrace();
                         }
+
+                        //save data to session
+                        SharedPreferences preferences   = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, responseBody.toString());
+                        editor.apply();
+
+                        //set true for allow next process
+                        agentInfoResult = AgentConstant.TRUE;
                     }
-                }
-                catch(JSONException ex)
-                {
-                    ex.printStackTrace();
-                }
 
-                //save data to session
-                SharedPreferences preferences   = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, responseBody.toString());
-                editor.apply();
+                    @Override
+                    public void onError(Throwable throwable) {
+                        errorDesc = "Wrong Json Format";
+                    }
 
-                //set true for allow next process
-                agentInfoResult = AgentConstant.TRUE;
+                    @Override
+                    public void onComplete() {
 
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //abc.setText("Gagal - Format Response Bukan JSON");
-                //Toast.makeText(getBaseContext(), "json", Toast.LENGTH_SHORT).show();
-                errorDesc = "Wrong Json Format";
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                //errMsg.setText(headers.toString() + " Gagal Koneksi");
-                //Toast.makeText(getBaseContext(), "gagal koneksi", Toast.LENGTH_SHORT).show();
-                errorDesc = "Connection Failed";
-            }
-        });
-
+                    }
+                });
     }
 
     private void setAgentInfoDummy()
@@ -1085,68 +1073,66 @@ public class MainAgentActivity extends BaseActivity implements View.OnClickListe
     private void setAgentInfoUpdated()
     {
         //String url = "http://192.168.0.100/webserver/gethotlist/testing";
-        String url = "http://192.168.43.206/webserver/gethotlist/testing";
-
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.get(url, null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray responseBody) {
-                //modification responseBody with adding parameter distance
-                try {
-                    int length = responseBody.length();
-
-                    for (int i = 0; i < length; i++) {
-                        //convert json array to json object
-                        JSONObject object = responseBody.getJSONObject(i);
-                        Double agentLatitude = object.getDouble("latitude");
-                        Double agentLongitude = object.getDouble("longitude");
-
-                        //jika radio button search location yang dipilih maka proses ini :
-                        if (searchLocationChecked) {
-                            String distance = getDistance(agentLatitude, agentLongitude, searchLocation.getLatitude(), searchLocation.getLongitude());
-                            //String distanceString = Double.toString(distance);
-                            object.put("distance", distance);
-                        }
-                        //jika radio button current location yang dipilih maka proses ini :
-                        else {
-                            String distance = getDistance(agentLatitude, agentLongitude, lastLocation.getLatitude(), lastLocation.getLongitude());
-                            //String distanceString = Double.toString(distance);
-                            object.put("distance", distance);
-                        }
-                    }
-                } catch (JSONException ex) {
-                    ex.printStackTrace();
-                }
-
-                //save data to session
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, responseBody.toString());
-                editor.apply();
-
-                //beritahu dan refresh fragment agent list bahwa ada data agent terbaru
-                agentListResultReceiver.send(0, null);
-
-                //beritahu dan refresh fragment agent map bahwa ada data agent terbaru
-                agentMapResultReceiver.send(0, null);
-
-                //beritahu dan refresh fragment agent list map bahwa ada data agent terbaru
-                agentListMapResultReceiver.send(0, null);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //abc.setText("Gagal - Format Response Bukan JSON");
-
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                //errMsg.setText(headers.toString() + " Gagal Koneksi");
-
-            }
-        });
+//        String url = "http://192.168.43.206/webserver/gethotlist/testing";
+//
+//        client.get(url, null, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray responseBody) {
+//                //modification responseBody with adding parameter distance
+//                try {
+//                    int length = responseBody.length();
+//
+//                    for (int i = 0; i < length; i++) {
+//                        //convert json array to json object
+//                        JSONObject object = responseBody.getJSONObject(i);
+//                        Double agentLatitude = object.getDouble("latitude");
+//                        Double agentLongitude = object.getDouble("longitude");
+//
+//                        //jika radio button search location yang dipilih maka proses ini :
+//                        if (searchLocationChecked) {
+//                            String distance = getDistance(agentLatitude, agentLongitude, searchLocation.getLatitude(), searchLocation.getLongitude());
+//                            //String distanceString = Double.toString(distance);
+//                            object.put("distance", distance);
+//                        }
+//                        //jika radio button current location yang dipilih maka proses ini :
+//                        else {
+//                            String distance = getDistance(agentLatitude, agentLongitude, lastLocation.getLatitude(), lastLocation.getLongitude());
+//                            //String distanceString = Double.toString(distance);
+//                            object.put("distance", distance);
+//                        }
+//                    }
+//                } catch (JSONException ex) {
+//                    ex.printStackTrace();
+//                }
+//
+//                //save data to session
+//                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//                SharedPreferences.Editor editor = preferences.edit();
+//                editor.putString(AgentConstant.AGENT_INFO_SHARED_PREFERENCES, responseBody.toString());
+//                editor.apply();
+//
+//                //beritahu dan refresh fragment agent list bahwa ada data agent terbaru
+//                agentListResultReceiver.send(0, null);
+//
+//                //beritahu dan refresh fragment agent map bahwa ada data agent terbaru
+//                agentMapResultReceiver.send(0, null);
+//
+//                //beritahu dan refresh fragment agent list map bahwa ada data agent terbaru
+//                agentListMapResultReceiver.send(0, null);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                //abc.setText("Gagal - Format Response Bukan JSON");
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+//                //errMsg.setText(headers.toString() + " Gagal Koneksi");
+//
+//            }
+//        });
 
     }
 

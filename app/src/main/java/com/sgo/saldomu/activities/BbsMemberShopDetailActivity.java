@@ -11,31 +11,26 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
-import com.sgo.saldomu.interfaces.ObjListeners;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
+import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.UUID;
-
-import timber.log.Timber;
 
 public class BbsMemberShopDetailActivity extends BaseActivity {
 
@@ -57,12 +52,12 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        tvMemberName    = (TextView) findViewById(R.id.tvMemberName);
-        tvShopName      = (TextView) findViewById(R.id.tvShopName);
+        tvMemberName    = findViewById(R.id.tvMemberName);
+        tvShopName      = findViewById(R.id.tvShopName);
         //spPilihan       = (Spinner) findViewById(R.id.spPilihan);
-        ivLocation      = (ImageView) findViewById(R.id.ivLocation);
-        ivCategory      = (ImageView) findViewById(R.id.ivCategory);
-        ivCloseShop     = (ImageView) findViewById(R.id.ivCloseShop);
+        ivLocation      = findViewById(R.id.ivLocation);
+        ivCategory      = findViewById(R.id.ivCategory);
+        ivCloseShop     = findViewById(R.id.ivCloseShop);
 
         progdialog      = DefinedDialog.CreateProgressDialog(this, "");
         memberId        = getIntent().getStringExtra("memberId");
@@ -177,7 +172,6 @@ public class BbsMemberShopDetailActivity extends BaseActivity {
         });
         */
 
-        RequestParams param    = new RequestParams();
         HashMap<String, Object> params = new HashMap<>();
         UUID rcUUID             = UUID.randomUUID();
         String  dtime           = DateTimeFormat.getCurrentDateTime();

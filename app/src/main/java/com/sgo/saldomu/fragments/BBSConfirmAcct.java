@@ -14,13 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -30,11 +28,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -169,7 +162,7 @@ public class BBSConfirmAcct extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }
@@ -178,8 +171,6 @@ public class BBSConfirmAcct extends BaseFragment {
         try{
             extraSignature = txId+tokenId+commCode+memberCode;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_CONFIRM_ACCT,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_CONFIRM_ACCT,
                     extraSignature);
             params.put(WebParams.COMM_CODE, commCode);

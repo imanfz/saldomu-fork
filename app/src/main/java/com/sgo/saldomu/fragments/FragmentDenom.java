@@ -18,8 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.DenomBankListData;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
@@ -36,7 +34,6 @@ import com.sgo.saldomu.dialogs.DenomItemDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,8 +162,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
             showLoading();
 
             extraSignature = obj.getMember_id_scadm();
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_LIST_BANK_DENOM_SCADM, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);
@@ -237,7 +232,6 @@ public class FragmentDenom extends BaseFragment implements DenomItemListAdapter.
         try{
 
             extraSignature = obj.getMember_id_scadm();
-            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_LIST, extraSignature);
 
             params.put(WebParams.USER_ID, userPhoneID);

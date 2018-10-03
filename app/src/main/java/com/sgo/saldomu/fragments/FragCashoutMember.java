@@ -23,8 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
@@ -53,8 +51,6 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -271,9 +267,6 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
     public void sentInquiryDataATC() {
 //        if(isVisible()) {
         try {
-            RequestParams param;
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_DATA_ATC,
-                    userID, accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_DATA_ATC);
             params.put(WebParams.USER_ID, userID);
             params.put(WebParams.MEMBER_ID, memberID);
@@ -339,9 +332,6 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param;
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_INQUIRY_TOKEN_ATC,
-                    userID, accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_TOKEN_ATC);
 
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(_token));
@@ -411,9 +401,6 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param;
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_CANCEL_ATC,
-                    userID, accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_ATC);
 
             params.put(WebParams.MEMBER_ID, memberID);
@@ -458,8 +445,6 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_RESEND_TOKEN_LKD,
-                    userID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_LKD);
             params.put(WebParams.TX_ID,_data);
             params.put(WebParams.USER_ID, userID);
@@ -567,8 +552,6 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = txId + MyApiClient.COMM_ID;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_GET_TRX_STATUS,
-                    userID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);

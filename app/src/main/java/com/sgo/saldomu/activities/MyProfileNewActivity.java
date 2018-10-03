@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
@@ -47,10 +46,6 @@ import com.sgo.saldomu.utils.PickAndCameraUtil;
 import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.widgets.ProgressRequestBody;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -597,8 +592,6 @@ public class MyProfileNewActivity extends BaseActivity {
             else
                 progdialog.show();
             String extraSignature = memberIDLogin;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPDATE_PROFILE,
-                    userPhoneID,accessKey, extraSignature);
 
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_UPDATE_PROFILE, extraSignature);
@@ -916,9 +909,6 @@ public class MyProfileNewActivity extends BaseActivity {
 
         extraSignature = String.valueOf(flag);
 
-        RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_UPLOAD_KTP,
-                userPhoneID,accessKey,extraSignature);
-
         HashMap<String, RequestBody> params = RetrofitService.getInstance()
                 .getSignature2(MyApiClient.LINK_UPLOAD_KTP, extraSignature);
 
@@ -1033,8 +1023,6 @@ public class MyProfileNewActivity extends BaseActivity {
             else
                 progdialog.show();
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_EXEC_CUST,
-                    userPhoneID, accessKey, memberIDLogin);
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_EXEC_CUST, memberIDLogin);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
@@ -1124,8 +1112,6 @@ public class MyProfileNewActivity extends BaseActivity {
             progdialog = DefinedDialog.CreateProgressDialog(this, "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, userPhoneID);

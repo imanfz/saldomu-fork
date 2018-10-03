@@ -5,37 +5,43 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.DenomModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.EvoucherHPActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.SgoPlusWeb;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
-import com.sgo.saldomu.models.retrofit.GetTrxStatusModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.MemberPulsaModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,8 +202,6 @@ public class BuyEVoucherHPInput extends BaseFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_MEMBER_PULSA,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_MEMBER_PULSA);
             params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,"") );
             params.put(WebParams.DATE_TIME, produckBank_kode);
@@ -271,18 +275,13 @@ public class BuyEVoucherHPInput extends BaseFragment {
             }
             else _member_id = member_pulsa_id;
 
-            RequestParams param;
             String url;
 
-            param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TOPUP_PULSA_RETAIL,
-                    userPhoneID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_TOPUP_PULSA_RETAIL);
             url = MyApiClient.LINK_TOPUP_PULSA_RETAIL;
 
             if(MyApiClient.IS_INTERNET_BANKING){
                 if(MyApiClient.IS_PROD) {
-                    param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_PROD_TOPUP_RETAIL,
-                            userPhoneID, accessKey);
                     params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_PROD_TOPUP_RETAIL);
                     url = MyApiClient.LINK_PROD_TOPUP_RETAIL;
                 }
@@ -347,8 +346,6 @@ public class BuyEVoucherHPInput extends BaseFragment {
 
             extraSignature = _tx_id+_comm_code+_product_code;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, _comm_code);
             params.put(WebParams.TX_ID, _tx_id);

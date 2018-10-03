@@ -38,17 +38,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
-import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.GlobalSetting;
-import com.sgo.saldomu.coreclass.HashMessage;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
@@ -58,7 +54,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,7 +62,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
@@ -512,8 +506,6 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
         String extraSignature = txId + memberLatitude + memberLongitude;
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
                 extraSignature);
 
@@ -644,94 +636,92 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
 
     private void confirmTransactionMember() {
 
-        RequestParams params = new RequestParams();
-        UUID rcUUID = UUID.randomUUID();
-        String dtime = DateTimeFormat.getCurrentDateTime();
-
-        params.put(WebParams.RC_UUID, rcUUID);
-        params.put(WebParams.RC_DATETIME, dtime);
-        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
-        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
-        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
-        params.put(WebParams.TX_ID, txId);
-        params.put(WebParams.KEY_VALUE, gcmId);
-        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
-
-        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
-                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
-
-        params.put(WebParams.SIGNATURE, signature);
-
-        MyApiClient.confirmTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                try {
-
-                    if ( progdialog2.isShowing())
-                        progdialog2.dismiss();
-
-                    String code = response.getString(WebParams.ERROR_CODE);
-                    if (code.equals(WebParams.SUCCESS_CODE)) {
-
-                        handler.removeCallbacks(runnable2);
-
-                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
-                    }
-
-                    handler.removeCallbacks(runnable2);
-
-                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                ifFailure(throwable);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                ifFailure(throwable);
-            }
-
-            private void ifFailure(Throwable throwable) {
-                //llHeaderProgress.setVisibility(View.GONE);
-                //pbHeaderProgress.setVisibility(View.GONE);
-                if ( progdialog2.isShowing())
-                    progdialog2.dismiss();
-
-                if (MyApiClient.PROD_FAILURE_FLAG)
-                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
-
-                Timber.w("Error Koneksi login:" + throwable.toString());
-
-            }
-
-        });
+//        RequestParams params = new RequestParams();
+//        UUID rcUUID = UUID.randomUUID();
+//        String dtime = DateTimeFormat.getCurrentDateTime();
+//
+//        params.put(WebParams.RC_UUID, rcUUID);
+//        params.put(WebParams.RC_DATETIME, dtime);
+//        params.put(WebParams.APP_ID, BuildConfig.APP_ID);
+//        params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID);
+//        params.put(WebParams.RECEIVER_ID, DefineValue.BBS_RECEIVER_ID);
+//        params.put(WebParams.TX_ID, txId);
+//        params.put(WebParams.KEY_VALUE, gcmId);
+//        params.put(WebParams.KEY_PHONE, sp.getString(DefineValue.USERID_PHONE, ""));
+//
+//        String signature = HashMessage.SHA1(HashMessage.MD5(rcUUID + dtime +
+//                DefineValue.BBS_SENDER_ID + DefineValue.BBS_RECEIVER_ID + BuildConfig.APP_ID + txId + sp.getString(DefineValue.USERID_PHONE, "")));
+//
+//        params.put(WebParams.SIGNATURE, signature);
+//
+//        MyApiClient.confirmTransactionMember(getApplicationContext(), params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//
+//                try {
+//
+//                    if ( progdialog2.isShowing())
+//                        progdialog2.dismiss();
+//
+//                    String code = response.getString(WebParams.ERROR_CODE);
+//                    if (code.equals(WebParams.SUCCESS_CODE)) {
+//
+//                        handler.removeCallbacks(runnable2);
+//
+//                        Intent intent = new Intent(getApplicationContext(), MainPage.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+//                        finish();
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
+//                    }
+//
+//                    handler.removeCallbacks(runnable2);
+//
+//                    Intent intent = new Intent(getApplicationContext(), MainPage.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                    finish();
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                super.onFailure(statusCode, headers, responseString, throwable);
+//                ifFailure(throwable);
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//                ifFailure(throwable);
+//            }
+//
+//            private void ifFailure(Throwable throwable) {
+//                //llHeaderProgress.setVisibility(View.GONE);
+//                //pbHeaderProgress.setVisibility(View.GONE);
+//                if ( progdialog2.isShowing())
+//                    progdialog2.dismiss();
+//
+//                if (MyApiClient.PROD_FAILURE_FLAG)
+//                    Toast.makeText(getApplicationContext(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                else
+//                    Toast.makeText(getApplicationContext(), throwable.toString(), Toast.LENGTH_SHORT).show();
+//
+//                Timber.w("Error Koneksi login:" + throwable.toString());
+//
+//            }
+//
+//        });
 
     }
 
     private void cancelTransactionMember() {
 
         String extraSignature = txId + sp.getString(DefineValue.MEMBER_ID, "");
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CANCEL_TRANSACTION_MEMBER, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -897,12 +887,12 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+ Locale.getDefault().getLanguage();
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", Locale.getDefault().getLanguage() );
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", agentLatitude.toString()+","+agentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", Locale.getDefault().getLanguage() );
 
 
             String tempParams = nextParams;

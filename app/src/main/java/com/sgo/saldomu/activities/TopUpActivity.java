@@ -12,13 +12,13 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.ListBankTopUpFragment;
 import com.sgo.saldomu.fragments.SgoPlus_input;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import java.util.List;
 
@@ -225,7 +225,7 @@ public class TopUpActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
     }
 
     public void setToolbarTitle(String _title) {

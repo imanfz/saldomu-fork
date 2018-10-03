@@ -26,8 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -44,7 +42,6 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.OpenHourDays;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,9 +152,6 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
         progdialog              = DefinedDialog.CreateProgressDialog(getContext(), "");
 
         String extraSignature = DefineValue.STRING_NO;
-        RequestParams param            = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_MEMBER_SHOP_LIST,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""),
-                extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -335,9 +329,7 @@ public class FragWaktuBeroperasi extends Fragment implements TimePickerFragment.
                         progdialog2 = DefinedDialog.CreateProgressDialog(getContext(), "");
                         progdialog2.show();
 
-                        RequestParams param = new RequestParams();
                         HashMap<String, Object> params = new HashMap<>();
-
 
                         UUID rcUUID             = UUID.randomUUID();
                         String  dtime           = DateTimeFormat.getCurrentDateTime();

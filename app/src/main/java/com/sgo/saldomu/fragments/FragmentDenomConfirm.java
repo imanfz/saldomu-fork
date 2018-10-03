@@ -22,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.DenomListModel;
 import com.sgo.saldomu.Beans.DenomOrderListModel;
 import com.sgo.saldomu.Beans.SCADMCommunityModel;
@@ -49,11 +47,9 @@ import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
-import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -267,7 +263,6 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
         extraSignature = obj.getMember_id_scadm()+productCode;
 
-        RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_DENOM_INVOKE, extraSignature);
 
         params.put(WebParams.MEMBER_ID_SCADM, obj.getMember_id_scadm());
@@ -327,8 +322,6 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
             extraSignature = txID+commCode+productCode+tokenValue;
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin
-                    ,MyApiClient.LINK_INSERT_TRANS_TOPUP, userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
             params.put(WebParams.TX_ID, txID);
@@ -396,8 +389,6 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
         try{
 
             extraSignature = txId + comm_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_GET_TRX_STATUS,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);

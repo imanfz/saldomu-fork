@@ -26,15 +26,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.adapter.ListAccountBBSAdapter;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -44,8 +42,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -278,7 +274,7 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }
@@ -325,8 +321,6 @@ public class ListAccountBBS extends BaseFragment implements View.OnClickListener
             extraSignature = dataComm.getComm_code()+dataComm.getMember_code()+
                     listDataAccount.get(position).getProduct_type()+ listDataAccount.get(position).getProduct_code()
                     + listDataAccount.get(position).getAccount_no();
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_BANK_ACCOUNT_DELETE, extraSignature);
 
             params.put(WebParams.COMM_CODE, dataComm.getComm_code());

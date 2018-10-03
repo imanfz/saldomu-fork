@@ -33,8 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.Biller_Data_Model;
 import com.sgo.saldomu.Beans.bank_biller_model;
 import com.sgo.saldomu.Beans.listBankModel;
@@ -49,8 +47,8 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
 import com.sgo.saldomu.coreclass.InetHandler;
 import com.sgo.saldomu.coreclass.LevelClass;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
@@ -62,8 +60,6 @@ import com.sgo.saldomu.models.retrofit.SentPaymentBillerModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -453,8 +449,6 @@ public class BillerDesciption extends BaseFragment {
 
             extraSignature = biller_comm_id+item_id+cust_id;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INQUIRY_BILLER,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_BILLER, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id);
@@ -529,8 +523,6 @@ public class BillerDesciption extends BaseFragment {
 
             extraSignature = tx_id+item_id+biller_comm_id+product_code;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_PAYMENT_BILLER,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_PAYMENT_BILLER, extraSignature);
             params.put(WebParams.DENOM_ITEM_ID, item_id);
             params.put(WebParams.DENOM_ITEM_REMARK, cust_id );
@@ -614,8 +606,6 @@ public class BillerDesciption extends BaseFragment {
 
             extraSignature = tx_id+_comm_code+_product_code;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, _comm_code);
             params.put(WebParams.TX_ID, _tx_id);

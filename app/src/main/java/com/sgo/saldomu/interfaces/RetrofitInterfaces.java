@@ -1,7 +1,7 @@
 package com.sgo.saldomu.interfaces;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sgo.saldomu.models.retrofit.ObjectModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,6 @@ import java.util.Map;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
@@ -28,6 +27,10 @@ public interface RetrofitInterfaces {
     @POST("{url}")
     @FormUrlEncoded
     Observable<JsonObject> GetObjectInterface(@Path(value = "url", encoded = true) String url);
+
+    @POST("{url}")
+    @FormUrlEncoded
+    Observable<JsonArray> GetArrayInterface(@Path(value = "url", encoded = true) String url);
 
     @Multipart
     @POST("{url}")

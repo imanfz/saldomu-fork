@@ -18,8 +18,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.NotificationModelClass;
 import com.sgo.saldomu.R;
@@ -30,8 +28,8 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DividerItemDecoration;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NotificationHandler;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -41,7 +39,6 @@ import com.sgo.saldomu.models.retrofit.NotifModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -322,8 +319,6 @@ public class FragNotification extends BaseFragment {
     private void sentReadNotif(String _notif_id, final int position){
         try{
             extraSignature = _notif_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_READ,
-                    _userid,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_READ, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.NOTIF_ID_READ,_notif_id);
@@ -396,8 +391,6 @@ public class FragNotification extends BaseFragment {
                 out.show();
             }
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_NOTIF_RETRIEVE,
-                    _userid,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_NOTIF_RETRIEVE);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.MEMBER_ID, _memberId);
@@ -596,8 +589,6 @@ public class FragNotification extends BaseFragment {
 
             extraSignature = _hold_id + commIDLogin;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER, extraSignature);
             params.put(WebParams.USER_ID,_userid);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);

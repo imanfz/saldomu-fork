@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.*;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -160,8 +159,6 @@ public class ForgotPassword extends BaseFragment {
             progdialog.show();
 
             extraSignature = userIDfinale + value_pin;
-            RequestParams paramss = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_FORGOT_PASSWORD,
-                    BuildConfig.SECRET_KEY, extraSignature );
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_FORGOT_PASSWORD, extraSignature);
             params.put(WebParams.USER_ID, userIDfinale);

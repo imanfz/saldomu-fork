@@ -22,6 +22,7 @@ import com.sgo.saldomu.Beans.myFriendModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 import java.io.File;
@@ -219,7 +220,7 @@ public class CoreApp extends Application {
 	@Override
     public void onTerminate() {
         super.onTerminate();
-        MyApiClient.CancelRequestWS(this, true);
+        RetrofitService.dispose();
         ActiveAndroid.dispose();
     }
 

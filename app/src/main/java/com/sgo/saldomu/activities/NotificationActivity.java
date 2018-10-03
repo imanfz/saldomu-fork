@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
+
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.fragments.FragNotification;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 
@@ -100,7 +101,7 @@ public class NotificationActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
         super.onDestroy();
     }
 

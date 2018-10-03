@@ -13,21 +13,33 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.activeandroid.ActiveAndroid;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
 import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.TimelineCommentAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.GlideManager;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.RoundImageTransformation;
+import com.sgo.saldomu.coreclass.RoundedQuickContactBadge;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
@@ -36,7 +48,6 @@ import com.sgo.saldomu.models.retrofit.CommentModel;
 import com.sgo.saldomu.models.retrofit.LikesModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -269,8 +280,6 @@ public class TimelineDetailActivity extends BaseActivity {
         try {
 
             extraSignature = post_id + from_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_COMMENT_LIST,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_COMMENT_LIST, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
@@ -359,8 +368,6 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_COMMENT,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_COMMENT, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
@@ -449,8 +456,6 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id + comment_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_COMMENT,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REMOVE_COMMENT, extraSignature);
             params.put(WebParams.COMMENT_ID, comment_id);
             params.put(WebParams.POST_ID, post_id);
@@ -552,8 +557,6 @@ public class TimelineDetailActivity extends BaseActivity {
             mProg = DefinedDialog.CreateProgressDialog(this, "");
 
             extraSignature = post_id + from_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_LIKE_LIST,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIKE_LIST, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.TO, from_id);
@@ -647,8 +650,6 @@ public class TimelineDetailActivity extends BaseActivity {
             like = true;
 
             extraSignature = post_id + from_id;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_ADD_LIKE,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_ADD_LIKE, extraSignature);
             params.put(WebParams.POST_ID, post_id);
             params.put(WebParams.FROM, _ownerID);
@@ -743,8 +744,6 @@ public class TimelineDetailActivity extends BaseActivity {
             like = false;
 
             extraSignature = post_id + like_id + to;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REMOVE_LIKE,
-                    _ownerID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REMOVE_LIKE, extraSignature);
             params.put(WebParams.LIKE_ID, like_id);
             params.put(WebParams.POST_ID, post_id);

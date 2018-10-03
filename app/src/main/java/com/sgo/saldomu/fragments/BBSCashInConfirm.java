@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.InsertPIN;
@@ -51,11 +50,6 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -349,7 +343,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     private void SimNotExitAction(){
         if(isSMS) {
             Toast.makeText(getActivity(), R.string.smsclass_simcard_listener_absent_toast, Toast.LENGTH_LONG).show();
-            MyApiClient.CancelRequestWS(getActivity(),true);
+            RetrofitService.dispose();
             getFragmentManager().popBackStack();
         }
     }
@@ -475,8 +469,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_code+tx_product_code+token;
 
-            final RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INSERT_TRANS_TOPUP,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_INSERT_TRANS_TOPUP,
                     extraSignature);
             params.put(WebParams.TX_ID, tx_id);
@@ -579,18 +571,13 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_code+tx_product_code;
 
-            RequestParams param;
             HashMap<String, Object> params;
             String url;
 
             if(isRequestOTP) {
-                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_REQ_TOKEN_SGOL,
-                        userPhoneID, accessKey, extraSignature);
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
                 url = MyApiClient.LINK_REQ_TOKEN_SGOL;
             }else {
-                param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_RESEND_TOKEN_SGOL,
-                        userPhoneID, accessKey, extraSignature);
                 params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_SGOL, extraSignature);
                 url = MyApiClient.LINK_RESEND_TOKEN_SGOL;
             }
@@ -657,8 +644,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             out.show();
 
             extraSignature = txId + comm_code;
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TRX_STATUS_BBS,
-                    userId,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRX_STATUS_BBS, extraSignature);
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
@@ -713,7 +698,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
             extraSignature = tx_id+comm_id+tokenValue.getText().toString();
 
-            final RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_RETRY_TOKEN, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_RETRY_TOKEN,
                     extraSignature);
             params.put(WebParams.TX_ID, tx_id);

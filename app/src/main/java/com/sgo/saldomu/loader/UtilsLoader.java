@@ -12,10 +12,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
-import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.coreclass.CoreApp;
@@ -33,11 +30,6 @@ import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetAppVersionModel;
 import com.sgo.saldomu.models.retrofit.GetBalanceModel;
 import com.sgo.saldomu.services.BalanceService;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -78,9 +70,6 @@ public class UtilsLoader {
             String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
             if(!member_id.isEmpty() && !access_key.isEmpty()) {
 
-                RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_SALDO,
-                        sp.getString(DefineValue.USERID_PHONE,""), sp.getString(DefineValue.ACCESS_KEY,"")
-                        , member_id);
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_SALDO, member_id);
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
@@ -155,8 +144,6 @@ public class UtilsLoader {
 
     public void getFailedPIN(String user_id , final OnLoadDataListener mListener){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_GET_FAILED_PIN,
-                    user_id, sp.getString(DefineValue.ACCESS_KEY,""));
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_GET_FAILED_PIN, "");
             params.put(WebParams.USER_ID, user_id);
@@ -213,8 +200,6 @@ public class UtilsLoader {
 
     public void getAppVersion(){
         try {
-            RequestParams param = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_APP_VERSION,
-                    BuildConfig.SECRET_KEY);
 
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_APP_VERSION, "");

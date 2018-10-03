@@ -7,18 +7,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.adapter.BbsMerchantCommunityListAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -26,7 +23,6 @@ import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.realm.Realm;
-import timber.log.Timber;
 
 import static io.realm.Realm.getDefaultInstance;
 
@@ -84,8 +79,6 @@ public class BbsMerchantCommunityList extends BaseActivity {
         });
 
         String extraSignature = DefineValue.STRING_YES;
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_MEMBER_SHOP_LIST,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_MEMBER_SHOP_LIST, extraSignature);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);

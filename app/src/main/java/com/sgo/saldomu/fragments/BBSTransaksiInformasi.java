@@ -33,8 +33,6 @@ import android.widget.Toast;
 import com.faber.circlestepview.CircleStepView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.CashInHistoryModel;
 import com.sgo.saldomu.Beans.CashOutHistoryModel;
@@ -63,11 +61,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.BBSTransModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.sgo.saldomu.widgets.CustomAutoCompleteTextViewWithIcon;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -561,8 +554,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -723,8 +714,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 //            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
 //                    +MyApiClient.CCY_VALUE+amount;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -800,9 +789,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog.show();
 
             extraSignature = model.getTx_id()+comm_code+model.getTx_product_code();
-
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userPhoneID,accessKey, extraSignature);
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
 

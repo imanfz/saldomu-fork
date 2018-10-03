@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CashoutActivity;
@@ -35,9 +34,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -120,8 +116,6 @@ public class ListCashOut extends ListFragment {
             if (isAdded() || isVisible()) {
                 final ProgressDialog prodDialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-                RequestParams param =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID, MyApiClient.LINK_BANKCASHOUT,
-                        userID, accessKey, memberID);
                 HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANKCASHOUT, memberID);
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
                 params.put(WebParams.MEMBER_ID, memberID );
@@ -287,8 +281,6 @@ public class ListCashOut extends ListFragment {
             String ownerId = sp.getString(DefineValue.USERID_PHONE,"");
             String accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_USER_CONTACT_INSERT,
-                    ownerId,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_USER_CONTACT_INSERT);
             params.put(WebParams.USER_ID, ownerId);

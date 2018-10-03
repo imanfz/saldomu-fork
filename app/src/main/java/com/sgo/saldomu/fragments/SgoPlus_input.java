@@ -29,18 +29,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.listBankModel;
+import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
-import com.sgo.saldomu.R;
-//import com.sgo.saldomu.activities.TagihanActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
@@ -51,12 +48,6 @@ import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.DataReqModel;
 import com.sgo.saldomu.models.retrofit.TopupValidModel;
 import com.sgo.saldomu.widgets.BaseFragment;
-//import com.sgo.saldomu.widgets.CustomFacebookButton;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +55,9 @@ import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 import timber.log.Timber;
+
+//import com.sgo.saldomu.activities.TagihanActivity;
+//import com.sgo.saldomu.widgets.CustomFacebookButton;
 
 /*
   Created by Administrator on 11/5/2014.
@@ -518,8 +512,6 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             extraSignature = memberIDLogin+product_code+MyApiClient.CCY_VALUE+amount;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_VALID_TOPUP,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_VALID_TOPUP, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.BANK_CODE, bank_kode);
@@ -654,8 +646,6 @@ public class SgoPlus_input extends BaseFragment implements EasyPermissions.Permi
 
             extraSignature = sentObject.tx_id+sentObject.comm_code+sentObject.product_code;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_REQ_TOKEN_SGOL,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
             params.put(WebParams.COMM_CODE, sentObject.comm_code);
             params.put(WebParams.TX_ID, sentObject.tx_id);

@@ -13,11 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.CollectionActivity;
@@ -33,10 +32,8 @@ import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.BBSRetrieveBankModel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -319,8 +316,6 @@ public class ListCollectionPayment extends ListFragment {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            RequestParams param = MyApiClient.getSignatureWithParams(commID,MyApiClient.LINK_BANK_ACCOUNT_COLLECTION,
-                    userID,accessKey, commID);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BANK_ACCOUNT_COLLECTION, commID);
             params.put(WebParams.COMM_ID, commID);
             params.put(WebParams.TYPE, DefineValue.BANKLIST_TYPE_ALL);

@@ -22,14 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.TutorialActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -38,13 +36,10 @@ import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.models.retrofit.BBSRegAcctModel;
 import com.sgo.saldomu.models.retrofit.BBSRetrieveBankModel;
-import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -373,9 +368,7 @@ public class BBSRegisterAcct extends BaseFragment {
 
     private void retreiveBank(String comm_code){
         try{
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_BANK_REG_ACCT,
-                    userPhoneID,accessKey, comm_code);
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_JOIN_AGENT, comm_code);
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_BANK_REG_ACCT, comm_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
@@ -384,7 +377,7 @@ public class BBSRegisterAcct extends BaseFragment {
             spSourceAcct.setVisibility(View.GONE);
             progBarBank.setVisibility(View.VISIBLE);
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_JOIN_AGENT, params,
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_BANK_REG_ACCT, params,
                     new ObjListener() {
                         @Override
                         public void onResponses(JsonObject object) {
@@ -435,8 +428,6 @@ public class BBSRegisterAcct extends BaseFragment {
         try{
             extraSignature = commCode+memberCode+benefAcctType+benefBankCode+benefAcctNo;
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_BBS_REQ_ACCT,
-                    userPhoneID,accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_REQ_ACCT, extraSignature);
             params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
@@ -498,7 +489,7 @@ public class BBSRegisterAcct extends BaseFragment {
 
     @Override
     public void onDestroy() {
-        MyApiClient.CancelRequestWSByTag(TAG,true);
+        RetrofitService.dispose();
         RealmManager.closeRealm(realm);
         super.onDestroy();
     }

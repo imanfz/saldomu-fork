@@ -14,10 +14,9 @@ import android.view.View;
 
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
-import com.sgo.saldomu.widgets.BaseActivity;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.fragments.BBSCashInConfirm;
 import com.sgo.saldomu.fragments.BBSJoinAgentInput;
@@ -34,6 +33,7 @@ import com.sgo.saldomu.fragments.FragSetttingKelola;
 import com.sgo.saldomu.fragments.FragTutupManual;
 import com.sgo.saldomu.fragments.FragWaktuBeroperasi;
 import com.sgo.saldomu.fragments.ListAccountBBS;
+import com.sgo.saldomu.widgets.BaseActivity;
 
 import timber.log.Timber;
 
@@ -413,7 +413,7 @@ public class BBSActivity extends BaseActivity implements ListAccountBBS.ActionLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
     }
 
     @Override

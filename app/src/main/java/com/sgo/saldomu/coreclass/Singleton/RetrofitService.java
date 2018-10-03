@@ -9,8 +9,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -20,6 +20,7 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.interfaces.ArrListeners;
 import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
@@ -29,9 +30,9 @@ import com.sgo.saldomu.securities.SHA;
 import com.sgo.saldomu.widgets.TLSSocket;
 
 import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.reactivestreams.Subscription;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,8 +55,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.FlowableSubscriber;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -418,7 +417,7 @@ public class RetrofitService {
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        getCompositeDisposable().add(d);
                     }
 
                     @Override
@@ -444,7 +443,7 @@ public class RetrofitService {
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        getCompositeDisposable().add(d);
                     }
 
                     @Override
@@ -481,6 +480,7 @@ public class RetrofitService {
                 .subscribe(new Observer<JsonObject>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
 
                     }
 
@@ -508,6 +508,7 @@ public class RetrofitService {
 
                     @Override
                     public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
 
                     }
 
@@ -539,6 +540,45 @@ public class RetrofitService {
                 });
     }
 
+    public void GetArrayRequest(String link, final ArrListeners listener) {
+        BuildRetrofit().GetArrayInterface(link).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonArray>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+
+                    }
+
+                    @Override
+                    public void onNext(JsonArray obj) {
+                        try {
+                            listener.onResponses(new JSONArray(getGson().toJson(obj)));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
     public void GetObjectRequest(String link, final ObjListener listener) {
         BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -546,6 +586,7 @@ public class RetrofitService {
 
                     @Override
                     public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
 
                     }
 
@@ -574,6 +615,7 @@ public class RetrofitService {
 
                     @Override
                     public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
 
                     }
 

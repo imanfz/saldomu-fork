@@ -7,29 +7,33 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.activeandroid.ActiveAndroid;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listHistoryModel;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.HistoryDetailActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.HistoryRecycleAdapter;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DateTimeFormat;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
 import com.sgo.saldomu.models.retrofit.HistoryListModel;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,8 +177,6 @@ public class MyHistory extends BaseFragmentMainPage {
             _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
             accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams param =  MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TIMELINE_LIST,
-                    _ownerID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TIMELINE_LIST);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);

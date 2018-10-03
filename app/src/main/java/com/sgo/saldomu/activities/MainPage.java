@@ -27,8 +27,6 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.google.gson.JsonObject;
 import com.gordonwong.materialsheetfab.MaterialSheetFab;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.commentModel;
 import com.sgo.saldomu.Beans.likeModel;
@@ -73,8 +71,6 @@ import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -734,8 +730,6 @@ public class MainPage extends BaseActivity {
 
             String cust_id = sp.getString(DefineValue.CUST_ID,"");
 
-            RequestParams param = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LIST_MEMBER
-                    , MyApiClient.COMM_ID_PULSA);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LIST_MEMBER, MyApiClient.COMM_ID_PULSA);
             params.put(WebParams.COMM_ID, commIDLogin);
             params.put(WebParams.CUST_ID, cust_id);
@@ -1391,7 +1385,7 @@ public class MainPage extends BaseActivity {
         }
 
         JobScheduleManager.getInstance(this).cancelAll();
-        MyApiClient.CancelRequestWS(this,true);
+        RetrofitService.dispose();
         super.onDestroy();
     }
 

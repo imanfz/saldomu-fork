@@ -24,8 +24,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -41,7 +39,6 @@ import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -200,8 +197,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
 
         progdialog              = DefinedDialog.CreateProgressDialog(this, "");
 
-        RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_TRANSACTION_AGENT,
-                userPhoneID, accessKey);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TRANSACTION_AGENT);
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
@@ -526,8 +521,6 @@ public class BbsApprovalAgentActivity extends BaseActivity implements GoogleApiC
         //startActivity(new Intent(getApplicationContext(), BbsMapViewByAgentActivity.class));
 
         String extraSignature = txId + memberId + shopId + flagTxStatus;
-        RequestParams params    = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT,
-                userPhoneID, accessKey, extraSignature);
         HashMap<String, Object> params3 = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_APPROVAL_TRX_AGENT, extraSignature);
 
         params3.put(WebParams.APP_ID, BuildConfig.APP_ID);

@@ -31,7 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -39,8 +38,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
@@ -53,8 +50,8 @@ import com.sgo.saldomu.coreclass.GlobalSetting;
 import com.sgo.saldomu.coreclass.GoogleAPIUtils;
 import com.sgo.saldomu.coreclass.MainAgentIntentService;
 import com.sgo.saldomu.coreclass.MainResultReceiver;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
@@ -68,7 +65,6 @@ import com.sgo.saldomu.models.ShopDetail;
 import com.sgo.saldomu.services.UpdateLocationService;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1045,8 +1041,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             progdialog              = DefinedDialog.CreateProgressDialog(this, getString(R.string.menu_item_search_agent));
 
             String extraSignature = categoryId + bbsProductType + bbsProductCode;
-            RequestParams param = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_SEARCH_TOKO,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SEARCH_TOKO,
                     extraSignature);
 
@@ -1519,12 +1513,12 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
             nextParams += "&mode="+DefineValue.GMAP_MODE;
             nextParams += "&language="+DefineValue.DEFAULT_LANGUAGE_CODE;
 
-            RequestParams rqParams = new RequestParams();
-            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
-            rqParams.put("sensor", "false");
-            rqParams.put("units", "metric");
-            rqParams.put("mode", DefineValue.GMAP_MODE);
-            rqParams.put("language", DefineValue.DEFAULT_LANGUAGE_CODE);
+//            RequestParams rqParams = new RequestParams();
+//            rqParams.put("origin", dataCurrentLatitude.toString()+","+dataCurrentLongitude.toString());
+//            rqParams.put("sensor", "false");
+//            rqParams.put("units", "metric");
+//            rqParams.put("mode", DefineValue.GMAP_MODE);
+//            rqParams.put("language", DefineValue.DEFAULT_LANGUAGE_CODE);
 
             for(int idx=0; idx <dataDetails.size(); idx++) {
                 ShopDetail tempShopDetail = dataDetails.get(idx);
@@ -1701,8 +1695,6 @@ public class BbsSearchAgentActivity extends BaseActivity implements View.OnClick
         if ( !txId.equals("") ) {
 
             String extraSignature = txId;
-            RequestParams param            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
-                    userPhoneID, accessKey, extraSignature);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CHECK_TRANSACTION_MEMBER,
                     extraSignature);
 

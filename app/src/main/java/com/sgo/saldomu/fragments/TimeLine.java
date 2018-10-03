@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.activeandroid.ActiveAndroid;
 import com.google.gson.JsonObject;
-import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.listTimeLineModel;
 import com.sgo.saldomu.R;
@@ -175,8 +174,6 @@ public class TimeLine extends BaseFragmentMainPage {
             _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
             accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
 
-            RequestParams param = MyApiClient.getSignatureWithParams(MyApiClient.COMM_ID,MyApiClient.LINK_TIMELINE_LIST,
-                    _ownerID,accessKey);
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TIMELINE_LIST);
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.PRIVACY, privacy);
