@@ -296,7 +296,6 @@ public class FragDataMandiriLKD extends BaseFragment {
                         Timber.d("response bbs send data lkd : "+ response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             changeToBBSCashInConfirm();
-
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
