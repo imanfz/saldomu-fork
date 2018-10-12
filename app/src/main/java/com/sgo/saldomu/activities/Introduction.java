@@ -52,8 +52,9 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         Button skipbtn = (Button)skipButton;
         Button donebtn = (Button)doneButton;
         skipbtn.setText(getString(R.string.start_now));
-        donebtn.setText("");
+        donebtn.setText("POS");
         skipbtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        donebtn.setTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
 
         if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")) {
             //cheat kalo diteken lama skip ke register (-1)
@@ -80,6 +81,8 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
             });
         }
 
+        donebtn.setOnClickListener(POSlistener);
+
         perms = new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_CONTACTS,
                 Manifest.permission.ACCESS_FINE_LOCATION};
 
@@ -92,6 +95,17 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
         }
 
     }
+
+    private Button.OnClickListener POSlistener = new Button.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent i = new Intent(Introduction.this,LoginActivity.class);
+                    i.putExtra(DefineValue.USER_IS_NEW,-2);
+                    i.putExtra(DefineValue.IS_POS, "Y");
+                    startActivity(i);
+                    Introduction.this.finish();
+        }
+    };
 
     private void InitializeSmsClass(){
         if(smsclass == null)

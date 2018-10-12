@@ -63,6 +63,7 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -912,6 +913,7 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
+            callBBSBirthPlaceService();
         }else {
 
         }
@@ -944,6 +946,11 @@ public class MainPage extends BaseActivity {
     private void callBBSCityService(){
         Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
+    }
+
+    private void callBBSBirthPlaceService(){
+        Timber.d("Panggil service BBS Birth Place");
+        UpdateBBSBirthPlace.startUpdateBBSBirthPlace(MainPage.this);
     }
 
     private void showChangePassword(){

@@ -222,6 +222,7 @@ public class MyApiClient {
 
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
+    public static String LINK_BBS_BIRTH_PLACE;
     public static String LINK_GLOBAL_BBS_COMM;
     public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
@@ -398,6 +399,7 @@ public class MyApiClient {
         LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
         LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
         LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_BBS_BIRTH_PLACE = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
         LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
@@ -1614,6 +1616,13 @@ public class MyApiClient {
         post(mContext, LINK_BBS_MANDIRI_LKD, params, responseHandler);
     }
 
+    public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSBirthPlace: %1$s ",LINK_BBS_BIRTH_PLACE);
+        if(isSync)
+            postSync(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+        else
+            post(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+    }
     //get Data------------------------------------------------------------------------------------------
 
 

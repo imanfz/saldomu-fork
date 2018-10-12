@@ -534,5 +534,6 @@ public class DefineValue {
     public static String OTHER_ATM = "other_atm";
     public static String TOKEN_ID = "token_id";
     public static String IS_OWNER = "is_owner";
+    public static String IS_POS = "is_pos";
 }
 

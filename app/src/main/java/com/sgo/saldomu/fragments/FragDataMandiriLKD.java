@@ -28,12 +28,13 @@ import com.sgo.saldomu.Beans.BBSCommBenef;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.widgets.BaseFragment;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -48,10 +49,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import io.realm.Realm;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
@@ -84,8 +85,8 @@ public class FragDataMandiriLKD extends BaseFragment {
     private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false, isOwner = false;
     private Activity act;
     private Realm realm;
-    private ArrayList<List_BBS_City> list_bbs_cities;
-    private ArrayList<String> list_name_bbs_cities;
+    private List<List_BBS_Birth_Place> list_bbs_birth_place;
+    private List<String> list_name_bbs_birth_place;
     private ArrayList<BBSCommBenef> listDataBank;
     public Boolean isUpdate = false;
     AutoCompleteTextView city_textview_autocomplete;
@@ -103,7 +104,7 @@ public class FragDataMandiriLKD extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         act = getActivity();
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BBSConfiguration);
 
         memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
         commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
@@ -163,33 +164,61 @@ public class FragDataMandiriLKD extends BaseFragment {
             isOwner = bundle.getBoolean(DefineValue.IS_OWNER, false);
         }
 
-        RealmResults<List_BBS_City> results = realm.where(List_BBS_City.class).findAllAsync();
-        list_name_bbs_cities = new ArrayList<>();
-        list_bbs_cities = new ArrayList<>();
-        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_City>>() {
-            @Override
-            public void onChange(RealmResults<List_BBS_City> element) {
-                if (getActivity() != null && !getActivity().isFinishing()) {
-                    for (List_BBS_City bbsCity : element) {
-                        list_bbs_cities.add(bbsCity);
-                        list_name_bbs_cities.add(bbsCity.getCity_name());
-                    }
 
-                    ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
-                            (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_cities);
 
-//                    city_textview_autocomplete.setText("KOTA JAKARTA");
-//                    city_textview_autocomplete.setThreshold(1);
-                    city_textview_autocomplete.setAdapter(city_adapter);
 
-                    if (bundle.containsKey(DefineValue.BENEF_CITY)) {
-                        city_textview_autocomplete.setText(bundle.getString(DefineValue.BENEF_CITY));
-                    }
-                }
+
+        RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
+
+        Timber.d("REALM RESULTS:"+results.toString());
+
+        list_bbs_birth_place = new ArrayList<>();
+        list_name_bbs_birth_place = new ArrayList<>();
+        list_bbs_birth_place = realm.copyFromRealm(results);
+
+
+
+        for(int i=0; i < results.size(); i++){
+
+            if(results.get(i).getBirthPlace_city() == null || results.get(i).getBirthPlace_city().equalsIgnoreCase("")){
+//                list_name_bbs_birth_place.add("Unknown");
+            }else{
+                list_name_bbs_birth_place.add(results.get(i).getBirthPlace_city());
             }
-        });
+        }
+
+
+//        for (List_BBS_Birth_Place bbsBirthPlace : results) {
+//            list_name_bbs_birth_place.add(bbsBirthPlace.getBirthPlace_city());
+//
+//        }
+
+        Timber.d("Size of List name Birth place:"+list_name_bbs_birth_place.size());
+        ArrayAdapter<String> city_adapter = new ArrayAdapter<String>
+                (getActivity(), android.R.layout.simple_selectable_list_item, list_name_bbs_birth_place);
+        city_textview_autocomplete.setThreshold(1);
+        city_textview_autocomplete.setAdapter(city_adapter);
+
+
+
+
+
+//                list_bbs_birth_place = new ArrayList<>();
+//        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_Birth_Place>>() {
+//            @Override
+//            public void onChange(RealmResults<List_BBS_Birth_Place> list_bbs_birth_places) {
+//                if (getActivity() != null && !getActivity().isFinishing()) {
+//                    for (List_BBS_Birth_Place bbsBirthPlace : list_bbs_birth_places) {
+//                        list_bbs_birth_place.add(bbsBirthPlace);
+//                        list_name_bbs_birth_place.add(bbsBirthPlace.getBirthPlace_city());
+//                    }
+//                }
+//            }
+//        });
 
         initializeLayout();
+
+
 
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));

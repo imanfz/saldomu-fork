@@ -361,6 +361,9 @@
             android:name=".services.UpdateBBSCity"
             android:exported="false" />
         <service
+            android:name=".services.UpdateBBSBirthPlace"
+            android:exported="false" />
+        <service
             android:name=".services.UpdateBBSData"
             android:exported="false" />
         // Job Dispatcher Service
