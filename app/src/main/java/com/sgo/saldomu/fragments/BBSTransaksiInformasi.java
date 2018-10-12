@@ -654,11 +654,16 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     smsDialog.dismiss();
                                     smsDialog.reset();
                                     try {
-                                        sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                                response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                                response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                                response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                                response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                        sentDataReqToken(response.getString(WebParams.TX_ID),
+                                                response.getString(WebParams.TX_PRODUCT_CODE),
+                                                response.getString(WebParams.TX_PRODUCT_NAME),
+                                                response.getString(WebParams.TX_BANK_CODE),
+                                                response.getString(WebParams.AMOUNT),
+                                                response.getString(WebParams.ADMIN_FEE),
+                                                response.getString(WebParams.TOTAL_AMOUNT),
+                                                response.getString(WebParams.TX_BANK_NAME),
+                                                response.getString(WebParams.MAX_RESEND_TOKEN),
+                                                response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
                                                 response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -673,28 +678,41 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         else if(source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
                             if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
                                     && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                        response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                        response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                        response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                        response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                sentDataReqToken(response.getString(WebParams.TX_ID),
+                                        response.getString(WebParams.TX_PRODUCT_CODE),
+                                        response.getString(WebParams.TX_PRODUCT_NAME),
+                                        response.getString(WebParams.TX_BANK_CODE),
+                                        response.getString(WebParams.AMOUNT),
+                                        response.getString(WebParams.ADMIN_FEE),
+                                        response.getString(WebParams.TOTAL_AMOUNT),
+                                        response.getString(WebParams.TX_BANK_NAME),
+                                        response.getString(WebParams.MAX_RESEND_TOKEN),
+                                        response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
                                         response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                             else changeToConfirmCashIn
                                     (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                            response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                            response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                            response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                            response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                            response.getString(WebParams.TX_PRODUCT_NAME),
+                                            response.getString(WebParams.TX_BANK_CODE),
+                                            response.getString(WebParams.AMOUNT),
+                                            response.getString(WebParams.ADMIN_FEE),
+                                            response.getString(WebParams.TOTAL_AMOUNT),
+                                            response.getString(WebParams.TX_BANK_NAME),
+                                            response.getString(WebParams.MAX_RESEND_TOKEN),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
                                             response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                         }
 
                         else{
                             changeToConfirmCashIn
                                     (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                            response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                            response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                            response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                            response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                            response.getString(WebParams.TX_PRODUCT_NAME),
+                                            response.getString(WebParams.TX_BANK_CODE),
+                                            response.getString(WebParams.AMOUNT),
+                                            response.getString(WebParams.ADMIN_FEE),
+                                            response.getString(WebParams.TOTAL_AMOUNT),
+                                            response.getString(WebParams.TX_BANK_NAME),
+                                            response.getString(WebParams.MAX_RESEND_TOKEN),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
                                             response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
                         }
 
@@ -799,9 +817,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         alert11.show();
     }
 
-    public void dialogBenefLKD (final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                                final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
-                                final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name){
+    public void dialogBenefLKD (final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
+ final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name){
         android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
         builder1.setTitle(R.string.c2a_lkd);
         builder1.setMessage("Transfer ke : ");
@@ -971,12 +988,17 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                             confirmationDialog.dismiss();
 
-                            sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                    response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                    response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                    response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME), null,
-                                    null, null);
-
+                            sentDataReqToken(response.getString(WebParams.TX_ID),
+                                    response.getString(WebParams.TX_PRODUCT_CODE),
+                                    response.getString(WebParams.TX_PRODUCT_NAME),
+                                    response.getString(WebParams.TX_BANK_CODE),
+                                    response.getString(WebParams.AMOUNT),
+                                    response.getString(WebParams.ADMIN_FEE),
+                                    response.getString(WebParams.TOTAL_AMOUNT),
+                                    response.getString(WebParams.TX_BANK_NAME),
+                                    null,
+                                    null,
+                                    null);
                         }
                         else if (code.equals("0296")) {
                             message = response.getString(WebParams.ERROR_MESSAGE);
@@ -1035,9 +1057,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         }
     }
 
-    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                                 final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
-                                 final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
+    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code, final String _amount, final String _fee, final String _totalAmount, final String _bank_name, final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();

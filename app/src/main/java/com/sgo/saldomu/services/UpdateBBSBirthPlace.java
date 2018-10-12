@@ -8,9 +8,10 @@ import android.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.sgo.saldomu.BuildConfig;
+import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.entityRealm.List_BBS_City;
+import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -18,34 +19,31 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import timber.log.Timber;
 
-/**
- * Created by thinkpad on 1/26/2017.
- */
-
-public class UpdateBBSCity extends IntentService {
+public class UpdateBBSBirthPlace extends IntentService {
 
     private Realm realm;
 
-    public UpdateBBSCity() {
-        super("UpdateBBSCity");
+    public UpdateBBSBirthPlace() {
+        super("UpdateBBSBirthPlace");
     }
 
-    public static void startUpdateBBSCity(Context context) {
-        Intent intent = new Intent(context, UpdateBBSCity.class);
+    public static void startUpdateBBSBirthPlace(Context context) {
+        Intent intent = new Intent(context, UpdateBBSBirthPlace.class);
         context.startService(intent);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        realm = Realm.getDefaultInstance();
+        realm = Realm.getInstance(RealmManager.BBSConfiguration);
 
-        long count = realm.where(List_BBS_City.class).count();
+        long count = realm.where(List_BBS_Birth_Place.class).count();
         if(count < 2)
-            getListBBSCity();
+            getListBBSBirthPlace();
         else
-            Timber.d("table bbs city masih terisi");
+            Timber.d("table bbs birth place masih terisi");
 
     }
 
@@ -57,17 +55,18 @@ public class UpdateBBSCity extends IntentService {
             realm.close();
     }
 
-    private void getListBBSCity(){
+    private void getListBBSBirthPlace(){
         try{
-            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_CITY, BuildConfig.SECRET_KEY);
-            Timber.d("isi params BBS city " +params.toString());
+            RequestParams params = MyApiClient.getSignatureWithParamsWithoutLogin(MyApiClient.COMM_ID, MyApiClient.LINK_BBS_BIRTH_PLACE,
+                    BuildConfig.SECRET_KEY);
+            Timber.d("params bbs birth place " +params.toString());
 
-            MyApiClient.getBBSCity(this,true, params, new JsonHttpResponseHandler() {
+            MyApiClient.getBBSBirthPlace(this,true, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        Timber.d("Isi response get BBS city: "+response.toString());
+                        Timber.d("Isi response get BBS birth place: "+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
                             insertToRealm(response.optJSONArray(WebParams.BBS_CITY));
                         }else {
@@ -98,7 +97,7 @@ public class UpdateBBSCity extends IntentService {
                 }
 
                 private void failure(Throwable throwable) {
-                    Timber.w("Error Koneksi get BBS city:" + throwable.toString());
+                    Timber.w("Error Koneksi get BBS birth place:" + throwable.toString());
                 }
             });
         }catch (Exception e){
@@ -107,25 +106,41 @@ public class UpdateBBSCity extends IntentService {
     }
 
     private void insertToRealm(JSONArray bbs_city) {
+
+        realm = Realm.getInstance(RealmManager.BBSConfiguration);
         if(bbs_city != null && bbs_city.length() > 0) {
             realm.beginTransaction();
-            realm.delete(List_BBS_City.class);
+            realm.delete(List_BBS_Birth_Place.class);
 
-            List_BBS_City list_bbs_city;
+            try{
+                List_BBS_Birth_Place list_BBS_Birth_Place;
 
-            for(int i = 0 ; i < bbs_city.length() ; i++) {
-                try {
-                    list_bbs_city = realm.createObjectFromJson(List_BBS_City.class, bbs_city.getJSONObject(i));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    realm.cancelTransaction();
+                for(int i = 0 ; i < bbs_city.length() ; i++) {
+                    try {
+                        list_BBS_Birth_Place= realm.createObjectFromJson(List_BBS_Birth_Place.class, bbs_city.getJSONObject(i));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Timber.d("REALM Json Error:"+e.toString());
+                        realm.cancelTransaction();
+                    }
                 }
+
+            }catch(Exception e){
+                Timber.d("REALM error:"+e.toString());
+            }finally {
+                realm.commitTransaction();
+                EndRealm();
             }
+
         }
 
-        if(realm.isInTransaction())
-            realm.commitTransaction();
 
-        EndRealm();
+        RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
+        Timber.d("REALM isi realm results:"+results.toString());
+
+//        if(realm.isInTransaction())
+//            realm.commitTransaction();
+
+
     }
 }

@@ -518,4 +518,5 @@ public class WebParams {
     public static String REFERAL_NO  = "referral_no";
     public static String LKD_PRODUCT_CODE  = "lkd_product_code";
     public static String SOURCE_OF_FUND = "source_of_fund";
+    public static String IS_POS = "is_pos";
 }
