@@ -120,8 +120,7 @@
                 android:layout_marginBottom="12dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
