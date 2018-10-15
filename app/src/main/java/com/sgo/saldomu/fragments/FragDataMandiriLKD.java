@@ -80,7 +80,7 @@ public class FragDataMandiriLKD extends BaseFragment {
             benef_city, source_product_h2h, api_key, callback_url, tx_bank_code, tx_bank_name, tx_product_name,
             fee, amount, share_type, comm_id, benef_product_name, name_benef, no_benef,
             no_hp_benef, remark, source_product_name, total_amount, transaksi, benef_product_code, tx_status,
-            benef_product_type, max_resend, custIDtypes;
+            benef_product_type, max_resend, custIDtypes, birthplace_id;
     LinearLayout layout_sender, layout_pob, layout_dob;
     private Boolean TCASHValidation = false, MandiriLKDValidation = false, code_success = false, isOwner = false;
     private Activity act;
@@ -90,6 +90,7 @@ public class FragDataMandiriLKD extends BaseFragment {
     private ArrayList<BBSCommBenef> listDataBank;
     public Boolean isUpdate = false;
     AutoCompleteTextView city_textview_autocomplete;
+    private Integer CityAutocompletePos = -1;
 
 
     @Nullable
@@ -164,10 +165,6 @@ public class FragDataMandiriLKD extends BaseFragment {
             isOwner = bundle.getBoolean(DefineValue.IS_OWNER, false);
         }
 
-
-
-
-
         RealmResults<List_BBS_Birth_Place> results = realm.where(List_BBS_Birth_Place.class).findAll();
 
         Timber.d("REALM RESULTS:"+results.toString());
@@ -175,8 +172,6 @@ public class FragDataMandiriLKD extends BaseFragment {
         list_bbs_birth_place = new ArrayList<>();
         list_name_bbs_birth_place = new ArrayList<>();
         list_bbs_birth_place = realm.copyFromRealm(results);
-
-
 
         for(int i=0; i < results.size(); i++){
 
@@ -199,10 +194,6 @@ public class FragDataMandiriLKD extends BaseFragment {
         city_textview_autocomplete.setThreshold(1);
         city_textview_autocomplete.setAdapter(city_adapter);
 
-
-
-
-
 //                list_bbs_birth_place = new ArrayList<>();
 //        results.addChangeListener(new RealmChangeListener<RealmResults<List_BBS_Birth_Place>>() {
 //            @Override
@@ -217,8 +208,6 @@ public class FragDataMandiriLKD extends BaseFragment {
 //        });
 
         initializeLayout();
-
-
 
         fromFormat = new SimpleDateFormat("yyyy-MM-dd", new Locale("ID", "INDONESIA"));
         toFormat = new SimpleDateFormat("dd-MM-yyyy", new Locale("ID", "INDONESIA"));
@@ -255,7 +244,6 @@ public class FragDataMandiriLKD extends BaseFragment {
 
     public void initializeLayout() {
         if (!isOwner) {
-            layout_sender.setVisibility(View.VISIBLE);
             layout_dob.setVisibility(View.VISIBLE);
             layout_pob.setVisibility(View.VISIBLE);
         }
@@ -267,7 +255,7 @@ public class FragDataMandiriLKD extends BaseFragment {
             sumberdana = sp_sumberdana.getItemAtPosition(i).toString();
             if (sumberdana.equalsIgnoreCase("LAINNYA")) {
                 et_sumberdana.setVisibility(View.VISIBLE);
-            }
+            }else et_sumberdana.setVisibility(View.GONE);
         }
 
         @Override
@@ -280,9 +268,9 @@ public class FragDataMandiriLKD extends BaseFragment {
         @Override
         public void onClick(View view) {
             if (inputvalidation()) {
+//                birthplace_id = list_bbs_birth_place.get(CityAutocompletePos).getBirthPlace_id();
                 sendData();
             }
-            ;
         }
     };
 
@@ -299,10 +287,11 @@ public class FragDataMandiriLKD extends BaseFragment {
                 params.put(WebParams.TRANSFER_TO, "S");
             } else {
                 params.put(WebParams.TRANSFER_TO, "O");
-                params.put(WebParams.CUST_NAME, et_name.getText().toString());
                 params.put(WebParams.CUST_BIRTH_PLACE, city_textview_autocomplete.getText().toString());
                 params.put(WebParams.CUST_BIRTH_DATE, date_dob);
             }
+
+            params.put(WebParams.CUST_NAME, et_name.getText().toString());
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.TX_ID, tx_id);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
@@ -468,37 +457,48 @@ public class FragDataMandiriLKD extends BaseFragment {
             et_address.requestFocus();
             et_address.setError("Alamat dibutuhkan!");
             return false;
-        } else if (layout_pob.getVisibility() == View.VISIBLE && city_textview_autocomplete.getText().toString().length() == 0) {
-            city_textview_autocomplete.requestFocus();
-            city_textview_autocomplete.setError("Tempat Lahir dibutuhkan!");
-            return false;
-        } else if (layout_dob.getVisibility() == View.VISIBLE && compare == 100) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Alert")
-                    .setMessage(getString(R.string.myprofile_validation_date_empty))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return false;
-        } else if (layout_dob.getVisibility() == View.VISIBLE && compare >= 0) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Alert")
-                    .setMessage(getString(R.string.myprofile_validation_date))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            return false;
-        } else if (et_noHp.getText().toString().length() == 0) {
+        } else if (layout_pob.getVisibility() == View.VISIBLE && layout_dob.getVisibility() == View.VISIBLE) {
+            if ( city_textview_autocomplete.getText().toString().trim().length() == 0)
+            {
+                city_textview_autocomplete.requestFocus();
+                city_textview_autocomplete.setError("Tempat Lahir dibutuhkan!");
+                return false;
+            }else if (!list_name_bbs_birth_place.contains(city_textview_autocomplete.getText().toString())){
+
+                city_textview_autocomplete.requestFocus();
+                city_textview_autocomplete.setError("Nama kota tidak ditemukan!");
+                return false;
+            }
+            else if (compare == 100) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Alert")
+                        .setMessage(getString(R.string.myprofile_validation_date_empty))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return false;
+            } else if (compare >= 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Alert")
+                        .setMessage(getString(R.string.myprofile_validation_date))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return false;
+            }
+        }
+
+        if (et_noHp.getText().toString().length() == 0) {
             et_noHp.requestFocus();
             et_noHp.setError("No. Handphone dibutuhkan!");
             return false;
@@ -507,7 +507,6 @@ public class FragDataMandiriLKD extends BaseFragment {
             et_sumberdana.setError("Sumber Dana dibutuhkan!");
             return false;
         }
-
         return true;
     }
 
