@@ -246,6 +246,7 @@ public class FragDataMandiriLKD extends BaseFragment {
         if (!isOwner) {
             layout_dob.setVisibility(View.VISIBLE);
             layout_pob.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -469,7 +470,7 @@ public class FragDataMandiriLKD extends BaseFragment {
                 city_textview_autocomplete.setError("Nama kota tidak ditemukan!");
                 return false;
             }
-            else if (compare == 100) {
+            else if (compare == 100 || tv_dob.getText().toString().equalsIgnoreCase(getString(R.string.myprofile_text_date_click))) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Alert")
                         .setMessage(getString(R.string.myprofile_validation_date_empty))
