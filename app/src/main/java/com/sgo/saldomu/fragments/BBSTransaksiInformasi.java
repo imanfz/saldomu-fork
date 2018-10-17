@@ -1093,12 +1093,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     showDialog(_tx_id, _product_code, _product_name, _bank_code,
                                             _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                                             _benef_acct_no, _benef_acct_name);
-                                else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                {
-                                    dialogBenefLKD(_tx_id, _product_code, _product_name, _bank_code,
-                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
-                                            _benef_acct_no, _benef_acct_name);
-                                }
+//                                else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+//                                {
+//                                    dialogBenefLKD(_tx_id, _product_code, _product_name, _bank_code,
+//                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+//                                            _benef_acct_no, _benef_acct_name);
+//                                }
                                 else
                                     changeToConfirmCashIn(_tx_id, _product_code, _product_name, _bank_code,
                                             _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
