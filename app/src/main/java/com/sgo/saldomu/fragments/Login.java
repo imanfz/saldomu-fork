@@ -117,6 +117,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                     is_pos = m.getString(DefineValue.IS_POS,"N");
                     getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
                     userIDValue.setEnabled(true);
+                    userIDValue.setHint("No HP POS yang sudah terdaftar");
                 }
             }
         }else if (sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y"))

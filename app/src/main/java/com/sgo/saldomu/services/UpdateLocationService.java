@@ -187,9 +187,8 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
             e.printStackTrace();
         }
 
-        String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
         RequestParams params    = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_UPDATE_LOCATION,
-                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""), extraSignature);
+                sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""));
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );
@@ -197,10 +196,12 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
         params.put(WebParams.LONGITUDE, longitude );
         params.put(WebParams.LATITUDE, latitude );
         params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, "") );
+        Timber.d("params location update: "+params.toString());
 
         MyApiClient.updateLocationService(getApplicationContext(), params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Timber.d("respon location update: "+response.toString());
                 try {
 
                     String code = response.getString(WebParams.ERROR_CODE);
