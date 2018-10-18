@@ -531,13 +531,14 @@
     <string name="menu_group_title_supports">Bantuan</string>
     <string name="menu_item_title_setting">Pengaturan</string>
     <string name="menu_item_title_help">Kontak Kami &amp; FAQ</string>
+    <string name="menu_item_title_help1">Hubungi Kami</string>
     <string name="menu_item_title_info_harga">Info Harga</string>
     <string name="menu_item_title_about">Tentang Aplikasi</string>
 
     <string name="title_about_app">Tentang Aplikasi</string>
 
     <string name="help_center">Pusat Bantuan</string>
-    <string name="help_desc">Pilih area layanan konsumen, berdasarkan pada masalah dan Anda akan mendapatkan layanan terbaik.</string>
+    <string name="help_desc">Silahkan memilih layanan konsumen berdasarkan provider yang anda gunakan untuk mendapatkan layanan terbaik.</string>
 
     <string name="title_register_sms_banking">Registrasi SMS Banking</string>
     <string name="rsb_register">Registrasi</string>

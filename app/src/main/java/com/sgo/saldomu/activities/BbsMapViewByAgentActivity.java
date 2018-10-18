@@ -453,7 +453,7 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         isInquiryRoute          = false;
 
-        String extraSignature = txId + memberId + shopId + agentLatitude + agentLongitude;
+        String extraSignature = txId + memberId + shopId;
         RequestParams params            = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_UPDATE_LOCATION_AGENT,
                 userPhoneID, accessKey, extraSignature);
 
