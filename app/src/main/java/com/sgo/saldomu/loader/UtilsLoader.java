@@ -23,6 +23,7 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
@@ -79,59 +80,57 @@ public class UtilsLoader {
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {
-                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_SALDO, params,
-                            new ObjListener() {
+                    RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_SALDO, params,
+                            new ErrorListener() {
+                                @Override
+                                public void onError(Throwable e) {
+                                    mListener.onFailure(e.toString());
+                                }
+
                                 @Override
                                 public void onResponses(JsonObject object) {
-
                                     Gson gson = new Gson();
 
                                     GetBalanceModel model = gson.fromJson(object, GetBalanceModel.class);
 
-                                    if (model.getOn_error()){
+                                    String code = model.getError_code();
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        Timber.v("masuk sini new balance caller Loader");
 
-                                        String code = model.getError_code();
-                                        if (code.equals(WebParams.SUCCESS_CODE)) {
-                                            Timber.v("masuk sini new balance caller Loader");
-
-                                            String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
-                                            if (unread.equals("")) {
-                                                SecurePreferences.Editor mEditor = sp.edit();
-                                                mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());
-                                                mEditor.apply();
-
-                                                setNotifCount(model.getUnread_notif());
-                                            }
-
+                                        String unread = sp.getString(WebParams.UNREAD_NOTIF, "");
+                                        if (unread.equals("")) {
                                             SecurePreferences.Editor mEditor = sp.edit();
-                                            mEditor.putString(DefineValue.BALANCE_AMOUNT, model.getAmount());
-                                            mEditor.putString(DefineValue.BALANCE_MAX_TOPUP, model.getMax_topup());
-                                            mEditor.putString(DefineValue.BALANCE_CCYID, model.getCcy_id());
-                                            mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
-                                            mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
-                                            mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
+                                            mEditor.putString(WebParams.UNREAD_NOTIF, model.getUnread_notif());
                                             mEditor.apply();
 
-                                            mListener.onSuccess(true);
-                                            Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
-                                            LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
-                                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                            if (getmActivity().isFinishing()) {
-                                                String message = model.getError_message();
-                                                AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                                test.showDialoginMain(getmActivity(), message);
-                                            }
-                                        } else {
-                                            code = model.getError_message();
-                                            Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                                            Bundle bundle = new Bundle();
-                                            bundle.putString(DefineValue.ERROR, code);
-                                            bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
-                                            mListener.onFail(bundle);
+                                            setNotifCount(model.getUnread_notif());
                                         }
 
-                                    }else {
-                                        mListener.onFailure(model.getError_message());
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.BALANCE_AMOUNT, model.getAmount());
+                                        mEditor.putString(DefineValue.BALANCE_MAX_TOPUP, model.getMax_topup());
+                                        mEditor.putString(DefineValue.BALANCE_CCYID, model.getCcy_id());
+                                        mEditor.putString(DefineValue.BALANCE_REMAIN_LIMIT, model.getRemain_limit());
+                                        mEditor.putString(DefineValue.BALANCE_PERIOD_LIMIT, model.getPeriod_limit());
+                                        mEditor.putString(DefineValue.BALANCE_NEXT_RESET, model.getNext_reset());
+                                        mEditor.apply();
+
+                                        mListener.onSuccess(true);
+                                        Intent i = new Intent(BalanceService.INTENT_ACTION_BALANCE);
+                                        LocalBroadcastManager.getInstance(getmActivity()).sendBroadcast(i);
+                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                        if (getmActivity().isFinishing()) {
+                                            String message = model.getError_message();
+                                            AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                            test.showDialoginMain(getmActivity(), message);
+                                        }
+                                    } else {
+                                        code = model.getError_message();
+                                        Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString(DefineValue.ERROR, code);
+                                        bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
+                                        mListener.onFail(bundle);
                                     }
                                 }
                             });
