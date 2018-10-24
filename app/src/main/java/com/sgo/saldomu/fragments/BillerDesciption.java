@@ -598,8 +598,6 @@ public class BillerDesciption extends BaseFragment {
         }
     }
 
-
-
     private void sentDataReqToken(final String _tx_id, final String _product_code, final String _comm_code, final String fee,
                                   final String merchant_type, final String _bank_code, final int _attempt){
         try{

@@ -615,7 +615,7 @@ public class BillerConfirm extends BaseFragment implements ReportBillerDialog.On
 
                             String code = model.getError_code();
 
-                            if (model.getOn_error()){
+                            if (!model.getOn_error()){
                                 if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0003")) {
 
                                     String txstatus = model.getTx_status();

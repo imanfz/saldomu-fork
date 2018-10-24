@@ -144,7 +144,7 @@ public class UtilsLoader {
     public void getFailedPIN(String user_id , final OnLoadDataListener mListener){
         try{
             HashMap<String, Object> params = RetrofitService.getInstance()
-                    .getSignatureSecretKey(MyApiClient.LINK_GET_FAILED_PIN, "");
+                    .getSignature(MyApiClient.LINK_GET_FAILED_PIN);
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
@@ -158,7 +158,7 @@ public class UtilsLoader {
                             Gson gson = new Gson();
                             FailedPinModel model = gson.fromJson(object, FailedPinModel.class);
 
-                            if (model.getOn_error()){
+                            if (!model.getOn_error()){
                                 String code = model.getError_code();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     int attempt = model.getFailed_attempt();
