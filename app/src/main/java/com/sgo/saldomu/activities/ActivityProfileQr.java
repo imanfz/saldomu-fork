@@ -53,14 +53,18 @@ public class ActivityProfileQr extends BaseActivity {
     private String getLvl(){
 
         int tempLvl = sp.getInt(DefineValue.LEVEL_VALUE,1);
+        boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        if(tempLvl == 1){
-            return getString(R.string.lbl_member_lvl_silver);
-        } else if(tempLvl == 2){
-            return getString(R.string.lbl_member_lvl_gold);
-        }else{
+        if(isAgent){
             return getString(R.string.lbl_member_lvl_agent);
+        }else{
+            if(tempLvl == 1){
+                return getString(R.string.lbl_member_lvl_silver);
+            } else if(tempLvl == 2){
+                return getString(R.string.lbl_member_lvl_gold);
+            }
         }
+        return "";
     }
     private void initPreferences() {
         if(getIntent() != null){
@@ -94,8 +98,6 @@ public class ActivityProfileQr extends BaseActivity {
                 Toast.makeText(ActivityProfileQr.this,"We're sorry this feature currently unavailable",Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void InitializeToolbar(){

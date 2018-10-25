@@ -255,6 +255,7 @@ public class WebParams {
     public static String CONTACT_DATA = "contact_data";
     public static String CONTACT_PHONE = "contact_phone";
     public static String CONTACT_EMAIL = "contact_email";
+    public static String CONTACT_WHATSAPP = "contact_whatsapp";
 
     public static String NO_HP = "no_hp";
     public static String ACCT_NO = "acct_no";
