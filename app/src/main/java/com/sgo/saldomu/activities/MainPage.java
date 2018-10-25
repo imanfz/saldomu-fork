@@ -213,7 +213,6 @@ public class MainPage extends BaseActivity {
                             mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
                             mEditor.apply();
                         }
-
                     }
                 }
                 openFirstScreen(FIRST_SCREEN_INTRO);

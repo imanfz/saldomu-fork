@@ -535,5 +535,11 @@ public class DefineValue {
     public static String TOKEN_ID = "token_id";
     public static String IS_OWNER = "is_owner";
     public static String IS_POS = "is_pos";
+
+
+
+    public static String QR_TYPE = "qr_type";
+    public static String QR_TYPE_ONLY_SOURCE = "QR_TYPE_ONLY_SOURCE";
+
 }
 

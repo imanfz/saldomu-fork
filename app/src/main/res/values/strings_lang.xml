@@ -1239,4 +1239,11 @@
     <string name="denom_item">Item Denom</string>
     <string name="order_number">Nomor Order</string>
     <string name="lkd_benef_name">Nama Pengirim</string>
+
+
+    <string name="lbl_profil_saya">Profil Saya</string>
+    <string name="lbl_member_lvl_silver">SILVER</string>
+    <string name="lbl_member_lvl_gold">GOLD</string>
+    <string name="lbl_member_lvl_agent">AGENT</string>
+
 </resources>

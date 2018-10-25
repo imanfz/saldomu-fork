@@ -38,6 +38,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivityProfileQr;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
@@ -240,8 +241,12 @@ public class NavigationDrawMenu extends ListFragment{
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+
+                Intent i = new Intent(getActivity(), ActivityProfileQr.class);
+                startActivity(i);
+
+//                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
         });
 
