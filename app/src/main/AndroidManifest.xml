@@ -323,6 +323,13 @@
 
         <activity android:name=".BluetoothPrinter.zj.DevicesList"/>
 
+
+        <activity
+            android:name=".activities.ScanQRActivity"
+            android:enabled="true"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+
+        </activity>
         <service
             android:name=".services.AgentShopService"
             android:exported="false" />

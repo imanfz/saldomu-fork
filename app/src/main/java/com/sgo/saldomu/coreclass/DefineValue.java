@@ -539,7 +539,9 @@ public class DefineValue {
 
 
     public static String QR_TYPE = "qr_type";
-    public static String QR_TYPE_ONLY_SOURCE = "QR_TYPE_ONLY_SOURCE";
+    public static String QR_FROM_PAY_FRIENDS = "QR_FROM_PAY_FRIENDS";
+    public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
+    public static String QR_OBJ = "QR_OBJ";
 
 }
 

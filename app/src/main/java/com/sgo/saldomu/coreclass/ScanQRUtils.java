@@ -30,8 +30,8 @@ public class ScanQRUtils  {
         return instance;
     }
 
-    public static String SCAN_QR_SEPARATOR = "%";
-    public static String EQUALS_SEPARATOR = "=";
+    public static final String SCAN_QR_SEPARATOR = "%";
+    public static final String EQUALS_SEPARATOR = "=";
 
 
     public Bitmap generateQRCode(String codeQr, String sourceAcct, String sourceName){
@@ -58,16 +58,13 @@ public class ScanQRUtils  {
     private String encryptedValue(String qrTypeValue, String sourceAcctValue, String sourceNameValue){
 
         String value = "";
-        if(qrTypeValue.equalsIgnoreCase(DefineValue.QR_TYPE_ONLY_SOURCE)){
+        if(qrTypeValue.equalsIgnoreCase(DefineValue.QR_TYPE_FROM_DEFAULT_ACCOUNT)){
             value =
                     DefineValue.QR_TYPE + EQUALS_SEPARATOR + qrTypeValue + SCAN_QR_SEPARATOR +
-                    DefineValue.SOURCE_ACCT + EQUALS_SEPARATOR + sourceAcctValue + SCAN_QR_SEPARATOR +
-                    DefineValue.SOURCE_ACCT_NAME + EQUALS_SEPARATOR + sourceNameValue;
+                    DefineValue.NO_HP_BENEF + EQUALS_SEPARATOR + sourceAcctValue + SCAN_QR_SEPARATOR +
+                    DefineValue.SOURCE_ACCT_NAME + EQUALS_SEPARATOR + sourceNameValue  + SCAN_QR_SEPARATOR;
         }
         return value;
     }
-
-
-
 
 }
