@@ -352,7 +352,7 @@
     <string name="payfriends_text_fee">Biaya Admin</string>
     <string name="payfriends_text_message">Pesan</string>
     <string name="payfriends_text_otp">Kode OTP</string>
-    <string name="payfriends_hint_recipients">Ketik nama penerima di sini</string>
+    <string name="payfriends_hint_recipients">Masukkan penerima</string>
     <string name="payfriends_hint_amount">Masukkan jumlah</string>
     <string name="payfriends_hint_message">Masukkan pesan</string>
     <string name="payfriends_amount" translatable="false">* contoh 200,000</string>
@@ -408,7 +408,7 @@
     <string name="askformoney_text_amount">Jumlah</string>
     <string name="askformoney_text_message">Pesan</string>
     <string name="askformoney_text_otp">Kode OTP</string>
-    <string name="askformoney_hint_recipients">Ketik nama penerima permintaan di sini</string>
+    <string name="askformoney_hint_recipients">Masukkan penerima permintaan</string>
     <string name="askformoney_hint_amount">Masukkan jumlah</string>
     <string name="askformoney_hint_message">Masukkan pesan</string>
     <string name="askformoney_hint_otp">Masukkan kode OTP yang telah dikirimkan ke nomor ponsel Anda</string>
@@ -644,6 +644,7 @@
     <string name="level_message_notavailable">Anda belum bisa melakukan Fitur ini, Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran dibawah ini, maka Anda dapat melakukan Fitur - fitur Kirim Saldo , Minta Saldo, dan Tarik Tunai. Dan Limit Saldo anda menjadi 5 Juta.</string>
     <string name="level_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
     <string name="upgrade_agent_dialog_finish_title">Data Perbaharuan menjadi Agen telah masuk Antrian</string>
+    <string name="upgrade_dialog_finish_title">Data Perbaharuan telah masuk Antrian</string>
     <!--<string name="level_dialog_finish_message">Silahkan lakukan konfirmasi upgrade membership Anda ke Principal dengan membawa Kartu Identitas Anda sesuai dengan yang didaftarkan atau silahkan hubungi :</string>-->
     <string name="network_connection_failure_toast">Koneksi internet gagal akses ke Server</string>
 
@@ -1242,6 +1243,7 @@
 
 
     <string name="lbl_profil_saya">Profil Saya</string>
+    <string name="lbl_member_saya">Member Saya</string>
     <string name="lbl_member_lvl_silver">SILVER</string>
     <string name="lbl_member_lvl_gold">GOLD</string>
     <string name="lbl_member_lvl_agent">AGENT</string>

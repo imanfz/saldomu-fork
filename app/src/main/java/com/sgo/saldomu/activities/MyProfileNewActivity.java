@@ -389,7 +389,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
         setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.myprofile_ab_title));
+        setActionBarTitle(getString(R.string.lbl_profil_saya));
     }
 
     @Override
