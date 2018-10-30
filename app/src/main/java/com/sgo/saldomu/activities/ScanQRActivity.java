@@ -233,8 +233,10 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 //        editor.putString(QRVALUE, rawResult.getText());
 //        editor.apply();
 
-
-        if(!qrType.isEmpty()){
+        if(qrType==null) {
+            Toast.makeText(ScanQRActivity.this, "QrCode Tidak Sesuai !",Toast.LENGTH_SHORT).show();
+        }
+        else if(!qrType.isEmpty()){
             QrModel qrModel = new QrModel(benef, benefName, qrType);
             Timber.d("Isi qrOBJ name:"+qrModel.getSourceName()+" id:"+qrModel.getSourceAcct()+" type:"+qrModel.getQrType());            Intent intent = new Intent();
             intent.putExtra(DefineValue.QR_OBJ, qrModel);
