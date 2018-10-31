@@ -595,7 +595,7 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private void searchAgent() {
         Double tempLatitude = latitude;
         Double tempLongitude = longitude;
-        String extraSignature = categoryId + tempLatitude + tempLongitude;
+        String extraSignature = categoryId;
         RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
                 userPhoneID, accessKey, extraSignature);
 

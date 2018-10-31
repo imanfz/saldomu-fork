@@ -15,6 +15,7 @@ import com.sgo.saldomu.activities.AboutAppsActivity;
 import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -90,27 +91,10 @@ public class ListSettings extends ListFragment {
 
         if(isLevel1){
             switch (position) {
-                case 0:
-                    i = new Intent(getActivity(), ChangePassword.class);
-                    switchActivity(i);
-                    break;
 
-                case 1:
-                    i = new Intent(getActivity(), ChangePIN.class);
-                    switchActivity(i);
-                    break;
-
-                case 2:
-                    i = new Intent(getActivity(), AboutAppsActivity.class);
-                    switchActivity(i);
-                    break;
-            }
-        }
-        else {
-            switch (position) {
                 case 0:
-                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
-                    switchActivity(i);
+                    i = new Intent(getActivity(), MyProfileNewActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
                     break;
                 case 1:
                     i = new Intent(getActivity(), ChangePassword.class);
@@ -128,6 +112,33 @@ public class ListSettings extends ListFragment {
                     break;
             }
         }
+        else {
+            switch (position) {
+                case 0:
+                    i = new Intent(getActivity(), MyProfileNewActivity.class);
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                    break;
+
+                case 1:
+                    i = new Intent(getActivity(), RegisterSMSBankingActivity.class);
+                    switchActivity(i);
+                    break;
+                case 2:
+                    i = new Intent(getActivity(), ChangePassword.class);
+                    switchActivity(i);
+                    break;
+
+                case 3:
+                    i = new Intent(getActivity(), ChangePIN.class);
+                    switchActivity(i);
+                    break;
+
+                case 4:
+                    i = new Intent(getActivity(), AboutAppsActivity.class);
+                    switchActivity(i);
+                    break;
+            }
+        }
 
     }
 
@@ -137,6 +148,13 @@ public class ListSettings extends ListFragment {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchContent(i,name,isBackstack);
+    }
+    private void switchActivity(Intent mIntent,int j){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent,j);
     }
 
     private void switchActivity(Intent mIntent){

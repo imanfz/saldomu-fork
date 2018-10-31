@@ -101,13 +101,15 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private Button btnNext, btnBack;
     private SMSclass smSclass;
     private SMSDialog smsDialog;
-    private Boolean isSMSBanking = false, isSimExist = false;
+    ConfirmationDialog confirmationDialog;
+    Dialog dialog;
+    private Boolean isSMSBanking = false, isSimExist = false, isOwner = false;
     private BBSTransaksiInformasi.ActionListener actionListener;
     private String comm_code, member_code, source_product_code="", source_product_type,
             benef_product_code, benef_product_name, benef_product_type, source_product_h2h,
             api_key, callback_url, source_product_name, productValue="", comm_id, city_id, amount,
             transaksi, no_benef, name_benef,city_name,no_source, benef_product_value_token, source_product_value_token, key_code,
-            noHPMemberLocation = "";
+            noHPMemberLocation = "", message, lkd_product_code;
     Realm realmBBS;
     CashInHistoryModel cashInHistoryModel;
     CashOutHistoryModel cashOutHistoryModel;
@@ -428,9 +430,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     private void SubmitAction(boolean isCashin){
         if (inputValidation()) {
-            ConfirmationDialog dialog;
             if (isCashin){
-                dialog = ConfirmationDialog.newDialog(this
+                confirmationDialog = ConfirmationDialog.newDialog(this
                         , transaksi
                         , amount
                         , source_product_name
@@ -439,7 +440,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         , etRemark.getText().toString(), name_benef,
                         etNoHp.getText().toString());
             }else {
-                dialog = ConfirmationDialog.newDialog(this
+                confirmationDialog = ConfirmationDialog.newDialog(this
                         , transaksi
                         , amount
                         , source_product_name
@@ -451,7 +452,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 //                getActivity().getFragmentManager().beginTransaction().add(dialog, "ConfirmationDialog").commit();
 //            else
 //                getChildFragmentManager().beginTransaction().add(dialog,"ConfirmationDialog").commit();
-            dialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
+            confirmationDialog.show(getActivity().getSupportFragmentManager(), "ConfirmationDialog");
         }
     }
 
@@ -556,6 +557,9 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
+            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                    +MyApiClient.CCY_VALUE+amount;
+
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_C2A,
                     userPhoneID, accessKey, extraSignature);
             params.put(WebParams.COMM_ID, comm_id);
@@ -571,7 +575,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             if (!key_code.equals("")) {
                 params.put(WebParams.CUST_ID, key_code);
             }
-            if (benef_product_code.equalsIgnoreCase("TCASH") || benef_product_code.equalsIgnoreCase("MANDIRILKD")) {
+            if (benef_product_code.equalsIgnoreCase("TCASH")) {
                 params.put(WebParams.BENEF_PRODUCT_VALUE_TOKEN, benef_product_value_token);
             }
 
@@ -590,7 +594,279 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             }
 
             Log.d("params insert c2a", params.toString());
-            MyApiClient.sentGlobalBBSInsertC2A(getActivity(),params, new JsonHttpResponseHandler(){
+        MyApiClient.sentGlobalBBSInsertC2A(getActivity(),params, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
+                btnNext.setEnabled(true);
+                progdialog.dismiss();
+
+                try {
+                    String code = response.getString(WebParams.ERROR_CODE);
+                    Timber.d("isi response sent insert C2A:"+response.toString());
+                    if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") ) {
+                        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+                        SecurePreferences.Editor mEditor = prefs.edit();
+                        mEditor.remove(DefineValue.AOD_TX_ID);
+                        mEditor.apply();
+
+                        confirmationDialog.dismiss();
+
+//                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
+                        if(code.equals("0282")) {
+                            if (source_product_code.equalsIgnoreCase("TCASH")) {
+                                TCASHValidation = true;
+                            }
+                            else
+                                MandiriLKDValidation=true;
+                        }else code_success=true;
+
+                        if(isSMSBanking) {
+                            if(smsDialog == null){
+                                smsDialog = new SMSDialog(getActivity(), null);
+                            }
+
+                            smsDialog.setListener(new SMSDialog.DialogButtonListener() {
+                                @Override
+                                public void onClickOkButton(View v, boolean isLongClick) {
+                                    if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
+                                        smsDialog.sentSms();
+                                        RegSimCardReceiver(true);
+                                    } else {
+                                        EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_send_sms),
+                                                RC_SEND_SMS, Manifest.permission.SEND_SMS);
+                                    }
+                                }
+
+                                @Override
+                                public void onClickCancelButton(View v, boolean isLongClick) {
+                                    if(progdialog.isShowing())
+                                        progdialog.dismiss();
+                                }
+
+                                @Override
+                                public void onSuccess(int user_is_new) {
+
+                                }
+
+                                @Override
+                                public void onSuccess(String product_value) {
+                                    productValue = product_value;
+                                    smsDialog.dismiss();
+                                    smsDialog.reset();
+                                    try {
+                                        sentDataReqToken(response.getString(WebParams.TX_ID),
+                                                response.getString(WebParams.TX_PRODUCT_CODE),
+                                                response.getString(WebParams.TX_PRODUCT_NAME),
+                                                response.getString(WebParams.TX_BANK_CODE),
+                                                response.getString(WebParams.AMOUNT),
+                                                response.getString(WebParams.ADMIN_FEE),
+                                                response.getString(WebParams.TOTAL_AMOUNT),
+                                                response.getString(WebParams.TX_BANK_NAME),
+                                                response.getString(WebParams.MAX_RESEND_TOKEN),
+                                                response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                                response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+
+                            if(isSimExist)
+                                smsDialog.show();
+                        }
+                        else if(source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
+                            if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
+                                    && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
+                                sentDataReqToken(response.getString(WebParams.TX_ID),
+                                        response.getString(WebParams.TX_PRODUCT_CODE),
+                                        response.getString(WebParams.TX_PRODUCT_NAME),
+                                        response.getString(WebParams.TX_BANK_CODE),
+                                        response.getString(WebParams.AMOUNT),
+                                        response.getString(WebParams.ADMIN_FEE),
+                                        response.getString(WebParams.TOTAL_AMOUNT),
+                                        response.getString(WebParams.TX_BANK_NAME),
+                                        response.getString(WebParams.MAX_RESEND_TOKEN),
+                                        response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                        response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
+                            else changeToConfirmCashIn
+                                    (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
+                                            response.getString(WebParams.TX_PRODUCT_NAME),
+                                            response.getString(WebParams.TX_BANK_CODE),
+                                            response.getString(WebParams.AMOUNT),
+                                            response.getString(WebParams.ADMIN_FEE),
+                                            response.getString(WebParams.TOTAL_AMOUNT),
+                                            response.getString(WebParams.TX_BANK_NAME),
+                                            response.getString(WebParams.MAX_RESEND_TOKEN),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
+                        }
+
+                        else{
+                            changeToConfirmCashIn
+                                    (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
+                                            response.getString(WebParams.TX_PRODUCT_NAME),
+                                            response.getString(WebParams.TX_BANK_CODE),
+                                            response.getString(WebParams.AMOUNT),
+                                            response.getString(WebParams.ADMIN_FEE),
+                                            response.getString(WebParams.TOTAL_AMOUNT),
+                                            response.getString(WebParams.TX_BANK_NAME),
+                                            response.getString(WebParams.MAX_RESEND_TOKEN),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
+                                            response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
+                        }
+
+                    } else if (code.equals("0295")) {
+                       message = response.getString(WebParams.ERROR_MESSAGE);
+                       showDialogLimit();
+                    } else if (code.equals("0296")) {
+                        message = response.getString(WebParams.ERROR_MESSAGE);
+                        lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
+                        dialogJoinLKD();
+                    }else if (code.equals(WebParams.LOGOUT_CODE)) {
+                        Timber.d("isi response autologout:" + response.toString());
+                        String message = response.getString(WebParams.ERROR_MESSAGE);
+                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                        test.showDialoginActivity(getActivity(), message);
+                    }else {
+                        Timber.d("isi error sent insert C2A:"+response.toString());
+                        String code_msg = response.getString(WebParams.ERROR_MESSAGE);
+                        Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                failure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                failure(throwable);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                failure(throwable);
+            }
+
+            private void failure(Throwable throwable){
+                btnNext.setEnabled(true);
+                if(MyApiClient.PROD_FAILURE_FLAG)
+                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(getActivity(), throwable.toString(), Toast.LENGTH_SHORT).show();
+
+                if(progdialog.isShowing())
+                    progdialog.dismiss();
+
+                Timber.w("Error Koneksi sent insert C2A:"+throwable.toString());
+            }
+
+        });
+    }catch (Exception e){
+        Timber.d("httpclient:"+e.getMessage());
+    }
+    }
+
+    public void showDialogLimit(){
+        dialog = DefinedDialog.MessageDialog(getActivity(), this.getString(R.string.limit_dialog_title),
+                message, new DefinedDialog.DialogButtonListener() {
+                    @Override
+                    public void onClickButton(View v, boolean isLongClick) {
+                       dialog.dismiss();
+                    }
+                }
+        );
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+
+        dialog.show();
+    }
+
+    public void dialogJoinLKD (){
+        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder1.setTitle(R.string.join_lkd);
+        builder1.setMessage(message);
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        joinMemberLKD();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        getActivity().finish();
+                    }
+                });
+
+        android.support.v7.app.AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    public void dialogBenefLKD (final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
+ final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name){
+        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder1.setTitle(R.string.c2a_lkd);
+        builder1.setMessage("Transfer ke : ");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Diri Sendiri",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isOwner = true;
+                        changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+                                            _benef_acct_no, _benef_acct_name);
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Orang Lain",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        isOwner = false;
+                        changeToDataMandiriLKD(_tx_id, _product_code, _product_name, _bank_code,
+                                _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+                                _benef_acct_no, _benef_acct_name);
+                    }
+                });
+
+        android.support.v7.app.AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    private void joinMemberLKD()
+    {
+        try {
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            progdialog.show();
+
+            extraSignature = memberIDLogin + lkd_product_code;
+
+            RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_BBS_MANDIRI_LKD,
+                    userPhoneID, accessKey, extraSignature);
+            params.put(WebParams.COMM_ID, comm_id);
+            params.put(WebParams.USER_ID, userPhoneID);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
+            params.put(WebParams.PRODUCT_CODE, lkd_product_code);
+
+            Timber.d("params send data member mandiri LKD:"+ params.toString());
+            MyApiClient.sentDataMemberMandiriLKD(getActivity(),params, new JsonHttpResponseHandler(){
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
                     btnNext.setEnabled(true);
@@ -598,107 +874,20 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
-                        if (code.equals(WebParams.SUCCESS_CODE) || code.equals("0282") ) {
-                            Timber.d("isi response sent insert C2A:"+response.toString());
-
-                            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-                            SecurePreferences.Editor mEditor = prefs.edit();
-                            mEditor.remove(DefineValue.AOD_TX_ID);
-                            mEditor.apply();
-
-//                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
-                            if(code.equals("0282")) {
-                                if (source_product_code.equalsIgnoreCase("TCASH")) {
-                                    TCASHValidation = true;
-                                }
-                                else
-                                    MandiriLKDValidation=true;
-                            }else code_success=true;
-
-                            if(isSMSBanking) {
-                                if(smsDialog == null){
-                                    smsDialog = new SMSDialog(getActivity(), null);
-                                }
-
-                                smsDialog.setListener(new SMSDialog.DialogButtonListener() {
-                                    @Override
-                                    public void onClickOkButton(View v, boolean isLongClick) {
-                                        if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.SEND_SMS)) {
-                                            smsDialog.sentSms();
-                                            RegSimCardReceiver(true);
-                                        } else {
-                                            EasyPermissions.requestPermissions(BBSTransaksiInformasi.this, getString(R.string.rationale_send_sms),
-                                                    RC_SEND_SMS, Manifest.permission.SEND_SMS);
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onClickCancelButton(View v, boolean isLongClick) {
-                                        if(progdialog.isShowing())
-                                            progdialog.dismiss();
-                                    }
-
-                                    @Override
-                                    public void onSuccess(int user_is_new) {
-
-                                    }
-
-                                    @Override
-                                    public void onSuccess(String product_value) {
-                                        productValue = product_value;
-                                        smsDialog.dismiss();
-                                        smsDialog.reset();
-                                        try {
-                                            sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                                    response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                                    response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                                    response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                                    response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
-                                                    response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-
-                                if(isSimExist)
-                                    smsDialog.show();
-                            }
-                            else if(source_product_h2h.equalsIgnoreCase("Y") && source_product_type.equalsIgnoreCase(DefineValue.EMO)) {
-                                if (code.equals(WebParams.SUCCESS_CODE) && !source_product_code.equalsIgnoreCase("TCASH")
-                                        && !source_product_code.equalsIgnoreCase("MANDIRILKD"))
-                                    sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                        response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                        response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                        response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                        response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
-                                        response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
-                                else changeToConfirmCashIn
-                                        (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                                response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                                response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                                response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                                response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
-                                                response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
-                            }
-                            else {
-                                changeToConfirmCashIn
-                                        (response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                        response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                        response.getString(WebParams.AMOUNT), response.getString(WebParams.ADMIN_FEE),
-                                        response.getString(WebParams.TOTAL_AMOUNT), response.getString(WebParams.TX_BANK_NAME),
-                                        response.getString(WebParams.MAX_RESEND_TOKEN), response.getString(WebParams.BENEF_PRODUCT_VALUE_CODE),
-                                        response.getString(WebParams.BENEF_PRODUCT_VALUE_NAME));
-                            }
-
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                        Timber.d("isi response sent data member mandiri lkd:"+response.toString());
+                        if (code.equals(WebParams.SUCCESS_CODE)) {
+                            if (transaksi.equalsIgnoreCase("Setor Tunai"))
+                            {
+                                sentInsertC2A();
+                            }else
+                                sentInsertA2C();
+                        }else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
                             test.showDialoginActivity(getActivity(), message);
                         }else {
-                            Timber.d("isi error sent insert C2A:"+response.toString());
+                            Timber.d("isi error send data member mandiri LKD:"+response.toString());
                             String code_msg = response.getString(WebParams.ERROR_MESSAGE);
                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                         }
@@ -735,7 +924,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                     if(progdialog.isShowing())
                         progdialog.dismiss();
 
-                    Timber.w("Error Koneksi sent insert C2A:"+throwable.toString());
+                    Timber.w("Error Koneksi send data member mandiri LKD:"+throwable.toString());
                 }
 
             });
@@ -750,8 +939,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-//            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
-//                    +MyApiClient.CCY_VALUE+amount;
+            extraSignature = comm_code+member_code+source_product_type+source_product_code+benef_product_type+benef_product_code
+                    +MyApiClient.CCY_VALUE+amount;
 
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin, MyApiClient.LINK_GLOBAL_BBS_INSERT_A2C,
                     userPhoneID, accessKey, extraSignature);
@@ -788,21 +977,35 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                     try {
                         String code = response.getString(WebParams.ERROR_CODE);
+                        Timber.d("isi response sent insert a2c:"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
-                            Timber.d("isi response sent insert a2c:"+response.toString());
-
                             SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
                             SecurePreferences.Editor mEditor = prefs.edit();
                             mEditor.remove(DefineValue.AOD_TX_ID);
                             mEditor.apply();
                             mEditor.commit();
 
-                            sentDataReqToken(response.getString(WebParams.TX_ID), response.getString(WebParams.TX_PRODUCT_CODE),
-                                    response.getString(WebParams.TX_PRODUCT_NAME), response.getString(WebParams.TX_BANK_CODE),
-                                    response.getString(WebParams.AMOUNT), response.getString(WebParams.TX_BANK_NAME), null, null,
-                                    null, null, null);
 
-                        } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                            confirmationDialog.dismiss();
+
+                            sentDataReqToken(response.getString(WebParams.TX_ID),
+                                    response.getString(WebParams.TX_PRODUCT_CODE),
+                                    response.getString(WebParams.TX_PRODUCT_NAME),
+                                    response.getString(WebParams.TX_BANK_CODE),
+                                    response.getString(WebParams.AMOUNT),
+                                    response.getString(WebParams.ADMIN_FEE),
+                                    response.getString(WebParams.TOTAL_AMOUNT),
+                                    response.getString(WebParams.TX_BANK_NAME),
+                                    null,
+                                    null,
+                                    null);
+                        }
+                        else if (code.equals("0296")) {
+                            message = response.getString(WebParams.ERROR_MESSAGE);
+                            lkd_product_code = response.getString(WebParams.LKD_PRODUCT_CODE);
+                            dialogJoinLKD();
+                        }
+                        else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:" + response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
                             AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -854,9 +1057,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         }
     }
 
-    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                                 final String _amount, final String fee, final String totalAmount, final String _bank_name,
-                                 final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
+    public void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code, final String _amount, final String _fee, final String _totalAmount, final String _bank_name, final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
         try{
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
@@ -886,19 +1087,26 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         String code = response.getString(WebParams.ERROR_CODE);
                         Timber.d("response reqtoken :"+response.toString());
                         if (code.equals(WebParams.SUCCESS_CODE)) {
+                            confirmationDialog.dismiss();
                             if(transaksi.equalsIgnoreCase(getString(R.string.cash_in))) {
                                 if (isSMSBanking)
                                     showDialog(_tx_id, _product_code, _product_name, _bank_code,
-                                            _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                                             _benef_acct_no, _benef_acct_name);
+//                                else if (benef_product_code.equalsIgnoreCase("MANDIRILKD"))
+//                                {
+//                                    dialogBenefLKD(_tx_id, _product_code, _product_name, _bank_code,
+//                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
+//                                            _benef_acct_no, _benef_acct_name);
+//                                }
                                 else
                                     changeToConfirmCashIn(_tx_id, _product_code, _product_name, _bank_code,
-                                            _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                                            _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                                             _benef_acct_no, _benef_acct_name);
                             }
                             else {
                                 changeToConfirmCashout(_tx_id, _product_code, _product_name, _bank_code,
-                                        _amount, _bank_name);
+                                        _amount, _fee, _totalAmount, _bank_name);
                             }
                         }
                         else if(code.equals(WebParams.LOGOUT_CODE)){
@@ -988,7 +1196,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void showDialog(final String _tx_id, final String _product_code, final String _product_name, final String _bank_code,
-                            final String _amount, final String fee, final String totalAmount, final String _bank_name,
+                            final String _amount, final String _fee, final String _totalAmount, final String _bank_name,
                             final String _max_resend_token, final String _benef_acct_no, final String _benef_acct_name) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
@@ -1009,7 +1217,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
             @Override
             public void onClick(View view) {
                 changeToConfirmCashIn(_tx_id, _product_code, _product_name, _bank_code,
-                        _amount, fee, totalAmount, _bank_name, _max_resend_token,
+                        _amount, _fee, _totalAmount, _bank_name, _max_resend_token,
                         _benef_acct_no, _benef_acct_name);
                 dialog.dismiss();
             }
@@ -1019,7 +1227,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     }
 
     private void changeToConfirmCashIn(String _tx_id, String _product_code, String _product_name, String _bank_code,
-                                       String _amount, String fee, String totalAmount, String _bank_name, String _max_resend_token,
+                                       String _amount, String _fee, String _totalAmount, String _bank_name, String _max_resend_token,
                                        String _benef_acct_no, String _benef_acct_name) {
 
         Bundle mArgs = new Bundle();
@@ -1032,11 +1240,11 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.BANK_CODE, _bank_code);
         mArgs.putString(DefineValue.BANK_NAME, _bank_name);
         mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
-        mArgs.putString(DefineValue.FEE, fee);
+        mArgs.putString(DefineValue.FEE, _fee);
         mArgs.putString(DefineValue.COMMUNITY_CODE,comm_code);
         mArgs.putString(DefineValue.TX_ID,_tx_id);
         mArgs.putString(DefineValue.AMOUNT,_amount);
-        mArgs.putString(DefineValue.TOTAL_AMOUNT,totalAmount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
         mArgs.putString(DefineValue.SHARE_TYPE,"1");
         mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
         mArgs.putString(DefineValue.API_KEY, api_key);
@@ -1067,6 +1275,57 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                 .replace(R.id.bbsTransaksiFragmentContent , mFrag, BBSCashInConfirm.TAG).commit();
         ToggleKeyboard.hide_keyboard(act);
 //        switchFragment(mFrag, getString(R.string.cash_in), true);
+    }
+
+    private void changeToDataMandiriLKD(String _tx_id, String _product_code, String _product_name, String _bank_code,
+                                       String _amount, String _fee, String _totalAmount, String _bank_name, String _max_resend_token,
+                                       String _benef_acct_no, String _benef_acct_name) {
+
+        Bundle mArgs = new Bundle();
+        if(benef_product_type.equalsIgnoreCase(DefineValue.ACCT)) {
+            mArgs.putString(DefineValue.BENEF_CITY, city_name);
+        }
+        mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
+        mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type);
+        mArgs.putString(DefineValue.PRODUCT_CODE, _product_code);
+        mArgs.putString(DefineValue.BANK_CODE, _bank_code);
+        mArgs.putString(DefineValue.BANK_NAME, _bank_name);
+        mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
+        mArgs.putString(DefineValue.FEE, _fee);
+        mArgs.putString(DefineValue.COMMUNITY_CODE,comm_code);
+        mArgs.putString(DefineValue.TX_ID,_tx_id);
+        mArgs.putString(DefineValue.AMOUNT,_amount);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT,_totalAmount);
+        mArgs.putString(DefineValue.SHARE_TYPE,"1");
+        mArgs.putString(DefineValue.CALLBACK_URL,callback_url);
+        mArgs.putString(DefineValue.API_KEY, api_key);
+        mArgs.putString(DefineValue.COMMUNITY_ID, comm_id);
+        mArgs.putString(DefineValue.BANK_BENEF, benef_product_name);
+        mArgs.putString(DefineValue.NAME_BENEF, _benef_acct_name);
+        mArgs.putString(DefineValue.NO_BENEF, _benef_acct_no);
+        mArgs.putString(DefineValue.TYPE_BENEF, benef_product_type);
+        mArgs.putString(DefineValue.NO_HP_BENEF, etNoHp.getText().toString());
+        mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());
+        mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
+        mArgs.putString(DefineValue.MAX_RESEND, _max_resend_token);
+        mArgs.putString(DefineValue.TRANSACTION, transaksi);
+        mArgs.putString(DefineValue.BENEF_PRODUCT_CODE, benef_product_code);
+        mArgs.putBoolean(DefineValue.IS_OWNER, isOwner);
+        if (TCASHValidation!=null)
+            mArgs.putBoolean(DefineValue.TCASH_HP_VALIDATION, TCASHValidation);
+        if (MandiriLKDValidation!=null)
+            mArgs.putBoolean(DefineValue.MANDIRI_LKD_VALIDATION, MandiriLKDValidation);
+        if (code_success!=null)
+            mArgs.putBoolean(DefineValue.CODE_SUCCESS, code_success);
+        btnNext.setEnabled(true);
+        cashInHistory();
+
+        Fragment mFrag = new FragDataMandiriLKD();
+        mFrag.setArguments(mArgs);
+
+        getFragmentManager().beginTransaction().addToBackStack(TAG)
+                .replace(R.id.bbsTransaksiFragmentContent , mFrag, FragDataMandiriLKD.TAG).commit();
+        ToggleKeyboard.hide_keyboard(act);
     }
 
     private void cashInHistory ()
@@ -1103,7 +1362,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
 
     private void changeToConfirmCashout(String _tx_id, String _product_code, String _product_name, String _bank_code,
-                                        String _amount, String _bank_name) {
+                                        String _amount, String _fee, String _totalAmount, String _bank_name) {
 
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
@@ -1124,6 +1383,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         mArgs.putString(DefineValue.REMARK, etRemark.getText().toString());
         mArgs.putString(DefineValue.SOURCE_ACCT, source_product_name);
         mArgs.putString(DefineValue.TRANSACTION, transaksi);
+        mArgs.putString(DefineValue.FEE, _fee);
+        mArgs.putString(DefineValue.TOTAL_AMOUNT, _totalAmount);
         btnNext.setEnabled(true);
         cashOutHistory();
 

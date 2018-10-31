@@ -63,6 +63,7 @@ import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -212,7 +213,6 @@ public class MainPage extends BaseActivity {
                             mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
                             mEditor.apply();
                         }
-
                     }
                 }
                 openFirstScreen(FIRST_SCREEN_INTRO);
@@ -236,15 +236,15 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin(){
-        Boolean isSimSame = true;
-        if (BuildConfig.FLAVOR.equals("production")){
-            if(smSclass == null)
-                smSclass = new SMSclass(this);
-
-            isSimSame = smSclass.isSimSameSP();
-        }
-
-        if(isSimSame) {
+//        Boolean isSimSame = true;
+//        if (BuildConfig.FLAVOR.equals("production")){
+//            if(smSclass == null)
+//                smSclass = new SMSclass(this);
+//
+//            isSimSame = smSclass.isSimSameSP();
+//        }
+//
+//        if(isSimSame) {
 
             startLocationService();
 
@@ -302,10 +302,10 @@ public class MainPage extends BaseActivity {
                 changeActivityNextLogin(notifDataNextLogin);
 
             }
-        }
-        else {
-            Logout(FIRST_SCREEN_INTRO);
-        }
+//        }
+//        else {
+//            Logout(FIRST_SCREEN_INTRO);
+//        }
     }
 
     void changeActivityNextLogin(String jsonStr) {
@@ -912,6 +912,7 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
+            callBBSBirthPlaceService();
         }else {
 
         }
@@ -944,6 +945,11 @@ public class MainPage extends BaseActivity {
     private void callBBSCityService(){
         Timber.d("Panggil service BBS City");
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
+    }
+
+    private void callBBSBirthPlaceService(){
+        Timber.d("Panggil service BBS Birth Place");
+        UpdateBBSBirthPlace.startUpdateBBSBirthPlace(MainPage.this);
     }
 
     private void showChangePassword(){

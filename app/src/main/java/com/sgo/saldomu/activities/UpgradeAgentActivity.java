@@ -520,6 +520,8 @@ public class UpgradeAgentActivity extends BaseActivity {
                             mEdit.remove(DefineValue.MODEL_NOTIF);
                             mEdit.apply();
                             DialogSuccessUploadPhoto();
+
+                            finish();
                         } else if (code.equals(WebParams.LOGOUT_CODE)) {
                             Timber.d("isi response autologout:"+response.toString());
                             String message = response.getString(WebParams.ERROR_MESSAGE);
@@ -589,7 +591,7 @@ public class UpgradeAgentActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-        dialognya.show();
+//        dialognya.show();
     }
 
     @Override

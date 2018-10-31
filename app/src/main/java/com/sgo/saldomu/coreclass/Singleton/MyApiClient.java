@@ -222,6 +222,7 @@ public class MyApiClient {
 
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
+    public static String LINK_BBS_BIRTH_PLACE;
     public static String LINK_GLOBAL_BBS_COMM;
     public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
@@ -262,6 +263,8 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
+    public static String LINK_BBS_SEND_DATA_LKD;
+    public static String LINK_BBS_MANDIRI_LKD;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -396,6 +399,7 @@ public class MyApiClient {
         LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
         LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
         LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_BBS_BIRTH_PLACE = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
         LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
@@ -415,6 +419,8 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
+        LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
+        LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
@@ -544,9 +550,9 @@ public class MyApiClient {
         UUID uuidnya = getUUID();
         String dtime = DateTimeFormat.getCurrentDateTime();
         String msgnya = uuidnya+dtime+BuildConfig.APP_ID+webServiceName+ commID + user_id + extraSignature;
-//        Timber.d("isi access_key :" + access_key);
+        Timber.d("isi access_key :" + access_key);
 
-//        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
+        Timber.d("isisnya signature :"+  webServiceName +" / "+commID+" / " +user_id);
 
         String hash = SHA.SHA256(access_key,msgnya);
 
@@ -1600,6 +1606,23 @@ public class MyApiClient {
         post(mContext, LINK_GET_DENOM_INVOKE, params, responseHandler);
     }
 
+    public static void getBBSSendDataLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs send data lkd: %1$s ",LINK_BBS_SEND_DATA_LKD);
+        post(mContext, LINK_BBS_SEND_DATA_LKD, params, responseHandler);
+    }
+
+    public static void sentDataMemberMandiriLKD(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address bbs data member mandiri lkd: %1$s ",LINK_BBS_MANDIRI_LKD);
+        post(mContext, LINK_BBS_MANDIRI_LKD, params, responseHandler);
+    }
+
+    public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address getBBSBirthPlace: %1$s ",LINK_BBS_BIRTH_PLACE);
+        if(isSync)
+            postSync(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+        else
+            post(mContext,LINK_BBS_BIRTH_PLACE, params, responseHandler);
+    }
     //get Data------------------------------------------------------------------------------------------
 
 
