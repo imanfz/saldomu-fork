@@ -23,9 +23,9 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetAppVersionModel;
@@ -80,13 +80,8 @@ public class UtilsLoader {
 
                 Timber.d("isi params get Balance Loader:" + params.toString());
                 if (!member_id.isEmpty()) {
-                    RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_SALDO, params,
-                            new ErrorListener() {
-                                @Override
-                                public void onError(Throwable e) {
-                                    mListener.onFailure(e.toString());
-                                }
-
+                    RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_SALDO, params,
+                            new ResponseListener() {
                                 @Override
                                 public void onResponses(JsonObject object) {
                                     Gson gson = new Gson();
@@ -133,7 +128,17 @@ public class UtilsLoader {
                                         mListener.onFail(bundle);
                                     }
                                 }
-                            });
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    mListener.onFailure(throwable.toString());
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            } );
                 }
             }
         }catch (Exception e){

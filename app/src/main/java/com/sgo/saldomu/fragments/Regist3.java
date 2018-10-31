@@ -37,7 +37,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CreatePassModel;
 import com.sgo.saldomu.models.retrofit.CreatePinModel;
 import com.sgo.saldomu.models.retrofit.RegModel;
@@ -57,11 +57,11 @@ import timber.log.Timber;
 public class Regist3 extends BaseFragment {
 
     SecurePreferences sp;
-    Button btnResend, btnSubmit,btnCancel;
-    String noHPValue,namaValue,emailValue,authType,custID, token, pass, confPass, memberID, emailToken;
+    Button btnResend, btnSubmit, btnCancel;
+    String noHPValue, namaValue, emailValue, authType, custID, token, pass, confPass, memberID, emailToken;
     int max_resend_sms;// max_resend_email;
     EditText TokenValue;
-    TextView mNoHPValue,mNamaValue,mEmail, txtToken;
+    TextView mNoHPValue, mNamaValue, mEmail, txtToken;
     ProgressDialog progdialog;
     View v, layout_resend;
     CircleStepView mCircleStepView;
@@ -83,11 +83,11 @@ public class Regist3 extends BaseFragment {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
         Bundle args = getArguments();
-        if(args != null) {
+        if (args != null) {
             noHPValue = args.getString(DefineValue.CUST_PHONE, "");
             namaValue = args.getString(DefineValue.CUST_NAME, "");
             emailValue = args.getString(DefineValue.CUST_EMAIL, "-");
-            emailToken = args.getString(DefineValue.TOKEN,"");
+            emailToken = args.getString(DefineValue.TOKEN, "");
 //            max_resend_sms = Integer.parseInt(args.getString(DefineValue.MAX_RESEND, "3"));
 //            max_resend_email = Integer.parseInt(args.getString(DefineValue.MAX_RESEND,"3"));
             max_resend_sms = 3;
@@ -96,9 +96,12 @@ public class Regist3 extends BaseFragment {
 
         txtToken = v.findViewById(R.id.token_text);
         TokenValue = v.findViewById(R.id.reg2_token_value);
-        mNoHPValue = v.findViewById(R.id.reg2_noHP_value); mNoHPValue.setText(noHPValue);
-        mNamaValue = v.findViewById(R.id.reg2_nama_value); mNamaValue.setText(namaValue);
-        mEmail = v.findViewById(R.id.reg2_email_value);mEmail.setText(emailValue);
+        mNoHPValue = v.findViewById(R.id.reg2_noHP_value);
+        mNoHPValue.setText(noHPValue);
+        mNamaValue = v.findViewById(R.id.reg2_nama_value);
+        mNamaValue.setText(namaValue);
+        mEmail = v.findViewById(R.id.reg2_email_value);
+        mEmail.setText(emailValue);
         btnSubmit = v.findViewById(R.id.btn_reg2_verification);
         btnCancel = v.findViewById(R.id.btn_reg2_cancel);
         btnResend = v.findViewById(R.id.btn_reg2_resend_token);
@@ -106,13 +109,13 @@ public class Regist3 extends BaseFragment {
 
         TokenValue.requestFocus();
 
-        if(max_resend_sms != 0) {
+        if (max_resend_sms != 0) {
             btnResend.setText(getString(R.string.reg3_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
         }
 //        else if(max_resend_email > 0)  {
 //            btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
 //        }
-        else if(max_resend_sms == 0) {
+        else if (max_resend_sms == 0) {
             layout_resend.setVisibility(View.GONE);
             showDialogEmptyToken();
         }
@@ -127,24 +130,24 @@ public class Regist3 extends BaseFragment {
     Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(inputValidation()){
-                        sentData();
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (inputValidation()) {
+                    sentData();
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(max_resend_sms!=0)requestResendToken("Y","N");
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (max_resend_sms != 0) requestResendToken("Y", "N");
 //                else if(max_resend_email > 0) requestResendToken("N","Y");
 //                else Toast.makeText(getActivity(),getString(R.string.reg2_notif_max_resend_token_empty),Toast.LENGTH_LONG).show();
-            }
-            else DefinedDialog.showErrorDialog(getActivity(),getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
@@ -171,7 +174,7 @@ public class Regist3 extends BaseFragment {
         }
     };
 
-    private void switchActivity(Intent i){
+    private void switchActivity(Intent i) {
         if (getActivity() == null)
             return;
 
@@ -180,7 +183,7 @@ public class Regist3 extends BaseFragment {
     }
 
 
-    private void switchActivityPIN(Intent i){
+    private void switchActivityPIN(Intent i) {
         /*if (getActivity() == null)
             return;
 
@@ -193,7 +196,7 @@ public class Regist3 extends BaseFragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if(max_resend_sms != 0)
+                if (max_resend_sms != 0)
                     btnResend.setText(getString(R.string.reg3_btn_text_resend_token_sms) + " (" + max_resend_sms + ")");
 //                else if(max_resend_email > 0)
 //                    btnResend.setText(getString(R.string.reg2_btn_text_resend_token_email) + " (" + max_resend_email + ")");
@@ -204,11 +207,11 @@ public class Regist3 extends BaseFragment {
         });
     }
 
-    CountDownTimer countDownTimer = new CountDownTimer(60000,1000) {
+    CountDownTimer countDownTimer = new CountDownTimer(60000, 1000) {
         @Override
         public void onTick(long l) {
             DateTime time = new DateTime(l);
-            btnResend.setText(getString(R.string.btnresend_text_try_again_after,time.toString("mm:ss")));
+            btnResend.setText(getString(R.string.btnresend_text_try_again_after, time.toString("mm:ss")));
         }
 
         @Override
@@ -220,8 +223,8 @@ public class Regist3 extends BaseFragment {
 
 
     //Resend Token
-    public void requestResendToken(final String is_sms, final String is_email){
-        try{
+    public void requestResendToken(final String is_sms, final String is_email) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
@@ -231,39 +234,34 @@ public class Regist3 extends BaseFragment {
             TokenValue.setEnabled(false);
 
             HashMap<String, Object> params = new HashMap<>();
-            params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
-            params.put(WebParams.CUST_PHONE,noHPValue);
-            params.put(WebParams.CUST_NAME,namaValue);
+            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
+            params.put(WebParams.CUST_PHONE, noHPValue);
+            params.put(WebParams.CUST_NAME, namaValue);
             params.put(WebParams.CUST_EMAIL, emailValue);
             params.put(WebParams.EMAIL_TOKEN, emailToken);
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.IS_SMS, is_sms);
             params.put(WebParams.IS_EMAIL, is_email);
 
-            Timber.d("isi params resend token:"+params.toString());
+            Timber.d("isi params resend token:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP2, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            btnCancel.setEnabled(true);
-                            btnSubmit.setEnabled(true);
-                            TokenValue.setEnabled(true);
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
                                 AlertDialog dialogToken;
-                                if(is_sms.equalsIgnoreCase("Y")) {
+                                if (is_sms.equalsIgnoreCase("Y")) {
                                     --max_resend_sms;
 
                                     if (max_resend_sms == 0) {
                                         layout_resend.setVisibility(View.GONE);
                                         showDialogEmptyToken();
-                                    }
-                                    else {
+                                    } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                         builder.setMessage(getString(R.string.reg3_dialog_token_message_sms))
                                                 .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -277,49 +275,38 @@ public class Regist3 extends BaseFragment {
                                         countDownTimer.start();
                                     }
                                 }
-//                            else if(is_email.equalsIgnoreCase("Y")) {
-//                                --max_resend_email;
-//                                txtToken.setText(getString(R.string.kode_token_email));
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                                builder.setMessage(getString(R.string.reg2_dialog_token_message_email))
-//                                        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-//                                            @Override
-//                                            public void onClick(DialogInterface dialog, int which) {
-//                                                dialog.dismiss();
-//                                            }
-//                                        });
-//                                dialogToken = builder.create();
-//                                dialogToken.show();
-//                            }
-
-//                            Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
                                 changeTextBtnSub();
 
                             } else {
-                                btnResend.setEnabled(true);
+
                                 code = model.getError_message();
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            btnResend.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            btnCancel.setEnabled(true);
+                            btnSubmit.setEnabled(true);
+                            TokenValue.setEnabled(true);
 
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
-
-//                        if (max_resend_email == 0) {
-//                            btnResend.setEnabled(false);
-//                            Toast.makeText(getActivity(), getString(R.string.notif_max_resend_token_empty), Toast.LENGTH_SHORT).show();
-//                        }
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
     //Submit
-    public void sentData(){
-        try{
+    public void sentData() {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
@@ -333,18 +320,12 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.DATE_TIME, DateTimeFormat.getCurrentDateTime());
             params.put(WebParams.SMS_TOKEN, TokenValue.getText().toString());
 
-            Timber.d("isi params reg 3 submit:"+params.toString());
+            Timber.d("isi params reg 3 submit:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_STEP3, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-                            btnCancel.setEnabled(true);
-                            btnSubmit.setEnabled(true);
-                            TokenValue.setEnabled(true);
-
                             RegModel model = getGson().fromJson(object, RegModel.class);
 
                             String code = model.getError_code();
@@ -357,15 +338,27 @@ public class Regist3 extends BaseFragment {
                                 switchActivityPIN(i);
                             } else {
                                 code = model.getError_message();
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                            btnCancel.setEnabled(true);
+                            btnSubmit.setEnabled(true);
+                            TokenValue.setEnabled(true);
                         }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -373,11 +366,11 @@ public class Regist3 extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Timber.d("isi regist 3 requestCode:"+String.valueOf(requestCode));
+        Timber.d("isi regist 3 requestCode:" + String.valueOf(requestCode));
         if (requestCode == LoginActivity.ACTIVITY_RESULT) {
-            Timber.d("isi regist 3 resultcode:"+String.valueOf(resultCode));
+            Timber.d("isi regist 3 resultcode:" + String.valueOf(resultCode));
             if (resultCode == LoginActivity.RESULT_PIN) {
-                Timber.d("isi regist 3 authtype:"+authType);
+                Timber.d("isi regist 3 authtype:" + authType);
 
                 pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
                 confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
@@ -387,8 +380,7 @@ public class Regist3 extends BaseFragment {
 //                switchActivityPIN(i);
 
                 sendCreatePass();
-            }
-            else if(resultCode == LoginActivity.RESULT_FINISHING){
+            } else if (resultCode == LoginActivity.RESULT_FINISHING) {
 //                if(authType.equals(DefineValue.AUTH_TYPE_OTP)){
 //                    pass = data.getStringExtra(DefineValue.NEW_PASSWORD);
 //                    confPass = data.getStringExtra(DefineValue.CONFIRM_PASSWORD);
@@ -397,8 +389,9 @@ public class Regist3 extends BaseFragment {
             }
         }
     }
-    public void sendCreatePass(){
-        try{
+
+    public void sendCreatePass() {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = custID + pass;
@@ -409,10 +402,10 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(token));
             params.put(WebParams.CUST_ID, custID);
 
-            Timber.d("params create pass:"+params.toString());
+            Timber.d("params create pass:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PASS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             CreatePassModel model = getGson().fromJson(object, CreatePassModel.class);
@@ -427,27 +420,33 @@ public class Regist3 extends BaseFragment {
                                 i.putExtra(DefineValue.REGISTRATION, true);
                                 switchActivityPIN(i);
                             } else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), PasswordRegisterActivity.class);
                                 i.putExtra(DefineValue.AUTHENTICATION_TYPE, authType);
                                 switchActivityPIN(i);
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
 
     }
-    public void sendCreatePin(Intent data){
-        try{
+
+    public void sendCreatePin(Intent data) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
             extraSignature = memberID + custID + data.getStringExtra(DefineValue.PIN_VALUE);
@@ -458,10 +457,10 @@ public class Regist3 extends BaseFragment {
             params.put(WebParams.PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.PIN_VALUE)));
             params.put(WebParams.CONFIRM_PIN, RSA.opensslEncrypt(data.getStringExtra(DefineValue.CONF_PIN)));
 
-            Timber.d("params create pin:"+params.toString());
+            Timber.d("params create pin:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CREATE_PIN, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             CreatePinModel model = getGson().fromJson(object, CreatePinModel.class);
@@ -469,31 +468,35 @@ public class Regist3 extends BaseFragment {
                             String code = model.getError_code();
                             String message = model.getError_message();
 
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 showDialog();
                             } else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), CreatePIN.class);
                                 i.putExtra(DefineValue.REGISTRATION, true);
                                 switchActivityPIN(i);
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
 
     }
 
-    void showDialog(){
+    void showDialog() {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -504,9 +507,12 @@ public class Regist3 extends BaseFragment {
         // set values for custom dialog components - text, image and button
         Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
         TextView Title = dialog.findViewById(R.id.title_dialog);
-        TextView Message = dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
-        TextView Message2 = dialog.findViewById(R.id.message_dialog2);Message2.setVisibility(View.VISIBLE);
-        TextView Message3 = dialog.findViewById(R.id.message_dialog3);Message3.setVisibility(View.VISIBLE);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
+        Message.setVisibility(View.VISIBLE);
+        TextView Message2 = dialog.findViewById(R.id.message_dialog2);
+        Message2.setVisibility(View.VISIBLE);
+        TextView Message3 = dialog.findViewById(R.id.message_dialog3);
+        Message3.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.regist2_notif_title));
         Message.setText(getResources().getString(R.string.regist2_notif_message_1));
@@ -519,7 +525,7 @@ public class Regist3 extends BaseFragment {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().popBackStack(null, android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 Fragment test = new Login();
-                switchFragment(test,"Login",false);
+                switchFragment(test, "Login", false);
                 dialog.dismiss();
             }
         });
@@ -527,28 +533,28 @@ public class Regist3 extends BaseFragment {
         dialog.show();
     }
 
-    private void switchFragment(Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
         LoginActivity fca = (LoginActivity) getActivity();
-        fca.switchContent(i,name,isBackstack);
+        fca.switchContent(i, name, isBackstack);
     }
 
     private void showDialogEmptyToken() {
         AlertDialog.Builder builder = new AlertDialog.Builder(act);
         builder.setMessage(getString(R.string.reg3_notif_max_resend_token_empty))
-        .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        })
-        .show();
+                .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
     }
 
-    public boolean inputValidation(){
-        if(TokenValue.getText().toString().length()==0){
+    public boolean inputValidation() {
+        if (TokenValue.getText().toString().length() == 0) {
             TokenValue.requestFocus();
             TokenValue.setError(this.getString(R.string.regist3_validation_otp));
             return false;
@@ -556,12 +562,12 @@ public class Regist3 extends BaseFragment {
         return true;
     }
 
-    private void toggleMyBroadcastReceiver(Boolean _on){
+    private void toggleMyBroadcastReceiver(Boolean _on) {
         if (getActivity() == null)
             return;
 
         LoginActivity fca = (LoginActivity) getActivity();
-        fca.togglerBroadcastReceiver(_on,myReceiver);
+        fca.togglerBroadcastReceiver(_on, myReceiver);
     }
 
     public BroadcastReceiver myReceiver = new BroadcastReceiver() {
@@ -576,28 +582,27 @@ public class Regist3 extends BaseFragment {
             String _member_code = "";
             String[] kode = context.getResources().getStringArray(R.array.broadcast_regist_kode_compare);
 
-            if(mBundle != null){
+            if (mBundle != null) {
                 Object[] pdus = (Object[]) mBundle.get("pdus");
                 mSMS = new SmsMessage[pdus.length];
 
-                for (int i = 0; i < mSMS.length ; i++){
-                    mSMS[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                for (int i = 0; i < mSMS.length; i++) {
+                    mSMS[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     strMessage += mSMS[i].getMessageBody();
                     strMessage += "\n";
                 }
 
                 String[] words = strMessage.split("\\s+");
-                for (int i = 0 ; i <words.length;i++)
-                {
-                    if(_kode_otp.equalsIgnoreCase("")){
-                        if(words[i].equalsIgnoreCase(kode[0])){
-                            if(words[i+1].equalsIgnoreCase(kode[1])) {
-                                _kode_otp = words[i+3];
+                for (int i = 0; i < words.length; i++) {
+                    if (_kode_otp.equalsIgnoreCase("")) {
+                        if (words[i].equalsIgnoreCase(kode[0])) {
+                            if (words[i + 1].equalsIgnoreCase(kode[1])) {
+                                _kode_otp = words[i + 3];
                                 _kode_otp = _kode_otp.replace(".", "").replace(" ", "");
                             }
                         }
                     }
-                    Timber.d("isi words:"+words[i]);
+                    Timber.d("isi words:" + words[i]);
                 }
                 TokenValue.setText(_kode_otp + _member_code);
             }

@@ -21,9 +21,9 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.OkHttpTLSSocketFactory;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.interfaces.ArrListeners;
-import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.interfaces.RetrofitInterfaces;
 import com.sgo.saldomu.securities.Md5;
 import com.sgo.saldomu.securities.SHA;
@@ -437,6 +437,36 @@ public class RetrofitService {
                 });
     }
 
+    public void PostObjectRequest(String link, HashMap<String, Object> param , final ResponseListener listener) {
+        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JsonObject>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        getCompositeDisposable().add(d);
+                    }
+
+                    @Override
+                    public void onNext(JsonObject obj) {
+                        listener.onResponses(obj);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (MyApiClient.PROD_FAILURE_FLAG)
+                            Toast.makeText(CoreApp.getAppContext(), CoreApp.getAppContext().getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        listener.onComplete();
+                    }
+                });
+    }
+
     public void PostJsonObjRequest(String link, HashMap<String, Object> param , final ObjListeners listener) {
         BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -470,33 +500,6 @@ public class RetrofitService {
                     @Override
                     public void onComplete() {
                         listener.onComplete();
-                    }
-                });
-    }
-
-    public void PostWithOnError(String link, HashMap<String, Object> param , final ErrorListener listener) {
-        BuildRetrofit().PostObjectInterface(link, param).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<JsonObject>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        getCompositeDisposable().add(d);
-
-                    }
-
-                    @Override
-                    public void onNext(JsonObject obj) {
-                        listener.onResponses(obj);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
@@ -579,7 +582,7 @@ public class RetrofitService {
                 });
     }
 
-    public void GetObjectRequest(String link, final ObjListener listener) {
+    public void GetObjectRequest(String link, final ResponseListener listener) {
         BuildRetrofit().GetObjectInterface(link).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {
@@ -597,6 +600,14 @@ public class RetrofitService {
 
                     @Override
                     public void onError(Throwable e) {
+                        if(MyApiClient.PROD_FAILURE_FLAG) {
+                            Toast.makeText(CoreApp.getAppContext(),
+                                    CoreApp.getAppContext().getResources().getString(R.string.network_connection_failure_toast),
+                                    Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(CoreApp.getAppContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+
                         listener.onResponses(getErrorMessage(e));
                     }
 

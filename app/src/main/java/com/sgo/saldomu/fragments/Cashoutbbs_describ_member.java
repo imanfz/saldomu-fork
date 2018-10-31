@@ -43,9 +43,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ErrorListener;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.OTPModel;
@@ -63,15 +62,15 @@ import timber.log.Timber;
 public class Cashoutbbs_describ_member extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     public final static String TAG = "com.sgo.saldomu.fragments.Cashoutbbs_describ_member";
     View v;
-//    layout_button_transaction;
-    String authType, amount, fee,total, ccyId, txId, product_h2h, comm_code,
-    product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
+    //    layout_button_transaction;
+    String authType, amount, fee, total, ccyId, txId, product_h2h, comm_code,
+            product_name, product_code, bank_code, bank_name, callback_url, api_key, comm_id, otp_member;
     TextView tvAgent, tvAmount, tvFee, tvTotal, tvCode, tvTxId, tvAlert, tvBankProduct;
     LinearLayout layoutOTP, layoutNoEmpty, layoutButton;
     RelativeLayout layoutEmpty;
     EditText tokenValue;
     Button btnOk, btnCancel, btnResend;
-    int pin_attempt=-1;
+    int pin_attempt = -1;
     boolean isPIN = true, isOTP = false;
     int start = 0;
     Handler handlerWS;
@@ -79,7 +78,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     ProgressDialog progdialog;
     ProgressBar loading;
     private int max_token_resend = 3;
-//    private Button btn_proses_transaction;
+    //    private Button btn_proses_transaction;
     int failed = 0;
 
     @Override
@@ -100,12 +99,11 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         super.onActivityCreated(savedInstanceState);
 
 
-
         String flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if(flagLogin == null)
+        if (flagLogin == null)
             flagLogin = DefineValue.STRING_NO;
 
-        if ( flagLogin.equals(DefineValue.STRING_NO) ) {
+        if (flagLogin.equals(DefineValue.STRING_NO)) {
             getActivity().finish();
         } else {
             String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
@@ -166,21 +164,17 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         validasiTutorial();
     }
 
-    private void validasiTutorial()
-    {
-        if(sp.contains(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS))
-        {
-            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS,false);
-            if(is_first_time)
+    private void validasiTutorial() {
+        if (sp.contains(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS)) {
+            Boolean is_first_time = sp.getBoolean(DefineValue.TUTORIAL_KONFIRMASI_CASHOUT_BBS, false);
+            if (is_first_time)
                 showTutorial();
-        }
-        else {
+        } else {
             showTutorial();
         }
     }
 
-    private void showTutorial()
-    {
+    private void showTutorial() {
         Intent intent = new Intent(getActivity(), TutorialActivity.class);
         intent.putExtra(DefineValue.TYPE, TutorialActivity.tutorial_konfirmasi_cashout_bbs);
         startActivity(intent);
@@ -189,8 +183,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     Button.OnClickListener btnOkListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
-                if(product_h2h.equalsIgnoreCase("Y")) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (product_h2h.equalsIgnoreCase("Y")) {
                     if (isPIN) {
                         Intent i = new Intent(getActivity(), InsertPIN.class);
                         if (pin_attempt != -1 && pin_attempt < 2)
@@ -203,19 +197,18 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                     } else {
                         Toast.makeText(getActivity(), "Authentication type kosong", Toast.LENGTH_LONG).show();
                     }
-                }
-                else if(product_h2h.equalsIgnoreCase("N")) {
+                } else if (product_h2h.equalsIgnoreCase("N")) {
                     changeToSGOPlus(txId, product_code, product_name, bank_code, amount, fee, total, bank_name);
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
     Button.OnClickListener btnCancelListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage(getString(R.string.cashoutmember_cancel_message))
                         .setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
@@ -232,22 +225,22 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                         });
                 AlertDialog dialog = builder.create();
                 dialog.show();
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
     Button.OnClickListener resendListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
-                if(authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
+                if (authType.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)) {
                     if (max_token_resend != 0)
                         sentResendToken(txId);
 
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         }
     };
@@ -265,8 +258,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == MainPage.REQUEST_FINISH){
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+        if (requestCode == MainPage.REQUEST_FINISH) {
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 OTPMemberATC(value_pin, txId);
             }
@@ -282,16 +275,8 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
             Timber.d("isi params sent list member atc:" + params.toString());
 
-            RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
-                    new ErrorListener() {
-                        @Override
-                        public void onError(Throwable e) {
-                            if (failed < 3) {
-                                failed++;
-                                handlerWS.postDelayed(runnableWS, 60000);
-                            }
-                        }
-
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_MEMBER_A2C, params,
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -331,7 +316,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(getActivity(), message);
-                                } else if (code.equals(ErrorDefinition.NO_TRANSACTION)){
+                                } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                     loading.setVisibility(View.GONE);
                                     tvAlert.setText(getString(R.string.cashoutmember_alert_no_tx));
                                     handlerWS.postDelayed(runnableWS, 60000);
@@ -345,6 +330,19 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 e.printStackTrace();
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            if (failed < 3) {
+                                failed++;
+                                handlerWS.postDelayed(runnableWS, 60000);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
         } catch (Exception e) {
             Timber.d("httpclient:" + e.getMessage());
@@ -352,7 +350,7 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     }
 
     private void setPayment(String _product_h2h) {
-        if(_product_h2h.equalsIgnoreCase("Y")) {
+        if (_product_h2h.equalsIgnoreCase("Y")) {
             if (isOTP) {
                 layoutOTP.setVisibility(View.VISIBLE);
                 btnResend = v.findViewById(R.id.btn_resend_token);
@@ -385,11 +383,11 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
     }
 
     public void OTPMemberATC(String _token, final String _tx_id) {
-        try{
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = _tx_id+_token+comm_code;
+            extraSignature = _tx_id + _token + comm_code;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_OTP_MEMBER_A2C, extraSignature);
 
@@ -397,19 +395,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             params.put(WebParams.TX_ID, _tx_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.CUSTOMER_ID,userPhoneID);
-            params.put(WebParams.COMM_CODE,comm_code);
-            params.put(WebParams.SENDER_ID,"GOMOBILE");
-            params.put(WebParams.RECEIVER_ID,"GOWORLD");
+            params.put(WebParams.CUSTOMER_ID, userPhoneID);
+            params.put(WebParams.COMM_CODE, comm_code);
+            params.put(WebParams.SENDER_ID, "GOMOBILE");
+            params.put(WebParams.RECEIVER_ID, "GOWORLD");
             Timber.d("isi params sent otp member ATC:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_OTP_MEMBER_A2C, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
                             OTPModel model = getGson().fromJson(object, OTPModel.class);
 
                             String code = model.getError_code();
@@ -425,31 +420,39 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(getActivity(), message);
-                            } else if(code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN)){
+                            } else if (code.equals(ErrorDefinition.ERROR_CODE_WRONG_TOKEN)) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            } else if(code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)) {
+                            } else if (code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 Intent i = new Intent(getActivity(), InsertPIN.class);
                                 pin_attempt = pin_attempt - 1;
-                                if(pin_attempt != -1 && pin_attempt < 2)
-                                    i.putExtra(DefineValue.ATTEMPT,pin_attempt);
+                                if (pin_attempt != -1 && pin_attempt < 2)
+                                    i.putExtra(DefineValue.ATTEMPT, pin_attempt);
                                 startActivityForResult(i, MainPage.REQUEST_FINISH);
-                            }
-                            else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 getActivity().finish();
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public void sentRejectConfirmCashout(){
-        try{
+    public void sentRejectConfirmCashout() {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
@@ -460,19 +463,16 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.TX_ID, txId);
 
-            Timber.d("isi params sent reject confirm cashout:"+params.toString());
+            Timber.d("isi params sent reject confirm cashout:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REJECT_CONFIRM_CASHOUT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
-                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals(WebParams.NO_DATA_CODE) ) {
+                            if (code.equals(WebParams.SUCCESS_CODE) || code.equals(WebParams.NO_DATA_CODE)) {
                                 getActivity().finish();
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
@@ -480,37 +480,42 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                                 test.showDialoginActivity(getActivity(), message);
                             } else {
                                 code = model.getError_message();
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public void sentResendToken(String _data){
-        try{
+    public void sentResendToken(String _data) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_RESEND_TOKEN_LKD, extraSignature);
-            params.put(WebParams.TX_ID,_data);
+            params.put(WebParams.TX_ID, _data);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params sent resend token:"+params.toString());
+            Timber.d("isi params sent resend token:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESEND_TOKEN_LKD, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
@@ -529,20 +534,29 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             if (max_token_resend == 0) {
                                 btnResend.setEnabled(false);
 
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
+
                                 Toast.makeText(getActivity(), getString(R.string.reg2_notif_max_resend_token_empty), Toast.LENGTH_LONG).show();
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public void getTrxStatusBBS(final String userName, final String txId, final String userId){
-        try{
+    public void getTrxStatusBBS(final String userName, final String txId, final String userId) {
+        try {
             final ProgressDialog out = DefinedDialog.CreateProgressDialog(getActivity(), getString(R.string.check_status));
             out.show();
 
@@ -553,10 +567,10 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.USER_ID, userId);
 
-            Timber.d("isi params sent get Trx Status bbs:"+params.toString());
+            Timber.d("isi params sent get Trx Status bbs:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TRX_STATUS_BBS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -568,22 +582,21 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
 
                                     JSONObject response = new JSONObject(getGson().toJson(model));
 
-                                    showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
-                                            txId, userId, response.optString(WebParams.TX_BANK_NAME,""),response.optString(WebParams.PRODUCT_NAME,""),
-                                            response.optString(WebParams.ADMIN_FEE,"0"),response.optString(WebParams.TX_AMOUNT,"0"),
-                                            txstatus,response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT,"0"),
-                                            response.optString(WebParams.MEMBER_NAME,""),response.optString(WebParams.SOURCE_BANK_NAME,""),
-                                            response.optString(WebParams.MEMBER_SHOP_NO,""),response.optString(WebParams.SOURCE_ACCT_NAME,""),
-                                            response.optString(WebParams.BENEF_BANK_NAME,""),response.optString(WebParams.BENEF_ACCT_NO,""),
-                                            response.optString(WebParams.BENEF_ACCT_NAME,""), response.optString(WebParams.MEMBER_SHOP_PHONE,""),
-                                            response.optString(WebParams.MEMBER_SHOP_NAME,""), otp_member, response.optString(WebParams.BUSS_SCHEME_CODE),
-                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE),""));
-                                } else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED, "")),
+                                            txId, userId, response.optString(WebParams.TX_BANK_NAME, ""), response.optString(WebParams.PRODUCT_NAME, ""),
+                                            response.optString(WebParams.ADMIN_FEE, "0"), response.optString(WebParams.TX_AMOUNT, "0"),
+                                            txstatus, response.getString(WebParams.TX_REMARK), response.optString(WebParams.TOTAL_AMOUNT, "0"),
+                                            response.optString(WebParams.MEMBER_NAME, ""), response.optString(WebParams.SOURCE_BANK_NAME, ""),
+                                            response.optString(WebParams.MEMBER_SHOP_NO, ""), response.optString(WebParams.SOURCE_ACCT_NAME, ""),
+                                            response.optString(WebParams.BENEF_BANK_NAME, ""), response.optString(WebParams.BENEF_ACCT_NO, ""),
+                                            response.optString(WebParams.BENEF_ACCT_NAME, ""), response.optString(WebParams.MEMBER_SHOP_PHONE, ""),
+                                            response.optString(WebParams.MEMBER_SHOP_NAME, ""), otp_member, response.optString(WebParams.BUSS_SCHEME_CODE),
+                                            response.optString(WebParams.BUSS_SCHEME_NAME), response.optString((WebParams.MEMBER_PHONE), ""));
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else {
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
                                     String msg = model.getError_message();
 //                            if(code.equals("0003")){
 //                                showReportBillerDialog(userName, DateTimeFormat.formatToID(response.optString(WebParams.CREATED,"")),
@@ -602,13 +615,21 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(out.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (out.isShowing())
                                 out.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -631,23 +652,21 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
 
         Boolean txStat = false;
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
         args.putString(DefineValue.MEMBER_NAME, member_name);
         args.putString(DefineValue.SOURCE_ACCT, source_bank_name);
         args.putString(DefineValue.MEMBER_SHOP_NO, member_shop_no);
@@ -709,33 +728,33 @@ public class Cashoutbbs_describ_member extends BaseFragment implements ReportBil
         i.putExtra(DefineValue.PRODUCT_CODE, _product_code);
         i.putExtra(DefineValue.BANK_CODE, _bank_code);
         i.putExtra(DefineValue.BANK_NAME, _bank_name);
-        i.putExtra(DefineValue.PRODUCT_NAME,_product_name);
+        i.putExtra(DefineValue.PRODUCT_NAME, _product_name);
         i.putExtra(DefineValue.FEE, fee);
-        i.putExtra(DefineValue.COMMUNITY_CODE,comm_code);
-        i.putExtra(DefineValue.TX_ID,_tx_id);
-        i.putExtra(DefineValue.AMOUNT,_amount);
-        i.putExtra(DefineValue.SHARE_TYPE,"1");
+        i.putExtra(DefineValue.COMMUNITY_CODE, comm_code);
+        i.putExtra(DefineValue.TX_ID, _tx_id);
+        i.putExtra(DefineValue.AMOUNT, _amount);
+        i.putExtra(DefineValue.SHARE_TYPE, "1");
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.TOPUP_IB_TYPE);
-        i.putExtra(DefineValue.CALLBACK_URL,callback_url);
+        i.putExtra(DefineValue.CALLBACK_URL, callback_url);
         i.putExtra(DefineValue.API_KEY, api_key);
 
-        i.putExtra(DefineValue.TOTAL_AMOUNT,totalAmount);
+        i.putExtra(DefineValue.TOTAL_AMOUNT, totalAmount);
         i.putExtra(DefineValue.COMMUNITY_ID, comm_id);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.BBS_MEMBER_OTP);
 
         switchActivityIB(i);
     }
 
-    private void switchActivityIB(Intent mIntent){
+    private void switchActivityIB(Intent mIntent) {
         if (getActivity() == null)
             return;
 
         BBSActivity fca = (BBSActivity) getActivity();
-        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    public boolean inputValidation(){
-        if(tokenValue.getText().toString().length()==0){
+    public boolean inputValidation() {
+        if (tokenValue.getText().toString().length() == 0) {
             tokenValue.requestFocus();
             tokenValue.setError(getString(R.string.cashoutmember_validation_otp));
             return false;

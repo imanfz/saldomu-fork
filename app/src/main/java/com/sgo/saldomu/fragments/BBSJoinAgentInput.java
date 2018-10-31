@@ -30,7 +30,7 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.BBSJoinAgentCommModel;
 import com.sgo.saldomu.models.retrofit.BBSJoinAgentModel;
 import com.sgo.saldomu.models.retrofit.CommunityModel;
@@ -60,8 +60,9 @@ public class BBSJoinAgentInput extends Fragment {
     private ActionListener actionListener;
 
 
-    public interface ActionListener{
+    public interface ActionListener {
         void onFinishProcess();
+
         void onCommunityEmpty();
     }
 
@@ -71,10 +72,9 @@ public class BBSJoinAgentInput extends Fragment {
         if (getTargetFragment() instanceof ActionListener) {
             actionListener = (ActionListener) getTargetFragment();
         } else {
-            if(context instanceof ActionListener){
+            if (context instanceof ActionListener) {
                 actionListener = (ActionListener) context;
-            }
-            else {
+            } else {
                 throw new RuntimeException(context.toString()
                         + " must implement ActionListener");
             }
@@ -92,8 +92,8 @@ public class BBSJoinAgentInput extends Fragment {
         super.onCreate(savedInstanceState);
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         listDataComm = new ArrayList<>();
         listComm = new ArrayList<>();
@@ -101,7 +101,7 @@ public class BBSJoinAgentInput extends Fragment {
         adapterDataComm = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, spinDataComm);
         adapterDataComm.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        progdialog = DefinedDialog.CreateProgressDialog(getContext(),"");
+        progdialog = DefinedDialog.CreateProgressDialog(getContext(), "");
         progdialog.dismiss();
     }
 
@@ -117,7 +117,7 @@ public class BBSJoinAgentInput extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 etAgentCode.setEnabled(!isChecked);
-                if(isChecked)
+                if (isChecked)
                     etAgentCode.setText("");
             }
         });
@@ -135,24 +135,24 @@ public class BBSJoinAgentInput extends Fragment {
     Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(inputValidation()){
+            if (inputValidation()) {
                 CallSentJoinAgent();
             }
         }
     };
 
-    private void CallSentJoinAgent(){
+    private void CallSentJoinAgent() {
         int test = spComm.getSelectedItemPosition();
-        String commCode,commName;
-        if(test == -1) {
+        String commCode, commName;
+        if (test == -1) {
             commCode = listComm.get(0).getComm_code();
             commName = listComm.get(0).getComm_name();
-        }else {
+        } else {
             commCode = listComm.get(test).getComm_code();
             commName = listComm.get(test).getComm_name();
         }
-        sentJoinAgent(commName,commCode,
-                etAgentCode.getText().toString(),userID);
+        sentJoinAgent(commName, commCode,
+                etAgentCode.getText().toString(), userID);
     }
 
     @Override
@@ -167,10 +167,10 @@ public class BBSJoinAgentInput extends Fragment {
         super.onDestroy();
     }
 
-    public boolean inputValidation(){
-        Timber.d("isi listDataComm = "+ String.valueOf(listDataComm.size()));
-        if(etAgentCode.isEnabled()){
-            if(etAgentCode.getText().toString().length()==0){
+    public boolean inputValidation() {
+        Timber.d("isi listDataComm = " + String.valueOf(listDataComm.size()));
+        if (etAgentCode.isEnabled()) {
+            if (etAgentCode.getText().toString().length() == 0) {
                 etAgentCode.requestFocus();
                 etAgentCode.setError(getString(R.string.bbsjoinagen_et_hint_agencode));
                 return false;
@@ -179,28 +179,27 @@ public class BBSJoinAgentInput extends Fragment {
         return listComm.size() != 0;
     }
 
-    private void CommunityUIRefresh(){
-        if(listComm.size() < 1) {
+    private void CommunityUIRefresh() {
+        if (listComm.size() < 1) {
             Toast.makeText(getActivity(), R.string.joinagentbbs_toast_empty_comm, Toast.LENGTH_LONG).show();
             actionListener.onCommunityEmpty();
         }
 
-        if(listComm.size() == 1) {
+        if (listComm.size() == 1) {
             TextView tvCommName = v.findViewById(R.id.tv_comm_name_value);
             tvCommName.setText(listComm.get(0).getComm_name());
             tvCommName.setVisibility(View.VISIBLE);
 //            progBarComm.setVisibility(View.GONE);
             spComm.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             spComm.setVisibility(View.VISIBLE);
 //            progBarComm.setVisibility(View.GONE);
         }
     }
 
-    private void retrieveComm(){
-        try{
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_GLOBAL_COMM);
+    private void retrieveComm() {
+        try {
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_GLOBAL_COMM);
             params.put(WebParams.SCHEME_CODE, DefineValue.BBS);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userID);
@@ -209,7 +208,7 @@ public class BBSJoinAgentInput extends Fragment {
             progBarComm.setVisibility(View.VISIBLE);
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_GLOBAL_COMM, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             Gson gson = new Gson();
@@ -220,7 +219,7 @@ public class BBSJoinAgentInput extends Fragment {
                             listComm.clear();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                JSONArray comm = response.optJSONArray(WebParams.COMMUNITY);
-                                if(model.getCommunity().size() > 0) {
+                                if (model.getCommunity().size() > 0) {
 
                                     listComm.addAll(model.getCommunity());
 
@@ -240,28 +239,34 @@ public class BBSJoinAgentInput extends Fragment {
 
                                 adapterDataComm.notifyDataSetChanged();
                                 CommunityUIRefresh();
-                            }
-                            else {
+                            } else {
                                 code = model.getError_message();
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                                 actionListener.onCommunityEmpty();
                             }
 
-                            progBarComm.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
+
+                        @Override
+                        public void onComplete() {
+
+                            progBarComm.setVisibility(View.GONE);
+                        }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient: "+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient: " + e.getMessage());
         }
     }
 
-    private void sentJoinAgent(final String commName, final String commCode, final String memberCode, String userID){
-        try{
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_BBS_JOIN_AGENT);
-            params.put(WebParams.COMM_CODE,commCode);
+    private void sentJoinAgent(final String commName, final String commCode, final String memberCode, String userID) {
+        try {
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_JOIN_AGENT);
+            params.put(WebParams.COMM_CODE, commCode);
             params.put(WebParams.MEMBER_CODE, memberCode);
             params.put(WebParams.CUST_ID, userID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -271,19 +276,18 @@ public class BBSJoinAgentInput extends Fragment {
             progdialog.show();
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_JOIN_AGENT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             BBSJoinAgentModel model = gson.fromJson(object, BBSJoinAgentModel.class);
 
                             String code = model.getError_code();
 
-                            if (code.equals(WebParams.SUCCESS_CODE)){
-                                String commCodeMsg = getString(R.string.community)+" : " + commName;
-                                String memberCodeMsg = getString(R.string.agent_name)+" : " + model.getMember_code();
-                                String msg = getString(R.string.bbsjoinagent_dialog_msg_success,commCodeMsg,memberCodeMsg);
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                String commCodeMsg = getString(R.string.community) + " : " + commName;
+                                String memberCodeMsg = getString(R.string.agent_name) + " : " + model.getMember_code();
+                                String msg = getString(R.string.bbsjoinagent_dialog_msg_success, commCodeMsg, memberCodeMsg);
                                 Dialog dialog = DefinedDialog.MessageDialog(getContext(),
                                         getString(R.string.bbsjoinagent_dialog_title_success), msg, new DefinedDialog.DialogButtonListener() {
                                             @Override
@@ -292,18 +296,25 @@ public class BBSJoinAgentInput extends Fragment {
                                             }
                                         });
                                 dialog.show();
-                            }
-                            else {
+                            } else {
                                 code = model.getError_message();
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
                             progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient: "+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient: " + e.getMessage());
         }
     }
 }

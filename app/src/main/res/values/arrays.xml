@@ -116,23 +116,15 @@
         <item>@color/green_700</item>
     </integer-array>
 
-    <string-array name="settings_list">
-        <item>Registrasi SMS Banking</item>
-        <item>Pengaturan Pembagian</item>
-        <item>Ganti Password</item>
-        <item>Tentang App</item>
-    </string-array>
-
     <string-array name="settings_list_pin">
         <item>Ganti Password</item>
         <item>Ganti PIN</item>
         <item>Tentang App</item>
+        <item>Bahasa</item>
     </string-array>
     <string-array name="settings_list_pin_2">
         <item>Registrasi SMS Banking</item>
-        <item>Ganti Password</item>
-        <item>Ganti PIN</item>
-        <item>Tentang App</item>
+
     </string-array>
 
     <string-array name="social_id_type">

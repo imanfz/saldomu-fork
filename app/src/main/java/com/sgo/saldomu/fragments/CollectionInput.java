@@ -46,7 +46,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.TopupAccCollectionModel;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -66,7 +66,7 @@ import timber.log.Timber;
 public class CollectionInput extends BaseFragment {
 
     private List<String> listProductName;
-    private HashMap<String,String> listBankProduct;
+    private HashMap<String, String> listBankProduct;
     private List<listBankModel> listDB;
 
     private View v;
@@ -129,14 +129,14 @@ public class CollectionInput extends BaseFragment {
 
         listDB = new ArrayList<>();
 
-        for(int i = 0; i < mData.length() ; i++){
+        for (int i = 0; i < mData.length(); i++) {
             try {
                 listBankModel mOb = new listBankModel(mData.getJSONObject(i).getString(WebParams.BANK_CODE),
-                                                      mData.getJSONObject(i).getString(WebParams.BANK_NAME),
-                                                      mData.getJSONObject(i).getString(WebParams.PRODUCT_CODE),
-                                                      mData.getJSONObject(i).getString(WebParams.PRODUCT_NAME),
-                                                      mData.getJSONObject(i).getString(WebParams.PRODUCT_TYPE),
-                                                      mData.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
+                        mData.getJSONObject(i).getString(WebParams.BANK_NAME),
+                        mData.getJSONObject(i).getString(WebParams.PRODUCT_CODE),
+                        mData.getJSONObject(i).getString(WebParams.PRODUCT_NAME),
+                        mData.getJSONObject(i).getString(WebParams.PRODUCT_TYPE),
+                        mData.getJSONObject(i).getString(WebParams.PRODUCT_H2H));
                 listDB.add(mOb);
                 bankName[i] = mOb.getBank_name();
             } catch (JSONException e) {
@@ -162,13 +162,12 @@ public class CollectionInput extends BaseFragment {
         sp_privacy.setOnItemSelectedListener(spinnerPrivacy);
 
 
-
     }
 
     private Spinner.OnItemSelectedListener spinnerPrivacy = new Spinner.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            privacy = i+1;
+            privacy = i + 1;
         }
 
         @Override
@@ -185,11 +184,11 @@ public class CollectionInput extends BaseFragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(s.toString().equals("0")) et_amount.setText("");
-            if(s.length() > 0 && s.charAt(0) == '0'){
+            if (s.toString().equals("0")) et_amount.setText("");
+            if (s.length() > 0 && s.charAt(0) == '0') {
                 int i = 0;
-                for (; i < s.length(); i++){
-                    if(s.charAt(i) != '0')break;
+                for (; i < s.length(); i++) {
+                    if (s.charAt(i) != '0') break;
                 }
                 et_amount.setText(s.toString().substring(i));
             }
@@ -219,9 +218,9 @@ public class CollectionInput extends BaseFragment {
                 @Override
                 public void run() {
                     for (listBankModel mOb : listDB) {
-                        if(mOb.getBank_name().equals(nama_bank)){
+                        if (mOb.getBank_name().equals(nama_bank)) {
                             listProductName.add(mOb.getProduct_name());
-                            listBankProduct.put(mOb.getProduct_name(),mOb.getProduct_code());
+                            listBankProduct.put(mOb.getProduct_name(), mOb.getProduct_code());
                         }
                     }
 
@@ -232,7 +231,7 @@ public class CollectionInput extends BaseFragment {
                             spinWheelBankProduct.setVisibility(View.GONE);
                             spin_produkBank.setVisibility(View.VISIBLE);
                             adapter3.notifyDataSetChanged();
-                            if(topupType.equals(DefineValue.EMONEY)){
+                            if (topupType.equals(DefineValue.EMONEY)) {
                                 View LayoutBankName = v.findViewById(R.id.layout_bank_name);
                                 LayoutBankName.setVisibility(View.GONE);
                             }
@@ -254,7 +253,7 @@ public class CollectionInput extends BaseFragment {
     private Button.OnClickListener prosesListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())) {
+            if (InetHandler.isNetworkAvailable(getActivity())) {
                 if (inputValidation()) {
                     sentValidTopupCollection(args.getString(DefineValue.COMMUNITY_ID, ""),
                             listDB.get(spin_namaBank.getSelectedItemPosition()).getBank_code(),
@@ -263,15 +262,15 @@ public class CollectionInput extends BaseFragment {
                             String.valueOf(et_remark.getText())
                     );
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
         }
     };
 
 
     private void sentValidTopupCollection(String _comm_id, String _bank_code, String _product_code, String _amount,
-                                          final String _payment_remark){
-        try{
+                                          final String _payment_remark) {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -280,7 +279,7 @@ public class CollectionInput extends BaseFragment {
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION, extraSignature);
             params.put(WebParams.USER_ID, userPhoneID);
             params.put(WebParams.COMM_ID, _comm_id);
-            params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID,""));
+            params.put(WebParams.CUST_ID, sp.getString(DefineValue.CUST_ID, ""));
             params.put(WebParams.BANK_CODE, _bank_code);
             params.put(WebParams.PRODUCT_CODE, _product_code);
             params.put(WebParams.CCY_ID, MyApiClient.CCY_VALUE);
@@ -291,9 +290,9 @@ public class CollectionInput extends BaseFragment {
             params.put(WebParams.MERCHANT_CODE, sp.getString(DefineValue.COMMUNITY_CODE, ""));
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE, ""));
 
-            if(topupType.equals(DefineValue.BANKLIST_TYPE_IB))
+            if (topupType.equals(DefineValue.BANKLIST_TYPE_IB))
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_IB);
-            else if(topupType.equals(DefineValue.BANKLIST_TYPE_SMS))
+            else if (topupType.equals(DefineValue.BANKLIST_TYPE_SMS))
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_SMS);
             else
                 params.put(WebParams.PRODUCT_TYPE, DefineValue.BANKLIST_TYPE_EMO);
@@ -301,16 +300,15 @@ public class CollectionInput extends BaseFragment {
             Timber.d("isi params Valid TopupCollection:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TOP_UP_ACCOUNT_COLLECTION, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             TopupAccCollectionModel model = getGson().fromJson(object, TopupAccCollectionModel.class);
 
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                if(topupType.equals(DefineValue.INTERNET_BANKING)) {
+                                if (topupType.equals(DefineValue.INTERNET_BANKING)) {
                                     changeToDescription(model.getTx_id(),
                                             model.getProduct_code(),
                                             model.getProduct_name(),
@@ -323,8 +321,7 @@ public class CollectionInput extends BaseFragment {
                                             model.getAuth_type()
                                     );
                                     progdialog.dismiss();
-                                }
-                                else {
+                                } else {
                                     sentDataReqToken(model.getTx_id(),
                                             model.getProduct_code(),
                                             model.getProduct_name(),
@@ -337,34 +334,40 @@ public class CollectionInput extends BaseFragment {
                                             model.getAuth_type()
                                     );
                                 }
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
                                 code = model.getError_code() + ":" + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 
                             }
+                        }
 
-                            if(progdialog.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    } );
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
 
     private void sentDataReqToken(final String _tx_id, final String _product_code, final String _product_name, final String _amount,
                                   final String _payment_remark, final String _ccy_value, final String _bank_name, final String _bank_code,
-                                  final String _fee, final String auth_type){
-        try{
+                                  final String _fee, final String auth_type) {
+        try {
 
-            extraSignature = _tx_id+ args.getString(DefineValue.COMMUNITY_CODE, "")+_product_code;
+            extraSignature = _tx_id + args.getString(DefineValue.COMMUNITY_CODE, "") + _product_code;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL);
             params.put(WebParams.COMM_CODE, args.getString(DefineValue.COMMUNITY_CODE, ""));
@@ -374,13 +377,12 @@ public class CollectionInput extends BaseFragment {
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
 
-            Timber.d("isi params regtoken Collection:"+params.toString());
+            Timber.d("isi params regtoken Collection:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REQ_TOKEN_SGOL, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
@@ -392,24 +394,20 @@ public class CollectionInput extends BaseFragment {
                                 else if (auth_type.equals(DefineValue.AUTH_TYPE_PIN))
                                     changeToDescription(_tx_id, _product_code, _product_name, _amount,
                                             _payment_remark, _ccy_value, _bank_name, _bank_code, _fee, auth_type);
-                                progdialog.dismiss();
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
-                                progdialog.dismiss();
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
                                 String code_msg = model.getError_message();
                                 if (code.equals(ErrorDefinition.ERROR_CODE_UNREGISTERED_SMS_BANKING)) {
                                     showDialogSMS(nama_bank);
-                                }
-                                else if(code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)){
-                                    String message_dialog = "\""+code_msg+"\" \n"+getString(R.string.dialog_message_less_balance,getString(R.string.appname));
+                                } else if (code.equals(ErrorDefinition.ERROR_CODE_LESS_BALANCE)) {
+                                    String message_dialog = "\"" + code_msg + "\" \n" + getString(R.string.dialog_message_less_balance, getString(R.string.appname));
 
                                     AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.dialog_title_less_balance),
-                                            message_dialog,getString(R.string.ok),getString(R.string.cancel),false);
+                                            message_dialog, getString(R.string.ok), getString(R.string.cancel), false);
                                     dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -420,19 +418,28 @@ public class CollectionInput extends BaseFragment {
                                     });
                                     dialog_frag.setTargetFragment(CollectionInput.this, 0);
                                     dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
-                                }
-                                else {
+                                } else {
                                     code = model.getError_code() + ":" + model.getError_message();
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
 
-                                if(progdialog.isShowing())
-                                    progdialog.dismiss();
+
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -456,14 +463,14 @@ public class CollectionInput extends BaseFragment {
         Message.setText(getString(R.string.topup_not_registered, _nama_bank));
         btnDialogOTP.setText(getString(R.string.firstscreen_button_daftar));
 
-        if(levelClass.isLevel1QAC())
+        if (levelClass.isLevel1QAC())
             btnDialogOTP.setText(getString(R.string.ok));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if(!levelClass.isLevel1QAC()) {
+                if (!levelClass.isLevel1QAC()) {
                     Intent newIntent = new Intent(getActivity(), RegisterSMSBankingActivity.class);
                     newIntent.putExtra(DefineValue.BANK_NAME, _nama_bank);
                     switchActivity(newIntent, MainPage.ACTIVITY_RESULT);
@@ -496,7 +503,7 @@ public class CollectionInput extends BaseFragment {
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getResources().getString(R.string.regist1_notif_title_verification));
-        Message.setText(getString(R.string.appname)+" "+getString(R.string.dialog_token_message_sms));
+        Message.setText(getString(R.string.appname) + " " + getString(R.string.dialog_token_message_sms));
 
         btnDialogOTP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -513,13 +520,13 @@ public class CollectionInput extends BaseFragment {
 
     private void changeToDescription(String _tx_id, String _product_code, String _product_name, String _amount,
                                      String _remark, String _ccy_id,
-                                     String _bank_name, String _bank_code, String _fee, String _auth_type){
+                                     String _bank_name, String _bank_code, String _fee, String _auth_type) {
 
         Fragment newFrag = new CollectionDescription();
         Bundle mArgs = getArguments();
-        mArgs.putString(DefineValue.TX_ID,_tx_id);
+        mArgs.putString(DefineValue.TX_ID, _tx_id);
         mArgs.putString(DefineValue.PRODUCT_CODE, _product_code);
-        mArgs.putString(DefineValue.PRODUCT_NAME,_product_name);
+        mArgs.putString(DefineValue.PRODUCT_NAME, _product_name);
         mArgs.putString(DefineValue.AMOUNT, _amount);
         mArgs.putString(DefineValue.REMARK, _remark);
         mArgs.putString(DefineValue.CCY_ID, _ccy_id);
@@ -540,7 +547,7 @@ public class CollectionInput extends BaseFragment {
     }
 
 
-    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack){
+    private void switchFragment(android.support.v4.app.Fragment i, String name, Boolean isBackstack) {
         if (getActivity() == null)
             return;
 
@@ -549,7 +556,7 @@ public class CollectionInput extends BaseFragment {
         fca.switchContent(i, name, isBackstack);
     }
 
-    private void switchActivity(Intent mIntent,int j){
+    private void switchActivity(Intent mIntent, int j) {
         if (getActivity() == null)
             return;
 
@@ -562,13 +569,12 @@ public class CollectionInput extends BaseFragment {
         keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
-    private boolean inputValidation(){
-        if(et_amount.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (et_amount.getText().toString().length() == 0) {
             et_amount.requestFocus();
             et_amount.setError(this.getString(R.string.sgoplus_validation_jumlahSGOplus));
             return false;
-        }
-        else if(Long.parseLong(et_amount.getText().toString()) < 1){
+        } else if (Long.parseLong(et_amount.getText().toString()) < 1) {
             et_amount.requestFocus();
             et_amount.setError(getString(R.string.payfriends_amount_zero));
             return false;

@@ -34,7 +34,7 @@ public class DateTimeFormat {
 
 
     public static String getCurrentDateTime(){
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
         return df.format(Calendar.getInstance().getTime());
     }
 

@@ -190,7 +190,7 @@ public class UpdateLocationService extends JobService implements GoogleApiClient
 
         String extraSignature   = String.valueOf(latitude) + String.valueOf(longitude);
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION,
-                extraSignature);
+                "");
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.SENDER_ID, DefineValue.BBS_SENDER_ID );

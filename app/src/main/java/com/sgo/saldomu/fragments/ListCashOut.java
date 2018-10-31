@@ -31,6 +31,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
@@ -288,10 +289,9 @@ public class ListCashOut extends ListFragment {
             Timber.d("isi params help list:" + params.toString());
 
             RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_USER_CONTACT_INSERT,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetHelpModel model = gson.fromJson(object, GetHelpModel.class);
 
                             String code = model.getError_code();
@@ -320,12 +320,20 @@ public class ListCashOut extends ListFragment {
                                 test.showDialoginActivity(getActivity(),message);
                             }
                             else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
+//                                if(MyApiClient.PROD_FAILURE_FLAG)
+//                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
+//                                else
                                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if(progdialog.isShowing())
                                 progdialog.dismiss();
                         }

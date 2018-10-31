@@ -10,7 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 import com.securepreferences.SecurePreferences;
@@ -19,11 +26,16 @@ import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.InsertPIN;
 import com.sgo.saldomu.activities.LoginActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.coreclass.*;
+import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.InetHandler;
+import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
+import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.ForgorPasswordModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
@@ -170,11 +182,9 @@ public class ForgotPassword extends BaseFragment {
             Timber.d(params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_FORGOT_PASSWORD, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            progdialog.dismiss();
-
                             ForgorPasswordModel model = getGson().fromJson(object, ForgorPasswordModel.class);
 
                             String code = model.getError_code();
@@ -211,6 +221,16 @@ public class ForgotPassword extends BaseFragment {
 
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            progdialog.dismiss();
+                        }
                     });
 
 
@@ -225,12 +245,9 @@ public class ForgotPassword extends BaseFragment {
             progDialog.setVisibility(View.VISIBLE);
 
             RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_HELP_PIN,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
-                            progDialog.setIndeterminate(false);
-                            progDialog.setVisibility(View.GONE);
                             Message.setVisibility(View.VISIBLE);
 
                             GetHelpModel model = getGson().fromJson(object, GetHelpModel.class);
@@ -256,6 +273,17 @@ public class ForgotPassword extends BaseFragment {
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            progDialog.setIndeterminate(false);
+                            progDialog.setVisibility(View.GONE);
                         }
                     });
         }catch (Exception e){

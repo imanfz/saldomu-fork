@@ -505,7 +505,8 @@ public class BbsMapViewByMemberActivity extends BaseActivity implements OnMapRea
             return;
 
         //progdialog              = DefinedDialog.CreateProgressDialog(this, "");
-        String extraSignature = txId + memberLatitude + memberLongitude;
+        String extraSignature = txId;
+//        + memberLatitude + memberLongitude;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_MEMBER,
                 extraSignature);
 

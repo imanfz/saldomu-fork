@@ -49,9 +49,9 @@ public class UpdateBBSCity extends IntentService {
 
     }
 
-    private void EndRealm(){
-        if(realm.isInTransaction())
-            realm.cancelTransaction();
+    private void EndRealm(Realm realm){
+//        if(realm.isInTransaction())
+//            realm.cancelTransaction();
 
         if(realm != null && !realm.isClosed())
             realm.close();
@@ -96,25 +96,33 @@ public class UpdateBBSCity extends IntentService {
     }
 
     private void insertToRealm(JSONArray bbs_city) {
-        if(bbs_city != null && bbs_city.length() > 0) {
-            realm.beginTransaction();
-            realm.delete(List_BBS_City.class);
 
-            List_BBS_City list_bbs_city;
+        Realm realm = Realm.getDefaultInstance();
 
-            for(int i = 0 ; i < bbs_city.length() ; i++) {
-                try {
-                    list_bbs_city = realm.createObjectFromJson(List_BBS_City.class, bbs_city.getJSONObject(i));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    realm.cancelTransaction();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                if(bbs_city != null && bbs_city.length() > 0) {
+
+                    realm.delete(List_BBS_City.class);
+
+                    List_BBS_City list_bbs_city;
+
+                    for(int i = 0 ; i < bbs_city.length() ; i++) {
+                        try {
+                            list_bbs_city = realm.createObjectFromJson(List_BBS_City.class, bbs_city.getJSONObject(i));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            realm.cancelTransaction();
+                        }
+                    }
+
+                    if(realm.isInTransaction())
+                        realm.commitTransaction();
+
+                    EndRealm(realm);
                 }
             }
-        }
-
-        if(realm.isInTransaction())
-            realm.commitTransaction();
-
-        EndRealm();
+        });
     }
 }

@@ -594,7 +594,8 @@ public class BbsNewSearchAgentActivity extends BaseActivity implements GoogleApi
     private void searchAgent() {
         Double tempLatitude = latitude;
         Double tempLongitude = longitude;
-        String extraSignature = categoryId + tempLatitude + tempLongitude;
+        String extraSignature = categoryId;
+//        + tempLatitude + tempLongitude;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_BBS_NEW_SEARCH_AGENT,
                 extraSignature);
 

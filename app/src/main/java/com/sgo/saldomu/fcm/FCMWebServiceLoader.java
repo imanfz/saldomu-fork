@@ -13,7 +13,7 @@ import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.interfaces.ErrorListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.FcmModel;
 
 import java.util.HashMap;
@@ -85,14 +85,8 @@ public class FCMWebServiceLoader {
 
         Timber.d("isi params reg token fcm to server : "+requestParams );
 
-        RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_REG_TOKEN_FCM, requestParams,
-                new ErrorListener() {
-                    @Override
-                    public void onError(Throwable e) {
-                        if(loaderListener != null)
-                            loaderListener.onSuccessLoader();
-                    }
-
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REG_TOKEN_FCM, requestParams,
+                new ResponseListener() {
                     @Override
                     public void onResponses(JsonObject object) {
                         try {
@@ -101,7 +95,7 @@ public class FCMWebServiceLoader {
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 CustomSecurePref.getInstance().insertString(DefineValue.FCM_SERVER_UUID,
-                                       model.getUid());
+                                        model.getUid());
                                 if(loaderListener != null)
                                     loaderListener.onSuccessLoader();
                             }
@@ -110,6 +104,17 @@ public class FCMWebServiceLoader {
                             if(loaderListener != null)
                                 loaderListener.onFailedLoader();
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if(loaderListener != null)
+                            loaderListener.onSuccessLoader();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

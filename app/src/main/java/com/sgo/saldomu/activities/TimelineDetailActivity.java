@@ -42,8 +42,8 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CommentModel;
 import com.sgo.saldomu.models.retrofit.LikesModel;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -93,8 +93,8 @@ public class TimelineDetailActivity extends BaseActivity {
 
         InitializeToolbar();
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _ownerID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         listLike = new ArrayList<>();
         listComment = new ArrayList<>();
@@ -125,7 +125,7 @@ public class TimelineDetailActivity extends BaseActivity {
 //            mPic= Picasso.with(this);
 
         Intent i = getIntent();
-        if(i != null) {
+        if (i != null) {
             post_id = i.getStringExtra("post_id");
             String from_name = i.getStringExtra("from_name");
             from_id = i.getStringExtra("from_id");
@@ -142,25 +142,25 @@ public class TimelineDetailActivity extends BaseActivity {
 
             likeModel.deleteByPostId(post_id);
 
-            if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
+            if (type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
                 iconPictureRight.setVisibility(View.VISIBLE);
-                if(with_profpic != null && with_profpic.equals(""))
+                if (with_profpic != null && with_profpic.equals(""))
                     GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
                 else
                     GlideManager.sharedInstance().initializeGlide(this, with_profpic, roundedImage, iconPictureRight);
 
                 toId.setText(to_name);
                 textStatus.setText(tx_status);
-            }
-            else {
+            } else {
                 iconPictureRight.setVisibility(View.GONE);
                 toId.setText(tx_status);
                 textStatus.setText(getResources().getString(R.string.doing));
             }
 
-            if(profpic != null && profpic.equals(""))
+            if (profpic != null && profpic.equals(""))
                 GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
-            else GlideManager.sharedInstance().initializeGlide(this, profpic, getResources().getDrawable(R.drawable.user_unknown_menu), iconPicture);
+            else
+                GlideManager.sharedInstance().initializeGlide(this, profpic, getResources().getDrawable(R.drawable.user_unknown_menu), iconPicture);
 
             PrettyTime p = new PrettyTime(new Locale(DefineValue.sDefSystemLanguage));
             Date time1 = DateTimeFormat.convertStringtoCustomDateTime(datetime);
@@ -196,7 +196,7 @@ public class TimelineDetailActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
-                if(listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
+                if (listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(TimelineDetailActivity.this);
                     builder.setTitle(getString(R.string.delete_comment));
                     builder.setMessage(getString(R.string.delete_comment_ask));
@@ -268,10 +268,9 @@ public class TimelineDetailActivity extends BaseActivity {
     }
 
     private void setImageLove() {
-        if(!like) {
+        if (!like) {
             imageLove.setImageResource(R.drawable.ic_like_inactive);
-        }
-        else {
+        } else {
             imageLove.setImageResource(R.drawable.ic_like_active);
         }
     }
@@ -317,7 +316,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                             }
                                         }
 
-                                        if(!flagSameComment) {
+                                        if (!flagSameComment) {
                                             String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                             String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                             String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -357,9 +356,8 @@ public class TimelineDetailActivity extends BaseActivity {
 
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -374,13 +372,13 @@ public class TimelineDetailActivity extends BaseActivity {
             params.put(WebParams.TO, from_id);
             params.put(WebParams.REPLY, reply);
             params.put(WebParams.DATETIME, DateTimeFormat.getCurrentDate());
-            params.put(WebParams.USER_ID,_ownerID);
+            params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params add comment:"+ params.toString());
+            Timber.d("isi params add comment:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_COMMENT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -410,7 +408,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                             }
                                         }
 
-                                        if(!flagSameComment) {
+                                        if (!flagSameComment) {
                                             String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                             String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                             String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -432,22 +430,27 @@ public class TimelineDetailActivity extends BaseActivity {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(TimelineDetailActivity.this, message);
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(mProg.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -464,10 +467,10 @@ public class TimelineDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params remove comment:"+ params.toString());
+            Timber.d("isi params remove comment:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_COMMENT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -496,7 +499,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                             }
                                         }
 
-                                        if(!flagSameComment) {
+                                        if (!flagSameComment) {
                                             String comment_post_id = mArrayComment.getJSONObject(i).getString(WebParams.POST_ID);
                                             String comment_from = mArrayComment.getJSONObject(i).getString(WebParams.FROM);
                                             String comment_from_name = mArrayComment.getJSONObject(i).getString(WebParams.FROM_NAME);
@@ -523,32 +526,37 @@ public class TimelineDetailActivity extends BaseActivity {
                                     commentAdapter.notifyDataSetChanged();
 
                                     listTimeLineModel.updateNumcomments(count, Integer.parseInt(post_id));
-                                    listTimeLineModel.updateComments("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateCommentId1("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateCommentId2("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateFromname1("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateFromname2("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateFromprofilepicture1("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateFromprofilepicture2("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateReply1("",Integer.parseInt(post_id));
-                                    listTimeLineModel.updateReply2("",Integer.parseInt(post_id));
+                                    listTimeLineModel.updateComments("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateCommentId1("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateCommentId2("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromname1("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromname2("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromprofilepicture1("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateFromprofilepicture2("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateReply1("", Integer.parseInt(post_id));
+                                    listTimeLineModel.updateReply2("", Integer.parseInt(post_id));
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(mProg.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -563,10 +571,10 @@ public class TimelineDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get like list:"+ params.toString());
+            Timber.d("isi params get like list:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIKE_LIST, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -606,7 +614,7 @@ public class TimelineDetailActivity extends BaseActivity {
                                         String like_to_profile_picture = mArrayLike.getJSONObject(i).getString(WebParams.TO_PROFILE_PICTURE);
                                         String like_datetime = mArrayLike.getJSONObject(i).getString(WebParams.DATETIME);
 
-                                        if(like_from.equals(_ownerID)) like = true;
+                                        if (like_from.equals(_ownerID)) like = true;
 
                                         mListLike.add(new likeModel(like_id, like_post_id,
                                                 like_from, like_from_name, like_from_profile_picture, like_to,
@@ -622,25 +630,28 @@ public class TimelineDetailActivity extends BaseActivity {
                                 } else if (code.equals(WebParams.NO_DATA_CODE)) {
                                     textLove.setText("");
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
 
+                                    Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
 
-                                    finish();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(mProg.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+                            finish();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -658,10 +669,10 @@ public class TimelineDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params add like:"+ params.toString());
+            Timber.d("isi params add like:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -719,22 +730,27 @@ public class TimelineDetailActivity extends BaseActivity {
                                     List<likeModel> mListLike = new ArrayList<>();
                                     insertLikeToDB(mListLike);
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(mProg.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -752,10 +768,10 @@ public class TimelineDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params remove like:"+ params.toString());
+            Timber.d("isi params remove like:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -804,13 +820,11 @@ public class TimelineDetailActivity extends BaseActivity {
                                     listTimeLineModel.updateNumlikes(count, Integer.parseInt(post_id));
                                     listTimeLineModel.updateIsLike("0", Integer.parseInt(post_id));
                                     insertLikeToDB(mListLike);
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(TimelineDetailActivity.this,message);
-                                }
-                                else if(code.equals(WebParams.NO_DATA_CODE)){
+                                    test.showDialoginActivity(TimelineDetailActivity.this, message);
+                                } else if (code.equals(WebParams.NO_DATA_CODE)) {
                                     textLove.setText("");
                                     String data_likes = gson.toJson(model.getData_likes());
                                     listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
@@ -819,39 +833,44 @@ public class TimelineDetailActivity extends BaseActivity {
                                     List<likeModel> mListLike = new ArrayList<>();
                                     insertLikeToDB(mListLike);
                                 } else {
-                                    if(MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(TimelineDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(TimelineDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
 
 
                                 }
-                            }
-                            catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            if(mProg.isShowing())
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void insertLikeToDB(List<likeModel> mListLike){
+    private void insertLikeToDB(List<likeModel> mListLike) {
         likeModel.deleteByPostId(post_id);
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         likeModel mTm;
 
-        Timber.d("arraylike length:"+ String.valueOf(mListLike.size()));
-        if(mListLike.size()>0){
+        Timber.d("arraylike length:" + String.valueOf(mListLike.size()));
+        if (mListLike.size() > 0) {
             for (int i = 0; i < mListLike.size(); i++) {
                 mTm = mListLike.get(i);
                 mTm.save();
-                Timber.d("idx array like:"+ String.valueOf(i));
+                Timber.d("idx array like:" + String.valueOf(i));
             }
         }
 
@@ -869,17 +888,17 @@ public class TimelineDetailActivity extends BaseActivity {
         });
     }
 
-    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
+    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments) {
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         commentModel mTm;
 
-        Timber.d("arrayComment length:"+ String.valueOf(mListComment.size()));
-        if(mListComment.size()>0){
+        Timber.d("arrayComment length:" + String.valueOf(mListComment.size()));
+        if (mListComment.size() > 0) {
             for (int i = 0; i < mListComment.size(); i++) {
                 mTm = mListComment.get(i);
                 mTm.save();
-                Timber.d("idx array comment:"+ String.valueOf(i));
+                Timber.d("idx array comment:" + String.valueOf(i));
             }
         }
 
@@ -897,29 +916,28 @@ public class TimelineDetailActivity extends BaseActivity {
                 listComment.clear();
                 listComment.addAll(commentModel.getByPostId(post_id));
                 commentAdapter.notifyDataSetChanged();
-                if(addRemove) {
+                if (addRemove) {
                     listTimeLineModel.updateNumcomments(Integer.toString(listComment.size()), Integer.parseInt(post_id));
-                    listTimeLineModel.updateComments(_data_comments,Integer.parseInt(post_id));
-                    if(listComment.size() < 2){
+                    listTimeLineModel.updateComments(_data_comments, Integer.parseInt(post_id));
+                    if (listComment.size() < 2) {
                         listTimeLineModel.updateCommentId1(Integer.toString(listComment.get(0).getComment_id()), Integer.parseInt(post_id));
-                        listTimeLineModel.updateFromname1(listComment.get(0).getFrom_name(),Integer.parseInt(post_id));
+                        listTimeLineModel.updateFromname1(listComment.get(0).getFrom_name(), Integer.parseInt(post_id));
                         listTimeLineModel.updateFromprofilepicture1(listComment.get(0).getFrom_profile_picture(), Integer.parseInt(post_id));
-                        listTimeLineModel.updateReply1(listComment.get(0).getReply(),Integer.parseInt(post_id));
+                        listTimeLineModel.updateReply1(listComment.get(0).getReply(), Integer.parseInt(post_id));
                         listTimeLineModel.updateCommentId2("", Integer.parseInt(post_id));
-                        listTimeLineModel.updateFromname2("",Integer.parseInt(post_id));
+                        listTimeLineModel.updateFromname2("", Integer.parseInt(post_id));
                         listTimeLineModel.updateFromprofilepicture2("", Integer.parseInt(post_id));
-                        listTimeLineModel.updateReply2("",Integer.parseInt(post_id));
-                    }
-                    else {
+                        listTimeLineModel.updateReply2("", Integer.parseInt(post_id));
+                    } else {
 
                         for (int index = 0; index < listComment.size(); index++) {
-                            if (index == listComment.size()-2) {
+                            if (index == listComment.size() - 2) {
                                 listTimeLineModel.updateCommentId2(Integer.toString(listComment.get(index).getComment_id()), Integer.parseInt(post_id));
-                                listTimeLineModel.updateFromname2(listComment.get(index).getFrom_name(),Integer.parseInt(post_id));
+                                listTimeLineModel.updateFromname2(listComment.get(index).getFrom_name(), Integer.parseInt(post_id));
                                 listTimeLineModel.updateFromprofilepicture2(listComment.get(index).getFrom_profile_picture(), Integer.parseInt(post_id));
-                                listTimeLineModel.updateReply2(listComment.get(index).getReply(),Integer.parseInt(post_id));
+                                listTimeLineModel.updateReply2(listComment.get(index).getReply(), Integer.parseInt(post_id));
                             }
-                            if (index == listComment.size()-1) {
+                            if (index == listComment.size() - 1) {
                                 listTimeLineModel.updateCommentId1(Integer.toString(listComment.get(index).getComment_id()), Integer.parseInt(post_id));
                                 listTimeLineModel.updateFromname1(listComment.get(index).getFrom_name(), Integer.parseInt(post_id));
                                 listTimeLineModel.updateFromprofilepicture1(listComment.get(index).getFrom_profile_picture(), Integer.parseInt(post_id));
@@ -935,7 +953,7 @@ public class TimelineDetailActivity extends BaseActivity {
     private ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(TimelineDetailActivity.this)) {
+            if (InetHandler.isNetworkAvailable(TimelineDetailActivity.this)) {
                 like = !like;
 //            String custName = sp.getString(CoreApp.CUST_NAME, getString(R.string.text_strip));
                 if (!like) {
@@ -988,7 +1006,7 @@ public class TimelineDetailActivity extends BaseActivity {
         return R.layout.activity_timeline_detail;
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_timeline_detail));
     }
@@ -1006,11 +1024,10 @@ public class TimelineDetailActivity extends BaseActivity {
 
     private void setLove() {
         String peopleLove = "";
-        for(int i = 0 ; i < listLike.size() ; i++) {
-            if(i == listLike.size()-1) {
+        for (int i = 0; i < listLike.size(); i++) {
+            if (i == listLike.size() - 1) {
                 peopleLove += listLike.get(i).getFrom_name() + " Like this.";
-            }
-            else {
+            } else {
                 peopleLove += listLike.get(i).getFrom_name() + ", ";
             }
         }

@@ -1,11 +1,11 @@
 package com.sgo.saldomu.coreclass;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.Configuration;
@@ -36,7 +36,7 @@ import timber.log.Timber;
 /*
   Created by Administrator on 8/15/2014.
  */
-public class CoreApp extends Application {
+public class CoreApp extends MultiDexApplication {
 
     private Activity mCurrentActivity = null;
     private static CoreApp _instance;

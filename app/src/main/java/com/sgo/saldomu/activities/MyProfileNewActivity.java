@@ -37,6 +37,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
 import com.sgo.saldomu.models.retrofit.GetHelpModel;
 import com.sgo.saldomu.models.retrofit.SentExecCustModel;
@@ -1119,10 +1120,9 @@ public class MyProfileNewActivity extends BaseActivity {
             Timber.d("isi params help list:" + params.toString());
 
             RetrofitService.getInstance().GetObjectRequest(MyApiClient.LINK_USER_CONTACT_INSERT,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetHelpModel model = gson.fromJson(object, GetHelpModel.class);
 
                             String code = model.getError_code();
@@ -1151,12 +1151,19 @@ public class MyProfileNewActivity extends BaseActivity {
                                 test.showDialoginActivity(MyProfileNewActivity.this,message);
                             }
                             else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(MyProfileNewActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MyProfileNewActivity.this, message, Toast.LENGTH_LONG).show();
                             }
 
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if(progdialog.isShowing())
                                 progdialog.dismiss();
                         }

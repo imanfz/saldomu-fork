@@ -33,9 +33,9 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
@@ -54,15 +54,15 @@ public class FragCashOutAgen extends BaseFragment {
     public final static String TAG = "com.sgo.indonesiakoe.fragments.FragCashOutAgen";
 
     private View v;
-    private String tx_id,nameadmin,amount,fee,total,ccy,authType;
+    private String tx_id, nameadmin, amount, fee, total, ccy, authType;
     private ProgressDialog progdialog;
-    private Boolean isOTP =  false;
+    private Boolean isOTP = false;
     private EditText et_otp;
     private JSONObject dataInq;
     private View layout_noData;
-    private int attempt,failed;
+    private int attempt, failed;
     private Button btnResend, btn_proses, btn_batal;
-    private int max_token_resend = 3, count_resend=0;
+    private int max_token_resend = 3, count_resend = 0;
     private Activity act;
 
 
@@ -84,16 +84,16 @@ public class FragCashOutAgen extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         act = getActivity();
-        if(InetHandler.isNetworkAvailable(getActivity())) {
+        if (InetHandler.isNetworkAvailable(getActivity())) {
             sentInquiryWithdraw();
-        }
-        else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+        } else
+            DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
         CashoutActivity fca = (CashoutActivity) getActivity();
         fca.setTitleToolbar(getString(R.string.title_cashout_tunai));
     }
 
-    private void initializeNoData(){
+    private void initializeNoData() {
         String contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
         String listContactPhone = "";
 
@@ -101,14 +101,14 @@ public class FragCashOutAgen extends BaseFragment {
             JSONArray arrayContact = new JSONArray(contactCenter);
             JSONObject mObject;
 //            String id;
-            for(int i=0; i < arrayContact.length() ; i++ ) {
+            for (int i = 0; i < arrayContact.length(); i++) {
                 mObject = arrayContact.getJSONObject(i);
 //                id = mObject.optString(WebParams.ID, "0");
-                if(i==0) {
-                    listContactPhone = mObject.optString(WebParams.NAME,"")+"\n"+
-                            mObject.optString(WebParams.CONTACT_PHONE,"")+" "+
-                            getString(R.string.or)+" "+
-                            mObject.optString(WebParams.CONTACT_EMAIL,"");
+                if (i == 0) {
+                    listContactPhone = mObject.optString(WebParams.NAME, "") + "\n" +
+                            mObject.optString(WebParams.CONTACT_PHONE, "") + " " +
+                            getString(R.string.or) + " " +
+                            mObject.optString(WebParams.CONTACT_EMAIL, "");
                     break;
                 }
             }
@@ -125,7 +125,7 @@ public class FragCashOutAgen extends BaseFragment {
         tv_message_noData.setText(getString(R.string.cashoutagen_nodata_message) + "\n" + listContactPhone);
     }
 
-    private void InitializeData(JSONObject mJson){
+    private void InitializeData(JSONObject mJson) {
 
         View layout_main = v.findViewById(R.id.layout_cashoutagen);
         layout_main.setVisibility(View.VISIBLE);
@@ -141,58 +141,57 @@ public class FragCashOutAgen extends BaseFragment {
         btn_proses = v.findViewById(R.id.btn_verification);
         btn_batal = v.findViewById(R.id.btn_cancel);
 
-        max_token_resend = mJson.optInt(WebParams.MAX_RESEND,3);
-        count_resend = mJson.optInt(WebParams.COUNT_RESEND,0);
+        max_token_resend = mJson.optInt(WebParams.MAX_RESEND, 3);
+        count_resend = mJson.optInt(WebParams.COUNT_RESEND, 0);
         count_resend = max_token_resend - count_resend;
 
         tx_id = mJson.optString(WebParams.TX_ID, "");
-        nameadmin = mJson.optString(WebParams.NAME_ADMIN,"");
-        amount = mJson.optString(WebParams.AMOUNT,"");
-        fee = mJson.optString(WebParams.FEE,"");
-        total = mJson.optString(WebParams.TOTAL,"");
-        ccy = mJson.optString(WebParams.CCY_ID,"");
+        nameadmin = mJson.optString(WebParams.NAME_ADMIN, "");
+        amount = mJson.optString(WebParams.AMOUNT, "");
+        fee = mJson.optString(WebParams.FEE, "");
+        total = mJson.optString(WebParams.TOTAL, "");
+        ccy = mJson.optString(WebParams.CCY_ID, "");
 
         tvUserID.setText(userPhoneID);
         tvTxID.setText(tx_id);
         tvNameAdmin.setText(nameadmin);
-        tvAmount.setText(ccy+" "+CurrencyFormat.format(amount));
-        tvFee.setText(ccy+" "+CurrencyFormat.format(fee));
-        tvTotal.setText(ccy+" "+CurrencyFormat.format(total));
+        tvAmount.setText(ccy + " " + CurrencyFormat.format(amount));
+        tvFee.setText(ccy + " " + CurrencyFormat.format(fee));
+        tvTotal.setText(ccy + " " + CurrencyFormat.format(total));
 
-        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE,"");
+        authType = sp.getString(DefineValue.AUTHENTICATION_TYPE, "");
 
-        if(authType.equalsIgnoreCase("OTP")) {
+        if (authType.equalsIgnoreCase("OTP")) {
             isOTP = true;
             View layoutOTP = v.findViewById(R.id.layout_token);
             et_otp = layoutOTP.findViewById(R.id.cashout_token_value);
             layoutOTP.setVisibility(View.VISIBLE);
 
             View layout_resendbtn = v.findViewById(R.id.layout_btn_resend);
-            btnResend= v.findViewById(R.id.btn_resend);
+            btnResend = v.findViewById(R.id.btn_resend);
             layout_resendbtn.setVisibility(View.VISIBLE);
 
             btnResend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(InetHandler.isNetworkAvailable(getActivity())) {
+                    if (InetHandler.isNetworkAvailable(getActivity())) {
                         btn_proses.setEnabled(false);
                         btnResend.setEnabled(false);
                         btn_batal.setEnabled(false);
 
                         if (count_resend != 0)
                             sentResendToken();
-                    }
-                    else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                    } else
+                        DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
                 }
             });
 
             changeTextBtnSub();
-        }
-        else {
-            new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
+        } else {
+            new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { //get pin attempt
                 @Override
                 public void onSuccess(Object deData) {
-                    attempt = (int)deData;
+                    attempt = (int) deData;
                 }
 
                 @Override
@@ -210,7 +209,7 @@ public class FragCashOutAgen extends BaseFragment {
         btn_proses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (InetHandler.isNetworkAvailable(getActivity())) {
                     if (inputValidation()) {
                         btn_proses.setEnabled(false);
                         btn_batal.setEnabled(false);
@@ -220,7 +219,8 @@ public class FragCashOutAgen extends BaseFragment {
                         } else
                             CallPINinput(-1);
                     }
-                }else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                } else
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
 
             }
         });
@@ -228,21 +228,21 @@ public class FragCashOutAgen extends BaseFragment {
         btn_batal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (InetHandler.isNetworkAvailable(getActivity())) {
                     btn_proses.setEnabled(false);
                     btn_batal.setEnabled(false);
                     if (isOTP)
                         btnResend.setEnabled(false);
                     showDialogDel();
-                }
-                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                } else
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
             }
         });
 
     }
 
-    public boolean inputValidation(){
-        if(isOTP && et_otp.getText().toString().length()==0){
+    public boolean inputValidation() {
+        if (isOTP && et_otp.getText().toString().length() == 0) {
             et_otp.requestFocus();
             et_otp.setError(this.getString(R.string.forgetpass_edittext_validation));
             return false;
@@ -250,27 +250,27 @@ public class FragCashOutAgen extends BaseFragment {
         return true;
     }
 
-    private void CallPINinput(int _attempt){
+    private void CallPINinput(int _attempt) {
         Intent i = new Intent(getActivity(), InsertPIN.class);
         i.putExtra(DefineValue.IS_FORGOT_PASSWORD, true);
-        if(_attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT,_attempt);
+        if (_attempt == 1)
+            i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(!btn_proses.isEnabled()){
+        if (!btn_proses.isEnabled()) {
             btn_proses.setEnabled(true);
             btn_batal.setEnabled(true);
-            if(isOTP)
+            if (isOTP)
                 btnResend.setEnabled(true);
         }
         //Timber.d("onActivity result", "Biller Fragment"+" / "+requestCode+" / "+resultCode);
-        if(requestCode == MainPage.REQUEST_FINISH){
+        if (requestCode == MainPage.REQUEST_FINISH) {
             //  Log.d("onActivity result", "Biller Fragment masuk request exit");
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 sentReqCodeWithdraw(value_pin);
             }
@@ -291,12 +291,12 @@ public class FragCashOutAgen extends BaseFragment {
     }
 
 
-    public void sentInquiryWithdraw(){
-        try{
+    public void sentInquiryWithdraw() {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
-            extraSignature = memberIDLogin+"COC";
+            extraSignature = memberIDLogin + "COC";
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INQUIRY_WITHDRAW, extraSignature);
             params.put(WebParams.MEMBER_ID, memberIDLogin);
@@ -313,28 +313,24 @@ public class FragCashOutAgen extends BaseFragment {
                             try {
 
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response inquiry withdraw:"+response.toString());
+                                Timber.d("isi response inquiry withdraw:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     InitializeData(response);
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else if(code.equals(ErrorDefinition.NO_TRANSACTION)){
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
 //                            initializeNoData();
 
                                     String contactCenter = sp.getString(DefineValue.LIST_CONTACT_CENTER, "");
-                                    if(contactCenter.equals("")) {
+                                    if (contactCenter.equals("")) {
                                         getHelpList();
-                                    }
-                                    else {
+                                    } else {
                                         initializeNoData();
                                     }
-                                }
-                                else {
+                                } else {
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                     getFragmentManager().popBackStack();
@@ -354,18 +350,18 @@ public class FragCashOutAgen extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public void sentReqCodeWithdraw(String tokenid){
-        try{
+    public void sentReqCodeWithdraw(String tokenid) {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -373,9 +369,9 @@ public class FragCashOutAgen extends BaseFragment {
             params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
             params.put(WebParams.USER_ID, userPhoneID);
-            params.put(WebParams.MEMBER_ID,memberIDLogin);
+            params.put(WebParams.MEMBER_ID, memberIDLogin);
             params.put(WebParams.TX_ID, tx_id);
-            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenid ));
+            params.put(WebParams.TOKEN_ID, RSA.opensslEncrypt(tokenid));
 
 
             Timber.d("isi params sent req code Withdraw:" + params.toString());
@@ -387,26 +383,23 @@ public class FragCashOutAgen extends BaseFragment {
                             try {
 
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response req Code withdraw:"+response.toString());
+                                Timber.d("isi response req Code withdraw:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     Fragment newFrag = FragCashOutAgenCode.
-                                            newInstance(response.optString(WebParams.OTP_MEMBER,""),
+                                            newInstance(response.optString(WebParams.OTP_MEMBER, ""),
                                                     dataInq);
                                     switchContent(newFrag, FragCashOutAgenCode.TAG);
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else if(code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)){
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else if (code.equals(ErrorDefinition.WRONG_PIN_CASHOUT)) {
                                     attempt = response.optInt(WebParams.FAILED_ATTEMPT, -1);
-                                    failed = response.optInt(WebParams.MAX_FAILED,3);
+                                    failed = response.optInt(WebParams.MAX_FAILED, 3);
                                     Toast.makeText(getActivity(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG).show();
                                     CallPINinput(failed - attempt);
-                                }
-                                else {
+                                } else {
 
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -426,20 +419,20 @@ public class FragCashOutAgen extends BaseFragment {
                         public void onComplete() {
                             btn_proses.setEnabled(true);
                             btn_batal.setEnabled(true);
-                            if(isOTP && count_resend>0)
+                            if (isOTP && count_resend > 0)
                                 btnResend.setEnabled(true);
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
 
-    public void sentResendToken(){
-        try{
+    public void sentResendToken() {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -451,10 +444,9 @@ public class FragCashOutAgen extends BaseFragment {
             Timber.d("isi params sent resend token:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_RESENT_TOKEN_BILLER, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
@@ -464,40 +456,43 @@ public class FragCashOutAgen extends BaseFragment {
 
                                 changeTextBtnSub();
                                 Toast.makeText(getActivity(), getString(R.string.reg2_notif_text_resend_token), Toast.LENGTH_SHORT).show();
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else if(code.equals(ErrorDefinition.NO_TRANSACTION)){
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(ErrorDefinition.NO_TRANSACTION)) {
                                 layout_noData.setVisibility(View.VISIBLE);
-                            }
-                            else {
+                            } else {
                                 code = model.getError_code() + ":" + model.getError_message();
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 getFragmentManager().popBackStack();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             btn_proses.setEnabled(true);
                             btn_batal.setEnabled(true);
-                            if(isOTP && count_resend>0)
+                            if (isOTP && count_resend > 0)
                                 btnResend.setEnabled(true);
 
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
 
-    public void sentDelWithdraw(){
-        try{
+    public void sentDelWithdraw() {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -513,18 +508,16 @@ public class FragCashOutAgen extends BaseFragment {
                         public void onResponses(JSONObject response) {
                             try {
                                 String code = response.getString(WebParams.ERROR_CODE);
-                                Timber.d("isi response del withdraw:"+response.toString());
+                                Timber.d("isi response del withdraw:" + response.toString());
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     getActivity().finish();
-                                    Toast.makeText(getActivity(), getString(R.string.cashoutagen_del_withdraw_text),Toast.LENGTH_LONG).show();
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                    Toast.makeText(getActivity(), getString(R.string.cashoutagen_del_withdraw_text), Toast.LENGTH_LONG).show();
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     Timber.d("isi response autologout:" + response.toString());
                                     String message = response.getString(WebParams.ERROR_MESSAGE);
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(getActivity(),message);
-                                }
-                                else {
+                                    test.showDialoginActivity(getActivity(), message);
+                                } else {
 
                                     code = response.getString(WebParams.ERROR_CODE) + ":" + response.getString(WebParams.ERROR_MESSAGE);
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
@@ -545,15 +538,15 @@ public class FragCashOutAgen extends BaseFragment {
                         public void onComplete() {
                             btn_proses.setEnabled(true);
                             btn_batal.setEnabled(true);
-                            if(isOTP && count_resend>0)
+                            if (isOTP && count_resend > 0)
                                 btnResend.setEnabled(true);
 
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+ e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -619,19 +612,18 @@ public class FragCashOutAgen extends BaseFragment {
 
                         @Override
                         public void onComplete() {
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     });
-        }
-        catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void showDialogDel(){
+    private void showDialogDel() {
         final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getString(R.string.cashoutagen_del_dialog_title),
-                getString(R.string.cashoutagen_del_withdraw_dialog_text),getString(R.string.ok),getString(R.string.cancel),false);
+                getString(R.string.cashoutagen_del_withdraw_dialog_text), getString(R.string.ok), getString(R.string.cancel), false);
         dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -643,7 +635,7 @@ public class FragCashOutAgen extends BaseFragment {
             public void onClick(DialogInterface dialog, int which) {
                 btn_proses.setEnabled(true);
                 btn_batal.setEnabled(true);
-                if(isOTP)
+                if (isOTP)
                     btnResend.setEnabled(true);
                 dialog_frag.dismiss();
             }
@@ -655,7 +647,7 @@ public class FragCashOutAgen extends BaseFragment {
         ft.commitAllowingStateLoss();
     }
 
-    private void switchContent(Fragment mFrag, String tag){
+    private void switchContent(Fragment mFrag, String tag) {
         if (getActivity() == null)
             return;
 

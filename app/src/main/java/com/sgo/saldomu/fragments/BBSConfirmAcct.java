@@ -24,7 +24,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.securities.RSA;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -184,10 +184,9 @@ public class BBSConfirmAcct extends BaseFragment {
             progdialog.show();
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_CONFIRM_ACCT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
@@ -219,13 +218,21 @@ public class BBSConfirmAcct extends BaseFragment {
                             }
                             else {
                                 code = model.getError_message();
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
+                                 Toast.makeText(getActivity(),code, Toast.LENGTH_SHORT).show();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
                             progdialog.dismiss();
                         }
-                    });
+                    } );
         }catch (Exception e){
             Timber.d("httpclient: "+e.getMessage());
         }

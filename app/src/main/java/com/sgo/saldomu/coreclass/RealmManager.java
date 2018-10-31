@@ -34,9 +34,37 @@ import timber.log.Timber;
 
 public class RealmManager {
 
+    private static RealmManager singleton;
+
     public static RealmConfiguration BillerConfiguration;
     public static RealmConfiguration BBSConfiguration;
     public static RealmConfiguration BBSMemberBankConfiguration;
+
+    private Realm realm;
+    private Realm bbsRealm;
+
+    public static RealmManager getInstance(){
+        if (singleton == null){
+            singleton = new RealmManager();
+        }
+        return singleton;
+    }
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public void setRealm(Realm realm) {
+        this.realm = realm;
+    }
+
+    public Realm getBbsRealm() {
+        return bbsRealm;
+    }
+
+    public void setBbsRealm(Realm bbsRealm) {
+        this.bbsRealm = bbsRealm;
+    }
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})

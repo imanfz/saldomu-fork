@@ -29,12 +29,12 @@ import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.DeviceUtils;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.LoginCommunityModel;
 import com.sgo.saldomu.models.retrofit.LoginModel;
 import com.sgo.saldomu.securities.RSA;
@@ -79,21 +79,21 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
         argsBundleNextLogin = getArguments();
 
-        userIDValue = (EditText) v.findViewById(R.id.userID_value);
-        passLoginValue = (EditText) v.findViewById(R.id.passLogin_value);
+        userIDValue = v.findViewById(R.id.userID_value);
+        passLoginValue = v.findViewById(R.id.passLogin_value);
 
-        btnLogin = (Button) v.findViewById(R.id.btn_login);
+        btnLogin = v.findViewById(R.id.btn_login);
         btnLogin.setOnClickListener(this);
 
 //        btnLayout = (MaterialRippleLayout) v.findViewById(R.id.btn_login_ripple_layout);
 
-        btnforgetPass = (Button) v.findViewById(R.id.btn_forgetPass);
+        btnforgetPass = v.findViewById(R.id.btn_forgetPass);
         btnforgetPass.setOnClickListener(this);
 
-        btnRegister = (Button) v.findViewById(R.id.btn_register);
+        btnRegister = v.findViewById(R.id.btn_register);
         btnRegister.setOnClickListener(this);
 
-        image_spinner = (ImageView) v.findViewById(R.id.image_spinning_wheel);
+        image_spinner = v.findViewById(R.id.image_spinning_wheel);
         frameAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.spinner_animation);
         frameAnimation.setRepeatCount(Animation.INFINITE);
 
@@ -168,11 +168,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
             Timber.d("isi params login:" + formBody.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, formBody, new ObjListener() {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, formBody, new ResponseListener() {
                 @Override
-                public void onResponses(JsonObject object) {
-
-                    LoginModel loginModel = getGson().fromJson(object, LoginModel.class);
+                public void onResponses(JsonObject response) {
+                    LoginModel loginModel = getGson().fromJson(response.toString(), LoginModel.class);
 
                     image_spinner.clearAnimation();
                     image_spinner.setVisibility(View.INVISIBLE);
@@ -230,20 +229,26 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         showDialog(getString(R.string.login_failed_wrong_id));
                     }
                     else {
-                        if(MyApiClient.PROD_FAILURE_FLAG) {
-                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                        }else
-                            Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
 
-                        image_spinner.clearAnimation();
-                        image_spinner.setVisibility(View.INVISIBLE);
-                        btnLogin.setEnabled(true);
-                        userIDValue.setEnabled(true);
-                        passLoginValue.setEnabled(true);
-                        btnforgetPass.setEnabled(true);
-                        btnRegister.setEnabled(true);
-                        btnLogin.setVisibility(View.VISIBLE);
                     }
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                    image_spinner.clearAnimation();
+                    image_spinner.setVisibility(View.INVISIBLE);
+                    btnLogin.setEnabled(true);
+                    userIDValue.setEnabled(true);
+                    passLoginValue.setEnabled(true);
+                    btnforgetPass.setEnabled(true);
+                    btnRegister.setEnabled(true);
+                    btnLogin.setVisibility(View.VISIBLE);
                 }
             });
         }catch (Exception e){
@@ -260,9 +265,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.login_failed_attempt_title));

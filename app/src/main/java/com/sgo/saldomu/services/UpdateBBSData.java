@@ -43,8 +43,6 @@ public class UpdateBBSData extends IntentService {
     final String CTA = "CTA";
     final String ATC = "ATC";
 
-
-    private Realm realm;
     SecurePreferences sp;
     private ResultReceiver localResultReceiver;
     String userID;
@@ -62,7 +60,6 @@ public class UpdateBBSData extends IntentService {
         if(intent.hasExtra("receiverTag"))
             localResultReceiver = intent.getParcelableExtra("receiverTag");
 
-        realm = Realm.getInstance(RealmManager.BBSConfiguration);
         curr_date = DateTimeFormat.getCurrentDate();
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
@@ -94,7 +91,7 @@ public class UpdateBBSData extends IntentService {
             if(getMustUpdateBBSData())
                 setMustUpdateBBSData(false);
         }
-        EndRealm();
+//        EndRealm();
         setUpdatingData(false);
     }
 
@@ -121,19 +118,20 @@ public class UpdateBBSData extends IntentService {
         sp.edit().putBoolean(DefineValue.IS_MUST_UPDATE_BBS_DATA,value).apply();
     }
 
-    private Realm getRealm(){
-        if (realm.isClosed() || realm == null)
-            realm = Realm.getInstance(RealmManager.BBSConfiguration);
-        return realm;
-    }
-
-    private void EndRealm(){
-        if(realm.isInTransaction())
-            realm.cancelTransaction();
-
-        if(realm != null && !realm.isClosed())
-            realm.close();
-    }
+//    private Realm getRealm(){
+//        if (realm.isClosed() || realm == null)
+//            realm = Realm.getInstance(RealmManager.BBSConfiguration);
+////            realm = RealmManager.getInstance().getBbsRealm();
+//        return realm;
+//    }
+//
+//    private void EndRealm(){
+//        if(realm.isInTransaction())
+//            realm.cancelTransaction();
+//
+//        if(realm != null && !realm.isClosed())
+//            realm.close();
+//    }
 
     private void getBBSdata(final String schemeCode){
         try{
@@ -170,14 +168,12 @@ public class UpdateBBSData extends IntentService {
         }
     }
 
-    private void clearDataRealm(String scheme_code){
-        RealmResults<BBSCommModel> jumlahDataComm = getRealm().where(BBSCommModel.class).
+    private void clearDataRealm(String scheme_code, Realm realm){
+        RealmResults<BBSCommModel> jumlahDataComm = realm.where(BBSCommModel.class).
                 equalTo(BBSCommModel.SCHEME_CODE,scheme_code).findAll();
-        RealmResults<BBSBankModel> jumlahDataBank = getRealm().where(BBSBankModel.class).
+        RealmResults<BBSBankModel> jumlahDataBank = realm.where(BBSBankModel.class).
                 equalTo(BBSBankModel.SCHEME_CODE,scheme_code).findAll();
 
-
-        realm.beginTransaction();
         if(jumlahDataComm.size() > 0) {
             jumlahDataComm.deleteAllFromRealm();
         }
@@ -186,82 +182,87 @@ public class UpdateBBSData extends IntentService {
         }
         if(scheme_code.equalsIgnoreCase(ATC))
             realm.delete(BBSAccountACTModel.class);
-        realm.commitTransaction();
     }
 
     private void insertToRealm(JSONArray communityData, String scheme_code) {
 
-        clearDataRealm(scheme_code);
-        if(communityData != null && communityData.length() > 0) {
+        Realm realm = Realm.getInstance(RealmManager.BBSConfiguration);
 
-            realm.beginTransaction();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                clearDataRealm(scheme_code, realm);
+                if(communityData != null && communityData.length() > 0) {
 
-            BBSCommModel tempBBSCommModel;
-            BBSBankModel tempBBSBankModel;
-            JSONArray tempBankComm;
+                    BBSCommModel tempBBSCommModel;
+                    BBSBankModel tempBBSBankModel;
+                    JSONArray tempBankComm;
 
-            if(scheme_code.equalsIgnoreCase(CTA)) {
-                ctaState = true;
-                setDateDataCTA(curr_date);
-            } else {
-                atcState = true;
-                setDateDataATC(curr_date);
-            }
-
-            int i = 0;
-//            for(int i = 0 ; i < communityData.length() ; i++) {
-                try {
-                    //insert to comm model
-                    tempBBSCommModel = realm.createObjectFromJson(BBSCommModel.class, communityData.getJSONObject(i));
-                    tempBBSCommModel.setScheme_code(scheme_code);
-                    tempBBSCommModel.setLast_update(curr_date);
-
-                    //insert to bank model source
-                    tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_SOURCE);
-                    if(tempBankComm != null && tempBankComm.length() > 0){
-                        for(int j = 0; j < tempBankComm.length() ; j++) {
-                            tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
-                            tempBBSBankModel.setComm_type("SOURCE");
-                            tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
-                            tempBBSBankModel.setScheme_code(scheme_code);
-                            tempBBSBankModel.setLast_update(curr_date);
-                        }
+                    if(scheme_code.equalsIgnoreCase(CTA)) {
+                        ctaState = true;
+                        setDateDataCTA(curr_date);
+                    } else {
+                        atcState = true;
+                        setDateDataATC(curr_date);
                     }
 
-                    //insert to bank model benef
-                    tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_BENEF);
-                    if(tempBankComm != null && tempBankComm.length() > 0){
-                        if (scheme_code.equalsIgnoreCase(ATC)){
-                            BBSAccountACTModel bbsAccountACTModel;
+                    int i = 0;
+//            for(int i = 0 ; i < communityData.length() ; i++) {
+                    try {
+                        //insert to comm model
+                        tempBBSCommModel = realm.createObjectFromJson(BBSCommModel.class, communityData.getJSONObject(i));
+                        tempBBSCommModel.setScheme_code(scheme_code);
+                        tempBBSCommModel.setLast_update(curr_date);
+
+                        //insert to bank model source
+                        tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_SOURCE);
+                        if(tempBankComm != null && tempBankComm.length() > 0){
                             for(int j = 0; j < tempBankComm.length() ; j++) {
-                                bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class,
-                                        tempBankComm.getJSONObject(j));
-
-                                bbsAccountACTModel.setComm_id(tempBBSCommModel.getComm_id());
-                                bbsAccountACTModel.setScheme_code(scheme_code);
-                                bbsAccountACTModel.setLast_update(curr_date);
-                            }
-                        }
-                        else {
-                            for (int j = 0; j < tempBankComm.length(); j++) {
                                 tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
-
-                                tempBBSBankModel.setComm_type("BENEF");
+                                tempBBSBankModel.setComm_type("SOURCE");
                                 tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
                                 tempBBSBankModel.setScheme_code(scheme_code);
                                 tempBBSBankModel.setLast_update(curr_date);
                             }
                         }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    realm.cancelTransaction();
-                }
-//            }
-        }
 
-        if(realm.isInTransaction())
-            realm.commitTransaction();
+                        //insert to bank model benef
+                        tempBankComm = communityData.getJSONObject(i).optJSONArray(WebParams.COMM_BENEF);
+                        if(tempBankComm != null && tempBankComm.length() > 0){
+                            if (scheme_code.equalsIgnoreCase(ATC)){
+                                BBSAccountACTModel bbsAccountACTModel;
+                                for(int j = 0; j < tempBankComm.length() ; j++) {
+                                    bbsAccountACTModel = realm.createObjectFromJson(BBSAccountACTModel.class,
+                                            tempBankComm.getJSONObject(j));
+
+                                    bbsAccountACTModel.setComm_id(tempBBSCommModel.getComm_id());
+                                    bbsAccountACTModel.setScheme_code(scheme_code);
+                                    bbsAccountACTModel.setLast_update(curr_date);
+                                }
+                            }
+                            else {
+                                for (int j = 0; j < tempBankComm.length(); j++) {
+
+                                    tempBBSBankModel = realm.createObjectFromJson(BBSBankModel.class, tempBankComm.getJSONObject(j));
+
+                                    tempBBSBankModel.setComm_type("BENEF");
+                                    tempBBSBankModel.setComm_id(tempBBSCommModel.getComm_id());
+                                    tempBBSBankModel.setScheme_code(scheme_code);
+                                    tempBBSBankModel.setLast_update(curr_date);
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        realm.cancelTransaction();
+                    }
+//            }
+                }
+
+            }
+        });
+
+
     }
 
     void sentFailed(Bundle bundle){

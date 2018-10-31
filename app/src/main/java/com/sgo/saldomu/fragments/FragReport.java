@@ -43,7 +43,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.GetReportDataModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
@@ -372,7 +372,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 
             String user_id = sp.getString(DefineValue.USERID_PHONE, "");
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
-            String url="", signature="";
+            String url = "", signature = "";
 
             if (report_type == REPORT_SCASH) {
                 url = MyApiClient.LINK_TRANSACTION_REPORT;
@@ -405,10 +405,9 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
             }
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             reportListModel = getGson().fromJson(object, GetReportDataModel.class);
 
                             reportData.clear();
@@ -478,10 +477,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     tv_date_to.setText(dedate);
                                     filter_btn.setChecked(false);
                                     code = reportListModel.getError_message();
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
 
                                     bak_date_from = (Calendar) date_from.clone();
                                     bak_date_to = (Calendar) date_to.clone();
@@ -491,12 +488,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                     emptyLayout.setVisibility(View.VISIBLE);
                                     NotifyDataChange();
                                 }
-
-                                if (out != null && out.isShowing())
-                                    out.dismiss();
-
-                                filter_btn.setOnClickListener(filterBtnListener);
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (out != null && out.isShowing())
+                                out.dismiss();
+
+                            filter_btn.setOnClickListener(filterBtnListener);
                         }
                     });
         } catch (Exception e) {
@@ -542,7 +547,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 _tx_id = _object.getTrx_id();
                 _comm_id = sp.getString(DefineValue.COMMUNITY_ID, "");
                 if (_object.getBuss_scheme_code().equalsIgnoreCase("RF") ||
-                        _object.getBuss_scheme_code().equalsIgnoreCase("RA")){
+                        _object.getBuss_scheme_code().equalsIgnoreCase("RA")) {
                     call = false;
                 }
 //                call =
@@ -570,7 +575,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 Timber.d("isi params sent get Trx Status:" + params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                        new ObjListener() {
+                        new ResponseListener() {
                             @Override
                             public void onResponses(JsonObject object) {
                                 GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
@@ -587,21 +592,26 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                                 } else {
                                     String msg = model.getError_message();
 
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                                 }
+                            }
 
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
                                 if (out.isShowing())
                                     out.dismiss();
                             }
                         });
             }
-            } catch(Exception e){
-                Timber.d("httpclient:" + e.getMessage());
-            }
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
+    }
 
 
     private void ShowDialog(ReportDataModel _object, GetTrxStatusReportModel response) {
@@ -641,7 +651,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                 }
             } else if (_object.getBuss_scheme_code().equals("EMO") || _object.getBuss_scheme_code().equalsIgnoreCase("TOP")) {
                 showReportEMODialog(response);
-            }else if (_object.getBuss_scheme_code().equals("BDK")) {
+            } else if (_object.getBuss_scheme_code().equals("BDK")) {
                 showReportBDKDialog(response);
 
             }
@@ -685,7 +695,8 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
 //        dialog.setTargetFragment(this,0);
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
-    private void showReportATCMemberDialog(GetTrxStatusReportModel response){
+
+    private void showReportATCMemberDialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
@@ -739,7 +750,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    private void showReportEMODialog(GetTrxStatusReportModel response){
+    private void showReportEMODialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
@@ -785,7 +796,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    private void showReportBDKDialog(GetTrxStatusReportModel response){
+    private void showReportBDKDialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
 
@@ -834,7 +845,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    private void showReportATCAgentDialog(GetTrxStatusReportModel response){
+    private void showReportATCAgentDialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
@@ -886,7 +897,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-    private void showReportCTADialog(GetTrxStatusReportModel response){
+    private void showReportCTADialog(GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, response.getMember_name());
@@ -960,7 +971,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         dialog.show(getActivity().getSupportFragmentManager(), ReportBillerDialog.TAG);
     }
 
-        private void showReportBillerDialog(ReportDataModel _object, GetTrxStatusReportModel response,  String ccyId){
+    private void showReportBillerDialog(ReportDataModel _object, GetTrxStatusReportModel response, String ccyId) {
         Bundle args = new Bundle();
         args.putString(DefineValue.DATE_TIME, _object.getDatetime());
         args.putString(DefineValue.TX_ID, _object.getTx_id());
@@ -984,7 +995,7 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
         showBillerDialog(args, response.getTx_status(), response.getTx_remark());
     }
 
-    private void showReportEspayBillerDialog( String name, GetTrxStatusReportModel response){
+    private void showReportEspayBillerDialog(String name, GetTrxStatusReportModel response) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, name);

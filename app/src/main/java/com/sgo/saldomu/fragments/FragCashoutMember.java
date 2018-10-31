@@ -40,10 +40,10 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ErrorListener;
 import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.InqDataAtcModel;
@@ -275,19 +275,10 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
 
             Timber.d("isi params sent inquiry data atc:" + params.toString());
 
-            RetrofitService.getInstance().PostWithOnError(MyApiClient.LINK_INQUIRY_DATA_ATC, params,
-                    new ErrorListener() {
-                        @Override
-                        public void onError(Throwable e) {
-                            if (failed < 3) {
-                                failed++;
-                                handlerWS.postDelayed(runnableWS, 60000);
-                            }
-                        }
-
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INQUIRY_DATA_ATC, params,
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             InqDataAtcModel model = getGson().fromJson(object, InqDataAtcModel.class);
 
                             String code = model.getError_code();
@@ -319,6 +310,18 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
                                 handlerWS.postDelayed(runnableWS, 60000);
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            if (failed < 3) {
+                                failed++;
+                                handlerWS.postDelayed(runnableWS, 60000);
+                            }
+                        }
+
+                        @Override
+                        public void onComplete() {
 
                         }
                     });

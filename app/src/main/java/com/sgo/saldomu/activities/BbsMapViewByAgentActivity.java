@@ -453,7 +453,8 @@ public class BbsMapViewByAgentActivity extends BaseActivity implements OnMapRead
 
         isInquiryRoute          = false;
 
-        String extraSignature = txId + memberId + shopId + agentLatitude + agentLongitude;
+        String extraSignature = txId + memberId + shopId;
+//        + agentLatitude + agentLongitude;
         HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_LOCATION_AGENT,
                 extraSignature);
 
