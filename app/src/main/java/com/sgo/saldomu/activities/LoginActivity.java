@@ -69,7 +69,7 @@ public class LoginActivity extends BaseActivity {
                 if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
                     newFrag = new Regist1();
                     newFrag.setArguments(m);
-                } else if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")
+                } else if (BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("production")
                         && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
                     if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
                         newFrag = new Regist1();
