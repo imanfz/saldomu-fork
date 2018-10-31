@@ -103,7 +103,7 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                     i.putExtra(DefineValue.USER_IS_NEW,-2);
                     i.putExtra(DefineValue.IS_POS, "Y");
                     startActivity(i);
-                    Introduction.this.finish();
+//                    Introduction.this.finish();
         }
     };
 
