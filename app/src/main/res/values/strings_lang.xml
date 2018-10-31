@@ -917,7 +917,7 @@
     <string name="update_bank_account">Perbaharui Bank Account</string>
     <string name="no_rekening_validation">Nomor Rekening Dibutuhkan !</string>
     <string name="nama_rekening_validation">Nama Rekening Dibutuhkan !</string>
-    <string name="title_bbs_list_account_bbs">Daftar Bank / E-Money</string>
+    <string name="title_bbs_list_account_bbs">Rekening Saya</string>
     <string name="dialog_title_delete_bbs_acct">Hapus Akun</string>
     <string name="dialog_msg_delete_bbs_acct">Nama : %1$s\nNo : %2$s\nProduk : %3$s \n\nMasukan password anda untuk menghapus akun.</string>
     <string name="bbsreg_et_error_rekbenef">No Rekening Tujuan dibutuhkan !</string>
@@ -1018,7 +1018,7 @@
 
     <string name="menu_item_search_agent_cta">Agen Setor Tunai</string>
     <string name="menu_item_search_agent_atc">Agen Tarik Tunai</string>
-    <string name="menu_item_search_agent_bbs">Agen</string>
+    <string name="menu_item_search_agent_bbs">Cari Agen</string>
 
     <string name="setting_permission_location">Setting Lokasi</string>
     <string name="err_disallow_permission_location">Silakan aktifkan lokasi Anda</string>
