@@ -192,7 +192,7 @@ public class ActivityProfileQr extends BaseActivity {
 
     private void InitializeToolbar(){
 
-        setActionBarTitle(getString(R.string.lbl_profil_saya));
+        setActionBarTitle(getString(R.string.lbl_member_saya));
         setActionBarIcon(R.drawable.ic_arrow_left);
     }
 
@@ -347,7 +347,7 @@ public class ActivityProfileQr extends BaseActivity {
     private void showDialogMessage()
     {
 
-        final Dialog dialognya = DefinedDialog.MessageDialog(ActivityProfileQr.this, this.getString(R.string.upgrade_agent_dialog_finish_title),
+        final Dialog dialognya = DefinedDialog.MessageDialog(ActivityProfileQr.this, this.getString(R.string.upgrade_dialog_finish_title),
                 this.getString(R.string.level_dialog_finish_message) + "\n" + listAddress + "\n" +
                         this.getString(R.string.level_dialog_finish_message_2) + "\n" + listContactPhone,
                 new DefinedDialog.DialogButtonListener() {

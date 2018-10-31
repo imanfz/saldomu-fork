@@ -109,7 +109,7 @@ android {
             buildConfigField 'String', "TOPIC_FCM_ALL_DEVICE", "\"allAndroidAppProd\""
 //            buildConfigField 'String', "URL_MNOTIF", "\"http://192.168.88.72:3335/\""
             buildConfigField 'String', "URL_MNOTIF", "\"https://mnotif.saldomu.com/\""
-            buildConfigField 'String', "SMS_CENTER_XL", "\"+6285931157571\""
+            buildConfigField 'String', "SMS_CENTER_XL", "\"+6287856894892\""
             buildConfigField 'String', "SMS_CENTER_TSEL", "\"+6282257470000\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_KEY", "\"kbsjgu7y9684vyhifq3796487d4ka0x5\""
             buildConfigField 'String', "OPENSSL_ENCRYPT_IV", "\"86ipndw356yj79rf\""

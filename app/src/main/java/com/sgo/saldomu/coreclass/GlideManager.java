@@ -37,6 +37,16 @@ public class GlideManager {
                 .into(target);
     }
 
+    public void initializeGlidePromo(Context context, Object source, Drawable errorDrawable, ImageView target){
+        Glide.with(context)
+                .load(source)
+                .centerCrop()
+                .fitCenter()
+                .error(errorDrawable)
+                .placeholder(R.drawable.progress_animation)
+                .into(target);
+    }
+
     public void initializeGlideProfile(Context context, Object source, ImageView target){
         Glide.with(context)
                 .load(source)
