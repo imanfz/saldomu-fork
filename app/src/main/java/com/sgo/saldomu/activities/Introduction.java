@@ -69,16 +69,16 @@ public class Introduction extends AppIntro implements EasyPermissions.Permission
                 }
             });
             //cheat kalo diteken lama next ke Login (-2)
-            donebtn.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    Intent i = new Intent(Introduction.this,LoginActivity.class);
-                    i.putExtra(DefineValue.USER_IS_NEW,-2);
-                    startActivity(i);
-                    Introduction.this.finish();
-                    return false;
-                }
-            });
+//            donebtn.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View v) {
+//                    Intent i = new Intent(Introduction.this,LoginActivity.class);
+//                    i.putExtra(DefineValue.USER_IS_NEW,-2);
+//                    startActivity(i);
+//                    Introduction.this.finish();
+//                    return false;
+//                }
+//            });
         }
 
         donebtn.setOnClickListener(POSlistener);
