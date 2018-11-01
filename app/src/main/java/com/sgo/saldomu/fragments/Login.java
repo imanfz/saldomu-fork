@@ -190,7 +190,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                             if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                                 setLoginProfile(loginModel);
-                                changeActivity();
+
                             } else {
                                 Bundle bundle = new Bundle();
                                 bundle.putString(DefineValue.USER_ID, userIDValue.getText().toString());
@@ -337,114 +337,120 @@ public class Login extends BaseFragment implements View.OnClickListener {
     }
 
     private void setLoginProfile(LoginModel model){
-        getActivity();
-        SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
-        SecurePreferences.Editor mEditor = prefs.edit();
-        String arraynya;
-        String userId = model.getUserId();
-        String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
 
-        if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
-            mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
-            mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
-            mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,true);
-        }
-        else {
-            if(prevContactFT.equals(DefineValue.NO)) {
-                myFriendModel.deleteAll();
-                mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
+        try {
+            SecurePreferences prefs = CustomSecurePref.getInstance().getmSecurePrefs();
+            SecurePreferences.Editor mEditor = prefs.edit();
+            String arraynya;
+            String userId = model.getUserId();
+            String prevContactFT = prefs.getString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,"");
+
+            if(prefs.getString(DefineValue.PREVIOUS_LOGIN_USER_ID,"").equals(userId)){
+                mEditor.putString(DefineValue.CONTACT_FIRST_TIME,prevContactFT);
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, prefs.getString(DefineValue.PREVIOUS_BALANCE, "0"));
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,true);
             }
-            mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
-            mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,false);
-            BBSDataManager.resetBBSData();
-        }
+            else {
+                if(prevContactFT.equals(DefineValue.NO)) {
+                    myFriendModel.deleteAll();
+                    mEditor.putString(DefineValue.CONTACT_FIRST_TIME, DefineValue.YES);
+                }
+                mEditor.putString(DefineValue.BALANCE_AMOUNT, "0");
+                mEditor.putBoolean(DefineValue.IS_SAME_PREVIOUS_USER,false);
+                BBSDataManager.resetBBSData();
+            }
 
 
-        mEditor.putString(DefineValue.USERID_PHONE, userId);
-        mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
-        mEditor.putString(DefineValue.USER_NAME, model.getUserName());
-        mEditor.putString(DefineValue.CUST_ID, model.getCustId());
-        mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
+            mEditor.putString(DefineValue.USERID_PHONE, userId);
+            mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_YES);
+            mEditor.putString(DefineValue.USER_NAME, model.getUserName());
+            mEditor.putString(DefineValue.CUST_ID, model.getCustId());
+            mEditor.putString(DefineValue.CUST_NAME, model.getCustName());
 
-        mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
-        mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
-        mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
-        mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
-        mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
-        mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFullName());
-        mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocialId());
-        mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
-        mEditor.putString(DefineValue.PROFILE_POB, model.getBirthPlace());
-        mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
-        mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
-        mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
-        mEditor.putString(DefineValue.PROFILE_BOM, model.getMotherName());
+            mEditor.putString(DefineValue.PROFILE_DOB, model.getDateOfBirth());
+            mEditor.putString(DefineValue.PROFILE_ADDRESS, model.getAddress());
+            mEditor.putString(DefineValue.PROFILE_BIO, model.getBio());
+            mEditor.putString(DefineValue.PROFILE_COUNTRY, model.getCountry());
+            mEditor.putString(DefineValue.PROFILE_EMAIL, model.getEmail());
+            mEditor.putString(DefineValue.PROFILE_FULL_NAME, model.getFullName());
+            mEditor.putString(DefineValue.PROFILE_SOCIAL_ID, model.getSocialId());
+            mEditor.putString(DefineValue.PROFILE_HOBBY, model.getHobby());
+            mEditor.putString(DefineValue.PROFILE_POB, model.getBirthPlace());
+            mEditor.putString(DefineValue.PROFILE_GENDER, model.getGender());
+            mEditor.putString(DefineValue.PROFILE_ID_TYPE, model.getIdtype());
+            mEditor.putString(DefineValue.PROFILE_VERIFIED, model.getVerified());
+            mEditor.putString(DefineValue.PROFILE_BOM, model.getMotherName());
 
-        mEditor.putString(DefineValue.LIST_ID_TYPES, getGson().toJson(model.getIdTypes()));
+            mEditor.putString(DefineValue.LIST_ID_TYPES, getGson().toJson(model.getIdTypes()));
 //            mEditor.putString(DefineValue.LIST_CONTACT_CENTER,response.getString(WebParams.CONTACT_CENTER));
 
-        mEditor.putString(DefineValue.IS_FIRST, model.getUserIsNew());
-        mEditor.putString(DefineValue.IS_CHANGED_PASS, model.getChangedPass());
+            mEditor.putString(DefineValue.IS_FIRST, model.getUserIsNew());
+            mEditor.putString(DefineValue.IS_CHANGED_PASS, model.getChangedPass());
 
-        mEditor.putString(DefineValue.IMG_URL, model.getImgUrl());
-        mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImgSmallUrl());
-        mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImgMediumUrl());
-        mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImgLargeUrl());
+            mEditor.putString(DefineValue.IMG_URL, model.getImgUrl());
+            mEditor.putString(DefineValue.IMG_SMALL_URL, model.getImgSmallUrl());
+            mEditor.putString(DefineValue.IMG_MEDIUM_URL, model.getImgMediumUrl());
+            mEditor.putString(DefineValue.IMG_LARGE_URL, model.getImgLargeUrl());
 
-        mEditor.putString(DefineValue.ACCESS_KEY, model.getAccessKey());
-        mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
+            mEditor.putString(DefineValue.ACCESS_KEY, model.getAccessKey());
+            mEditor.putString(DefineValue.ACCESS_SECRET, model.getAccessSecret());
 
-        mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
+            mEditor.putString(DefineValue.LINK_APP, model.getSocialSignature());
 
-        if (Integer.valueOf(model.getIsRegistered()) == 0)
-            mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
-        else
-            mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
+            if (Integer.valueOf(model.getIsRegistered()) == 0)
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, false);
+            else
+                mEditor.putBoolean(DefineValue.IS_REGISTERED_LEVEL, true);
 
-        if(!model.getCommunity().isEmpty()){
-            mEditor.putInt(DefineValue.COMMUNITY_LENGTH,model.getCommunity().size());
-            for(int i = 0 ; i < model.getCommunity().size();i++){
-                LoginCommunityModel commModel = model.getCommunity().get(i);
-                if(commModel.getCommId().equals(MyApiClient.COMM_ID)){
-                    mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
-                    mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
-                    mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
-                    mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());
-                    mEditor.putString(DefineValue.COMMUNITY_NAME, commModel.getCommName());
-                    mEditor.putString(DefineValue.BUSS_SCHEME_CODE, commModel.getBussSchemeCode());
-                    mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
-                    mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
-                    mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
-                    mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
-                    if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES))
-                        mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
-                    else
-                        mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
-                    mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
-                    mEditor.putBoolean(DefineValue.IS_AGENT, Integer.valueOf(commModel.getIsAgent())>0);
+            if(!model.getCommunity().isEmpty()){
+                mEditor.putInt(DefineValue.COMMUNITY_LENGTH,model.getCommunity().size());
+                for(int i = 0 ; i < model.getCommunity().size();i++){
+                    LoginCommunityModel commModel = model.getCommunity().get(i);
+                    if(commModel.getCommId().equals(MyApiClient.COMM_ID)){
+                        mEditor.putString(DefineValue.COMMUNITY_ID, commModel.getCommId());
+                        mEditor.putString(DefineValue.CALLBACK_URL_TOPUP, commModel.getCallbackUrl());
+                        mEditor.putString(DefineValue.API_KEY_TOPUP, commModel.getApiKey());
+                        mEditor.putString(DefineValue.COMMUNITY_CODE, commModel.getCommCode());
+                        mEditor.putString(DefineValue.COMMUNITY_NAME, commModel.getCommName());
+                        mEditor.putString(DefineValue.BUSS_SCHEME_CODE, commModel.getBussSchemeCode());
+                        mEditor.putString(DefineValue.AUTHENTICATION_TYPE, commModel.getAuthenticationType());
+                        mEditor.putString(DefineValue.LENGTH_AUTH, commModel.getLengthAuth());
+                        mEditor.putString(DefineValue.IS_HAVE_PIN, commModel.getIsHavePin());
+                        mEditor.putInt(DefineValue.LEVEL_VALUE, Integer.valueOf(commModel.getMemberLevel()));
+                        if (commModel.getAllowMemberLevel().equals(DefineValue.STRING_YES))
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,true);
+                        else
+                            mEditor.putBoolean(DefineValue.ALLOW_MEMBER_LEVEL,false);
+                        mEditor.putString(DefineValue.IS_NEW_BULK, commModel.getIsNewBulk());
+                        mEditor.putBoolean(DefineValue.IS_AGENT, Integer.valueOf(commModel.getIsAgent())>0);
 
 //                        mEditor.putString(DefineValue.CAN_TRANSFER,arrayJson.getJSONObject(i).optString(WebParams.CAN_TRANSFER, DefineValue.STRING_NO));
-                    Timber.w("isi comm id yg bener:" + commModel.getCommId());
-                    break;
+                        Timber.w("isi comm id yg bener:" + commModel.getCommId());
+                        break;
+                    }
                 }
             }
-        }
 
-        if (!model.getShopIdAgent().equals("")) {
+            if (!model.getShopIdAgent().equals("")) {
 //                JSONObject shopAgentObject = response.getJSONObject("shop_id_agent");
 //                if (shopAgentObject.length() > 0) {
 //
 //                }
-            mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
-            mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
-            mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
-        }
+                mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, DefineValue.STRING_NO);
+                mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, DefineValue.STRING_NO);
+                mEditor.putString(DefineValue.SHOP_AGENT_DATA, getGson().toJson(model.getShopIdAgent()));
+            }
 
-        if(model.getSettings() != null){
-            mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
-        }
+            if(model.getSettings() != null){
+                mEditor.putInt(DefineValue.MAX_MEMBER_TRANS, Integer.valueOf(model.getSettings().get(0).getMaxMemberTransfer()));
+            }
 
-        mEditor.apply();
+            mEditor.apply();
+
+            changeActivity();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private boolean inputValidation(){
