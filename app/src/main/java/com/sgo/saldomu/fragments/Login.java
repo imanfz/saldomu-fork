@@ -102,7 +102,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
         Bundle m = getArguments();
 
-        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("production")){ //untuk shorcut dari tombol di activity LoginActivity
+        if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             }
@@ -125,7 +125,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
         {
             getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
-            userIDValue.setHint("No HP POS yang sudah terdaftar");
         }
 
 
