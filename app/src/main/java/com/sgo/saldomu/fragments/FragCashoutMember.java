@@ -40,7 +40,6 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
@@ -413,10 +412,9 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             Timber.d("isi params sent cancel ATC:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CANCEL_ATC, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                             String code = model.getError_code();
@@ -428,15 +426,21 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
                                 test.showDialoginActivity(getActivity(), message);
                             } else {
                                 code = model.getError_message();
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    });
+                    } );
 
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -567,10 +571,9 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
@@ -588,12 +591,17 @@ public class FragCashoutMember extends BaseFragment implements ReportBillerDialo
                                 showDialogNotInput(message);
                             }
                             else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
 
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if(progdialog.isShowing())
                                 progdialog.dismiss();
                         }

@@ -45,7 +45,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.models.retrofit.CategoriesModel;
 import com.sgo.saldomu.models.retrofit.CategoryListModel;
@@ -79,7 +79,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
     View BPJS;
     View PLS;
     View TKN;
-    Boolean is_first_time=true;
+    Boolean is_first_time = true;
     private LevelClass levelClass;
     private SecurePreferences sp;
     ProgressDialog progdialog;
@@ -137,8 +137,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
-        GridHome=(GridView)v.findViewById(R.id.grid);
-        tv_saldo = (TextView)v.findViewById(R.id.tv_saldo);
+        GridHome = (GridView) v.findViewById(R.id.grid);
+        tv_saldo = (TextView) v.findViewById(R.id.tv_saldo);
         swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
         llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
         return v;
@@ -151,12 +151,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        levelClass = new LevelClass(getActivity(),sp);
+        levelClass = new LevelClass(getActivity(), sp);
 
         btn_beli = (Button) v.findViewById(R.id.btn_beli);
         input = (EditText) v.findViewById(R.id.input);
         tv_pulsa = (TextView) v.findViewById(R.id.tv_pulsa);
-        tv_bpjs =(TextView) v.findViewById(R.id.tv_bpjs);
+        tv_bpjs = (TextView) v.findViewById(R.id.tv_bpjs);
         tv_listrikPLN = (TextView) v.findViewById(R.id.tv_listrikPLN);
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
@@ -170,11 +170,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .equalTo(WebParams.BILLER_TYPE_CODE, "PLS")
                 .findFirst();
 
-        if (mBillerTypeDataPLS!=null)
-        {
+        if (mBillerTypeDataPLS != null) {
             PLS.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             PLS.setVisibility(View.GONE);
         }
 
@@ -182,11 +180,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .equalTo(WebParams.BILLER_TYPE_CODE, "BPJS")
                 .findFirst();
 
-        if (mBillerTypeDataBPJS!=null)
-        {
+        if (mBillerTypeDataBPJS != null) {
             BPJS.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             BPJS.setVisibility(View.GONE);
         }
 
@@ -194,19 +190,17 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 .equalTo(WebParams.BILLER_TYPE_CODE, "TKN")
                 .findFirst();
 
-        if (mBillerTypeDataTKN!=null)
-        {
+        if (mBillerTypeDataTKN != null) {
             TKN.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             TKN.setVisibility(View.GONE);
         }
 
-        if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+        if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
             llAgentDetail.setVisibility(View.GONE);
 
         } else {
-            if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+            if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
                 llAgentDetail.setVisibility(View.VISIBLE);
             } else {
                 llAgentDetail.setVisibility(View.GONE);
@@ -214,10 +208,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         }
 
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
 
-        if ( isAgent ) {
-            if(isAdded()) {
+        if (isAgent) {
+            if (isAdded()) {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                 GridHome.setAdapter(adapter);
             }
@@ -232,16 +226,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
             params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
             Timber.d("isi params shop category:" + params.toString());
 
-            if(this.isVisible()) {
-                progdialog              = DefinedDialog.CreateProgressDialog(getActivity(), "");
+            if (this.isVisible()) {
+                progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_CATEGORY_LIST, params,
-                        new ObjListener() {
+                        new ResponseListener() {
                             @Override
                             public void onResponses(JsonObject object) {
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
-
                                 CategoryListModel model = getGson().fromJson(object, CategoryListModel.class);
 
                                 String code = model.getError_code();
@@ -269,27 +260,35 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
 
                                 } else {
-                                    Toast.makeText(getActivity().getApplicationContext(), model.getError_message(), Toast.LENGTH_LONG);
+                                    Toast.makeText(getActivity(), model.getError_message(), Toast.LENGTH_LONG).show();
                                 }
 
                                 //gridBbsCategoryAdapter.notifyDataSetChanged();
-                                if(isAdded()) {
+                                if (isAdded()) {
                                     GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                                     GridHome.setAdapter(adapter);
                                 }
+                            }
+
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                if (progdialog.isShowing())
+                                    progdialog.dismiss();
                             }
                         });
             }
         }
 
-        btn_beli.setOnClickListener(new View.OnClickListener()
-        {
+        btn_beli.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(view_pulsa.getVisibility()==View.VISIBLE)
-                {
-                    if (inputValidation()==true)
-                    {
+                if (view_pulsa.getVisibility() == View.VISIBLE) {
+                    if (inputValidation() == true) {
                         Intent intent = new Intent(getActivity(), BillerActivity.class);
                         intent.putExtra(DefineValue.BILLER_TYPE, "PLS");
                         intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
@@ -301,16 +300,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
 //                    bundle.putString(DefineValue.PHONE_NUMBER, input.getText().toString());
 //                    switchMenu(NavigationDrawMenu.MDAP,bundle);
                 }
-                if(view_bpjs.getVisibility()==View.VISIBLE)
-                {
+                if (view_bpjs.getVisibility() == View.VISIBLE) {
                     Intent intent = new Intent(getActivity(), BillerActivity.class);
                     intent.putExtra(DefineValue.BILLER_TYPE, "BPJS");
                     intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
                     intent.putExtra(DefineValue.BILLER_NAME, "BPJS");
                     startActivity(intent);
                 }
-                if (view_listrikPLN.getVisibility()==View.VISIBLE)
-                {
+                if (view_listrikPLN.getVisibility() == View.VISIBLE) {
                     Intent intent = new Intent(getActivity(), BillerActivity.class);
                     intent.putExtra(DefineValue.BILLER_TYPE, "TKN");
                     intent.putExtra(DefineValue.BILLER_ID_NUMBER, input.getText().toString());
@@ -319,8 +316,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 }
             }
         });
-        tv_pulsa.setOnClickListener(new View.OnClickListener()
-        {
+        tv_pulsa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 input.setText("");
@@ -330,8 +326,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 input.setHint("Masukkan No. Hp");
             }
         });
-        tv_bpjs.setOnClickListener(new View.OnClickListener()
-        {
+        tv_bpjs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 input.setText("");
@@ -343,8 +338,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 input.setHint("Masukkan No. BPJS");
             }
         });
-        tv_listrikPLN.setOnClickListener(new View.OnClickListener()
-        {
+        tv_listrikPLN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 input.setText("");
@@ -364,23 +358,23 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 String menuItemName = ((TextView) view.findViewById(R.id.grid_text)).getText().toString();
 
-                if ( menuItemName.equals(getString(R.string.newhome_title_topup)) ) {
+                if (menuItemName.equals(getString(R.string.newhome_title_topup))) {
                     switchMenu(NavigationDrawMenu.MTOPUP, null);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_title_pay_friends)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_pay_friends))) {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_title_ask_for_money)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_ask_for_money))) {
                     if (levelClass.isLevel1QAC()) {
                         levelClass.showDialogLevel();
                     } else switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_title_buy)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_buy))) {
                     switchMenu(NavigationDrawMenu.MBUY, null);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_title_report)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_report))) {
                     switchMenu(NavigationDrawMenu.MREPORT, null);
-                }else if ( menuItemName.equals(getString(R.string.menu_item_title_scadm)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_scadm))) {
                     switchMenu(NavigationDrawMenu.MSCADM, null);
-                } else if (menuItemName.equals(getString(R.string.menu_item_search_agent)) ) {
+                } else if (menuItemName.equals(getString(R.string.menu_item_search_agent))) {
                     Bundle bundle = new Bundle();
                     switchMenu(NavigationDrawMenu.MCATEGORYBBS, bundle);
                 /*} else if ( menuItemName.equals(getString(R.string.menu_item_search_agent_cta)) ) {
@@ -402,34 +396,32 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                     i.putExtra(DefineValue.AMOUNT, "");
                     switchActivity(i, MainPage.ACTIVITY_RESULT);*/
-                } else if ( menuItemName.equals(getString(R.string.cash_in)) ) {
+                } else if (menuItemName.equals(getString(R.string.cash_in))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
                     i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                } else if ( menuItemName.equals(getString(R.string.cash_out)) ) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.cash_out))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
                     i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHOUT);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                } else if ( menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_trx_agent))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSTRXAGENT);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.BBSONPROGRESSAGENT);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                }else if (menuItemName.equals(getString(R.string.title_cash_out_member)) ) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else if (menuItemName.equals(getString(R.string.title_cash_out_member))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
-                    switchActivity(i,MainPage.ACTIVITY_RESULT);
-                }
-                else
-                {
-                    for(int x=0;x<shopCategories.size();x++) {
+                    switchActivity(i, MainPage.ACTIVITY_RESULT);
+                } else {
+                    for (int x = 0; x < shopCategories.size(); x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
-                        if ( menuItemName.indexOf(categoryName) > 0 ) {
+                        if (menuItemName.indexOf(categoryName) > 0) {
                             Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                             i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
@@ -447,10 +439,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         });
 
-        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+        if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
-            if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+            if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
                 swSettingOnline.setChecked(true);
             } else {
                 swSettingOnline.setChecked(false);
@@ -459,74 +451,74 @@ public class FragHomeNew extends BaseFragmentMainPage {
         }
 
         RefreshSaldo();
-        if(levelClass != null)
+        if (levelClass != null)
             levelClass.refreshData();
     }
 
-    private ArrayList<String> SetupListMenu(){
+    private ArrayList<String> SetupListMenu() {
         String[] _data;
-        ArrayList<String> data = new ArrayList<>() ;
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent) {
+        ArrayList<String> data = new ArrayList<>();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        if (isAgent) {
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-            Collections.addAll(data,_data);
+            Collections.addAll(data, _data);
 
         } else {
 
             String[] categories = new String[shopCategories.size()];
-            for(int x =0 ; x < shopCategories.size(); x++ ) {
+            for (int x = 0; x < shopCategories.size(); x++) {
                 categories[x] = getString(R.string.menu_item_search_agent_bbs) + " " + shopCategories.get(x).getCategoryName();
             }
-            Collections.addAll(data,categories);
+            Collections.addAll(data, categories);
 
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_not_agent);
-            Collections.addAll(data,_data);
+            Collections.addAll(data, _data);
         }
         _data = getResources().getStringArray(R.array.list_menu_frag_new_home);
-        Collections.addAll(data,_data);
+        Collections.addAll(data, _data);
         return data;
     }
 
-    private int[] SetupListMenuIcons(){
+    private int[] SetupListMenuIcons() {
 
-        int totalIdx            = 0;
-        int overallIdx          = 0;
-        TypedArray ta           = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home);
-        TypedArray taAgent      = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_agent);
-        TypedArray taNotAgent   = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_not_agent);
+        int totalIdx = 0;
+        int overallIdx = 0;
+        TypedArray ta = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home);
+        TypedArray taAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_agent);
+        TypedArray taNotAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_not_agent);
 
-        totalIdx                = ta.length();
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent) {
-            totalIdx    += taAgent.length();
+        totalIdx = ta.length();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        if (isAgent) {
+            totalIdx += taAgent.length();
         } else {
-            totalIdx    += shopCategories.size();
-            totalIdx    += taNotAgent.length();
+            totalIdx += shopCategories.size();
+            totalIdx += taNotAgent.length();
         }
 
-        int[] data        = new int[totalIdx];
+        int[] data = new int[totalIdx];
 
-        if(isAgent) {
-            for( int j = 0; j < taAgent.length(); j++) {
+        if (isAgent) {
+            for (int j = 0; j < taAgent.length(); j++) {
                 data[j] = taAgent.getResourceId(j, -1);
                 overallIdx++;
             }
 
 
         } else {
-            for(int x =0; x < shopCategories.size(); x++ ) {
+            for (int x = 0; x < shopCategories.size(); x++) {
                 data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
             }
 
 
-            for( int j = 0; j < taNotAgent.length(); j++) {
+            for (int j = 0; j < taNotAgent.length(); j++) {
                 data[overallIdx] = taNotAgent.getResourceId(j, -1);
                 overallIdx++;
             }
         }
 
-        for( int j = 0; j < ta.length(); j++) {
+        for (int j = 0; j < ta.length(); j++) {
             data[overallIdx] = ta.getResourceId(j, -1);
             overallIdx++;
         }
@@ -534,25 +526,26 @@ public class FragHomeNew extends BaseFragmentMainPage {
         return data;
     }
 
-    private boolean inputValidation(){
-        if(input.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (input.getText().toString().length() == 0) {
             input.requestFocus();
             input.setError(getString(R.string.validation_pulsa));
             return false;
         }
-        if(input.getText().toString().charAt(0) == ' '){
+        if (input.getText().toString().charAt(0) == ' ') {
             input.requestFocus();
             input.setError(getString(R.string.validation_pulsa));
             return false;
         }
-        if(input.getText().toString().length()<5){
+        if (input.getText().toString().length() < 5) {
             input.requestFocus();
             input.setError(getString(R.string.validation_pulsa));
             return false;
         }
         return true;
     }
-    private void switchMenu(int idx_menu,Bundle data){
+
+    private void switchMenu(int idx_menu, Bundle data) {
         if (getActivity() == null)
             return;
 
@@ -560,8 +553,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         fca.switchMenu(idx_menu, data);
     }
 
-    private void RefreshSaldo(){
-        String balance = sp.getString(DefineValue.BALANCE_AMOUNT,"0");
+    private void RefreshSaldo() {
+        String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "0");
         tv_saldo.setText(CurrencyFormat.format(balance));
     }
 
@@ -595,13 +588,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
             RefreshSaldo();
 
             String action = intent.getAction();
-            if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+            if (action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP)) {
 
-                if ( !sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+                if (!sp.getBoolean(DefineValue.IS_AGENT, false)) {
                     llAgentDetail.setVisibility(View.GONE);
 
                 } else {
-                    if ( sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES) ) {
+                    if (sp.getString(DefineValue.IS_AGENT_APPROVE, "").equals(DefineValue.STRING_YES)) {
                         llAgentDetail.setVisibility(View.VISIBLE);
                     } else {
                         llAgentDetail.setVisibility(View.GONE);
@@ -609,10 +602,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                 }
 
-                if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
-                    Timber.d("Receiver AgentShop " + sp.getString(DefineValue.AGENT_SHOP_CLOSED, "") );
+                if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
+                    Timber.d("Receiver AgentShop " + sp.getString(DefineValue.AGENT_SHOP_CLOSED, ""));
                     swSettingOnline.setOnCheckedChangeListener(null);
-                    if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+                    if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
                         swSettingOnline.setChecked(true);
                     } else {
                         swSettingOnline.setChecked(false);
@@ -622,14 +615,15 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
         }
     };
+
     @Override
     public void onResume() {
         super.onResume();
 
-        if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
+        if (sp.getBoolean(DefineValue.IS_AGENT, false)) {
 
             swSettingOnline.setOnCheckedChangeListener(null);
-            if ( sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
+            if (sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
                 swSettingOnline.setChecked(true);
             } else {
                 swSettingOnline.setChecked(false);
@@ -646,12 +640,12 @@ public class FragHomeNew extends BaseFragmentMainPage {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
     }
 
-    private void switchActivity(Intent mIntent, int j){
+    private void switchActivity(Intent mIntent, int j) {
         if (getActivity() == null)
             return;
 
         MainPage fca = (MainPage) getActivity();
-        fca.switchActivity(mIntent,j);
+        fca.switchActivity(mIntent, j);
     }
 
     Switch.OnCheckedChangeListener switchListener = new CompoundButton.OnCheckedChangeListener() {
@@ -659,31 +653,31 @@ public class FragHomeNew extends BaseFragmentMainPage {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 
-            shopStatus              = DefineValue.SHOP_OPEN;
-            Boolean isCallWebservice    = false;
+            shopStatus = DefineValue.SHOP_OPEN;
+            Boolean isCallWebservice = false;
 
             if (!isChecked) {
                 //buka
-                shopStatus          = DefineValue.SHOP_CLOSE;
+                shopStatus = DefineValue.SHOP_CLOSE;
 
             }
 
             if (shopStatus.equals(DefineValue.SHOP_OPEN)) {
-                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO) ) {
-                    isCallWebservice    = true;
+                if (!sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_NO)) {
+                    isCallWebservice = true;
                 }
 
             } else {
-                if ( !sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES) ) {
-                    isCallWebservice    = true;
+                if (!sp.getString(DefineValue.AGENT_SHOP_CLOSED, "").equals(DefineValue.STRING_YES)) {
+                    isCallWebservice = true;
                 }
             }
 
-            String extraSignature   = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
+            String extraSignature = sp.getString(DefineValue.BBS_MEMBER_ID, "") + sp.getString(DefineValue.BBS_SHOP_ID, "");
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, extraSignature);
 
-            if ( !GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN) ) {
+            if (!GlobalSetting.isLocationEnabled(getActivity()) && shopStatus.equals(DefineValue.SHOP_OPEN)) {
                 showAlertEnabledGPS();
             } else {
                 if (isCallWebservice) {
@@ -699,11 +693,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
 
                     RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_UPDATE_CLOSE_SHOP_TODAY, params,
-                            new ObjListener() {
+                            new ResponseListener() {
                                 @Override
                                 public void onResponses(JsonObject object) {
-                                    progdialog2.dismiss();
-
                                     jsonModel model = getGson().fromJson(object, jsonModel.class);
 
                                     String code = model.getError_code();
@@ -724,7 +716,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                     Intent i = new Intent(AgentShopService.INTENT_ACTION_AGENT_SHOP);
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
+                                }
 
+                                @Override
+                                public void onError(Throwable throwable) {
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+                                    progdialog2.dismiss();
                                 }
                             });
                 }

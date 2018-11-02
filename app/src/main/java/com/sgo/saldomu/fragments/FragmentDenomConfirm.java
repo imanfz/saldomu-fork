@@ -41,9 +41,9 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ObjListeners;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
@@ -335,10 +335,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
 
                             String code = model.getError_code();
@@ -356,9 +355,7 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                             else {
 
                                 code = model.getError_code() +" : "+ model.getError_message();
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 String message = model.getError_message();
 //                            progdialog.dismiss();
 //                            btn_next.setEnabled(true);
@@ -379,7 +376,17 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
 
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }
@@ -399,10 +406,9 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
             Timber.d("isi params sent get Trx Status:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
@@ -422,13 +428,21 @@ public class FragmentDenomConfirm extends BaseFragment implements DenomItemListA
                             }
                             else {
                                 String msg;
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    msg = getString(R.string.network_connection_failure_toast);
-                                else msg = model.getError_message();
+                                msg = model.getError_message();
                                 showDialog(msg);
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

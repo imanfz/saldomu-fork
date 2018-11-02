@@ -29,7 +29,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
@@ -46,7 +46,7 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
 
     private View v;
     private SecurePreferences sp;
-    private String userid,accesskey,memberId,tx_id,nameadmin,amount,fee,total,ccy;
+    private String userid, accesskey, memberId, tx_id, nameadmin, amount, fee, total, ccy;
     private ProgressDialog progdialog;
 
 
@@ -80,21 +80,21 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         userid = sp.getString(DefineValue.USERID_PHONE, "");
         accesskey = sp.getString(DefineValue.ACCESS_KEY, "");
-        memberId = sp.getString(DefineValue.MEMBER_ID,"");
+        memberId = sp.getString(DefineValue.MEMBER_ID, "");
 
         Bundle args = getArguments();
         JSONObject dataInq = new JSONObject();
         String kodeAdmin = "";
         try {
-            dataInq = new JSONObject(args.getString(DefineValue.DATA,""));
-            kodeAdmin = args.getString(DefineValue.OTP_MEMBER,"");
+            dataInq = new JSONObject(args.getString(DefineValue.DATA, ""));
+            kodeAdmin = args.getString(DefineValue.OTP_MEMBER, "");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        InitializeData(dataInq,kodeAdmin);
+        InitializeData(dataInq, kodeAdmin);
     }
 
-    private void InitializeData(JSONObject mJson, String kodeAdmin){
+    private void InitializeData(JSONObject mJson, String kodeAdmin) {
         TextView tvUserID = (TextView) v.findViewById(R.id.cashoutagen_userId_value);
         TextView tvTxID = (TextView) v.findViewById(R.id.cashoutagen_trxid_value);
         TextView tvNameAdmin = (TextView) v.findViewById(R.id.cashout_admin_name_value);
@@ -106,35 +106,35 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
 
 
         tx_id = mJson.optString(WebParams.TX_ID, "");
-        nameadmin = mJson.optString(WebParams.NAME_ADMIN,"");
-        amount = mJson.optString(WebParams.AMOUNT,"");
-        fee = mJson.optString(WebParams.FEE,"");
-        total = mJson.optString(WebParams.TOTAL,"");
-        ccy = mJson.optString(WebParams.CCY_ID,"");
+        nameadmin = mJson.optString(WebParams.NAME_ADMIN, "");
+        amount = mJson.optString(WebParams.AMOUNT, "");
+        fee = mJson.optString(WebParams.FEE, "");
+        total = mJson.optString(WebParams.TOTAL, "");
+        ccy = mJson.optString(WebParams.CCY_ID, "");
         tvKodeAdmin.setText(kodeAdmin);
 
         tvUserID.setText(userid);
         tvTxID.setText(tx_id);
         tvNameAdmin.setText(nameadmin);
-        tvAmount.setText(ccy+" "+CurrencyFormat.format(amount));
-        tvFee.setText(ccy+" "+CurrencyFormat.format(fee));
-        tvTotal.setText(ccy+" "+CurrencyFormat.format(total));
+        tvAmount.setText(ccy + " " + CurrencyFormat.format(amount));
+        tvFee.setText(ccy + " " + CurrencyFormat.format(fee));
+        tvTotal.setText(ccy + " " + CurrencyFormat.format(total));
 
 
         btn_proses.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(InetHandler.isNetworkAvailable(getActivity())) {
+                if (InetHandler.isNetworkAvailable(getActivity())) {
                     getTrxStatus();
-                }
-                else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
+                } else
+                    DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message));
             }
         });
 
     }
 
-    public void getTrxStatus(){
-        try{
+    public void getTrxStatus() {
+        try {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
@@ -148,13 +148,12 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
             params.put(WebParams.TX_TYPE, DefineValue.EMO);
             params.put(WebParams.USER_ID, userid);
 
-            Timber.d("isi params sent get Trx Status:"+params.toString());
+            Timber.d("isi params sent get Trx Status:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
@@ -165,31 +164,35 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
 //                                        response.optString(WebParams.TX_STATUS,""), response.optString(WebParams.TX_REMARK, ""),
 //                                        response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME)
                                 );
-                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else if(code.equals(ErrorDefinition.ERROR_CODE_ADMIN_NOT_INPUT)) {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else if (code.equals(ErrorDefinition.ERROR_CODE_ADMIN_NOT_INPUT)) {
                                 showDialogNotInput(message);
-                            }
-                            else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(getActivity(), message,Toast.LENGTH_LONG).show();
-                            }
+                            } else {
 
-                            if(progdialog.isShowing())
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
                     }
             );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    void showDialogNotInput(String message){
+    void showDialogNotInput(String message) {
         // Create custom dialog object
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -198,9 +201,10 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOK = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);Message.setVisibility(View.VISIBLE);
+        Button btnDialogOK = (Button) dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = (TextView) dialog.findViewById(R.id.title_dialog);
+        TextView Message = (TextView) dialog.findViewById(R.id.message_dialog);
+        Message.setVisibility(View.VISIBLE);
 
         Title.setText(getResources().getString(R.string.dialog_notinput_cashoutcode));
         Message.setText(message);
@@ -225,30 +229,28 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
         args.putString(DefineValue.USERID_PHONE, userid);
         args.putString(DefineValue.DATE_TIME, DateTimeFormat.formatToID(model.getCreated()));
         args.putString(DefineValue.NAME_ADMIN, nameadmin);
-        args.putString(DefineValue.AMOUNT, ccy+" "+CurrencyFormat.format(amount));
+        args.putString(DefineValue.AMOUNT, ccy + " " + CurrencyFormat.format(amount));
         args.putString(DefineValue.FEE, ccy + " " + CurrencyFormat.format(fee));
-        args.putString(DefineValue.TOTAL_AMOUNT, ccy+" "+CurrencyFormat.format(total));
-        args.putString(DefineValue.REPORT_TYPE,DefineValue.CASHOUT_TUNAI);
+        args.putString(DefineValue.TOTAL_AMOUNT, ccy + " " + CurrencyFormat.format(total));
+        args.putString(DefineValue.REPORT_TYPE, DefineValue.CASHOUT_TUNAI);
 
         Boolean txStat = false;
         String txStatus = model.getTx_status();
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
 
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_name());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
@@ -262,7 +264,7 @@ public class FragCashOutAgenCode extends BaseFragment implements ReportBillerDia
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if(getActivity().getSupportFragmentManager().getBackStackEntryCount()>0)
+                if (getActivity().getSupportFragmentManager().getBackStackEntryCount() > 0)
                     getActivity().getSupportFragmentManager().popBackStack();
                 else
                     getActivity().finish();

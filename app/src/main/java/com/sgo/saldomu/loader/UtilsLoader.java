@@ -44,15 +44,16 @@ public class UtilsLoader {
     private Activity mActivity;
     private SecurePreferences sp;
 
-    public UtilsLoader(){
+    public UtilsLoader() {
 
     }
-    public UtilsLoader(Activity mAct){
+
+    public UtilsLoader(Activity mAct) {
         this.setmActivity(mAct);
         this.sp = CustomSecurePref.getInstance().getmSecurePrefs();
     }
 
-    public UtilsLoader(Activity mAct, SecurePreferences _sp){
+    public UtilsLoader(Activity mAct, SecurePreferences _sp) {
         this.setmActivity(mAct);
         this.sp = _sp;
     }
@@ -65,13 +66,13 @@ public class UtilsLoader {
         this.mActivity = mActivity;
     }
 
-    public void getDataBalance(Boolean is_auto,final OnLoadDataListener mListener){
-        try{
+    public void getDataBalance(Boolean is_auto, final OnLoadDataListener mListener) {
+        try {
             String member_id = sp.getString(DefineValue.MEMBER_ID, "");
-            String access_key= sp.getString(DefineValue.ACCESS_KEY,"");
-            if(!member_id.isEmpty() && !access_key.isEmpty()) {
+            String access_key = sp.getString(DefineValue.ACCESS_KEY, "");
+            if (!member_id.isEmpty() && !access_key.isEmpty()) {
 
-                HashMap<String, Object> params = RetrofitService.getInstance().getSignature( MyApiClient.LINK_SALDO, member_id);
+                HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_SALDO, member_id);
                 params.put(WebParams.MEMBER_ID, member_id);
                 params.put(WebParams.USER_ID, sp.getString(DefineValue.USERID_PHONE, ""));
                 params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
@@ -138,16 +139,16 @@ public class UtilsLoader {
                                 public void onComplete() {
 
                                 }
-                            } );
+                            });
                 }
             }
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    public void getFailedPIN(String user_id , final OnLoadDataListener mListener){
-        try{
+    public void getFailedPIN(String user_id, final OnLoadDataListener mListener) {
+        try {
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignature(MyApiClient.LINK_GET_FAILED_PIN);
             params.put(WebParams.USER_ID, user_id);
@@ -163,13 +164,13 @@ public class UtilsLoader {
                             Gson gson = new Gson();
                             FailedPinModel model = gson.fromJson(object, FailedPinModel.class);
 
-                            if (!model.getOn_error()){
+                            if (!model.getOn_error()) {
                                 String code = model.getError_code();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
                                     int attempt = model.getFailed_attempt();
                                     int failed = model.getMax_failed();
-                                    if(attempt != -1)
-                                        mListener.onSuccess(failed-attempt);
+                                    if (attempt != -1)
+                                        mListener.onSuccess(failed - attempt);
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -178,23 +179,23 @@ public class UtilsLoader {
                                     code = model.getError_message();
                                     Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
                                     Bundle bundle = new Bundle();
-                                    bundle.putString(DefineValue.ERROR,code);
+                                    bundle.putString(DefineValue.ERROR, code);
                                     bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
                                     mListener.onFail(bundle);
                                 }
-                            }else {
+                            } else {
                                 mListener.onFailure(model.getError_message());
                             }
 
                         }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void setNotifCount(String _count){
+    private void setNotifCount(String _count) {
         if (mActivity == null)
             return;
 
@@ -202,28 +203,28 @@ public class UtilsLoader {
         fca.setNotifAmount(_count);
     }
 
-    public void getAppVersion(){
+    public void getAppVersion() {
         try {
 
             HashMap<String, Object> params = RetrofitService.getInstance()
                     .getSignatureSecretKey(MyApiClient.LINK_APP_VERSION, "");
 
-            Timber.d("params get app version:"+params.toString());
+            Timber.d("params get app version:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_APP_VERSION, params
-                    , new ObjListener() {
+                    , new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             GetAppVersionModel model = RetrofitService.getInstance().getGson().fromJson(object, GetAppVersionModel.class);
 
-                            if (!model.getOn_error()){
+                            if (!model.getOn_error()) {
                                 String code = model.getError_code();
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 //                                    Timber.d("Isi response get App Version:"+response.toString());
 
                                     final AppDataModel appModel = model.getApp_data();
                                     sp.edit().putString(DefineValue.SHORT_URL_APP, appModel.getShortUrl()).apply();
-                                    if(appModel.getDisable().equals("1")) {
+                                    if (appModel.getDisable().equals("1")) {
                                         String message = getmActivity().getResources().getString(R.string.maintenance_message);
                                         DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
                                             @Override
@@ -234,12 +235,11 @@ public class UtilsLoader {
                                                 getmActivity().getParent().finish();
                                             }
                                         };
-                                        AlertDialog alertDialog =  DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
-                                                message,android.R.drawable.ic_dialog_alert,false,
-                                                getmActivity().getString(R.string.ok),okListener);
+                                        AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
+                                                message, android.R.drawable.ic_dialog_alert, false,
+                                                getmActivity().getString(R.string.ok), okListener);
                                         alertDialog.show();
-                                    }
-                                    else {
+                                    } else {
                                         String package_version = appModel.getPackageVersion();
                                         final String package_name = appModel.getPackageName();
                                         final String type = appModel.getType();
@@ -273,8 +273,7 @@ public class UtilsLoader {
                                             alertDialog.show();
                                         }
                                     }
-                                }
-                                else if (code.equals("0381")) {
+                                } else if (code.equals("0381")) {
                                     String message = model.getError_message();
                                     DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
                                         @Override
@@ -285,9 +284,9 @@ public class UtilsLoader {
                                             getmActivity().getParent().finish();
                                         }
                                     };
-                                    AlertDialog alertDialog =  DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
-                                            message,android.R.drawable.ic_dialog_alert,false,
-                                            getmActivity().getString(R.string.ok),okListener);
+                                    AlertDialog alertDialog = DefinedDialog.BuildAlertDialog(getmActivity(), getmActivity().getString(R.string.maintenance),
+                                            message, android.R.drawable.ic_dialog_alert, false,
+                                            getmActivity().getString(R.string.ok), okListener);
                                     alertDialog.show();
                                 } else {
                                     code = model.getError_message();
@@ -295,10 +294,20 @@ public class UtilsLoader {
                                 }
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

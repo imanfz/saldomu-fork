@@ -42,7 +42,7 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CommentDataModel;
 import com.sgo.saldomu.models.retrofit.CommentModel;
 import com.sgo.saldomu.models.retrofit.LikesModel;
@@ -91,8 +91,8 @@ public class HistoryDetailActivity extends BaseActivity {
 
         InitializeToolbar();
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _ownerID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _ownerID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         listLike = new ArrayList<>();
         listComment = new ArrayList<>();
@@ -104,11 +104,11 @@ public class HistoryDetailActivity extends BaseActivity {
         TextView messageTransaction = (TextView) findViewById(R.id.message_transaction);
         TextView amount = (TextView) findViewById(R.id.amount);
         TextView dateTime = (TextView) findViewById(R.id.datetime);
-        imageLove = (ImageView)findViewById(R.id.image_love);
-        imageSendComment = (ImageView)findViewById(R.id.image_comment);
-        etComment = (EditText)findViewById(R.id.detail_value_comment);
-        textLove = (TextView)findViewById(R.id.detail_value_love);
-        lvComment = (ListView)findViewById(R.id.lvComment);
+        imageLove = (ImageView) findViewById(R.id.image_love);
+        imageSendComment = (ImageView) findViewById(R.id.image_comment);
+        etComment = (EditText) findViewById(R.id.detail_value_comment);
+        textLove = (TextView) findViewById(R.id.detail_value_love);
+        lvComment = (ListView) findViewById(R.id.lvComment);
         TextView textStatus = (TextView) findViewById(R.id.status);
 
         Bitmap bm = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_unknown_menu);
@@ -136,9 +136,9 @@ public class HistoryDetailActivity extends BaseActivity {
         String with_profpic = i.getString(DefineValue.WITH_PROF_PIC);
         String type_post = i.getString(DefineValue.POST_TYPE, "");
 
-        if(type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
+        if (type_post.equals("5") || type_post.equals("6") || type_post.equals("7")) {
             iconPictureRight.setVisibility(View.VISIBLE);
-            if(with_profpic.equals(""))
+            if (with_profpic.equals(""))
                 GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPictureRight);
 
             else
@@ -146,14 +146,13 @@ public class HistoryDetailActivity extends BaseActivity {
 
             toId.setText(to_name);
             textStatus.setText(tx_status);
-        }
-        else {
+        } else {
             iconPictureRight.setVisibility(View.GONE);
             toId.setText(tx_status);
             textStatus.setText(getResources().getString(R.string.doing));
         }
 
-        if(profpic != null && profpic.equals(""))
+        if (profpic != null && profpic.equals(""))
             GlideManager.sharedInstance().initializeGlide(this, R.drawable.user_unknown_menu, roundedImage, iconPicture);
         else
             GlideManager.sharedInstance().initializeGlide(this, profpic, roundedImage, iconPicture);
@@ -166,7 +165,7 @@ public class HistoryDetailActivity extends BaseActivity {
         messageTransaction.setText(message);
         dateTime.setText(period);
         String _amount = ccy + " " + CurrencyFormat.format(amountvalue);
-        if(amountvalue.equals("0") || amountvalue.isEmpty())
+        if (amountvalue.equals("0") || amountvalue.isEmpty())
             amount.setVisibility(View.GONE);
         else
             amount.setText(_amount);
@@ -179,7 +178,7 @@ public class HistoryDetailActivity extends BaseActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 final int index = position;
-                if(listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
+                if (listComment.get(position).getFrom_id().equalsIgnoreCase(_ownerID)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(HistoryDetailActivity.this);
                     builder.setTitle(getString(R.string.delete_comment));
                     builder.setMessage(getString(R.string.delete_comment_ask));
@@ -251,10 +250,9 @@ public class HistoryDetailActivity extends BaseActivity {
     }
 
     private void setImageLove() {
-        if(!like) {
+        if (!like) {
             imageLove.setImageResource(R.drawable.ic_like_inactive);
-        }
-        else {
+        } else {
             imageLove.setImageResource(R.drawable.ic_like_active);
         }
     }
@@ -269,13 +267,12 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params get comment list:"+params.toString());
+            Timber.d("isi params get comment list:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_COMMENT_LIST, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             CommentModel model = gson.fromJson(object, CommentModel.class);
 
@@ -313,16 +310,22 @@ public class HistoryDetailActivity extends BaseActivity {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
                                 test.showDialoginActivity(HistoryDetailActivity.this, message);
                             } else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(HistoryDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(HistoryDetailActivity.this, model.getError_message(), Toast.LENGTH_SHORT).show();
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -341,13 +344,12 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params add comment:"+params.toString());
+            Timber.d("isi params add comment:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_COMMENT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             CommentModel model = gson.fromJson(object, CommentModel.class);
 
@@ -399,23 +401,27 @@ public class HistoryDetailActivity extends BaseActivity {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
                                     test.showDialoginActivity(HistoryDetailActivity.this, message);
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
 
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -434,10 +440,10 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params remove comment:"+params.toString());
+            Timber.d("isi params remove comment:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_COMMENT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -506,23 +512,28 @@ public class HistoryDetailActivity extends BaseActivity {
                                     listHistoryModel.updateReply1("", Integer.parseInt(post_id));
                                     listHistoryModel.updateReply2("", Integer.parseInt(post_id));
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
 
                                     Timber.d("isi error add comment:" + message);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -537,10 +548,10 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-           Timber.d("isi params get like list:"+params.toString());
+            Timber.d("isi params get like list:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LIKE_LIST, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -597,24 +608,29 @@ public class HistoryDetailActivity extends BaseActivity {
                                     textLove.setText("");
                                     Timber.d("isi error like list:" + message);
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
 
                                     Timber.d("isi error like list:" + message);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -632,10 +648,10 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params add like:"+params.toString());
+            Timber.d("isi params add like:" + params.toString());
 
-           RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
-                    new ObjListener() {
+            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -694,22 +710,28 @@ public class HistoryDetailActivity extends BaseActivity {
                                     List<likeModel> mListLike = new ArrayList<>();
                                     insertLikeToDB(mListLike);
                                 } else {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                                    Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
 
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             if (mProg.isShowing())
                                 mProg.dismiss();
                         }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -730,10 +752,10 @@ public class HistoryDetailActivity extends BaseActivity {
             params.put(WebParams.USER_ID, _ownerID);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params remove like:"+params.toString());
+            Timber.d("isi params remove like:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -784,12 +806,10 @@ public class HistoryDetailActivity extends BaseActivity {
                                     listHistoryModel.updateNumlikes(count, Integer.parseInt(post_id));
                                     listHistoryModel.updateIsLike("0", Integer.parseInt(post_id));
                                     insertLikeToDB(mListLike);
-                                }
-                                else if(code.equals(WebParams.LOGOUT_CODE)){
+                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginActivity(HistoryDetailActivity.this,message);
-                                }
-                                else if(code.equals(WebParams.NO_DATA_CODE)){
+                                    test.showDialoginActivity(HistoryDetailActivity.this, message);
+                                } else if (code.equals(WebParams.NO_DATA_CODE)) {
                                     textLove.setText("");
                                     listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
                                     listHistoryModel.updateNumlikes(count, Integer.parseInt(post_id));
@@ -797,39 +817,45 @@ public class HistoryDetailActivity extends BaseActivity {
                                     List<likeModel> mListLike = new ArrayList<>();
                                     insertLikeToDB(mListLike);
                                 } else {
-                                    if(MyApiClient.PROD_FAILURE_FLAG)
+                                    if (MyApiClient.PROD_FAILURE_FLAG)
                                         Toast.makeText(HistoryDetailActivity.this, getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
                                     else
                                         Toast.makeText(HistoryDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                            catch (JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                        }
 
-                            if(mProg.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (mProg.isShowing())
                                 mProg.dismiss();
                         }
-                    });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    } );
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void insertLikeToDB(List<likeModel> mListLike){
+    private void insertLikeToDB(List<likeModel> mListLike) {
         likeModel.deleteByPostId(post_id);
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         likeModel mTm;
         new likeModel();
-        Timber.d("arraylike length:"+String.valueOf(mListLike.size()));
-        if(mListLike.size()>0){
+        Timber.d("arraylike length:" + String.valueOf(mListLike.size()));
+        if (mListLike.size() > 0) {
             for (int i = 0; i < mListLike.size(); i++) {
 
                 mTm = mListLike.get(i);
                 mTm.save();
-                Timber.d("idx array like:"+String.valueOf(i));
+                Timber.d("idx array like:" + String.valueOf(i));
             }
         }
 
@@ -847,14 +873,14 @@ public class HistoryDetailActivity extends BaseActivity {
         });
     }
 
-    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments){
+    private void insertCommentToDB(List<commentModel> mListComment, final boolean addRemove, final String _data_comments) {
         ActiveAndroid.initialize(this);
         ActiveAndroid.beginTransaction();
         commentModel mTm;
         new commentModel();
 
         Timber.d("arrayComment length:" + String.valueOf(mListComment.size()));
-        if(mListComment.size()>0){
+        if (mListComment.size() > 0) {
             for (int i = 0; i < mListComment.size(); i++) {
                 mTm = mListComment.get(i);
                 mTm.save();
@@ -913,7 +939,7 @@ public class HistoryDetailActivity extends BaseActivity {
     private ImageView.OnClickListener imageLikeListener = new ImageView.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(InetHandler.isNetworkAvailable(HistoryDetailActivity.this)) {
+            if (InetHandler.isNetworkAvailable(HistoryDetailActivity.this)) {
                 like = !like;
 //            String custName = sp.getString(CoreApp.CUST_NAME, getString(R.string.text_strip));
                 if (!like) {
@@ -966,7 +992,7 @@ public class HistoryDetailActivity extends BaseActivity {
         return R.layout.activity_history_detail;
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.menu_item_history_detail));
     }
@@ -975,10 +1001,9 @@ public class HistoryDetailActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-				if(getSupportFragmentManager().getBackStackEntryCount()>0) {
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
-                }
-                else{
+                } else {
                     setResult(RESULT);
                     finish();
                 }
@@ -989,11 +1014,10 @@ public class HistoryDetailActivity extends BaseActivity {
 
     private void setLove() {
         String peopleLove = "";
-        for(int i = 0 ; i < listLike.size() ; i++) {
-            if(i == listLike.size()-1) {
+        for (int i = 0; i < listLike.size(); i++) {
+            if (i == listLike.size() - 1) {
                 peopleLove += listLike.get(i).getFrom_name() + " Like this.";
-            }
-            else {
+            } else {
                 peopleLove += listLike.get(i).getFrom_name() + ", ";
             }
         }
