@@ -30,7 +30,6 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.BankCashoutModel;
 import com.sgo.saldomu.models.retrofit.ContactDataModel;
@@ -125,10 +124,9 @@ public class ListCashOut extends ListFragment {
                 Timber.d("isi params get Bank cashout:" + params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BANKCASHOUT, params,
-                        new ObjListener() {
+                        new ResponseListener() {
                             @Override
                             public void onResponses(JsonObject object) {
-
                                 BankCashoutModel model = getGson().fromJson(object, BankCashoutModel.class);
 
                                 String code = model.getError_code();
@@ -137,7 +135,6 @@ public class ListCashOut extends ListFragment {
                                         SecurePreferences.Editor mEditor = sp.edit();
                                         mEditor.putString(DefineValue.BANK_CASHOUT, model.getBank_cashout());
                                         mEditor.apply();
-                                        prodDialog.dismiss();
                                     }
                                 } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                     String message = model.getError_message();
@@ -148,12 +145,17 @@ public class ListCashOut extends ListFragment {
                                         test.showDialoginMain(getActivity(), message);
                                 } else {
                                     code = model.getError_message();
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
+                            }
 
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
                                 if (prodDialog.isShowing())
                                     prodDialog.dismiss();
                             }

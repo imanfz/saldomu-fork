@@ -20,7 +20,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.CommDataModel;
 
 import org.json.JSONArray;
@@ -145,7 +145,7 @@ public class UpdateBBSData extends IntentService {
             Timber.d("params list community %1$s : %2$s",schemeCode,params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_BBS_LIST_COMMUNITY_ALL, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             try {
@@ -162,7 +162,17 @@ public class UpdateBBSData extends IntentService {
                                 e.printStackTrace();
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient %1$s : %2$s",schemeCode,e.getMessage());
         }

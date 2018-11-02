@@ -35,8 +35,8 @@ import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadMoreListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.LikesModel;
 
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-public class HistoryRecycleAdapter extends RecyclerView.Adapter{
+public class HistoryRecycleAdapter extends RecyclerView.Adapter {
 
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
@@ -70,20 +70,20 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     private OnLoadMoreListener onLoadMoreListener;
 
     public HistoryRecycleAdapter(List<listHistoryModel> _mData, int _rowLayout, Context _mContext,
-                                 RecyclerView mRecycle){
+                                 RecyclerView mRecycle) {
         mData = _mData;
         rowLayout = _rowLayout;
         mContext = _mContext;
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        user_id = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        user_id = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         LoadingLoadMoreFinish();
 
         if (mRecycle.getLayoutManager() instanceof LinearLayoutManager) {
 
-            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager)mRecycle.getLayoutManager();
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecycle.getLayoutManager();
             mRecycle.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -91,8 +91,8 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 
                     totalItemCount = linearLayoutManager.getItemCount();
                     lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-                    Timber.d("HistoryRecycleadapter:"+String.valueOf(totalItemCount)+"/"+
-                        String.valueOf(lastVisibleItem) +"/"+String.valueOf(loadingLoadMore));
+                    Timber.d("HistoryRecycleadapter:" + String.valueOf(totalItemCount) + "/" +
+                            String.valueOf(lastVisibleItem) + "/" + String.valueOf(loadingLoadMore));
                     if (!loadingLoadMore && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
 
                         if (onLoadMoreListener != null) {
@@ -137,8 +137,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(rowLayout, viewGroup, false);
             vh = new SimpleHolder(v);
-        }
-        else {
+        } else {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.progress_item, viewGroup, false);
             vh = new ProgressViewHolder(v);
         }
@@ -149,7 +148,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder mHolder, int i) {
 
-        if(mHolder instanceof SimpleHolder) {
+        if (mHolder instanceof SimpleHolder) {
             simpleHolder = (SimpleHolder) mHolder;
             final listHistoryModel _data = mData.get(i);
             String string_date = _data.getDatetime();
@@ -270,15 +269,13 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
                     }
                 }
             });
-        }
-        else {
+        } else {
             ((ProgressViewHolder) mHolder).progressBar.setIndeterminate(true);
         }
     }
 
 
-
-    private void setImageProfPic(String _data, QuickContactBadge _holder){
+    private void setImageProfPic(String _data, QuickContactBadge _holder) {
         /*
         float density = getResources().getDisplayMetrics().density;
         String _url_profpic;
@@ -301,26 +298,24 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 //            mPic= Picasso.with(mContext);
 
         assert _data != null;
-        if(_data != null && _data.equals("") || _data.isEmpty()){
+        if (_data != null && _data.equals("") || _data.isEmpty()) {
             GlideManager.sharedInstance().initializeGlide(mContext, R.drawable.user_unknown_menu, roundedImage, _holder);
-        }
-        else {
+        } else {
             GlideManager.sharedInstance().initializeGlide(mContext, _data, roundedImage, _holder);
         }
     }
 
-    private void swap(List<listHistoryModel> datas){
+    private void swap(List<listHistoryModel> datas) {
         mData.clear();
         mData.addAll(datas);
         notifyDataSetChanged();
     }
 
 
-
     public class SimpleHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public LinearLayout layoutComment, layoutComment1, layoutComment2;
-        public TextView fromId,toId,messageTransaction,amount,dateTime, status, comment, nameComment1, textComment1, nameComment2, textComment2,
-                        likeCount, commentCount;
+        public TextView fromId, toId, messageTransaction, amount, dateTime, status, comment, nameComment1, textComment1, nameComment2, textComment2,
+                likeCount, commentCount;
         public ImageView imageLove;
         public QuickContactBadge iconPicture, iconPictureRight, iconPictureComment1, iconPictureComment2;
 
@@ -352,7 +347,7 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 
         @Override
         public void onClick(View v) {
-            if(mItemClickListener != null) {
+            if (mItemClickListener != null) {
                 mItemClickListener.onItemClick(v, getPosition());
             }
         }
@@ -389,13 +384,12 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params add like:"+params.toString());
+            Timber.d("isi params add like:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             LikesModel model = gson.fromJson(object, LikesModel.class);
 
@@ -410,19 +404,26 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
 
                                 listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
                             } else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
 
                                 listHistoryModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike) - 1), Integer.parseInt(post_id));
                                 listHistoryModel.updateIsLike("0", Integer.parseInt(post_id));
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -439,10 +440,10 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
             params.put(WebParams.USER_ID, user_id);
             params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
 
-            Timber.d("isi params remove like:"+params.toString());
+            Timber.d("isi params remove like:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             Gson gson = new Gson();
@@ -455,25 +456,29 @@ public class HistoryRecycleAdapter extends RecyclerView.Adapter{
                             if (code.equals(WebParams.SUCCESS_CODE) && !count.equals("0")) {
 
                                 listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
-                            }
-                            else if(code.equals(WebParams.NO_DATA_CODE)) {
+                            } else if (code.equals(WebParams.NO_DATA_CODE)) {
 
                                 listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
-                            }
-                            else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
 
-                                listHistoryModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike)+1), Integer.parseInt(post_id));
+                                listHistoryModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike) + 1), Integer.parseInt(post_id));
                                 listHistoryModel.updateIsLike("1", Integer.parseInt(post_id));
                             }
                         }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
                     });
-        }
-        catch(Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 

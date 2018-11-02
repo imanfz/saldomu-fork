@@ -34,7 +34,7 @@ import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.LikesModel;
 
 import org.json.JSONArray;
@@ -314,10 +314,9 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
             Timber.d("isi params add like:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ADD_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             LikesModel model = gson.fromJson(object, LikesModel.class);
 
@@ -332,16 +331,23 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
 
                                 listHistoryModel.updateLikes(data_likes, Integer.parseInt(post_id));
                             } else {
-                                if (MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
 
                                 listHistoryModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike) - 1), Integer.parseInt(post_id));
                                 listHistoryModel.updateIsLike("0", Integer.parseInt(post_id));
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    } );
         }
         catch(Exception e){
             Timber.d("httpclient:"+e.getMessage());
@@ -364,7 +370,7 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
             Timber.d("isi params remove like:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_REMOVE_LIKE, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             Gson gson = new Gson();
@@ -383,16 +389,23 @@ public class TimeLineRecycleAdapter extends RecyclerView.Adapter<TimeLineRecycle
                                 listTimeLineModel.updateLikes(data_likes, Integer.parseInt(post_id));
                             }
                             else {
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(mContext, mContext.getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else
-                                    Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, model.getError_message(), Toast.LENGTH_SHORT).show();
 
                                 listTimeLineModel.updateNumlikes(Integer.toString(Integer.parseInt(jumlahLike)+1), Integer.parseInt(post_id));
                                 listTimeLineModel.updateIsLike("1", Integer.parseInt(post_id));
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    } );
         }
         catch(Exception e){
             Timber.d("httpclient:"+ e.getMessage());

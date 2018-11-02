@@ -50,7 +50,7 @@ import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.InformationDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
 import com.sgo.saldomu.models.retrofit.SentDataPayfriendModel;
 import com.sgo.saldomu.widgets.BaseFragment;
@@ -464,14 +464,10 @@ public class FragPayFriends extends BaseFragment {
             Timber.d("isi params sent req token p2p:"+params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(url, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             try {
-
-                                if (progdialog.isShowing())
-                                    progdialog.dismiss();
 
                                 SentDataPayfriendModel model = getGson().fromJson(object, SentDataPayfriendModel.class);
 
@@ -525,9 +521,7 @@ public class FragPayFriends extends BaseFragment {
                                         dialog_frag.show(getActivity().getSupportFragmentManager(), AlertDialogFrag.TAG);
                                     }
                                     else {
-                                        if(MyApiClient.PROD_FAILURE_FLAG)
-                                            Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                        else
+
                                             Toast.makeText(getActivity(), code_msg, Toast.LENGTH_LONG).show();
                                     }
 
@@ -536,10 +530,19 @@ public class FragPayFriends extends BaseFragment {
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
 
                         }
-                    });
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
+                                progdialog.dismiss();
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

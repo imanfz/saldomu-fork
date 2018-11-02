@@ -23,7 +23,6 @@ import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.AppDataModel;
@@ -157,35 +156,39 @@ public class UtilsLoader {
             Timber.d("isi params get FailedPin Loader:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_FAILED_PIN, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             FailedPinModel model = gson.fromJson(object, FailedPinModel.class);
 
-                            if (!model.getOn_error()) {
-                                String code = model.getError_code();
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    int attempt = model.getFailed_attempt();
-                                    int failed = model.getMax_failed();
-                                    if (attempt != -1)
-                                        mListener.onSuccess(failed - attempt);
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = model.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getmActivity(), message);
-                                } else {
-                                    code = model.getError_message();
-                                    Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString(DefineValue.ERROR, code);
-                                    bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
-                                    mListener.onFail(bundle);
-                                }
+                            String code = model.getError_code();
+                            if (code.equals(WebParams.SUCCESS_CODE)) {
+                                int attempt = model.getFailed_attempt();
+                                int failed = model.getMax_failed();
+                                if (attempt != -1)
+                                    mListener.onSuccess(failed - attempt);
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                String message = model.getError_message();
+                                AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                test.showDialoginMain(getmActivity(), message);
                             } else {
-                                mListener.onFailure(model.getError_message());
+                                code = model.getError_message();
+                                Toast.makeText(getmActivity(), code, Toast.LENGTH_LONG).show();
+                                Bundle bundle = new Bundle();
+                                bundle.putString(DefineValue.ERROR, code);
+                                bundle.putString(DefineValue.ERROR_CODE, model.getError_code());
+                                mListener.onFail(bundle);
                             }
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            mListener.onFailure(throwable.toString());
+                        }
+
+                        @Override
+                        public void onComplete() {
 
                         }
                     });

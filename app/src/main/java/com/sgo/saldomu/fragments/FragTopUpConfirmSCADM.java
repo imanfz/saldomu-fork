@@ -35,8 +35,8 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.loader.UtilsLoader;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
@@ -54,14 +54,14 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     Button btn_next;
     private ProgressDialog progdialog;
     int attempt, failed;
-    Boolean isPIN=false;
+    Boolean isPIN = false;
     LinearLayout layout_otp;
     EditText et_otp;
     String comm_name, member_code, product_name, bank_gateway, comm_code, bank_code, product_code, amount, remark;
-    String ccy_id, tx_id, member_id_scadm, member_name, comm_id,bank_name, admin_fee,total_amount, api_key, item_name;
+    String ccy_id, tx_id, member_id_scadm, member_name, comm_id, bank_name, admin_fee, total_amount, api_key, item_name;
     TextView tv_community_name, tv_community_code, tv_member_code, tv_product_name, tv_jumlah, tv_remark, tv_admin_fee, tv_total_amount;
-    double dfee=0;
-    double damount=0;
+    double dfee = 0;
+    double damount = 0;
     double dtotal_amount = 0;
 
     @Nullable
@@ -76,9 +76,9 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         super.onActivityCreated(savedInstanceState);
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
 
-        memberIDLogin = sp.getString(DefineValue.MEMBER_ID,"");
-        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID,"");
-        userPhoneID = sp.getString(DefineValue.USERID_PHONE,"");
+        memberIDLogin = sp.getString(DefineValue.MEMBER_ID, "");
+        commIDLogin = sp.getString(DefineValue.COMMUNITY_ID, "");
+        userPhoneID = sp.getString(DefineValue.USERID_PHONE, "");
         accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle1 = getArguments();
@@ -100,7 +100,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         total_amount = bundle1.getString(DefineValue.TOTAL_AMOUNT, "");
         remark = bundle1.getString(DefineValue.REMARK, "");
         api_key = bundle1.getString(DefineValue.API_KEY, "");
-        attempt = bundle1.getInt(DefineValue.ATTEMPT,-1);
+        attempt = bundle1.getInt(DefineValue.ATTEMPT, -1);
 
 
         tv_community_code = v.findViewById(R.id.community_code);
@@ -120,22 +120,21 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         tv_member_code.setText(member_code);
         tv_product_name.setText(product_name);
         tv_remark.setText(remark);
-        damount = Double.parseDouble(bundle1.getString(DefineValue.AMOUNT,""));
-        dfee = Double.parseDouble(bundle1.getString(DefineValue.FEE,""));
-        dtotal_amount = Double.parseDouble(bundle1.getString(DefineValue.TOTAL_AMOUNT,""));
+        damount = Double.parseDouble(bundle1.getString(DefineValue.AMOUNT, ""));
+        dfee = Double.parseDouble(bundle1.getString(DefineValue.FEE, ""));
+        dtotal_amount = Double.parseDouble(bundle1.getString(DefineValue.TOTAL_AMOUNT, ""));
         tv_jumlah.setText(ccy_id + ". " + CurrencyFormat.format(damount));
         tv_admin_fee.setText(ccy_id + ". " + CurrencyFormat.format(dfee));
         tv_total_amount.setText(ccy_id + ". " + CurrencyFormat.format(dtotal_amount));
 
-        if (product_name.equalsIgnoreCase("MANDIRI SMS"))
-        {
+        if (product_name.equalsIgnoreCase("MANDIRI SMS")) {
             layout_otp.setVisibility(View.VISIBLE);
         }
 
-        new UtilsLoader(getActivity(),sp).getFailedPIN(userPhoneID,new OnLoadDataListener() { //get pin attempt
+        new UtilsLoader(getActivity(), sp).getFailedPIN(userPhoneID, new OnLoadDataListener() { //get pin attempt
             @Override
             public void onSuccess(Object deData) {
-                attempt = (int)deData;
+                attempt = (int) deData;
             }
 
             @Override
@@ -152,30 +151,25 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(bank_gateway.equalsIgnoreCase("N"))
-                {
-                    changeToSGOPlus(tx_id,product_code, product_name,bank_code,
+                if (bank_gateway.equalsIgnoreCase("N")) {
+                    changeToSGOPlus(tx_id, product_code, product_name, bank_code,
                             String.valueOf(damount), String.valueOf(dfee), String.valueOf(dtotal_amount), bank_name);
-                }
-                else if (bank_gateway.equalsIgnoreCase("Y")) {
-                    if (product_code.equalsIgnoreCase("SCASH")){
+                } else if (bank_gateway.equalsIgnoreCase("Y")) {
+                    if (product_code.equalsIgnoreCase("SCASH")) {
                         CallPINinput(attempt);
                         btn_next.setEnabled(true);
-                    }
-                    else
-                    {
-                        if(inputValidation()) {
-                            sentInsertTransTopup(et_otp.getText().toString(),amount);
-                        }
-                        else btn_next.setEnabled(true);
+                    } else {
+                        if (inputValidation()) {
+                            sentInsertTransTopup(et_otp.getText().toString(), amount);
+                        } else btn_next.setEnabled(true);
                     }
                 }
             }
         });
     }
 
-    private boolean inputValidation(){
-        if(et_otp.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (et_otp.getText().toString().length() == 0) {
             et_otp.requestFocus();
             et_otp.setError(this.getString(R.string.regist2_validation_otp));
             return false;
@@ -183,19 +177,19 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         return true;
     }
 
-    private void CallPINinput(int _attempt){
+    private void CallPINinput(int _attempt) {
         Intent i = new Intent(getActivity(), InsertPIN.class);
-        if(_attempt == 1)
-            i.putExtra(DefineValue.ATTEMPT,_attempt);
+        if (_attempt == 1)
+            i.putExtra(DefineValue.ATTEMPT, _attempt);
         startActivityForResult(i, MainPage.REQUEST_FINISH);
     }
 
-    private void sentInsertTransTopup(String tokenValue, final String _amount){
-        try{
+    private void sentInsertTransTopup(String tokenValue, final String _amount) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = tx_id+comm_code+product_code+tokenValue;
+            extraSignature = tx_id + comm_code + product_code + tokenValue;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
 
@@ -203,14 +197,14 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
             params.put(WebParams.PRODUCT_CODE, product_code);
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_name);
-            params.put(WebParams.MEMBER_ID,member_id_scadm);
+            params.put(WebParams.MEMBER_ID, member_id_scadm);
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
             params.put(WebParams.USER_ID, userPhoneID);
 
-            Timber.d("isi params insertTrxTOpupSGOL:"+params.toString());
+            Timber.d("isi params insertTrxTOpupSGOL:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
@@ -218,46 +212,50 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
                             String code = model.getError_code();
                             if (code.equals(WebParams.SUCCESS_CODE)) {
 
-                                getTrxStatus(tx_id,comm_id,_amount);
+                                getTrxStatus(tx_id, comm_id, _amount);
                                 setResultActivity(MainPage.RESULT_BALANCE);
 
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
 
-                                code = model.getError_code()+":"+ model.getError_message();
+                                code = model.getError_code() + ":" + model.getError_message();
                                 Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 String message = model.getError_message();
-                                progdialog.dismiss();
-                                btn_next.setEnabled(true);
-                                if(isPIN && message.equals("PIN tidak sesuai")){
+
+                                if (isPIN && message.equals("PIN tidak sesuai")) {
                                     Intent i = new Intent(getActivity(), InsertPIN.class);
 
                                     attempt = model.getFailed_attempt();
                                     failed = model.getMax_failed();
 
-                                    if(attempt != -1)
-                                        i.putExtra(DefineValue.ATTEMPT,failed-attempt);
+                                    if (attempt != -1)
+                                        i.putExtra(DefineValue.ATTEMPT, failed - attempt);
 
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
-                                }
-                                else{
+                                } else {
                                     getActivity().finish();
                                 }
 
                             }
+                        }
 
-                            if(progdialog.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                             btn_next.setEnabled(true);
                         }
                     });
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
@@ -265,36 +263,35 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Timber.d("onActivity result", "Biller Fragment"+" / "+requestCode+" / "+resultCode);
-        if(requestCode == MainPage.REQUEST_FINISH){
+        if (requestCode == MainPage.REQUEST_FINISH) {
             //  Log.d("onActivity result", "Biller Fragment masuk request exit");
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 String _amount;
-                    _amount = amount;
+                _amount = amount;
                 //    Log.d("onActivity result", "Biller Fragment result pin value");
-                sentInsertTransTopup(value_pin,_amount);
+                sentInsertTransTopup(value_pin, _amount);
             }
         }
     }
 
-    private void getTrxStatus(final String txId, String comm_id, final String _amount){
-        try{
+    private void getTrxStatus(final String txId, String comm_id, final String _amount) {
+        try {
 
             extraSignature = txId + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
 
             params.put(WebParams.TX_ID, txId);
             params.put(WebParams.COMM_ID, comm_id);
-                params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
+            params.put(WebParams.TYPE, DefineValue.BIL_PAYMENT_TYPE);
             params.put(WebParams.TX_TYPE, DefineValue.ESPAY);
             params.put(WebParams.USER_ID, userPhoneID);
-            Timber.d("isi params sent get Trx Status:"+params.toString());
+            Timber.d("isi params sent get Trx Status:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetTrxStatusReportModel model = getGson().fromJson(object, GetTrxStatusReportModel.class);
 
                             String code = model.getError_code();
@@ -307,28 +304,34 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
 //                                        , response.optString(WebParams.BILLER_DETAIL),
 //                                        response.optString(WebParams.BUSS_SCHEME_CODE), response.optString(WebParams.BUSS_SCHEME_NAME), response.optString(WebParams.PRODUCT_NAME),
 //                                        response.optString(WebParams.COMM_CODE), response.optString(WebParams.MEMBER_CODE));
-                            } else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
                                 showDialog(message);
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             btn_next.setEnabled(true);
 
-                            if(progdialog.isShowing())
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
-                    }
-            );
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+                    });
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
-    private void showReportBillerDialog(GetTrxStatusReportModel model, String name,String userId, String txId,
-                                        String itemName,String txStatus, String _amount){
+    private void showReportBillerDialog(GetTrxStatusReportModel model, String name, String userId, String txId,
+                                        String itemName, String txStatus, String _amount) {
 //            , String biller_detail,
 //                                        String buss_scheme_code, String buss_scheme_name, String product_name, String comm_code, String member_code) {
         Bundle args = new Bundle();
@@ -343,23 +346,21 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(admin_fee));
 
         Boolean txStat = false;
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, model.getTx_remark());
 
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(admin_fee);
@@ -367,10 +368,10 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         args.putString(DefineValue.BILLER_DETAIL, model.getBiller_detail().getPhoneNumber());
         args.putString(DefineValue.BUSS_SCHEME_CODE, model.getBuss_scheme_code());
         args.putString(DefineValue.BUSS_SCHEME_NAME, model.getBuss_scheme_name());
-        args.putString(DefineValue.BANK_PRODUCT,product_name);
-        args.putString(DefineValue.COMMUNITY_CODE,comm_code);
-        args.putString(DefineValue.MEMBER_CODE,member_code);
-        args.putString(DefineValue.BANK_PRODUCT,product_name);
+        args.putString(DefineValue.BANK_PRODUCT, product_name);
+        args.putString(DefineValue.COMMUNITY_CODE, comm_code);
+        args.putString(DefineValue.MEMBER_CODE, member_code);
+        args.putString(DefineValue.BANK_PRODUCT, product_name);
 
         dialog.setArguments(args);
         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -378,7 +379,7 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         ft.commitAllowingStateLoss();
     }
 
-    private void setResultActivity(int result){
+    private void setResultActivity(int result) {
         if (getActivity() == null)
             return;
 
@@ -393,32 +394,32 @@ public class FragTopUpConfirmSCADM extends BaseFragment implements ReportBillerD
         i.putExtra(DefineValue.PRODUCT_CODE, product_code);
         i.putExtra(DefineValue.BANK_CODE, bank_code);
         i.putExtra(DefineValue.BANK_NAME, bank_name);
-        i.putExtra(DefineValue.PRODUCT_NAME,product_name);
+        i.putExtra(DefineValue.PRODUCT_NAME, product_name);
         i.putExtra(DefineValue.FEE, fee);
         i.putExtra(DefineValue.REMARK, remark);
-        i.putExtra(DefineValue.COMMUNITY_CODE,comm_code);
-        i.putExtra(DefineValue.MEMBER_CODE,member_code);
-        i.putExtra(DefineValue.MEMBER_ID_SCADM,member_id_scadm);
-        i.putExtra(DefineValue.MEMBER_NAME,member_name);
-        i.putExtra(DefineValue.TX_ID,tx_id);
-        i.putExtra(DefineValue.AMOUNT,amount);
-        i.putExtra(DefineValue.TOTAL_AMOUNT,total_amount);
+        i.putExtra(DefineValue.COMMUNITY_CODE, comm_code);
+        i.putExtra(DefineValue.MEMBER_CODE, member_code);
+        i.putExtra(DefineValue.MEMBER_ID_SCADM, member_id_scadm);
+        i.putExtra(DefineValue.MEMBER_NAME, member_name);
+        i.putExtra(DefineValue.TX_ID, tx_id);
+        i.putExtra(DefineValue.AMOUNT, amount);
+        i.putExtra(DefineValue.TOTAL_AMOUNT, total_amount);
         i.putExtra(DefineValue.COMMUNITY_ID, comm_id);
         i.putExtra(DefineValue.API_KEY, api_key);
         i.putExtra(DefineValue.CALLBACK_URL, (DefineValue.CALLBACK_URL));
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.TOPUP);
         i.putExtra(DefineValue.TRANSACTION_TYPE, DefineValue.TOPUP_IB_TYPE);
-        Timber.d("isi args:"+i.toString());
+        Timber.d("isi args:" + i.toString());
         btn_next.setEnabled(true);
         switchActivityIB(i);
     }
 
-    private void switchActivityIB(Intent mIntent){
+    private void switchActivityIB(Intent mIntent) {
         if (getActivity() == null)
             return;
 
         TopUpSCADMActivity fca = (TopUpSCADMActivity) getActivity();
-        fca.switchActivity(mIntent,MainPage.ACTIVITY_RESULT);
+        fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
     @Override

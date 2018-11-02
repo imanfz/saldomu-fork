@@ -23,7 +23,7 @@ import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.jsonModel;
 
 import java.util.HashMap;
@@ -73,11 +73,11 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        _userId = sp.getString(DefineValue.USERID_PHONE,"");
-        _accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        _userId = sp.getString(DefineValue.USERID_PHONE, "");
+        _accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             req_id = bundle.getString(DefineValue.REQUEST_ID);
             trx_id = bundle.getString(DefineValue.TRX_ID);
             from = bundle.getString(DefineValue.FROM);
@@ -107,14 +107,14 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
     }
 
 
-    private void sentAsk4MoneyReject(){
-        try{
+    private void sentAsk4MoneyReject() {
+        try {
 //
 //            UUID uuid = MyApiClient.getUUID();
 //            String dtime = DateTimeFormat.getCurrentDateTime();
 //            String webservice = MyApiClient.getWebserviceName(MyApiClient.LINK_ASK4MONEY_REJECT);
 //            Timber.d("Webservice:"+webservice);
-            String extraSignature = req_id+trx_id+from;
+            String extraSignature = req_id + trx_id + from;
 //            String signature = MyApiClient.getSignature(webservice, MyApiClient.COMM_ID
 //                    , _userId, _accessKey, extraSignature);
 
@@ -136,10 +136,9 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
             Timber.d("isi params ask for money reject:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_ASK4MONEY_REJECT, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             jsonModel model = gson.fromJson(object, jsonModel.class);
 
@@ -156,29 +155,33 @@ public class RejectNotifDialog extends DialogFragment implements Dialog.OnClickL
                                 code = model.getError_code() + " : " + model.getError_message();
 
                                 if (!getActivity().isFinishing()) {
-                                    if (MyApiClient.PROD_FAILURE_FLAG)
-                                        Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                    else Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
                             }
+                        }
 
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
                             dismiss();
                         }
                     });
 
-        }catch (Exception e){
-            Timber.d("httpclient:"+e.getMessage());
+        } catch (Exception e) {
+            Timber.d("httpclient:" + e.getMessage());
         }
     }
 
 
     @Override
-    public void onStart()
-    {
+    public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
-        if (dialog != null)
-        {
+        if (dialog != null) {
             int width = ViewGroup.LayoutParams.MATCH_PARENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);

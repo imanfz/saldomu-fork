@@ -42,7 +42,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.FailedPinModel;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusModel;
 import com.sgo.saldomu.securities.RSA;
@@ -55,7 +55,7 @@ import timber.log.Timber;
 /**
  * Created by thinkpad on 9/15/2015.
  */
-public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback{
+public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialog.OnDialogOkCallback {
     private View v;
     private TextView tv_operator_value;
     private TextView tv_nominal_value;
@@ -114,8 +114,8 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         super.onActivityCreated(savedInstanceState);
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         tv_phone_number = v.findViewById(R.id.pulsatoken_pulsa_id_value);
         tv_operator_value = v.findViewById(R.id.pulsatoken_operator_value);
@@ -167,17 +167,16 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         tv_fee_value.setText(ccy_id + ". " + CurrencyFormat.format(fee));
         tv_total_amount_value.setText(ccy_id + ". " + CurrencyFormat.format(total_amount));
 
-        if(!is_sgo_plus){
-            merchant_type = args.getString(DefineValue.AUTHENTICATION_TYPE,"");
-            if(merchant_type.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP)|| product_payment_type.equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)){
+        if (!is_sgo_plus) {
+            merchant_type = args.getString(DefineValue.AUTHENTICATION_TYPE, "");
+            if (merchant_type.equalsIgnoreCase(DefineValue.AUTH_TYPE_OTP) || product_payment_type.equalsIgnoreCase(DefineValue.BANKLIST_TYPE_SMS)) {
                 LinearLayout layoutOTP = v.findViewById(R.id.layout_token);
                 layoutOTP.setVisibility(View.VISIBLE);
                 et_token_value = layoutOTP.findViewById(R.id.pulsatoken_token_value);
 
                 et_token_value.requestFocus();
                 isPIN = false;
-            }
-            else isPIN = true;
+            } else isPIN = true;
         }
 
     }
@@ -194,15 +193,15 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         i.putExtra(DefineValue.API_KEY, api_key);
         i.putExtra(DefineValue.CALLBACK_URL, callback_url);
         i.putExtra(DefineValue.COMMUNITY_ID, comm_id);
-        i.putExtra(DefineValue.DENOM_DATA,item_name);
-        i.putExtra(DefineValue.PAYMENT_NAME,payment_name);
+        i.putExtra(DefineValue.DENOM_DATA, item_name);
+        i.putExtra(DefineValue.PAYMENT_NAME, payment_name);
         i.putExtra(DefineValue.SHARE_TYPE, shareType);
         i.putExtra(DefineValue.REPORT_TYPE, DefineValue.PULSA_AGENT);
         i.putExtra(DefineValue.OPERATOR_NAME, operator_name);
         i.putExtra(DefineValue.DESTINATION_REMARK, phone_number);
 
         double totalAmount = Double.parseDouble(amount) + Double.parseDouble(_fee);
-        i.putExtra(DefineValue.TOTAL_AMOUNT,String.valueOf(totalAmount));
+        i.putExtra(DefineValue.TOTAL_AMOUNT, String.valueOf(totalAmount));
 
         btn_submit.setEnabled(true);
         switchActivityIB(i);
@@ -211,30 +210,27 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     private Button.OnClickListener submitListener = new Button.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(InetHandler.isNetworkAvailable(getActivity())){
+            if (InetHandler.isNetworkAvailable(getActivity())) {
 
-                Timber.d("hit button submit","masukkkk");
+                Timber.d("hit button submit", "masukkkk");
                 btn_submit.setEnabled(false);
-                if(is_sgo_plus){
+                if (is_sgo_plus) {
                     changeToSgoPlus(tx_id, bank_code, product_code, fee);
-                }
-                else {
+                } else {
 
-                    if(isPIN){
+                    if (isPIN) {
                         Intent i = new Intent(getActivity(), InsertPIN.class);
                         btn_submit.setEnabled(true);
                         startActivityForResult(i, MainPage.REQUEST_FINISH);
-                    }
-                    else{
-                        if(inputValidation()) {
+                    } else {
+                        if (inputValidation()) {
                             sentInsertTransTopup(et_token_value.getText().toString());
                             hideKeyboard();
-                        }
-                        else btn_submit.setEnabled(true);
+                        } else btn_submit.setEnabled(true);
                     }
                 }
-            }
-            else DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message),null);
+            } else
+                DefinedDialog.showErrorDialog(getActivity(), getString(R.string.inethandler_dialog_message), null);
         }
     };
 
@@ -246,12 +242,12 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         }
     };
 
-    private void sentInsertTransTopup(String tokenValue){
-        try{
+    private void sentInsertTransTopup(String tokenValue) {
+        try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = tx_id+comm_code+product_code+tokenValue;
+            extraSignature = tx_id + comm_code + product_code + tokenValue;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_INSERT_TRANS_TOPUP, extraSignature);
             params.put(WebParams.TX_ID, tx_id);
@@ -259,13 +255,13 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             params.put(WebParams.COMM_CODE, comm_code);
             params.put(WebParams.COMM_ID, comm_id);
             params.put(WebParams.USER_ID, userID);
-            params.put(WebParams.MEMBER_ID,sp.getString(DefineValue.MEMBER_ID, ""));
+            params.put(WebParams.MEMBER_ID, sp.getString(DefineValue.MEMBER_ID, ""));
             params.put(WebParams.PRODUCT_VALUE, RSA.opensslEncrypt(tokenValue));
 
             Timber.d("isi params insertTrxTOpupSGOL", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_INSERT_TRANS_TOPUP, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
                             FailedPinModel model = getGson().fromJson(object, FailedPinModel.class);
@@ -275,8 +271,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                             if (code.equals(WebParams.SUCCESS_CODE)) {
                                 getTrxStatus(tx_id, comm_id);
                                 setResultActivity();
-                            }
-                            else if(message.equals("PIN tidak sesuai")) {
+                            } else if (message.equals("PIN tidak sesuai")) {
                                 String msg = code + ":" + message;
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
                                 if (isPIN) {
@@ -284,32 +279,36 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                                     startActivityForResult(i, MainPage.REQUEST_FINISH);
                                 }
 
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }
-                            else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
                                 String msg = code + ":" + message;
-                                if(MyApiClient.PROD_FAILURE_FLAG)
-                                    Toast.makeText(getActivity(), getString(R.string.network_connection_failure_toast), Toast.LENGTH_SHORT).show();
-                                else Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
 
                                 onOkButton();
                             }
+                        }
 
-                            if(progdialog.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                             btn_submit.setEnabled(true);
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.d("httpclient", e.getMessage());
         }
     }
 
-    private void getTrxStatus(final String txId, String comm_id){
-        try{
+    private void getTrxStatus(final String txId, String comm_id) {
+        try {
 
             extraSignature = tx_id + comm_id;
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_GET_TRX_STATUS, extraSignature);
@@ -322,10 +321,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             Timber.d("isi params sent get Trx Status" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             GetTrxStatusModel model = getGson().fromJson(object, GetTrxStatusModel.class);
 
                             String code = model.getError_code();
@@ -335,30 +333,35 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
                                         DateTimeFormat.formatToID(model.getCreated()),
                                         sp.getString(DefineValue.USERID_PHONE, ""), txId, item_name,
                                         model.getTx_status(), model.getTx_remark(), amount);
-                            }
-                            else if(code.equals(WebParams.LOGOUT_CODE)){
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 String message = model.getError_message();
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(getActivity(),message);
-                            }else {
+                                test.showDialoginActivity(getActivity(), message);
+                            } else {
                                 String msg;
-                                if(MyApiClient.PROD_FAILURE_FLAG) {
-                                    msg = getString(R.string.network_connection_failure_toast);
-                                }else msg = model.getError_message();
+                                msg = model.getError_message();
                                 showDialog(msg);
                             }
+                        }
 
-                            if(progdialog.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (progdialog.isShowing())
                                 progdialog.dismiss();
                             btn_submit.setEnabled(true);
                         }
                     });
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.d("httpclient", e.getMessage());
         }
     }
 
-    private void showReportBillerDialog(String name,String date,String userId, String txId,String itemName,String txStatus,
+    private void showReportBillerDialog(String name, String date, String userId, String txId, String itemName, String txStatus,
                                         String txRemark, String _amount) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
@@ -372,26 +375,24 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         args.putString(DefineValue.PAYMENT_NAME, payment_name);
         args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.OPERATOR_NAME, operator_name);
-        args.putString(DefineValue.DESTINATION_REMARK,phone_number);
+        args.putString(DefineValue.DESTINATION_REMARK, phone_number);
 
         Boolean txStat = false;
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
 
         double totalAmount = Double.parseDouble(_amount) + Double.parseDouble(fee);
@@ -430,7 +431,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         dialog.show();
     }
 
-    private void switchActivityIB(Intent mIntent){
+    private void switchActivityIB(Intent mIntent) {
         if (getActivity() == null)
             return;
 
@@ -438,14 +439,14 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
         fca.switchActivity(mIntent, MainPage.ACTIVITY_RESULT);
     }
 
-    private void exit(){
+    private void exit() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
 
 
-    private boolean inputValidation(){
-        if(et_token_value.getText().toString().length()==0){
+    private boolean inputValidation() {
+        if (et_token_value.getText().toString().length() == 0) {
             et_token_value.requestFocus();
             et_token_value.setError(this.getString(R.string.regist2_validation_otp));
             return false;
@@ -454,7 +455,7 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     }
 
 
-    private void setResultActivity(){
+    private void setResultActivity() {
         if (getActivity() == null)
             return;
 
@@ -481,26 +482,26 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     @Override
     public void onResume() {
         super.onResume();
-        Log.wtf("masuk onResume","masukkk");
-        if(!is_sgo_plus)
-            if(!isPIN)
+        Log.wtf("masuk onResume", "masukkk");
+        if (!is_sgo_plus)
+            if (!isPIN)
                 toggleMyBroadcastReceiver(true);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(!is_sgo_plus)
-            if(!isPIN)
+        if (!is_sgo_plus)
+            if (!isPIN)
                 toggleMyBroadcastReceiver(false);
     }
 
-    private void toggleMyBroadcastReceiver(Boolean _on){
+    private void toggleMyBroadcastReceiver(Boolean _on) {
         if (getActivity() == null)
             return;
 
-        PulsaAgentActivity fca = (PulsaAgentActivity ) getActivity();
-        fca.togglerBroadcastReceiver(_on,myReceiver);
+        PulsaAgentActivity fca = (PulsaAgentActivity) getActivity();
+        fca.togglerBroadcastReceiver(_on, myReceiver);
     }
 
 
@@ -514,43 +515,42 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
             String _member_code = "";
             String[] kode = context.getResources().getStringArray(R.array.broadcast_kode_compare);
 
-            if(mBundle != null){
+            if (mBundle != null) {
                 Object[] pdus = (Object[]) mBundle.get("pdus");
                 assert pdus != null;
                 mSMS = new SmsMessage[pdus.length];
 
-                for (int i = 0; i < mSMS.length ; i++){
-                    mSMS[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
+                for (int i = 0; i < mSMS.length; i++) {
+                    mSMS[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                     strMessage += mSMS[i].getMessageBody();
                     strMessage += "\n";
                 }
 
                 String[] words = strMessage.split(" ");
-                for (int i = 0 ; i <words.length;i++)
-                {
-                    if(_kode_otp.equalsIgnoreCase("")){
-                        if(words[i].equalsIgnoreCase(kode[0])){
-                            if(words[i+1].equalsIgnoreCase(kode[1]))
-                                _kode_otp = words[i+2];
-                            _kode_otp =  _kode_otp.replace(".","").replace(" ","");
+                for (int i = 0; i < words.length; i++) {
+                    if (_kode_otp.equalsIgnoreCase("")) {
+                        if (words[i].equalsIgnoreCase(kode[0])) {
+                            if (words[i + 1].equalsIgnoreCase(kode[1]))
+                                _kode_otp = words[i + 2];
+                            _kode_otp = _kode_otp.replace(".", "").replace(" ", "");
                         }
                     }
 
-                    if(_member_code.equals("")){
-                        if(words[i].equalsIgnoreCase(kode[2]))
-                            _member_code = words[i+1];
+                    if (_member_code.equals("")) {
+                        if (words[i].equalsIgnoreCase(kode[2]))
+                            _member_code = words[i + 1];
                     }
                 }
 
-                insertTokenEdit(_kode_otp,_member_code);
+                insertTokenEdit(_kode_otp, _member_code);
                 //Toast.makeText(context,strMessage,Toast.LENGTH_SHORT).show();
             }
         }
     };
 
-    private void insertTokenEdit(String _kode_otp, String _member_kode){
-        Timber.d("isi _kode_otp, _member_kode, member kode session"+ _kode_otp+ " / " +_member_kode +" / "+ sp.getString(DefineValue.MEMBER_CODE,""));
-        if(_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE,""))){
+    private void insertTokenEdit(String _kode_otp, String _member_kode) {
+        Timber.d("isi _kode_otp, _member_kode, member kode session" + _kode_otp + " / " + _member_kode + " / " + sp.getString(DefineValue.MEMBER_CODE, ""));
+        if (_member_kode.equals(sp.getString(DefineValue.MEMBER_CODE, ""))) {
             et_token_value.setText(_kode_otp);
         }
     }
@@ -560,9 +560,9 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //Timber.d("onActivity result", "Biller Fragment"+" / "+requestCode+" / "+resultCode);
-        if(requestCode == MainPage.REQUEST_FINISH){
+        if (requestCode == MainPage.REQUEST_FINISH) {
             //  Timber.d("onActivity result", "Biller Fragment masuk request exit");
-            if(resultCode == InsertPIN.RESULT_PIN_VALUE){
+            if (resultCode == InsertPIN.RESULT_PIN_VALUE) {
                 String value_pin = data.getStringExtra(DefineValue.PIN_VALUE);
                 //    Timber.d("onActivity result", "Biller Fragment result pin value");
                 sentInsertTransTopup(value_pin);
@@ -577,10 +577,10 @@ public class PulsaAgentConfirm extends BaseFragment implements ReportBillerDialo
     }
 
 
-    private void hideKeyboard(){
+    private void hideKeyboard() {
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

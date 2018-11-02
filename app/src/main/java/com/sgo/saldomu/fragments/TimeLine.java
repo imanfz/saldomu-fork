@@ -28,7 +28,7 @@ import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.HistoryListModel;
 
 import org.json.JSONArray;
@@ -185,10 +185,9 @@ public class TimeLine extends BaseFragmentMainPage {
             Timber.d("isi params get timeline list:" + params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_TIMELINE_LIST, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             HistoryListModel model = getGson().fromJson(object, HistoryListModel.class);
 
                             try {
@@ -306,13 +305,23 @@ public class TimeLine extends BaseFragmentMainPage {
                                         initializeDataPost();
                                     }
                                 }
-                                if(frameLayout !=null)
-                                    frameLayout.refreshComplete();
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
-                    });
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if(frameLayout !=null)
+                                frameLayout.refreshComplete();
+                        }
+                    } );
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
         }

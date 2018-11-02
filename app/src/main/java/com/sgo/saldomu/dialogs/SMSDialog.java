@@ -23,12 +23,12 @@ import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.InetHandler;
-import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.NoHPFormat;
 import com.sgo.saldomu.coreclass.SMSclass;
+import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.coreclass.WebParams;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.InqSMSModel;
 
 import java.util.HashMap;
@@ -276,10 +276,9 @@ public class SMSDialog extends Dialog {
                     Timber.d("isi params inquiry sms:" + params.toString());
 
                     RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGIN, params
-                            , new ObjListener() {
+                            , new ResponseListener() {
                                 @Override
                                 public void onResponses(JsonObject object) {
-
                                     Gson gson = new Gson();
 
                                     final InqSMSModel model = gson.fromJson(object, InqSMSModel.class);
@@ -318,7 +317,22 @@ public class SMSDialog extends Dialog {
                                         }, 3000);
                                     }
                                 }
-                            });
+
+                                @Override
+                                public void onError(Throwable throwable) {
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            sentInquirySMS();
+                                        }
+                                    }, 3000);
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            } );
                 }
             } else {
                 tvMessage.setText(getContext().getString(R.string.dialog_sms_msg3));

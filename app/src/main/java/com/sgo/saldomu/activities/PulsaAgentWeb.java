@@ -37,7 +37,7 @@ import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ReportBillerDialog;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.widgets.BaseActivity;
 
@@ -79,20 +79,20 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         InitializeToolbar();
 
         SecurePreferences sp = CustomSecurePref.getInstance().getmSecurePrefs();
-        userID = sp.getString(DefineValue.USERID_PHONE,"");
-        accessKey = sp.getString(DefineValue.ACCESS_KEY,"");
+        userID = sp.getString(DefineValue.USERID_PHONE, "");
+        accessKey = sp.getString(DefineValue.ACCESS_KEY, "");
 
         isDisconnected = !isOnline();
 
-        mIntent   = getIntent();
-        String productCode  = mIntent.getStringExtra(DefineValue.PRODUCT_CODE);
+        mIntent = getIntent();
+        String productCode = mIntent.getStringExtra(DefineValue.PRODUCT_CODE);
         bankProduct = mIntent.getStringExtra(DefineValue.PRODUCT_NAME);
         bankCode = mIntent.getStringExtra(DefineValue.BANK_CODE);
 //        bankName = mIntent.getStringExtra(CoreApp.BANK_NAME);
         String commCode = mIntent.getStringExtra(DefineValue.COMMUNITY_CODE);
         String fee = mIntent.getStringExtra(DefineValue.FEE);
         String paymentId = mIntent.getStringExtra(DefineValue.TX_ID);
-        String apikey  = mIntent.getStringExtra(DefineValue.API_KEY)  ;
+        String apikey = mIntent.getStringExtra(DefineValue.API_KEY);
         String amount = mIntent.getStringExtra(DefineValue.AMOUNT);
         String comm_id = mIntent.getStringExtra(DefineValue.COMMUNITY_ID);
         String totalAmount = mIntent.getStringExtra(DefineValue.TOTAL_AMOUNT);
@@ -105,29 +105,28 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         Timber.d("isi intent", mIntent.getExtras().toString());
 
         //if(MyApiClient.PROD_FLAG && topUpType.equals(CoreApp.PULSA))masterDomainSGOplus = prodDomainSGOPlus;
-        if(MyApiClient.IS_PROD){
-            if(bankCode.equals("008"))masterDomainSGOplus = prodDomainSGOPlusMandiri;
+        if (MyApiClient.IS_PROD) {
+            if (bankCode.equals("008")) masterDomainSGOplus = prodDomainSGOPlusMandiri;
             else masterDomainSGOplus = prodDomainSGOPlus;
-        }
-        else masterDomainSGOplus = devDomainSGOPlus;
+        } else masterDomainSGOplus = devDomainSGOPlus;
 
 
         SGO_PLUS_URL = masterDomainSGOplus + "index/order/?key=" + apikey +
-                "&paymentId="+paymentId+
-                "&commCode="+commCode+
-                "&bankCode="+bankCode+
-                "&productCode="+productCode+"&mobile=1";
+                "&paymentId=" + paymentId +
+                "&commCode=" + commCode +
+                "&bankCode=" + bankCode +
+                "&productCode=" + productCode + "&mobile=1";
 
 
 //        if(!bankCode.equals("008")){
-            try {
-                String callbackUrl = mIntent.getStringExtra(DefineValue.CALLBACK_URL);
-                if(!callbackUrl.isEmpty())
-                    SGO_PLUS_URL = SGO_PLUS_URL + "&url=" + URLEncoder.encode(callbackUrl + "?refid=" + gen_numb() + "&ref_back_url=" + productCode + "&isclose=1", "utf-8");
+        try {
+            String callbackUrl = mIntent.getStringExtra(DefineValue.CALLBACK_URL);
+            if (!callbackUrl.isEmpty())
+                SGO_PLUS_URL = SGO_PLUS_URL + "&url=" + URLEncoder.encode(callbackUrl + "?refid=" + gen_numb() + "&ref_back_url=" + productCode + "&isclose=1", "utf-8");
 
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 //        }
 
 
@@ -135,19 +134,19 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         Timber.d("sgo+ urlnya", SGO_PLUS_URL);
         //showReportBillerDialog(MyApiClient.getCurrentDateTime(), paymentId, sp.getString(CoreApp.USERID_PHONE, "")
         //        , bankName,productCode,fee,amount);
-        loadUrl(sp.getString(DefineValue.USER_NAME,""),SGO_PLUS_URL, paymentId,userID,totalAmount,
-                fee,amount,reportType,comm_id,transType,shareType);
+        loadUrl(sp.getString(DefineValue.USER_NAME, ""), SGO_PLUS_URL, paymentId, userID, totalAmount,
+                fee, amount, reportType, comm_id, transType, shareType);
         setResult(MainPage.RESULT_NORMAL);
     }
 
     private boolean isOnline() {
-        ConnectivityManager connMgr = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connMgr = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
 
     private int gen_numb() {
-        Random r = new Random( System.currentTimeMillis() );
+        Random r = new Random(System.currentTimeMillis());
         return ((1 + r.nextInt(9)) * 100000000 + r.nextInt(100000000));
     }
 
@@ -166,12 +165,12 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(true);
-        if(bankCode.equals("014")) {
+        if (bankCode.equals("014")) {
             webSettings.setLoadWithOverviewMode(true);
             webSettings.setUseWideViewPort(true);
         }
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        if (android.os.Build.VERSION.SDK_INT<=11) {
+        if (android.os.Build.VERSION.SDK_INT <= 11) {
             webSettings.setAppCacheMaxSize(1024 * 1024 * 8);
         }
 
@@ -181,7 +180,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
                 //setSupportProgress(progress * 100);
                 getProgressSpinner().setVisibility(View.VISIBLE);
                 //activity.setProgress(progress * 100);
-                if(progress == 100)
+                if (progress == 100)
                     getProgressSpinner().setVisibility(View.GONE);
             }
         });
@@ -190,16 +189,14 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Timber.d("isi url tombol-tombolnya", url);
-                if (url.contains("isclose=1")){
+                if (url.contains("isclose=1")) {
                     setResult(MainPage.RESULT_BALANCE);
                     getTrxStatus(userName, DateTimeFormat.getCurrentDateTime(), payment_id, userId, totalAmount,
-                            fee, amount,reportType,commId,transType, shareType);
-                }
-                else if (url.contains("isback=1")){
+                            fee, amount, reportType, commId, transType, shareType);
+                } else if (url.contains("isback=1")) {
                     setResult(MainPage.RESULT_BALANCE);
                     onOkButton();
-                }
-                else view.loadUrl(url);
+                } else view.loadUrl(url);
 
                 return true;
             }
@@ -230,8 +227,8 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
     private void getTrxStatus(final String userName, final String date, final String txId, final String userId,
                               final String totalAmount, final String fee, final String amount, final String reportType,
-                              final String comm_id, final String transtype, final String shareType){
-        try{
+                              final String comm_id, final String transtype, final String shareType) {
+        try {
             out = DefinedDialog.CreateProgressDialog(this, null);
             out.show();
 
@@ -248,10 +245,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
             Timber.d("isi params sent get Trx Status", params.toString());
 
             RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_GET_TRX_STATUS, params,
-                    new ObjListener() {
+                    new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-
                             Gson gson = new Gson();
                             GetTrxStatusReportModel model = gson.fromJson(object, GetTrxStatusReportModel.class);
 
@@ -259,28 +255,34 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
                             String message = model.getError_message();
 
                             if (code.equals(WebParams.SUCCESS_CODE)) {
-                                showReportBillerDialog(userName,DateTimeFormat.formatToID(model.getCreated()),
-                                        txId, userId,totalAmount,fee,amount,
-                                        model.getTx_status(),model.getTx_remark(), reportType);
-                            }else if(code.equals(WebParams.LOGOUT_CODE)){
+                                showReportBillerDialog(userName, DateTimeFormat.formatToID(model.getCreated()),
+                                        txId, userId, totalAmount, fee, amount,
+                                        model.getTx_status(), model.getTx_remark(), reportType);
+                            } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                test.showDialoginActivity(PulsaAgentWeb.this,message);
+                                test.showDialoginActivity(PulsaAgentWeb.this, message);
                             } else {
-                                if(code.equals("0003")){
-                                    showReportBillerDialog(userName,date,txId, userId,totalAmount,fee,amount,
-                                            DefineValue.FAILED,getString(R.string.transaction_failed_tx_id),reportType);
-                                }
-                                else
+                                if (code.equals("0003")) {
+                                    showReportBillerDialog(userName, date, txId, userId, totalAmount, fee, amount,
+                                            DefineValue.FAILED, getString(R.string.transaction_failed_tx_id), reportType);
+                                } else
                                     showDialog(message);
                             }
+                        }
 
-                            if(out.isShowing())
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            if (out.isShowing())
                                 out.dismiss();
                         }
-                    }
-            );
+                    });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.d("httpclient", e.getMessage());
         }
     }
@@ -294,9 +296,9 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button)dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView)dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView)dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = (Button) dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = (TextView) dialog.findViewById(R.id.title_dialog);
+        TextView Message = (TextView) dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));
@@ -314,17 +316,17 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
     }
 
 
-    private void showReportBillerDialog(String userName, String date,String txId, String userId,String total_amount,
+    private void showReportBillerDialog(String userName, String date, String txId, String userId, String total_amount,
                                         String fee, String amount, String txStatus, String txRemark, String reportType) {
         Bundle args = new Bundle();
         ReportBillerDialog dialog = ReportBillerDialog.newInstance(this);
         args.putString(DefineValue.USER_NAME, userName);
-        args.putString(DefineValue.DATE_TIME,date);
-        args.putString(DefineValue.TX_ID,txId);
+        args.putString(DefineValue.DATE_TIME, date);
+        args.putString(DefineValue.TX_ID, txId);
         args.putString(DefineValue.REPORT_TYPE, reportType);
         args.putString(DefineValue.USERID_PHONE, userId);
 
-        args.putString(DefineValue.FEE,MyApiClient.CCY_VALUE+". "+ CurrencyFormat.format(fee));
+        args.putString(DefineValue.FEE, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(fee));
         args.putString(DefineValue.AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(amount));
         args.putString(DefineValue.TOTAL_AMOUNT, MyApiClient.CCY_VALUE + ". " + CurrencyFormat.format(total_amount));
         args.putString(DefineValue.PAYMENT_NAME, paymentName);
@@ -333,26 +335,24 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         args.putString(DefineValue.DESTINATION_REMARK, getIntent().getStringExtra(DefineValue.DESTINATION_REMARK));
 
         Boolean txStat = false;
-        if (txStatus.equals(DefineValue.SUCCESS)){
+        if (txStatus.equals(DefineValue.SUCCESS)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_success));
-        }else if(txStatus.equals(DefineValue.ONRECONCILED)){
+        } else if (txStatus.equals(DefineValue.ONRECONCILED)) {
             txStat = true;
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_pending));
-        }else if(txStatus.equals(DefineValue.SUSPECT)){
+        } else if (txStatus.equals(DefineValue.SUSPECT)) {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_suspect));
-        }
-        else if(!txStatus.equals(DefineValue.FAILED)){
-            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction)+" "+txStatus);
-        }
-        else {
+        } else if (!txStatus.equals(DefineValue.FAILED)) {
+            args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction) + " " + txStatus);
+        } else {
             args.putString(DefineValue.TRX_MESSAGE, getString(R.string.transaction_failed));
         }
         args.putBoolean(DefineValue.TRX_STATUS, txStat);
-        if(!txStat)args.putString(DefineValue.TRX_REMARK, txRemark);
+        if (!txStat) args.putString(DefineValue.TRX_REMARK, txRemark);
 
 
-        if(reportType.equals(DefineValue.PULSA_AGENT)){
+        if (reportType.equals(DefineValue.PULSA_AGENT)) {
             setResult(PulsaAgentActivity.RESULT_DAP);
         }
 
@@ -383,9 +383,8 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(event.getAction() == KeyEvent.ACTION_DOWN){
-            switch(keyCode)
-            {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
                     //if(webview.canGoBack()){
                     //    webview.goBack();
@@ -400,7 +399,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
         return super.onKeyDown(keyCode, event);
     }
 
-    private void InitializeToolbar(){
+    private void InitializeToolbar() {
         setActionBarIcon(R.drawable.ic_arrow_left);
         setActionBarTitle(getString(R.string.sgoplusweb_ab_title));
     }
@@ -427,7 +426,7 @@ public class PulsaAgentWeb extends BaseActivity implements ReportBillerDialog.On
                 finish();
                 return true;
             case R.id.action_refresh:
-                if(webview != null) {
+                if (webview != null) {
                     webview.loadUrl(SGO_PLUS_URL);
                     invalidateOptionsMenu();
                 }

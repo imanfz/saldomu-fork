@@ -12,7 +12,7 @@ import com.sgo.saldomu.activities.NotificationActivity;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.Singleton.RetrofitService;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
-import com.sgo.saldomu.interfaces.ObjListener;
+import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.NotifModel;
 
 import org.json.JSONArray;
@@ -52,7 +52,7 @@ public class NotificationHandler {
                 Timber.d("isi params Retrieve Notif Handler:" + params.toString());
 
                 RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_NOTIF_RETRIEVE, params,
-                        new ObjListener() {
+                        new ResponseListener() {
                             @Override
                             public void onResponses(JsonObject object) {
                                 try {
@@ -92,7 +92,17 @@ public class NotificationHandler {
                                     e.printStackTrace();
                                 }
                             }
-                        });
+
+                            @Override
+                            public void onError(Throwable throwable) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        } );
             }
         }catch (Exception e){
             Timber.d("httpclient:"+e.getMessage());
