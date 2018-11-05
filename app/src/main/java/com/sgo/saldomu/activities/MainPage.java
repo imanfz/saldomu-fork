@@ -142,7 +142,7 @@ public class MainPage extends BaseActivity {
     private void InitializeApp(){
         if(GooglePlayUtils.isGooglePlayServicesAvailable(this)) {
             if (RootUtil.isDeviceRooted()){
-                if (BuildConfig.FLAVOR.equals("production")){
+                if (BuildConfig.FLAVOR.equals("development")){
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainPage.this);
                     builder.setMessage("Apakah anda ingin melewati pengecekan device?")

@@ -35,6 +35,7 @@
 
     <string-array name="home_vpi_title">
         <item>BERANDA</item>
+        <item>MOBILE TELLER</item>
         <item>RIWAYAT</item>
         <!--<item>LINI WAKTU</item>-->
         <!--<item>GROUP</item>-->

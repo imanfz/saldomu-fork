@@ -3,6 +3,7 @@ package com.sgo.saldomu.fragments;
 import android.app.Activity;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -16,6 +17,7 @@ import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.adapter.MainFragmentAdapter;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
+import com.sgo.saldomu.coreclass.DefineValue;
 import com.viewpagerindicator.TitlePageIndicator;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -34,6 +36,7 @@ public class FragMainPage extends Fragment {
     private PtrFrameLayout currentPtrFrame;
     private SecurePreferences sp;
     private View currentView;
+    private boolean isAgent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +49,8 @@ public class FragMainPage extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sp = CustomSecurePref.getInstance().getmSecurePrefs();
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         MainFragmentAdapter adapternya;
@@ -55,6 +60,7 @@ public class FragMainPage extends Fragment {
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
 //        mList.add(new Home());
         mList.add(new FragHomeNew());
+        mList.add(new FragHomeAgent());
         mList.add(new MyHistory());
 //        mList.add(new TimeLine());
 //        mList.add(new Group());
@@ -67,7 +73,7 @@ public class FragMainPage extends Fragment {
         pager.setPageMargin(pageMargin);
         tabs.setViewPager(pager);
         pager.setCurrentItem(0);
-        pager.setOffscreenPageLimit(2);
+        pager.setOffscreenPageLimit(3);
 
         setCurrentAdapternya(adapternya);
 

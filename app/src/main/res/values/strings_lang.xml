@@ -638,6 +638,7 @@
     <string name="limit_dialog_title">Kendala Setor Tunai</string>
     <string name="level_dialog_title">Fitur Belum Tersedia</string>
     <string name="level_dialog_message">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan dengan mengisi Formulir Pendaftaran.</string>
+    <string name="level_dialog_message_agent">Anda belum bisa melakukan Fitur ini. Lakukan Pembaharuan keanggotaan menjadi Agen dengan mengisi Formulir Pendaftaran.</string>
     <string name="level_dialog_btn_ok">Isi Form</string>
 
     <string name="level_title">Registrasi Perbaharui Keanggotaan</string>
