@@ -1,6 +1,7 @@
 package com.sgo.saldomu.fragments;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
@@ -36,6 +38,7 @@ import com.google.gson.JsonObject;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.PayFriendsConfirmTokenActivity;
+import com.sgo.saldomu.activities.ScanQRActivity;
 import com.sgo.saldomu.activities.TopUpActivity;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ErrorDefinition;
@@ -53,6 +56,7 @@ import com.sgo.saldomu.dialogs.InformationDialog;
 import com.sgo.saldomu.interfaces.ResponseListener;
 import com.sgo.saldomu.models.retrofit.PayfriendDataTrfModel;
 import com.sgo.saldomu.models.retrofit.SentDataPayfriendModel;
+import com.sgo.saldomu.models.QrModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import java.util.ArrayList;
@@ -79,6 +83,7 @@ public class FragPayFriends extends BaseFragment {
     private Button btnGetOTP;
     private EditText etAmount;
     private EditText etMessage;
+    private ImageButton btnScanQR;
     private List<String> listName;
 
     private int privacy;
@@ -93,6 +98,11 @@ public class FragPayFriends extends BaseFragment {
 
     private String authType;
 
+
+    public static final int REQUEST_QR_FROM_PAY_FRIENDS = 1001;
+    private QrModel qrObj = new QrModel();
+    private BaseRecipientAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -104,6 +114,8 @@ public class FragPayFriends extends BaseFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.information, menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+
     }
 
     @Override
@@ -138,7 +150,7 @@ public class FragPayFriends extends BaseFragment {
         etMessage = v.findViewById(R.id.payfriends_value_message);
         txtNumberRecipients = v.findViewById(R.id.payfriends_value_number_recipients);
         btnGetOTP = v.findViewById(R.id.btn_get_otp);
-
+        btnScanQR = v.findViewById(R.id.btnScanQr);
         if(authType.equalsIgnoreCase("PIN")) {
             btnGetOTP.setText(R.string.next);
         }
@@ -166,12 +178,14 @@ public class FragPayFriends extends BaseFragment {
         txtName.setText(sp.getString(DefineValue.USER_NAME, ""));
 
         phoneRetv.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-        final BaseRecipientAdapter adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, getActivity().getApplicationContext());
+        adapter = new BaseRecipientAdapter(BaseRecipientAdapter.QUERY_TYPE_PHONE, getActivity().getApplicationContext());
         phoneRetv.setAdapter(adapter);
         phoneRetv.dismissDropDownOnItemSelected(true);
         phoneRetv.setThreshold(1);
 
+
         btnGetOTP.setOnClickListener(btnGetOTPListener);
+        btnScanQR.setOnClickListener(scanQRListener);
 
         etAmount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -360,6 +374,17 @@ public class FragPayFriends extends BaseFragment {
             this.name = name;
         }
     }
+
+    private Button.OnClickListener scanQRListener = new Button.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+
+            switchViewToScanQR();
+        }
+
+    };
+
 
     private Button.OnClickListener btnGetOTPListener = new Button.OnClickListener() {
         @Override
@@ -693,4 +718,40 @@ public class FragPayFriends extends BaseFragment {
         }
     }
 
+
+
+
+
+    private void switchViewToScanQR() {
+        Intent intent = new Intent (getActivity(), ScanQRActivity.class);
+        intent.putExtra(DefineValue.TYPE, DefineValue.QR_FROM_PAY_FRIENDS);
+        startActivityForResult(intent,REQUEST_QR_FROM_PAY_FRIENDS);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQUEST_QR_FROM_PAY_FRIENDS:
+                if(resultCode == Activity.RESULT_OK){
+                    if(data != null){
+                         qrObj = data.getParcelableExtra(DefineValue.QR_OBJ);
+                         setBundleViewQR();
+                    }
+                }
+                break;
+
+        }
+
+    }
+
+    private void setBundleViewQR() {
+
+        Timber.d("Isi qrOBJ name:"+qrObj.getSourceName()+" id:"+qrObj.getSourceAcct()+" type:"+qrObj.getQrType());
+        phoneRetv.setText("+"+NoHPFormat.formatTo62(qrObj.getSourceAcct()));
+        phoneRetv.requestFocus();
+
+
+    }
 }

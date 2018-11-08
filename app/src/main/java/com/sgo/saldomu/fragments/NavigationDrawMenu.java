@@ -39,6 +39,7 @@ import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.ActivityProfileQr;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
@@ -250,8 +251,12 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         llHeaderProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
-                switchActivity(i, MainPage.ACTIVITY_RESULT);
+
+                Intent i = new Intent(getActivity(), ActivityProfileQr.class);
+                startActivity(i);
+
+//                Intent i = new Intent(getActivity(), MyProfileNewActivity.class);
+//                switchActivity(i, MainPage.ACTIVITY_RESULT);
             }
         });
 
@@ -472,7 +477,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_supports)));                                        //10
         models.add(new navdrawmainmenuModel(R.drawable.ic_report,R.drawable.ic_report,getString(R.string.menu_item_title_report),MREPORT));              //6
         models.add(new navdrawmainmenuModel(R.drawable.ic_setting,R.drawable.ic_setting,getString(R.string.menu_item_title_setting),MSETTINGS));                    //11
-        models.add(new navdrawmainmenuModel(R.drawable.ic_help,R.drawable.ic_help,getString(R.string.menu_item_title_help),MHELP));                          //12
+        models.add(new navdrawmainmenuModel(R.drawable.ic_help,R.drawable.ic_help,getString(R.string.menu_item_title_help1),MHELP));                          //12
         models.add(new navdrawmainmenuModel(R.drawable.ic_buy_icon_color,R.drawable.ic_buy_icon_color,getString(R.string.menu_item_title_info_harga),MINFO)); //28                         //15
         models.add(new navdrawmainmenuModel(getString(R.string.menu_group_title_logout)));                                        //13
         models.add(new navdrawmainmenuModel(R.drawable.ic_logout_icon,R.drawable.ic_logout_icon,getString(R.string.menu_item_title_logout),MLOGOUT));                 //14
@@ -548,7 +553,7 @@ public class NavigationDrawMenu extends ListFragment implements ProgressRequestB
                 break;
             case MHELP:
                 newFragment = new ContactTab();
-                switchFragment(newFragment, getString(R.string.menu_item_title_help));
+                switchFragment(newFragment, getString(R.string.menu_item_title_help1));
                 break;
             case MBBS:
                 newFragment = new ListBBS();

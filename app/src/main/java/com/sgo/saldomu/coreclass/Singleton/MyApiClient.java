@@ -208,6 +208,7 @@ public class MyApiClient {
 
     public static String LINK_RESEND_TOKEN_LKD;
     public static String LINK_BBS_CITY;
+    public static String LINK_BBS_BIRTH_PLACE;
     public static String LINK_GLOBAL_BBS_COMM;
     public static String LINK_GLOBAL_BBS_BANK_C2A;
     public static String LINK_GLOBAL_BBS_INSERT_C2A;
@@ -248,7 +249,8 @@ public class MyApiClient {
     public static String LINK_GET_LIST_BANK_DENOM_SCADM;
     public static String LINK_GET_DENOM_LIST;
     public static String LINK_GET_DENOM_INVOKE;
-    public static String LINK_BBS_SEND_DATA;
+    public static String LINK_BBS_SEND_DATA_LKD;
+    public static String LINK_BBS_MANDIRI_LKD;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -383,6 +385,7 @@ public class MyApiClient {
         LINK_BBS_JOIN_AGENT = headaddressfinal + "BBSJoinAgent/Invoke";
         LINK_BBS_REQ_ACCT = headaddressfinal + "BBSRegAcct/Invoke";
         LINK_BBS_GLOBAL_COMM = headaddressfinal + "GlobalComm/Retrieve";
+        LINK_BBS_BIRTH_PLACE = headaddressfinal + "ServiceBBSBirthPlace/Retrieve";
         LINK_TRX_STATUS_BBS = headaddressfinal + "TrxBBSStatus/Retrieve";
         LINK_GLOBAL_BBS_BANK_A2C = headaddressfinal + "GlobalBBSBankA2C/Retrieve";
         LINK_GLOBAL_BBS_INSERT_A2C = headaddressfinal + "GlobalBBSInsertA2C/Invoke";
@@ -402,7 +405,8 @@ public class MyApiClient {
         LINK_GET_LIST_BANK_DENOM_SCADM = headaddressfinal +"scadm/ListBank/Denom";
         LINK_GET_DENOM_LIST = headaddressfinal +"scadm/ListDenom/Retrieve";
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
-        LINK_BBS_SEND_DATA = headaddressfinal +"BBSTrxCustomer/Submit";
+        LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
+        LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 

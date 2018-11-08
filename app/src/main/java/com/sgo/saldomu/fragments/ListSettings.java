@@ -16,6 +16,7 @@ import com.sgo.saldomu.activities.AboutAppsActivity;
 import com.sgo.saldomu.activities.ChangePIN;
 import com.sgo.saldomu.activities.ChangePassword;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.RegisterSMSBankingActivity;
 import com.sgo.saldomu.adapter.EasyAdapter;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -131,6 +132,13 @@ public class ListSettings extends ListFragment {
 
         MainPage fca = (MainPage) getActivity();
         fca.switchContent(i,name,isBackstack);
+    }
+    private void switchActivity(Intent mIntent,int j){
+        if (getActivity() == null)
+            return;
+
+        MainPage fca = (MainPage) getActivity();
+        fca.switchActivity(mIntent,j);
     }
 
     private void switchActivity(Intent mIntent){

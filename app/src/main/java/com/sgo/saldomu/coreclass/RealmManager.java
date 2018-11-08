@@ -14,6 +14,7 @@ import com.sgo.saldomu.entityRealm.AgentServiceDetail;
 import com.sgo.saldomu.entityRealm.BBSAccountACTModel;
 import com.sgo.saldomu.entityRealm.BBSBankModel;
 import com.sgo.saldomu.entityRealm.BBSCommModel;
+import com.sgo.saldomu.entityRealm.List_BBS_Birth_Place;
 import com.sgo.saldomu.entityRealm.List_BBS_City;
 import com.sgo.saldomu.entityRealm.MerchantCommunityList;
 
@@ -75,7 +76,7 @@ public class RealmManager {
     private static class AppModule {
     }
 
-    @RealmModule(classes = { BBSBankModel.class, BBSCommModel.class, BBSAccountACTModel.class})
+    @RealmModule(classes = { BBSBankModel.class, BBSCommModel.class, BBSAccountACTModel.class, List_BBS_Birth_Place.class, AgentDetail.class, AgentServiceDetail.class, MerchantCommunityList.class})
     private static class BBSModule {
     }
 

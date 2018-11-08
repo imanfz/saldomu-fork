@@ -99,30 +99,34 @@ public class UpdateBBSCity extends IntentService {
 
         Realm realm = Realm.getDefaultInstance();
 
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if(bbs_city != null && bbs_city.length() > 0) {
+        if(bbs_city != null && bbs_city.length() > 0) {
 
-                    realm.delete(List_BBS_City.class);
+            realm.beginTransaction();
 
-                    List_BBS_City list_bbs_city;
+            realm.delete(List_BBS_City.class);
 
-                    for(int i = 0 ; i < bbs_city.length() ; i++) {
-                        try {
-                            list_bbs_city = realm.createObjectFromJson(List_BBS_City.class, bbs_city.getJSONObject(i));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            realm.cancelTransaction();
-                        }
-                    }
+            List_BBS_City list_bbs_city;
 
-                    if(realm.isInTransaction())
-                        realm.commitTransaction();
-
-                    EndRealm(realm);
+            for(int i = 0 ; i < bbs_city.length() ; i++) {
+                try {
+                    list_bbs_city = realm.createObjectFromJson(List_BBS_City.class, bbs_city.getJSONObject(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    realm.cancelTransaction();
                 }
             }
-        });
+
+            if(realm.isInTransaction())
+                realm.commitTransaction();
+
+            EndRealm(realm);
+        }
+
+//        realm.executeTransaction(new Realm.Transaction() {
+//            @Override
+//            public void execute(Realm realm) {
+//
+//            }
+//        });
     }
 }

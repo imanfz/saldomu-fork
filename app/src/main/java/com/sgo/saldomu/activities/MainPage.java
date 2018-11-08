@@ -68,6 +68,7 @@ import com.sgo.saldomu.models.retrofit.jsonModel;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.AppInfoService;
 import com.sgo.saldomu.services.BalanceService;
+import com.sgo.saldomu.services.UpdateBBSBirthPlace;
 import com.sgo.saldomu.services.UpdateBBSCity;
 import com.sgo.saldomu.services.UserProfileService;
 import com.sgo.saldomu.widgets.BaseActivity;
@@ -215,7 +216,6 @@ public class MainPage extends BaseActivity {
                             mEditor.putString(DefineValue.MODEL_NOTIF, Integer.toString(modelNotif));
                             mEditor.apply();
                         }
-
                     }
                 }
                 openFirstScreen(FIRST_SCREEN_INTRO);
@@ -239,75 +239,76 @@ public class MainPage extends BaseActivity {
     }
 
     void initializeLogin() {
-        Boolean isSimSame = true;
-        if (BuildConfig.FLAVOR.equals("production")) {
-            if (smSclass == null)
-                smSclass = new SMSclass(this);
+//        Boolean isSimSame = true;
+//        if (BuildConfig.FLAVOR.equals("production")){
+//            if(smSclass == null)
+//                smSclass = new SMSclass(this);
+//
+//            isSimSame = smSclass.isSimSameSP();
+//        }
+//
+//        if(isSimSame) {
 
-            isSimSame = smSclass.isSimSameSP();
-        }
-
-        if (isSimSame) {
-
-            startLocationService();
+        startLocationService();
 
 //            if (savedInstanceState != null)
 //                mContent = getSupportFragmentManager().getFragment(savedInstanceState, "mContent");
 
-            levelClass = new LevelClass(this, sp);
-            isForeground = true;
-            agent = sp.getBoolean(DefineValue.IS_AGENT, false);
-            UtilsLoader utilsLoader = new UtilsLoader(this, sp);
-            utilsLoader.getAppVersion();
-            ActiveAndroid.initialize(this);
-            progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
-            progdialog.show();
-            InitializeNavDrawer();
-            setupFab();
-            FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
+        levelClass = new LevelClass(this, sp);
+        isForeground = true;
+        agent = sp.getBoolean(DefineValue.IS_AGENT, false);
+        UtilsLoader utilsLoader = new UtilsLoader(this, sp);
+        utilsLoader.getAppVersion();
+        ActiveAndroid.initialize(this);
+        progdialog = DefinedDialog.CreateProgressDialog(this, getString(R.string.initialize));
+        progdialog.show();
+        InitializeNavDrawer();
+        setupFab();
+        FCMWebServiceLoader.getInstance(this).sentTokenAtLogin(false, userPhoneID, sp.getString(DefineValue.PROFILE_EMAIL, ""));
 
-            AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
+        AlertDialogLogout.getInstance();    //inisialisasi alertdialoglogout
 
 
-            if (checkNotificationAction()) {
-                int type = Integer.valueOf(getIntent().getExtras().getString("type"));
+        if (checkNotificationAction()) {
+            int type = Integer.valueOf(getIntent().getExtras().getString("type"));
 
-                Map<String, String> msgMap = new HashMap<String, String>();
-                Intent intentData = getIntent();
-                if (intentData.hasExtra("model_notif")) {
-                    msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
-                }
-                if (intentData.hasExtra("options")) {
-                    msgMap.put("options", intentData.getStringExtra("options"));
-                }
-                Timber.d("testing :" + msgMap.toString());
-
-                FCMManager fcmManager = new FCMManager(this);
-                Intent intent = fcmManager.checkingAction(type, msgMap);
-                if (intent != null) {
-                    startActivity(intent);
-                }
-                //this.finish();
-            } else {
-                String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
-                if (!sp_model_notif.equals("")) {
-                    if (sp_model_notif.equals("2")) {
-                        Intent i = new Intent(this, MyProfileNewActivity.class);
-                        startActivity(i);
-                    }
-                    sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
-                }
+            Map<String, String> msgMap = new HashMap<String, String>();
+            Intent intentData = getIntent();
+            if (intentData.hasExtra("model_notif")) {
+                msgMap.put("model_notif", intentData.getStringExtra("model_notif"));
             }
-
-            String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
-            if (!notifDataNextLogin.equals("")) {
-
-                changeActivityNextLogin(notifDataNextLogin);
-
+            if (intentData.hasExtra("options")) {
+                msgMap.put("options", intentData.getStringExtra("options"));
             }
+            Timber.d("testing :" + msgMap.toString());
+
+            FCMManager fcmManager = new FCMManager(this);
+            Intent intent = fcmManager.checkingAction(type, msgMap);
+            if (intent != null) {
+                startActivity(intent);
+            }
+            //this.finish();
         } else {
-            Logout(FIRST_SCREEN_INTRO);
+            String sp_model_notif = sp.getString(DefineValue.MODEL_NOTIF, "");
+            if (!sp_model_notif.equals("")) {
+                if (sp_model_notif.equals("2")) {
+                    Intent i = new Intent(this, MyProfileNewActivity.class);
+                    startActivity(i);
+                }
+                sp.edit().remove(DefineValue.MODEL_NOTIF).apply();
+            }
         }
+
+        String notifDataNextLogin = sp.getString(DefineValue.NOTIF_DATA_NEXT_LOGIN, "");
+        if (!notifDataNextLogin.equals("")) {
+
+            changeActivityNextLogin(notifDataNextLogin);
+
+        }
+//        }
+//        else {
+//            Logout(FIRST_SCREEN_INTRO);
+//        }
     }
 
     void changeActivityNextLogin(String jsonStr) {
@@ -877,11 +878,10 @@ public class MainPage extends BaseActivity {
             callBBSCityService();
             checkAndRunServiceBBS();
             callAgentShopService();
+            callBBSBirthPlaceService();
         } else {
 
         }
-
-
     }
 
     /**
@@ -912,409 +912,414 @@ public class MainPage extends BaseActivity {
         UpdateBBSCity.startUpdateBBSCity(MainPage.this);
     }
 
-    private void showChangePassword() {
-        Intent i = new Intent(this, ChangePassword.class);
-        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-        switchActivity(i, ACTIVITY_RESULT);
-    }
+private void callBBSBirthPlaceService(){
+        Timber.d("Panggil service BBS Birth Place");
+        UpdateBBSBirthPlace.startUpdateBBSBirthPlace(MainPage.this);
+        }
 
-    private void showMyProfile() {
-        Intent i = new Intent(this, MyProfileNewActivity.class);
+private void showChangePassword(){
+        Intent i=new Intent(this,ChangePassword.class);
+        i.putExtra(DefineValue.IS_FIRST,DefineValue.YES);
+        switchActivity(i,ACTIVITY_RESULT);
+        }
+
+private void showMyProfile(){
+        Intent i=new Intent(this,MyProfileNewActivity.class);
 //        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-        switchActivity(i, ACTIVITY_RESULT);
-    }
+        switchActivity(i,ACTIVITY_RESULT);
+        }
 
-    private void showCreatePin() {
-        Intent i = new Intent(this, CreatePIN.class);
-        switchActivity(i, MainPage.ACTIVITY_RESULT);
+private void showCreatePin(){
+        Intent i=new Intent(this,CreatePIN.class);
+        switchActivity(i,MainPage.ACTIVITY_RESULT);
 
-    }
+        }
 
-    private void checkField() {
-        if (sp.getString(DefineValue.IS_CHANGED_PASS, "").equals(DefineValue.STRING_NO)) {
-            showChangePassword();
-        } else if (sp.getString(DefineValue.IS_HAVE_PIN, "").equalsIgnoreCase(DefineValue.STRING_NO)) {
-            showCreatePin();
-        } else if (levelClass.isLevel1QAC() && sp.getString(DefineValue.IS_FIRST, "").equalsIgnoreCase(DefineValue.YES)) {
-            showMyProfile();
+private void checkField(){
+        if(sp.getString(DefineValue.IS_CHANGED_PASS,"").equals(DefineValue.STRING_NO)){
+        showChangePassword();
+        }else if(sp.getString(DefineValue.IS_HAVE_PIN,"").equalsIgnoreCase(DefineValue.STRING_NO)){
+        showCreatePin();
+        }else if(levelClass.isLevel1QAC()&&sp.getString(DefineValue.IS_FIRST,"").equalsIgnoreCase(DefineValue.YES)){
+        showMyProfile();
         }
 //        else if(sp.getString(DefineValue.IS_NEW_BULK,"N").equalsIgnoreCase(DefineValue.STRING_YES)){
 //            showValidasiEmail();
 //        }
-    }
+        }
 
 
 //----------------------------------------------------------------------------------------------------------------
 
 
-    private void openFirstScreen(int index) {
+private void openFirstScreen(int index){
         Intent i;
-        switch (index) {
-            case FIRST_SCREEN_LOGIN:
-                i = new Intent(this, LoginActivity.class);
-                break;
-            case FIRST_SCREEN_INTRO:
-                i = new Intent(this, Introduction.class);
-                break;
-            default:
-                i = new Intent(this, LoginActivity.class);
-                break;
+        switch(index){
+        case FIRST_SCREEN_LOGIN:
+        i=new Intent(this,LoginActivity.class);
+        break;
+        case FIRST_SCREEN_INTRO:
+        i=new Intent(this,Introduction.class);
+        break;
+default:
+        i=new Intent(this,LoginActivity.class);
+        break;
         }
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         this.finish();
-    }
+        }
 
 
-    public void setNotifAmount(String _amount) {
-        AmountNotif = Integer.parseInt(_amount);
+public void setNotifAmount(String _amount){
+        AmountNotif=Integer.parseInt(_amount);
         invalidateOptionsMenu();
-    }
+        }
 
-    public void switchContent(Fragment mFragment, String fragName) {
-        mContent = mFragment;
+public void switchContent(Fragment mFragment,String fragName){
+        mContent=mFragment;
 
         materialSheetFab.showFab();
 
         getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_page_content, mContent, fragName)
-                .commitAllowingStateLoss();
+        .beginTransaction()
+        .replace(R.id.main_page_content,mContent,fragName)
+        .commitAllowingStateLoss();
         setActionBarTitle(fragName);
-        if (mDrawerLayout != null) mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
-    }
+        if(mDrawerLayout!=null)mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
+        }
 
-    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
+public void switchContent(Fragment mFragment,String fragName,Boolean isBackstack){
 
-        if (isBackstack) {
-            Timber.d("backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_page_content, mFragment, fragName)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            Timber.d("bukan backstack");
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.main_page_content, mFragment, fragName)
-                    .commit();
+        if(isBackstack){
+        Timber.d("backstack");
+        getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.main_page_content,mFragment,fragName)
+        .addToBackStack(null)
+        .commit();
+        }else{
+        Timber.d("bukan backstack");
+        getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.main_page_content,mFragment,fragName)
+        .commit();
 
         }
         setActionBarTitle(fragName);
-        if (mDrawerLayout != null) mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
-    }
-
-    public void switchActivity(Intent mIntent, int activity_type) {
-        switch (activity_type) {
-            case ACTIVITY_RESULT:
-                startActivityForResult(mIntent, REQUEST_FINISH);
-                break;
-            case 2:
-                break;
+        if(mDrawerLayout!=null)mDrawerLayout.closeDrawer(mLeftDrawerRelativeLayout);
         }
-    }
 
-    public void switchMenu(int IdxItemMenu, Bundle data) {
-        mNavDrawer.selectItem(IdxItemMenu, data);
-    }
+public void switchActivity(Intent mIntent,int activity_type){
+        switch(activity_type){
+        case ACTIVITY_RESULT:
+        startActivityForResult(mIntent,REQUEST_FINISH);
+        break;
+        case 2:
+        break;
+        }
+        }
 
-    public void switchLogout() {
+public void switchMenu(int IdxItemMenu,Bundle data){
+        mNavDrawer.selectItem(IdxItemMenu,data);
+        }
+
+public void switchLogout(){
         sentLogout();
-    }
+        }
 
-    private void Logout(int logoutTo) {
+private void Logout(int logoutTo){
 
-        String balance = sp.getString(DefineValue.BALANCE_AMOUNT, "");
-        String contact_first_time = sp.getString(DefineValue.CONTACT_FIRST_TIME, "");
+        String balance=sp.getString(DefineValue.BALANCE_AMOUNT,"");
+        String contact_first_time=sp.getString(DefineValue.CONTACT_FIRST_TIME,"");
         deleteData();
-        SecurePreferences.Editor mEditor = sp.edit();
-        mEditor.putString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID, userPhoneID);
-        mEditor.putString(DefineValue.PREVIOUS_BALANCE, balance);
-        mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME, contact_first_time);
+        SecurePreferences.Editor mEditor=sp.edit();
+        mEditor.putString(DefineValue.FLAG_LOGIN,DefineValue.STRING_NO);
+        mEditor.putString(DefineValue.PREVIOUS_LOGIN_USER_ID,userPhoneID);
+        mEditor.putString(DefineValue.PREVIOUS_BALANCE,balance);
+        mEditor.putString(DefineValue.PREVIOUS_CONTACT_FIRST_TIME,contact_first_time);
 
-        mEditor.putString(DefineValue.IS_AGENT_APPROVE, "");
-        mEditor.putString(DefineValue.AGENT_NAME, "");
-        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED, "");
-        mEditor.putString(DefineValue.BBS_MEMBER_ID, "");
-        mEditor.putString(DefineValue.BBS_SHOP_ID, "");
-        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION, "");
-        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR, "");
-        mEditor.putString(DefineValue.SHOP_AGENT_DATA, "");
+        mEditor.putString(DefineValue.IS_AGENT_APPROVE,"");
+        mEditor.putString(DefineValue.AGENT_NAME,"");
+        mEditor.putString(DefineValue.AGENT_SHOP_CLOSED,"");
+        mEditor.putString(DefineValue.BBS_MEMBER_ID,"");
+        mEditor.putString(DefineValue.BBS_SHOP_ID,"");
+        mEditor.putString(DefineValue.IS_AGENT_SET_LOCATION,"");
+        mEditor.putString(DefineValue.IS_AGENT_SET_OPENHOUR,"");
+        mEditor.putString(DefineValue.SHOP_AGENT_DATA,"");
 
         //di commit bukan apply, biar yakin udah ke di write datanya
         mEditor.commit();
         openFirstScreen(logoutTo);
-    }
+        }
 
-    private void sentLogout() {
-        try {
-            if (progdialog != null && !progdialog.isShowing()) {
-                progdialog = DefinedDialog.CreateProgressDialog(this, "");
-                progdialog.show();
-            }
+private void sentLogout(){
+        try{
+        if(progdialog!=null&&!progdialog.isShowing()){
+        progdialog=DefinedDialog.CreateProgressDialog(this,"");
+        progdialog.show();
+        }
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
+        HashMap<String, Object> params=RetrofitService.getInstance().getSignature(MyApiClient.LINK_LOGOUT);
 //            RequestParams params = MyApiClient.getInstance().getSignatureWithParams(MyApiClient.LINK_LOGOUT);
-            params.put(WebParams.COMM_ID, MyApiClient.COMM_ID);
-            params.put(WebParams.USER_ID, userPhoneID);
+        params.put(WebParams.COMM_ID,MyApiClient.COMM_ID);
+        params.put(WebParams.USER_ID,userPhoneID);
 
-            Timber.d("isi params logout:" + params.toString());
+        Timber.d("isi params logout:"+params.toString());
 
-            RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT, params
-                    , new ResponseListener() {
-                        @Override
-                        public void onResponses(JsonObject object) {
-                            jsonModel model = RetrofitService.getInstance().getGson().fromJson(object, jsonModel.class);
+        RetrofitService.getInstance().PostObjectRequest(MyApiClient.LINK_LOGOUT,params
+        ,new ResponseListener(){
+@Override
+public void onResponses(JsonObject object){
+        jsonModel model=RetrofitService.getInstance().getGson().fromJson(object,jsonModel.class);
 
-                            if (model.getError_code().equals(WebParams.SUCCESS_CODE)) {
-                                //stopService(new Intent(MainPage.this, UpdateLocationService.class));
-                                Logout(FIRST_SCREEN_LOGIN);
+        if(model.getError_code().equals(WebParams.SUCCESS_CODE)){
+        //stopService(new Intent(MainPage.this, UpdateLocationService.class));
+        Logout(FIRST_SCREEN_LOGIN);
 
-                            } else {
-                                Toast.makeText(MainPage.this, model.getError_message(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-                            MainPage.this.finish();
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
-                        }
-                    });
-        } catch (Exception e) {
-            Timber.d("httpclient:" + e.getMessage());
+        }else{
+        Toast.makeText(MainPage.this,model.getError_message(),Toast.LENGTH_LONG).show();
         }
-    }
+        }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.d("isi request code:" + String.valueOf(requestCode));
-        Timber.d("isi result Code:" + String.valueOf(resultCode));
-        if (requestCode == REQUEST_FINISH) {
-            if (resultCode == RESULT_LOGOUT) {
-                switchLogout();
-            }
-            if (resultCode == RESULT_ERROR) {
-                this.finish();
-            }
-            if (resultCode == RESULT_BALANCE) {
-                Timber.w("Masuk result Balance");
-                mNavDrawer.getBalance(true);
-            }
-            if (resultCode == RESULT_NOTIF) {
-                Timber.w("Masuk result notif");
-                CheckNotification();
-                invalidateOptionsMenu();
-                if (data != null) {
-                    int _type = data.getIntExtra(DefineValue.NOTIF_TYPE, 0);
-                    switch (_type) {
-                        case NotificationActivity.TYPE_TRANSFER:
-                            Bundle dataBundle = new Bundle();
-                            dataBundle.putString(DefineValue.AMOUNT, data.getStringExtra(DefineValue.AMOUNT));
-                            dataBundle.putString(DefineValue.CUST_NAME, data.getStringExtra(DefineValue.CUST_NAME));
-                            dataBundle.putString(DefineValue.MESSAGE, data.getStringExtra(DefineValue.MESSAGE));
-                            dataBundle.putString(DefineValue.USERID_PHONE, data.getStringExtra(DefineValue.USERID_PHONE));
-                            dataBundle.putString(DefineValue.TRX, data.getStringExtra(DefineValue.TRX));
-                            dataBundle.putString(DefineValue.REQUEST_ID, data.getStringExtra(DefineValue.REQUEST_ID));
+@Override
+public void onError(Throwable throwable){
+        MainPage.this.finish();
+        }
 
-                            mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS, dataBundle);
-                            break;
-                        case NotificationActivity.TYPE_LIKE:
-                        case NotificationActivity.TYPE_COMMENT:
-                            int _post_id = Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID, "0"));
-                            if (mContent instanceof FragMainPage) {
-                                FragMainPage mFrag = (FragMainPage) mContent;
-                                if (mFrag.getFragment(0) instanceof MyHistory) {
-                                    MyHistory _history = (MyHistory) mFrag.getFragment(0);
-                                    _history.ScrolltoItem(_post_id);
-                                }
-                            }
-                            Intent i = new Intent(this, HistoryDetailActivity.class);
-                            i.putExtras(data);
-                            switchActivity(i, ACTIVITY_RESULT);
-                            break;
-                        case NotificationActivity.REJECTED_KTP:
-                            Intent e = new Intent(this, MyProfileNewActivity.class);
-                            switchActivity(e, ACTIVITY_RESULT);
-                            break;
-                        case NotificationActivity.REJECTED_SIUP_NPWP:
-                            Intent a = new Intent(this, UpgradeAgentActivity.class);
-                            switchActivity(a, ACTIVITY_RESULT);
-                            break;
-                    }
-                }
-            }
-            if (resultCode == RESULT_REFRESH_NAVDRAW) {
+@Override
+public void onComplete(){
+        if(progdialog.isShowing())
+        progdialog.dismiss();
+        }
+        });
+        }catch(Exception e){
+        Timber.d("httpclient:"+e.getMessage());
+        }
+        }
+
+@Override
+protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        Timber.d("isi request code:"+String.valueOf(requestCode));
+        Timber.d("isi result Code:"+String.valueOf(resultCode));
+        if(requestCode==REQUEST_FINISH){
+        if(resultCode==RESULT_LOGOUT){
+        switchLogout();
+        }
+        if(resultCode==RESULT_ERROR){
+        this.finish();
+        }
+        if(resultCode==RESULT_BALANCE){
+        Timber.w("Masuk result Balance");
+        mNavDrawer.getBalance(true);
+        }
+        if(resultCode==RESULT_NOTIF){
+        Timber.w("Masuk result notif");
+        CheckNotification();
+        invalidateOptionsMenu();
+        if(data!=null){
+        int _type=data.getIntExtra(DefineValue.NOTIF_TYPE,0);
+        switch(_type){
+        case NotificationActivity.TYPE_TRANSFER:
+        Bundle dataBundle=new Bundle();
+        dataBundle.putString(DefineValue.AMOUNT,data.getStringExtra(DefineValue.AMOUNT));
+        dataBundle.putString(DefineValue.CUST_NAME,data.getStringExtra(DefineValue.CUST_NAME));
+        dataBundle.putString(DefineValue.MESSAGE,data.getStringExtra(DefineValue.MESSAGE));
+        dataBundle.putString(DefineValue.USERID_PHONE,data.getStringExtra(DefineValue.USERID_PHONE));
+        dataBundle.putString(DefineValue.TRX,data.getStringExtra(DefineValue.TRX));
+        dataBundle.putString(DefineValue.REQUEST_ID,data.getStringExtra(DefineValue.REQUEST_ID));
+
+        mNavDrawer.selectItem(NavigationDrawMenu.MPAYFRIENDS,dataBundle);
+        break;
+        case NotificationActivity.TYPE_LIKE:
+        case NotificationActivity.TYPE_COMMENT:
+        int _post_id=Integer.valueOf(data.getExtras().getString(DefineValue.POST_ID,"0"));
+        if(mContent instanceof FragMainPage){
+        FragMainPage mFrag=(FragMainPage)mContent;
+        if(mFrag.getFragment(0)instanceof MyHistory){
+        MyHistory _history=(MyHistory)mFrag.getFragment(0);
+        _history.ScrolltoItem(_post_id);
+        }
+        }
+        Intent i=new Intent(this,HistoryDetailActivity.class);
+        i.putExtras(data);
+        switchActivity(i,ACTIVITY_RESULT);
+        break;
+        case NotificationActivity.REJECTED_KTP:
+        Intent e=new Intent(this,MyProfileNewActivity.class);
+        switchActivity(e,ACTIVITY_RESULT);
+        break;
+        case NotificationActivity.REJECTED_SIUP_NPWP:
+        Intent a=new Intent(this,UpgradeAgentActivity.class);
+        switchActivity(a,ACTIVITY_RESULT);
+        break;
+        }
+        }
+        }
+        if(resultCode==RESULT_REFRESH_NAVDRAW){
 //                Timber.d("masuukk result refesh navdraw");
-                mNavDrawer.refreshUINavDrawer();
-                mNavDrawer.refreshDataNavDrawer();
+        mNavDrawer.refreshUINavDrawer();
+        mNavDrawer.refreshDataNavDrawer();
 
-            }
-            if (resultCode == RESULT_FIRST_TIME) {
-                checkField();
-                mNavDrawer.refreshUINavDrawer();
-                mNavDrawer.refreshDataNavDrawer();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
-    }
+        if(resultCode==RESULT_FIRST_TIME){
+        checkField();
+        mNavDrawer.refreshUINavDrawer();
+        mNavDrawer.refreshDataNavDrawer();
+        }
+        }else{
+        super.onActivityResult(requestCode,resultCode,data);
+        }
+        }
 
-    private Boolean isLogin() {
-        flagLogin = sp.getString(DefineValue.FLAG_LOGIN, DefineValue.STRING_NO);
-        if (flagLogin == null)
-            flagLogin = DefineValue.STRING_NO;
+private Boolean isLogin(){
+        flagLogin=sp.getString(DefineValue.FLAG_LOGIN,DefineValue.STRING_NO);
+        if(flagLogin==null)
+        flagLogin=DefineValue.STRING_NO;
         Timber.d("isLoginMainPage");
         return flagLogin.equals(DefineValue.STRING_YES);
-    }
+        }
 
-    private void showLogoutDialog() {
-        AlertDialog.Builder alertbox = new AlertDialog.Builder(this);
+private void showLogoutDialog(){
+        AlertDialog.Builder alertbox=new AlertDialog.Builder(this);
         alertbox.setTitle("Warning");
         alertbox.setMessage("Exit Application?");
-        alertbox.setPositiveButton("OK", new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                        switchLogout();
-                    }
-                });
-        alertbox.setNegativeButton(getString(R.string.cancel), new
-                DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
+        alertbox.setPositiveButton("OK",new
+        DialogInterface.OnClickListener(){
+public void onClick(DialogInterface arg0,int arg1){
+        switchLogout();
+        }
+        });
+        alertbox.setNegativeButton(getString(R.string.cancel),new
+        DialogInterface.OnClickListener(){
+public void onClick(DialogInterface arg0,int arg1){
+        }
+        });
         alertbox.show();
-    }
+        }
 //---------------------------------------------------------------------------------------------------------
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.ab_notification, menu);
+@Override
+public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.ab_notification,menu);
         return true;
-    }
+        }
 
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem itemData = menu.findItem(R.id.notifications);
+@Override
+public boolean onPrepareOptionsMenu(Menu menu){
+        MenuItem itemData=menu.findItem(R.id.notifications);
 
         itemData.setActionView(R.layout.ab_notification);
-        NotificationActionView actionView = (NotificationActionView) itemData.getActionView();
-        actionView.setItemData(menu, itemData);
+        NotificationActionView actionView=(NotificationActionView)itemData.getActionView();
+        actionView.setItemData(menu,itemData);
         actionView.setCount(AmountNotif); // initial value
-        if (AmountNotif == 0) actionView.hideView();
+        if(AmountNotif==0)actionView.hideView();
         return super.onPrepareOptionsMenu(menu);
-    }
+        }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+@Override
+public boolean onOptionsItemSelected(MenuItem item){
         invalidateOptionsMenu();
-        if (item.getItemId() == R.id.notifications) {
-            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                //NotificationActionView.setCountDelta(this, 3);
-                //FragNotification fragNotification = new FragNotification();
-                //switchContent(fragNotification, "Notification",true);
-                Intent i = new Intent(this, NotificationActivity.class);
-                switchActivity(i, ACTIVITY_RESULT);
-            } else getSupportFragmentManager().popBackStack();
-            return true;
-        } else if (item.getItemId() == R.id.right_drawer_menu) {
-            refreshPromo();
-            if (mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)) {
-                mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
-            }
-            mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
-            return true;
-        } else if (item.getItemId() == R.id.menu_item_home) {
-            invalidateOptionsMenu();
-            Fragment newFragment = new FragMainPage();
-            switchContent(newFragment, getString(R.string.appname).toUpperCase());
-            mNavDrawer.setPositionNull();
-            invalidateOptionsMenu();
+        if(item.getItemId()==R.id.notifications){
+        if(getSupportFragmentManager().getBackStackEntryCount()==0){
+        //NotificationActionView.setCountDelta(this, 3);
+        //FragNotification fragNotification = new FragNotification();
+        //switchContent(fragNotification, "Notification",true);
+        Intent i=new Intent(this,NotificationActivity.class);
+        switchActivity(i,ACTIVITY_RESULT);
+        }else getSupportFragmentManager().popBackStack();
+        return true;
+        }else if(item.getItemId()==R.id.right_drawer_menu){
+        refreshPromo();
+        if(mDrawerLayout.isDrawerOpen(mRightDrawerRelativeLayout)){
+        mDrawerLayout.closeDrawer(mRightDrawerRelativeLayout);
+        }
+        mDrawerLayout.openDrawer(mRightDrawerRelativeLayout);
+        return true;
+        }else if(item.getItemId()==R.id.menu_item_home){
+        invalidateOptionsMenu();
+        Fragment newFragment=new FragMainPage();
+        switchContent(newFragment,getString(R.string.appname).toUpperCase());
+        mNavDrawer.setPositionNull();
+        invalidateOptionsMenu();
         }
         invalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
-    }
+        }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+@Override
+protected void onPostCreate(Bundle savedInstanceState){
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
-        if (mDrawerToggle != null)
-            mDrawerToggle.syncState();
-    }
+        if(mDrawerToggle!=null)
+        mDrawerToggle.syncState();
+        }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+@Override
+public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
         // Pass any configuration change to the drawer toggls
-        if (mDrawerToggle != null)
-            mDrawerToggle.onConfigurationChanged(newConfig);
-    }
+        if(mDrawerToggle!=null)
+        mDrawerToggle.onConfigurationChanged(newConfig);
+        }
 
-    @Override
-    public void onBackPressed() {
-        Timber.w("get Back Stack Entry Count:" + String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            showLogoutDialog();
-        } else super.onBackPressed();
+@Override
+public void onBackPressed(){
+        Timber.w("get Back Stack Entry Count:"+String.valueOf(getSupportFragmentManager().getBackStackEntryCount()));
+        if(getSupportFragmentManager().getBackStackEntryCount()==0){
+        showLogoutDialog();
+        }else super.onBackPressed();
 
-    }
+        }
 
-    @Override
-    protected void onStart() {
+@Override
+protected void onStart(){
         super.onStart();
 
         doBindToService();
         doBindToAppInfoService();
         doBindToUserProfileService();
 
-    }
+        }
 
 
-    public int getDefaultSimmm(Context context) {
+public int getDefaultSimmm(Context context){
 
-        Object tm = context.getSystemService(Context.TELEPHONY_SERVICE);
+        Object tm=context.getSystemService(Context.TELEPHONY_SERVICE);
         Method method_getDefaultSim;
-        int defaultSimm = -1;
-        try {
-            method_getDefaultSim = tm.getClass().getDeclaredMethod("getDefaultSim");
-            method_getDefaultSim.setAccessible(true);
-            defaultSimm = (Integer) method_getDefaultSim.invoke(tm);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        int defaultSimm=-1;
+        try{
+        method_getDefaultSim=tm.getClass().getDeclaredMethod("getDefaultSim");
+        method_getDefaultSim.setAccessible(true);
+        defaultSimm=(Integer)method_getDefaultSim.invoke(tm);
+        }catch(Exception e){
+        // TODO Auto-generated catch block
+        e.printStackTrace();
         }
 
         Method method_getSmsDefaultSim;
-        int smsDefaultSim = -1;
-        try {
-            method_getSmsDefaultSim = tm.getClass().getDeclaredMethod("getSmsDefaultSim");
-            smsDefaultSim = (Integer) method_getSmsDefaultSim.invoke(tm);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        int smsDefaultSim=-1;
+        try{
+        method_getSmsDefaultSim=tm.getClass().getDeclaredMethod("getSmsDefaultSim");
+        smsDefaultSim=(Integer)method_getSmsDefaultSim.invoke(tm);
+        }catch(Exception e){
+        // TODO Auto-generated catch block
+        e.printStackTrace();
         }
         return smsDefaultSim;
-    }
+        }
 
 
-    @Override
-    protected void onResume() {
+@Override
+protected void onResume(){
         super.onResume();
-        if (isForeground) {
-            if (serviceReferenceBalance != null) {
-                serviceReferenceBalance.StartCallBalance();
-            }
-            if (serviceAppInfoReference != null) {
-                serviceAppInfoReference.StartCallAppInfo();
-            }
+        if(isForeground){
+        if(serviceReferenceBalance!=null){
+        serviceReferenceBalance.StartCallBalance();
+        }
+        if(serviceAppInfoReference!=null){
+        serviceAppInfoReference.StartCallAppInfo();
+        }
 
 //        if(mBH !=null)
 //            mBH.getDataBalance();
@@ -1323,76 +1328,76 @@ public class MainPage extends BaseActivity {
 //                new IntentFilter(DefineValue.BR_REGISTRATION_COMPLETE));
         }
 
-    }
+        }
 
-    @Override
-    protected void onPause() {
-        if (isForeground) {
-            if (serviceReferenceBalance != null)
-                serviceReferenceBalance.StopCallBalance();
-            if (serviceAppInfoReference != null)
-                serviceAppInfoReference.StopCallAppInfo();
+@Override
+protected void onPause(){
+        if(isForeground){
+        if(serviceReferenceBalance!=null)
+        serviceReferenceBalance.StopCallBalance();
+        if(serviceAppInfoReference!=null)
+        serviceAppInfoReference.StopCallAppInfo();
         }
         super.onPause();
 
-    }
+        }
 
-    @Override
-    protected void onStop() {
+@Override
+protected void onStop(){
         super.onStop();
         doUnbindService();
         doUnbindAppInfoService();
         doUnbindUserProfileService();
-    }
+        }
 
-    @Override
-    protected void onDestroy() {
+@Override
+protected void onDestroy(){
         Timber.w("destroy main page");
         /*serviceReferenceBalance.StopCallBalance();
         doUnbindService();*/
-        if (progdialog != null && progdialog.isShowing()) {
-            progdialog.dismiss();
+        if(progdialog!=null&&progdialog.isShowing()){
+        progdialog.dismiss();
         }
 
         JobScheduleManager.getInstance(this).cancelAll();
         RetrofitService.dispose();
         super.onDestroy();
-    }
+        }
 
-    private void deleteData() {
+private void deleteData(){
 //        sp.edit().clear().apply();
         CustomSecurePref.getInstance().ClearAllCustomData();
         listTimeLineModel.deleteAll();
         listHistoryModel.deleteAll();
         commentModel.deleteAll();
         likeModel.deleteAll();
-    }
+        }
 
 
-    private void setupFab() {
-        materialSheetFab = FabInstance.newInstance(this, new FabInstance.OnBtnListener() {
-            @Override
-            public void OnClickItemFAB(int idx) {
-                switch (idx) {
-                    case FabInstance.ITEM_FAB_ASK4MONEY:
-                        switchMenu(NavigationDrawMenu.MASK4MONEY, null);
-                        break;
-                    case FabInstance.ITEM_FAB_PAYFRIENDS:
-                        switchMenu(NavigationDrawMenu.MPAYFRIENDS, null);
-                        break;
-                }
-            }
+private void setupFab(){
+        materialSheetFab=FabInstance.newInstance(this,new FabInstance.OnBtnListener(){
+@Override
+public void OnClickItemFAB(int idx){
+        switch(idx){
+        case FabInstance.ITEM_FAB_ASK4MONEY:
+        switchMenu(NavigationDrawMenu.MASK4MONEY,null);
+        break;
+        case FabInstance.ITEM_FAB_PAYFRIENDS:
+        switchMenu(NavigationDrawMenu.MPAYFRIENDS,null);
+        break;
+        }
+        }
         });
 
-    }
+        }
 
-    private void showValidasiEmail() {
-        Intent i = new Intent(this, ValidasiEmailActivity.class);
-        i.putExtra(DefineValue.IS_FIRST, DefineValue.YES);
-        switchActivity(i, ACTIVITY_RESULT);
-    }
+private void showValidasiEmail(){
+        Intent i=new Intent(this,ValidasiEmailActivity.class);
+        i.putExtra(DefineValue.IS_FIRST,DefineValue.YES);
+        switchActivity(i,ACTIVITY_RESULT);
+        }
 
-    private void callAgentShopService() {
+private void callAgentShopService(){
         AgentShopService.getAgentShop(MainPage.this);
-    }
-}
+        }
+        }

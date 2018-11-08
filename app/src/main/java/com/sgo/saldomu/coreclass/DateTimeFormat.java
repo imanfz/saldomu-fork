@@ -42,8 +42,8 @@ public class DateTimeFormat {
         if(_date.isEmpty())
             return null;
 
-        DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss", new Locale("ID","INDONESIA"));
-        DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy kk:mm:ss", new Locale("ID","INDONESIA"));
+        DateFormat fromFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", new Locale("ID","INDONESIA"));
+        DateFormat toFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", new Locale("ID","INDONESIA"));
         String newDate = "";
         try {
             newDate = toFormat.format(fromFormat.parse(_date));

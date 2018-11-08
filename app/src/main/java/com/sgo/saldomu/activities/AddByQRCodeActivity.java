@@ -18,15 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
-import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+//import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.Beans.friendModel;
 import com.sgo.saldomu.Beans.myFriendModel;
@@ -57,12 +55,15 @@ import timber.log.Timber;
 /*
   Created by thinkpad on 4/24/2015.
  */
-public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderView.OnQRCodeReadListener {
+public class AddByQRCodeActivity extends BaseActivity
+
+//        implements QRCodeReaderView.OnQRCodeReadListener
+{
 
     private SecurePreferences sp;
     private int RESULT;
 
-    private QRCodeReaderView mydecoderview;
+//    private QRCodeReaderView mydecoderview;
     private ImageView imageBarcode;
     private AlertDialog dialogContact;
     private String _ownerID;
@@ -89,14 +90,14 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         int width = size.x/2;
         int height = size.y/3;
 
-        mydecoderview = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
-        mydecoderview.setOnQRCodeReadListener(this);
+//        mydecoderview = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
+//        mydecoderview.setOnQRCodeReadListener(this);
 
         imageBarcode = (ImageView) findViewById(R.id.image_barcode);
         TextView tvIDBarcode = (TextView) findViewById(R.id.idBarcode);
 
         FrameLayout flScanner = (FrameLayout) findViewById(R.id.llQRCodeScanner);
-        mydecoderview.getLayoutParams().width = width;
+//        mydecoderview.getLayoutParams().width = width;
         flScanner.getLayoutParams().height = height;
 
         imageBarcode.getLayoutParams().width = width;
@@ -282,110 +283,110 @@ public class AddByQRCodeActivity extends BaseActivity implements QRCodeReaderVie
         bundle.putString(Contacts.Intents.Insert.EMAIL, custEmail);
 
         //Encode with a QR Code image
-        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(qrInputText,
-                bundle,
-                Contents.Type.CONTACT,
-                BarcodeFormat.QR_CODE.toString(),
-                smallerDimension);
-        try {
-            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-            imageBarcode.setImageBitmap(bitmap);
-
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+//        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(qrInputText,
+//                bundle,
+//                Contents.Type.CONTACT,
+//                BarcodeFormat.QR_CODE.toString(),
+//                smallerDimension);
+//        try {
+//            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+//            imageBarcode.setImageBitmap(bitmap);
+//
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // Called when a QR is decoded
     // "text" : the text encoded in QR
     // "points" : points where QR control points are placed
-    @Override
-    public void onQRCodeRead(final String text, PointF[] points) {
-        Timber.d("Result "+text);
-
-        if( dialogContact != null && dialogContact.isShowing() ) return;
-
-        if(text.contains("MECARD:")) {
-
-            String[] separatedComa = text.split(";");
-            String[] first = separatedComa[0].split(":");
-            final String name = first[2];
-
-            String[] second = separatedComa[1].split(":");
-            final String phone = second[1];
-
-            String[] third = separatedComa[2].split(":");
-            final String email = third[1];
-
-            String qrText = "Name : " + name + "\n" + "Phone : " + phone + "\n" + "Email : " + email;
-
-            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(this)
-                    .setTitle("Add to Contacts")
-                    .setMessage(qrText)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            //masukin kontak ke hp
-                            addContactToPhone(name, phone, email);
-                            //kirim kontak ke server
-                            List<friendModel> mfriendModel = new ArrayList<>();
-                            mfriendModel.add(new friendModel(name, phone, "", "", email, _ownerID));
-                            insertContact(mfriendModel);
-
-                        }
-                    })
-                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert);
-
-            dialogContact = builderDialog.create();
-            dialogContact.show();
-        }
-        else {
-            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(this)
-                    .setTitle("Alert")
-                    .setMessage("QR Code Invalid")
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .setIcon(android.R.drawable.ic_dialog_alert);
-
-            dialogContact = builderDialog.create();
-            dialogContact.show();
-        }
-    }
-
-
-    // Called when your device have no camera
-    @Override
-    public void cameraNotFound() {
-
-    }
-
-    // Called when there's no QR codes in the camera preview image
-    @Override
-    public void QRCodeNotFoundOnCamImage() {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mydecoderview.getCameraManager().startPreview();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mydecoderview.getCameraManager().stopPreview();
-    }
+//    @Override
+//    public void onQRCodeRead(final String text, PointF[] points) {
+//        Timber.d("Result "+text);
+//
+//        if( dialogContact != null && dialogContact.isShowing() ) return;
+//
+//        if(text.contains("MECARD:")) {
+//
+//            String[] separatedComa = text.split(";");
+//            String[] first = separatedComa[0].split(":");
+//            final String name = first[2];
+//
+//            String[] second = separatedComa[1].split(":");
+//            final String phone = second[1];
+//
+//            String[] third = separatedComa[2].split(":");
+//            final String email = third[1];
+//
+//            String qrText = "Name : " + name + "\n" + "Phone : " + phone + "\n" + "Email : " + email;
+//
+//            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(this)
+//                    .setTitle("Add to Contacts")
+//                    .setMessage(qrText)
+//                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            //masukin kontak ke hp
+//                            addContactToPhone(name, phone, email);
+//                            //kirim kontak ke server
+//                            List<friendModel> mfriendModel = new ArrayList<>();
+//                            mfriendModel.add(new friendModel(name, phone, "", "", email, _ownerID));
+//                            insertContact(mfriendModel);
+//
+//                        }
+//                    })
+//                    .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setIcon(android.R.drawable.ic_dialog_alert);
+//
+//            dialogContact = builderDialog.create();
+//            dialogContact.show();
+//        }
+//        else {
+//            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(this)
+//                    .setTitle("Alert")
+//                    .setMessage("QR Code Invalid")
+//                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    })
+//                    .setIcon(android.R.drawable.ic_dialog_alert);
+//
+//            dialogContact = builderDialog.create();
+//            dialogContact.show();
+//        }
+//    }
+//
+//
+//    // Called when your device have no camera
+//    @Override
+//    public void cameraNotFound() {
+//
+//    }
+//
+//    // Called when there's no QR codes in the camera preview image
+//    @Override
+//    public void QRCodeNotFoundOnCamImage() {
+//
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        mydecoderview.getCameraManager().startPreview();
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        mydecoderview.getCameraManager().stopPreview();
+//    }
 
     private void addContactToPhone(String names,
                                    String phoneNumbers,

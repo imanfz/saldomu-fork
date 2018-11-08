@@ -103,6 +103,7 @@ public class HelpFragment extends BaseFragment {
                                             helpModel.setDesc(mArrayContact.getJSONObject(i).getString(WebParams.DESCRIPTION));
                                             helpModel.setPhone(mArrayContact.getJSONObject(i).getString(WebParams.CONTACT_PHONE));
                                             helpModel.setMail(mArrayContact.getJSONObject(i).getString(WebParams.CONTACT_EMAIL));
+                                            helpModel.setWhatsappPhone(mArrayContact.getJSONObject(i).getString(WebParams.CONTACT_WHATSAPP));
                                             listHelp.add(helpModel);
                                         }
                                         mAdapter.notifyDataSetChanged();

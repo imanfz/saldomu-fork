@@ -121,34 +121,34 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         super.onActivityCreated(savedInstanceState);
 
 
-        CircleStepView mCircleStepView = ((CircleStepView) v.findViewById(R.id.circle_step_view));
+        CircleStepView mCircleStepView = v.findViewById(R.id.circle_step_view);
         mCircleStepView.setTextBelowCircle("", "", getString(R.string.konfirmasi_agen));
         mCircleStepView.setCurrentCircleIndex(2, false);
 
-        tvTitle = (TextView) v.findViewById(R.id.tv_title);
+        tvTitle = v.findViewById(R.id.tv_title);
         cityLayout = v.findViewById(R.id.benef_city_layout);
-        tvSourceAcct = (TextView) v.findViewById(R.id.bbscashin_confirm_value_source_acct);
-        tvBankBenef = (TextView) v.findViewById(R.id.bbscashin_confirm_value_benef_acct);
-        tvBenefCity = (TextView) v.findViewById(R.id.bbscashin_confirm_value_benef_city);
-        tvAmount = (TextView) v.findViewById(R.id.bbscashin_confirm_value_amount);
-        tvFee = (TextView) v.findViewById(R.id.bbscashin_confirm_value_fee);
-        tvTotal = (TextView) v.findViewById(R.id.bbscashin_confirm_value_total);
-        tvNoBenefAcct = (TextView) v.findViewById(R.id.bbscashin_confirm_value_benef_no);
-        tvNameBenefAcct = (TextView) v.findViewById(R.id.bbscashin_confirm_value_benef_name);
-        tvNoHp = (TextView) v.findViewById(R.id.bbscashin_confirm_value_no_hp);
-        tvRemark = (TextView) v.findViewById(R.id.bbscashin_confirm_value_remark);
-        btnSubmit = (Button) v.findViewById(R.id.btn_submit);
+        tvSourceAcct = v.findViewById(R.id.bbscashin_confirm_value_source_acct);
+        tvBankBenef = v.findViewById(R.id.bbscashin_confirm_value_benef_acct);
+        tvBenefCity = v.findViewById(R.id.bbscashin_confirm_value_benef_city);
+        tvAmount = v.findViewById(R.id.bbscashin_confirm_value_amount);
+        tvFee = v.findViewById(R.id.bbscashin_confirm_value_fee);
+        tvTotal = v.findViewById(R.id.bbscashin_confirm_value_total);
+        tvNoBenefAcct = v.findViewById(R.id.bbscashin_confirm_value_benef_no);
+        tvNameBenefAcct = v.findViewById(R.id.bbscashin_confirm_value_benef_name);
+        tvNoHp = v.findViewById(R.id.bbscashin_confirm_value_no_hp);
+        tvRemark = v.findViewById(R.id.bbscashin_confirm_value_remark);
+        btnSubmit = v.findViewById(R.id.btn_submit);
         layout_OTP = v.findViewById(R.id.layout_OTP);
-        tokenValue = (EditText) v.findViewById(R.id.bbscashin_confirm_value_otp);
+        tokenValue = v.findViewById(R.id.bbscashin_confirm_value_otp);
         layout_btn_resend = v.findViewById(R.id.layout_btn_resend);
-        btnResend = (Button) v.findViewById(R.id.btn_resend_token);
-        tvNoDestination = (TextView) v.findViewById(R.id.bbscashin_confirm_text_no_destination);
-        btnBack = (Button) v.findViewById(R.id.btn_back);
+        btnResend = v.findViewById(R.id.btn_resend_token);
+        tvNoDestination = v.findViewById(R.id.bbscashin_confirm_text_no_destination);
+        btnBack = v.findViewById(R.id.btn_back);
         layoutTCASH = v.findViewById(R.id.layout_TCASH);
-        noHpTCASH = (EditText) v.findViewById(R.id.et_no_hp_tcash);
-        tbNameBenef = (TableRow) v.findViewById(R.id.tb_name_benef);
-        tvNomor = (TextView) v.findViewById(R.id.tv_no_tcash);
-        tvOTP = (TextView) v.findViewById(R.id.tv_otp);
+        noHpTCASH = v.findViewById(R.id.et_no_hp_tcash);
+        tbNameBenef = v.findViewById(R.id.tb_name_benef);
+        tvNomor = v.findViewById(R.id.tv_no_tcash);
+        tvOTP = v.findViewById(R.id.tv_otp);
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -183,8 +183,8 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             code_success = bundle.getBoolean(DefineValue.CODE_SUCCESS);
             String benef_product_type = bundle.getString(DefineValue.TYPE_BENEF, "");
 
-            if (!bundle.getString(DefineValue.MAX_RESEND).equals(""))
-                max_token_resend = Integer.parseInt(bundle.getString(DefineValue.MAX_RESEND));
+            if (!bundle.containsKey(DefineValue.MAX_RESEND))
+                max_token_resend = Integer.parseInt(bundle.getString(DefineValue.MAX_RESEND, "3"));
 
             tvTitle.setText(transaksi);
             tvAmount.setText(CurrencyFormat.format(amount));
@@ -193,7 +193,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
             tvNameBenefAcct.setText(name_benef);
-            if (name_benef.isEmpty() || name_benef == null || name_benef.equalsIgnoreCase("")) {
+            if (!name_benef.equalsIgnoreCase("")) {
                 tbNameBenef.setVisibility(View.GONE);
             }
             tvNoBenefAcct.setText(no_benef);
@@ -754,9 +754,9 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
         dialog.setContentView(R.layout.dialog_notification);
 
         // set values for custom dialog components - text, image and button
-        Button btnDialogOTP = (Button) dialog.findViewById(R.id.btn_dialog_notification_ok);
-        TextView Title = (TextView) dialog.findViewById(R.id.title_dialog);
-        TextView Message = (TextView) dialog.findViewById(R.id.message_dialog);
+        Button btnDialogOTP = dialog.findViewById(R.id.btn_dialog_notification_ok);
+        TextView Title = dialog.findViewById(R.id.title_dialog);
+        TextView Message = dialog.findViewById(R.id.message_dialog);
 
         Message.setVisibility(View.VISIBLE);
         Title.setText(getString(R.string.error));

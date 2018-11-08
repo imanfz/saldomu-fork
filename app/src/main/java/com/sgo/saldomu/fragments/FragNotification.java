@@ -414,7 +414,7 @@ public class FragNotification extends BaseFragment {
 
                                 NotifModel model = getGson().fromJson(object, NotifModel.class);
 
-                                String code = model.getError_message();
+                                String code = model.getError_code();
 
                                 if (code.equals(WebParams.SUCCESS_CODE)) {
 
@@ -592,7 +592,7 @@ public class FragNotification extends BaseFragment {
                     out.show();
             }
 
-            extraSignature = _hold_id + commIDLogin;
+            extraSignature = _hold_id + MyApiClient.COMM_ID;
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_CLAIM_TRANSFER_NON_MEMBER, extraSignature);
             params.put(WebParams.USER_ID, _userid);

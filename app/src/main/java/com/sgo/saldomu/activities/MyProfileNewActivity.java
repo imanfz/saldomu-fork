@@ -116,6 +116,7 @@ public class MyProfileNewActivity extends BaseActivity {
     private ProgressDialog progdialog;
     private PickAndCameraUtil pickAndCameraUtil;
     Gson gson;
+    private LinearLayout lytVerifiedMember;
 
     @Override
     protected int getLayoutResource() {
@@ -238,7 +239,9 @@ public class MyProfileNewActivity extends BaseActivity {
         cameraTTD = v.findViewById(R.id.camera_ttd);
         btn1 = v.findViewById(R.id.button1);
         btn2 = v.findViewById(R.id.button2);
-        levelClass = new LevelClass(this, sp);
+        lytVerifiedMember = v.findViewById(R.id.lyt_verifying_member);
+
+        levelClass = new LevelClass(this,sp);
 
 //        if(levelClass.isLevel1QAC() && isRegisteredLevel) { DialogSuccessUploadPhoto(); }
 
@@ -285,9 +288,10 @@ public class MyProfileNewActivity extends BaseActivity {
             tv_dob.setEnabled(false);
         }
 
-        if (levelClass.isLevel1QAC()) {
-            btn1.setVisibility(View.VISIBLE);
-            dataVerifiedMember.setVisibility(View.GONE);
+        if(levelClass.isLevel1QAC())
+        {
+            btn1.setVisibility(View.GONE);
+
         }
 
         if (!levelClass.isLevel1QAC() || is_agent) {
@@ -378,7 +382,7 @@ public class MyProfileNewActivity extends BaseActivity {
         else {
             setActionBarIcon(R.drawable.ic_arrow_left);
         }
-        setActionBarTitle(getString(R.string.myprofile_ab_title));
+        setActionBarTitle(getString(R.string.lbl_profil_saya));
     }
 
     @Override
@@ -532,6 +536,13 @@ public class MyProfileNewActivity extends BaseActivity {
         dedate = sp.getString(DefineValue.PROFILE_DOB, "");
         if (dedate.equals("")) {
             tv_dob.setEnabled(true);
+            btn1.setVisibility(View.VISIBLE);
+
+        }else{
+            Timber.d("TEST Log lvl...."+levelClass.isLevel1QAC());
+            if(levelClass.isLevel1QAC() && !isRegisteredLevel){
+                lytVerifiedMember.setVisibility(View.VISIBLE);
+            }
         }
 
         if (!dedate.equals("")) {
@@ -941,7 +952,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-        dialognya.show();
+//        dialognya.show();
     }
 
     private void DialogWaitingUpgradeAgent() {
@@ -959,7 +970,7 @@ public class MyProfileNewActivity extends BaseActivity {
         dialognya.setCanceledOnTouchOutside(false);
         dialognya.setCancelable(false);
 
-        dialognya.show();
+//        dialognya.show();
     }
 
     private static boolean isValidEmail(CharSequence target) {

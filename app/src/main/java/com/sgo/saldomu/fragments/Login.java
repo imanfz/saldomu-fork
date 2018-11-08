@@ -54,7 +54,7 @@ import timber.log.Timber;
  */
 public class Login extends BaseFragment implements View.OnClickListener {
 
-    private String userIDfinale = null;
+    private String userIDfinale = null, is_pos;
     private Button btnforgetPass;
     private Button btnRegister;
     private EditText userIDValue;
@@ -103,11 +103,30 @@ public class Login extends BaseFragment implements View.OnClickListener {
             userIDValue.setText(userIDfinale);
         }
 
+        Bundle m = getArguments();
+
         if(BuildConfig.DEBUG && BuildConfig.FLAVOR.equals("development")){ //untuk shorcut dari tombol di activity LoginActivity
-            Bundle m = getArguments();
             if(m != null && m.containsKey(DefineValue.USER_IS_NEW)) {
                 getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             }
+            userIDValue.setEnabled(true);
+        }
+
+        if (m!=null)
+        {
+            if (m.containsKey(DefineValue.IS_POS))
+            {
+                if (m.getString(DefineValue.IS_POS).equalsIgnoreCase("Y"))
+                {
+                    is_pos = m.getString(DefineValue.IS_POS,"N");
+                    getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
+                    userIDValue.setEnabled(true);
+                    userIDValue.setHint("No HP POS yang sudah terdaftar");
+                }
+            }
+        }else if (sp.getString(DefineValue.IS_POS,"N").equalsIgnoreCase("Y"))
+        {
+            getActivity().findViewById(R.id.userID_value).setVisibility(View.VISIBLE);
             userIDValue.setEnabled(true);
         }
 
@@ -184,9 +203,10 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
                     String code = loginModel.getError_code();
 
-                    if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)){
+                    if (code.equalsIgnoreCase(WebParams.SUCCESS_CODE)) {
                         String unregist_member = loginModel.getCommunity().get(0).getUnregisterMember();
-                        if(checkCommunity(loginModel.getCommunity())){
+                        sp.edit().putString(DefineValue.IS_POS, is_pos).commit();
+                        if (checkCommunity(loginModel.getCommunity())) {
                             if (unregist_member.equals("N")) {
                                 Toast.makeText(getActivity(), getString(R.string.login_toast_loginsukses), Toast.LENGTH_LONG).show();
                                 setLoginProfile(loginModel);
@@ -200,35 +220,33 @@ public class Login extends BaseFragment implements View.OnClickListener {
                                 switchFragment(newFrag, "reg1", true);
                             }
                         }
-                    } else if(code.equals(DefineValue.ERROR_0042)){
+                    }else if (code.equals(DefineValue.ERROR_0042)) {
                         int failed = Integer.valueOf(loginModel.getFailedAttempt());
                         int max = Integer.valueOf(loginModel.getMaxFailed());
                         String message;
 
-                        if(max-failed == 0){
+                        if (max - failed == 0) {
                             message = getString(R.string.login_failed_attempt_3);
-                        }
-                        else {
-                            message = getString(R.string.login_failed_attempt_1,max-failed);
+                        } else {
+                            message = getString(R.string.login_failed_attempt_1, max - failed);
                         }
 
                         showDialog(message);
-                    } else if(code.equals(DefineValue.ERROR_0126)){
+                    } else if (code.equals(DefineValue.ERROR_0126)) {
                         showDialog(getString(R.string.login_failed_attempt_3));
-                    } else if(code.equals(DefineValue.ERROR_0018)||code.equals(DefineValue.ERROR_0017)){
+                    } else if (code.equals(DefineValue.ERROR_0018) || code.equals(DefineValue.ERROR_0017)) {
                         showDialog(getString(R.string.login_failed_inactive));
-                    } else if(code.equals(DefineValue.ERROR_0127)){
+                    } else if (code.equals(DefineValue.ERROR_0127)) {
                         showDialog(getString(R.string.login_failed_dormant));
-                    } else if(code.equals(DefineValue.ERROR_0004)) {
+                    } else if (code.equals(DefineValue.ERROR_0004)) {
                         String msg = loginModel.getError_message();
-                        if (msg != null && !msg.isEmpty()){
+                        if (msg != null && !msg.isEmpty()) {
                             showDialog(msg);
-                        }else
+                        } else
                             showDialog(getString(R.string.login_failed_wrong_pass));
-                    } else if(code.equals(DefineValue.ERROR_0002)){
+                    } else if (code.equals(DefineValue.ERROR_0002)) {
                         showDialog(getString(R.string.login_failed_wrong_id));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), loginModel.getError_message(), Toast.LENGTH_SHORT).show();
 
                     }

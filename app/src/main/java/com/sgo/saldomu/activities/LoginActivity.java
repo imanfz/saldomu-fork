@@ -72,7 +72,8 @@ public class LoginActivity extends BaseActivity {
                     if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
                         newFrag = new Regist1();
 
-                    } else if (m.getInt(DefineValue.USER_IS_NEW, 0) == -2) {
+                    }
+                    else if (m.getInt(DefineValue.USER_IS_NEW, 0) == -2) {
                         newFrag = new Login();
                     }
                     newFrag.setArguments(m);

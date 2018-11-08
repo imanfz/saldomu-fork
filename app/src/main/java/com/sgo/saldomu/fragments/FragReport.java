@@ -408,86 +408,100 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                     new ResponseListener() {
                         @Override
                         public void onResponses(JsonObject object) {
-                            reportListModel = getGson().fromJson(object, GetReportDataModel.class);
+                            try {
 
-                            reportData.clear();
+                                String code;
 
-                            reportData.addAll(reportListModel.getReport_data());
-
-                            if (isAdded()) {
-                                if (isRefresh != null) {
-                                    if (isRefresh)
-                                        out.dismiss();
+                                if (object.get("report_data").getAsString().equals("")){
+                                    code = "0003";
+                                }else {
+                                    code = reportListModel.getError_code();
                                 }
 
-                                String code = reportListModel.getError_code();
-                                if (code.equals(WebParams.SUCCESS_CODE)) {
-                                    if (isRefresh == null) {
-                                        mPtrFrame.refreshComplete();
+                                reportListModel = getGson().fromJson(object, GetReportDataModel.class);
+
+                                reportData.clear();
+
+                                reportData.addAll(reportListModel.getReport_data());
+
+                                if (isAdded()) {
+                                    if (isRefresh != null) {
+                                        if (isRefresh)
+                                            out.dismiss();
                                     }
+
+
+                                    if (code.equals(WebParams.SUCCESS_CODE)) {
+                                        if (isRefresh == null) {
+                                            mPtrFrame.refreshComplete();
+                                        }
 //                                    else if (isRefresh)
-                                    else {
-                                        btn_loadmore.setVisibility(View.VISIBLE);
-                                        spining_progress.setVisibility(View.GONE);
-                                        spining_progress.setAnimation(null);
-                                    }
+                                        else {
+                                            btn_loadmore.setVisibility(View.VISIBLE);
+                                            spining_progress.setVisibility(View.GONE);
+                                            spining_progress.setAnimation(null);
+                                        }
 
-                                    if (lv_report.getVisibility() == View.GONE) {
-                                        lv_report.setVisibility(View.VISIBLE);
-                                        emptyLayout.setVisibility(View.GONE);
-                                    }
+                                        if (lv_report.getVisibility() == View.GONE) {
+                                            lv_report.setVisibility(View.VISIBLE);
+                                            emptyLayout.setVisibility(View.GONE);
+                                        }
 
-                                    int _page = Integer.valueOf(reportListModel.getNext());
-                                    if (_page != 0) {
-                                        page++;
+                                        int _page = Integer.valueOf(reportListModel.getNext());
+                                        if (_page != 0) {
+                                            page++;
+                                            setLoadMore(false);
+                                            setLoadMore(true);
+                                        } else {
+                                            setLoadMore(false);
+                                        }
+                                        NotifyDataChange();
+
+                                        if (isRefresh == null || isRefresh) {
+                                            lv_report.setSelection(0);
+                                            lv_report.smoothScrollToPosition(0);
+                                            lv_report.setSelectionAfterHeaderView();
+                                        }
+
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+
+                                    } else if (code.equals(WebParams.LOGOUT_CODE)) {
+                                        String message = reportListModel.getError_message();
+                                        AlertDialogLogout test = AlertDialogLogout.getInstance();
+                                        test.showDialoginMain(getActivity(), message);
+                                    } else if (code.equals("0003")) {
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+                                        mPtrFrame.refreshComplete();
                                         setLoadMore(false);
-                                        setLoadMore(true);
+                                        lv_report.setVisibility(View.GONE);
+                                        emptyLayout.setVisibility(View.VISIBLE);
+                                        NotifyDataChange();
                                     } else {
+                                        date_from = (Calendar) bak_date_from.clone();
+                                        String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
+                                        tv_date_from.setText(dedate);
+                                        date_to = (Calendar) bak_date_to.clone();
+                                        dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
+                                        tv_date_to.setText(dedate);
+                                        filter_btn.setChecked(false);
+                                        code = reportListModel.getError_message();
+
+                                        Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
+
+                                        bak_date_from = (Calendar) date_from.clone();
+                                        bak_date_to = (Calendar) date_to.clone();
+                                        mPtrFrame.refreshComplete();
                                         setLoadMore(false);
+                                        lv_report.setVisibility(View.GONE);
+                                        emptyLayout.setVisibility(View.VISIBLE);
+                                        NotifyDataChange();
                                     }
-                                    NotifyDataChange();
-
-                                    if (isRefresh == null || isRefresh) {
-                                        lv_report.setSelection(0);
-                                        lv_report.smoothScrollToPosition(0);
-                                        lv_report.setSelectionAfterHeaderView();
-                                    }
-
-                                    bak_date_from = (Calendar) date_from.clone();
-                                    bak_date_to = (Calendar) date_to.clone();
-
-                                } else if (code.equals(WebParams.LOGOUT_CODE)) {
-                                    String message = reportListModel.getError_message();
-                                    AlertDialogLogout test = AlertDialogLogout.getInstance();
-                                    test.showDialoginMain(getActivity(), message);
-                                } else if (code.equals("0003")) {
-                                    bak_date_from = (Calendar) date_from.clone();
-                                    bak_date_to = (Calendar) date_to.clone();
-                                    mPtrFrame.refreshComplete();
-                                    setLoadMore(false);
-                                    lv_report.setVisibility(View.GONE);
-                                    emptyLayout.setVisibility(View.VISIBLE);
-                                    NotifyDataChange();
-                                } else {
-                                    date_from = (Calendar) bak_date_from.clone();
-                                    String dedate = getString(R.string.from) + " :\n" + date_from.get(Calendar.DAY_OF_MONTH) + "-" + (date_from.get(Calendar.MONTH) + 1) + "-" + date_from.get(Calendar.YEAR);
-                                    tv_date_from.setText(dedate);
-                                    date_to = (Calendar) bak_date_to.clone();
-                                    dedate = getString(R.string.to) + " :\n" + date_to.get(Calendar.DAY_OF_MONTH) + "-" + (date_to.get(Calendar.MONTH) + 1) + "-" + date_to.get(Calendar.YEAR);
-                                    tv_date_to.setText(dedate);
-                                    filter_btn.setChecked(false);
-                                    code = reportListModel.getError_message();
-
-                                    Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
-
-                                    bak_date_from = (Calendar) date_from.clone();
-                                    bak_date_to = (Calendar) date_to.clone();
-                                    mPtrFrame.refreshComplete();
-                                    setLoadMore(false);
-                                    lv_report.setVisibility(View.GONE);
-                                    emptyLayout.setVisibility(View.VISIBLE);
-                                    NotifyDataChange();
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+
                             }
                         }
 

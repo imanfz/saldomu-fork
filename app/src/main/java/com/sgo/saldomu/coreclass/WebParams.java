@@ -255,6 +255,7 @@ public class WebParams {
     public static String CONTACT_DATA = "contact_data";
     public static String CONTACT_PHONE = "contact_phone";
     public static String CONTACT_EMAIL = "contact_email";
+    public static String CONTACT_WHATSAPP = "contact_whatsapp";
 
     public static String NO_HP = "no_hp";
     public static String ACCT_NO = "acct_no";
@@ -512,8 +513,12 @@ public class WebParams {
     public static String BUSS_SCHEME_TITLE  = "buss_scheme_title";
     public static String TX_DESCRIPTION  = "tx_description";
     public static String TRANSFER_DATA  = "transfer_data";
+    public static String TRANSFER_TO  = "transfer_to";
     public static String BANK  = "bank";
     public static String ORDER_ID  = "order_id";
     public static String REFERAL_NO  = "referral_no";
+    public static String LKD_PRODUCT_CODE  = "lkd_product_code";
+    public static String SOURCE_OF_FUND = "source_of_fund";
+    public static String IS_POS = "is_pos";
 
 }

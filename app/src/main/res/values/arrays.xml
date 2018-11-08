@@ -117,12 +117,14 @@
     </integer-array>
 
     <string-array name="settings_list_pin">
+        <item>Profil Saya</item>
         <item>Ganti Password</item>
         <item>Ganti PIN</item>
         <item>Tentang App</item>
         <item>Bahasa</item>
     </string-array>
     <string-array name="settings_list_pin_2">
+        <item>Profil Saya</item>
         <item>Registrasi SMS Banking</item>
 
     </string-array>
@@ -131,7 +133,12 @@
         <item>KTP</item>
         <item>SIM</item>
         <item>PASPOR</item>
-        <item>KITAS</item>
+    </string-array>
+
+    <string-array name="sumber_dana_type">
+        <item>GAJI</item>
+        <item>HASIL USAHA</item>
+        <item>LAINNYA</item>
     </string-array>
 
     <string-array name="gender_type">
