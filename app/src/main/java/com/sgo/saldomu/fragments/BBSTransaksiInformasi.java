@@ -79,7 +79,8 @@ import timber.log.Timber;
  * Created by thinkpad on 4/21/2017.
  */
 
-public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissions.PermissionCallbacks, ConfirmationDialog.clickListener {
+public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissions.PermissionCallbacks
+        , ConfirmationDialog.clickListener {
     public final static String TAG = "com.sgo.saldomu.fragments.BBSTransaksiInformasi";
     private final String MANDIRISMS = "MANDIRISMS";
     private static final int RC_READ_PHONE_STATE = 122;
@@ -906,18 +907,18 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         }
     }
 
-    public void sentDataReqToken(final BBSTransModel model) {
+    public void sentDataReqToken(final BBSTransModel A2CModel) {
         try {
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
             progdialog.show();
 
-            extraSignature = model.getTx_id() + comm_code + model.getTx_product_code();
+            extraSignature = A2CModel.getTx_id() + comm_code + A2CModel.getTx_product_code();
 
             HashMap<String, Object> params = RetrofitService.getInstance().getSignature(MyApiClient.LINK_REQ_TOKEN_SGOL, extraSignature);
 
             params.put(WebParams.COMM_CODE, comm_code);
-            params.put(WebParams.TX_ID, model.getTx_id());
-            params.put(WebParams.PRODUCT_CODE, model.getTx_product_code());
+            params.put(WebParams.TX_ID, A2CModel.getTx_id());
+            params.put(WebParams.PRODUCT_CODE, A2CModel.getTx_product_code());
             if (source_product_code.equalsIgnoreCase("TCASH") || source_product_code.equalsIgnoreCase("MANDIRILKD"))
                 params.put(WebParams.PRODUCT_VALUE, "");
             params.put(WebParams.USER_ID, userPhoneID);
@@ -943,7 +944,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     else
                                         changeToConfirmCashIn(model);
                                 } else {
-                                    changeToConfirmCashout(model);
+                                    changeToConfirmCashout(model, A2CModel);
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -1159,7 +1160,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         editor.apply();
     }
 
-    private void changeToConfirmCashout(BBSTransModel model) {
+    private void changeToConfirmCashout(BBSTransModel model, BBSTransModel A2CModel) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
         mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type);

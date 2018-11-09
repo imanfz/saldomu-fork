@@ -157,8 +157,8 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
                 benef_city = bundle.getString(DefineValue.BENEF_CITY);
             }
             source_product_h2h = bundle.getString(DefineValue.PRODUCT_H2H);
-            source_product_type = bundle.getString(DefineValue.PRODUCT_TYPE);
-            tx_product_code = bundle.getString(DefineValue.PRODUCT_CODE);
+            source_product_type = bundle.getString(DefineValue.PRODUCT_TYPE, "");
+            tx_product_code = bundle.getString(DefineValue.PRODUCT_CODE, "");
             tx_bank_code = bundle.getString(DefineValue.BANK_CODE);
             tx_bank_name = bundle.getString(DefineValue.BANK_NAME);
             tx_product_name = bundle.getString(DefineValue.PRODUCT_NAME);
@@ -173,7 +173,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             comm_id = bundle.getString(DefineValue.COMMUNITY_ID);
             benef_product_name = bundle.getString(DefineValue.BANK_BENEF);
             benef_product_code = bundle.getString(DefineValue.BENEF_PRODUCT_CODE);
-            name_benef = bundle.getString(DefineValue.NAME_BENEF);
+            name_benef = bundle.getString(DefineValue.NAME_BENEF, "");
             no_benef = bundle.getString(DefineValue.NO_BENEF);
             no_hp_benef = bundle.getString(DefineValue.NO_HP_BENEF);
             remark = bundle.getString(DefineValue.REMARK);
@@ -193,7 +193,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
             tvBankBenef.setText(benef_product_name);
             tvBenefCity.setText(benef_city);
             tvNameBenefAcct.setText(name_benef);
-            if (!name_benef.equalsIgnoreCase("")) {
+            if (name_benef.equalsIgnoreCase("")) {
                 tbNameBenef.setVisibility(View.GONE);
             }
             tvNoBenefAcct.setText(no_benef);
