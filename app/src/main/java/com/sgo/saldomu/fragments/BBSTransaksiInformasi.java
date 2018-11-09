@@ -600,8 +600,6 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     mEditor.remove(DefineValue.AOD_TX_ID);
                                     mEditor.apply();
 
-                                    confirmationDialog.dismiss();
-
 //                            Toast.makeText(getActivity(), "Kode " +code, Toast.LENGTH_LONG);
                                     if (code.equals("0282")) {
                                         if (source_product_code.equalsIgnoreCase("TCASH")) {
@@ -684,6 +682,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                             btnNext.setEnabled(true);
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
+                            confirmationDialog.dismiss();
                         }
                     });
         } catch (Exception e) {
@@ -897,7 +896,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         @Override
                         public void onComplete() {
                             btnNext.setEnabled(true);
-
+                            confirmationDialog.dismiss();
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
                         }
@@ -942,9 +941,9 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     if (isSMSBanking)
                                         showDialog(model);
                                     else
-                                        changeToConfirmCashIn(model);
+                                        changeToConfirmCashIn(A2CModel);
                                 } else {
-                                    changeToConfirmCashout(model, A2CModel);
+                                    changeToConfirmCashout(model);
                                 }
                             } else if (code.equals(WebParams.LOGOUT_CODE)) {
                                 AlertDialogLogout test = AlertDialogLogout.getInstance();
@@ -998,6 +997,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         public void onComplete() {
                             if (progdialog.isShowing())
                                 progdialog.dismiss();
+                            confirmationDialog.dismiss();
                         }
                     });
         } catch (Exception e) {
@@ -1160,7 +1160,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
         editor.apply();
     }
 
-    private void changeToConfirmCashout(BBSTransModel model, BBSTransModel A2CModel) {
+    private void changeToConfirmCashout(BBSTransModel model) {
         Bundle mArgs = new Bundle();
         mArgs.putString(DefineValue.PRODUCT_H2H, source_product_h2h);
         mArgs.putString(DefineValue.PRODUCT_TYPE, source_product_type);
