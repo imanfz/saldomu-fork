@@ -251,6 +251,7 @@ public class MyApiClient {
     public static String LINK_GET_DENOM_INVOKE;
     public static String LINK_BBS_SEND_DATA_LKD;
     public static String LINK_BBS_MANDIRI_LKD;
+    public static String LINK_CANCEL_TRANSACTION_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -415,6 +416,7 @@ public class MyApiClient {
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
+        LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
 
 //        getInstance().syncHttpClient.setTimeout(TIMEOUT);
 ////        if(PROD_FLAG_ADDRESS)
@@ -794,5 +796,6 @@ public class MyApiClient {
 //        getClient().cancelRequestsByTAG(tag, interruptIfRunning);
 //    }
     //----------------------------------------------------------------------------------------------------
+
 }
 

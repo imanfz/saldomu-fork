@@ -2,6 +2,8 @@ package com.sgo.saldomu.dialogs
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.widget.LinearLayoutManager
@@ -55,7 +57,14 @@ class PickLanguageDialog : DialogFragment() {
 
         recyclerview.adapter = PickLangAdapter(activity, list)
         recyclerview.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        recyclerview.addItemDecoration(DividerItemDecoration(activity!!.resources.getDrawable(R.drawable.divider)))
+
+        val drawable : Drawable
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = activity!!.resources.getDrawable(R.drawable.divider, null)
+        }else{
+            drawable = activity!!.resources.getDrawable(R.drawable.divider)
+        }
+        recyclerview.addItemDecoration(DividerItemDecoration(drawable))
 
         list.add("Indonesia")
         list.add("Inggris")

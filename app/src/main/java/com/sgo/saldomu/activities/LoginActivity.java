@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
@@ -68,7 +69,8 @@ public class LoginActivity extends BaseActivity {
                 if (m.getInt(DefineValue.USER_IS_NEW, 0) == 1) {
                     newFrag = new Regist1();
                     newFrag.setArguments(m);
-                } else if (m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
+                } else if (BuildConfig.DEBUG == true && BuildConfig.FLAVOR.equalsIgnoreCase( "development")
+                        && m.getInt(DefineValue.USER_IS_NEW, 0) != 0 ) { //untuk shorcut dari tombol di activity introduction
                     if (m.getInt(DefineValue.USER_IS_NEW, 0) == -1) {
                         newFrag = new Regist1();
 

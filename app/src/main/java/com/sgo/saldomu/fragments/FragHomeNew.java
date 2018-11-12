@@ -137,10 +137,10 @@ public class FragHomeNew extends BaseFragmentMainPage {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.frag_home_new, container, false);
-        GridHome = (GridView) v.findViewById(R.id.grid);
-        tv_saldo = (TextView) v.findViewById(R.id.tv_saldo);
-        swSettingOnline = (Switch) v.findViewById(R.id.swSettingOnline);
-        llAgentDetail = (LinearLayout) v.findViewById(R.id.llAgentDetail);
+        GridHome = v.findViewById(R.id.grid);
+        tv_saldo = v.findViewById(R.id.tv_saldo);
+        swSettingOnline = v.findViewById(R.id.swSettingOnline);
+        llAgentDetail = v.findViewById(R.id.llAgentDetail);
         return v;
 
     }
@@ -153,11 +153,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(), sp);
 
-        btn_beli = (Button) v.findViewById(R.id.btn_beli);
-        input = (EditText) v.findViewById(R.id.input);
-        tv_pulsa = (TextView) v.findViewById(R.id.tv_pulsa);
-        tv_bpjs = (TextView) v.findViewById(R.id.tv_bpjs);
-        tv_listrikPLN = (TextView) v.findViewById(R.id.tv_listrikPLN);
+        btn_beli = v.findViewById(R.id.btn_beli);
+        input = v.findViewById(R.id.input);
+        tv_pulsa = v.findViewById(R.id.tv_pulsa);
+        tv_bpjs = v.findViewById(R.id.tv_bpjs);
+        tv_listrikPLN = v.findViewById(R.id.tv_listrikPLN);
         view_pulsa = v.findViewById(R.id.view_pulsa);
         view_bpjs = v.findViewById(R.id.view_bpjs);
         view_listrikPLN = v.findViewById(R.id.view_listrikPLN);
@@ -417,9 +417,13 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 } else if (menuItemName.equals(getString(R.string.title_cash_out_member))) {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
-                    switchActivity(i, MainPage.ACTIVITY_RESULT);
-                } else {
-                    for (int x = 0; x < shopCategories.size(); x++) {
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
+                }else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent)) ) {
+                    switchMenu(NavigationDrawMenu.MTAGIH, null);
+                }
+                else
+                {
+                    for(int x=0;x<shopCategories.size();x++) {
                         String categoryName = shopCategories.get(x).getCategoryName();
                         if (menuItemName.indexOf(categoryName) > 0) {
                             Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
@@ -453,7 +457,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
         RefreshSaldo();
         if (levelClass != null)
             levelClass.refreshData();
-    }
+        }
 
     private ArrayList<String> SetupListMenu() {
         String[] _data;
@@ -463,7 +467,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
             Collections.addAll(data, _data);
 
-        } else {
+        } else
+            if (!isAgent){
 
             String[] categories = new String[shopCategories.size()];
             for (int x = 0; x < shopCategories.size(); x++) {
@@ -487,13 +492,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
         TypedArray taAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_agent);
         TypedArray taNotAgent = getResources().obtainTypedArray(R.array.list_menu_icon_frag_new_home_not_agent);
 
-        totalIdx = ta.length();
-        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT, false);
-        if (isAgent) {
-            totalIdx += taAgent.length();
-        } else {
-            totalIdx += shopCategories.size();
-            totalIdx += taNotAgent.length();
+        totalIdx                = ta.length();
+        Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
+        if(isAgent) {
+            totalIdx    += taAgent.length();
+        } else
+        if (!isAgent){
+            totalIdx    += shopCategories.size();
+            totalIdx    += taNotAgent.length();
         }
 
         int[] data = new int[totalIdx];
@@ -505,8 +511,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
 
-        } else {
-            for (int x = 0; x < shopCategories.size(); x++) {
+        } else
+            if (!isAgent){
+            for(int x =0; x < shopCategories.size(); x++ ) {
                 data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;
             }

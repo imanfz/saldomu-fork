@@ -58,7 +58,7 @@ public class UpdateBBSBirthPlace extends IntentService {
     private void getListBBSBirthPlace(){
         try{
 
-            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_BBS_CITY,
+            HashMap<String, Object> params = RetrofitService.getInstance().getSignatureSecretKey(MyApiClient.LINK_BBS_BIRTH_PLACE,
                     "");
             Timber.d("params bbs birth place " +params.toString());
 
