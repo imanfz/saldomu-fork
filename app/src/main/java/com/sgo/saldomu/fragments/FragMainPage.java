@@ -1,11 +1,14 @@
 package com.sgo.saldomu.fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -14,10 +17,13 @@ import android.view.ViewGroup;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.adapter.MainFragmentAdapter;
 import com.sgo.saldomu.coreclass.BaseFragmentMainPage;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
+import com.sgo.saldomu.coreclass.LevelClass;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.viewpagerindicator.TitlePageIndicator;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -37,6 +43,8 @@ public class FragMainPage extends Fragment {
     private SecurePreferences sp;
     private View currentView;
     private boolean isAgent;
+    ViewPager pager;
+    LevelClass levelClass;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,7 +63,6 @@ public class FragMainPage extends Fragment {
                 .getDisplayMetrics());
         MainFragmentAdapter adapternya;
         TitlePageIndicator tabs;
-        ViewPager pager;
         getActivity().invalidateOptionsMenu();
         final List<BaseFragmentMainPage> mList = new ArrayList<>();
 //        mList.add(new Home());
@@ -68,6 +75,27 @@ public class FragMainPage extends Fragment {
         tabs = (TitlePageIndicator)getCurrentView().findViewById(R.id.main_tabs);
         pager = (ViewPager) getCurrentView().findViewById(R.id.main_pager);
         adapternya = new MainFragmentAdapter(getChildFragmentManager(),getActivity(),mList);
+
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (pager.getCurrentItem()==1)
+                {
+                    if (!isAgent && !levelClass.isLevel1QAC())
+                        showDialogNotAgent();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         pager.setAdapter(adapternya);
         pager.setPageMargin(pageMargin);
@@ -129,6 +157,35 @@ public class FragMainPage extends Fragment {
 
 
         ToggleFAB(false);
+    }
+
+    public void showDialogNotAgent()
+    {
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
+                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+                getActivity().getString(R.string.cancel), false);
+        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+            }
+        });
+        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog_frag.dismiss();
+                pager.setCurrentItem(0);
+            }
+        });
+
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.add(dialog_frag,null);
+        ft.commitAllowingStateLoss();
     }
 
     public Fragment getFragment(int position){

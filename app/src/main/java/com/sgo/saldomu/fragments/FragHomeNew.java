@@ -221,8 +221,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
                 GridHome adapter = new GridHome(getActivity(), SetupListMenu(), SetupListMenuIcons());
                 GridHome.setAdapter(adapter);
             }
-        } else {
-
+        }
+        else {
+//if (!isAgent) {
             RequestParams params = MyApiClient.getSignatureWithParams(sp.getString(DefineValue.COMMUNITY_ID, ""), MyApiClient.LINK_CATEGORY_LIST,
                     sp.getString(DefineValue.USERID_PHONE, ""), sp.getString(DefineValue.ACCESS_KEY, ""));
 
@@ -465,6 +466,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
                     Intent i = new Intent(getActivity(), BBSActivity.class);
                     i.putExtra(DefineValue.INDEX, BBSActivity.CONFIRMCASHOUT);
                     switchActivity(i,MainPage.ACTIVITY_RESULT);
+                }else if (menuItemName.equals(getString(R.string.menu_item_title_tagih_agent)) ) {
+                    switchMenu(NavigationDrawMenu.MTAGIH, null);
                 }
                 else
                 {
@@ -512,7 +515,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
             Collections.addAll(data,_data);
 
-        } else {
+        } else
+            if (!isAgent){
 
             String[] categories = new String[shopCategories.size()];
             for(int x =0 ; x < shopCategories.size(); x++ ) {
@@ -540,7 +544,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         if(isAgent) {
             totalIdx    += taAgent.length();
-        } else {
+        } else
+        if (!isAgent){
             totalIdx    += shopCategories.size();
             totalIdx    += taNotAgent.length();
         }
@@ -554,7 +559,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
 
-        } else {
+        } else
+            if (!isAgent){
             for(int x =0; x < shopCategories.size(); x++ ) {
                 data[x] = R.drawable.ic_location_on_black;
                 overallIdx++;

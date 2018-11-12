@@ -96,39 +96,10 @@ public class FragHomeAgent extends BaseFragmentMainPage {
         }
     }
 
-    public void showDialogNotAgent()
-    {
-        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
-                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
-                getActivity().getString(R.string.cancel), false);
-        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
-                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
-            }
-        });
-        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog_frag.dismiss();
-                getActivity().finish();
-            }
-        });
-
-        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.add(dialog_frag,null);
-        ft.commitAllowingStateLoss();
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        v = inflater.inflate(R.layout.frag_list_bbs, container, false);
+        v = inflater.inflate(R.layout.frag_home_agent, container, false);
         return v;
     }
 
@@ -138,22 +109,10 @@ public class FragHomeAgent extends BaseFragmentMainPage {
 
         EasyAdapter adapter = new EasyAdapter(getActivity(),R.layout.list_view_item_with_arrow, _data);
 
-        //ListView listView1 = (ListView) v.findViewById(android.R.id.list);
-        //listView1.setAdapter(adapter);
-
-        llAgentDetail       = (LinearLayout) v.findViewById(R.id.llAgentDetail);
-        swSettingOnline     = (Switch) v.findViewById(R.id.swSettingOnline);
-        llAgentDetail.setVisibility(View.GONE);
-        swSettingOnline.setVisibility(View.GONE);
-        setAgentDetailToUI();
-
         GridView gvListBbs  = (GridView) v.findViewById(R.id.gvListBbs);
 
         GridBbsMenu gridBbsMenuAdapter = new GridBbsMenu(getActivity(), SetupMenuItems(), SetupMenuIcons());
         gvListBbs.setAdapter(gridBbsMenuAdapter);
-
-        if (!isAgent)
-            showDialogNotAgent();
 
         gvListBbs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,7 +143,10 @@ public class FragHomeAgent extends BaseFragmentMainPage {
                     } else if (menuItemName.equalsIgnoreCase(getString(R.string.cash_out))) {
                         posIdx = BBSActivity.TRANSACTION;
                         trxType = DefineValue.BBS_CASHOUT;
-                    } else {
+                    } else if (menuItemName.equals(getString(R.string.menu_item_title_onprogress_agent)) ) {
+                        posIdx = BBSActivity.BBSONPROGRESSAGENT;
+                        trxType = DefineValue.INDEX;
+                    }else {
                         posIdx = -1;
                     }
                 } else {
@@ -231,51 +193,6 @@ public class FragHomeAgent extends BaseFragmentMainPage {
             Timber.d("Run Service update data BBS");
         }
     }
-
-
-    /*@Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-
-        int posIdx;
-        if(isAgent) {
-            if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_list_account_bbs)))
-                posIdx = BBSActivity.LISTACCBBS;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.transaction)))
-                posIdx = BBSActivity.TRANSACTION;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                posIdx = BBSActivity.CONFIRMCASHOUT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_kelola)))
-                posIdx = BBSActivity.BBSKELOLA;
-            //else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_list_approval)))
-                //posIdx = BBSActivity.BBSAPPROVALAGENT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_trx_agent)))
-                posIdx = BBSActivity.BBSTRXAGENT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_waktu_beroperasi)))
-                posIdx = BBSActivity.BBSWAKTUBEROPERASI;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.menu_item_title_tutup_manual)))
-                posIdx = BBSActivity.BBSTUTUPMANUAL;
-            else {
-                posIdx = -1;
-            }
-        } else {
-            if (_data[position].equalsIgnoreCase(getString(R.string.title_cash_out_member)))
-                posIdx = BBSActivity.CONFIRMCASHOUT;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_rating_by_member)))
-                posIdx = BBSActivity.BBSRATINGBYMEMBER;
-            else if (_data[position].equalsIgnoreCase(getString(R.string.title_bbs_my_orders)))
-                posIdx = BBSActivity.BBSMYORDERS;
-            else {
-                posIdx = -1;
-            }
-
-        }
-        if(posIdx !=-1){
-            Intent i = new Intent(getActivity(), BBSActivity.class);
-            i.putExtra(DefineValue.INDEX, posIdx);
-            switchActivity(i,MainPage.ACTIVITY_RESULT);
-        }
-    }
-    */
 
     private void switchActivity(Intent mIntent, int j){
         if (getActivity() == null)
@@ -435,7 +352,7 @@ public class FragHomeAgent extends BaseFragmentMainPage {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(i);
 
                                 } else {
-                                    setAgentDetailToUI();
+//                                    setAgentDetailToUI();
                                     Toast.makeText(getContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
                                 }
 
@@ -507,9 +424,9 @@ public class FragHomeAgent extends BaseFragmentMainPage {
                     switchMenu(NavigationDrawMenu.MHOME);
                 }
             }
-            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
-                setAgentDetailToUI();
-            }
+//            else if ( action.equals(AgentShopService.INTENT_ACTION_AGENT_SHOP) ) {
+//                setAgentDetailToUI();
+//            }
         }
     };
 

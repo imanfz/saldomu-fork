@@ -46,7 +46,7 @@ import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
-import com.sgo.saldomu.activities.MyProfileNewActivity;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
@@ -120,6 +120,7 @@ public class NavigationDrawMenu extends ListFragment{
     public static final int MTARIKDANA = 26;
     public static final int MSCADM = 27;
     public static final int MINFO = 28;
+    public static final int MTAGIH = 29;
 
     private static final int RC_GPS_REQUEST = 1;
 
@@ -612,6 +613,9 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MINFO:
                 startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
+                break;
+            case MTAGIH:
+                startActivity(new Intent(getActivity(), TagihActivity.class));
                 break;
         }
     }

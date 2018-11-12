@@ -202,8 +202,7 @@
         <!-- item>@string/menu_item_title_list_approval</item -->
         <!-- item>@string/menu_item_title_waktu_beroperasi</item -->
         <!-- item>@string/menu_item_title_tutup_manual</item -->
-
-
+        <item>@string/menu_item_title_onprogress_agent</item>
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
@@ -214,6 +213,7 @@
         <item>@drawable/ic_tariktunai</item>
         <!-- item>@drawable/ic_laporan</item -->
         <item>@drawable/ic_belanja</item>
+        <item>@drawable/ic_location_on_black</item>
     </integer-array>
 
     <string-array name="list_bbs_member">
@@ -245,10 +245,11 @@
         <item>@string/menu_item_title_scadm</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_agent">
-        <item>@string/cash_in</item>
-        <item>@string/cash_out</item>
-        <item>@string/menu_item_title_trx_agent</item>
-        <item>@string/menu_item_title_onprogress_agent</item>
+        <!--<item>@string/cash_in</item>-->
+        <!--<item>@string/cash_out</item>-->
+        <!--<item>@string/menu_item_title_trx_agent</item>-->
+        <!--<item>@string/menu_item_title_onprogress_agent</item>-->
+        <item>@string/menu_item_title_tagih_agent</item>
     </string-array>
     <string-array name="list_menu_frag_new_home_not_agent">
         <!--<item>@string/menu_item_search_agent_cta</item>-->
@@ -271,10 +272,11 @@
         <item>@drawable/ic_laporan</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_agent">
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_tariktunai</item>
-        <item>@drawable/ic_location_on_black</item>
+        <!--<item>@drawable/ic_tariktunai</item>-->
+        <!--<item>@drawable/ic_tariktunai</item>-->
+        <!--<item>@drawable/ic_tariktunai</item>-->
+        <!--<item>@drawable/ic_location_on_black</item>-->
+        <item>@drawable/tagih_id</item>
     </integer-array>
     <integer-array name="list_menu_icon_frag_new_home_not_agent">
         <!--<item>@drawable/ic_location_on_black</item>-->

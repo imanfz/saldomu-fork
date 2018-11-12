@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80FFFFFF"
+    >
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorSecondary"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:id="@+id/llAgentDetail"-->
+        <!--android:padding="6dp"-->
+        <!--android:visibility="gone">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/set_online"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textColor="@color/grey_1000w"-->
+            <!--android:textSize="@dimen/abc_text_size_body_1_material"-->
+            <!--android:textStyle="bold" />-->
+
+
+
+        <!--<Switch-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:id="@+id/swSettingOnline"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:textOff="@string/no"-->
+            <!--android:textOn="@string/yes" />-->
+
+    <!--</LinearLayout>-->
+
+    <!-- ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:dividerHeight="1dp"
+        android:layout_height="match_parent">
+
+    </ListView -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorSecondaryWhiteFixed">
+        <GridView
+            android:layout_weight="2"
+            android:numColumns="2"
+            android:gravity="center"
+            android:columnWidth="100dp"
+            android:stretchMode="columnWidth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/gvListBbs"
+            android:padding="2dp"
+            android:background="@color/colorSecondaryWhiteFixed"
+            android:verticalSpacing="2dp"
+            android:horizontalSpacing="2dp"
+            />
+    </LinearLayout>
+
+</LinearLayout>
