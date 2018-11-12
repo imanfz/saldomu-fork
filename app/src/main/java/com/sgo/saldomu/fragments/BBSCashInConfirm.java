@@ -63,7 +63,6 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
     public final static String TAG = "com.sgo.saldomu.fragments.BBSCashInConfirm";
     private static final int MAX_TOKEN_RESENT = 3;
 
-    private ProgressDialog progdialog;
     private TextView tvTitle;
     private View v, cityLayout, layout_btn_resend, layout_OTP, layoutTCASH;
     private TextView tvSourceAcct, tvBankBenef, tvBenefCity, tvAmount, tvNoBenefAcct,
@@ -435,8 +434,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     private void sentInsertTransTopup(String token) {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = tx_id + comm_code + tx_product_code + token;
 
@@ -526,8 +524,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                             btnSubmit.setEnabled(true);
                         }
                     });
@@ -539,8 +536,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     private void requestResendToken(final boolean isRequestOTP) {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = tx_id + comm_code + tx_product_code;
 
@@ -602,7 +598,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
                         @Override
                         public void onComplete() {
-                            progdialog.dismiss();
+                            dismissProgressDialog();
 
                             btnSubmit.setEnabled(true);
                             btnResend.setEnabled(true);
@@ -681,8 +677,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
     private void sentRetryToken() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = tx_id + comm_id + tokenValue.getText().toString();
 
@@ -734,8 +729,7 @@ public class BBSCashInConfirm extends BaseFragment implements ReportBillerDialog
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            dismissProgressDialog();
                             btnSubmit.setEnabled(true);
                         }
                     });

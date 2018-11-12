@@ -25,7 +25,7 @@ public interface RetrofitInterfaces {
 //            , @FieldMap Map<String, Object> body);
 
     @POST("{url}")
-    @FormUrlEncoded
+//    @FormUrlEncoded
     Observable<JsonObject> GetObjectInterface(@Path(value = "url", encoded = true) String url);
 
     @POST("{url}")

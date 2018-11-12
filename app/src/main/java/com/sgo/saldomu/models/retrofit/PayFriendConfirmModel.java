@@ -1,17 +1,14 @@
 package com.sgo.saldomu.models.retrofit;
 
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 public class PayFriendConfirmModel extends jsonModel {
     @SerializedName("data")
     @Expose
     private
-    List<PayfriendDataModel> data;
-//    String data;
+//    List<PayfriendDataModel> data;
+    Object data;
     @SerializedName("buss_scheme_code")
     @Expose
     private
@@ -24,11 +21,12 @@ public class PayFriendConfirmModel extends jsonModel {
     @Expose
     private
 //    TrfDataModel transfer_data;
-    JsonObject transfer_data;
+//    JsonObject transfer_data;
+    Object transfer_data;
 
-    public List<PayfriendDataModel> getData() {
-        return data;
-    }
+//    public List<PayfriendDataModel> getData() {
+//        return data;
+//    }
 
 //    public String getData() {
 //        return data;
@@ -42,7 +40,11 @@ public class PayFriendConfirmModel extends jsonModel {
         return buss_scheme_name;
     }
 
-    public JsonObject getTransfer_data() {
+    public Object getTransfer_data() {
         return transfer_data;
+    }
+
+    public Object getData() {
+        return data;
     }
 }

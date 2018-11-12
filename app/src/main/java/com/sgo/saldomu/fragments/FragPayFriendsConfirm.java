@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.sgo.saldomu.Beans.RecepientModel;
 import com.sgo.saldomu.R;
@@ -472,7 +473,9 @@ public class FragPayFriendsConfirm extends BaseFragment implements ReportBillerD
                                     String _txid = "", _recipient = "", _recipient_error = null, _message;
                                     double _Amount = 0.0, _fee = 0.0, _total_amount = 0.0, _total_wc = 0.0;
                                     _message = message;
-                                    List<PayfriendDataModel> temp = new ArrayList<>(model.getData());
+                                    JsonParser jsonParser = new JsonParser();
+                                    List<PayfriendDataModel> temp = getGson().fromJson(toJson(model.getData()),
+                                            new TypeToken<List<PayfriendDataModel>>() {}.getType());
 
 //                        if (!model.getData().equals("")){
 //                            Type type = new TypeToken<List<PayfriendDataModel>>() {}.getType();

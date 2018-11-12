@@ -35,7 +35,8 @@ public class InqBillerModel extends jsonModel {
     @SerializedName("description")
     @Expose
     private
-    DescriptionModel description;
+    Object description;
+//    DescriptionModel description;
     @SerializedName("admin_fee")
     @Expose
     private
@@ -73,7 +74,7 @@ public class InqBillerModel extends jsonModel {
         return item_name;
     }
 
-    public DescriptionModel getDescription() {
+    public Object getDescription() {
         return description;
     }
 

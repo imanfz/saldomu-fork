@@ -1,5 +1,6 @@
 package com.sgo.saldomu.widgets;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,11 +9,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.securepreferences.SecurePreferences;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.coreclass.CustomSecurePref;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.dialogs.ProgBarDialog;
 
 import timber.log.Timber;
@@ -27,9 +31,11 @@ public abstract class BaseFragment extends Fragment {
     protected String memberIDLogin, commIDLogin, userPhoneID, accessKey;
     protected String extraSignature="";
     protected ProgBarDialog loadingDialog;
+    protected ProgressDialog progdialog;
 
     protected View v;
     protected Gson gson;
+    JsonParser jsonParser;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +54,17 @@ public abstract class BaseFragment extends Fragment {
             gson = new Gson();
         }
         return gson;
+    }
+
+    protected JsonParser getJsonParser(){
+        if (jsonParser == null){
+            jsonParser = new JsonParser();
+        }
+        return jsonParser;
+    }
+
+    protected JsonElement toJson(Object model){
+        return getJsonParser().parse(getGson().toJson(model));
     }
 
     protected void SwitchFragment(Fragment mFragment, String fragName, Boolean isBackstack){
@@ -85,6 +102,22 @@ public abstract class BaseFragment extends Fragment {
             e.printStackTrace();
         }
 
+    }
+
+    ProgressDialog getProgressDialog(){
+        if (progdialog == null)
+            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
+        return progdialog;
+    }
+
+    protected void showProgressDialog(){
+        if (!getProgressDialog().isShowing())
+            getProgressDialog().show();
+    }
+
+    protected void dismissProgressDialog(){
+        if (getProgressDialog().isShowing())
+            getProgressDialog().dismiss();
     }
 
     public FragmentManager getFragManager(){

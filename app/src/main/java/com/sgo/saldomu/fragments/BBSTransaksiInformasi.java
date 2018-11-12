@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -86,7 +85,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     private static final int RC_READ_PHONE_STATE = 122;
     private static final int RC_SEND_SMS = 123;
     private View v, bbs_informasi_form, emptyCashoutBenefLayout;
-    private ProgressDialog progdialog;
+
     private Activity act;
     private TextView tvTitle;
     private CustomAutoCompleteTextViewWithIcon actv_rekening_cta;
@@ -543,8 +542,8 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     private void sentInsertC2A() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+
+            showProgressDialog();
 
             extraSignature = comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
                     + MyApiClient.CCY_VALUE + amount;
@@ -628,8 +627,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                                             @Override
                                             public void onClickCancelButton(View v, boolean isLongClick) {
-                                                if (progdialog.isShowing())
-                                                    progdialog.dismiss();
+                                                dismissProgressDialog();
                                             }
 
                                             @Override
@@ -674,14 +672,12 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
                             btnNext.setEnabled(true);
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
                             confirmationDialog.dismiss();
                         }
                     });
@@ -767,8 +763,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     private void joinMemberLKD() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = memberIDLogin + lkd_product_code;
 
@@ -818,8 +813,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                         @Override
                         public void onComplete() {
                             btnNext.setEnabled(true);
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
+                            showProgressDialog();
                         }
                     });
 
@@ -831,8 +825,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     private void sentInsertA2C() {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = comm_code + member_code + source_product_type + source_product_code + benef_product_type + benef_product_code
                     + MyApiClient.CCY_VALUE + amount;
@@ -890,15 +883,13 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
                         @Override
                         public void onError(Throwable throwable) {
-
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onComplete() {
                             btnNext.setEnabled(true);
                             confirmationDialog.dismiss();
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
                         }
                     });
         } catch (Exception e) {
@@ -908,8 +899,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
 
     public void sentDataReqToken(final BBSTransModel A2CModel) {
         try {
-            progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
-            progdialog.show();
+            showProgressDialog();
 
             extraSignature = A2CModel.getTx_id() + comm_code + A2CModel.getTx_product_code();
 
@@ -986,17 +976,17 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
                                     Toast.makeText(getActivity(), code, Toast.LENGTH_LONG).show();
                                 }
                             }
+                            dismissProgressDialog();
                         }
 
                         @Override
                         public void onError(Throwable throwable) {
+                            dismissProgressDialog();
 
                         }
 
                         @Override
                         public void onComplete() {
-                            if (progdialog.isShowing())
-                                progdialog.dismiss();
                             confirmationDialog.dismiss();
                         }
                     });
@@ -1342,8 +1332,7 @@ public class BBSTransaksiInformasi extends BaseFragment implements EasyPermissio
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         Toast.makeText(getActivity(), getString(R.string.cancel_permission_read_contacts), Toast.LENGTH_SHORT).show();
         if (requestCode == RC_SEND_SMS) {
-            if (progdialog.isShowing())
-                progdialog.dismiss();
+            dismissProgressDialog();
             if (smsDialog != null) {
                 smsDialog.dismiss();
                 smsDialog.reset();

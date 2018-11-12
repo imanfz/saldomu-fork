@@ -49,6 +49,8 @@ import com.sgo.saldomu.models.retrofit.GetTrxStatusReportModel;
 import com.sgo.saldomu.models.retrofit.ReportDataModel;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -411,18 +413,20 @@ public class FragReport extends ListFragment implements ReportBillerDialog.OnDia
                             try {
 
                                 String code;
+                                JSONObject temp = new JSONObject(getGson().toJson(object));
 
-                                if (object.get("report_data").getAsString().equals("")){
+                                if (temp.optString("report_data", "").equals("")){
                                     code = "0003";
                                 }else {
+
+                                    reportListModel = getGson().fromJson(object, GetReportDataModel.class);
+
                                     code = reportListModel.getError_code();
+
+                                    reportData.clear();
+
+                                    reportData.addAll(reportListModel.getReport_data());
                                 }
-
-                                reportListModel = getGson().fromJson(object, GetReportDataModel.class);
-
-                                reportData.clear();
-
-                                reportData.addAll(reportListModel.getReport_data());
 
                                 if (isAdded()) {
                                     if (isRefresh != null) {
