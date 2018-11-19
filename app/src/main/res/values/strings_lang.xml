@@ -749,6 +749,7 @@
     <string name="saving_gallery">Menyimpan di galeri...</string>
     <string name="community">Komunitas</string>
     <string name="member_code">Kode Member</string>
+    <string name="shop_code">Kode Toko</string>
     <string name="foldername_struk">Struk Saldomu</string>
 
     <string name="period_month">period_month</string>
@@ -1252,5 +1253,6 @@
 
     <string name="lbl_need_help">Hi Support, i want to ask.</string>
     <string name="mitra">Mitra</string>
+    <string name="error_input_tagih">Kode Toko dibutuhkan!</string>
 
 </resources>

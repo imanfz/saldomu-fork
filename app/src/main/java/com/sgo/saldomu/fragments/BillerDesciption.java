@@ -444,6 +444,9 @@ public class BillerDesciption extends BaseFragment {
 
             progdialog = DefinedDialog.CreateProgressDialog(getActivity(), "");
 
+            if (cust_id.equalsIgnoreCase(""))
+                cust_id = userPhoneID;
+
             extraSignature = biller_comm_id+item_id+cust_id;
 
             RequestParams params = MyApiClient.getSignatureWithParams(commIDLogin,MyApiClient.LINK_INQUIRY_BILLER,
