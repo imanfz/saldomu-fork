@@ -1,23 +1,33 @@
 package com.sgo.saldomu.activities;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.activeandroid.util.Log;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.coreclass.RealmManager;
+import com.sgo.saldomu.coreclass.ToggleKeyboard;
+import com.sgo.saldomu.fragments.FragListCommunitySCADM;
+import com.sgo.saldomu.fragments.FragTagihInput;
 import com.sgo.saldomu.widgets.BaseActivity;
 
-public class TagihActivity extends BaseActivity {
-    Spinner sp_mitra, sp_communtiy;
-    SecurePreferences sp;
-    EditText et_memberCode;
-    Button btn_submit;
-    View v;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import timber.log.Timber;
 
+public class TagihActivity extends BaseActivity {
+    SecurePreferences sp;
+    FragmentManager fragmentManager;
+    Fragment mContent;
+    Fragment newFragment = null;
 
     @Override
     protected int getLayoutResource() {
@@ -27,22 +37,27 @@ public class TagihActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp_mitra = findViewById(R.id.sp_mitra);
-        sp_communtiy = findViewById(R.id.sp_community);
-        et_memberCode = findViewById(R.id.et_memberCode);
-        btn_submit = findViewById(R.id.btn_submit);
+
 
         InitializeToolbar();
 
-        btn_submit.setOnClickListener(submitListener);
-    }
+        if (findViewById(R.id.layout_tagih) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
 
-    Button.OnClickListener submitListener = new Button.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
+            newFragment = new FragTagihInput();
         }
-    };
+
+        mContent = newFragment;
+
+        fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.layout_tagih, newFragment);
+        fragmentTransaction.commitAllowingStateLoss();
+        setResult(MainPage.RESULT_NORMAL);
+
+    }
 
     public void InitializeToolbar(){
         setActionBarIcon(R.drawable.ic_arrow_left);
@@ -59,5 +74,41 @@ public class TagihActivity extends BaseActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    public void switchContent(Fragment mFragment, String fragName, Boolean isBackstack) {
+        ToggleKeyboard.hide_keyboard(this);
+        if(isBackstack){
+            Timber.d("backstack");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.layout_tagih, mFragment, fragName)
+                    .addToBackStack(null)
+                    .commitAllowingStateLoss();
+        }
+        else {
+            Timber.d("bukan backstack");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.layout_tagih, mFragment, fragName)
+                    .commitAllowingStateLoss();
+
+        }
+        setActionBarTitle(fragName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

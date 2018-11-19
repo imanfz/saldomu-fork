@@ -42,8 +42,6 @@ public class RealmManager {
     public static RealmConfiguration BBSMemberBankConfiguration;
     public static RealmConfiguration TagihDataConfig;
 
-    private static String REALM_TAGIH_NAME = "saldomudevtagih.realm";
-    private static int REALM_SCHEME_TAGIH_VERSION = 2;
 
     @RealmModule(classes = { Account_Collection_Model.class, bank_biller_model.class,
             Biller_Data_Model.class, Biller_Type_Data_Model.class, Denom_Data_Model.class})
@@ -73,7 +71,7 @@ public class RealmManager {
         file = new File(mContext.getFilesDir(),BuildConfig.REALM_BBS_MEMBER_BANK_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.bbsmemberbank),file);
 
-        file = new File(mContext.getFilesDir(),REALM_TAGIH_NAME);
+        file = new File(mContext.getFilesDir(),BuildConfig.REALM_TAGIH_NAME);
         copyBundledRealmFile(mContext.getResources().openRawResource(R.raw.saldomudevtagih),file);
 
         Realm.init(mContext);
@@ -108,8 +106,8 @@ public class RealmManager {
                 .build();
 
         TagihDataConfig = new RealmConfiguration.Builder()
-                .name(REALM_TAGIH_NAME)
-                .schemaVersion(REALM_SCHEME_TAGIH_VERSION)
+                .name(BuildConfig.REALM_TAGIH_NAME)
+                .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
                 .modules(new TagihModule())
                 .migration(new TagihDataMigration())
                 .build();
@@ -133,6 +131,10 @@ public class RealmManager {
 
     public static Realm getRealmBiller(){
         return Realm.getInstance(BillerConfiguration);
+    }
+
+    public static Realm getRealmTagih(){
+        return Realm.getInstance(TagihDataConfig);
     }
 
     public static void closeRealm(Realm realm){

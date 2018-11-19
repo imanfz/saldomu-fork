@@ -266,6 +266,7 @@ public class MyApiClient {
     public static String LINK_BBS_SEND_DATA_LKD;
     public static String LINK_BBS_MANDIRI_LKD;
     public static String LINK_CANCEL_TRANSACTION_DGI;
+    public static String LINK_LIST_INVOICE_DGI;
 
     public static String LINK_GOOGLE_MAPS_API_GEOCODE;
 
@@ -422,6 +423,7 @@ public class MyApiClient {
         LINK_GET_DENOM_INVOKE = headaddressfinal +"scadm/Denom/Invoke";
         LINK_BBS_SEND_DATA_LKD = headaddressfinal +"BBSTrxCustomer/Submit";
         LINK_BBS_MANDIRI_LKD = headaddressfinal +"RegAgentLKD/Invoke";
+
         LINK_REG_TOKEN_FCM = urlMNotif + "user/register";
 //        LINK_REG_TOKEN_FCM = urlMNotif + "sendnotification/invoke";
 
@@ -430,6 +432,8 @@ public class MyApiClient {
 
         LINK_REQ_CHANGE_EMAIL = headaddressfinal + "ReqChangeEmail/Invoke";
         LINK_CONFIRM_CHANGE_EMAIL = headaddressfinal + "ConfirmChangeEmail/Invoke";
+
+        LINK_LIST_INVOICE_DGI = headaddressfinal +"invoice/Listinv/Retrieve";
         LINK_CANCEL_TRANSACTION_DGI = headaddressfinal + "invoice/Canceltrx/Invoke";
 
         getInstance().syncHttpClient.setTimeout(TIMEOUT);
@@ -1621,6 +1625,11 @@ public class MyApiClient {
     public static void cancelTransactionDGI(Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         Timber.wtf("address cancel transaction DGI: %1$s ",LINK_CANCEL_TRANSACTION_DGI);
         post(mContext, LINK_CANCEL_TRANSACTION_DGI, params, responseHandler);
+    }
+
+    public static void inputDataDGI (Context mContext, RequestParams params, AsyncHttpResponseHandler responseHandler) {
+        Timber.wtf("address list invoice DGI: %1$s ",LINK_LIST_INVOICE_DGI);
+        post(mContext, LINK_LIST_INVOICE_DGI, params, responseHandler);
     }
 
     public static void getBBSBirthPlace(Context mContext, Boolean isSync, RequestParams params, AsyncHttpResponseHandler responseHandler) {

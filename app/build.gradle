@@ -67,6 +67,8 @@ android {
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "1"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_MEMBER_BANK_VERSION", "1"
+            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomudevtagih.realm\""
+            buildConfigField "long", "REALM_SCHEME_TAGIH_VERSION", "2"
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "false"
             buildConfigField 'String', "COMM_CODE_BBS_ATC", "\"EMOMSCADM\""
@@ -99,6 +101,8 @@ android {
             buildConfigField "long", "REALM_SCHEME_BBS_VERSION", "1"
             buildConfigField "String", "REALM_BBS_MEMBER_BANK_NAME", "\"bbsmemberbank.realm\""
             buildConfigField "long", "REALM_SCHEME_BBS_MEMBER_BANK_VERSION", "1"
+            buildConfigField "String", "REALM_TAGIH_NAME", "\"saldomudevtagih.realm\""
+            buildConfigField "long", "REALM_SCHEME_TAGIH_VERSION", "2"
 
             buildConfigField 'boolean', "IS_PROD_DOMAIN", "true"
 
