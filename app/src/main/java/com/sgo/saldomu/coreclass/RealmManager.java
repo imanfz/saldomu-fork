@@ -47,6 +47,10 @@ public class RealmManager {
     private Realm realm;
     private Realm bbsRealm;
 
+    //version
+    private static String REALM_TAGIH_NAME = "saldomudevtagih.realm";
+    private static int REALM_SCHEME_TAGIH_VERSION = 2;
+
     public static RealmManager getInstance(){
         if (singleton == null){
             singleton = new RealmManager();
@@ -133,8 +137,8 @@ public class RealmManager {
                 .build();
 
         TagihDataConfig = new RealmConfiguration.Builder()
-                .name(BuildConfig.REALM_TAGIH_NAME)
-                .schemaVersion(BuildConfig.REALM_SCHEME_TAGIH_VERSION)
+                .name(REALM_TAGIH_NAME)
+                .schemaVersion(REALM_SCHEME_TAGIH_VERSION)
                 .modules(new TagihModule())
                 .migration(new TagihDataMigration())
                 .build();
