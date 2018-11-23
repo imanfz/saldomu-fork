@@ -543,6 +543,8 @@ public class DefineValue {
     public static String QR_TYPE_FROM_DEFAULT_ACCOUNT = "QR_TYPE_FROM_DEFAULT_ACCOUNT";
     public static String QR_OBJ = "QR_OBJ";
     public static String DGI = "DGI";
+    public static String MOBILE_PHONE = "mobile_phone";
+    public static String RESPONSE = "mobile_phone";
 
 }
 

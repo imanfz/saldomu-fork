@@ -511,11 +511,11 @@ public class FragHomeNew extends BaseFragmentMainPage {
         String[] _data;
         ArrayList<String> data = new ArrayList<>() ;
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent) {
-            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
-            Collections.addAll(data,_data);
-
-        } else
+//        if(isAgent) {
+//            _data = getResources().getStringArray(R.array.list_menu_frag_new_home_agent);
+//            Collections.addAll(data,_data);
+//
+//        } else
             if (!isAgent){
 
             String[] categories = new String[shopCategories.size()];
@@ -542,9 +542,9 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         totalIdx                = ta.length();
         Boolean isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
-        if(isAgent) {
-            totalIdx    += taAgent.length();
-        } else
+//        if(isAgent) {
+//            totalIdx    += taAgent.length();
+//        } else
         if (!isAgent){
             totalIdx    += shopCategories.size();
             totalIdx    += taNotAgent.length();
@@ -552,14 +552,14 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
         int[] data        = new int[totalIdx];
 
-        if(isAgent) {
-            for( int j = 0; j < taAgent.length(); j++) {
-                data[j] = taAgent.getResourceId(j, -1);
-                overallIdx++;
-            }
-
-
-        } else
+//        if(isAgent) {
+//            for( int j = 0; j < taAgent.length(); j++) {
+//                data[j] = taAgent.getResourceId(j, -1);
+//                overallIdx++;
+//            }
+//
+//
+//        } else
             if (!isAgent){
             for(int x =0; x < shopCategories.size(); x++ ) {
                 data[x] = R.drawable.ic_location_on_black;

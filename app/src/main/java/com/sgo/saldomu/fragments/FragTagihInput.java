@@ -1,9 +1,11 @@
 package com.sgo.saldomu.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +20,24 @@ import com.activeandroid.util.Log;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.securepreferences.SecurePreferences;
+import com.sgo.saldomu.Beans.SCADMCommunityModel;
 import com.sgo.saldomu.Beans.TagihCommunityModel;
 import com.sgo.saldomu.Beans.TagihModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
+import com.sgo.saldomu.activities.JoinCommunitySCADMActivity;
+import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.coreclass.DateTimeFormat;
 import com.sgo.saldomu.coreclass.DefineValue;
 import com.sgo.saldomu.coreclass.RealmManager;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
+import com.sgo.saldomu.coreclass.ToggleKeyboard;
 import com.sgo.saldomu.coreclass.WebParams;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
+import com.sgo.saldomu.models.MobilePhoneModel;
+import com.sgo.saldomu.models.PaymentTypeDGIModel;
 import com.sgo.saldomu.widgets.BaseFragment;
 
 import org.apache.http.Header;
@@ -119,26 +128,48 @@ public class FragTagihInput extends BaseFragment {
         });
     }
 
+
     public void initializeCommunity(int pos) {
         Realm _realm = RealmManager.getRealmTagih();
-        ArrayList<TagihCommunityModel> list = new ArrayList<>();
-        list.addAll(mitraNameData.get(pos).getListCommunity());
+        final ArrayList<TagihCommunityModel> listTagih = new ArrayList<>();
+        listTagih.addAll(mitraNameData.get(pos).getListCommunity());
 //                _realm.where(TagihCommunityModel.class).findAll();
-        Log.d("mainpage", "id : " + list.get(0).getId());
+        Log.d("mainpage", "id : " + listTagih.get(0).getId());
 
         communityNameArrayList.clear();
 
-        for (int i = 0; i < list.size(); i++) {
-            communityNameArrayList.add(list.get(i).getComm_name());
-            commCodeTagih = list.get(i).getComm_code();
+        for (int i = 0; i < listTagih.size(); i++) {
+            communityNameArrayList.add(listTagih.get(i).getComm_name());
+            Timber.d("comm code tagih : "+listTagih.get(i).getComm_code());
         }
         communityAdapter.notifyDataSetChanged();
+
+        if(listTagih != null && listTagih.size() > 0){
+            commCodeTagih = listTagih.get(0).getComm_code();
+        }else
+            commCodeTagih ="";
+
+
+        sp_communtiy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                commCodeTagih = listTagih.get(position).getComm_code();
+
+                Timber.d("TEST comm code tagih selected: "+listTagih.get(position).getComm_code()+" pos:"+position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     public Boolean inputValidation() {
         if (et_memberCode.getText().toString().equalsIgnoreCase("")) {
             et_memberCode.requestFocus();
             et_memberCode.setError(getString(R.string.error_input_tagih));
+            return false;
         }
             return true;
     }
@@ -155,7 +186,7 @@ public class FragTagihInput extends BaseFragment {
 
         params.put(WebParams.APP_ID, BuildConfig.APP_ID);
         params.put(WebParams.MEMBER_CODE, et_memberCode.getText().toString());
-        params.put(WebParams.COMM_CODE, commCodeTagih);
+        params.put(WebParams.COMM_CODE,commCodeTagih);
         params.put(WebParams.USER_ID, userPhoneID);
         Timber.d("params list invoice DGI : " + params.toString());
 
@@ -172,8 +203,17 @@ public class FragTagihInput extends BaseFragment {
                     String error_message = response.getString(WebParams.ERROR_MESSAGE);
                     Timber.d("response list invoice DGI : " + response.toString());
                     if (code.equals(WebParams.SUCCESS_CODE)) {
-                        Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
 
+                        String responseListInvoice = response.toString();
+                        Fragment newFrag = new FragListInvoiceTagih();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(DefineValue.RESPONSE, responseListInvoice);
+                        newFrag.setArguments(bundle);
+                        if(getActivity() == null){
+                            return;
+                        }
+                        TagihActivity ftf = (TagihActivity) getActivity();
+                        ftf.switchContent(newFrag,"List Invoice",true);
                     } else {
                         Toast.makeText(getActivity(), error_message, Toast.LENGTH_LONG);
                     }
