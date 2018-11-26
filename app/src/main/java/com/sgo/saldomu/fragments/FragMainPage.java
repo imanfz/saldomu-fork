@@ -88,7 +88,7 @@ public class FragMainPage extends Fragment {
             public void onPageSelected(int position) {
                 if (pager.getCurrentItem()==0)
                 {
-                    if (!isAgent && !levelClass.isLevel1QAC())
+                    if (!isAgent)
                         showDialogNotAgent();
                 }
             }
