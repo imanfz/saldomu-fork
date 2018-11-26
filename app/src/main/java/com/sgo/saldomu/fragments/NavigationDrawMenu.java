@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ import com.sgo.saldomu.activities.BbsMerchantCommunityList;
 import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
+import com.sgo.saldomu.activities.MyProfileNewActivity;
 import com.sgo.saldomu.activities.TagihActivity;
 import com.sgo.saldomu.adapter.NavDrawMainMenuAdapter;
 import com.sgo.saldomu.coreclass.CurrencyFormat;
@@ -59,6 +61,7 @@ import com.sgo.saldomu.coreclass.LevelClass;
 import com.sgo.saldomu.coreclass.RoundImageTransformation;
 import com.sgo.saldomu.coreclass.Singleton.MyApiClient;
 import com.sgo.saldomu.coreclass.WebParams;
+import com.sgo.saldomu.dialogs.AlertDialogFrag;
 import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
@@ -571,10 +574,15 @@ public class NavigationDrawMenu extends ListFragment{
                 switchFragment(newFragment, getString(R.string.menu_item_title_help1));
                 break;
             case MBBS:
-                newFragment = new ListBBS();
-                if(data != null)
-                    newFragment.setArguments(data);
-                switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                if (isAgent)
+                {
+                    newFragment = new ListBBS();
+                    if(data != null)
+                        newFragment.setArguments(data);
+                    switchFragment(newFragment,getString(R.string.menu_item_title_bbs));
+                }
+                else showDialogNotAgent();
+
                 break;
             case MLOGOUT:
                 AlertDialog.Builder alertbox=new AlertDialog.Builder(getActivity());
@@ -937,5 +945,33 @@ public class NavigationDrawMenu extends ListFragment{
                 });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public void showDialogNotAgent()
+    {
+        final AlertDialogFrag dialog_frag = AlertDialogFrag.newInstance(getActivity().getString(R.string.level_dialog_title),
+                getActivity().getString(R.string.level_dialog_message_agent), getActivity().getString(R.string.level_dialog_btn_ok),
+                getActivity().getString(R.string.cancel), false);
+        dialog_frag.setOkListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent mI = new Intent(getActivity(), MyProfileNewActivity.class);
+                getActivity().startActivityForResult(mI, MainPage.ACTIVITY_RESULT);
+            }
+        });
+        dialog_frag.setCancelListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog_frag.dismiss();
+            }
+        });
+
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        Fragment prev = getActivity().getSupportFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.add(dialog_frag,null);
+        ft.commitAllowingStateLoss();
     }
 }
