@@ -520,6 +520,16 @@ public class WebParams {
     public static String LKD_PRODUCT_CODE  = "lkd_product_code";
     public static String SOURCE_OF_FUND = "source_of_fund";
     public static String IS_POS = "is_pos";
+    public static String MOBILE_PHONE = "mobile_phone";
+    public static String PHONE_DATA = "phone_data";
+    public static String FEE_DATA = "fee_data";
+    public static String PAYMENT_TYPE = "payment_type";
+    public static String PAYMENT_CODE = "payment_code";
+    public static String BUYER_FEE = "buyer_fee";
+    public static String SELLER_FEE = "seller_fee";
+    public static String COMMISSION_FEE = "commission_fee";
+    public static String MIN_AMOUNT = "min_amount";
+    public static String MAX_AMOUNT = "max_amount";
 
 
 }
