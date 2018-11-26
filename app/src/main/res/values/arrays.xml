@@ -34,7 +34,7 @@
     </string-array>
 
     <string-array name="home_vpi_title">
-        <item>MOBILE TELLER</item>
+        <item>AGEN</item>
         <item>BERANDA</item>
         <item>RIWAYAT</item>
         <!--<item>LINI WAKTU</item>-->
@@ -193,7 +193,7 @@
     </string-array>
 
     <string-array name="list_bbs_agent">
-        <item>@string/menu_item_title_tagih_agent</item>
+        <!--<item>@string/menu_item_title_tagih_agent</item>-->
         <item>@string/cash_in</item>
         <item>@string/cash_out</item>
         <item>@string/menu_item_title_trx_agent</item>
@@ -207,7 +207,7 @@
     </string-array>
 
     <integer-array name="list_icon_bbs_agent">
-        <item>@drawable/tagih_id</item>
+        <!--<item>@drawable/tagih_id</item>-->
         <item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item>
         <item>@drawable/ic_tariktunai</item>

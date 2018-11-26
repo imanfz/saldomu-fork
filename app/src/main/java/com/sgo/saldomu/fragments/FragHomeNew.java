@@ -253,10 +253,16 @@ public class FragHomeNew extends BaseFragmentMainPage {
                                 JSONArray categories = response.getJSONArray("category");
 
                                 for (int i = 0; i < categories.length(); i++) {
-
                                     JSONObject object = categories.getJSONObject(i);
                                     ShopCategory shopCategory = new ShopCategory();
                                     shopCategory.setCategoryId(object.getString("category_id"));
+                                    if (shopCategory.getCategoryId().contains("SETOR"))
+                                    {
+                                        String categoryIDcta = shopCategory.getCategoryId().toString();
+                                        SecurePreferences.Editor mEditor = sp.edit();
+                                        mEditor.putString(DefineValue.CATEGORY_ID_CTA, categoryIDcta);
+                                        mEditor.apply();
+                                    }
                                     shopCategory.setSchemeCode(object.getString("scheme_code"));
                                     String tempCategory = object.getString("category_name").toLowerCase();
 
@@ -269,8 +275,8 @@ public class FragHomeNew extends BaseFragmentMainPage {
 
                                     shopCategory.setCategoryName(builder.toString());
                                     shopCategories.add(shopCategory);
-                                }
 
+                                }
 
                             } else {
                                 Toast.makeText(getActivity().getApplicationContext(), response.getString(WebParams.ERROR_MESSAGE), Toast.LENGTH_LONG);
@@ -476,6 +482,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
                         if ( menuItemName.indexOf(categoryName) > 0 ) {
                             Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
                             i.putExtra(DefineValue.CATEGORY_ID, shopCategories.get(x).getCategoryId());
+                            sp.edit().putString(DefineValue.CATEGORY_ID,shopCategories.get(x).getCategoryId());
                             i.putExtra(DefineValue.CATEGORY_NAME, shopCategories.get(x).getCategoryName());
                             i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
                             i.putExtra(DefineValue.AMOUNT, "");
@@ -490,6 +497,7 @@ public class FragHomeNew extends BaseFragmentMainPage {
             }
 
         });
+
 
         if ( sp.getBoolean(DefineValue.IS_AGENT, false) ) {
 

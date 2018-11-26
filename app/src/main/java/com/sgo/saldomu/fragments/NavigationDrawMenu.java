@@ -39,11 +39,13 @@ import com.sgo.saldomu.Beans.navdrawmainmenuModel;
 import com.sgo.saldomu.BuildConfig;
 import com.sgo.saldomu.R;
 import com.sgo.saldomu.activities.ActivityProfileQr;
+import com.sgo.saldomu.activities.BBSActivity;
 import com.sgo.saldomu.activities.BbsApprovalAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByAgentActivity;
 import com.sgo.saldomu.activities.BbsMapViewByMemberActivity;
 import com.sgo.saldomu.activities.BbsMemberShopActivity;
 import com.sgo.saldomu.activities.BbsMerchantCommunityList;
+import com.sgo.saldomu.activities.BbsNewSearchAgentActivity;
 import com.sgo.saldomu.activities.InfoHargaWebActivity;
 import com.sgo.saldomu.activities.MainPage;
 import com.sgo.saldomu.activities.TagihActivity;
@@ -61,6 +63,7 @@ import com.sgo.saldomu.dialogs.AlertDialogLogout;
 import com.sgo.saldomu.dialogs.DefinedDialog;
 import com.sgo.saldomu.interfaces.OnLoadDataListener;
 import com.sgo.saldomu.loader.UtilsLoader;
+import com.sgo.saldomu.models.ShopCategory;
 import com.sgo.saldomu.services.AgentShopService;
 import com.sgo.saldomu.services.BalanceService;
 import com.sgo.saldomu.utils.PickAndCameraUtil;
@@ -148,7 +151,10 @@ public class NavigationDrawMenu extends ListFragment{
     private final int RESULT_CAMERA = 200;
     final int RC_CAMERA_STORAGE = 14;
     private PickAndCameraUtil pickAndCameraUtil;
+    Boolean isAgent;
     private String isRegisteredLevel; //saat antri untuk diverifikasi
+    String categoryIdcta;
+    ArrayList<ShopCategory> shopCategories = new ArrayList<>();
 
     Boolean isLevel1;
 
@@ -158,7 +164,6 @@ public class NavigationDrawMenu extends ListFragment{
         filter = new IntentFilter();
         filter.addAction(BalanceService.INTENT_ACTION_BALANCE);
         filter.addAction(AgentShopService.INTENT_ACTION_AGENT_SHOP);
-        sp = CustomSecurePref.getInstance().getmSecurePrefs();
         pickAndCameraUtil = new PickAndCameraUtil(getActivity(),this);
     }
 
@@ -175,7 +180,9 @@ public class NavigationDrawMenu extends ListFragment{
 
         sp = CustomSecurePref.getInstance().getmSecurePrefs();
         levelClass = new LevelClass(getActivity(),sp);
+        isAgent = sp.getBoolean(DefineValue.IS_AGENT,false);
         isRegisteredLevel = sp.getString(DefineValue.IS_REGISTERED_LEVEL,"0");
+        categoryIdcta = sp.getString(DefineValue.CATEGORY_ID_CTA,"");
         mAdapter = new NavDrawMainMenuAdapter(getActivity(), generateData());
         ListView mListView = v.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
@@ -521,10 +528,27 @@ public class NavigationDrawMenu extends ListFragment{
                 if(levelClass.isLevel1QAC()) {
                     levelClass.showDialogLevel();
                 }
-                else {
-                    newFragment = new ListCashOut();
-                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+                else if (!levelClass.isLevel1QAC() && !isAgent)
+                {
+                        Intent i = new Intent(getActivity(), BbsNewSearchAgentActivity.class);
+                        i.putExtra(DefineValue.CATEGORY_ID,categoryIdcta);
+                        i.putExtra(DefineValue.CATEGORY_NAME, "Setor Tunai");
+                        i.putExtra(DefineValue.BBS_AGENT_MOBILITY, DefineValue.STRING_YES);
+                        i.putExtra(DefineValue.AMOUNT, "");
+                        i.putExtra(DefineValue.BBS_SCHEME_CODE, "CTA");
+                        switchActivity(i, MainPage.ACTIVITY_RESULT);
+                        break;
+                }else if (isAgent)
+                {
+                    Intent i = new Intent(getActivity(), BBSActivity.class);
+                    i.putExtra(DefineValue.INDEX, BBSActivity.TRANSACTION);
+                    i.putExtra(DefineValue.TYPE, DefineValue.BBS_CASHIN);
+                    switchActivity(i,MainPage.ACTIVITY_RESULT);
                 }
+//                else {
+//                    newFragment = new ListCashOut();
+//                    switchFragment(newFragment, getString(R.string.menu_item_title_cash_out));
+//                }
                 break;
             case MSCADM:
                 newFragment = new FragSCADM();
@@ -613,9 +637,6 @@ public class NavigationDrawMenu extends ListFragment{
                 break;
             case MINFO:
                 startActivity(new Intent(getActivity(), InfoHargaWebActivity.class));
-                break;
-            case MTAGIH:
-                startActivity(new Intent(getActivity(), TagihActivity.class));
                 break;
         }
     }
